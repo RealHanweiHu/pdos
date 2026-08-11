@@ -148,6 +148,7 @@ describe("ProjectWorkspace", () => {
 
   afterEach(() => {
     cleanup();
+    window.history.replaceState({}, "", "/");
     vi.unstubAllGlobals();
   });
 
@@ -332,6 +333,23 @@ describe("ProjectWorkspace", () => {
     expect(screen.getAllByRole("tab")).toHaveLength(2);
     expect(screen.queryByRole("tab", { name: "任务" })).not.toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toBe(false);
+  });
+
+  it("opens the project selected by the dashboard deep link", async () => {
+    window.history.replaceState({}, "", "/projects?project=project-1");
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+
+    expect(await screen.findByRole("heading", { name: "Next pump platform" })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock.mock.calls.filter(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toHaveLength(3));
   });
 
   it("redirects expired sessions and retries load failures", async () => {

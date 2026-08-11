@@ -54,7 +54,7 @@ make dev
 管理员；该入口成功一次后永久 fail-close。随后使用 `POST /api/auth/login` 获取短期 Bearer
 JWT，并通过 `GET /api/auth/me` 验证服务端重新解析的活跃租户上下文。
 
-浏览器认证入口为 `/login`，登录成功后进入 `/requirements` 需求池。Next.js 的同源
+浏览器认证入口为 `/login`，登录成功后进入 `/` 驾驶舱；需求池仍可从主导航进入。Next.js 的同源
 `/api/session/*` 与 Requirement/Customer BFF 使用
 `PDOS_API_INTERNAL_URL` 访问 FastAPI，将 JWT 只写入 HttpOnly、SameSite=Lax cookie；token
 不会返回给客户端 JavaScript，也不写入浏览器存储。生产环境不要给该内部地址添加

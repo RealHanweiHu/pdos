@@ -128,6 +128,7 @@ export function useProjectActions({ replace }: { replace: (href: string) => void
     selectProject: (project: Project) => setSelectedId(project.id),
     selectedProject,
     setProjects,
+    setSelectedProjectId: setSelectedId,
     statusMessage,
     transitionStage,
     transitionStatus,

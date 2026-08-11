@@ -46,7 +46,7 @@ function messageFrom(error: unknown) {
 export function ProjectWorkspace() {
   const { replace } = useRouter();
   const actions = useProjectActions({ replace });
-  const { setProjects } = actions;
+  const { setProjects, setSelectedProjectId } = actions;
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -71,13 +71,33 @@ export function ProjectWorkspace() {
         setIdentity(loaded.identity);
         setProjects(loaded.projects);
         setLoadState("ready");
+        const deepLinkedId = new URLSearchParams(window.location.search).get("project");
+        const deepLinkedProject = loaded.projects.find((project) => project.id === deepLinkedId);
+        if (deepLinkedProject) {
+          setSelectedProjectId(deepLinkedProject.id);
+          if (workItemRoles.includes(loaded.identity.user.role)) {
+            const sequence = requestSequence.current + 1;
+            requestSequence.current = sequence;
+            setWorkItemState("loading");
+            requestProjectWorkItems(deepLinkedProject.id).then(
+              (items) => {
+                if (!active || requestSequence.current !== sequence) return;
+                setWorkItems(items);
+                setWorkItemState("ready");
+              },
+              () => {
+                if (active && requestSequence.current === sequence) setWorkItemState("error");
+              },
+            );
+          }
+        }
       },
       () => {
         if (active) setLoadState("error");
       },
     );
     return () => { active = false; };
-  }, [replace, setProjects]);
+  }, [replace, setProjects, setSelectedProjectId]);
 
   const canViewWorkItems = identity !== null && workItemRoles.includes(identity.user.role);
 
