@@ -28,5 +28,7 @@ pnpm build
 - `/cases`: role-aware Development Case list/editor with explicit state transitions and approved Case→Project creation
 - `/projects`: membership-aware Project list/editor with seven-stage Timeline, explicit lifecycle transitions, and adjacent-stage progression
 - `/api/requirements`, `/api/development-cases`, `/api/projects`, and their item/action routes: server-only BFF endpoints that forward the HttpOnly session token without exposing it to client JavaScript
+- `/api/projects/{projectId}/tasks|issues|risks` plus item/transition routes: bounded, project-scoped work-item BFF contracts for the S1-6 workspace
 
-Business screens are added only by their canonical Sprint work items. Task, Issue, and Risk surfaces remain reserved for S1-4.
+Business screens are added only by their canonical Sprint work items. Task, Issue, and Risk data
+contracts are complete; their five-tab Project Workspace presentation remains reserved for S1-6.

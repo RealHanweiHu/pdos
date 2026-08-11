@@ -88,6 +88,21 @@ Owner, Admin, and Project Manager can edit Project content, follow the frozen
 `active ↔ on_hold`), and advance active Projects only to an adjacent Stage in their own Workflow.
 The Project API never accepts tenant scope from the client.
 
+## Task, Issue, and Risk lifecycle
+
+Project-scoped Task endpoints expose explicit create/edit/transition actions and derive readiness
+from same-project, acyclic dependencies. An unfinished predecessor keeps a Task in `todo/waiting`;
+only a user action with a nonblank reason may write `blocked`. Issue follows the strict
+`open → analysis → action → verification → closed` graph. Risk follows
+`open → mitigating/watching`, allows `mitigating ↔ watching`, and closes only from either active
+state; its score is always `likelihood × impact`.
+
+Owner and Admin may access work items inside their tenant. Project Manager, Engineer, and Quality
+require exact Project membership. Supplier and Customer are denied, including assignment as a
+work-item owner. Every write records its versioned event and immutable audit in the business
+transaction; cross-project dependencies, cross-Workflow Stages, and failed writes leave no
+partial rows.
+
 ## Events and audit
 
 `cehub_event.events` is an ordered stream with `(source, event_id)` idempotency and tenant-safe

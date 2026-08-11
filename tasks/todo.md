@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S1-4 Task / Issue / Risk。** S1-3 已于 2026-08-11 完成全部验收；下一项按计划实现任务依赖、Issue 五态与 Risk 工作流。
+> 唯一当前指针：**S1-5 事件全覆盖 + 调试页。** S1-4 已于 2026-08-11 完成全部验收；下一项按计划补齐事件浏览与回放调试能力。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -326,7 +326,7 @@
 - Playwright：七阶段 Timeline、空态/错误重试/只读角色、明暗主题和 320/768/1440px 均通过；320px 无横向溢出、所有可见交互目标至少 44px，控制台 0 warning/0 error
 - 本地截图：`output/playwright/s1-3-project-light-1440.png`、`s1-3-project-dark-1440.png`、`s1-3-project-dark-768.png`、`s1-3-project-dark-320.png`（验证产物按 `.gitignore` 不入库）
 
-## Current: S1-4 Task / Issue / Risk
+## Completed: S1-4 Task / Issue / Risk
 
 **Definition of Ready**
 
@@ -345,13 +345,22 @@
 - [x] S1-4b：实现 Task readiness/依赖环检测与状态动作，确保“等待前置 ≠ blocked”
 - [x] S1-4c：实现 Issue 五态与 Risk 生命周期服务，所有写路径同事务落版本化 event+audit
 - [x] S1-4d：实现项目对象权限绑定的 Task/Issue/Risk API 与同源 BFF，列表稳定排序并隐藏外部角色
-- [ ] S1-4e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project→Task/Issue/Risk HTTP 验收
+- [x] S1-4e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project→Task/Issue/Risk HTTP 验收
 
 **Acceptance evidence required**
 
-- [ ] 同项目 Task 可建立无环依赖；前置未完成时后继仍为 `todo/waiting` 且不可开始，前置完成或跳过后 readiness 自动变为 `ready`
-- [ ] `blocked` 只能由带非空原因的显式动作产生并可解除；依赖变化永不把后继写成 blocked
-- [ ] Issue 仅按五态相邻前进并在 closed 写入关闭时间；Risk 仅按冻结四态流转并稳定返回 likelihood×impact 分值
-- [ ] 跨租户、跨项目依赖/Stage/负责人、非成员和外部角色均 fail-close；失败事务不留下业务/event/audit 残片
-- [ ] 每个 Task/Issue/Risk 创建、内容编辑与状态动作均有对应版本化 event 与不可变 audit，`ISSUE_CREATED` 保持 canonical payload
-- [ ] FastAPI/BFF 合同、101+ server tests、55+ web tests、lint/type/build、migration 0007 往返及真实 HTTP 链路全绿
+- [x] 同项目 Task 可建立无环依赖；前置未完成时后继仍为 `todo/waiting` 且不可开始，前置完成或跳过后 readiness 自动变为 `ready`
+- [x] `blocked` 只能由带非空原因的显式动作产生并可解除；依赖变化永不把后继写成 blocked
+- [x] Issue 仅按五态相邻前进并在 closed 写入关闭时间；Risk 仅按冻结四态流转并稳定返回 likelihood×impact 分值
+- [x] 跨租户、跨项目依赖/Stage/负责人、非成员和外部角色均 fail-close；失败事务不留下业务/event/audit 残片
+- [x] 每个 Task/Issue/Risk 创建、内容编辑与状态动作均有对应版本化 event 与不可变 audit，`ISSUE_CREATED` 保持 canonical payload
+- [x] FastAPI/BFF 合同、101+ server tests、55+ web tests、lint/type/build、migration 0007 往返及真实 HTTP 链路全绿
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：107 个 server tests、58 个 web tests、Ruff/ESLint、Python/TypeScript 严格类型检查和生产构建全绿；migration `0007` downgrade→upgrade 往返与唯一 Alembic head 测试通过
+- 隔离真实同源 HTTP：Owner 完成 Requirement→Case→Project→Task/Issue/Risk；最终 Requirement/Case 均为 `converted`，Project 独占 7 个 Stage，含 2 个 Task、1 条 dependency、1 个 closed Issue 与 1 个 closed Risk
+- Task 证据：后继从 `todo/waiting` 随前置完成自动变为 `todo/ready`，显式 `blocked` 必须带原因且解除后恢复 `todo/ready`；有向环与跨项目依赖均被拒绝
+- Issue/Risk 证据：Issue 严格相邻推进并写 `closed_at`；Risk 严格按冻结状态图推进，`likelihood=4`、`impact=5` 稳定返回 `score=20`
+- 权限与事务证据：跨项目依赖、跨 Workflow Stage、外部角色负责人、非成员与 Supplier 入口均 fail-close；失败写入前后业务/event/audit 计数不变
+- 事件审计证据：真实链路中 requirement/development_case/project/task/issue/risk/decision 的 event 与 audit 数量逐实体一致；`ISSUE_CREATED` canonical payload 由测试锁定
