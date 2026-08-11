@@ -54,6 +54,14 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
         "DECISION_RECORDED",
         "PROJECT_UPDATED",
         "PROJECT_STATUS_CHANGED",
+        "TASK_CREATED",
+        "TASK_UPDATED",
+        "TASK_STATUS_CHANGED",
+        "ISSUE_UPDATED",
+        "ISSUE_STATUS_CHANGED",
+        "RISK_CREATED",
+        "RISK_UPDATED",
+        "RISK_STATUS_CHANGED",
     } <= EVENT_REGISTRY.keys()
     assert "TENANT_BOOTSTRAPPED" not in SPEC_EVENT_TYPES
     assert "USER_SIGNED_IN" not in SPEC_EVENT_TYPES
@@ -85,6 +93,13 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
     decision = definition_for("DECISION_RECORDED")
     assert decision.entity == "decision"
     assert decision.payload_schema["required"] == ["decision_kind", "outcome"]
+
+    issue_created = definition_for("ISSUE_CREATED")
+    assert issue_created.payload_schema["required"] == ["issue_id", "severity"]
+    task_status = definition_for("TASK_STATUS_CHANGED")
+    assert task_status.payload_schema["required"] == ["from_status", "to_status"]
+    risk_created = definition_for("RISK_CREATED")
+    assert risk_created.payload_schema["required"] == ["risk_id", "score", "status"]
 
 
 def test_unknown_event_types_fail_closed() -> None:
