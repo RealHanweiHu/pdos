@@ -41,10 +41,27 @@ def test_spec_event_catalog_is_complete_and_versioned() -> None:
         assert definition.payload_schema["additionalProperties"] is False
 
 
-def test_auth_write_events_are_registered_without_changing_the_spec_catalog() -> None:
-    assert {"TENANT_BOOTSTRAPPED", "USER_SIGNED_IN"} <= EVENT_REGISTRY.keys()
+def test_domain_write_events_are_registered_without_changing_the_spec_catalog() -> None:
+    assert {
+        "TENANT_BOOTSTRAPPED",
+        "USER_SIGNED_IN",
+        "REQUIREMENT_CREATED",
+        "REQUIREMENT_UPDATED",
+    } <= EVENT_REGISTRY.keys()
     assert "TENANT_BOOTSTRAPPED" not in SPEC_EVENT_TYPES
     assert "USER_SIGNED_IN" not in SPEC_EVENT_TYPES
+    assert "REQUIREMENT_CREATED" not in SPEC_EVENT_TYPES
+    assert "REQUIREMENT_UPDATED" not in SPEC_EVENT_TYPES
+
+    created = definition_for("REQUIREMENT_CREATED")
+    assert created.entity == "requirement"
+    assert created.producer == "requirement_service"
+    assert created.payload_schema["required"] == ["requirement_code", "status", "priority"]
+
+    updated = definition_for("REQUIREMENT_UPDATED")
+    assert updated.entity == "requirement"
+    assert updated.producer == "requirement_service"
+    assert updated.payload_schema["properties"]["changed_fields"] == {"type": "array"}
 
 
 def test_unknown_event_types_fail_closed() -> None:

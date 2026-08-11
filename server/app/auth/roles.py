@@ -23,6 +23,9 @@ class Action(StrEnum):
     PROJECT_VIEW = "project.view"
     PROJECT_EDIT = "project.edit"
     PROJECT_MEMBERS_MANAGE = "project.members.manage"
+    REQUIREMENT_VIEW = "requirement.view"
+    REQUIREMENT_CREATE = "requirement.create"
+    REQUIREMENT_EDIT = "requirement.edit"
     WORK_ITEM_VIEW = "work_item.view"
     WORK_ITEM_EDIT = "work_item.edit"
     QUALITY_MANAGE = "quality.manage"
@@ -40,6 +43,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.PROJECT_VIEW,
                 Action.PROJECT_EDIT,
                 Action.PROJECT_MEMBERS_MANAGE,
+                Action.REQUIREMENT_VIEW,
+                Action.REQUIREMENT_CREATE,
+                Action.REQUIREMENT_EDIT,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,
@@ -48,6 +54,7 @@ _ROLE_ACTIONS = MappingProxyType(
         Role.ENGINEER: frozenset(
             {
                 Action.PROJECT_VIEW,
+                Action.REQUIREMENT_VIEW,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
             }
@@ -55,6 +62,7 @@ _ROLE_ACTIONS = MappingProxyType(
         Role.QUALITY: frozenset(
             {
                 Action.PROJECT_VIEW,
+                Action.REQUIREMENT_VIEW,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,

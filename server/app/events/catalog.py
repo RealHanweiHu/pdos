@@ -136,6 +136,30 @@ _DEFINITIONS = (
         consumers=("security_audit",),
         payload_schema=_payload_schema(authentication_method="string"),
     ),
+    EventDefinition(
+        event_type="REQUIREMENT_CREATED",
+        version=1,
+        entity="requirement",
+        producer="requirement_service",
+        consumers=("intake_projection", "agent_dispatcher"),
+        payload_schema=_payload_schema(
+            requirement_code="string",
+            status="string",
+            priority="string",
+        ),
+    ),
+    EventDefinition(
+        event_type="REQUIREMENT_UPDATED",
+        version=1,
+        entity="requirement",
+        producer="requirement_service",
+        consumers=("intake_projection", "agent_dispatcher"),
+        payload_schema=_payload_schema(
+            changed_fields="array",
+            status="string",
+            priority="string",
+        ),
+    ),
 )
 
 EVENT_REGISTRY = MappingProxyType(
