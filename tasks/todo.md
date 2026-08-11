@@ -36,15 +36,15 @@
 
 **Acceptance criteria**
 
-- [ ] FastAPI `/healthz` 返回稳定、可测试的健康响应
-- [ ] Python lint/type/test 命令可重复运行
-- [ ] Alembic 环境存在且只有一个 head
+- [x] FastAPI `/healthz` 返回稳定、可测试的健康响应
+- [x] Python lint/type/test 命令可重复运行
+- [x] Alembic 环境存在且只有一个 head（`0000_scaffold`）
 
 **Verification**
 
-- [ ] 聚焦测试先失败后通过
-- [ ] server lint/type/test 全绿
-- [ ] 运行时请求 `/healthz` 成功
+- [x] 聚焦测试先失败后通过
+- [x] server lint/type/test 全绿
+- [x] 运行时请求 `/healthz` 成功
 
 **Dependencies:** S0-1a
 

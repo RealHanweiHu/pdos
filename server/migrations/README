@@ -1,0 +1,4 @@
+PDOS database migrations are strictly monotonic and are the only schema-change entrypoint.
+
+Use an explicit DATABASE_URL for every Alembic command. Test migrations must target the
+pdos_test database; the fail-close guard is added in S0-1d with the local data stack.
