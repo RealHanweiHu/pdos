@@ -23,6 +23,9 @@ def test_production_compose_exposes_only_the_web_service() -> None:
     assert "extra_hosts" not in services["api"]
     assert "extra_hosts" not in services["migrate"]
     assert services["web"]["ports"] == ["127.0.0.1:${APP_PORT:-3002}:3000"]
+    assert services["web"]["networks"] == {
+        "default": {"aliases": ["pdos-web"]},
+    }
     web_environment = cast(dict[str, str], services["web"]["environment"])
     assert web_environment["PDOS_API_INTERNAL_URL"] == "http://api:8000"
 
