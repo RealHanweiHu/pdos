@@ -205,11 +205,20 @@ export function ProjectWorkspace() {
   }
 
   async function moveTask(task: ProjectTask, input: TaskTransitionInput) {
-    return mutateWorkItem(
-      () => transitionTask(task.project_id, task.id, input),
-      (items, updated) => ({ ...items, tasks: items.tasks.map((item) => item.id === task.id ? updated as ProjectTask : item) }),
-      "任务状态已更新",
-    );
+    setWorkItemBusy(true);
+    setWorkItemError(null);
+    setWorkItemStatus(null);
+    try {
+      await transitionTask(task.project_id, task.id, input);
+      setWorkItems(await requestProjectWorkItems(task.project_id));
+      setWorkItemStatus("任务状态已更新");
+      return true;
+    } catch (error) {
+      setWorkItemError(messageFrom(error));
+      return false;
+    } finally {
+      setWorkItemBusy(false);
+    }
   }
 
   async function moveIssue(issue: ProjectIssue, toStatus: IssueStatus) {

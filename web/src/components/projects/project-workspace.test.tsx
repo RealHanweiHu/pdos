@@ -96,6 +96,16 @@ const waitingTask = {
   ...workItemTimestamps,
 };
 
+const foundationTask = {
+  ...waitingTask,
+  id: "task-1",
+  title: "Prepare motor validation fixture",
+  priority: "high",
+  dependency_task_ids: [],
+  unresolved_dependency_ids: [],
+  readiness: "ready",
+};
+
 const openIssue = {
   id: "issue-1",
   project_id: "project-1",
@@ -314,6 +324,45 @@ describe("ProjectWorkspace", () => {
       "/api/projects/project-1/issues/issue-1/transitions",
       expect.objectContaining({ body: JSON.stringify({ to_status: "analysis" }) }),
     );
+  });
+
+  it("refreshes sibling readiness after a predecessor is completed", async () => {
+    const user = userEvent.setup();
+    let transitionCount = 0;
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/tasks") && !init?.method) {
+        const dependent = transitionCount === 2
+          ? { ...waitingTask, unresolved_dependency_ids: [], readiness: "ready" }
+          : waitingTask;
+        const foundation = transitionCount === 0
+          ? foundationTask
+          : { ...foundationTask, status: transitionCount === 1 ? "in_progress" : "done", readiness: transitionCount === 1 ? "ready" : "complete" };
+        return jsonResponse({ items: [dependent, foundation] });
+      }
+      if (path.endsWith("/issues")) return jsonResponse({ items: [] });
+      if (path.endsWith("/risks")) return jsonResponse({ items: [] });
+      if (path.endsWith("/tasks/task-1/transitions")) {
+        transitionCount += 1;
+        return jsonResponse({
+          ...foundationTask,
+          status: transitionCount === 1 ? "in_progress" : "done",
+          readiness: transitionCount === 1 ? "ready" : "complete",
+        });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    await user.click(await screen.findByRole("tab", { name: "任务" }));
+    await user.click(screen.getByRole("button", { name: "开始任务" }));
+    await user.click(await screen.findByRole("button", { name: "完成任务" }));
+
+    await waitFor(() => expect(screen.queryByText("等待前置")).not.toBeInTheDocument());
+    expect(screen.getByRole("button", { name: "开始任务" })).toBeInTheDocument();
   });
 
   it("does not expose or request work items for external project members", async () => {
