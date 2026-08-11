@@ -1,0 +1,134 @@
+"use client";
+
+import {
+  ClipboardTextIcon,
+  FolderOpenIcon,
+  GaugeIcon,
+  SignOutIcon,
+} from "@phosphor-icons/react";
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+import type { WorkspaceIdentity } from "./requirements/requirement-types";
+
+const navigation = [
+  { href: "/", label: "驾驶舱", icon: GaugeIcon, key: "dashboard" },
+  { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
+  { href: null, label: "开发案例", icon: FolderOpenIcon, key: "cases" },
+] as const;
+
+export function WorkspaceShell({
+  active,
+  children,
+  identity,
+  loggingOut,
+  onLogout,
+}: {
+  active: "dashboard" | "requirements";
+  children: ReactNode;
+  identity: WorkspaceIdentity;
+  loggingOut: boolean;
+  onLogout: () => void;
+}) {
+  return (
+    <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
+      <a
+        className="fixed left-4 top-4 z-50 -translate-y-20 rounded-lg bg-primary px-3 py-2 font-medium text-primary-foreground transition-transform focus:translate-y-0"
+        href="#main-content"
+      >
+        跳到主要内容
+      </a>
+      <aside className="hidden border-r border-sidebar-border bg-sidebar lg:flex lg:flex-col">
+        <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
+          <span
+            aria-hidden="true"
+            className="flex size-6 items-center justify-center rounded-lg bg-primary font-mono text-xs font-bold text-primary-foreground"
+          >
+            P
+          </span>
+          <span className="font-semibold tracking-tight">PDOS</span>
+        </div>
+        <nav aria-label="主导航" className="px-3 py-4">
+          <p className="px-2 pb-2 text-[11px] font-semibold text-muted-foreground">
+            工作区
+          </p>
+          <ul className="space-y-1" role="list">
+            {navigation.map(({ href, icon: Icon, key, label }) => (
+              <li key={key}>
+                {href ? (
+                  <Link
+                    aria-current={active === key ? "page" : undefined}
+                    className={cn(
+                      "flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30",
+                      active === key &&
+                        "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-[inset_2px_0_0_var(--sidebar-primary)]",
+                    )}
+                    href={href}
+                  >
+                    <Icon aria-hidden="true" weight="regular" />
+                    {label}
+                  </Link>
+                ) : (
+                  <span
+                    aria-disabled="true"
+                    className="flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm text-muted-foreground/60"
+                  >
+                    <Icon aria-hidden="true" weight="regular" />
+                    {label}
+                    <span className="ml-auto text-[10px]">S1-2</span>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="mt-auto border-t border-sidebar-border px-4 py-4">
+          <p className="truncate text-xs font-medium text-sidebar-accent-foreground">
+            {identity.user.display_name}
+          </p>
+          <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+            {identity.tenant.name}
+          </p>
+        </div>
+      </aside>
+
+      <div className="min-w-0">
+        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 sm:px-6">
+          <div className="flex items-center gap-2 lg:hidden">
+            <span
+              aria-hidden="true"
+              className="flex size-6 items-center justify-center rounded-lg bg-primary font-mono text-xs font-bold text-primary-foreground"
+            >
+              P
+            </span>
+            <span className="font-semibold">PDOS</span>
+          </div>
+          <p className="hidden truncate text-xs text-muted-foreground sm:block lg:ml-0">
+            {identity.tenant.name} · {identity.user.display_name}
+          </p>
+          <div className="ml-auto flex items-center gap-1">
+            <ThemeToggle />
+            <Button
+              aria-label="退出登录"
+              className="size-11 sm:size-8"
+              disabled={loggingOut}
+              onClick={onLogout}
+              size="icon"
+              title="退出登录"
+              variant="ghost"
+            >
+              <SignOutIcon aria-hidden="true" weight="regular" />
+            </Button>
+          </div>
+        </header>
+        <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6" id="main-content">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}

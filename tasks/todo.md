@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S1-1 Requirement 池。** Sprint 0 已于 2026-08-11 经人确认通过；当前只实施需求录入/编辑/关联 Customer 与 REQUIREMENT 事件闭环。
+> 唯一当前指针：**S1-2 Development Case + 转化。** S1-1 已于 2026-08-11 完成全部验收；下一项按计划实现 Requirement→Case 正式转化与 Decision 留痕。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -223,7 +223,7 @@
 - [x] 由人使用生产账号完成公网 login→me→首页 smoke；访问日志已核对 login 200 / me 200，登录后服务健康、零重启且最近 10 分钟无 PDOS 5xx
 - [x] 汇报 Sprint 0 验收结果并获得人明确确认，进入 Sprint 1
 
-## Current: S1-1 Requirement Pool
+## Completed: S1-1 Requirement Pool
 
 **Definition of Ready**
 
@@ -237,12 +237,25 @@
 - [x] S1-1a：冻结 Requirement/Customer 数据约束与 tenant-safe migration 0004
 - [x] S1-1b：实现需求创建、读取与编辑 API，服务端绑定 tenant/actor，跨租户 fail-close
 - [x] S1-1c：登记 REQUIREMENT_CREATED / REQUIREMENT_UPDATED 事件，并让写路径同事务写 event + audit
-- [ ] S1-1d：实现需求池 UI 与同源 BFF，覆盖录入、编辑、Customer 关联、空态/错误态和键盘路径
-- [ ] S1-1e：完成聚焦测试、完整门禁、真实 API/浏览器 smoke 与迁移往返验证
+- [x] S1-1d：实现需求池 UI 与同源 BFF，覆盖录入、编辑、Customer 关联、空态/错误态和键盘路径
+- [x] S1-1e：完成聚焦测试、完整门禁、真实 API/浏览器 smoke 与迁移往返验证
 
 **Acceptance evidence required**
 
-- [ ] 同一租户可录入、查看和编辑需求，可关联本租户 Customer；Customer 可为空
-- [ ] 跨租户 Requirement/Customer 不可见、不可关联、不可编辑，未知对象稳定返回 404
-- [ ] 创建和编辑分别同事务落版本化 REQUIREMENT event 与不可变 audit，失败时全部回滚
-- [ ] 需求池按最新更新时间稳定排序，页面在双主题和 320/768/1440px 下可用且控制台无 warning/error
+- [x] 同一租户可录入、查看和编辑需求，可关联本租户 Customer；Customer 可为空
+- [x] 跨租户 Requirement/Customer 不可见、不可关联、不可编辑，未知对象稳定返回 404
+- [x] 创建和编辑分别同事务落版本化 REQUIREMENT event 与不可变 audit，失败时全部回滚
+- [x] 需求池按最新更新时间稳定排序，页面在双主题和 320/768/1440px 下可用且控制台无 warning/error
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：server/web 测试套件、Ruff/ESLint、Python/TypeScript 严格类型检查和生产构建全绿；Alembic `0004` 保持唯一 head，迁移往返测试通过
+- 隔离真实 HTTP/浏览器：owner 登录后完成需求创建、关联本租户 Customer、编辑标题/状态；同源 BFF 的 GET/POST/PATCH 分别返回 200/201/200，PATCH 仅发送发生变化的字段
+- 数据库证据：同一需求产生 `REQUIREMENT_CREATED`、`REQUIREMENT_UPDATED` 两个 v1 event，以及带正确前后快照的不可变 create/update audit
+- Playwright：空态、错误重试、只读角色、键盘路径、明暗主题及 320/768/1440px 均通过；320px 无横向溢出且交互目标至少 44px，控制台 0 warning/0 error
+- 本地截图：`output/playwright/s1-requirements-empty-light.png`、`s1-requirements-populated-dark.png`、`s1-requirements-mobile-dark.png`、`s1-requirements-tablet-light.png`（验证产物按 `.gitignore` 不入库）
+
+## Next: S1-2 Development Case + Conversion
+
+- [ ] 冻结 Requirement→Case 转化命令、Case 状态机与 Decision 留痕的规格映射
+- [ ] 按 TDD 切片实现迁移/API/事件审计/BFF/UI，并保持转化为独立正式动作

@@ -21,4 +21,10 @@ pnpm build
 - One 8px radius system, except documented full-pill filters
 - Theme defaults to the system preference and supports a manual light/dark toggle
 
-Business screens are added only by their canonical Sprint work items. The current page is intentionally limited to the verified application shell.
+## Implemented routes
+
+- `/login` and `/setup`: local account authentication through the same-origin session BFF
+- `/requirements`: tenant-scoped Requirement pool with create/edit, optional Customer association, role-aware controls, loading/error/empty states, and responsive light/dark layouts
+- `/api/requirements`, `/api/requirements/[requirementId]`, and `/api/customers`: server-only BFF routes that forward the HttpOnly session token without exposing it to client JavaScript
+
+Business screens are added only by their canonical Sprint work items. Requirement→Case conversion remains reserved for S1-2.

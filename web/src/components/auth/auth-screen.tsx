@@ -121,7 +121,7 @@ export function AuthScreen({
       const identity = (await identityResponse.json()) as AuthIdentity;
       setAuthenticated(true);
       if (onAuthenticated) onAuthenticated(identity);
-      else router.push("/");
+      else router.push("/requirements");
       return { ok: true };
     } catch {
       return { ok: false, message: "网络连接失败，请稍后重试。" };

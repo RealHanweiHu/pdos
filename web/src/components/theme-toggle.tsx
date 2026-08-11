@@ -22,6 +22,7 @@ export function ThemeToggle() {
   return (
     <Button
       aria-label={label}
+      className="size-11 sm:size-8"
       disabled={!mounted}
       onClick={() => setTheme(nextTheme)}
       size="icon"
