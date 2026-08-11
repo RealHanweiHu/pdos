@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S0-3 Auth + Tenant Resolution。** S0-2 已由 `pdos_test` 往返迁移、metadata drift 检测与完整门禁验收。
+> 唯一当前指针：**S0-4 RBAC 7 Roles。** S0-3 已由认证安全反例、真实 HTTP 路径与完整门禁验收。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -131,7 +131,7 @@
 - [x] 状态、唯一性、租户归属与跨实体引用约束的正反例测试通过
 - [x] downgrade→upgrade 往返后仍保持单一 Alembic head，完整门禁全绿
 
-## Next: S0-3 Auth + Tenant Resolution
+## Completed: S0-3 Auth + Tenant Resolution
 
 **Definition of Ready**
 
@@ -141,14 +141,36 @@
 
 **Implementation slices**
 
-- [ ] S0-3a：建立密码哈希、JWT claim/时效与认证配置契约
-- [ ] S0-3b：实现一次性 `/api/setup`，原子创建首个 Tenant 与初始化管理员账号
-- [ ] S0-3c：实现本地账号登录、签发 JWT 与当前用户读取端点
-- [ ] S0-3d：实现 fail-close 租户解析；缺失、失效或无租户归属一律拒绝
-- [ ] S0-3e：覆盖 setup 竞态、错误密码、伪造/过期 token 与租户上下文正反例
+- [x] S0-3a：建立密码哈希、JWT claim/时效与认证配置契约
+- [x] S0-3b：实现一次性 `/api/setup`，原子创建首个 Tenant 与初始化管理员账号
+- [x] S0-3c：实现本地账号登录、签发 JWT 与当前用户读取端点
+- [x] S0-3d：实现 fail-close 租户解析；缺失、失效或无租户归属一律拒绝
+- [x] S0-3e：覆盖 setup 竞态、错误密码、伪造/过期 token 与租户上下文正反例
 
 **Acceptance evidence required**
 
-- [ ] 空库只能成功 setup 一次，并可使用创建的初始化管理员登录
-- [ ] 有效 token 可解析唯一 tenant/user；所有无效上下文返回稳定 401/403
-- [ ] 聚焦测试、完整门禁与真实 HTTP 认证路径全绿
+- [x] 空库只能成功 setup 一次，并可使用创建的初始化管理员登录
+- [x] 有效 token 可解析唯一 tenant/user；所有无效上下文返回稳定 401/403
+- [x] 聚焦测试、完整门禁与真实 HTTP 认证路径全绿
+
+## Next: S0-4 RBAC 7 Roles
+
+**Definition of Ready**
+
+- [x] 规格出处：`RBAC_and_Audit.md` 与 canonical S0-4
+- [x] 依赖项：S0-3 已提供 fail-close 的 tenant/user 认证上下文
+- [x] 范围冻结：7 个固定角色、项目成员关系、服务端角色矩阵、外部角色最小可见面
+
+**Implementation slices**
+
+- [ ] S0-4a：定义 7 个冻结角色及租户级角色归属，初始化管理员授予 Owner
+- [ ] S0-4b：增加 tenant-safe 项目成员表与 migration 0002，保持 Alembic 单 head/无 drift
+- [ ] S0-4c：建立服务端权限动作目录与角色矩阵，默认拒绝未登记动作
+- [ ] S0-4d：实现 tenant + project 对象权限依赖，非项目成员与跨租户请求 fail-close
+- [ ] S0-4e：覆盖 7 角色矩阵、Supplier/Customer 最小可见面和多租户隔离正反例
+
+**Acceptance evidence required**
+
+- [ ] 7 个角色对全部冻结动作的 allow/deny 矩阵测试通过，未知动作默认拒绝
+- [ ] 项目成员只能访问本租户授权项目；跨租户与非成员请求稳定拒绝
+- [ ] migration 0002 往返、聚焦测试、完整门禁与真实 HTTP 权限路径全绿

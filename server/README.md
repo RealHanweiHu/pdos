@@ -19,3 +19,16 @@ uv run --python 3.12 alembic heads
 
 Alembic upgrade and downgrade commands require an explicit `DATABASE_URL`. Test database
 execution is wired through the fail-close `pdos_test` guard in S0-1d.
+
+## Authentication configuration
+
+The API loads `DATABASE_URL`, `JWT_SECRET`, `JWT_ISSUER`, `JWT_AUDIENCE`, and
+`JWT_ACCESS_TOKEN_MINUTES` lazily. `JWT_SECRET` must contain at least 32 bytes and must be
+different in every environment. Access tokens use strict HS256 issuer/audience validation;
+the tenant in a signed token is only a claim and is revalidated against the current database
+membership and tenant status on every protected request.
+
+On an empty database, `POST /api/setup` atomically creates the first tenant and administrator.
+Only one concurrent setup request can succeed. Use `POST /api/auth/login` to issue a Bearer
+token and `GET /api/auth/me` to resolve the current tenant-bound identity. All authentication
+responses are marked `Cache-Control: no-store`.

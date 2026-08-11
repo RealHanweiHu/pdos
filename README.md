@@ -46,6 +46,11 @@ make dev
 若 55432 已被其他本地项目占用，可临时设置 `PDOS_POSTGRES_PORT`，并让
 `DATABASE_URL`/`TEST_DATABASE_URL` 使用相同端口；compose 的默认值仍为 55432。
 
+首次启动认证服务前，确认 `.env` 中的 `JWT_SECRET` 至少 32 字节；早期模板生成的
+`dev-only-change-me` 已不再接受。空库通过 `POST /api/setup` 原子创建首个租户与初始化
+管理员；该入口成功一次后永久 fail-close。随后使用 `POST /api/auth/login` 获取短期 Bearer
+JWT，并通过 `GET /api/auth/me` 验证服务端重新解析的活跃租户上下文。
+
 ## 不可协商项（摘要）
 
 1. AI-native：Sprint 2 起 AI 在关键路径，拆除测试为验收判据

@@ -81,7 +81,7 @@ ai-native-R&D-platform/
 | [x] S0-0 | **UI 基线 v0.2 已完成并拍板**（2026-08-10 校准） | 交付：`2026-08-09-ui-baseline.md` + `ui-baseline-mockup.html`。定稿：shadcn/ui + Tailwind v4 + Geist/Geist Mono；**公司主题橙**强调色（亮 #c2410c / 暗 #fb923c）、待审状态色纯黄、圆角 8px 锁定、双主题跟随系统；IA 导航树 + 三承重界面（收件箱三键裁决 A/E/R + 逐字段 diff + 证据引用跳转；accepted 后独立 Apply；驾驶舱三卡；项目工作区阶段轨道+九页签）交互已定义。Sprint 0 按此实现，改动走版本号 |
 | [x] S0-1 | **仓库脚手架 + 本地基础设施 + 最小 CI 门禁** | 建立 `web/` Next.js App Router + TS + Tailwind v4 + shadcn/ui + Geist/Phosphor，`server/` FastAPI + LangGraph(Python) + Alembic；本地 compose 提供 pgvector/pg16（`pdos` 与 `pdos_test`）+ MinIO；统一开发/测试/类型/构建命令与 CI。测试入口必须 fail-close：`TEST_DATABASE_URL` 库名不是 `pdos_test` 时直接拒绝。**验收**：无 LLM key 时本地依赖可启动，web 与 `/healthz` 可访问；空迁移可在 `pdos_test` 升级；web lint/type/build 与 server lint/type/test 全绿；生产模板不含真实密钥。ECS 空应用部署是人授权后的单独 smoke gate，不由 Agent 自行执行 |
 | [x] S0-2 | migration 0001：10 schema + 第一批实体表 | cehub_core：Tenant/User/Customer；cehub_project：Requirement/DevelopmentCase/Project/Workflow/Stage/Gate/Task/Issue/Risk/Decision |
-| [ ] S0-3 | 认证 + 租户解析 | 本地账号密码 + JWT（CEHub 模式）；fail-close 租户中间件（语义参考 CEHub tenant-context：无默认租户成员关系即拒绝）；/api/setup 一次性初始化管理员（CEHub 模式） |
+| [x] S0-3 | 认证 + 租户解析 | 本地账号密码 + JWT（CEHub 模式）；fail-close 租户中间件（语义参考 CEHub tenant-context：无默认租户成员关系即拒绝）；/api/setup 一次性初始化管理员（CEHub 模式） |
 | [ ] S0-4 | RBAC 7 角色 | Owner/Admin/PM/Engineer/Quality/Supplier/Customer；对象权限骨架（项目成员表+角色矩阵）；Supplier/Customer 为外部角色，默认最小可见面 |
 | [ ] S0-5 | 事件与审计骨架 | `cehub_event.events`（规格 schema：event_id/event_type/source/entity/entity_id/payload/timestamp + tenant_id/project_id；UNIQUE(source, event_id) 幂等）+ `cehub_audit.audit_log`；建立版本化事件注册表并登记规格 10 类事件的 payload/生产者/消费者/幂等规则；写路径纪律=业务同事务落事件 |
 
