@@ -328,6 +328,30 @@
 
 ## Current: S1-4 Task / Issue / Risk
 
-- [ ] 按 canonical 规格完成 Definition of Ready 与 migration `0007` 范围冻结
-- [ ] 实现 Task 依赖与阻塞语义、Issue 五态、Risk 生命周期及项目工作页
-- [ ] 完成事务、租户/对象权限、事件审计、完整门禁与真实浏览器验收
+**Definition of Ready**
+
+- [x] 规格出处：`Workflow.md`、`Product_Flow.md`、`PostgreSQL_Schema_Design.md`、`RBAC_and_Audit.md`、`Event_Catalog.md` 与 canonical S1-4
+- [x] 依赖项：S1-3 已完成；Project/Stage/成员对象权限、Task/Issue/Risk 基础表与同事务 event+audit 端口已就绪
+- [x] Task 边界冻结：公开状态边为 `todo → in_progress/blocked/skipped`、`in_progress → blocked/done`、`blocked → todo/in_progress/skipped`；`done/skipped` 终态，`pending_approval` 本项不开放入口
+- [x] 依赖语义冻结：前置未完成时派生 `waiting` readiness、Task 保持 `todo`；不得自动或人工借依赖写成 `blocked`，显式阻塞必须提供真实原因；依赖仅限同项目且禁止自环/有向环
+- [x] Issue 状态图冻结：`open → analysis → action → verification → closed`，closed 终态；Risk 状态图冻结：`open → mitigating/watching`、`mitigating ↔ watching`、两者可到 `closed`，closed 终态
+- [x] 对象权限冻结：Owner/Admin 可访问租户内项目工作项；PM/Engineer/Quality 仅限成员项目且可编辑；Supplier/Customer 无工作项入口
+- [x] UI 边界冻结：S1-4 交付 FastAPI 与同源 BFF 数据合同；Project Workspace 的 Task/Issue/Risk 五标签组合按 canonical 留在 S1-6
+- [x] 迁移号预留为 `0007`：增加 Task 依赖关系与显式阻塞原因，强化工作项对象约束、稳定排序索引及闭环时间一致性，迁移号不复用
+
+**Implementation slices**
+
+- [ ] S1-4a：migration 0007 建立同项目 Task dependency 图、blocked reason 与 Task/Issue/Risk 数据边界
+- [ ] S1-4b：实现 Task readiness/依赖环检测与状态动作，确保“等待前置 ≠ blocked”
+- [ ] S1-4c：实现 Issue 五态与 Risk 生命周期服务，所有写路径同事务落版本化 event+audit
+- [ ] S1-4d：实现项目对象权限绑定的 Task/Issue/Risk API 与同源 BFF，列表稳定排序并隐藏外部角色
+- [ ] S1-4e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project→Task/Issue/Risk HTTP 验收
+
+**Acceptance evidence required**
+
+- [ ] 同项目 Task 可建立无环依赖；前置未完成时后继仍为 `todo/waiting` 且不可开始，前置完成或跳过后 readiness 自动变为 `ready`
+- [ ] `blocked` 只能由带非空原因的显式动作产生并可解除；依赖变化永不把后继写成 blocked
+- [ ] Issue 仅按五态相邻前进并在 closed 写入关闭时间；Risk 仅按冻结四态流转并稳定返回 likelihood×impact 分值
+- [ ] 跨租户、跨项目依赖/Stage/负责人、非成员和外部角色均 fail-close；失败事务不留下业务/event/audit 残片
+- [ ] 每个 Task/Issue/Risk 创建、内容编辑与状态动作均有对应版本化 event 与不可变 audit，`ISSUE_CREATED` 保持 canonical payload
+- [ ] FastAPI/BFF 合同、101+ server tests、55+ web tests、lint/type/build、migration 0007 往返及真实 HTTP 链路全绿
