@@ -89,13 +89,13 @@
 
 **Acceptance criteria**
 
-- [ ] CI 覆盖 web/server lint、type、test、build
-- [ ] CI 启动隔离测试库并执行 migration smoke
-- [ ] 失败步骤有明确日志，不静默跳过
+- [x] CI 覆盖 web/server lint、type、test、build
+- [x] CI 启动隔离测试库、验证 pgvector 并执行 migration smoke
+- [x] 失败步骤有明确日志，不静默跳过
 
 **Verification**
 
-- [ ] 本地等价验证命令全绿
+- [x] 本地等价验证命令全绿
 - [ ] CI 首次运行全绿
 
 **Dependencies:** S0-1b, S0-1c, S0-1d

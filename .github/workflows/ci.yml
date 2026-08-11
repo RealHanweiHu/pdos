@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality and migration gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TEST_DATABASE_URL: postgresql://pdos@127.0.0.1:5432/pdos_test
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.6-pg16-bookworm
+        env:
+          POSTGRES_DB: pdos_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_USER: pdos
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready --username=pdos --dbname=pdos_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable locked pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.16.0 --activate
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: .python-version
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          version: "0.11.7"
+          working-directory: server
+
+      - name: Install locked dependencies
+        run: make setup
+
+      - name: Verify pgvector service
+        run: >-
+          docker exec "${{ job.services.postgres.id }}"
+          psql --username=pdos --dbname=pdos_test --set=ON_ERROR_STOP=1
+          --command='CREATE EXTENSION IF NOT EXISTS vector;'
+
+      - name: Upgrade isolated test database
+        run: cd server && uv run --frozen --python 3.12 python -m scripts.migrate_test
+
+      - name: Lint and formatting
+        run: make lint
+
+      - name: Static type checks
+        run: make type
+
+      - name: Unit tests
+        run: make test
+
+      - name: Production build
+        run: make build
