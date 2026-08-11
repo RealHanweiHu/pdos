@@ -32,6 +32,7 @@ class Action(StrEnum):
     DEVELOPMENT_CASE_TRANSITION = "development_case.transition"
     WORK_ITEM_VIEW = "work_item.view"
     WORK_ITEM_EDIT = "work_item.edit"
+    EVENT_DEBUG_VIEW = "event_debug.view"
     QUALITY_MANAGE = "quality.manage"
     EXTERNAL_RESPOND = "external.respond"
 

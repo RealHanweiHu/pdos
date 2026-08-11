@@ -20,6 +20,7 @@ EXPECTED_ACTIONS = {
     "development_case.transition",
     "work_item.view",
     "work_item.edit",
+    "event_debug.view",
     "quality.manage",
     "external.respond",
 }

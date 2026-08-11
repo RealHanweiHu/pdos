@@ -5,6 +5,7 @@ import pytest
 from app.events.catalog import (
     EVENT_REGISTRY,
     SPEC_EVENT_TYPES,
+    SPRINT_1_IMPLEMENTED_EVENT_TYPES,
     UnknownEventTypeError,
     definition_for,
 )
@@ -52,17 +53,21 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
         "DEVELOPMENT_CASE_UPDATED",
         "DEVELOPMENT_CASE_STATUS_CHANGED",
         "DECISION_RECORDED",
+        "PROJECT_CREATED",
         "PROJECT_UPDATED",
         "PROJECT_STATUS_CHANGED",
+        "PROJECT_STAGE_CHANGED",
         "TASK_CREATED",
         "TASK_UPDATED",
         "TASK_STATUS_CHANGED",
+        "ISSUE_CREATED",
         "ISSUE_UPDATED",
         "ISSUE_STATUS_CHANGED",
         "RISK_CREATED",
         "RISK_UPDATED",
         "RISK_STATUS_CHANGED",
-    } <= EVENT_REGISTRY.keys()
+    } == SPRINT_1_IMPLEMENTED_EVENT_TYPES
+    assert EVENT_REGISTRY.keys() >= SPRINT_1_IMPLEMENTED_EVENT_TYPES
     assert "TENANT_BOOTSTRAPPED" not in SPEC_EVENT_TYPES
     assert "USER_SIGNED_IN" not in SPEC_EVENT_TYPES
     assert "REQUIREMENT_CREATED" not in SPEC_EVENT_TYPES

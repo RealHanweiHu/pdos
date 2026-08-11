@@ -306,6 +306,32 @@ SPEC_EVENT_TYPES = frozenset(
         "AI_FEEDBACK_RECEIVED",
     }
 )
+SPRINT_1_IMPLEMENTED_EVENT_TYPES = frozenset(
+    {
+        "TENANT_BOOTSTRAPPED",
+        "USER_SIGNED_IN",
+        "REQUIREMENT_CREATED",
+        "REQUIREMENT_UPDATED",
+        "REQUIREMENT_CONVERTED",
+        "DEVELOPMENT_CASE_CREATED",
+        "DEVELOPMENT_CASE_UPDATED",
+        "DEVELOPMENT_CASE_STATUS_CHANGED",
+        "DECISION_RECORDED",
+        "PROJECT_CREATED",
+        "PROJECT_UPDATED",
+        "PROJECT_STATUS_CHANGED",
+        "PROJECT_STAGE_CHANGED",
+        "TASK_CREATED",
+        "TASK_UPDATED",
+        "TASK_STATUS_CHANGED",
+        "ISSUE_CREATED",
+        "ISSUE_UPDATED",
+        "ISSUE_STATUS_CHANGED",
+        "RISK_CREATED",
+        "RISK_UPDATED",
+        "RISK_STATUS_CHANGED",
+    }
+)
 
 
 def definition_for(event_type: str) -> EventDefinition:
