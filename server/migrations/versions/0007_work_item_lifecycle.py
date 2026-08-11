@@ -275,14 +275,14 @@ def downgrade() -> None:
         ("ck_tasks_blocked_reason_consistent", "tasks"),
     ):
         op.drop_constraint(
-            constraint_name,
+            op.f(constraint_name),
             table_name,
             type_="check",
             schema=PROJECT_SCHEMA,
         )
     for table_name in ("risks", "issues", "tasks"):
         op.drop_constraint(
-            f"ck_{table_name}_title_nonblank",
+            op.f(f"ck_{table_name}_title_nonblank"),
             table_name,
             type_="check",
             schema=PROJECT_SCHEMA,

@@ -17,6 +17,7 @@ from sqlalchemy import (
     Table,
     UniqueConstraint,
     create_engine,
+    inspect,
     text,
 )
 from sqlalchemy.exc import IntegrityError
@@ -261,4 +262,19 @@ def test_database_rejects_invalid_work_item_scope_and_lifecycle(
                 },
             )
     finally:
+        engine.dispose()
+
+
+def test_work_item_migration_round_trip(
+    work_item_schema_database_url: str,
+) -> None:
+    config = Config(str(SERVER_ROOT / "alembic.ini"))
+    engine = create_engine(psycopg_database_url(work_item_schema_database_url))
+    try:
+        command.downgrade(config, "0006_project_lifecycle")
+        assert "task_dependencies" not in inspect(engine).get_table_names(schema="cehub_project")
+        command.upgrade(config, "head")
+        assert "task_dependencies" in inspect(engine).get_table_names(schema="cehub_project")
+    finally:
+        command.upgrade(config, "head")
         engine.dispose()

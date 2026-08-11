@@ -41,6 +41,7 @@ EXPECTED_TABLES = {
     ("cehub_project", "stages"),
     ("cehub_project", "gates"),
     ("cehub_project", "tasks"),
+    ("cehub_project", "task_dependencies"),
     ("cehub_project", "issues"),
     ("cehub_project", "risks"),
     ("cehub_project", "decisions"),
