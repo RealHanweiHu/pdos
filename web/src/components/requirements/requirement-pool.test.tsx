@@ -4,10 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { RequirementPool } from "./requirement-pool";
 
-const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
+const { routerPush, routerReplace } = vi.hoisted(() => ({
+  routerPush: vi.fn(),
+  routerReplace: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: routerReplace }),
+  useRouter: () => ({ push: routerPush, replace: routerReplace }),
 }));
 
 function jsonResponse(body: object, status = 200) {
@@ -58,6 +61,7 @@ describe("RequirementPool", () => {
   beforeEach(() => {
     fetchMock.mockReset();
     routerReplace.mockReset();
+    routerPush.mockReset();
     vi.stubGlobal("fetch", fetchMock);
   });
 
@@ -232,6 +236,62 @@ describe("RequirementPool", () => {
           body: JSON.stringify({ title: "Converted requirement updated" }),
         }),
       ),
+    );
+  });
+
+  it("converts an approved Requirement through a separate formal action", async () => {
+    const user = userEvent.setup();
+    const approvedRequirement = { ...createdRequirement, status: "approved" as const };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/customers") return jsonResponse({ items: [customer] });
+      if (
+        path === "/api/requirements/requirement-1/convert-to-case" &&
+        init?.method === "POST"
+      ) {
+        return jsonResponse(
+          {
+            development_case: { id: "case-1", code: "CASE-001" },
+            decision: { id: "decision-1" },
+          },
+          201,
+        );
+      }
+      if (path === "/api/requirements") {
+        return jsonResponse({ items: [approvedRequirement] });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<RequirementPool />);
+
+    await screen.findByText("Reduce seal leakage");
+    await user.click(screen.getByRole("button", { name: "打开需求 REQ-001" }));
+    await user.click(screen.getByRole("button", { name: "转为开发案例" }));
+    await user.type(screen.getByLabelText("案例编号"), "CASE-001");
+    await user.clear(screen.getByLabelText("案例标题"));
+    await user.type(screen.getByLabelText("案例标题"), "Seal leakage development case");
+    await user.type(screen.getByLabelText("转化理由"), "Approved customer demand.");
+    const businessCase = screen.getByLabelText("商业论证（JSON）");
+    await user.clear(businessCase);
+    await user.click(businessCase);
+    await user.paste(JSON.stringify({ market_impact: "high" }));
+    await user.click(screen.getByRole("button", { name: "确认转化" }));
+
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/cases"));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/requirements/requirement-1/convert-to-case",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          code: "CASE-001",
+          title: "Seal leakage development case",
+          summary: "Target the next platform.",
+          business_case: { market_impact: "high" },
+          rationale: "Approved customer demand.",
+        }),
+      }),
     );
   });
 

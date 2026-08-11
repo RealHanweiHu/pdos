@@ -58,6 +58,22 @@ audit snapshots in the same database transaction. The `converted` status is rese
 formal Requirement→Development Case action in S1-2 and cannot be set through the generic edit
 endpoint.
 
+## Development Case conversion
+
+Owner, Admin, and Project Manager can convert one approved Requirement exactly once with
+`POST /api/requirements/{requirement_id}/convert-to-case`. The server binds tenant and actor
+scope, then creates a draft Development Case and conversion Decision, marks the Requirement
+converted, and records correlated events plus immutable audits in one transaction. A failed or
+duplicate conversion rolls the entire action back. Engineer and Quality are read-only; Supplier
+and Customer have no Case access.
+
+Authenticated internal roles can list and inspect tenant-bound cases with
+`GET /api/development-cases` and `GET /api/development-cases/{id}`. Authorized editors use
+`PATCH /api/development-cases/{id}` and the explicit
+`POST /api/development-cases/{id}/transitions` action. The frozen graph is
+`draft → evaluating → approved → converted` with `evaluating → rejected`; terminal cases cannot
+be edited, and `approved → converted` requires an existing same-tenant Project reference.
+
 ## Events and audit
 
 `cehub_event.events` is an ordered stream with `(source, event_id)` idempotency and tenant-safe

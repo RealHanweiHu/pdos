@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S1-2 Development Case + 转化。** S1-1 已于 2026-08-11 完成全部验收；下一项按计划实现 Requirement→Case 正式转化与 Decision 留痕。
+> 唯一当前指针：**S1-3 Project + Workflow/Stage 实例化。** S1-2 已于 2026-08-11 完成全部验收；下一项按计划实现项目状态机及 Workflow 模板到 Stage 实例的正式动作。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -255,7 +255,7 @@
 - Playwright：空态、错误重试、只读角色、键盘路径、明暗主题及 320/768/1440px 均通过；320px 无横向溢出且交互目标至少 44px，控制台 0 warning/0 error
 - 本地截图：`output/playwright/s1-requirements-empty-light.png`、`s1-requirements-populated-dark.png`、`s1-requirements-mobile-dark.png`、`s1-requirements-tablet-light.png`（验证产物按 `.gitignore` 不入库）
 
-## Current: S1-2 Development Case + Conversion
+## Completed: S1-2 Development Case + Conversion
 
 **Definition of Ready**
 
@@ -267,16 +267,29 @@
 
 **Implementation slices**
 
-- [ ] S1-2a：migration 0005 对齐 Case 状态、非空/JSON/一需求一 Case 约束与更新时间索引
-- [ ] S1-2b：实现正式 Requirement→Case 转化服务/API，原子写 Case、Decision、Requirement 及各自 event+audit
-- [ ] S1-2c：实现 Case 列表/详情/编辑与状态迁移，非法跃迁和跨租户对象 fail-close
-- [ ] S1-2d：实现同源 BFF、需求转化入口与 Case 工作页，覆盖空态/错误态/只读角色/双主题响应式
-- [ ] S1-2e：完成聚焦测试、完整门禁、迁移往返及真实 API/浏览器验收
+- [x] S1-2a：migration 0005 对齐 Case 状态、非空/JSON/一需求一 Case 约束与更新时间索引
+- [x] S1-2b：实现正式 Requirement→Case 转化服务/API，原子写 Case、Decision、Requirement 及各自 event+audit
+- [x] S1-2c：实现 Case 列表/详情/编辑与状态迁移，非法跃迁和跨租户对象 fail-close
+- [x] S1-2d：实现同源 BFF、需求转化入口与 Case 工作页，覆盖空态/错误态/只读角色/双主题响应式
+- [x] S1-2e：完成聚焦测试、完整门禁、迁移往返及真实 API/浏览器验收
 
 **Acceptance evidence required**
 
-- [ ] 已批准 Requirement 可且仅可转化一次；转化结果同时包含 draft Case 与 conversion Decision，Requirement 变为 converted
-- [ ] 任一转化写入失败时 Requirement/Case/Decision/event/audit 全部回滚；跨租户与未知对象返回一致 404
-- [ ] Case 只允许冻结状态边迁移；approved→converted 必须已有 Project，终态不可再编辑
-- [ ] owner/admin/PM 可转化和编辑，Engineer/Quality 只读，Supplier/Customer 无入口
-- [ ] Case 页面在双主题和 320/768/1440px 下可用，控制台无 warning/error
+- [x] 已批准 Requirement 可且仅可转化一次；转化结果同时包含 draft Case 与 conversion Decision，Requirement 变为 converted
+- [x] 任一转化写入失败时 Requirement/Case/Decision/event/audit 全部回滚；跨租户与未知对象返回一致 404
+- [x] Case 只允许冻结状态边迁移；approved→converted 必须已有 Project，终态不可再编辑
+- [x] owner/admin/PM 可转化和编辑，Engineer/Quality 只读，Supplier/Customer 无入口
+- [x] Case 页面在双主题和 320/768/1440px 下可用，控制台无 warning/error
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：95 个 server tests、44 个 web tests、Ruff/ESLint、Python/TypeScript 严格类型检查和生产构建全绿；migration `0005` 往返与唯一 Alembic head 测试通过
+- 隔离真实 HTTP/浏览器：Owner 创建并批准 Requirement 后完成一次性转化；POST 返回 201 并导航至 Case 工作页，Case 最小 PATCH 仅发送 `title`
+- 数据库证据：Requirement 为 `converted`、Case 为 `approved`、conversion Decision 恰好 1 条；转化与两次状态迁移分别产生完整 event+audit，事务回滚、重复转化与跨租户正反例测试通过
+- Playwright：Case 编辑及 `draft → evaluating → approved` 显式迁移通过；明暗主题和 320/768/1440px 无横向溢出，移动端主要控件至少 44px，控制台 0 warning/0 error
+- 本地截图：`output/playwright/s1-2-cases-light-1440.png`、`s1-2-cases-dark-1440.png`、`s1-2-cases-dark-768.png`、`s1-2-cases-dark-320.png`（验证产物按 `.gitignore` 不入库）
+
+## Current: S1-3 Project + Workflow/Stage Instantiation
+
+- [ ] 完成 Definition of Ready：回读项目/工作流/阶段规格，冻结状态机、模板实例化边界、权限与 migration 编号
+- [ ] 按 canonical S1-3 拆分实现切片与验收证据，不提前进入 Task / Issue / Risk

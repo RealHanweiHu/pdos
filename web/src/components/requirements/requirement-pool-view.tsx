@@ -2,29 +2,35 @@ import { PlusIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { WorkspaceShell } from "@/components/workspace-shell";
+import type { WorkspaceIdentity } from "@/components/workspace-types";
 
+import {
+  RequirementConversionForm,
+  type RequirementConversionResult,
+  type RequirementConversionValues,
+} from "./requirement-conversion-form";
 import {
   RequirementForm,
   type RequirementFormValues,
   type RequirementSubmissionResult,
 } from "./requirement-form";
 import { RequirementList } from "./requirement-list";
-import type {
-  CustomerSummary,
-  Requirement,
-  WorkspaceIdentity,
-} from "./requirement-types";
+import type { CustomerSummary, Requirement } from "./requirement-types";
 
 export function RequirementPoolView({
   canEdit,
   creating,
   customers,
+  convertingRequirement,
   editingRequirement,
   identity,
   loggingOut,
   onCancelCreate,
+  onCancelConversion,
   onCancelEdit,
   onCreate,
+  onConvert,
+  onBeginConversion,
   onLogout,
   onNew,
   onSelect,
@@ -36,12 +42,19 @@ export function RequirementPoolView({
   canEdit: boolean;
   creating: boolean;
   customers: CustomerSummary[];
+  convertingRequirement: Requirement | null;
   editingRequirement: Requirement | null;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
   onCancelCreate: () => void;
+  onCancelConversion: () => void;
   onCancelEdit: () => void;
   onCreate: (values: RequirementFormValues) => Promise<RequirementSubmissionResult>;
+  onConvert: (
+    requirement: Requirement,
+    values: RequirementConversionValues,
+  ) => Promise<RequirementConversionResult>;
+  onBeginConversion: (requirement: Requirement) => void;
   onLogout: () => void;
   onNew: () => void;
   onSelect: (requirement: Requirement) => void;
@@ -102,6 +115,15 @@ export function RequirementPoolView({
               onSubmit={onCreate}
             />
           </section>
+        ) : convertingRequirement ? (
+          <section aria-label="转为开发案例" className="rounded-lg border bg-card p-4">
+            <RequirementConversionForm
+              busy={saving}
+              onCancel={onCancelConversion}
+              onSubmit={(values) => onConvert(convertingRequirement, values)}
+              requirement={convertingRequirement}
+            />
+          </section>
         ) : editingRequirement ? (
           <section aria-label="编辑需求" className="rounded-lg border bg-card p-4">
             <RequirementForm
@@ -112,6 +134,18 @@ export function RequirementPoolView({
               onSubmit={(values) => onUpdate(editingRequirement, values)}
               requirement={editingRequirement}
             />
+            {editingRequirement.status === "approved" ? (
+              <div className="mt-4 border-t pt-4">
+                <p className="text-xs text-muted-foreground">批准后的需求可执行一次正式转化。</p>
+                <Button
+                  className="mt-3 h-11 w-full sm:h-8"
+                  onClick={() => onBeginConversion(editingRequirement)}
+                  variant="outline"
+                >
+                  转为开发案例
+                </Button>
+              </div>
+            ) : null}
           </section>
         ) : null}
       </div>

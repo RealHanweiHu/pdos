@@ -1,34 +1,13 @@
-import type {
-  CustomerSummary,
-  Requirement,
-  WorkspaceIdentity,
-} from "./requirement-types";
+import { isRecord, requestIdentity, responseBody } from "@/components/workspace-api";
+import type { WorkspaceIdentity } from "@/components/workspace-types";
+
+import type { CustomerSummary, Requirement } from "./requirement-types";
 
 export type LoadedPool = {
   identity: WorkspaceIdentity;
   requirements: Requirement[];
   customers: CustomerSummary[];
 };
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function isWorkspaceIdentity(value: unknown): value is WorkspaceIdentity {
-  if (!isRecord(value) || !isRecord(value.tenant) || !isRecord(value.user)) return false;
-  return (
-    typeof value.tenant.id === "string" &&
-    typeof value.tenant.slug === "string" &&
-    typeof value.tenant.name === "string" &&
-    typeof value.user.id === "string" &&
-    typeof value.user.tenant_id === "string" &&
-    typeof value.user.username === "string" &&
-    typeof value.user.display_name === "string" &&
-    typeof value.user.role === "string" &&
-    (typeof value.user.email === "string" || value.user.email === null) &&
-    typeof value.user.is_active === "boolean"
-  );
-}
 
 function isCustomer(value: unknown): value is CustomerSummary {
   return (
@@ -61,10 +40,6 @@ function isRequirement(value: unknown): value is Requirement {
   );
 }
 
-async function responseBody(response: Response): Promise<unknown> {
-  return response.json();
-}
-
 async function itemList<T>(
   response: Response,
   guard: (value: unknown) => value is T,
@@ -83,14 +58,8 @@ export async function readRequirement(response: Response): Promise<Requirement> 
 }
 
 export async function requestPool(): Promise<LoadedPool | null> {
-  const identityResponse = await fetch("/api/session/me", {
-    cache: "no-store",
-    credentials: "same-origin",
-  });
-  if (identityResponse.status === 401) return null;
-  if (!identityResponse.ok) throw new Error("identity unavailable");
-  const identityBody = await responseBody(identityResponse);
-  if (!isWorkspaceIdentity(identityBody)) throw new Error("invalid identity response");
+  const identity = await requestIdentity();
+  if (identity === null) return null;
 
   const [requirementsResponse, customersResponse] = await Promise.all([
     fetch("/api/requirements", { cache: "no-store", credentials: "same-origin" }),
@@ -104,5 +73,5 @@ export async function requestPool(): Promise<LoadedPool | null> {
     itemList(requirementsResponse, isRequirement),
     itemList(customersResponse, isCustomer),
   ]);
-  return { identity: identityBody, requirements, customers };
+  return { identity, requirements, customers };
 }

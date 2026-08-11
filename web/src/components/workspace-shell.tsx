@@ -11,14 +11,13 @@ import type { ReactNode } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
-
-import type { WorkspaceIdentity } from "./requirements/requirement-types";
 
 const navigation = [
   { href: "/", label: "驾驶舱", icon: GaugeIcon, key: "dashboard" },
   { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
-  { href: null, label: "开发案例", icon: FolderOpenIcon, key: "cases" },
+  { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
 ] as const;
 
 export function WorkspaceShell({
@@ -28,7 +27,7 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active: "dashboard" | "requirements";
+  active: "dashboard" | "requirements" | "cases";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
@@ -59,29 +58,18 @@ export function WorkspaceShell({
           <ul className="space-y-1" role="list">
             {navigation.map(({ href, icon: Icon, key, label }) => (
               <li key={key}>
-                {href ? (
-                  <Link
-                    aria-current={active === key ? "page" : undefined}
-                    className={cn(
-                      "flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30",
-                      active === key &&
-                        "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-[inset_2px_0_0_var(--sidebar-primary)]",
-                    )}
-                    href={href}
-                  >
-                    <Icon aria-hidden="true" weight="regular" />
-                    {label}
-                  </Link>
-                ) : (
-                  <span
-                    aria-disabled="true"
-                    className="flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm text-muted-foreground/60"
-                  >
-                    <Icon aria-hidden="true" weight="regular" />
-                    {label}
-                    <span className="ml-auto text-[10px]">S1-2</span>
-                  </span>
-                )}
+                <Link
+                  aria-current={active === key ? "page" : undefined}
+                  className={cn(
+                    "flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30",
+                    active === key &&
+                      "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-[inset_2px_0_0_var(--sidebar-primary)]",
+                  )}
+                  href={href}
+                >
+                  <Icon aria-hidden="true" weight="regular" />
+                  {label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -125,6 +113,25 @@ export function WorkspaceShell({
             </Button>
           </div>
         </header>
+        <nav aria-label="移动端主导航" className="border-b bg-card px-2 lg:hidden">
+          <ul className="grid grid-cols-3" role="list">
+            {navigation.map(({ href, icon: Icon, key, label }) => (
+              <li key={key}>
+                <Link
+                  aria-current={active === key ? "page" : undefined}
+                  className={cn(
+                    "flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-1 text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+                    active === key && "font-medium text-primary",
+                  )}
+                  href={href}
+                >
+                  <Icon aria-hidden="true" />
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6" id="main-content">
           {children}
         </main>

@@ -16,7 +16,8 @@
 - [x] S0-1～S0-5 本地工作项、RDS/OSS、生产迁移、ECS 容器与一次性 setup 已完成
 - [x] Sprint 0 Exit Gate 已于 2026-08-11 经人确认通过
 - [x] S1-1 Requirement 池已完成：需求录入/编辑/Customer 关联、REQUIREMENT event+audit 与真实浏览器验收全绿
-- [ ] **当前：S1-2 Development Case + 转化**，按 `tasks/todo.md` 实现 Requirement→Case 正式动作、Case 状态机与 Decision 留痕
+- [x] S1-2 Development Case + 转化已完成：一次性 Requirement→Case、Decision 留痕、Case 状态机与真实浏览器验收全绿
+- [ ] **当前：S1-3 Project + Workflow/Stage 实例化**，按 `tasks/todo.md` 实现项目状态机及模板到阶段实例的正式动作
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
