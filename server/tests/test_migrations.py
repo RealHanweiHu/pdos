@@ -6,8 +6,8 @@ from alembic.script import ScriptDirectory
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_migration_history_has_one_development_case_head() -> None:
+def test_migration_history_has_one_project_lifecycle_head() -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0005_development_cases"]
+    assert scripts.get_heads() == ["0006_project_lifecycle"]

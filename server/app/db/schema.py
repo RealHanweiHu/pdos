@@ -292,6 +292,8 @@ workflows = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint("version > 0", name="positive_version"),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
     UniqueConstraint("tenant_id", "id", name="uq_workflows_tenant_id_id"),
     UniqueConstraint("tenant_id", "code", "version", name="uq_workflows_tenant_code_version"),
     Index("ix_workflows_tenant_active", "tenant_id", "is_active"),
@@ -326,6 +328,8 @@ stages = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint("sequence > 0", name="positive_sequence"),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
     ForeignKeyConstraint(
         ["tenant_id", "workflow_id"],
         [f"{PROJECT_SCHEMA}.workflows.tenant_id", f"{PROJECT_SCHEMA}.workflows.id"],
@@ -385,6 +389,8 @@ projects = Table(
         "target_date IS NULL OR start_date IS NULL OR target_date >= start_date",
         name="date_order",
     ),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
     ForeignKeyConstraint(
         ["tenant_id", "development_case_id"],
         [
@@ -425,7 +431,14 @@ projects = Table(
     UniqueConstraint("tenant_id", "id", name="uq_projects_tenant_id_id"),
     UniqueConstraint("tenant_id", "workflow_id", "id", name="uq_projects_tenant_workflow_id"),
     UniqueConstraint("tenant_id", "code", name="uq_projects_tenant_code"),
+    UniqueConstraint(
+        "tenant_id",
+        "development_case_id",
+        name="uq_projects_tenant_development_case",
+    ),
+    UniqueConstraint("tenant_id", "workflow_id", name="uq_projects_tenant_workflow"),
     Index("ix_projects_tenant_status", "tenant_id", "status"),
+    Index("ix_projects_tenant_updated", "tenant_id", "updated_at", "id"),
     schema=PROJECT_SCHEMA,
 )
 
