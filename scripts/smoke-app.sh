@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd -- "$script_dir/.." && pwd)"
 smoke_log_dir="$(mktemp -d "${TMPDIR:-/tmp}/pdos-s0-1-smoke.XXXXXX")"
 api_pid=""
 web_pid=""
+test_database_url="$(
+  cd "$repository_root/server"
+  uv run --python 3.12 python -c \
+    'from app.db.test_safety import configured_test_database_url; print(configured_test_database_url())'
+)"
 
 cleanup() {
   trap - EXIT INT TERM
@@ -44,14 +49,16 @@ wait_for_url() {
 }
 
 trap cleanup EXIT INT TERM
+trap show_logs ERR
 
-(cd "$repository_root/server" && exec uv run --python 3.12 uvicorn app.main:app --host 127.0.0.1 --port 8800) >"$smoke_log_dir/api.log" 2>&1 &
+(cd "$repository_root/server" && DATABASE_URL="$test_database_url" exec uv run --python 3.12 uvicorn app.main:app --host 127.0.0.1 --port 8800) >"$smoke_log_dir/api.log" 2>&1 &
 api_pid="$!"
-(cd "$repository_root/web" && exec "$repository_root/scripts/pnpm.sh" dev --hostname 127.0.0.1 --port 3300) >"$smoke_log_dir/web.log" 2>&1 &
+(cd "$repository_root/web" && PDOS_API_INTERNAL_URL=http://127.0.0.1:8800 exec "$repository_root/scripts/pnpm.sh" dev --hostname 127.0.0.1 --port 3300) >"$smoke_log_dir/web.log" 2>&1 &
 web_pid="$!"
 
 wait_for_url http://127.0.0.1:8800/healthz
 wait_for_url http://127.0.0.1:3300/
+wait_for_url http://127.0.0.1:3300/login
 
 health_response="$(curl --fail --silent --show-error http://127.0.0.1:8800/healthz)"
 if [[ "$health_response" != '{"status":"ok","service":"pdos-api","version":"0.1.0"}' ]]; then
@@ -65,4 +72,16 @@ if [[ "$web_response" != *'<title>PDOS · 产品开发操作系统</title>'* ]];
   exit 1
 fi
 
-printf '%s\n' 'Application smoke passed: web and API returned expected responses'
+login_response="$(curl --fail --silent --show-error http://127.0.0.1:3300/login)"
+if [[ "$login_response" != *'<title>登录 · PDOS</title>'* ]]; then
+  printf '%s\n' 'Login smoke response did not contain the expected title' >&2
+  exit 1
+fi
+
+session_status="$(curl --fail --silent --show-error http://127.0.0.1:3300/api/session/status)"
+if [[ "$session_status" != '{"needs_setup":true}' && "$session_status" != '{"needs_setup":false}' ]]; then
+  printf 'Unexpected same-origin session status response: %s\n' "$session_status" >&2
+  exit 1
+fi
+
+printf '%s\n' 'Application smoke passed: web, login BFF, and API returned expected responses'

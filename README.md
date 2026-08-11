@@ -51,6 +51,11 @@ make dev
 管理员；该入口成功一次后永久 fail-close。随后使用 `POST /api/auth/login` 获取短期 Bearer
 JWT，并通过 `GET /api/auth/me` 验证服务端重新解析的活跃租户上下文。
 
+浏览器入口为 `/login`。Next.js 的同源 `/api/session/*` BFF 使用
+`PDOS_API_INTERNAL_URL` 访问 FastAPI，将 JWT 只写入 HttpOnly、SameSite=Lax cookie；token
+不会返回给客户端 JavaScript，也不写入浏览器存储。生产环境不要给该内部地址添加
+`NEXT_PUBLIC_` 前缀。
+
 ## 不可协商项（摘要）
 
 1. AI-native：Sprint 2 起 AI 在关键路径，拆除测试为验收判据

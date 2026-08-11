@@ -28,3 +28,4 @@ htmlcov/
 
 # 本地验证产物
 output/
+.playwright-cli/

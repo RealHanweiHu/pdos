@@ -4,6 +4,7 @@ import {
   DatabaseIcon,
   ShieldCheckIcon,
 } from "@phosphor-icons/react/ssr";
+import Link from "next/link";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -76,7 +77,15 @@ export default function Home() {
             AI-native 产品开发操作系统
           </p>
           <div className="ml-auto">
-            <ThemeToggle />
+            <div className="flex items-center gap-1">
+              <Link
+                className="flex h-8 items-center rounded-lg px-2.5 font-medium text-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
+                href="/login"
+              >
+                登录
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 

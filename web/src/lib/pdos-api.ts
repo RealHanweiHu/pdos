@@ -1,0 +1,133 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+export const SESSION_COOKIE_NAME = "pdos_access_token";
+const MAX_REQUEST_BYTES = 16_384;
+const MAX_TOKEN_LENGTH = 4_096;
+
+type TokenResponse = {
+  access_token: string;
+  token_type: "bearer";
+  expires_in: number;
+};
+
+export class InvalidRequestBodyError extends Error {}
+export class InvalidUpstreamResponseError extends Error {}
+
+function apiBaseUrl() {
+  const configured = process.env.PDOS_API_INTERNAL_URL ?? "http://127.0.0.1:8000";
+  const url = new URL(configured);
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new InvalidUpstreamResponseError("Unsupported PDOS API protocol");
+  }
+  return url;
+}
+
+export async function pdosApiFetch(path: string, init?: RequestInit) {
+  return fetch(new URL(path, apiBaseUrl()), {
+    ...init,
+    cache: "no-store",
+    signal: AbortSignal.timeout(5_000),
+    headers: {
+      Accept: "application/json",
+      ...init?.headers,
+    },
+  });
+}
+
+export async function readBoundedJson(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers.get("content-type")?.split(";", 1)[0];
+  if (contentType !== "application/json") {
+    throw new InvalidRequestBodyError("JSON request required");
+  }
+  const bodyText = await request.text();
+  if (new TextEncoder().encode(bodyText).byteLength > MAX_REQUEST_BYTES) {
+    throw new InvalidRequestBodyError("Request body too large");
+  }
+  let body: unknown;
+  try {
+    body = JSON.parse(bodyText);
+  } catch {
+    throw new InvalidRequestBodyError("Valid JSON required");
+  }
+  if (body === null || typeof body !== "object" || Array.isArray(body)) {
+    throw new InvalidRequestBodyError("JSON object required");
+  }
+  return body as Record<string, unknown>;
+}
+
+export async function readTokenResponse(response: Response): Promise<TokenResponse> {
+  const body: unknown = await response.json();
+  if (
+    body === null ||
+    typeof body !== "object" ||
+    !("access_token" in body) ||
+    !("token_type" in body) ||
+    !("expires_in" in body)
+  ) {
+    throw new InvalidUpstreamResponseError("Malformed authentication response");
+  }
+  const token = body as Record<string, unknown>;
+  if (
+    typeof token.access_token !== "string" ||
+    token.access_token.length === 0 ||
+    token.access_token.length > MAX_TOKEN_LENGTH ||
+    token.token_type !== "bearer" ||
+    typeof token.expires_in !== "number" ||
+    !Number.isInteger(token.expires_in) ||
+    token.expires_in < 60 ||
+    token.expires_in > 86_400
+  ) {
+    throw new InvalidUpstreamResponseError("Malformed authentication response");
+  }
+  return token as TokenResponse;
+}
+
+export async function persistSession(token: TokenResponse) {
+  const store = await cookies();
+  store.set(SESSION_COOKIE_NAME, token.access_token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: token.expires_in,
+  });
+}
+
+export async function currentSessionToken() {
+  const store = await cookies();
+  return store.get(SESSION_COOKIE_NAME)?.value ?? null;
+}
+
+export async function clearSession() {
+  const store = await cookies();
+  store.set(SESSION_COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
+export async function forwardJson(response: Response) {
+  const body = await response.text();
+  return new NextResponse(body || null, {
+    status: response.status,
+    headers: {
+      "Cache-Control": "no-store",
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export function sessionJson(body: object, status = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: { "Cache-Control": "no-store" },
+  });
+}
+
+export function sessionError(status: number, code: string, message: string) {
+  return sessionJson({ detail: { code, message } }, status);
+}

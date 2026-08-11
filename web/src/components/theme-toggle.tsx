@@ -2,18 +2,27 @@
 
 import { MoonIcon, SunIcon } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
+import { useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
 
+const subscribe = () => () => undefined;
+
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
+  const isDark = mounted && resolvedTheme === "dark";
   const nextTheme = isDark ? "light" : "dark";
-  const label = isDark ? "切换为浅色主题" : "切换为深色主题";
+  const label = mounted
+    ? isDark
+      ? "切换为浅色主题"
+      : "切换为深色主题"
+    : "切换主题";
 
   return (
     <Button
       aria-label={label}
+      disabled={!mounted}
       onClick={() => setTheme(nextTheme)}
       size="icon"
       title={label}
