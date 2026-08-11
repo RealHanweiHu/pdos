@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S0-2 Migration 0001。** S0-1 已由本地 `make verify-s0-1` 与 GitHub Actions run `31461239210` 双重验收。
+> 唯一当前指针：**S0-3 Auth + Tenant Resolution。** S0-2 已由 `pdos_test` 往返迁移、metadata drift 检测与完整门禁验收。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -109,7 +109,7 @@
 - [x] 执行计划 S0-1 checkbox 更新为 `[x]`
 - [x] 当前指针移动到 S0-2
 
-## Next: S0-2 Migration 0001
+## Completed: S0-2 Migration 0001
 
 **Definition of Ready**
 
@@ -119,14 +119,36 @@
 
 **Implementation slices**
 
-- [ ] S0-2a：创建 10 个冻结 namespace，并建立跨表通用主键、时间戳与租户归属约定
-- [ ] S0-2b：建立 `cehub_core` 的 Tenant/User/Customer 表、约束与索引
-- [ ] S0-2c：建立 `cehub_project` 的 Requirement/DevelopmentCase/Project/Workflow/Stage/Gate 表与状态约束
-- [ ] S0-2d：建立 `cehub_project` 的 Task/Issue/Risk/Decision 表、关系约束与查询索引
-- [ ] S0-2e：补齐迁移正反向、单 head、实体清单、租户外键与开发/测试库隔离验收
+- [x] S0-2a：创建 10 个冻结 namespace，并建立跨表通用主键、时间戳与租户归属约定
+- [x] S0-2b：建立 `cehub_core` 的 Tenant/User/Customer 表、约束与索引
+- [x] S0-2c：建立 `cehub_project` 的 Requirement/DevelopmentCase/Project/Workflow/Stage/Gate 表与状态约束
+- [x] S0-2d：建立 `cehub_project` 的 Task/Issue/Risk/Decision 表、关系约束与查询索引
+- [x] S0-2e：补齐迁移正反向、单 head、实体清单、租户外键与开发/测试库隔离验收
 
 **Acceptance evidence required**
 
-- [ ] `pdos_test` 从空库升级到 `0001`，10 schema 与 13 张首批实体表精确存在
-- [ ] 状态、唯一性、租户归属与跨实体引用约束的正反例测试通过
-- [ ] downgrade→upgrade 往返后仍保持单一 Alembic head，完整门禁全绿
+- [x] `pdos_test` 从空库升级到 `0001`，10 schema 与 13 张首批实体表精确存在
+- [x] 状态、唯一性、租户归属与跨实体引用约束的正反例测试通过
+- [x] downgrade→upgrade 往返后仍保持单一 Alembic head，完整门禁全绿
+
+## Next: S0-3 Auth + Tenant Resolution
+
+**Definition of Ready**
+
+- [x] 规格出处：`RBAC_and_Audit.md` 与 canonical S0-3
+- [x] 依赖项：S0-2 User/Tenant 表及 composite tenant FK 已完成
+- [x] 范围冻结：本地密码、JWT、一次性 `/api/setup`、fail-close 租户上下文
+
+**Implementation slices**
+
+- [ ] S0-3a：建立密码哈希、JWT claim/时效与认证配置契约
+- [ ] S0-3b：实现一次性 `/api/setup`，原子创建首个 Tenant 与初始化管理员账号
+- [ ] S0-3c：实现本地账号登录、签发 JWT 与当前用户读取端点
+- [ ] S0-3d：实现 fail-close 租户解析；缺失、失效或无租户归属一律拒绝
+- [ ] S0-3e：覆盖 setup 竞态、错误密码、伪造/过期 token 与租户上下文正反例
+
+**Acceptance evidence required**
+
+- [ ] 空库只能成功 setup 一次，并可使用创建的初始化管理员登录
+- [ ] 有效 token 可解析唯一 tenant/user；所有无效上下文返回稳定 401/403
+- [ ] 聚焦测试、完整门禁与真实 HTTP 认证路径全绿

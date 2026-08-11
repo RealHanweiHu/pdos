@@ -6,6 +6,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from app.db.namespaces import SCHEMAS
+from app.db.schema import metadata
 from app.db.url import psycopg_database_url
 
 config = context.config
@@ -13,8 +15,19 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# S0-2 replaces this with the canonical application metadata before migration 0001.
-target_metadata = None
+target_metadata = metadata
+
+
+def include_name(
+    name: str | None,
+    type_: str,
+    parent_names: dict[str, str | None],
+) -> bool:
+    if type_ == "schema":
+        return name in SCHEMAS
+    if type_ == "table":
+        return parent_names.get("schema_name") in SCHEMAS
+    return True
 
 
 def database_url() -> str:
@@ -29,6 +42,8 @@ def run_migrations_offline() -> None:
     context.configure(
         url=database_url(),
         target_metadata=target_metadata,
+        include_name=include_name,
+        include_schemas=True,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
@@ -47,7 +62,12 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            include_name=include_name,
+            include_schemas=True,
+        )
 
         with context.begin_transaction():
             context.run_migrations()

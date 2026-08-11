@@ -61,9 +61,17 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Caddy/DNS smoke 必须
 - [x] 生产模板无密钥，未执行未经授权的外部操作
 - [x] 唯一执行计划将 S0-1 标记为 `[x]`
 
-### Phase 2+: Canonical Sprint Sequence
+### Phase 2: S0-2 Initial Schema
 
-S0-2 及以后按唯一执行计划逐项展开；开始某工作项时，再在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
+- [x] Alembic `0001_initial_entities` 创建 10 个冻结 namespace
+- [x] `cehub_core` 建立 Tenant/User/Customer
+- [x] `cehub_project` 建立首批 10 个项目域实体
+- [x] composite tenant FK、状态、唯一性、索引与时间戳约束落库
+- [x] downgrade→upgrade、metadata drift、隔离与完整门禁全绿
+
+### Phase 3+: Canonical Sprint Sequence
+
+S0-3 及以后按唯一执行计划逐项展开；开始某工作项时，再在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
 
 ## Risks and Mitigations
 
