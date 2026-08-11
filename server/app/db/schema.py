@@ -234,9 +234,12 @@ development_cases = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "status IN ('draft', 'proposed', 'approved', 'rejected', 'converted')",
+        "status IN ('draft', 'evaluating', 'approved', 'rejected', 'converted')",
         name="status_allowed",
     ),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("jsonb_typeof(business_case) = 'object'", name="business_case_object"),
     ForeignKeyConstraint(
         ["tenant_id", "requirement_id"],
         [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
@@ -251,7 +254,13 @@ development_cases = Table(
     ),
     UniqueConstraint("tenant_id", "id", name="uq_development_cases_tenant_id_id"),
     UniqueConstraint("tenant_id", "code", name="uq_development_cases_tenant_code"),
+    UniqueConstraint(
+        "tenant_id",
+        "requirement_id",
+        name="uq_development_cases_tenant_requirement",
+    ),
     Index("ix_development_cases_tenant_status", "tenant_id", "status"),
+    Index("ix_development_cases_tenant_updated", "tenant_id", "updated_at", "id"),
     schema=PROJECT_SCHEMA,
 )
 
