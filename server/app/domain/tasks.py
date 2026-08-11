@@ -294,10 +294,19 @@ class TaskService:
         if user_id is None:
             return
         found = connection.execute(
-            select(tables.project_members.c.id).where(
+            select(tables.project_members.c.id)
+            .join(
+                tables.users,
+                (tables.users.c.tenant_id == tables.project_members.c.tenant_id)
+                & (tables.users.c.id == tables.project_members.c.user_id),
+            )
+            .where(
                 tables.project_members.c.tenant_id == tenant_id,
                 tables.project_members.c.project_id == project_id,
                 tables.project_members.c.user_id == user_id,
+                tables.users.c.role.in_(
+                    {"owner", "admin", "project_manager", "engineer", "quality"}
+                ),
             )
         ).scalar_one_or_none()
         if found is None:

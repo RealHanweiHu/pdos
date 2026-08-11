@@ -343,7 +343,7 @@
 
 - [x] S1-4a：migration 0007 建立同项目 Task dependency 图、blocked reason 与 Task/Issue/Risk 数据边界
 - [x] S1-4b：实现 Task readiness/依赖环检测与状态动作，确保“等待前置 ≠ blocked”
-- [ ] S1-4c：实现 Issue 五态与 Risk 生命周期服务，所有写路径同事务落版本化 event+audit
+- [x] S1-4c：实现 Issue 五态与 Risk 生命周期服务，所有写路径同事务落版本化 event+audit
 - [ ] S1-4d：实现项目对象权限绑定的 Task/Issue/Risk API 与同源 BFF，列表稳定排序并隐藏外部角色
 - [ ] S1-4e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project→Task/Issue/Risk HTTP 验收
 
