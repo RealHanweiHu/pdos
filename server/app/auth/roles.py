@@ -26,6 +26,10 @@ class Action(StrEnum):
     REQUIREMENT_VIEW = "requirement.view"
     REQUIREMENT_CREATE = "requirement.create"
     REQUIREMENT_EDIT = "requirement.edit"
+    DEVELOPMENT_CASE_VIEW = "development_case.view"
+    DEVELOPMENT_CASE_CREATE = "development_case.create"
+    DEVELOPMENT_CASE_EDIT = "development_case.edit"
+    DEVELOPMENT_CASE_TRANSITION = "development_case.transition"
     WORK_ITEM_VIEW = "work_item.view"
     WORK_ITEM_EDIT = "work_item.edit"
     QUALITY_MANAGE = "quality.manage"
@@ -46,6 +50,10 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.REQUIREMENT_VIEW,
                 Action.REQUIREMENT_CREATE,
                 Action.REQUIREMENT_EDIT,
+                Action.DEVELOPMENT_CASE_VIEW,
+                Action.DEVELOPMENT_CASE_CREATE,
+                Action.DEVELOPMENT_CASE_EDIT,
+                Action.DEVELOPMENT_CASE_TRANSITION,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,
@@ -55,6 +63,7 @@ _ROLE_ACTIONS = MappingProxyType(
             {
                 Action.PROJECT_VIEW,
                 Action.REQUIREMENT_VIEW,
+                Action.DEVELOPMENT_CASE_VIEW,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
             }
@@ -63,6 +72,7 @@ _ROLE_ACTIONS = MappingProxyType(
             {
                 Action.PROJECT_VIEW,
                 Action.REQUIREMENT_VIEW,
+                Action.DEVELOPMENT_CASE_VIEW,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,

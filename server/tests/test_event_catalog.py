@@ -47,6 +47,11 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
         "USER_SIGNED_IN",
         "REQUIREMENT_CREATED",
         "REQUIREMENT_UPDATED",
+        "REQUIREMENT_CONVERTED",
+        "DEVELOPMENT_CASE_CREATED",
+        "DEVELOPMENT_CASE_UPDATED",
+        "DEVELOPMENT_CASE_STATUS_CHANGED",
+        "DECISION_RECORDED",
     } <= EVENT_REGISTRY.keys()
     assert "TENANT_BOOTSTRAPPED" not in SPEC_EVENT_TYPES
     assert "USER_SIGNED_IN" not in SPEC_EVENT_TYPES
@@ -62,6 +67,22 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
     assert updated.entity == "requirement"
     assert updated.producer == "requirement_service"
     assert updated.payload_schema["properties"]["changed_fields"] == {"type": "array"}
+
+    converted = definition_for("REQUIREMENT_CONVERTED")
+    assert converted.entity == "requirement"
+    assert converted.producer == "development_case_service"
+
+    case_created = definition_for("DEVELOPMENT_CASE_CREATED")
+    assert case_created.entity == "development_case"
+    assert case_created.payload_schema["required"] == [
+        "case_code",
+        "requirement_id",
+        "status",
+    ]
+
+    decision = definition_for("DECISION_RECORDED")
+    assert decision.entity == "decision"
+    assert decision.payload_schema["required"] == ["decision_kind", "outcome"]
 
 
 def test_unknown_event_types_fail_closed() -> None:

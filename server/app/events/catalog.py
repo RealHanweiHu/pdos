@@ -160,6 +160,53 @@ _DEFINITIONS = (
             priority="string",
         ),
     ),
+    EventDefinition(
+        event_type="REQUIREMENT_CONVERTED",
+        version=1,
+        entity="requirement",
+        producer="development_case_service",
+        consumers=("intake_projection", "timeline_projection"),
+        payload_schema=_payload_schema(
+            development_case_id="string",
+            decision_id="string",
+        ),
+    ),
+    EventDefinition(
+        event_type="DEVELOPMENT_CASE_CREATED",
+        version=1,
+        entity="development_case",
+        producer="development_case_service",
+        consumers=("case_projection", "timeline_projection"),
+        payload_schema=_payload_schema(
+            case_code="string",
+            requirement_id="string",
+            status="string",
+        ),
+    ),
+    EventDefinition(
+        event_type="DEVELOPMENT_CASE_UPDATED",
+        version=1,
+        entity="development_case",
+        producer="development_case_service",
+        consumers=("case_projection", "timeline_projection"),
+        payload_schema=_payload_schema(changed_fields="array", status="string"),
+    ),
+    EventDefinition(
+        event_type="DEVELOPMENT_CASE_STATUS_CHANGED",
+        version=1,
+        entity="development_case",
+        producer="development_case_service",
+        consumers=("case_projection", "timeline_projection"),
+        payload_schema=_payload_schema(from_status="string", to_status="string"),
+    ),
+    EventDefinition(
+        event_type="DECISION_RECORDED",
+        version=1,
+        entity="decision",
+        producer="development_case_service",
+        consumers=("decision_projection", "timeline_projection"),
+        payload_schema=_payload_schema(decision_kind="string", outcome="string"),
+    ),
 )
 
 EVENT_REGISTRY = MappingProxyType(
