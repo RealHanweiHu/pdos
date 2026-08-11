@@ -55,6 +55,8 @@ networks:
     name: pdos_default
 ```
 
+同一共享网络内 ERP 与 CRM 也都曾占用通用别名 `web`；ERP 主站的 Nginx 上游必须使用唯一 DNS 名 `erp-management-dashboard-web-1:3000`，不得继续使用 `web:3000`。
+
 Nginx 为 `pdos.beepump.net` 提供 ACME HTTP-01 路由和 HTTPS 反代；登录与 setup 入口复用文件顶部的登录限流区：
 
 ```nginx

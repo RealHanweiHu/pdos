@@ -29,6 +29,7 @@ Accepted
 3. Nginx 为 `/api/session/login` 与 `/api/session/setup` 复用登录限流区，并设置转发协议、客户端地址和请求 ID。
 4. Let’s Encrypt 使用现有 certbot webroot 签发独立证书；部署 hook 仅在 `RENEWED_DOMAINS` 包含 `pdos.beepump.net` 时复制证书、执行 `nginx -t` 并 reload。
 5. 继续保留 `127.0.0.1:3002` 作为私有运维 smoke 入口；不公开 API 端口。
+6. 观察中发现 ERP 与 CRM 在共享网络都占用别名 `web`；现有 ERP Nginx 上游改用唯一 DNS 名 `erp-management-dashboard-web-1`，避免把 ERP 请求误发到 CRM。
 
 ## Alternatives Considered
 
@@ -51,5 +52,6 @@ Accepted
 
 - Nginx Compose 与 TLS 配置属于 ERP 部署目录，修改前必须备份并在候选容器中通过 `nginx -t`。
 - 单文件 bind mount 在宿主机原子替换后，运行中容器仍持有旧 inode；配置替换后必须只强制重建 Nginx，不能仅依赖 reload。
+- 边缘代理的任何上游都必须使用网络内唯一名称；禁止使用跨 Compose 项目重复的通用别名 `web`。
 - 证书、HTTP→HTTPS、响应安全头、401 错误路径、既有站点回归和至少 30 分钟错误观察均属于 Sprint 0 出口证据。
 - 回滚不执行 Alembic downgrade；恢复 Nginx/Compose 备份并重建 Nginx，PDOS 可继续通过回环端口检查。
