@@ -401,3 +401,32 @@
 - Playwright：Owner 检查 source/entity/event_id/project_id/consumers 与展开 payload，并完成 event_type+project_id 筛选；PM 无事件入口；明暗主题与 320/768/1440px 全绿
 - 响应式修复：长 event type `<select>` 的 intrinsic width 已收口；320px `scrollWidth=innerWidth=320`，所有可见交互目标至少 44px，控制台 0 warning/0 error
 - 本地截图：`output/playwright/s1-5-events-light-1440.png`、`s1-5-events-dark-1440.png`、`s1-5-events-dark-768.png`、`s1-5-events-dark-320.png`（验证产物按 `.gitignore` 不入库）
+
+## Current: S1-6 Frontend First Version
+
+**Definition of Ready**
+
+- [x] 规格出处：`Product_Flow.md`、`Workflow.md`、`System_of_Record_Matrix.md`、UI baseline 与 canonical S1-6
+- [x] 依赖项：S1-1～S1-5 已完成；Project/Workflow/Stage 与 Task/Issue/Risk FastAPI、RBAC、同源 BFF 合同均已就绪
+- [x] Dashboard 范围冻结：登录后默认首页仅交付 Portfolio 与跨项目 Risk 两卡；S2-6 AI Brief 不提前占位或伪造数据
+- [x] Project Workspace 范围冻结：仅 Overview/Timeline/Task/Issue/Risk 五标签；Gate/Document/Meeting/AI Chat 均留在后续 Sprint
+- [x] 交互范围冻结：内部角色可通过既有 BFF 创建工作项并执行合法状态动作；项目编辑/状态/阶段能力保留；不在前端复制服务端状态机真值
+- [x] 权限范围冻结：Owner/Admin 读取租户项目；PM/Engineer/Quality 仅成员项目且可操作工作项；Supplier/Customer 不请求、不展示 Task/Issue/Risk 入口
+- [x] 数据范围冻结：不新增 migration 或业务 API；Dashboard 按可见项目聚合风险，失败项目不静默伪装为零风险
+
+**Implementation slices**
+
+- [ ] S1-6a：以测试冻结 Task/Issue/Risk 前端类型、响应校验、创建与状态动作请求合同
+- [ ] S1-6b：重构 Project Workspace 为五标签，交付 Overview 汇总、Timeline 与角色感知的三类工作项界面
+- [ ] S1-6c：将登录后首页替换为 Portfolio/Risk 双卡 Dashboard，并按权限处理风险聚合与失败态
+- [ ] S1-6d：完成聚焦测试、完整门禁、Requirement→Case→Project→Task/Issue 浏览器闭环及双主题响应式验收
+
+**Acceptance evidence required**
+
+- [ ] 登录后默认进入 Dashboard；Portfolio 展示可见项目的状态、当前阶段与进度，Risk 按 score 降序汇总且可回到对应项目
+- [ ] Project Workspace 精确显示五标签；Overview 数量与三类列表一致，Timeline 正确渲染七阶段
+- [ ] Task 明确区分 status 与 readiness，依赖未完成显示 waiting 而非 blocked；显式 blocked 动作必须填写原因
+- [ ] Issue/Risk 仅呈现服务端冻结状态图允许的下一动作；创建与动作成功后局部数据刷新，失败显示行内可重试错误
+- [ ] Supplier/Customer 无 Task/Issue/Risk 标签或网络请求；内部只读/可写边界与服务端 RBAC 一致
+- [ ] 页面具备 loading/empty/error 状态，在亮暗主题与 320/768/1440px 下无横向溢出，键盘可达且控制台零 warning/error
+- [ ] web/server tests、lint/type/build、Alembic 单 head 与 Sprint 1 真实业务闭环全部通过
