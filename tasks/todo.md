@@ -364,3 +364,30 @@
 - Issue/Risk 证据：Issue 严格相邻推进并写 `closed_at`；Risk 严格按冻结状态图推进，`likelihood=4`、`impact=5` 稳定返回 `score=20`
 - 权限与事务证据：跨项目依赖、跨 Workflow Stage、外部角色负责人、非成员与 Supplier 入口均 fail-close；失败写入前后业务/event/audit 计数不变
 - 事件审计证据：真实链路中 requirement/development_case/project/task/issue/risk/decision 的 event 与 audit 数量逐实体一致；`ISSUE_CREATED` canonical payload 由测试锁定
+
+## Current: S1-5 Event Coverage + Debug Stream
+
+**Definition of Ready**
+
+- [x] 规格出处：`Event_Catalog.md`、`API_Design.md`、`RBAC_and_Audit.md` 与 canonical S1-5
+- [x] 依赖项：S1-1～S1-4 的业务写路径已统一经过 `EventAuditWriter`，事件表已有 tenant/project/id 查询索引，无需新增 migration `0008`
+- [x] 覆盖边界冻结：审计 Sprint 1 已实现写路径并锁定版本化注册表；尚无业务生产者的 Gate/Document/Test/Supplier/Complaint/AI 事件保留注册定义，不伪造事件
+- [x] API 边界冻结：只读 `GET /api/events` 提供 tenant-bound、`id` 升序 cursor、limit 与 event_type/project_id 筛选；`GET /api/events/catalog` 返回冻结定义；不提前实现 S2-5 外部 `POST /events`
+- [x] 权限边界冻结：事件调试能力仅 Owner/Admin 可见，其他五角色无导航且 API fail-close；project_id 筛选必须解析为当前租户项目
+- [x] 回放语义冻结：本项的“回放”是按稳定 cursor 检查历史 envelope/payload，不提供重新执行消费者或改写业务状态的动作
+- [x] UI 边界冻结：`/events` 为开发内部只读页，提供类型/项目筛选、刷新、加载更多、catalog/envelope/payload 检查以及 loading/empty/error/forbidden 状态；遵循既定双主题与响应式基线
+
+**Implementation slices**
+
+- [ ] S1-5a：锁定 Sprint 1 implemented-event 覆盖清单、catalog 合同与 Owner/Admin 专属 action
+- [ ] S1-5b：实现 tenant-bound Event 查询服务及 catalog/stream FastAPI，覆盖 cursor、筛选、权限和跨租户正反例
+- [ ] S1-5c：实现同源 BFF 与只读 `/events` 调试页，隐藏非管理员入口并检查 envelope/payload
+- [ ] S1-5d：完成聚焦测试、完整门禁及真实事件流 cursor/filter HTTP 与响应式双主题浏览器验收
+
+**Acceptance evidence required**
+
+- [ ] Sprint 1 所有实际写路径的 event type 均在 v1 registry 中且 producer/payload 受服务端校验；canonical 10 类集合不被扩写
+- [ ] Event stream 只返回当前租户数据，按 `id` 稳定升序，可用 cursor 无重无漏读取并按 event_type/同租户 project_id 筛选
+- [ ] Owner/Admin 可访问 catalog 与 stream；PM/Engineer/Quality/Supplier/Customer 均 403，UI 无入口；未知/跨租户 project filter 一致 fail-close
+- [ ] 调试页可检查 schema version、source、entity、event_id、timestamp、consumers 与 payload，且不提供任何写入/重放执行能力
+- [ ] API/BFF、server/web tests、lint/type/build 与真实事件流 HTTP/浏览器链路全绿
