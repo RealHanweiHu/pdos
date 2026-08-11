@@ -255,7 +255,28 @@
 - Playwright：空态、错误重试、只读角色、键盘路径、明暗主题及 320/768/1440px 均通过；320px 无横向溢出且交互目标至少 44px，控制台 0 warning/0 error
 - 本地截图：`output/playwright/s1-requirements-empty-light.png`、`s1-requirements-populated-dark.png`、`s1-requirements-mobile-dark.png`、`s1-requirements-tablet-light.png`（验证产物按 `.gitignore` 不入库）
 
-## Next: S1-2 Development Case + Conversion
+## Current: S1-2 Development Case + Conversion
 
-- [ ] 冻结 Requirement→Case 转化命令、Case 状态机与 Decision 留痕的规格映射
-- [ ] 按 TDD 切片实现迁移/API/事件审计/BFF/UI，并保持转化为独立正式动作
+**Definition of Ready**
+
+- [x] 规格出处：`PostgreSQL_Schema_Design.md`、`System_of_Record_Matrix.md` 与 canonical S1-2
+- [x] 依赖项：S1-1 已完成；Requirement、DevelopmentCase、Decision 基础表与同事务 event+audit 端口已就绪
+- [x] 范围冻结：一条已批准 Requirement 只能执行一次正式转化；同事务创建 draft Case、创建 conversion Decision 并把 Requirement 标记为 converted
+- [x] Case 状态机冻结：`draft → evaluating → approved → converted`，`evaluating → rejected`；converted/rejected 为终态，转 converted 必须已有同租户 Project 引用
+- [x] 迁移号预留为 `0005`，将历史 `proposed` Case 状态单向映射为 `evaluating`，迁移号不复用
+
+**Implementation slices**
+
+- [ ] S1-2a：migration 0005 对齐 Case 状态、非空/JSON/一需求一 Case 约束与更新时间索引
+- [ ] S1-2b：实现正式 Requirement→Case 转化服务/API，原子写 Case、Decision、Requirement 及各自 event+audit
+- [ ] S1-2c：实现 Case 列表/详情/编辑与状态迁移，非法跃迁和跨租户对象 fail-close
+- [ ] S1-2d：实现同源 BFF、需求转化入口与 Case 工作页，覆盖空态/错误态/只读角色/双主题响应式
+- [ ] S1-2e：完成聚焦测试、完整门禁、迁移往返及真实 API/浏览器验收
+
+**Acceptance evidence required**
+
+- [ ] 已批准 Requirement 可且仅可转化一次；转化结果同时包含 draft Case 与 conversion Decision，Requirement 变为 converted
+- [ ] 任一转化写入失败时 Requirement/Case/Decision/event/audit 全部回滚；跨租户与未知对象返回一致 404
+- [ ] Case 只允许冻结状态边迁移；approved→converted 必须已有 Project，终态不可再编辑
+- [ ] owner/admin/PM 可转化和编辑，Engineer/Quality 只读，Supplier/Customer 无入口
+- [ ] Case 页面在双主题和 320/768/1440px 下可用，控制台无 warning/error
