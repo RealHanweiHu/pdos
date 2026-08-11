@@ -561,12 +561,14 @@ tasks = Table(
         nullable=False,
     ),
     Column("project_id", Uuid, nullable=False),
+    Column("workflow_id", Uuid),
     Column("stage_id", Uuid),
     Column("parent_task_id", Uuid),
     Column("assignee_user_id", Uuid),
     Column("title", String(512), nullable=False),
     Column("description", Text),
     Column("status", String(32), nullable=False, server_default=text("'todo'")),
+    Column("blocked_reason", Text),
     Column("priority", String(16), nullable=False, server_default=text("'medium'")),
     Column("start_date", Date),
     Column("due_date", Date),
@@ -591,6 +593,22 @@ tasks = Table(
     CheckConstraint(
         "due_date IS NULL OR start_date IS NULL OR due_date >= start_date", name="date_order"
     ),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint(
+        "(status = 'blocked' AND blocked_reason IS NOT NULL AND btrim(blocked_reason) <> '') "
+        "OR (status <> 'blocked' AND blocked_reason IS NULL)",
+        name="blocked_reason_consistent",
+    ),
+    CheckConstraint(
+        "(status = 'done' AND completed_at IS NOT NULL) "
+        "OR (status <> 'done' AND completed_at IS NULL)",
+        name="completion_consistent",
+    ),
+    CheckConstraint(
+        "(workflow_id IS NULL AND stage_id IS NULL) "
+        "OR (workflow_id IS NOT NULL AND stage_id IS NOT NULL)",
+        name="stage_pair_consistent",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "project_id"],
         [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
@@ -598,9 +616,23 @@ tasks = Table(
         ondelete="RESTRICT",
     ),
     ForeignKeyConstraint(
-        ["tenant_id", "stage_id"],
-        [f"{PROJECT_SCHEMA}.stages.tenant_id", f"{PROJECT_SCHEMA}.stages.id"],
-        name="fk_tasks_tenant_stage",
+        ["tenant_id", "workflow_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.projects.tenant_id",
+            f"{PROJECT_SCHEMA}.projects.workflow_id",
+            f"{PROJECT_SCHEMA}.projects.id",
+        ],
+        name="fk_tasks_tenant_project_workflow",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "stage_id"],
+        [
+            f"{PROJECT_SCHEMA}.stages.tenant_id",
+            f"{PROJECT_SCHEMA}.stages.workflow_id",
+            f"{PROJECT_SCHEMA}.stages.id",
+        ],
+        name="fk_tasks_tenant_workflow_stage",
         ondelete="RESTRICT",
     ),
     ForeignKeyConstraint(
@@ -624,6 +656,63 @@ tasks = Table(
     Index("ix_tasks_tenant_project_status", "tenant_id", "project_id", "status"),
     Index("ix_tasks_tenant_assignee_status", "tenant_id", "assignee_user_id", "status"),
     Index("ix_tasks_tenant_due_date", "tenant_id", "due_date"),
+    Index("ix_tasks_tenant_project_updated", "tenant_id", "project_id", "updated_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+task_dependencies = Table(
+    "task_dependencies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("depends_on_task_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("task_id <> depends_on_task_id", name="no_self_reference"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        name="fk_task_dependencies_tenant_project_task",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "depends_on_task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        name="fk_task_dependencies_tenant_project_predecessor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "task_id",
+        "depends_on_task_id",
+        name="uq_task_dependencies_tenant_project_edge",
+    ),
+    Index(
+        "ix_task_dependencies_tenant_project_predecessor",
+        "tenant_id",
+        "project_id",
+        "depends_on_task_id",
+    ),
     schema=PROJECT_SCHEMA,
 )
 
@@ -638,6 +727,7 @@ issues = Table(
         nullable=False,
     ),
     Column("project_id", Uuid, nullable=False),
+    Column("workflow_id", Uuid),
     Column("stage_id", Uuid),
     Column("owner_user_id", Uuid),
     Column("reported_by_user_id", Uuid),
@@ -666,6 +756,17 @@ issues = Table(
         name="status_allowed",
     ),
     CheckConstraint("severity IN ('low', 'medium', 'high', 'critical')", name="severity_allowed"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint(
+        "(status = 'closed' AND closed_at IS NOT NULL) "
+        "OR (status <> 'closed' AND closed_at IS NULL)",
+        name="closed_at_consistent",
+    ),
+    CheckConstraint(
+        "(workflow_id IS NULL AND stage_id IS NULL) "
+        "OR (workflow_id IS NOT NULL AND stage_id IS NOT NULL)",
+        name="stage_pair_consistent",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "project_id"],
         [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
@@ -673,9 +774,23 @@ issues = Table(
         ondelete="RESTRICT",
     ),
     ForeignKeyConstraint(
-        ["tenant_id", "stage_id"],
-        [f"{PROJECT_SCHEMA}.stages.tenant_id", f"{PROJECT_SCHEMA}.stages.id"],
-        name="fk_issues_tenant_stage",
+        ["tenant_id", "workflow_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.projects.tenant_id",
+            f"{PROJECT_SCHEMA}.projects.workflow_id",
+            f"{PROJECT_SCHEMA}.projects.id",
+        ],
+        name="fk_issues_tenant_project_workflow",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "stage_id"],
+        [
+            f"{PROJECT_SCHEMA}.stages.tenant_id",
+            f"{PROJECT_SCHEMA}.stages.workflow_id",
+            f"{PROJECT_SCHEMA}.stages.id",
+        ],
+        name="fk_issues_tenant_workflow_stage",
         ondelete="RESTRICT",
     ),
     ForeignKeyConstraint(
@@ -698,6 +813,7 @@ issues = Table(
         "status",
         "severity",
     ),
+    Index("ix_issues_tenant_project_updated", "tenant_id", "project_id", "updated_at", "id"),
     schema=PROJECT_SCHEMA,
 )
 
@@ -739,6 +855,12 @@ risks = Table(
     ),
     CheckConstraint("likelihood BETWEEN 1 AND 5", name="likelihood_range"),
     CheckConstraint("impact BETWEEN 1 AND 5", name="impact_range"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint(
+        "(status = 'closed' AND closed_at IS NOT NULL) "
+        "OR (status <> 'closed' AND closed_at IS NULL)",
+        name="closed_at_consistent",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "project_id"],
         [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
@@ -754,6 +876,7 @@ risks = Table(
     UniqueConstraint("tenant_id", "id", name="uq_risks_tenant_id_id"),
     Index("ix_risks_tenant_project_status", "tenant_id", "project_id", "status"),
     Index("ix_risks_tenant_target_date", "tenant_id", "target_date"),
+    Index("ix_risks_tenant_project_updated", "tenant_id", "project_id", "updated_at", "id"),
     schema=PROJECT_SCHEMA,
 )
 
@@ -952,6 +1075,7 @@ class Tables:
     stages: Table
     gates: Table
     tasks: Table
+    task_dependencies: Table
     issues: Table
     risks: Table
     decisions: Table
@@ -971,6 +1095,7 @@ tables = Tables(
     stages=stages,
     gates=gates,
     tasks=tasks,
+    task_dependencies=task_dependencies,
     issues=issues,
     risks=risks,
     decisions=decisions,
