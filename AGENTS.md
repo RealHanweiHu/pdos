@@ -1,0 +1,46 @@
+# AGENTS.md · 交接给任何编码 Agent 的入口
+
+本仓库是 **PDOS（AI-native 产品开发操作系统，工作名）** 的全量建设项目。你的任务是**严格按执行计划推进**，不是重新设计。
+
+## 必读顺序（动手前）
+
+1. `docs/design/2026-08-09-preview-execution-plan.md` — **唯一执行依据**：六 Sprint 工作项+验收判据、基础设施参数、§11 方法论施工纪律
+2. `docs/specs/cehub-v3.2-preview/` — 产品规格（11 份，实体/Agent/事件目录/状态机/SoR 边界以此为准）
+3. `docs/design/2026-08-09-ui-baseline.md` + `docs/design/ui-baseline-mockup.html` — UI v0.2 已拍板：shadcn/ui + Tailwind v4 + Geist，橙色强调（亮 #c2410c/暗 #fb923c），圆角 8px，双主题；前端严格按此实现
+4. `docs/design/2026-08-09-cehub-v32-convergence.md` — 决策背景（为何全量新建、老 CEHub 的角色）
+
+## 当前进度指针
+
+- [x] S0-0 UI 基线 v0.2（已拍板）
+- [ ] **下一步：人确认结构校准 → 仓库首次 git commit（docs/模板/资产全量入库，不 push）→ S0-1 脚手架**
+- 人工基础设施轨（RDS/pgvector/OSS）可与 S0-1 本地/CI 轨并行；Agent 不自行执行控制台或生产操作
+- 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
+
+## 不可协商项（违反=返工）
+
+1. **AI 输出人审**：Agent 唯一写出口=创建 finding；接受与应用是两个人工动作；数据库角色 `pdos_agent` 对业务表零写权限（S2-2b 是安全边界，不是可选项）
+2. **模型传参不作为政策事实**：工具的租户/项目范围由服务端从 run 上下文绑定
+3. **迁移纪律**：Alembic 从第 1 天规范化，schema 与迁移永不脱节；迁移号单调递增不复用
+4. **测试隔离**：测试只连 `pdos_test` 库，绝不碰开发/生产库
+5. **前缀冻结**：Agent system prompt+工具定义定稿后不插动态内容；动态状态由代码预聚合追加到 context 末尾
+6. **不替代 ERP/MES/PLM**；worker 错误路径零 LLM 调用；golden-case 评测集是可信根，自动化不得写入
+7. **栈已定**：Next.js + FastAPI + PostgreSQL(10 schema namespace) + LangGraph(Python) + shadcn/ui。不换栈、不加第二 UI 库、不混图标族（Phosphor）
+
+## 环境与资产
+
+- `.env`（本地）由用户从 `.env.example` 复制填写；**模型选择是租户级产品功能**（治理页设置，默认 MiniMax 国内版；下拉=env 配了凭据且 golden-case 评测通过的白名单，key 不暴露给用户）；协议层只有两种形态：OpenAI 兼容（GLM/MiniMax/OpenAI/DeepSeek）+ Anthropic 原生，见 `.env.example` 与计划 S2-1。缺 `PDOS_LLM_API_KEY` 时 Sprint 0/1 照常推进，Sprint 2 需要。新模型入白名单必须先过 golden-case
+- 本地库：`docker compose up -d`（PG=pgvector/pg16 端口 55432 + MinIO 9000）——compose 文件在 S0-1 创建
+- `certs/ApsaraDB-CA-Chain.pem`（RDS CA）与 `assets/cehub/deliverable-guide-manifest.json`（Sprint 3 检查项资产库，687 条 checkItems，**直接消费勿解析 xlsx 反推**）已随仓库携带
+- 参考代码（可选复用）：老 CEHub 仓库在本机 `~/Desktop/ce-project-hub`（gate 签核轮次/租户 fail-close/activityLogTailer 语义值得参考重实现；若无法访问该路径，按规格与计划独立实现即可，复用非必需）
+
+## 必须停下问人的事（不得自行执行）
+
+- RDS 控制台建账号/建库、OSS 建桶、ECS 部署与 Caddy/DNS 变更（一次性动作，模板注释里有步骤）
+- 任何 git push 到远程、生产环境操作
+- 偏离执行计划的范围变更（先提出，人拍板后再做）
+- 每个 Sprint 出口：汇报验收结果，等确认再进下一 Sprint
+
+## 验证要求
+
+- 每个工作项完成的判据是执行计划里写的验收条款，不是"代码写完了"
+- Sprint 2 的红队违例测试（注入诱导写业务表→0 穿透）与拆除测试（停 LLM→系统可见失能）是硬验收
