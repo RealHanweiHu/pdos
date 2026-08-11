@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import yaml
@@ -22,3 +23,10 @@ def test_ci_enforces_quality_and_isolated_migration_gates() -> None:
     assert "scripts.migrate_test" in commands
     assert "CREATE EXTENSION IF NOT EXISTS vector" in commands
     assert "PDOS_LLM_API_KEY" not in workflow_path.read_text()
+
+
+def test_web_typecheck_generates_route_types_in_a_clean_checkout() -> None:
+    package_path = REPOSITORY_ROOT / "web" / "package.json"
+    scripts = json.loads(package_path.read_text())["scripts"]
+
+    assert scripts["typecheck"] == "next typegen && tsc --noEmit"
