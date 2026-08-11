@@ -291,5 +291,28 @@
 
 ## Current: S1-3 Project + Workflow/Stage Instantiation
 
-- [ ] 完成 Definition of Ready：回读项目/工作流/阶段规格，冻结状态机、模板实例化边界、权限与 migration 编号
-- [ ] 按 canonical S1-3 拆分实现切片与验收证据，不提前进入 Task / Issue / Risk
+**Definition of Ready**
+
+- [x] 规格出处：`Workflow.md`、`PostgreSQL_Schema_Design.md`、`Product_Flow.md`、`API_Design.md`、`RBAC_and_Audit.md`、`System_of_Record_Matrix.md` 与 canonical S1-3
+- [x] 依赖项：S1-2 已完成；approved Development Case、Project/Workflow/Stage 基础表、项目对象权限与同事务 event+audit 端口已就绪
+- [x] 项目状态图冻结：`draft → proposed → approved → active → completed → archived`，另有 `active → on_hold → active`；archived 为终态
+- [x] 实例化边界冻结：版本化 NPD 模板由服务端定义；创建 Project 时为该项目创建独占 Workflow 实体及 P1 Concept、P2 Planning、P3 Design、P4 EVT、P5 DVT、P6 PVT、P7 MP 七个有序 Stage 实例
+- [x] 正式动作冻结：一个 approved Case 只能创建一个 Project；同事务创建 Workflow/Stages/Project、把创建者加入项目、把 Case 标记 converted，并写 event+audit
+- [x] 对象权限冻结：Owner/Admin 全租户可见；PM/Engineer/Quality/Supplier/Customer 仅见项目成员范围；仅 Owner/Admin/PM 可创建、编辑、迁移状态或推进相邻 Stage
+- [x] 迁移号预留为 `0006`，增加一 Case 一 Project、一 Workflow 一 Project、非空与稳定排序约束，迁移号不复用
+
+**Implementation slices**
+
+- [ ] S1-3a：migration 0006 冻结 Project/Workflow/Stage 实例约束、唯一性与查询索引
+- [ ] S1-3b：实现版本化 NPD Workflow 模板与 Case→Project 原子实例化服务，接通 PROJECT/CASE event+audit
+- [ ] S1-3c：实现租户/成员安全的 Project 列表、详情、编辑、七态迁移与相邻 Stage 推进 API
+- [ ] S1-3d：实现同源 BFF 与 Project 创建/列表/详情/Timeline 工作页，覆盖对象权限、空态/错误态和响应式双主题
+- [ ] S1-3e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project/Stage 浏览器验收
+
+**Acceptance evidence required**
+
+- [ ] approved Case 可且仅可创建一个 draft Project；结果含独占 Workflow、七个有序 Stage、首 Stage 指针与创建者成员关系，Case 同事务变为 converted
+- [ ] 任一实例化写入失败时 Workflow/Stage/Project/member/Case/event/audit 全部回滚；跨租户/未知 Case 与对象范围 fail-close
+- [ ] Project 只允许冻结状态边；仅 active 项目可推进到同 Workflow 的相邻 Stage，末 Stage/跳级/跨 Workflow 均拒绝
+- [ ] Owner/Admin 可见租户项目；其余五角色仅见成员项目，且只有 Owner/Admin/PM 有写入口
+- [ ] Project 页面正确渲染七阶段 Timeline，并在双主题和 320/768/1440px 下可用，控制台无 warning/error
