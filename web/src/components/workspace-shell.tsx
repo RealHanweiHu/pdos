@@ -5,6 +5,7 @@ import {
   FolderOpenIcon,
   GaugeIcon,
   KanbanIcon,
+  PulseIcon,
   SignOutIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -20,6 +21,7 @@ const navigation = [
   { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
   { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
   { href: "/projects", label: "项目", icon: KanbanIcon, key: "projects" },
+  { href: "/events", label: "事件流", icon: PulseIcon, key: "events", adminOnly: true },
 ] as const;
 
 export function WorkspaceShell({
@@ -29,12 +31,15 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active: "dashboard" | "requirements" | "cases" | "projects";
+  active: "dashboard" | "requirements" | "cases" | "projects" | "events";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
   onLogout: () => void;
 }) {
+  const visibleNavigation = navigation.filter(
+    (item) => !("adminOnly" in item) || ["owner", "admin"].includes(identity.user.role),
+  );
   return (
     <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
       <a
@@ -58,7 +63,7 @@ export function WorkspaceShell({
             工作区
           </p>
           <ul className="space-y-1" role="list">
-            {navigation.map(({ href, icon: Icon, key, label }) => (
+            {visibleNavigation.map(({ href, icon: Icon, key, label }) => (
               <li key={key}>
                 <Link
                   aria-current={active === key ? "page" : undefined}
@@ -116,8 +121,8 @@ export function WorkspaceShell({
           </div>
         </header>
         <nav aria-label="移动端主导航" className="border-b bg-card px-2 lg:hidden">
-          <ul className="grid grid-cols-4" role="list">
-            {navigation.map(({ href, icon: Icon, key, label }) => (
+          <ul className={cn("grid", visibleNavigation.length === 5 ? "grid-cols-3 sm:grid-cols-5" : "grid-cols-4")} role="list">
+            {visibleNavigation.map(({ href, icon: Icon, key, label }) => (
               <li key={key}>
                 <Link
                   aria-current={active === key ? "page" : undefined}
