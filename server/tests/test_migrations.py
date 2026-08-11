@@ -6,8 +6,8 @@ from alembic.script import ScriptDirectory
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_migration_history_has_one_rbac_schema_head() -> None:
+def test_migration_history_has_one_requirement_pool_head() -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0003_events_audit"]
+    assert scripts.get_heads() == ["0004_requirement_pool"]

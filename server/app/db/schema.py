@@ -135,6 +135,8 @@ customers = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint("status IN ('active', 'inactive')", name="status_allowed"),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
     UniqueConstraint("tenant_id", "id", name="uq_customers_tenant_id_id"),
     UniqueConstraint("tenant_id", "code", name="uq_customers_tenant_code"),
     Index("ix_customers_tenant_status", "tenant_id", "status"),
@@ -177,6 +179,12 @@ requirements = Table(
         name="status_allowed",
     ),
     CheckConstraint("priority IN ('low', 'medium', 'high', 'critical')", name="priority_allowed"),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint(
+        "jsonb_typeof(acceptance_criteria) = 'array'",
+        name="acceptance_criteria_array",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "customer_id"],
         [f"{CORE_SCHEMA}.customers.tenant_id", f"{CORE_SCHEMA}.customers.id"],
@@ -192,6 +200,7 @@ requirements = Table(
     UniqueConstraint("tenant_id", "id", name="uq_requirements_tenant_id_id"),
     UniqueConstraint("tenant_id", "code", name="uq_requirements_tenant_code"),
     Index("ix_requirements_tenant_status", "tenant_id", "status"),
+    Index("ix_requirements_tenant_updated", "tenant_id", "updated_at", "id"),
     schema=PROJECT_SCHEMA,
 )
 
