@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项、真实浏览器与生产容器验收已完成；进入 Sprint 1 前仍需 ECS 人工 smoke 与 Sprint 出口确认。
+> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项、真实浏览器、RDS/OSS、ECS 容器与一次性 setup 已完成；进入 Sprint 1 前仍需公网 HTTPS smoke、观察窗口与 Sprint 出口确认。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -209,12 +209,14 @@
 
 **Local evidence (2026-08-11)**
 
-- `make verify-sprint-0`：81 个 server tests、15 个 web tests、lint/type/build、migration head、真实 web/API/BFF smoke 与生产容器 smoke 全绿
+- `make verify-sprint-0`：82 个 server tests、15 个 web tests、lint/type/build、migration head、真实 web/API/BFF smoke 与生产容器 smoke 全绿
 - Playwright 真实浏览器：setup→me→首页、错误密码、login→me→首页均已验证；明暗主题刷新零 hydration/console error，键盘顺序与 320/768/1440px 布局通过
 - 生产制品：migration→API healthy→web healthy；仅 web 绑定宿主机回环端口，API/web 分别以 UID 10001/1001 运行；pnpm/uv 生产依赖审计均无已知漏洞
 - 本地截图：`output/playwright/login-768-light-final.png`、`output/playwright/login-1440-dark-final.png`（验证产物按 `.gitignore` 不入库）
 
 **Human-authorized environment gate**
 
-- [ ] 经人确认后执行 ECS 空应用部署与登录页 smoke；不在本地 Agent 中擅自操作 RDS/OSS/Caddy/DNS
+- [x] 经人授权完成 RDS `pdos`/`pdos_app` 与 pgvector 验证、私有 OSS 桶及最小权限凭据、生产 migration、ECS API/web healthy 和回环端口登录页 smoke
+- [x] 人通过私有 SSH 隧道完成唯一一次 setup；已验证 tenant/user/Owner、`TENANT_BOOTSTRAPPED` 事件和审计各一条，`needs_setup: false`，随后关闭隧道
+- [ ] 完成公网 HTTPS 登录路径 smoke 与至少 30 分钟观察；实际环境为现有 Nginx + `pdos.beepump.net`，与计划中的 Caddy + `pdos.beepump.io` 不同，须先取得人对该偏差的明确确认
 - [ ] 汇报 Sprint 0 验收结果并等待确认，再进入 Sprint 1
