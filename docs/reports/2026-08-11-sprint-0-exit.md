@@ -2,7 +2,7 @@
 
 ## Status
 
-**Pending human-authenticated public smoke.** S0-0～S0-5、基础设施、生产部署、HTTPS、回滚准备和观察窗口均已验证；不得在下方唯一开放项完成并经人确认前进入 Sprint 1。
+**Passed — awaiting Sprint exit confirmation.** S0-0～S0-5、基础设施、生产部署、HTTPS、回滚准备、观察窗口和人工认证公网 smoke 均已验证；得到人对本报告的明确确认后才进入 Sprint 1。
 
 - 报告日期：2026-08-11
 - 生产域名：`https://pdos.beepump.net`
@@ -85,8 +85,12 @@ PDOS_POSTGRES_PORT=56432 make verify-sprint-0
 - 边缘故障时恢复 Compose/TLS/hook 备份、先校验，再只强制重建 Nginx。
 - 单文件 bind mount 原子替换会更换 inode，因此最终配置不能只 reload；该陷阱已记录在 ADR-001。
 
-## Open exit item
+## Human-authenticated public smoke
 
-- [ ] 人使用生产账号在 `https://pdos.beepump.net/login` 完成成功 login→`/api/session/me`→首页。
-- 当前 Nginx 访问日志汇总：`login 200 = 0`、`me 200 = 0`；因此该项不能按推断关闭。
-- 完成后重新核对成功路径、服务健康和错误日志，再把本报告状态改为 Passed，并向人汇报 Sprint 0 出口；只有得到明确确认才进入 Sprint 1。
+- [x] 人使用生产账号在 `https://pdos.beepump.net/login` 完成成功 login→`/api/session/me`→首页。
+- Nginx 访问日志核对到成功路径：`POST /api/session/login = 200`、随后 `GET /api/session/me = 200`。
+- 登录后健康复核：API/web 均为 healthy、Nginx running，三者 restart count 均为 0；HTTPS 登录页返回 200，`needs_setup=false`，最近 10 分钟 PDOS 5xx 为 0。
+
+## Exit decision
+
+Sprint 0 验收证据完整，报告状态为 Passed。当前唯一开放动作是由人明确确认 Sprint 0 出口；确认前不得进入 Sprint 1。

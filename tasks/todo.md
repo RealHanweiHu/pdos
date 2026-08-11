@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项、真实浏览器、RDS/OSS、ECS 容器与一次性 setup 已完成；进入 Sprint 1 前仍需公网 HTTPS smoke、观察窗口与 Sprint 出口确认。
+> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项、真实浏览器、RDS/OSS、ECS 容器、一次性 setup、公网 HTTPS smoke 与观察窗口均已完成；进入 Sprint 1 前只等待 Sprint 出口确认。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -220,5 +220,5 @@
 - [x] 人通过私有 SSH 隧道完成唯一一次 setup；已验证 tenant/user/Owner、`TENANT_BOOTSTRAPPED` 事件和审计各一条，`needs_setup: false`，随后关闭隧道
 - [x] 人确认采用现有 Nginx + `pdos.beepump.net`；已接入 `pdos_default`、签发并验证证书/续期、启用 HTTPS 反代与登录限流，公网登录页 200、错误凭据 401，既有站点回归正常
 - [x] 修复 ERP/CRM 共享 `web` 别名导致的偶发误路由；最终 Nginx 配置上线后连续观察 30 分钟，API/web/Nginx 异常计数均为 0，服务重启计数为 0
-- [ ] 由人使用生产账号完成公网 login→me→首页 smoke；当前访问日志尚无公网 login 200 / me 200 证据
+- [x] 由人使用生产账号完成公网 login→me→首页 smoke；访问日志已核对 login 200 / me 200，登录后服务健康、零重启且最近 10 分钟无 PDOS 5xx
 - [ ] 汇报 Sprint 0 验收结果并等待确认，再进入 Sprint 1
