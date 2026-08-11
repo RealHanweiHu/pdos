@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S0-1a Root Contract。** S0-1c web 壳已先行完成；基线 commit：`d28d984`（未 push）。
+> 唯一当前指针：**S0-1d Local Data Isolation。** S0-1a/b/c 已完成；基线 commit：`d28d984`（未 push）。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -19,14 +19,14 @@
 
 **Acceptance criteria**
 
-- [ ] 根目录给出单一的 setup/dev/test/lint/type/build 入口与版本约束
-- [ ] `.env.example` 能在无 LLM key 下支持 Sprint 0/1
-- [ ] 不提交真实密钥、构建产物或本地数据卷
+- [x] 根目录给出单一的 setup/dev/test/lint/type/build 入口与版本约束
+- [x] `.env.example` 能在无 LLM key 下支持 Sprint 0/1
+- [x] 不提交真实密钥、构建产物或本地数据卷
 
 **Verification**
 
-- [ ] 新环境按 README 能完成依赖准备
-- [ ] secret/config 扫描无真实值
+- [x] 新环境按 README 能完成依赖准备
+- [x] secret/config 扫描无真实值
 
 **Dependencies:** Gate B0
 

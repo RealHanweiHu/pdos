@@ -17,11 +17,28 @@
 
 ## 快速开始（开发）
 
+前置版本：Node.js 22+、Python 3.12、`uv`、pnpm（或 Corepack）和 Docker Compose。仓库中的
+`.nvmrc`、`.python-version`、`web/package.json` 与锁文件共同固定运行时和依赖版本。
+
 ```bash
-cp .env.example .env        # Sprint 0/1 无需 LLM key；Sprint 2 前填写所选供应商凭据
-docker compose up -d        # PostgreSQL(pgvector) + MinIO
-# 脚手架就绪后: 迁移 + 启动命令见执行计划 S0-1
+cp .env.example .env  # Sprint 0/1 无需 LLM key；Sprint 2 前填写所选供应商凭据
+make setup
+make dev
 ```
+
+根目录命令是本地与 CI 的统一契约：
+
+| 命令 | 用途 |
+|---|---|
+| `make setup` | 校验工具版本并按锁文件安装 web/server 依赖 |
+| `make dev` | 同时启动 Next.js 与 FastAPI 开发进程 |
+| `make test` | 运行 web/server 测试 |
+| `make lint` | 运行 ESLint、Ruff 与格式检查 |
+| `make type` | 运行 TypeScript 与 Python 严格类型检查 |
+| `make build` | 构建 Next.js 并编译检查 Python 源码 |
+| `make check` | 顺序执行 lint、type、test、build 完整门禁 |
+
+S0-1d 接入本地 pgvector/MinIO 后，依赖启动与隔离数据库迁移也会归入这组根命令。
 
 ## 不可协商项（摘要）
 

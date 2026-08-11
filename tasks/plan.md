@@ -47,7 +47,7 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Caddy/DNS smoke 必须
 
 ### Phase 1: S0-1 Scaffold
 
-- [ ] S0-1a：建立根目录命令契约与环境校验
+- [x] S0-1a：建立根目录命令契约与环境校验
 - [x] S0-1b：建立 FastAPI `/healthz`、Python 工具链与空 Alembic 环境
 - [x] S0-1c：建立 Next.js 应用壳与 UI token 基础
 - [ ] S0-1d：建立 pgvector/MinIO、本地 `pdos`/`pdos_test` 与测试 fail-close 保护
