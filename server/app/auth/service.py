@@ -71,6 +71,7 @@ class AuthService:
 
         signed_in_at = datetime.now(UTC)
         self._repository.record_successful_login(
+            tenant_id=context.tenant.id,
             user_id=context.user.id,
             signed_in_at=signed_in_at,
         )

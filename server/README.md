@@ -42,3 +42,16 @@ All other roles require both an allowed action and an exact tenant-safe `project
 Supplier and Customer are external roles and receive only project visibility plus the external
 response action. `GET /api/projects/{project_id}/access` exposes the resolved role and action set
 without accepting tenant scope from the client.
+
+## Events and audit
+
+`cehub_event.events` is an ordered stream with `(source, event_id)` idempotency and tenant-safe
+project scope. `app/events/catalog.py` freezes each event version, producer, consumer set, payload
+schema, and retry rule. `EventAuditWriter` accepts an existing SQLAlchemy transaction so the
+business mutation, event, and audit row commit or roll back together; tenant, project, and actor
+scope are supplied by server-side context. Secret-bearing keys are rejected before I/O.
+
+`cehub_audit.audit_log` is append-only: PostgreSQL rejects both `UPDATE` and `DELETE`. Its
+`event_id` correlates the audit record with the business event without adding user IDs or other
+high-cardinality values to telemetry. JSONB checks require object payloads and snapshots at the
+database boundary, including for direct SQL writers.

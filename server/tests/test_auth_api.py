@@ -114,6 +114,40 @@ def test_setup_login_and_current_user_follow_the_real_http_path(
     assert me_response.json()["user"]["username"] == "owner"
     assert "password_hash" not in me_response.text
 
+    engine = create_engine(psycopg_database_url(isolated_auth_database))
+    try:
+        with engine.connect() as connection:
+            event_rows = connection.execute(
+                select(
+                    tables.events.c.event_type,
+                    tables.events.c.payload,
+                ).order_by(tables.events.c.id)
+            ).mappings()
+            audit_rows = connection.execute(
+                select(
+                    tables.audit_log.c.action,
+                    tables.audit_log.c.before_snapshot,
+                    tables.audit_log.c.after_snapshot,
+                    tables.audit_log.c.context,
+                ).order_by(tables.audit_log.c.id)
+            ).mappings()
+            recorded = {"events": list(event_rows), "audits": list(audit_rows)}
+    finally:
+        engine.dispose()
+
+    assert [row["event_type"] for row in recorded["events"]] == [
+        "TENANT_BOOTSTRAPPED",
+        "USER_SIGNED_IN",
+    ]
+    assert [row["action"] for row in recorded["audits"]] == [
+        "tenant.bootstrap",
+        "user.sign_in",
+    ]
+    serialized_records = str(recorded).lower()
+    assert SETUP_PAYLOAD["password"] not in serialized_records
+    assert "password_hash" not in serialized_records
+    assert token_body["access_token"] not in serialized_records
+
 
 def test_unknown_user_and_wrong_password_are_indistinguishable(client: TestClient) -> None:
     assert client.post("/api/setup", json=SETUP_PAYLOAD).status_code == 201

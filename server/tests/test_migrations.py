@@ -10,4 +10,4 @@ def test_migration_history_has_one_rbac_schema_head() -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0002_rbac"]
+    assert scripts.get_heads() == ["0003_events_audit"]

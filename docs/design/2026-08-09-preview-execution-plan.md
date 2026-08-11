@@ -83,7 +83,7 @@ ai-native-R&D-platform/
 | [x] S0-2 | migration 0001：10 schema + 第一批实体表 | cehub_core：Tenant/User/Customer；cehub_project：Requirement/DevelopmentCase/Project/Workflow/Stage/Gate/Task/Issue/Risk/Decision |
 | [x] S0-3 | 认证 + 租户解析 | 本地账号密码 + JWT（CEHub 模式）；fail-close 租户中间件（语义参考 CEHub tenant-context：无默认租户成员关系即拒绝）；/api/setup 一次性初始化管理员（CEHub 模式） |
 | [x] S0-4 | RBAC 7 角色 | Owner/Admin/PM/Engineer/Quality/Supplier/Customer；对象权限骨架（项目成员表+角色矩阵）；Supplier/Customer 为外部角色，默认最小可见面 |
-| [ ] S0-5 | 事件与审计骨架 | `cehub_event.events`（规格 schema：event_id/event_type/source/entity/entity_id/payload/timestamp + tenant_id/project_id；UNIQUE(source, event_id) 幂等）+ `cehub_audit.audit_log`；建立版本化事件注册表并登记规格 10 类事件的 payload/生产者/消费者/幂等规则；写路径纪律=业务同事务落事件 |
+| [x] S0-5 | 事件与审计骨架 | `cehub_event.events`（规格 schema：event_id/event_type/source/entity/entity_id/payload/timestamp + tenant_id/project_id；UNIQUE(source, event_id) 幂等）+ `cehub_audit.audit_log`；建立版本化事件注册表并登记规格 10 类事件的 payload/生产者/消费者/幂等规则；写路径纪律=业务同事务落事件 |
 
 **验收**：多租户下建项目互不可见；7 角色权限矩阵有测试；任一写路径落事件+审计；ECS 上可访问登录页。
 

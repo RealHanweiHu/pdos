@@ -9,9 +9,10 @@ from uuid import UUID, uuid4
 from sqlalchemy import Engine, func, select, update
 from sqlalchemy.engine import RowMapping
 
-from app.auth.errors import SetupAlreadyCompletedError
+from app.auth.errors import InvalidCredentialsError, SetupAlreadyCompletedError
 from app.auth.roles import Role
 from app.db.schema import tables
+from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 SETUP_ADVISORY_LOCK_KEY = 0x50444F5353455455
 
@@ -89,6 +90,28 @@ class AuthRepository:
                     "role": Role.OWNER,
                     "password_hash": password_hash,
                 },
+            )
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=user_id,
+            ).record(
+                EventDraft(
+                    event_id=f"tenant:{tenant_id}:bootstrapped",
+                    event_type="TENANT_BOOTSTRAPPED",
+                    source="auth_service",
+                    entity_id=tenant_id,
+                    payload={"initial_admin_user_id": str(user_id)},
+                ),
+                AuditDraft(
+                    action="tenant.bootstrap",
+                    after_snapshot={
+                        "slug": tenant_slug,
+                        "name": tenant_name,
+                        "initial_admin_user_id": str(user_id),
+                    },
+                    context={"authentication_method": "local_password"},
+                ),
             )
         return AuthContext(
             tenant=TenantRecord(
@@ -168,12 +191,65 @@ class AuthRepository:
             row = connection.execute(statement).mappings().one_or_none()
         return self._context_from_mapping(row) if row is not None else None
 
-    def record_successful_login(self, *, user_id: UUID, signed_in_at: datetime) -> None:
+    def record_successful_login(
+        self,
+        *,
+        tenant_id: UUID,
+        user_id: UUID,
+        signed_in_at: datetime,
+    ) -> None:
         with self._engine.begin() as connection:
+            user_row = (
+                connection.execute(
+                    select(
+                        tables.users.c.id,
+                        tables.users.c.last_signed_in_at,
+                    )
+                    .where(
+                        tables.users.c.tenant_id == tenant_id,
+                        tables.users.c.id == user_id,
+                    )
+                    .with_for_update()
+                )
+                .mappings()
+                .one_or_none()
+            )
+            if user_row is None:
+                raise InvalidCredentialsError
+            previous_signed_in_at = user_row["last_signed_in_at"]
             connection.execute(
                 update(tables.users)
-                .where(tables.users.c.id == user_id)
+                .where(
+                    tables.users.c.tenant_id == tenant_id,
+                    tables.users.c.id == user_id,
+                )
                 .values(last_signed_in_at=signed_in_at, updated_at=signed_in_at)
+            )
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=user_id,
+            ).record(
+                EventDraft(
+                    event_id=f"user:{user_id}:sign-in:{uuid4()}",
+                    event_type="USER_SIGNED_IN",
+                    source="auth_service",
+                    entity_id=user_id,
+                    payload={"authentication_method": "local_password"},
+                    occurred_at=signed_in_at,
+                ),
+                AuditDraft(
+                    action="user.sign_in",
+                    before_snapshot={
+                        "last_signed_in_at": (
+                            previous_signed_in_at.isoformat()
+                            if previous_signed_in_at is not None
+                            else None
+                        )
+                    },
+                    after_snapshot={"last_signed_in_at": signed_in_at.isoformat()},
+                    context={"authentication_method": "local_password"},
+                ),
             )
 
     @staticmethod

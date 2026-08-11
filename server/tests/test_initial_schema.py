@@ -45,6 +45,8 @@ EXPECTED_TABLES = {
     ("cehub_project", "risks"),
     ("cehub_project", "decisions"),
     ("cehub_project", "project_members"),
+    ("cehub_event", "events"),
+    ("cehub_audit", "audit_log"),
 }
 
 

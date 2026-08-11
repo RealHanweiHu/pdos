@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S0-5 Event + Audit Skeleton。** S0-4 已由 7 角色全矩阵、migration 0002 往返、多租户对象权限与真实 HTTP 路径验收。
+> 唯一当前指针：**Sprint 0 Exit Gate。** S0-5 已由 migration 0003、事件注册表、同事务回滚、不可变审计与真实 HTTP 路径验收；进入 Sprint 1 前仍需登录页与 ECS 人工 smoke。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -175,7 +175,7 @@
 - [x] 项目成员只能访问本租户授权项目；跨租户与非成员请求稳定拒绝
 - [x] migration 0002 往返、聚焦测试、完整门禁与真实 HTTP 权限路径全绿
 
-## Next: S0-5 Event + Audit Skeleton
+## Completed: S0-5 Event + Audit Skeleton
 
 **Definition of Ready**
 
@@ -185,14 +185,27 @@
 
 **Implementation slices**
 
-- [ ] S0-5a：增加 `cehub_event.events` 与 `cehub_audit.audit_log` 的 tenant-safe migration 0003
-- [ ] S0-5b：建立版本化事件注册表，登记规格 10 类事件的 schema、生产者、消费者与幂等规则
-- [ ] S0-5c：建立业务写 + event + audit 的同事务写入端口，服务端绑定 tenant/actor
-- [ ] S0-5d：将 Sprint 0 已有写路径接入事件与审计，并保持敏感字段不进入 payload
-- [ ] S0-5e：覆盖重复 event、事务回滚、跨租户引用、审计不可变与迁移 drift 正反例
+- [x] S0-5a：增加 `cehub_event.events` 与 `cehub_audit.audit_log` 的 tenant-safe migration 0003
+- [x] S0-5b：建立版本化事件注册表，登记规格 10 类事件的 schema、生产者、消费者与幂等规则
+- [x] S0-5c：建立业务写 + event + audit 的同事务写入端口，服务端绑定 tenant/actor
+- [x] S0-5d：将 Sprint 0 已有写路径接入事件与审计，并保持敏感字段不进入 payload
+- [x] S0-5e：覆盖重复 event、事务回滚、跨租户引用、审计不可变与迁移 drift 正反例
 
 **Acceptance evidence required**
 
-- [ ] `(source, event_id)` 重复写被数据库拒绝；规格 10 类事件注册表完整且版本固定
-- [ ] 任一已实现业务写路径均同事务落 event + audit；失败时三者一并回滚
-- [ ] migration 0003 往返、聚焦测试、完整门禁与真实 HTTP 审计路径全绿
+- [x] `(source, event_id)` 重复写被数据库拒绝；规格 10 类事件注册表完整且版本固定
+- [x] 任一已实现业务写路径均同事务落 event + audit；失败时三者一并回滚
+- [x] migration 0003 往返、聚焦测试、完整门禁与真实 HTTP 审计路径全绿
+
+## Next: Sprint 0 Exit Gate
+
+**Local implementation and verification**
+
+- [ ] 按 UI 基线实现首次 setup 与账号密码登录页，双主题、键盘操作和错误态可用
+- [ ] 浏览器经同源 API 边界完成 setup/login/me，JWT 不进入服务端日志或页面可见输出
+- [ ] 多租户项目不可见、7 角色矩阵、写路径 event+audit 的 Sprint 0 汇总证据全绿
+
+**Human-authorized environment gate**
+
+- [ ] 经人确认后执行 ECS 空应用部署与登录页 smoke；不在本地 Agent 中擅自操作 RDS/OSS/Caddy/DNS
+- [ ] 汇报 Sprint 0 验收结果并等待确认，再进入 Sprint 1

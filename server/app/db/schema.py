@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from sqlalchemy import (
     JSON,
+    BigInteger,
     Boolean,
     CheckConstraint,
     Column,
@@ -13,6 +14,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     ForeignKeyConstraint,
+    Identity,
     Index,
     Integer,
     MetaData,
@@ -26,7 +28,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 
-from app.db.namespaces import CORE_SCHEMA, PROJECT_SCHEMA
+from app.db.namespaces import AUDIT_SCHEMA, CORE_SCHEMA, EVENT_SCHEMA, PROJECT_SCHEMA
 
 NAMING_CONVENTION = {
     "ix": "ix_%(table_name)s_%(column_0_name)s",
@@ -809,6 +811,102 @@ decisions = Table(
     schema=PROJECT_SCHEMA,
 )
 
+events = Table(
+    "events",
+    metadata,
+    Column("id", BigInteger, Identity(), primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid),
+    Column("event_id", String(128), nullable=False),
+    Column("event_type", String(64), nullable=False),
+    Column("schema_version", SmallInteger, nullable=False),
+    Column("source", String(64), nullable=False),
+    Column("entity", String(64), nullable=False),
+    Column("entity_id", Uuid, nullable=False),
+    Column("payload", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "timestamp",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("schema_version > 0", name="schema_version_positive"),
+    CheckConstraint("jsonb_typeof(payload) = 'object'", name="payload_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_events_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("source", "event_id", name="uq_events_source_event_id"),
+    Index("ix_events_tenant_id", "tenant_id", "id"),
+    Index("ix_events_tenant_project_id", "tenant_id", "project_id", "id"),
+    Index("ix_events_event_type_id", "event_type", "id"),
+    schema=EVENT_SCHEMA,
+)
+
+audit_log = Table(
+    "audit_log",
+    metadata,
+    Column("id", BigInteger, Identity(), primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid),
+    Column("actor_user_id", Uuid),
+    Column("event_id", String(128), nullable=False),
+    Column("action", String(128), nullable=False),
+    Column("entity", String(64), nullable=False),
+    Column("entity_id", Uuid, nullable=False),
+    Column("before_snapshot", json_type),
+    Column("after_snapshot", json_type),
+    Column("context", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "timestamp",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "(before_snapshot IS NOT NULL AND jsonb_typeof(before_snapshot) = 'object') "
+        "OR (after_snapshot IS NOT NULL AND jsonb_typeof(after_snapshot) = 'object')",
+        name="snapshot_present",
+    ),
+    CheckConstraint(
+        "before_snapshot IS NULL OR jsonb_typeof(before_snapshot) = 'object'",
+        name="before_snapshot_object",
+    ),
+    CheckConstraint(
+        "after_snapshot IS NULL OR jsonb_typeof(after_snapshot) = 'object'",
+        name="after_snapshot_object",
+    ),
+    CheckConstraint("jsonb_typeof(context) = 'object'", name="context_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_audit_log_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_audit_log_tenant_actor",
+        ondelete="RESTRICT",
+    ),
+    Index("ix_audit_log_tenant_id", "tenant_id", "id"),
+    Index("ix_audit_log_tenant_project_id", "tenant_id", "project_id", "id"),
+    Index("ix_audit_log_entity_id", "entity", "entity_id", "id"),
+    schema=AUDIT_SCHEMA,
+)
+
 
 @dataclass(frozen=True)
 class Tables:
@@ -826,6 +924,8 @@ class Tables:
     issues: Table
     risks: Table
     decisions: Table
+    events: Table
+    audit_log: Table
 
 
 tables = Tables(
@@ -843,4 +943,6 @@ tables = Tables(
     issues=issues,
     risks=risks,
     decisions=decisions,
+    events=events,
+    audit_log=audit_log,
 )
