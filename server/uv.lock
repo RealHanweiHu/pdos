@@ -563,6 +563,7 @@ dependencies = [
     { name = "langgraph" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic-settings" },
+    { name = "python-dotenv" },
     { name = "sqlalchemy" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -583,6 +584,7 @@ requires-dist = [
     { name = "langgraph", specifier = ">=1.1,<2" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3,<4" },
     { name = "pydantic-settings", specifier = ">=2.13,<3" },
+    { name = "python-dotenv", specifier = ">=1.2,<2" },
     { name = "sqlalchemy", specifier = ">=2.0,<3" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.42,<1" },
 ]

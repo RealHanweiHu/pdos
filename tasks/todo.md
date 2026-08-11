@@ -73,13 +73,13 @@
 
 - [ ] compose 启动 pgvector/pg16 与 MinIO
 - [ ] `pdos`、`pdos_test` 独立创建
-- [ ] 测试入口遇到非 `pdos_test` URL 直接拒绝
+- [x] 测试入口遇到非 `pdos_test` URL 直接拒绝
 
 **Verification**
 
 - [ ] `pdos_test` 可执行 `alembic upgrade head`
-- [ ] 故意传入 `pdos` URL 的隔离测试失败关闭
-- [ ] MinIO healthcheck 通过
+- [x] 故意传入 `pdos` URL 的隔离测试失败关闭
+- [x] MinIO healthcheck 通过并初始化私有 `pdos-files` 桶
 
 **Dependencies:** S0-1a, S0-1b
 

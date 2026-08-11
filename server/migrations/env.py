@@ -6,6 +6,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from app.db.url import psycopg_database_url
+
 config = context.config
 
 if config.config_file_name is not None:
@@ -20,7 +22,7 @@ def database_url() -> str:
     if not url:
         message = "DATABASE_URL must be set explicitly for Alembic commands"
         raise RuntimeError(message)
-    return url
+    return psycopg_database_url(url)
 
 
 def run_migrations_offline() -> None:

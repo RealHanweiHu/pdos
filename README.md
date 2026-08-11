@@ -31,6 +31,8 @@ make dev
 | 命令 | 用途 |
 |---|---|
 | `make setup` | 校验工具版本并按锁文件安装 web/server 依赖 |
+| `make infra-up` | 启动固定版本的 pgvector/PG16 与 MinIO |
+| `make db-migrate-test` | 经过 fail-close 保护后只升级 `pdos_test` |
 | `make dev` | 同时启动 Next.js 与 FastAPI 开发进程 |
 | `make test` | 运行 web/server 测试 |
 | `make lint` | 运行 ESLint、Ruff 与格式检查 |
@@ -38,7 +40,7 @@ make dev
 | `make build` | 构建 Next.js 并编译检查 Python 源码 |
 | `make check` | 顺序执行 lint、type、test、build 完整门禁 |
 
-S0-1d 接入本地 pgvector/MinIO 后，依赖启动与隔离数据库迁移也会归入这组根命令。
+`make dev` 会保留本地数据卷并按需启动依赖；`make infra-down` 只停止容器，不删除数据卷。
 
 ## 不可协商项（摘要）
 
