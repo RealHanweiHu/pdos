@@ -1,22 +1,23 @@
 import { Button } from "@/components/ui/button";
 
 import { caseStatusLabels } from "./case-list";
+import { CaseProjectForm, type CaseProjectResult, type CaseProjectValues } from "./case-project-form";
 import type { DevelopmentCase } from "./case-types";
 
 export function CaseStatusActions({
   busy,
   developmentCase,
+  onCreateProject,
   onTransition,
 }: {
   busy: boolean;
   developmentCase: DevelopmentCase;
+  onCreateProject: (values: CaseProjectValues) => Promise<CaseProjectResult>;
   onTransition: (toStatus: DevelopmentCase["status"]) => void;
 }) {
   if (developmentCase.status === "approved") {
     return (
-      <div className="mt-4 rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">
-        已批准。S1-3 创建并关联 Project 后，服务端才允许转为“已转项目”。
-      </div>
+      <CaseProjectForm busy={busy} developmentCase={developmentCase} onSubmit={onCreateProject} />
     );
   }
   if (developmentCase.status === "converted" || developmentCase.status === "rejected") {

@@ -4,10 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CaseWorkspace } from "./case-workspace";
 
-const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
+const { routerPush, routerReplace } = vi.hoisted(() => ({
+  routerPush: vi.fn(),
+  routerReplace: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: routerReplace }),
+  useRouter: () => ({ push: routerPush, replace: routerReplace }),
 }));
 
 function jsonResponse(body: object, status = 200) {
@@ -48,6 +51,7 @@ describe("CaseWorkspace", () => {
 
   beforeEach(() => {
     fetchMock.mockReset();
+    routerPush.mockReset();
     routerReplace.mockReset();
     vi.stubGlobal("fetch", fetchMock);
   });
@@ -190,6 +194,46 @@ describe("CaseWorkspace", () => {
       screen.queryByRole("button", { name: "打开开发案例 CASE-001" }),
     ).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "进入评估" })).not.toBeInTheDocument();
+  });
+
+  it("creates a Project from an approved Case and opens the Project workspace", async () => {
+    const user = userEvent.setup();
+    const approvedCase = { ...developmentCase, status: "approved" };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/development-cases" && !init?.method) {
+        return jsonResponse({ items: [approvedCase] });
+      }
+      if (path === "/api/projects" && init?.method === "POST") {
+        return jsonResponse({ id: "project-1" }, 201);
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<CaseWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开开发案例 CASE-001" }));
+    await user.type(screen.getByLabelText("项目编号"), "PRJ-001");
+    const projectName = screen.getByLabelText("项目名称");
+    await user.clear(projectName);
+    await user.type(projectName, "Next pump platform");
+    await user.click(screen.getByRole("button", { name: "创建项目" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          development_case_id: "case-1",
+          code: "PRJ-001",
+          name: "Next pump platform",
+          description: "Evaluate the next pump platform.",
+          start_date: null,
+          target_date: null,
+        }),
+      }),
+    );
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith("/projects"));
   });
 
   it("redirects expired sessions and retries load errors", async () => {

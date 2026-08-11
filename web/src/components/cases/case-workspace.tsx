@@ -7,14 +7,16 @@ import type { WorkspaceIdentity } from "@/components/workspace-types";
 
 import { readCase, requestCases } from "./case-api";
 import type { CaseFormValues } from "./case-form";
-import type { DevelopmentCase } from "./case-types";
+import { requestProjectCreation } from "./case-project-api";
+import type { CaseProjectValues } from "./case-project-form";
+import { caseStatusLabel, type DevelopmentCase } from "./case-types";
 import { CaseWorkspaceError, CaseWorkspaceLoading } from "./case-workspace-state";
 import { CaseWorkspaceView } from "./case-workspace-view";
 
 type LoadState = "loading" | "ready" | "error" | "redirecting";
 
 export function CaseWorkspace() {
-  const { replace } = useRouter();
+  const { push, replace } = useRouter();
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [cases, setCases] = useState<DevelopmentCase[]>([]);
@@ -42,9 +44,7 @@ export function CaseWorkspace() {
         if (active) setLoadState("error");
       },
     );
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, [replace]);
 
   async function retryLoad() {
@@ -151,6 +151,24 @@ export function CaseWorkspace() {
     }
   }
 
+  async function createProject(developmentCase: DevelopmentCase, values: CaseProjectValues) {
+    setSaving(true);
+    setStatusMessage(null);
+    setErrorMessage(null);
+    try {
+      const result = await requestProjectCreation(developmentCase, values);
+      if (!result.ok && result.unauthorized) {
+        replace("/login");
+      }
+      if (result.ok) {
+        push("/projects");
+      }
+      return result;
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function logout() {
     setLoggingOut(true);
     try {
@@ -168,6 +186,7 @@ export function CaseWorkspace() {
       identity={identity}
       loggingOut={loggingOut}
       onCancelEdit={() => setSelectedId(null)}
+      onCreateProject={createProject}
       onLogout={() => void logout()}
       onSelect={(developmentCase) => setSelectedId(developmentCase.id)}
       onTransition={(developmentCase, toStatus) => void transitionCase(developmentCase, toStatus)}
@@ -177,14 +196,4 @@ export function CaseWorkspace() {
       statusMessage={statusMessage}
     />
   );
-}
-
-function caseStatusLabel(status: DevelopmentCase["status"]) {
-  return {
-    draft: "草稿",
-    evaluating: "评估中",
-    approved: "已批准",
-    rejected: "已拒绝",
-    converted: "已转项目",
-  }[status];
 }

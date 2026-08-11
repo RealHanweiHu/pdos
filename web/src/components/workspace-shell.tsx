@@ -4,6 +4,7 @@ import {
   ClipboardTextIcon,
   FolderOpenIcon,
   GaugeIcon,
+  KanbanIcon,
   SignOutIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -18,6 +19,7 @@ const navigation = [
   { href: "/", label: "驾驶舱", icon: GaugeIcon, key: "dashboard" },
   { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
   { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
+  { href: "/projects", label: "项目", icon: KanbanIcon, key: "projects" },
 ] as const;
 
 export function WorkspaceShell({
@@ -27,7 +29,7 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active: "dashboard" | "requirements" | "cases";
+  active: "dashboard" | "requirements" | "cases" | "projects";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
@@ -114,7 +116,7 @@ export function WorkspaceShell({
           </div>
         </header>
         <nav aria-label="移动端主导航" className="border-b bg-card px-2 lg:hidden">
-          <ul className="grid grid-cols-3" role="list">
+          <ul className="grid grid-cols-4" role="list">
             {navigation.map(({ href, icon: Icon, key, label }) => (
               <li key={key}>
                 <Link

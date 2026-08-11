@@ -3,6 +3,7 @@ import type { WorkspaceIdentity } from "@/components/workspace-types";
 
 import { CaseForm, type CaseFormValues, type CaseSubmissionResult } from "./case-form";
 import { CaseList } from "./case-list";
+import type { CaseProjectResult, CaseProjectValues } from "./case-project-form";
 import { CaseStatusActions } from "./case-status-actions";
 import type { DevelopmentCase } from "./case-types";
 
@@ -13,6 +14,7 @@ export function CaseWorkspaceView({
   identity,
   loggingOut,
   onCancelEdit,
+  onCreateProject,
   onLogout,
   onSelect,
   onTransition,
@@ -27,6 +29,7 @@ export function CaseWorkspaceView({
   identity: WorkspaceIdentity;
   loggingOut: boolean;
   onCancelEdit: () => void;
+  onCreateProject: (developmentCase: DevelopmentCase, values: CaseProjectValues) => Promise<CaseProjectResult>;
   onLogout: () => void;
   onSelect: (developmentCase: DevelopmentCase) => void;
   onTransition: (developmentCase: DevelopmentCase, toStatus: DevelopmentCase["status"]) => void;
@@ -74,6 +77,7 @@ export function CaseWorkspaceView({
             <CaseStatusActions
               busy={saving}
               developmentCase={selectedCase}
+              onCreateProject={(values) => onCreateProject(selectedCase, values)}
               onTransition={(toStatus) => onTransition(selectedCase, toStatus)}
             />
           </section>
