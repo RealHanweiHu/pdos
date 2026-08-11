@@ -18,6 +18,7 @@ from app.auth.errors import (
 )
 from app.auth.passwords import PasswordService
 from app.auth.repository import AuthContext, AuthRepository
+from app.auth.roles import Role
 from app.auth.service import AuthService
 from app.auth.tokens import TokenCodec
 from app.db.engine import get_engine
@@ -85,6 +86,7 @@ class PublicUser(BaseModel):
     tenant_id: UUID
     username: str
     display_name: str
+    role: Role
     email: str | None
     is_active: bool
 
@@ -141,6 +143,7 @@ def public_identity(context: AuthContext) -> IdentityResponse:
             tenant_id=context.user.tenant_id,
             username=context.user.username,
             display_name=context.user.display_name,
+            role=context.user.role,
             email=context.user.email,
             is_active=context.user.is_active,
         ),

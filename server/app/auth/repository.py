@@ -10,6 +10,7 @@ from sqlalchemy import Engine, func, select, update
 from sqlalchemy.engine import RowMapping
 
 from app.auth.errors import SetupAlreadyCompletedError
+from app.auth.roles import Role
 from app.db.schema import tables
 
 SETUP_ADVISORY_LOCK_KEY = 0x50444F5353455455
@@ -29,6 +30,7 @@ class UserRecord:
     tenant_id: UUID
     username: str
     display_name: str
+    role: Role
     email: str | None
     password_hash: str | None
     is_active: bool
@@ -84,6 +86,7 @@ class AuthRepository:
                     "tenant_id": tenant_id,
                     "username": username,
                     "display_name": display_name,
+                    "role": Role.OWNER,
                     "password_hash": password_hash,
                 },
             )
@@ -99,6 +102,7 @@ class AuthRepository:
                 tenant_id=tenant_id,
                 username=username,
                 display_name=display_name,
+                role=Role.OWNER,
                 email=None,
                 password_hash=password_hash,
                 is_active=True,
@@ -115,6 +119,7 @@ class AuthRepository:
                 tables.users.c.id.label("user_id"),
                 tables.users.c.username,
                 tables.users.c.display_name,
+                tables.users.c.role.label("user_role"),
                 tables.users.c.email,
                 tables.users.c.password_hash,
                 tables.users.c.is_active,
@@ -146,6 +151,7 @@ class AuthRepository:
                 tables.users.c.id.label("user_id"),
                 tables.users.c.username,
                 tables.users.c.display_name,
+                tables.users.c.role.label("user_role"),
                 tables.users.c.email,
                 tables.users.c.password_hash,
                 tables.users.c.is_active,
@@ -184,6 +190,7 @@ class AuthRepository:
                 tenant_id=row["tenant_id"],
                 username=row["username"],
                 display_name=row["display_name"],
+                role=Role(row["user_role"]),
                 email=row["email"],
                 password_hash=row["password_hash"],
                 is_active=row["is_active"],

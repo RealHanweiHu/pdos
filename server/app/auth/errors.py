@@ -15,3 +15,7 @@ class InvalidAccessTokenError(RuntimeError):
 
 class TenantContextDeniedError(RuntimeError):
     """Raised when a valid identity has no active server-side tenant context."""
+
+
+class ObjectPermissionDeniedError(RuntimeError):
+    """Raised when a tenant-bound identity cannot perform an object action."""

@@ -32,3 +32,13 @@ On an empty database, `POST /api/setup` atomically creates the first tenant and 
 Only one concurrent setup request can succeed. Use `POST /api/auth/login` to issue a Bearer
 token and `GET /api/auth/me` to resolve the current tenant-bound identity. All authentication
 responses are marked `Cache-Control: no-store`.
+
+## RBAC and project scope
+
+The role catalog is frozen to Owner, Admin, Project Manager, Engineer, Quality, Supplier, and
+Customer. Every action is listed in a server-side matrix; unknown roles and actions are denied.
+Owner and Admin can resolve projects inside their active tenant without a project-membership row.
+All other roles require both an allowed action and an exact tenant-safe `project_members` record.
+Supplier and Customer are external roles and receive only project visibility plus the external
+response action. `GET /api/projects/{project_id}/access` exposes the resolved role and action set
+without accepting tenant scope from the client.

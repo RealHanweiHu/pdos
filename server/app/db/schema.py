@@ -1,4 +1,4 @@
-"""Canonical SQLAlchemy metadata for the first PDOS entity slice."""
+"""Canonical SQLAlchemy metadata for the implemented PDOS entity slices."""
 
 from __future__ import annotations
 
@@ -77,6 +77,7 @@ users = Table(
     Column("username", String(64), nullable=False),
     Column("email", String(320)),
     Column("display_name", String(256), nullable=False),
+    Column("role", String(32), nullable=False),
     Column("password_hash", String(256)),
     Column("is_active", Boolean, nullable=False, server_default=text("true")),
     Column("last_signed_in_at", DateTime(timezone=True)),
@@ -91,6 +92,11 @@ users = Table(
         DateTime(timezone=True),
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "role IN ('owner', 'admin', 'project_manager', 'engineer', 'quality', "
+        "'supplier', 'customer')",
+        name="role_allowed",
     ),
     UniqueConstraint("tenant_id", "id", name="uq_users_tenant_id_id"),
     UniqueConstraint("tenant_id", "username", name="uq_users_tenant_username"),
@@ -400,6 +406,55 @@ projects = Table(
     UniqueConstraint("tenant_id", "workflow_id", "id", name="uq_projects_tenant_workflow_id"),
     UniqueConstraint("tenant_id", "code", name="uq_projects_tenant_code"),
     Index("ix_projects_tenant_status", "tenant_id", "status"),
+    schema=PROJECT_SCHEMA,
+)
+
+project_members = Table(
+    "project_members",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("user_id", Uuid, nullable=False),
+    Column("added_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_project_members_tenant_project",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_members_tenant_user",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "added_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_members_tenant_added_by",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_project_members_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "user_id",
+        name="uq_project_members_tenant_project_user",
+    ),
+    Index("ix_project_members_tenant_project", "tenant_id", "project_id"),
+    Index("ix_project_members_tenant_user", "tenant_id", "user_id"),
     schema=PROJECT_SCHEMA,
 )
 
@@ -763,6 +818,7 @@ class Tables:
     requirements: Table
     development_cases: Table
     projects: Table
+    project_members: Table
     workflows: Table
     stages: Table
     gates: Table
@@ -779,6 +835,7 @@ tables = Tables(
     requirements=requirements,
     development_cases=development_cases,
     projects=projects,
+    project_members=project_members,
     workflows=workflows,
     stages=stages,
     gates=gates,

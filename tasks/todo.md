@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S0-4 RBAC 7 Roles。** S0-3 已由认证安全反例、真实 HTTP 路径与完整门禁验收。
+> 唯一当前指针：**S0-5 Event + Audit Skeleton。** S0-4 已由 7 角色全矩阵、migration 0002 往返、多租户对象权限与真实 HTTP 路径验收。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -153,7 +153,7 @@
 - [x] 有效 token 可解析唯一 tenant/user；所有无效上下文返回稳定 401/403
 - [x] 聚焦测试、完整门禁与真实 HTTP 认证路径全绿
 
-## Next: S0-4 RBAC 7 Roles
+## Completed: S0-4 RBAC 7 Roles
 
 **Definition of Ready**
 
@@ -163,14 +163,36 @@
 
 **Implementation slices**
 
-- [ ] S0-4a：定义 7 个冻结角色及租户级角色归属，初始化管理员授予 Owner
-- [ ] S0-4b：增加 tenant-safe 项目成员表与 migration 0002，保持 Alembic 单 head/无 drift
-- [ ] S0-4c：建立服务端权限动作目录与角色矩阵，默认拒绝未登记动作
-- [ ] S0-4d：实现 tenant + project 对象权限依赖，非项目成员与跨租户请求 fail-close
-- [ ] S0-4e：覆盖 7 角色矩阵、Supplier/Customer 最小可见面和多租户隔离正反例
+- [x] S0-4a：定义 7 个冻结角色及租户级角色归属，初始化管理员授予 Owner
+- [x] S0-4b：增加 tenant-safe 项目成员表与 migration 0002，保持 Alembic 单 head/无 drift
+- [x] S0-4c：建立服务端权限动作目录与角色矩阵，默认拒绝未登记动作
+- [x] S0-4d：实现 tenant + project 对象权限依赖，非项目成员与跨租户请求 fail-close
+- [x] S0-4e：覆盖 7 角色矩阵、Supplier/Customer 最小可见面和多租户隔离正反例
 
 **Acceptance evidence required**
 
-- [ ] 7 个角色对全部冻结动作的 allow/deny 矩阵测试通过，未知动作默认拒绝
-- [ ] 项目成员只能访问本租户授权项目；跨租户与非成员请求稳定拒绝
-- [ ] migration 0002 往返、聚焦测试、完整门禁与真实 HTTP 权限路径全绿
+- [x] 7 个角色对全部冻结动作的 allow/deny 矩阵测试通过，未知动作默认拒绝
+- [x] 项目成员只能访问本租户授权项目；跨租户与非成员请求稳定拒绝
+- [x] migration 0002 往返、聚焦测试、完整门禁与真实 HTTP 权限路径全绿
+
+## Next: S0-5 Event + Audit Skeleton
+
+**Definition of Ready**
+
+- [x] 规格出处：`Event_Catalog.md`、`RBAC_and_Audit.md` 与 canonical S0-5
+- [x] 依赖项：S0-2 业务实体、S0-3 actor/tenant 上下文与 S0-4 权限边界已完成
+- [x] 范围冻结：events、audit_log、规格 10 类事件注册表、业务写与事件同事务
+
+**Implementation slices**
+
+- [ ] S0-5a：增加 `cehub_event.events` 与 `cehub_audit.audit_log` 的 tenant-safe migration 0003
+- [ ] S0-5b：建立版本化事件注册表，登记规格 10 类事件的 schema、生产者、消费者与幂等规则
+- [ ] S0-5c：建立业务写 + event + audit 的同事务写入端口，服务端绑定 tenant/actor
+- [ ] S0-5d：将 Sprint 0 已有写路径接入事件与审计，并保持敏感字段不进入 payload
+- [ ] S0-5e：覆盖重复 event、事务回滚、跨租户引用、审计不可变与迁移 drift 正反例
+
+**Acceptance evidence required**
+
+- [ ] `(source, event_id)` 重复写被数据库拒绝；规格 10 类事件注册表完整且版本固定
+- [ ] 任一已实现业务写路径均同事务落 event + audit；失败时三者一并回滚
+- [ ] migration 0003 往返、聚焦测试、完整门禁与真实 HTTP 审计路径全绿

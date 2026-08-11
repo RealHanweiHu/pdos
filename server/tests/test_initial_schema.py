@@ -44,6 +44,7 @@ EXPECTED_TABLES = {
     ("cehub_project", "issues"),
     ("cehub_project", "risks"),
     ("cehub_project", "decisions"),
+    ("cehub_project", "project_members"),
 }
 
 
@@ -71,7 +72,7 @@ def migrated_database_url() -> Iterator[str]:
             os.environ["DATABASE_URL"] = previous_database_url
 
 
-def test_initial_metadata_contains_only_the_frozen_s0_2_entities() -> None:
+def test_metadata_contains_the_frozen_s0_2_entities_and_s0_4_membership() -> None:
     actual_tables = {(table.schema, table.name) for table in metadata.tables.values()}
 
     assert actual_tables == EXPECTED_TABLES
