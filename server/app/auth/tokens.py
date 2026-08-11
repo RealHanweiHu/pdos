@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import hmac
 from dataclasses import dataclass
@@ -17,6 +19,22 @@ from app.settings import Settings
 
 ALGORITHM = "HS256"
 KEY_CONTEXT = b"pdos/access-token/v1"
+
+
+def _has_canonical_base64url_segments(token: str) -> bool:
+    segments = token.split(".")
+    if len(segments) != 3 or any(not segment for segment in segments):
+        return False
+    for segment in segments:
+        try:
+            padded = f"{segment}{'=' * (-len(segment) % 4)}"
+            decoded = base64.b64decode(padded, altchars=b"-_", validate=True)
+            canonical = base64.urlsafe_b64encode(decoded).rstrip(b"=").decode("ascii")
+        except (UnicodeEncodeError, UnicodeDecodeError, binascii.Error, ValueError):
+            return False
+        if not hmac.compare_digest(segment, canonical):
+            return False
+    return True
 
 
 @dataclass(frozen=True)
@@ -66,6 +84,8 @@ class TokenCodec:
         return EncodedAccessToken(token=encoded, issued_at=now, expires_at=expires_at)
 
     def decode(self, token: str) -> AccessTokenClaims:
+        if not _has_canonical_base64url_segments(token):
+            raise InvalidAccessTokenError
         try:
             payload: dict[str, Any] = jwt.decode(
                 token,
