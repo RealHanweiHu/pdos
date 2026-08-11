@@ -84,3 +84,6 @@ jobs:
 
       - name: Production build
         run: make build
+
+      - name: Application runtime smoke
+        run: make smoke-app

@@ -18,6 +18,7 @@ def test_ci_enforces_quality_and_isolated_migration_gates() -> None:
     assert "make type" in commands
     assert "make test" in commands
     assert "make build" in commands
+    assert "make smoke-app" in commands
     assert "scripts.migrate_test" in commands
     assert "CREATE EXTENSION IF NOT EXISTS vector" in commands
     assert "PDOS_LLM_API_KEY" not in workflow_path.read_text()

@@ -5,7 +5,7 @@ PYTHON := uv run --python 3.12
 
 .DEFAULT_GOAL := help
 
-.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev test lint type typecheck build check
+.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev smoke-app test lint type typecheck build check verify-s0-1
 
 help:
 	@printf '%s\n' \
@@ -14,6 +14,7 @@ help:
 		'  make infra-up   Start local PostgreSQL and MinIO' \
 		'  make db-migrate-test  Upgrade only the isolated pdos_test database' \
 		'  make dev        Run the web and API development processes' \
+		'  make smoke-app  Run isolated web and API runtime smoke checks' \
 		'  make test       Run all unit tests' \
 		'  make lint       Run all lint and formatting checks' \
 		'  make type       Run all static type checks' \
@@ -50,6 +51,9 @@ dev: check-env
 	@$(MAKE) infra-up
 	@./scripts/dev.sh
 
+smoke-app: check-env
+	@./scripts/smoke-app.sh
+
 test: check-test-db
 	cd web && $(PNPM) test
 	cd server && $(PYTHON) pytest
@@ -70,3 +74,9 @@ build:
 	cd server && $(PYTHON) python -m compileall -q app migrations
 
 check: lint typecheck test build
+
+verify-s0-1:
+	@$(MAKE) check-env
+	@$(MAKE) db-migrate-test
+	@$(MAKE) check
+	@$(MAKE) smoke-app

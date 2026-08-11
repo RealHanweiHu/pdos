@@ -34,11 +34,13 @@ make dev
 | `make infra-up` | 启动固定版本的 pgvector/PG16 与 MinIO |
 | `make db-migrate-test` | 经过 fail-close 保护后只升级 `pdos_test` |
 | `make dev` | 同时启动 Next.js 与 FastAPI 开发进程 |
+| `make smoke-app` | 在隔离端口启动 web/API 并核对真实 HTTP 响应 |
 | `make test` | 运行 web/server 测试 |
 | `make lint` | 运行 ESLint、Ruff 与格式检查 |
 | `make type` | 运行 TypeScript 与 Python 严格类型检查 |
 | `make build` | 构建 Next.js 并编译检查 Python 源码 |
 | `make check` | 顺序执行 lint、type、test、build 完整门禁 |
+| `make verify-s0-1` | 执行隔离迁移、完整门禁和运行时 smoke，作为 S0-1 单一验收入口 |
 
 `make dev` 会保留本地数据卷并按需启动依赖；`make infra-down` 只停止容器，不删除数据卷。
 

@@ -56,9 +56,9 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Caddy/DNS smoke 必须
 ### Checkpoint: S0-1
 
 - [ ] 无 LLM key 时本地依赖与空应用可运行
-- [ ] `/healthz` 与 web 首页运行时可访问
+- [x] `/healthz` 与 web 首页运行时可访问（`make smoke-app`）
 - [ ] `pdos_test` migration smoke、完整测试、类型检查、构建全绿
-- [ ] 生产模板无密钥，未执行未经授权的外部操作
+- [x] 生产模板无密钥，未执行未经授权的外部操作
 - [ ] 唯一执行计划将 S0-1 标记为 `[x]`
 
 ### Phase 2+: Canonical Sprint Sequence
