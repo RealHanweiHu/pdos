@@ -234,9 +234,9 @@
 
 **Implementation slices**
 
-- [ ] S1-1a：冻结 Requirement/Customer 数据约束与 tenant-safe migration 0004
-- [ ] S1-1b：实现需求创建、读取与编辑 API，服务端绑定 tenant/actor，跨租户 fail-close
-- [ ] S1-1c：登记 REQUIREMENT_CREATED / REQUIREMENT_UPDATED 事件，并让写路径同事务写 event + audit
+- [x] S1-1a：冻结 Requirement/Customer 数据约束与 tenant-safe migration 0004
+- [x] S1-1b：实现需求创建、读取与编辑 API，服务端绑定 tenant/actor，跨租户 fail-close
+- [x] S1-1c：登记 REQUIREMENT_CREATED / REQUIREMENT_UPDATED 事件，并让写路径同事务写 event + audit
 - [ ] S1-1d：实现需求池 UI 与同源 BFF，覆盖录入、编辑、Customer 关联、空态/错误态和键盘路径
 - [ ] S1-1e：完成聚焦测试、完整门禁、真实 API/浏览器 smoke 与迁移往返验证
 

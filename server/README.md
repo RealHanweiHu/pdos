@@ -43,6 +43,21 @@ Supplier and Customer are external roles and receive only project visibility plu
 response action. `GET /api/projects/{project_id}/access` exposes the resolved role and action set
 without accepting tenant scope from the client.
 
+## Requirement pool
+
+Authenticated internal roles can read the tenant-bound Requirement pool with
+`GET /api/requirements`, inspect one item with `GET /api/requirements/{id}`, and obtain the
+Customer selector from `GET /api/customers`. Owner, Admin, and Project Manager can create and
+edit requirements with `POST /api/requirements` and `PATCH /api/requirements/{id}`. External
+Supplier/Customer roles have no Intake access. Customer and Requirement identifiers are always
+resolved inside the authenticated tenant; missing and cross-tenant requirements share the same
+404 response.
+
+Create and edit operations emit `REQUIREMENT_CREATED` / `REQUIREMENT_UPDATED` plus immutable
+audit snapshots in the same database transaction. The `converted` status is reserved for the
+formal Requirement→Development Case action in S1-2 and cannot be set through the generic edit
+endpoint.
+
 ## Events and audit
 
 `cehub_event.events` is an ordered stream with `(source, event_id)` idempotency and tenant-safe
