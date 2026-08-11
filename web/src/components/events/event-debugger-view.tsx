@@ -107,18 +107,18 @@ export function EventDebuggerView({
       </div>
 
       <form className="mt-5 grid gap-3 rounded-lg border bg-card p-4 sm:grid-cols-2 lg:grid-cols-[minmax(180px,1fr)_minmax(240px,1.3fr)_auto]" onSubmit={submit}>
-        <label className="grid gap-1.5 text-xs font-medium">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium">
           事件类型
-          <select className="h-11 rounded-lg border bg-background px-3 text-sm" defaultValue={filters.eventType} key={`type-${filters.eventType}`} name="event_type">
+          <select className="h-11 w-full min-w-0 max-w-full rounded-lg border bg-background px-3 text-sm" defaultValue={filters.eventType} key={`type-${filters.eventType}`} name="event_type">
             <option value="">全部类型</option>
             {catalog.map((definition) => <option key={definition.event_type} value={definition.event_type}>{definition.event_type}</option>)}
           </select>
         </label>
-        <label className="grid gap-1.5 text-xs font-medium">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium">
           项目 ID
-          <input className="h-11 rounded-lg border bg-background px-3 font-mono text-sm" defaultValue={filters.projectId} key={`project-${filters.projectId}`} name="project_id" placeholder="可选 UUID" />
+          <input className="h-11 w-full min-w-0 max-w-full rounded-lg border bg-background px-3 font-mono text-sm" defaultValue={filters.projectId} key={`project-${filters.projectId}`} name="project_id" placeholder="可选 UUID" />
         </label>
-        <div className="flex flex-wrap items-end gap-2 sm:col-span-2 lg:col-span-1">
+        <div className="flex min-w-0 flex-wrap items-end gap-2 sm:col-span-2 lg:col-span-1">
           <Button className="h-11" type="submit">应用筛选</Button>
           <Button className="h-11" onClick={onClearFilters} type="button" variant="outline">清除筛选</Button>
           <Button aria-label="刷新事件流" className="size-11" onClick={onRefresh} size="icon" type="button" variant="ghost"><ArrowClockwiseIcon aria-hidden="true" /></Button>

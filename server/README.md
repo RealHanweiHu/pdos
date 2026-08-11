@@ -115,3 +115,9 @@ scope are supplied by server-side context. Secret-bearing keys are rejected befo
 `event_id` correlates the audit record with the business event without adding user IDs or other
 high-cardinality values to telemetry. JSONB checks require object payloads and snapshots at the
 database boundary, including for direct SQL writers.
+
+Owner and Admin can inspect the frozen registry with `GET /api/events/catalog` and read their
+tenant event stream with `GET /api/events`. The stream is read-only, ordered by the immutable
+database `id`, and supports `after_id`, bounded `limit`, `event_type`, and tenant-validated
+`project_id` filters. All other roles are denied. This Sprint 1 debugger does not expose the
+future external `POST /events` contract and cannot re-execute consumers or mutate business state.

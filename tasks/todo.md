@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S1-5 事件全覆盖 + 调试页。** S1-4 已于 2026-08-11 完成全部验收；下一项按计划补齐事件浏览与回放调试能力。
+> 唯一当前指针：**S1-6 前端第一版。** S1-5 已于 2026-08-11 完成全部验收；下一项按计划交付 Dashboard 骨架与 Project Workspace 五标签。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -365,7 +365,7 @@
 - 权限与事务证据：跨项目依赖、跨 Workflow Stage、外部角色负责人、非成员与 Supplier 入口均 fail-close；失败写入前后业务/event/audit 计数不变
 - 事件审计证据：真实链路中 requirement/development_case/project/task/issue/risk/decision 的 event 与 audit 数量逐实体一致；`ISSUE_CREATED` canonical payload 由测试锁定
 
-## Current: S1-5 Event Coverage + Debug Stream
+## Completed: S1-5 Event Coverage + Debug Stream
 
 **Definition of Ready**
 
@@ -382,12 +382,22 @@
 - [x] S1-5a：锁定 Sprint 1 implemented-event 覆盖清单、catalog 合同与 Owner/Admin 专属 action
 - [x] S1-5b：实现 tenant-bound Event 查询服务及 catalog/stream FastAPI，覆盖 cursor、筛选、权限和跨租户正反例
 - [x] S1-5c：实现同源 BFF 与只读 `/events` 调试页，隐藏非管理员入口并检查 envelope/payload
-- [ ] S1-5d：完成聚焦测试、完整门禁及真实事件流 cursor/filter HTTP 与响应式双主题浏览器验收
+- [x] S1-5d：完成聚焦测试、完整门禁及真实事件流 cursor/filter HTTP 与响应式双主题浏览器验收
 
 **Acceptance evidence required**
 
-- [ ] Sprint 1 所有实际写路径的 event type 均在 v1 registry 中且 producer/payload 受服务端校验；canonical 10 类集合不被扩写
-- [ ] Event stream 只返回当前租户数据，按 `id` 稳定升序，可用 cursor 无重无漏读取并按 event_type/同租户 project_id 筛选
-- [ ] Owner/Admin 可访问 catalog 与 stream；PM/Engineer/Quality/Supplier/Customer 均 403，UI 无入口；未知/跨租户 project filter 一致 fail-close
-- [ ] 调试页可检查 schema version、source、entity、event_id、timestamp、consumers 与 payload，且不提供任何写入/重放执行能力
-- [ ] API/BFF、server/web tests、lint/type/build 与真实事件流 HTTP/浏览器链路全绿
+- [x] Sprint 1 所有实际写路径的 event type 均在 v1 registry 中且 producer/payload 受服务端校验；canonical 10 类集合不被扩写
+- [x] Event stream 只返回当前租户数据，按 `id` 稳定升序，可用 cursor 无重无漏读取并按 event_type/同租户 project_id 筛选
+- [x] Owner/Admin 可访问 catalog 与 stream；PM/Engineer/Quality/Supplier/Customer 均 403，UI 无入口；未知/跨租户 project filter 一致 fail-close
+- [x] 调试页可检查 schema version、source、entity、event_id、timestamp、consumers 与 payload，且不提供任何写入/重放执行能力
+- [x] API/BFF、server/web tests、lint/type/build 与真实事件流 HTTP/浏览器链路全绿
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：108 个 server tests、64 个 web tests、Ruff/ESLint、Python/TypeScript 严格类型检查与生产构建全绿；事件读取未改变 schema，Alembic 仍为唯一 `0007` head
+- catalog 证据：canonical 10 类集合保持不变；Sprint 1 implemented set 精确锁定 22 类，真实页面显示 `22 / 29` 已实现/已注册，未来生产者定义保留但不伪造数据
+- 真实同源 HTTP：`limit=2` 首段 ID `[43,44]`、`after_id=44` 次段 `[45,46]`，无重叠且稳定升序；`TASK_CREATED` 类型筛选仅返回对应事件
+- 权限与租户证据：Owner/Admin catalog/stream 200，PM 直达只显示管理员限制且导航无入口；五个非管理员角色 API 403，跨租户/未知 Project filter 一致 404，异租户事件不进入结果
+- Playwright：Owner 检查 source/entity/event_id/project_id/consumers 与展开 payload，并完成 event_type+project_id 筛选；PM 无事件入口；明暗主题与 320/768/1440px 全绿
+- 响应式修复：长 event type `<select>` 的 intrinsic width 已收口；320px `scrollWidth=innerWidth=320`，所有可见交互目标至少 44px，控制台 0 warning/0 error
+- 本地截图：`output/playwright/s1-5-events-light-1440.png`、`s1-5-events-dark-1440.png`、`s1-5-events-dark-768.png`、`s1-5-events-dark-320.png`（验证产物按 `.gitignore` 不入库）
