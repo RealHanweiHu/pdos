@@ -218,5 +218,6 @@
 
 - [x] 经人授权完成 RDS `pdos`/`pdos_app` 与 pgvector 验证、私有 OSS 桶及最小权限凭据、生产 migration、ECS API/web healthy 和回环端口登录页 smoke
 - [x] 人通过私有 SSH 隧道完成唯一一次 setup；已验证 tenant/user/Owner、`TENANT_BOOTSTRAPPED` 事件和审计各一条，`needs_setup: false`，随后关闭隧道
-- [ ] 完成公网 HTTPS 登录路径 smoke 与至少 30 分钟观察；实际环境为现有 Nginx + `pdos.beepump.net`，与计划中的 Caddy + `pdos.beepump.io` 不同，须先取得人对该偏差的明确确认
+- [x] 人确认采用现有 Nginx + `pdos.beepump.net`；已接入 `pdos_default`、签发并验证证书/续期、启用 HTTPS 反代与登录限流，公网登录页 200、错误凭据 401，既有站点回归正常
+- [ ] 由人使用生产账号完成公网 login→me→首页 smoke，并完成 Nginx 上线后至少 30 分钟的无异常观察
 - [ ] 汇报 Sprint 0 验收结果并等待确认，再进入 Sprint 1

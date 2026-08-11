@@ -28,7 +28,7 @@
   → Sprint 0 人工出口
 ```
 
-RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Caddy/DNS smoke 必须单独授权，且只要求在 Sprint 0 出口前完成。
+RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Nginx/DNS smoke 必须单独授权，且只要求在 Sprint 0 出口前完成。
 
 ## Task List
 

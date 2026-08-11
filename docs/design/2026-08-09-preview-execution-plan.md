@@ -29,7 +29,7 @@
 
 工作项状态以编号前的 checkbox 为准：`[ ]` 未开始、`[~]` 进行中、`[x]` 完成、`[!]` 阻塞。任何工作项只能按以下顺序推进：
 
-1. **Definition of Ready**：确认规格出处、依赖项、预计触达文件、迁移号、验收条款；涉及 RDS/OSS/ECS/Caddy/DNS、生产环境或远程 push 时，先停下等人确认。
+1. **Definition of Ready**：确认规格出处、依赖项、预计触达文件、迁移号、验收条款；涉及 RDS/OSS/ECS/边缘代理/DNS、生产环境或远程 push 时，先停下等人确认。
 2. **纵向最小切片**：以一个可运行行为为单位同时完成 schema/服务/API/UI/测试中实际需要的部分；共享迁移和公共契约串行，契约冻结后的独立切片才可并行。
 3. **实现内门禁**：先跑聚焦测试，再跑 lint/format/typecheck、完整测试、构建；涉及数据库时必须在 `pdos_test` 执行 `alembic upgrade head`，并验证开发库与测试库隔离保护。
 4. **运行时验证**：不能只以编译通过收口；按工作项验收条款走一次真实 API/UI/worker 路径，覆盖至少一个错误路径，并记录命令、结果或截图位置。
@@ -48,7 +48,7 @@
 | RDS CA | 复用 `certs/ApsaraDB-CA-Chain.pem`（CEHub 仓库已带，公开 CA 链） | 拷贝进本仓库 certs/ |
 | **pgvector** | 规格要求。RDS PG 需确认版本支持 `CREATE EXTENSION vector`（阿里云 RDS PG 11+ 一般可装） | Sprint 0 第一天验证；**不支持则回退**：ECS 上 compose 内置 `pgvector/pgvector:pg16` 容器承载 pdos 库（RDS 仅作回退时不用） |
 | **ECS** | 复用 `8.140.197.68`（Ubuntu 22.04 + Docker，已跑 ERP 看板 + CEHub） | 新 compose 项目，app 绑 `127.0.0.1:3002`（3000/3001 已被占用），api 与 LangGraph worker 分容器 |
-| **域名/HTTPS** | 复用 Caddy | Caddyfile 加一段：`pdos.beepump.io { reverse_proxy localhost:3002 }`，DNS 加 A 记录即可，自动签证书 |
+| **域名/HTTPS** | 复用 ECS 现有 Nginx（2026-08-11 经人确认） | `pdos.beepump.net` A 记录指向 ECS；Nginx 接入 `pdos_default` 并反代唯一别名 `pdos-web:3000`；certbot webroot 签发和续期证书。决策与回滚见 ADR-001 |
 | **对象存储** | 复用 OSS（同 endpoint/凭据模式） | 控制台新建桶 `pdos-files`（托管 OSS 需预建桶，应用凭据无 CreateBucket 权限——CEHub 已踩过） |
 | **钉钉**（Sprint 5） | 复用同企业 corp_id 与协议实现经验（免登/回调 AES/交互卡片模板机制） | 建议新建企业内应用（新 agent_id + 回调地址），避免与 CEHub 回调冲突；代码层协议逻辑可搬 |
 | **部署链** | 复用 CEHub 模式：`.env.production` 不入库、`scripts/deploy-ecs.sh`、runtime migrator、compose prod 只绑本机端口 | 照抄骨架改参数 |
@@ -157,7 +157,7 @@ ai-native-R&D-platform/
 
 1. Sprint 2 末起双跑试点（新系统体验 AI 面，老 CEHub 仍是事实源）；
 2. Sprint 3 末迁移工具就绪，试点项目全量迁移演练；
-3. Sprint 5 末：选低峰全量迁移 → `pdos.beepump.io` 转正（或接管主域）→ 老 CEHub 转只读归档（保留审计查询期，Manus 切换时同样手法）；
+3. Sprint 5 末：选低峰全量迁移 → `pdos.beepump.net` 转正（或接管主域）→ 老 CEHub 转只读归档（保留审计查询期，Manus 切换时同样手法）；
 4. CEHub 仓库侧独立事项：`codex/cehub-v3-2` M0 止血落库照做（现役系统健康问题）；grandfather 幂等失败需查证是否影响现役 main。
 
 ## 10. 排期总览与风险
@@ -202,5 +202,5 @@ ai-native-R&D-platform/
 1. 人确认本次结构校准 → 本仓库首次 commit（docs/模板/资产全量入库；不 push）；
 2. 启动 [ ] S0-1：先完成本地脚手架、隔离数据库、MinIO 与 CI 门禁；
 3. 人工基础设施轨与 S0-1 并行：人创建 RDS `pdos`/`pdos_app`、验证 pgvector、创建 OSS 桶；Agent 只提供检查清单，不自行操作；
-4. S0-1 本地验收通过后进入 S0-2 migration 0001；空应用 ECS/Caddy/DNS smoke 仅在人明确授权后执行，并在 Sprint 0 出口前完成；
+4. S0-1 本地验收通过后进入 S0-2 migration 0001；空应用 ECS/Nginx/DNS smoke 仅在人明确授权后执行，并在 Sprint 0 出口前完成；
 5. CEHub M0 止血是另一仓库的独立轨道，不占用本仓库的迁移号或完成状态。

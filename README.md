@@ -60,7 +60,7 @@ JWT，并通过 `GET /api/auth/me` 验证服务端重新解析的活跃租户上
 `NEXT_PUBLIC_` 前缀。
 
 生产部署使用 `compose.production.yaml`，启动顺序固定为 migration→API healthy→web
-healthy，宿主机只绑定 `127.0.0.1:${APP_PORT}:3000`。部署、Caddy、DNS 与回滚步骤见
+healthy，宿主机只绑定 `127.0.0.1:${APP_PORT}:3000`。部署、Nginx、DNS 与回滚步骤见
 [`docs/runbooks/sprint-0-ecs-smoke.md`](docs/runbooks/sprint-0-ecs-smoke.md)；执行任何外部环境动作前必须取得明确授权。
 
 ## 不可协商项（摘要）

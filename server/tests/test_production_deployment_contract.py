@@ -82,7 +82,10 @@ def test_sprint_zero_runbook_has_preflight_smoke_and_rollback_gates() -> None:
 
     assert "RDS" in runbook
     assert "OSS" in runbook
-    assert "Caddy" in runbook
+    assert "Nginx" in runbook
+    assert "pdos.beepump.net" in runbook
+    assert "pdos_default" in runbook
+    assert "certbot" in runbook
     assert "回滚" in runbook
     assert "明确授权" in runbook
     assert "公开前" in runbook
