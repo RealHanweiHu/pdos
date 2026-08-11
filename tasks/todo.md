@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S1-6 前端第一版。** S1-5 已于 2026-08-11 完成全部验收；下一项按计划交付 Dashboard 骨架与 Project Workspace 五标签。
+> 唯一当前指针：**Sprint 1 Exit Gate。** S1-1～S1-6 已于 2026-08-11 完成全部验收；汇报验收结果并等待人明确确认后，方可进入 Sprint 2。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -402,7 +402,7 @@
 - 响应式修复：长 event type `<select>` 的 intrinsic width 已收口；320px `scrollWidth=innerWidth=320`，所有可见交互目标至少 44px，控制台 0 warning/0 error
 - 本地截图：`output/playwright/s1-5-events-light-1440.png`、`s1-5-events-dark-1440.png`、`s1-5-events-dark-768.png`、`s1-5-events-dark-320.png`（验证产物按 `.gitignore` 不入库）
 
-## Current: S1-6 Frontend First Version
+## Completed: S1-6 Frontend First Version
 
 **Definition of Ready**
 
@@ -419,14 +419,31 @@
 - [x] S1-6a：以测试冻结 Task/Issue/Risk 前端类型、响应校验、创建与状态动作请求合同
 - [x] S1-6b：重构 Project Workspace 为五标签，交付 Overview 汇总、Timeline 与角色感知的三类工作项界面
 - [x] S1-6c：将登录后首页替换为 Portfolio/Risk 双卡 Dashboard，并按权限处理风险聚合与失败态
-- [ ] S1-6d：完成聚焦测试、完整门禁、Requirement→Case→Project→Task/Issue 浏览器闭环及双主题响应式验收
+- [x] S1-6d：完成聚焦测试、完整门禁、Requirement→Case→Project→Task/Issue 浏览器闭环及双主题响应式验收
 
 **Acceptance evidence required**
 
-- [ ] 登录后默认进入 Dashboard；Portfolio 展示可见项目的状态、当前阶段与进度，Risk 按 score 降序汇总且可回到对应项目
-- [ ] Project Workspace 精确显示五标签；Overview 数量与三类列表一致，Timeline 正确渲染七阶段
-- [ ] Task 明确区分 status 与 readiness，依赖未完成显示 waiting 而非 blocked；显式 blocked 动作必须填写原因
-- [ ] Issue/Risk 仅呈现服务端冻结状态图允许的下一动作；创建与动作成功后局部数据刷新，失败显示行内可重试错误
-- [ ] Supplier/Customer 无 Task/Issue/Risk 标签或网络请求；内部只读/可写边界与服务端 RBAC 一致
-- [ ] 页面具备 loading/empty/error 状态，在亮暗主题与 320/768/1440px 下无横向溢出，键盘可达且控制台零 warning/error
-- [ ] web/server tests、lint/type/build、Alembic 单 head 与 Sprint 1 真实业务闭环全部通过
+- [x] 登录后默认进入 Dashboard；Portfolio 展示可见项目的状态、当前阶段与进度，Risk 按 score 降序汇总且可回到对应项目
+- [x] Project Workspace 精确显示五标签；Overview 数量与三类列表一致，Timeline 正确渲染七阶段
+- [x] Task 明确区分 status 与 readiness，依赖未完成显示 waiting 而非 blocked；显式 blocked 动作必须填写原因
+- [x] Issue/Risk 仅呈现服务端冻结状态图允许的下一动作；创建与动作成功后局部数据刷新，失败显示行内可重试错误
+- [x] Supplier/Customer 无 Task/Issue/Risk 标签或网络请求；内部只读/可写边界与服务端 RBAC 一致
+- [x] 页面具备 loading/empty/error 状态，在亮暗主题与 320/768/1440px 下无横向溢出，键盘可达且控制台零 warning/error
+- [x] web/server tests、lint/type/build、Alembic 单 head 与 Sprint 1 真实业务闭环全部通过
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：108 个 server tests、75 个 web tests、Ruff/ESLint、Python/TypeScript 严格类型检查、测试库隔离、生产构建与 Python 编译全绿；Alembic 仍为唯一 `0007` head
+- Playwright 真实浏览器：从登录后 Dashboard 完成 Requirement `REQ-S1-001` → Case `CASE-S1-001`（Decision 留痕）→ Project `PRJ-S1-001` → Task/Issue/Risk；Dashboard 风险评分 20 可深链回项目，Timeline 精确渲染 P1～P7
+- Task/Issue/Risk 证据：前置 Task 完成后后继从 `todo/waiting` 即时刷新为 `todo/ready`；Issue 严格走完 open→analysis→action→verification→closed；Risk 的 likelihood=4、impact=5、score=20
+- 事件审计证据：真实链路产生 27 条事件与 27 条审计，按 `(tenant_id, event_id)` 未配对数为 0；Requirement/Case/Decision/Project/Task/Issue/Risk 全程可回放
+- 权限与错误态：Supplier/Customer 的工作项标签与请求由测试锁定为零；Dashboard 部分风险请求失败不会伪装为零风险；工作项状态错误行内呈现
+- 响应式与可访问性：亮/暗主题以及 320/768/1440px 均无横向溢出；320px 主要控件触控区至少 44px，原生前置复选框关联标签触控区为 201×44px；控制台 0 warning/0 error
+- 本地截图：`output/playwright/s1-6-project-timeline-light-1440.png`、`s1-6-dashboard-dark-1440.png`、`s1-6-project-task-dark-768.png`、`s1-6-dashboard-dark-320.png`、`s1-6-project-task-dark-320-viewport.png`（验证产物按 `.gitignore` 不入库）
+
+## Next: Sprint 1 Exit Gate
+
+- [x] S1-1～S1-6 的工作项验收条款与项目级 Definition of Done 全部满足
+- [x] Requirement→Case（Decision）→Project→Task/Issue 的真实业务闭环、事件回放与七阶段 Timeline 验收通过
+- [x] Sprint 1 的完整质量门禁、权限边界、双主题与响应式浏览器验收通过
+- [ ] 汇报 Sprint 1 验收结果并获得人明确确认，进入 Sprint 2

@@ -20,7 +20,8 @@
 - [x] S1-3 Project + Workflow/Stage 实例化已完成：Case→Project 原子动作、七态状态机、七阶段 Timeline 与真实浏览器验收全绿
 - [x] S1-4 Task / Issue / Risk 已完成：依赖 readiness、Issue/Risk 状态机、项目权限、同源 BFF 与真实 HTTP 验收全绿
 - [x] S1-5 事件全覆盖 + 调试页已完成：22 类已实现事件覆盖、tenant-bound cursor API、只读调试页与管理员权限验收全绿
-- [ ] **当前：S1-6 前端第一版**，按 `tasks/todo.md` 交付 Dashboard Portfolio/Risk 两卡与 Project Workspace 五标签
+- [x] S1-6 前端第一版已完成：Dashboard Portfolio/Risk 两卡、Project Workspace 五标签及 Sprint 1 真实浏览器闭环验收全绿
+- [ ] **当前：Sprint 1 Exit Gate**，汇报 Sprint 1 验收结果并等待人明确确认后，方可进入 Sprint 2
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
