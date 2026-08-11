@@ -91,7 +91,7 @@ ai-native-R&D-platform/
 
 | # | 工作项 | 说明 |
 |---|---|---|
-| [ ] S1-1 | Requirement 池 | 录入/编辑/关联 Customer；REQUIREMENT 相关事件 |
+| [~] S1-1 | Requirement 池 | 录入/编辑/关联 Customer；REQUIREMENT 相关事件 |
 | [ ] S1-2 | Development Case + 转化 | Requirement→Case 正式转化动作（产 **Decision** 记录）；Case 状态机 Draft→Evaluating→Approved→Converted/Rejected |
 | [ ] S1-3 | Project + Workflow/Stage 实例化 | 项目 7 态状态机（Draft/Proposed/Approved/Active/OnHold/Completed/Archived）；Workflow 模板→Stage 实例（NPD 阶段结构参考 CEHub SOP 但按规格 Workflow 实体建模） |
 | [ ] S1-4 | Task / Issue / Risk | Issue 5 态（Open→Analysis→Action→Verification→Closed）；任务依赖与阻塞遵守「前置未完成=待开始≠blocked」铁律 |

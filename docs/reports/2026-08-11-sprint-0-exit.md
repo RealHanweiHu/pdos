@@ -2,7 +2,7 @@
 
 ## Status
 
-**Passed — awaiting Sprint exit confirmation.** S0-0～S0-5、基础设施、生产部署、HTTPS、回滚准备、观察窗口和人工认证公网 smoke 均已验证；得到人对本报告的明确确认后才进入 Sprint 1。
+**Passed and approved.** S0-0～S0-5、基础设施、生产部署、HTTPS、回滚准备、观察窗口和人工认证公网 smoke 均已验证；人于 2026-08-11 明确确认进入 Sprint 1。
 
 - 报告日期：2026-08-11
 - 生产域名：`https://pdos.beepump.net`
@@ -93,4 +93,4 @@ PDOS_POSTGRES_PORT=56432 make verify-sprint-0
 
 ## Exit decision
 
-Sprint 0 验收证据完整，报告状态为 Passed。当前唯一开放动作是由人明确确认 Sprint 0 出口；确认前不得进入 Sprint 1。
+Sprint 0 验收证据完整，报告状态为 Passed，并已于 2026-08-11 获得人的明确出口确认。当前执行指针已移动到 S1-1。

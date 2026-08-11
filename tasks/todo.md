@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项、真实浏览器、RDS/OSS、ECS 容器、一次性 setup、公网 HTTPS smoke 与观察窗口均已完成；进入 Sprint 1 前只等待 Sprint 出口确认。
+> 唯一当前指针：**S1-1 Requirement 池。** Sprint 0 已于 2026-08-11 经人确认通过；当前只实施需求录入/编辑/关联 Customer 与 REQUIREMENT 事件闭环。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -221,4 +221,28 @@
 - [x] 人确认采用现有 Nginx + `pdos.beepump.net`；已接入 `pdos_default`、签发并验证证书/续期、启用 HTTPS 反代与登录限流，公网登录页 200、错误凭据 401，既有站点回归正常
 - [x] 修复 ERP/CRM 共享 `web` 别名导致的偶发误路由；最终 Nginx 配置上线后连续观察 30 分钟，API/web/Nginx 异常计数均为 0，服务重启计数为 0
 - [x] 由人使用生产账号完成公网 login→me→首页 smoke；访问日志已核对 login 200 / me 200，登录后服务健康、零重启且最近 10 分钟无 PDOS 5xx
-- [ ] 汇报 Sprint 0 验收结果并等待确认，再进入 Sprint 1
+- [x] 汇报 Sprint 0 验收结果并获得人明确确认，进入 Sprint 1
+
+## Current: S1-1 Requirement Pool
+
+**Definition of Ready**
+
+- [x] 规格出处：`PostgreSQL_Schema_Design.md`、`Product_Flow.md`、`Event_Catalog.md`、`RBAC_and_Audit.md` 与 canonical S1-1
+- [x] 依赖项：Sprint 0 出口已确认；Requirement/Customer 基础表、租户认证、RBAC 与同事务 event+audit 端口已就绪
+- [x] 范围冻结：需求录入、列表/详情、编辑、可选 Customer 关联，以及版本化 REQUIREMENT 事件；不提前实现 Requirement→Case 转化
+- [x] 迁移号预留为 `0004`，单调递增且不复用
+
+**Implementation slices**
+
+- [ ] S1-1a：冻结 Requirement/Customer 数据约束与 tenant-safe migration 0004
+- [ ] S1-1b：实现需求创建、读取与编辑 API，服务端绑定 tenant/actor，跨租户 fail-close
+- [ ] S1-1c：登记 REQUIREMENT_CREATED / REQUIREMENT_UPDATED 事件，并让写路径同事务写 event + audit
+- [ ] S1-1d：实现需求池 UI 与同源 BFF，覆盖录入、编辑、Customer 关联、空态/错误态和键盘路径
+- [ ] S1-1e：完成聚焦测试、完整门禁、真实 API/浏览器 smoke 与迁移往返验证
+
+**Acceptance evidence required**
+
+- [ ] 同一租户可录入、查看和编辑需求，可关联本租户 Customer；Customer 可为空
+- [ ] 跨租户 Requirement/Customer 不可见、不可关联、不可编辑，未知对象稳定返回 404
+- [ ] 创建和编辑分别同事务落版本化 REQUIREMENT event 与不可变 audit，失败时全部回滚
+- [ ] 需求池按最新更新时间稳定排序，页面在双主题和 320/768/1440px 下可用且控制台无 warning/error

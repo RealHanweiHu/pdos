@@ -14,7 +14,8 @@
 - [x] S0-0 UI 基线 v0.2（已拍板）
 - [x] 仓库首次 git commit 已完成：`d28d984`（docs/模板/资产全量入库，未 push）
 - [x] S0-1～S0-5 本地工作项、RDS/OSS、生产迁移、ECS 容器与一次性 setup 已完成
-- [ ] **当前：Sprint 0 Exit Gate**，公网登录 smoke 与观察窗口均已通过，出口报告状态为 Passed；得到人确认后才进入 Sprint 1
+- [x] Sprint 0 Exit Gate 已于 2026-08-11 经人确认通过
+- [ ] **当前：S1-1 Requirement 池**，按 `tasks/todo.md` 完成需求录入/编辑/关联 Customer 与 REQUIREMENT 事件闭环
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
