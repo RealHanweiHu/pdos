@@ -52,6 +52,8 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
         "DEVELOPMENT_CASE_UPDATED",
         "DEVELOPMENT_CASE_STATUS_CHANGED",
         "DECISION_RECORDED",
+        "PROJECT_UPDATED",
+        "PROJECT_STATUS_CHANGED",
     } <= EVENT_REGISTRY.keys()
     assert "TENANT_BOOTSTRAPPED" not in SPEC_EVENT_TYPES
     assert "USER_SIGNED_IN" not in SPEC_EVENT_TYPES

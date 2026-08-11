@@ -304,8 +304,8 @@
 **Implementation slices**
 
 - [x] S1-3a：migration 0006 冻结 Project/Workflow/Stage 实例约束、唯一性与查询索引
-- [ ] S1-3b：实现版本化 NPD Workflow 模板与 Case→Project 原子实例化服务，接通 PROJECT/CASE event+audit
-- [ ] S1-3c：实现租户/成员安全的 Project 列表、详情、编辑、七态迁移与相邻 Stage 推进 API
+- [x] S1-3b：实现版本化 NPD Workflow 模板与 Case→Project 原子实例化服务，接通 PROJECT/CASE event+audit
+- [x] S1-3c：实现租户/成员安全的 Project 列表、详情、编辑、七态迁移与相邻 Stage 推进 API
 - [ ] S1-3d：实现同源 BFF 与 Project 创建/列表/详情/Timeline 工作页，覆盖对象权限、空态/错误态和响应式双主题
 - [ ] S1-3e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project/Stage 浏览器验收
 

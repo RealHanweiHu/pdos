@@ -53,6 +53,22 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(from_stage_id="string", to_stage_id="string"),
     ),
     EventDefinition(
+        event_type="PROJECT_UPDATED",
+        version=1,
+        entity="project",
+        producer="project_service",
+        consumers=("timeline_projection",),
+        payload_schema=_payload_schema(changed_fields="array", status="string"),
+    ),
+    EventDefinition(
+        event_type="PROJECT_STATUS_CHANGED",
+        version=1,
+        entity="project",
+        producer="project_service",
+        consumers=("timeline_projection", "agent_dispatcher"),
+        payload_schema=_payload_schema(from_status="string", to_status="string"),
+    ),
+    EventDefinition(
         event_type="GATE_APPROVED",
         version=1,
         entity="gate",
