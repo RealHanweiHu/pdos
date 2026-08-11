@@ -38,7 +38,7 @@ export function WorkspaceShell({
   return (
     <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
       <a
-        className="fixed left-4 top-4 z-50 -translate-y-20 rounded-lg bg-primary px-3 py-2 font-medium text-primary-foreground transition-transform focus:translate-y-0"
+        className="fixed left-4 top-4 z-50 inline-flex min-h-11 -translate-y-20 items-center rounded-lg bg-primary px-3 py-2 font-medium text-primary-foreground transition-transform focus:translate-y-0"
         href="#main-content"
       >
         跳到主要内容
