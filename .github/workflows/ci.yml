@@ -87,3 +87,6 @@ jobs:
 
       - name: Application runtime smoke
         run: make smoke-app
+
+      - name: Production container smoke
+        run: make smoke-production

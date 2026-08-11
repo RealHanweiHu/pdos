@@ -7,6 +7,7 @@ vi.mock("next/headers", () => ({
 }));
 
 import { POST } from "./route";
+import { resetLoginRateLimiterForTests } from "@/lib/login-rate-limit";
 
 function loginRequest() {
   return new Request("http://localhost/api/session/login", {
@@ -25,6 +26,7 @@ describe("POST /api/session/login", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resetLoginRateLimiterForTests();
     vi.stubGlobal("fetch", fetchMock);
     process.env.PDOS_API_INTERNAL_URL = "http://127.0.0.1:8000";
   });
@@ -67,6 +69,25 @@ describe("POST /api/session/login", () => {
     const response = await POST(loginRequest());
 
     expect(response.status).toBe(401);
+    expect(setCookie).not.toHaveBeenCalled();
+  });
+
+  it("rate limits repeated credential failures before another upstream call", async () => {
+    fetchMock.mockImplementation(async () =>
+      Response.json(
+        { detail: { code: "INVALID_CREDENTIALS", message: "Invalid" } },
+        { status: 401 },
+      ),
+    );
+
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      expect((await POST(loginRequest())).status).toBe(401);
+    }
+    const blocked = await POST(loginRequest());
+
+    expect(blocked.status).toBe(429);
+    expect(blocked.headers.get("Retry-After")).toBeTruthy();
+    expect(fetchMock).toHaveBeenCalledTimes(10);
     expect(setCookie).not.toHaveBeenCalled();
   });
 });

@@ -48,6 +48,18 @@ wait_for_url() {
   return 1
 }
 
+assert_security_headers() {
+  local url="$1"
+  local headers
+  headers="$(curl --fail --silent --show-error --dump-header - --output /dev/null "$url")"
+  for header_name in content-security-policy permissions-policy referrer-policy strict-transport-security x-content-type-options x-frame-options; do
+    if ! grep --ignore-case --quiet "^${header_name}:" <<<"$headers"; then
+      printf 'Missing security header %s on %s\n' "$header_name" "$url" >&2
+      return 1
+    fi
+  done
+}
+
 trap cleanup EXIT INT TERM
 trap show_logs ERR
 
@@ -77,6 +89,7 @@ if [[ "$login_response" != *'<title>登录 · PDOS</title>'* ]]; then
   printf '%s\n' 'Login smoke response did not contain the expected title' >&2
   exit 1
 fi
+assert_security_headers http://127.0.0.1:3300/login
 
 session_status="$(curl --fail --silent --show-error http://127.0.0.1:3300/api/session/status)"
 if [[ "$session_status" != '{"needs_setup":true}' && "$session_status" != '{"needs_setup":false}' ]]; then

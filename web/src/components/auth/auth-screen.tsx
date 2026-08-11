@@ -22,6 +22,7 @@ const errorMessages: Record<string, string> = {
   SETUP_ALREADY_COMPLETED: "系统已经完成初始化，请刷新后登录。",
   SETUP_LOGIN_FAILED: "工作区已创建，请使用管理员账号登录。",
   AUTH_SERVICE_UNAVAILABLE: "认证服务暂不可用，请稍后重试。",
+  LOGIN_RATE_LIMITED: "尝试次数过多，请稍后重试。",
 };
 
 async function responseError(response: Response) {

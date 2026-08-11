@@ -2,7 +2,15 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_ROOT_COMMANDS = {"setup", "dev", "test", "lint", "type", "typecheck", "build"}
-REQUIRED_S0_GATE_COMMANDS = {"infra-up", "db-migrate-test", "smoke-app", "verify-s0-1"}
+REQUIRED_S0_GATE_COMMANDS = {
+    "infra-up",
+    "db-migrate-test",
+    "production-preflight",
+    "smoke-app",
+    "smoke-production",
+    "verify-s0-1",
+    "verify-sprint-0",
+}
 
 
 def test_root_makefile_exposes_the_required_command_contract() -> None:

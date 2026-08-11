@@ -1,0 +1,8 @@
+services:
+  migrate:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  api:
+    extra_hosts:
+      - host.docker.internal:host-gateway

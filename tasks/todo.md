@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项与真实浏览器验收已完成；进入 Sprint 1 前仍需 ECS 人工 smoke 与 Sprint 出口确认。
+> 唯一当前指针：**Sprint 0 Exit Gate。** 本地工作项、真实浏览器与生产容器验收已完成；进入 Sprint 1 前仍需 ECS 人工 smoke 与 Sprint 出口确认。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -204,11 +204,14 @@
 - [x] 按 UI 基线实现首次 setup 与账号密码登录页，双主题、键盘操作和错误态可用
 - [x] 浏览器经同源 API 边界完成 setup/login/me，JWT 不进入服务端日志或页面可见输出
 - [x] 多租户项目不可见、7 角色矩阵、写路径 event+audit 的 Sprint 0 汇总证据全绿
+- [x] web/API 非 root 生产镜像、migration→API→web compose 顺序及回滚运行手册可执行
+- [x] 登录限流、安全响应头、私有首次 setup 顺序与生产容器 smoke 通过
 
-**Local evidence (2026-08-10)**
+**Local evidence (2026-08-11)**
 
-- `make verify-s0-1`：59 个 server tests、10 个 web tests、lint/type/build、migration head 与真实 web/API/BFF smoke 全绿
+- `make verify-sprint-0`：81 个 server tests、15 个 web tests、lint/type/build、migration head、真实 web/API/BFF smoke 与生产容器 smoke 全绿
 - Playwright 真实浏览器：setup→me→首页、错误密码、login→me→首页均已验证；明暗主题刷新零 hydration/console error，键盘顺序与 320/768/1440px 布局通过
+- 生产制品：migration→API healthy→web healthy；仅 web 绑定宿主机回环端口，API/web 分别以 UID 10001/1001 运行；pnpm/uv 生产依赖审计均无已知漏洞
 - 本地截图：`output/playwright/login-768-light-final.png`、`output/playwright/login-1440-dark-final.png`（验证产物按 `.gitignore` 不入库）
 
 **Human-authorized environment gate**

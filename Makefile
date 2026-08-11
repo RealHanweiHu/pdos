@@ -5,7 +5,7 @@ PYTHON := uv run --python 3.12
 
 .DEFAULT_GOAL := help
 
-.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev smoke-app test lint type typecheck build check verify-s0-1
+.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev production-preflight smoke-app smoke-production test lint type typecheck build check verify-s0-1 verify-sprint-0
 
 help:
 	@printf '%s\n' \
@@ -14,12 +14,15 @@ help:
 		'  make infra-up   Start local PostgreSQL and MinIO' \
 		'  make db-migrate-test  Upgrade only the isolated pdos_test database' \
 		'  make dev        Run the web and API development processes' \
+		'  make production-preflight  Validate .env.production before migration/deploy' \
 		'  make smoke-app  Run isolated web and API runtime smoke checks' \
+		'  make smoke-production  Build and smoke the production containers against pdos_test' \
 		'  make test       Run all unit tests' \
 		'  make lint       Run all lint and formatting checks' \
 		'  make type       Run all static type checks' \
 		'  make build      Build/compile all applications' \
-		'  make check      Run lint, type, test, and build gates'
+		'  make check      Run lint, type, test, and build gates' \
+		'  make verify-sprint-0  Run every local Sprint 0 gate, including production containers'
 
 check-env:
 	@./scripts/check-env.sh
@@ -51,8 +54,16 @@ dev: check-env
 	@$(MAKE) infra-up
 	@./scripts/dev.sh
 
+production-preflight: check-env
+	cd server && $(PYTHON) python -m scripts.check_production_env ../.env.production
+	docker compose --env-file .env.production -f compose.production.yaml config --quiet
+
 smoke-app: check-env
 	@./scripts/smoke-app.sh
+
+smoke-production: check-env
+	@$(MAKE) db-migrate-test
+	@./scripts/smoke-production.sh
 
 test: check-test-db
 	cd web && $(PNPM) test
@@ -80,3 +91,6 @@ verify-s0-1:
 	@$(MAKE) db-migrate-test
 	@$(MAKE) check
 	@$(MAKE) smoke-app
+
+verify-sprint-0: verify-s0-1
+	@$(MAKE) smoke-production
