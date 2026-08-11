@@ -71,6 +71,72 @@ const project = {
   updated_at: "2026-08-11T16:00:00Z",
 };
 
+const workItemTimestamps = {
+  created_at: "2026-08-11T16:00:00Z",
+  updated_at: "2026-08-11T16:00:00Z",
+};
+
+const waitingTask = {
+  id: "task-2",
+  project_id: "project-1",
+  stage_id: null,
+  parent_task_id: null,
+  assignee_user_id: null,
+  title: "Integrate validation fixture",
+  description: null,
+  status: "todo",
+  blocked_reason: null,
+  priority: "high",
+  start_date: null,
+  due_date: null,
+  completed_at: null,
+  dependency_task_ids: ["task-1"],
+  unresolved_dependency_ids: ["task-1"],
+  readiness: "waiting",
+  ...workItemTimestamps,
+};
+
+const openIssue = {
+  id: "issue-1",
+  project_id: "project-1",
+  stage_id: null,
+  owner_user_id: null,
+  reported_by_user_id: "user-1",
+  title: "Thermal drift",
+  description: null,
+  status: "open",
+  severity: "critical",
+  root_cause: null,
+  resolution: null,
+  target_date: null,
+  closed_at: null,
+  ...workItemTimestamps,
+};
+
+const openRisk = {
+  id: "risk-1",
+  project_id: "project-1",
+  owner_user_id: null,
+  title: "Supplier slip",
+  description: null,
+  status: "open",
+  likelihood: 4,
+  impact: 5,
+  score: 20,
+  mitigation_plan: null,
+  contingency_plan: null,
+  target_date: null,
+  closed_at: null,
+  ...workItemTimestamps,
+};
+
+function workItemResponse(path: string) {
+  if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask] });
+  if (path.endsWith("/issues")) return jsonResponse({ items: [openIssue] });
+  if (path.endsWith("/risks")) return jsonResponse({ items: [openRisk] });
+  return null;
+}
+
 describe("ProjectWorkspace", () => {
   const fetchMock = vi.fn<typeof fetch>();
 
@@ -117,8 +183,10 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
+    await user.click(screen.getByRole("tab", { name: "时间线" }));
     expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
     for (const stage of stages) expect(screen.getAllByText(stage.name).length).toBeGreaterThan(0);
+    await user.click(screen.getByRole("tab", { name: "概览" }));
     const name = screen.getByLabelText("项目名称");
     await user.clear(name);
     await user.type(name, "Updated pump platform");
@@ -177,9 +245,93 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
+    await user.click(screen.getByRole("tab", { name: "时间线" }));
     expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "编辑项目" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "提交立项" })).not.toBeInTheDocument();
+  });
+
+  it("renders the five internal tabs and keeps dependency waiting distinct from blocked", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+
+    expect(await screen.findAllByRole("tab")).toHaveLength(5);
+    expect(screen.getByRole("tab", { name: "概览" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("1", { selector: "[data-metric='task']" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "任务" }));
+    expect(screen.getAllByText("Integrate validation fixture")).toHaveLength(2);
+    expect(screen.getByText("等待前置")).toBeInTheDocument();
+    expect(screen.queryByText("已阻塞", { exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "开始任务" })).not.toBeInTheDocument();
+  });
+
+  it("creates work items and advances only explicit lifecycle actions", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/tasks") && init?.method === "POST") {
+        return jsonResponse({ ...waitingTask, id: "task-3", title: "Review DVT report", dependency_task_ids: [], unresolved_dependency_ids: [], readiness: "ready" }, 201);
+      }
+      if (path.endsWith("/issues/issue-1/transitions")) {
+        return jsonResponse({ ...openIssue, status: "analysis" });
+      }
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    await screen.findByRole("tab", { name: "任务" });
+    await user.click(screen.getByRole("tab", { name: "任务" }));
+    await user.type(screen.getByLabelText("任务标题"), "Review DVT report");
+    await user.click(screen.getByRole("button", { name: "创建任务" }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/tasks",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ title: "Review DVT report", priority: "medium", dependency_task_ids: [] }),
+      }),
+    );
+
+    await user.click(screen.getByRole("tab", { name: "问题" }));
+    await user.click(screen.getByRole("button", { name: "进入分析" }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/issues/issue-1/transitions",
+      expect.objectContaining({ body: JSON.stringify({ to_status: "analysis" }) }),
+    );
+  });
+
+  it("does not expose or request work items for external project members", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") {
+        return jsonResponse({ ...identity, user: { ...identity.user, role: "supplier" } });
+      }
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+
+    expect(screen.getAllByRole("tab")).toHaveLength(2);
+    expect(screen.queryByRole("tab", { name: "任务" })).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toBe(false);
   });
 
   it("redirects expired sessions and retries load failures", async () => {

@@ -1,16 +1,47 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
 import { requestProjects } from "./project-api";
+import {
+  createIssue,
+  createRisk,
+  createTask,
+  requestProjectWorkItems,
+  transitionIssue,
+  transitionRisk,
+  transitionTask,
+} from "./project-work-item-api";
+import type {
+  IssueCreateInput,
+  IssueStatus,
+  ProjectIssue,
+  ProjectRisk,
+  ProjectTask,
+  ProjectWorkItems,
+  RiskCreateInput,
+  RiskStatus,
+  TaskCreateInput,
+  TaskTransitionInput,
+} from "./project-work-item-types";
 import { ProjectWorkspaceError, ProjectWorkspaceLoading } from "./project-workspace-state";
-import { ProjectWorkspaceView } from "./project-workspace-view";
+import {
+  ProjectWorkspaceView,
+  type ProjectWorkspaceTab,
+  type WorkItemLoadState,
+} from "./project-workspace-view";
+import type { Project } from "./project-types";
 import { useProjectActions } from "./use-project-actions";
 
 type LoadState = "loading" | "ready" | "error" | "redirecting";
+const workItemRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
+
+function messageFrom(error: unknown) {
+  return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
+}
 
 export function ProjectWorkspace() {
   const { replace } = useRouter();
@@ -19,6 +50,13 @@ export function ProjectWorkspace() {
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [activeTab, setActiveTab] = useState<ProjectWorkspaceTab>("overview");
+  const [workItemState, setWorkItemState] = useState<WorkItemLoadState>("idle");
+  const [workItems, setWorkItems] = useState<ProjectWorkItems | null>(null);
+  const [workItemBusy, setWorkItemBusy] = useState(false);
+  const [workItemError, setWorkItemError] = useState<string | null>(null);
+  const [workItemStatus, setWorkItemStatus] = useState<string | null>(null);
+  const requestSequence = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -40,6 +78,38 @@ export function ProjectWorkspace() {
     );
     return () => { active = false; };
   }, [replace, setProjects]);
+
+  const canViewWorkItems = identity !== null && workItemRoles.includes(identity.user.role);
+
+  async function loadWorkItems(projectId: string) {
+    const sequence = requestSequence.current + 1;
+    requestSequence.current = sequence;
+    setWorkItemState("loading");
+    setWorkItems(null);
+    setWorkItemError(null);
+    try {
+      const loaded = await requestProjectWorkItems(projectId);
+      if (requestSequence.current !== sequence) return;
+      setWorkItems(loaded);
+      setWorkItemState("ready");
+    } catch {
+      if (requestSequence.current === sequence) setWorkItemState("error");
+    }
+  }
+
+  function selectProject(project: Project) {
+    actions.selectProject(project);
+    setActiveTab("overview");
+    setWorkItemError(null);
+    setWorkItemStatus(null);
+    if (canViewWorkItems) {
+      void loadWorkItems(project.id);
+    } else {
+      requestSequence.current += 1;
+      setWorkItems(null);
+      setWorkItemState("idle");
+    }
+  }
 
   async function retryLoad() {
     try {
@@ -66,6 +136,78 @@ export function ProjectWorkspace() {
     }
   }
 
+  async function mutateWorkItem<T>(
+    operation: () => Promise<T>,
+    apply: (items: ProjectWorkItems, updated: T) => ProjectWorkItems,
+    success: string,
+  ) {
+    setWorkItemBusy(true);
+    setWorkItemError(null);
+    setWorkItemStatus(null);
+    try {
+      const updated = await operation();
+      setWorkItems((current) => current === null ? current : apply(current, updated));
+      setWorkItemStatus(success);
+      return true;
+    } catch (error) {
+      setWorkItemError(messageFrom(error));
+      return false;
+    } finally {
+      setWorkItemBusy(false);
+    }
+  }
+
+  async function addTask(input: TaskCreateInput) {
+    if (!actions.selectedProject) return false;
+    return mutateWorkItem(
+      () => createTask(actions.selectedProject!.id, input),
+      (items, task) => ({ ...items, tasks: [task as ProjectTask, ...items.tasks] }),
+      "任务已创建",
+    );
+  }
+
+  async function addIssue(input: IssueCreateInput) {
+    if (!actions.selectedProject) return false;
+    return mutateWorkItem(
+      () => createIssue(actions.selectedProject!.id, input),
+      (items, issue) => ({ ...items, issues: [issue as ProjectIssue, ...items.issues] }),
+      "问题已创建",
+    );
+  }
+
+  async function addRisk(input: RiskCreateInput) {
+    if (!actions.selectedProject) return false;
+    return mutateWorkItem(
+      () => createRisk(actions.selectedProject!.id, input),
+      (items, risk) => ({ ...items, risks: [risk as ProjectRisk, ...items.risks] }),
+      "风险已创建",
+    );
+  }
+
+  async function moveTask(task: ProjectTask, input: TaskTransitionInput) {
+    return mutateWorkItem(
+      () => transitionTask(task.project_id, task.id, input),
+      (items, updated) => ({ ...items, tasks: items.tasks.map((item) => item.id === task.id ? updated as ProjectTask : item) }),
+      "任务状态已更新",
+    );
+  }
+
+  async function moveIssue(issue: ProjectIssue, toStatus: IssueStatus) {
+    return mutateWorkItem(
+      () => transitionIssue(issue.project_id, issue.id, toStatus),
+      (items, updated) => ({ ...items, issues: items.issues.map((item) => item.id === issue.id ? updated as ProjectIssue : item) }),
+      "问题状态已更新",
+    );
+  }
+
+  async function moveRisk(risk: ProjectRisk, toStatus: RiskStatus) {
+    return mutateWorkItem(
+      () => transitionRisk(risk.project_id, risk.id, toStatus),
+      (items, updated) => ({ ...items, risks: items.risks.map((item) => item.id === risk.id ? updated as ProjectRisk : item) }),
+      "风险状态已更新",
+    );
+  }
+
   if (loadState === "redirecting") return null;
   if (loadState === "loading") return <ProjectWorkspaceLoading />;
   if (loadState === "error" || identity === null) {
@@ -74,20 +216,34 @@ export function ProjectWorkspace() {
   const canEdit = ["owner", "admin", "project_manager"].includes(identity.user.role);
   return (
     <ProjectWorkspaceView
+      activeTab={activeTab}
       canEdit={canEdit}
+      canViewWorkItems={canViewWorkItems}
       errorMessage={actions.errorMessage}
       identity={identity}
       loggingOut={loggingOut}
       onCancelEdit={actions.clearSelection}
+      onCreateIssue={addIssue}
+      onCreateRisk={addRisk}
+      onCreateTask={addTask}
       onLogout={() => void logout()}
-      onSelect={actions.selectProject}
+      onRetryWorkItems={() => { if (actions.selectedProject) void loadWorkItems(actions.selectedProject.id); }}
+      onSelect={selectProject}
       onStageTransition={(project, stageId) => void actions.transitionStage(project, stageId)}
       onStatusTransition={(project, status) => void actions.transitionStatus(project, status)}
+      onTabChange={setActiveTab}
+      onTransitionIssue={moveIssue}
+      onTransitionRisk={moveRisk}
+      onTransitionTask={moveTask}
       onUpdate={actions.updateProject}
       projects={actions.projects}
       saving={actions.saving}
       selectedProject={actions.selectedProject}
-      statusMessage={actions.statusMessage}
+      statusMessage={workItemStatus ?? actions.statusMessage}
+      workItemBusy={workItemBusy}
+      workItemError={workItemError}
+      workItemState={workItemState}
+      workItems={workItems}
     />
   );
 }
