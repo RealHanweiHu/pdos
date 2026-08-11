@@ -22,3 +22,6 @@ __pycache__/
 
 # 本地数据卷
 .docker-data/
+
+# 本地验证产物
+output/

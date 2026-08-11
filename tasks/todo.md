@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**等待人确认结构校准；确认后首次本地 commit，再进入 S0-1。**
+> 唯一当前指针：**S0-1a Root Contract。** S0-1c web 壳已先行完成；基线 commit：`d28d984`（未 push）。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -10,8 +10,8 @@
 - [x] UI accepted→applied 双动作校准
 - [x] Agent 控制面/执行面数据库角色校准
 - [x] 文档交叉口径扫描
-- [ ] 人确认本次文档校准
-- [ ] 创建首次本地 commit（禁止 push）
+- [x] 人确认本次文档校准
+- [x] 创建首次本地 commit（`d28d984`，未 push）
 
 ## Next: S0-1 Scaffold
 
@@ -54,14 +54,14 @@
 
 **Acceptance criteria**
 
-- [ ] Next.js App Router 空应用采用 Tailwind v4、shadcn/ui、Geist、Phosphor
-- [ ] 公司橙、8px 圆角与双主题 token 落到基础样式
-- [ ] 首页可运行且不提前实现 Sprint 1 业务页面
+- [x] Next.js App Router 空应用采用 Tailwind v4、shadcn/ui、Geist、Phosphor
+- [x] 公司橙、8px 圆角与双主题 token 落到基础样式
+- [x] 首页可运行且不提前实现 Sprint 1 业务页面
 
 **Verification**
 
-- [ ] web lint/type/build 全绿
-- [ ] 亮/暗主题运行时 smoke 通过
+- [x] web test/lint/type/build 全绿
+- [x] 亮/暗主题运行时 smoke 通过；320/768/1024/1440 无横向溢出，浏览器控制台零 warning/error
 
 **Dependencies:** S0-1a
 

@@ -20,7 +20,7 @@
 | 阴影 | 仅浮层（弹窗/下拉）用；卡片分组优先 border + 留白，不堆卡片 |
 | 主题 | 双主题跟随系统 + 手动切换；语义 token（`--surface/--text/--accent`）CSS 变量策略，section 不得反转主题 |
 | 动效 | 150-200ms ease-out，仅限：hover/active 反馈（`active:scale-[0.98]`）、面板切换、toast。无循环动效、无滚动劫持 |
-| 图标 | Phosphor（`@phosphor-icons/react`），strokeWeight 统一 1.5，单一族 |
+| 图标 | Phosphor（`@phosphor-icons/react`），线性图标统一 `weight="regular"`，状态强调可用 `fill`，单一族；Server Component 从 `/ssr` 子路径导入 |
 
 ## 2. 信息架构（导航树定稿）
 

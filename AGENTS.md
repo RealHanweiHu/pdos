@@ -12,7 +12,8 @@
 ## 当前进度指针
 
 - [x] S0-0 UI 基线 v0.2（已拍板）
-- [ ] **下一步：人确认结构校准 → 仓库首次 git commit（docs/模板/资产全量入库，不 push）→ S0-1 脚手架**
+- [x] 仓库首次 git commit 已完成：`d28d984`（docs/模板/资产全量入库，未 push）
+- [ ] **当前：S0-1 脚手架**，按 `tasks/todo.md` 从 S0-1a 顺序推进
 - 人工基础设施轨（RDS/pgvector/OSS）可与 S0-1 本地/CI 轨并行；Agent 不自行执行控制台或生产操作
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

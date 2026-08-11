@@ -37,19 +37,19 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Caddy/DNS smoke 必须
 - [x] 确认设计六层结构与六 Sprint 依赖链
 - [x] 补齐 S0-1、DoR/DoD、状态与人工轨
 - [x] 校准 finding 双动作、数据库角色和文档漂移
-- [ ] 人审本次校准并完成首次本地 commit
+- [x] 人审本次校准并完成首次本地 commit（`d28d984`，未 push）
 
 ### Checkpoint: Baseline
 
-- [ ] 唯一执行计划、AGENTS、README、UI 基线口径一致
-- [ ] 仓库不含真实凭据
-- [ ] 首次 commit 已创建但未 push
+- [x] 唯一执行计划、AGENTS、README、UI 基线口径一致
+- [x] 仓库不含真实凭据
+- [x] 首次 commit 已创建但未 push
 
 ### Phase 1: S0-1 Scaffold
 
 - [ ] S0-1a：建立根目录命令契约与环境校验
 - [ ] S0-1b：建立 FastAPI `/healthz`、Python 工具链与空 Alembic 环境
-- [ ] S0-1c：建立 Next.js 应用壳与 UI token 基础
+- [x] S0-1c：建立 Next.js 应用壳与 UI token 基础
 - [ ] S0-1d：建立 pgvector/MinIO、本地 `pdos`/`pdos_test` 与测试 fail-close 保护
 - [ ] S0-1e：建立 CI，跑 web/server lint、type、test、build 与 test DB migration smoke
 
