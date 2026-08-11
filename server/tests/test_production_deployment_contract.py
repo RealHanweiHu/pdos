@@ -42,14 +42,22 @@ def test_production_startup_orders_migration_api_and_web() -> None:
 
 
 def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> None:
+    services = production_services()
     server_dockerfile = (REPOSITORY_ROOT / "server" / "Dockerfile").read_text()
     web_dockerfile = (REPOSITORY_ROOT / "web" / "Dockerfile").read_text()
     next_config = (REPOSITORY_ROOT / "web" / "next.config.ts").read_text()
+    api_build = cast(dict[str, object], services["api"]["build"])
+    api_build_args = cast(dict[str, str], api_build["args"])
 
     assert "USER pdos" in server_dockerfile
     assert "USER nextjs" in web_dockerfile
     assert "ARG PYTHON_BASE_IMAGE=" in server_dockerfile
     assert "ARG UV_BASE_IMAGE=" in server_dockerfile
+    assert "ARG UV_DEFAULT_INDEX=" in server_dockerfile
+    assert "UV_DEFAULT_INDEX=${UV_DEFAULT_INDEX}" in server_dockerfile
+    assert api_build_args["UV_DEFAULT_INDEX"] == (
+        "${PDOS_UV_DEFAULT_INDEX:-https://pypi.org/simple}"
+    )
     assert "ARG NODE_BASE_IMAGE=" in web_dockerfile
     assert server_dockerfile.count("@sha256:") == 2
     assert web_dockerfile.count("@sha256:") == 1

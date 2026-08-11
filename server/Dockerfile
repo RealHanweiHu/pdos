@@ -5,9 +5,12 @@ FROM ${UV_BASE_IMAGE} AS uv
 
 FROM ${PYTHON_BASE_IMAGE} AS builder
 
+ARG UV_DEFAULT_INDEX=https://pypi.org/simple
+
 COPY --from=uv /uv /uvx /bin/
 
-ENV UV_COMPILE_BYTECODE=1 \
+ENV UV_DEFAULT_INDEX=${UV_DEFAULT_INDEX} \
+    UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy
 
 WORKDIR /app/server
