@@ -74,6 +74,20 @@ Authenticated internal roles can list and inspect tenant-bound cases with
 `draft → evaluating → approved → converted` with `evaluating → rejected`; terminal cases cannot
 be edited, and `approved → converted` requires an existing same-tenant Project reference.
 
+## Project lifecycle
+
+Owner, Admin, and Project Manager can create one Project from one approved Development Case with
+`POST /api/projects`. The transaction instantiates a versioned, project-exclusive NPD Workflow,
+its seven ordered Stage records, the draft Project and creator membership, marks the Case
+converted, and records the correlated events and immutable audits. Any failure rolls the whole
+action back.
+
+Owner and Admin list every tenant Project; all other roles only list exact membership scope.
+Owner, Admin, and Project Manager can edit Project content, follow the frozen
+`draft → proposed → approved → active → completed → archived` graph (including
+`active ↔ on_hold`), and advance active Projects only to an adjacent Stage in their own Workflow.
+The Project API never accepts tenant scope from the client.
+
 ## Events and audit
 
 `cehub_event.events` is an ordered stream with `(source, event_id)` idempotency and tenant-safe

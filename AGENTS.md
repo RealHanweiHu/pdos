@@ -17,7 +17,8 @@
 - [x] Sprint 0 Exit Gate 已于 2026-08-11 经人确认通过
 - [x] S1-1 Requirement 池已完成：需求录入/编辑/Customer 关联、REQUIREMENT event+audit 与真实浏览器验收全绿
 - [x] S1-2 Development Case + 转化已完成：一次性 Requirement→Case、Decision 留痕、Case 状态机与真实浏览器验收全绿
-- [ ] **当前：S1-3 Project + Workflow/Stage 实例化**，按 `tasks/todo.md` 实现项目状态机及模板到阶段实例的正式动作
+- [x] S1-3 Project + Workflow/Stage 实例化已完成：Case→Project 原子动作、七态状态机、七阶段 Timeline 与真实浏览器验收全绿
+- [ ] **当前：S1-4 Task / Issue / Risk**，按 `tasks/todo.md` 实现任务依赖、Issue 五态与 Risk 工作流
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

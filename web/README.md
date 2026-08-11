@@ -25,7 +25,8 @@ pnpm build
 
 - `/login` and `/setup`: local account authentication through the same-origin session BFF
 - `/requirements`: tenant-scoped Requirement pool with create/edit, optional Customer association, and the one-time approved Requirement→Case action
-- `/cases`: role-aware Development Case list/editor with explicit state transitions, loading/error/empty states, and responsive light/dark layouts
-- `/api/requirements`, `/api/development-cases`, and their item/action routes: server-only BFF endpoints that forward the HttpOnly session token without exposing it to client JavaScript
+- `/cases`: role-aware Development Case list/editor with explicit state transitions and approved Case→Project creation
+- `/projects`: membership-aware Project list/editor with seven-stage Timeline, explicit lifecycle transitions, and adjacent-stage progression
+- `/api/requirements`, `/api/development-cases`, `/api/projects`, and their item/action routes: server-only BFF endpoints that forward the HttpOnly session token without exposing it to client JavaScript
 
-Business screens are added only by their canonical Sprint work items. Project creation and Workflow/Stage instantiation remain reserved for S1-3.
+Business screens are added only by their canonical Sprint work items. Task, Issue, and Risk surfaces remain reserved for S1-4.

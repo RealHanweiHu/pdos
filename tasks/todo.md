@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S1-3 Project + Workflow/Stage 实例化。** S1-2 已于 2026-08-11 完成全部验收；下一项按计划实现项目状态机及 Workflow 模板到 Stage 实例的正式动作。
+> 唯一当前指针：**S1-4 Task / Issue / Risk。** S1-3 已于 2026-08-11 完成全部验收；下一项按计划实现任务依赖、Issue 五态与 Risk 工作流。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -289,7 +289,7 @@
 - Playwright：Case 编辑及 `draft → evaluating → approved` 显式迁移通过；明暗主题和 320/768/1440px 无横向溢出，移动端主要控件至少 44px，控制台 0 warning/0 error
 - 本地截图：`output/playwright/s1-2-cases-light-1440.png`、`s1-2-cases-dark-1440.png`、`s1-2-cases-dark-768.png`、`s1-2-cases-dark-320.png`（验证产物按 `.gitignore` 不入库）
 
-## Current: S1-3 Project + Workflow/Stage Instantiation
+## Completed: S1-3 Project + Workflow/Stage Instantiation
 
 **Definition of Ready**
 
@@ -306,13 +306,28 @@
 - [x] S1-3a：migration 0006 冻结 Project/Workflow/Stage 实例约束、唯一性与查询索引
 - [x] S1-3b：实现版本化 NPD Workflow 模板与 Case→Project 原子实例化服务，接通 PROJECT/CASE event+audit
 - [x] S1-3c：实现租户/成员安全的 Project 列表、详情、编辑、七态迁移与相邻 Stage 推进 API
-- [ ] S1-3d：实现同源 BFF 与 Project 创建/列表/详情/Timeline 工作页，覆盖对象权限、空态/错误态和响应式双主题
-- [ ] S1-3e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project/Stage 浏览器验收
+- [x] S1-3d：实现同源 BFF 与 Project 创建/列表/详情/Timeline 工作页，覆盖对象权限、空态/错误态和响应式双主题
+- [x] S1-3e：完成聚焦测试、完整门禁、迁移往返及真实 Requirement→Case→Project/Stage 浏览器验收
 
 **Acceptance evidence required**
 
-- [ ] approved Case 可且仅可创建一个 draft Project；结果含独占 Workflow、七个有序 Stage、首 Stage 指针与创建者成员关系，Case 同事务变为 converted
-- [ ] 任一实例化写入失败时 Workflow/Stage/Project/member/Case/event/audit 全部回滚；跨租户/未知 Case 与对象范围 fail-close
-- [ ] Project 只允许冻结状态边；仅 active 项目可推进到同 Workflow 的相邻 Stage，末 Stage/跳级/跨 Workflow 均拒绝
-- [ ] Owner/Admin 可见租户项目；其余五角色仅见成员项目，且只有 Owner/Admin/PM 有写入口
-- [ ] Project 页面正确渲染七阶段 Timeline，并在双主题和 320/768/1440px 下可用，控制台无 warning/error
+- [x] approved Case 可且仅可创建一个 draft Project；结果含独占 Workflow、七个有序 Stage、首 Stage 指针与创建者成员关系，Case 同事务变为 converted
+- [x] 任一实例化写入失败时 Workflow/Stage/Project/member/Case/event/audit 全部回滚；跨租户/未知 Case 与对象范围 fail-close
+- [x] Project 只允许冻结状态边；仅 active 项目可推进到同 Workflow 的相邻 Stage，末 Stage/跳级/跨 Workflow 均拒绝
+- [x] Owner/Admin 可见租户项目；其余五角色仅见成员项目，且只有 Owner/Admin/PM 有写入口
+- [x] Project 页面正确渲染七阶段 Timeline，并在双主题和 320/768/1440px 下可用，控制台无 warning/error
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：101 个 server tests、55 个 web tests、Ruff/ESLint、Python/TypeScript 严格类型检查和生产构建全绿；migration `0006` 往返与唯一 Alembic head 测试通过
+- 隔离真实 HTTP/浏览器：Owner 完成 Requirement→Case→Project，Project 创建 POST 返回 201；内容编辑 PATCH 仅发送变化的 `name`，三次状态迁移与一次相邻 Stage 推进均返回 200
+- 数据库证据：独占 Workflow/Project/创建者成员各 1 条、七个 Stage 顺序与模板完全一致，来源 Case 为 `converted`；项目最终为 `active/planning`，创建、更新、状态和阶段 event+audit 数量逐项一致
+- 权限与事务证据：重复编号、重复 Case、跨租户/非成员、非法状态边、跳级/跨 Workflow/非 active 推进及中途失败回滚均由正反例测试覆盖
+- Playwright：七阶段 Timeline、空态/错误重试/只读角色、明暗主题和 320/768/1440px 均通过；320px 无横向溢出、所有可见交互目标至少 44px，控制台 0 warning/0 error
+- 本地截图：`output/playwright/s1-3-project-light-1440.png`、`s1-3-project-dark-1440.png`、`s1-3-project-dark-768.png`、`s1-3-project-dark-320.png`（验证产物按 `.gitignore` 不入库）
+
+## Current: S1-4 Task / Issue / Risk
+
+- [ ] 按 canonical 规格完成 Definition of Ready 与 migration `0007` 范围冻结
+- [ ] 实现 Task 依赖与阻塞语义、Issue 五态、Risk 生命周期及项目工作页
+- [ ] 完成事务、租户/对象权限、事件审计、完整门禁与真实浏览器验收
