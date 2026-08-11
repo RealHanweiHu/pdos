@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: pdos
       POSTGRES_USER: pdos
     ports:
-      - "127.0.0.1:55432:5432"
+      - "127.0.0.1:${PDOS_POSTGRES_PORT:-55432}:5432"
     volumes:
       - pdos-postgres-data:/var/lib/postgresql/data
       - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro

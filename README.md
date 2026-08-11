@@ -43,6 +43,8 @@ make dev
 | `make verify-s0-1` | 执行隔离迁移、完整门禁和运行时 smoke，作为 S0-1 单一验收入口 |
 
 `make dev` 会保留本地数据卷并按需启动依赖；`make infra-down` 只停止容器，不删除数据卷。
+若 55432 已被其他本地项目占用，可临时设置 `PDOS_POSTGRES_PORT`，并让
+`DATABASE_URL`/`TEST_DATABASE_URL` 使用相同端口；compose 的默认值仍为 55432。
 
 ## 不可协商项（摘要）
 

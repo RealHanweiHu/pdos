@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S0-1d Local Data Isolation。** S0-1a/b/c 已完成；基线 commit：`d28d984`（未 push）。
+> 唯一当前指针：**S0-1e CI Gate。** S0-1a/b/c/d 已完成；基线 commit：`d28d984`（未 push）。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -71,13 +71,13 @@
 
 **Acceptance criteria**
 
-- [ ] compose 启动 pgvector/pg16 与 MinIO
-- [ ] `pdos`、`pdos_test` 独立创建
+- [x] compose 启动 pgvector/pg16 与 MinIO
+- [x] `pdos`、`pdos_test` 独立创建
 - [x] 测试入口遇到非 `pdos_test` URL 直接拒绝
 
 **Verification**
 
-- [ ] `pdos_test` 可执行 `alembic upgrade head`
+- [x] `pdos_test` 可执行 `alembic upgrade head`
 - [x] 故意传入 `pdos` URL 的隔离测试失败关闭
 - [x] MinIO healthcheck 通过并初始化私有 `pdos-files` 桶
 

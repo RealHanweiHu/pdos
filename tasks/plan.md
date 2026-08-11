@@ -50,14 +50,14 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Caddy/DNS smoke 必须
 - [x] S0-1a：建立根目录命令契约与环境校验
 - [x] S0-1b：建立 FastAPI `/healthz`、Python 工具链与空 Alembic 环境
 - [x] S0-1c：建立 Next.js 应用壳与 UI token 基础
-- [ ] S0-1d：建立 pgvector/MinIO、本地 `pdos`/`pdos_test` 与测试 fail-close 保护
+- [x] S0-1d：建立 pgvector/MinIO、本地 `pdos`/`pdos_test` 与测试 fail-close 保护
 - [ ] S0-1e：建立 CI，跑 web/server lint、type、test、build 与 test DB migration smoke
 
 ### Checkpoint: S0-1
 
-- [ ] 无 LLM key 时本地依赖与空应用可运行
+- [x] 无 LLM key 时本地依赖与空应用可运行
 - [x] `/healthz` 与 web 首页运行时可访问（`make smoke-app`）
-- [ ] `pdos_test` migration smoke、完整测试、类型检查、构建全绿
+- [x] `pdos_test` migration smoke、完整测试、类型检查、构建全绿
 - [x] 生产模板无密钥，未执行未经授权的外部操作
 - [ ] 唯一执行计划将 S0-1 标记为 `[x]`
 
