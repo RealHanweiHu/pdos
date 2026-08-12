@@ -28,7 +28,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 
-from app.db.namespaces import AUDIT_SCHEMA, CORE_SCHEMA, EVENT_SCHEMA, PROJECT_SCHEMA
+from app.db.namespaces import AI_SCHEMA, AUDIT_SCHEMA, CORE_SCHEMA, EVENT_SCHEMA, PROJECT_SCHEMA
 
 NAMING_CONVENTION = {
     "ix": "ix_%(table_name)s_%(column_0_name)s",
@@ -965,6 +965,154 @@ decisions = Table(
     schema=PROJECT_SCHEMA,
 )
 
+tenant_model_settings = Table(
+    "tenant_model_settings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("provider", String(32), nullable=False, server_default=text("'minimax'")),
+    Column("model", String(128), nullable=False, server_default=text("'MiniMax-M2.7'")),
+    Column(
+        "daily_token_budget",
+        BigInteger,
+        nullable=False,
+        server_default=text("2000000"),
+    ),
+    Column("updated_by_user_id", Uuid),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic')",
+        name="provider_allowed",
+    ),
+    CheckConstraint("btrim(model) <> ''", name="model_nonblank"),
+    CheckConstraint(
+        "daily_token_budget BETWEEN 1 AND 1000000000",
+        name="daily_budget_range",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "updated_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_tenant_model_settings_tenant_updater",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", name="uq_tenant_model_settings_tenant_id"),
+    schema=AI_SCHEMA,
+)
+
+model_invocations = Table(
+    "model_invocations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid),
+    Column("run_id", Uuid),
+    Column("request_id", String(128)),
+    Column("agent_key", String(64), nullable=False),
+    Column("agent_tier", String(32), nullable=False, server_default=text("'default'")),
+    Column("prompt_version", String(128), nullable=False),
+    Column("provider", String(32), nullable=False),
+    Column("model", String(128), nullable=False),
+    Column("model_version", String(128)),
+    Column("protocol", String(32), nullable=False),
+    Column("status", String(32), nullable=False),
+    Column("input_tokens", BigInteger, nullable=False, server_default=text("0")),
+    Column("output_tokens", BigInteger, nullable=False, server_default=text("0")),
+    Column("total_tokens", BigInteger, nullable=False, server_default=text("0")),
+    Column("latency_ms", Integer, nullable=False, server_default=text("0")),
+    Column(
+        "normalized_cost_microusd",
+        BigInteger,
+        nullable=False,
+        server_default=text("0"),
+    ),
+    Column("structured_attempts", SmallInteger, nullable=False, server_default=text("0")),
+    Column("error_code", String(64)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic')",
+        name="provider_allowed",
+    ),
+    CheckConstraint(
+        "protocol IN ('openai-compatible', 'anthropic-native')",
+        name="protocol_allowed",
+    ),
+    CheckConstraint(
+        "agent_tier IN ('default', 'extraction', 'reasoning')",
+        name="agent_tier_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('succeeded', 'provider_error', 'schema_error', 'budget_exceeded')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(agent_key) <> ''", name="agent_key_nonblank"),
+    CheckConstraint("btrim(prompt_version) <> ''", name="prompt_version_nonblank"),
+    CheckConstraint("btrim(model) <> ''", name="model_nonblank"),
+    CheckConstraint(
+        "input_tokens >= 0 AND output_tokens >= 0 AND total_tokens >= 0 "
+        "AND total_tokens = input_tokens + output_tokens",
+        name="token_totals_consistent",
+    ),
+    CheckConstraint("latency_ms >= 0", name="latency_nonnegative"),
+    CheckConstraint("normalized_cost_microusd >= 0", name="cost_nonnegative"),
+    CheckConstraint(
+        "structured_attempts BETWEEN 0 AND 3",
+        name="structured_attempts_range",
+    ),
+    CheckConstraint(
+        "(status = 'succeeded' AND error_code IS NULL) OR "
+        "(status <> 'succeeded' AND error_code IS NOT NULL AND btrim(error_code) <> '')",
+        name="error_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_model_invocations_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    Index("ix_model_invocations_tenant_created", "tenant_id", "created_at", "id"),
+    Index(
+        "ix_model_invocations_tenant_agent_created",
+        "tenant_id",
+        "agent_key",
+        "created_at",
+        "id",
+    ),
+    Index(
+        "ix_model_invocations_tenant_project_created",
+        "tenant_id",
+        "project_id",
+        "created_at",
+        "id",
+    ),
+    schema=AI_SCHEMA,
+)
+
 events = Table(
     "events",
     metadata,
@@ -1079,6 +1227,8 @@ class Tables:
     issues: Table
     risks: Table
     decisions: Table
+    tenant_model_settings: Table
+    model_invocations: Table
     events: Table
     audit_log: Table
 
@@ -1099,6 +1249,8 @@ tables = Tables(
     issues=issues,
     risks=risks,
     decisions=decisions,
+    tenant_model_settings=tenant_model_settings,
+    model_invocations=model_invocations,
     events=events,
     audit_log=audit_log,
 )
