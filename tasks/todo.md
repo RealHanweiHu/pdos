@@ -700,6 +700,6 @@
 
 ## Sprint 2 Exit Gate — Awaiting explicit human confirmation
 
-- [ ] 汇报 Sprint 2 验收结果
+- [x] 汇报 Sprint 2 验收结果；生产部署与人工 smoke 证据见 `docs/reports/2026-08-12-sprint-2-production-deployment.md`
 - [ ] 由人选择 1–2 个真实双跑项目并填写 `docs/runbooks/sprint-2-pilot.md`
 - [ ] 获得人明确确认后才进入 Sprint 3

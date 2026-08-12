@@ -4,6 +4,8 @@
 
 本文件是执行控制视图，不是第二份产品计划。产品范围、Sprint 工作项与验收只以 `docs/design/2026-08-09-preview-execution-plan.md` 为准；这里负责把当前工作项拆成单次可实现、可验证的小任务，并在每次交接后保持唯一当前指针。
 
+当前唯一指针：**Sprint 2 Exit Gate**。S0～S2 已实现，Sprint 2 生产部署与人工 smoke 已通过；进入 S3-1 前仍需选择或建立 1–2 个真实双跑项目，并获得人的明确出口确认。
+
 ## Architecture Decisions
 
 - 保持 Next.js + FastAPI + PostgreSQL 10 schema + LangGraph(Python) + shadcn/ui 的既定栈。
@@ -71,7 +73,7 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Nginx/DNS smoke 必须
 
 ### Phase 3+: Canonical Sprint Sequence
 
-S0-3 及以后按唯一执行计划逐项展开；开始某工作项时，再在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
+S0-3～S2-7 已按唯一执行计划完成。当前执行 Sprint 2 出口：真实项目双跑选择与人工确认；出口通过后再按 S3-1→S3-7、Sprint 4、Sprint 5 与切换退役的 canonical 顺序展开。开始每个工作项时，在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
 
 ## Risks and Mitigations
 
@@ -85,4 +87,4 @@ S0-3 及以后按唯一执行计划逐项展开；开始某工作项时，再在
 
 ## Open Questions
 
-- 当前无产品架构开放问题；进入 S0-1 前只需人确认本次校准与首次 commit。
+- Sprint 2 试点需要哪 1–2 个真实 Project？当前生产库在 2026-08-12 部署抽查时 Project 数为 0，因此需由人选择要新建还是后续从现役 CEHub 映射进入。
