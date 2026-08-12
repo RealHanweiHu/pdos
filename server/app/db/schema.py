@@ -2057,6 +2057,171 @@ erp_handoffs = Table(
     schema=PRODUCT_SCHEMA,
 )
 
+deliverable_check_templates = Table(
+    "deliverable_check_templates",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("asset_schema_version", Integer, nullable=False),
+    Column("template_versions", json_type, nullable=False),
+    Column("check_item_key", String(256), nullable=False),
+    Column("deliverable_name", String(512), nullable=False),
+    Column("requirement", Text, nullable=False),
+    Column("source", String(64), nullable=False),
+    Column("bindings", json_type, nullable=False),
+    Column("content_hash", String(64), nullable=False),
+    Column("imported_at", DateTime(timezone=True), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("asset_schema_version > 0", name="schema_version_positive"),
+    CheckConstraint(
+        "btrim(check_item_key) <> '' AND btrim(deliverable_name) <> '' "
+        "AND btrim(requirement) <> '' AND btrim(source) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint("jsonb_typeof(template_versions) = 'array'", name="versions_array"),
+    CheckConstraint("jsonb_typeof(bindings) = 'array'", name="bindings_array"),
+    CheckConstraint("content_hash ~ '^[0-9a-f]{64}$'", name="content_hash_hex"),
+    UniqueConstraint("tenant_id", "id", name="uq_check_templates_tenant_id_id"),
+    UniqueConstraint("tenant_id", "check_item_key", name="uq_check_templates_tenant_item_key"),
+    Index(
+        "ix_check_templates_tenant_schema",
+        "tenant_id",
+        "asset_schema_version",
+        "check_item_key",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+project_check_items = Table(
+    "project_check_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("workflow_id", Uuid, nullable=False),
+    Column("stage_id", Uuid, nullable=False),
+    Column("template_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("completed_by_user_id", Uuid),
+    Column("binding_key", String(512), nullable=False),
+    Column("phase_id", String(64), nullable=False),
+    Column("phase_code", String(32), nullable=False),
+    Column("phase_name", String(256), nullable=False),
+    Column("task_id", String(256), nullable=False),
+    Column("task_name", String(512), nullable=False),
+    Column("deliverable_name", String(512), nullable=False),
+    Column("requirement", Text, nullable=False),
+    Column("is_gate", Boolean, nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'pending'")),
+    Column("evidence_reference", String(2048)),
+    Column("completion_note", Text),
+    Column("completed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "btrim(binding_key) <> '' AND btrim(phase_id) <> '' AND btrim(phase_code) <> '' "
+        "AND btrim(phase_name) <> '' AND btrim(task_id) <> '' AND btrim(task_name) <> '' "
+        "AND btrim(deliverable_name) <> '' AND btrim(requirement) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint("status IN ('pending', 'completed', 'not_applicable')", name="status_allowed"),
+    CheckConstraint(
+        "(status = 'pending' AND completed_by_user_id IS NULL AND completed_at IS NULL) OR "
+        "(status IN ('completed', 'not_applicable') AND completed_by_user_id IS NOT NULL "
+        "AND completed_at IS NOT NULL)",
+        name="completion_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.projects.tenant_id",
+            f"{PROJECT_SCHEMA}.projects.workflow_id",
+            f"{PROJECT_SCHEMA}.projects.id",
+        ],
+        name="fk_project_check_items_tenant_workflow_project",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "stage_id"],
+        [
+            f"{PROJECT_SCHEMA}.stages.tenant_id",
+            f"{PROJECT_SCHEMA}.stages.workflow_id",
+            f"{PROJECT_SCHEMA}.stages.id",
+        ],
+        name="fk_project_check_items_tenant_workflow_stage",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "template_id"],
+        [
+            f"{PROJECT_SCHEMA}.deliverable_check_templates.tenant_id",
+            f"{PROJECT_SCHEMA}.deliverable_check_templates.id",
+        ],
+        name="fk_project_check_items_tenant_template",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_check_items_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "completed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_check_items_tenant_completer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_project_check_items_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "template_id",
+        "binding_key",
+        name="uq_project_check_items_tenant_project_template_binding",
+    ),
+    Index(
+        "ix_project_check_items_tenant_project_stage_status",
+        "tenant_id",
+        "project_id",
+        "stage_id",
+        "status",
+        "is_gate",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
 gates = Table(
     "gates",
     metadata,
@@ -3645,6 +3810,8 @@ class Tables:
     ecr_affected_boms: Table
     engineering_change_notices: Table
     erp_handoffs: Table
+    deliverable_check_templates: Table
+    project_check_items: Table
     workflows: Table
     stages: Table
     gates: Table
@@ -3698,6 +3865,8 @@ tables = Tables(
     ecr_affected_boms=ecr_affected_boms,
     engineering_change_notices=engineering_change_notices,
     erp_handoffs=erp_handoffs,
+    deliverable_check_templates=deliverable_check_templates,
+    project_check_items=project_check_items,
     workflows=workflows,
     stages=stages,
     gates=gates,

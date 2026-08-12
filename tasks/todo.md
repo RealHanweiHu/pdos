@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S3-5 检查项资产库。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-4 已完成；双跑试点为 C4s 与 S18-01。
+> 唯一当前指针：**S3-6 前端。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-5 已完成；双跑试点为 C4s 与 S18-01。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -911,7 +911,7 @@
 | 初次全仓 `make check` 读取 `.env` 的旧 55432，后端统一连接失败 | 1 | 确认 lint/type/web 全绿且错误同源后，以 `TEST_DATABASE_URL`/`DATABASE_URL` 显式覆盖 57432 从头重跑，238 项全绿 |
 | 自动生成 migration/schema 的长约束字符串未通过 Ruff E501 | 1 | 仅拆分 Python 字符串字面量，不改变 SQL 约束语义；Ruff、drift 与往返测试全绿 |
 
-## In Progress: S3-5 检查项资产库
+## Completed: S3-5 检查项资产库
 
 **Definition of Ready**
 
@@ -923,8 +923,48 @@
 
 **Implementation slices**
 
-- [ ] S3-5a：冻结 manifest 校验、687 条完整性、稳定 ID/绑定/硬闸语义与导入幂等契约
-- [ ] S3-5b：migration 0019 建立版本化检查项模板与项目实例/完成证据的 tenant-safe 数据边界
-- [ ] S3-5c：实现直接导入器、项目实例化与查询/完成 API，保持 event/audit 和 RBAC 边界
-- [ ] S3-5d：将 isGate 未完成项接入对应 Stage Gate readiness，验证非硬闸项不阻断
-- [ ] S3-5e：完成迁移往返、完整门禁与真实 HTTP 验收，更新 canonical checkbox 和当前指针
+- [x] S3-5a：冻结 manifest 校验、687 条完整性、稳定 ID/绑定/硬闸语义与导入幂等契约
+- [x] S3-5b：migration 0019 建立版本化检查项模板与项目实例/完成证据的 tenant-safe 数据边界
+- [x] S3-5c：实现直接导入器、项目实例化与查询/完成 API，保持 event/audit 和 RBAC 边界
+- [x] S3-5d：将 isGate 未完成项接入对应 Stage Gate readiness，验证非硬闸项不阻断
+- [x] S3-5e：完成迁移往返、完整门禁与真实 HTTP 验收，更新 canonical checkbox 和当前指针
+
+**Acceptance evidence required**
+
+- [x] JSON asset 直接解析为恰好 687 个稳定唯一检查项；720 个 binding 与 131 个 isGate binding 完整保留
+- [x] 模板导入按 tenant 幂等且 content hash 漂移 fail-close；项目实例按 projectType/Stage 绑定且重放零重复
+- [x] 硬闸项 pending/not_applicable 均阻断对应 Gate，completed 必须有证据；非硬闸项可带理由 not_applicable 且不阻断
+- [x] 读取/治理/完成权限、跨租户与数据库 tenant/project/stage FK fail-close；`pdos_agent` 零业务写
+- [x] migration 0019 往返保持单 head/无 metadata drift；完整门禁与真实 TCP HTTP 路径全绿
+
+**Completion evidence（2026-08-12）**
+
+- 直接读取 `deliverable-guide-manifest.json`，确认 schemaVersion 3、模板版本 2 个、687 个唯一 checkItems、720 个 bindings、131 个 isGate bindings；99 个无 binding 条目仍完整进入模板库，不被丢弃。
+- migration `0019_deliverable_checks` 建立 tenant 级版本化模板与 project/workflow/stage 绑定实例；content hash 防止同 key 静默漂移，项目唯一约束和 PostgreSQL conflict handling 保证导入/实例化重放幂等。
+- NPD 七阶段实例化 282 项，其中 44 项硬闸；Concept 阶段 6 个硬闸 blocker 可见。完成一项必须提供 evidence，blocker 6→5；硬闸 not_applicable 409，非硬闸带理由 not_applicable 200。
+- 模板导入、项目实例化、完成/豁免均同事务落 `DELIVERABLE_CHECK_CHANGED` 与 immutable audit；真实闭环 event/audit 各 4 条；`pdos_agent` 对 project_check_items INSERT 被数据库拒绝。
+- `make check` 全绿：Web 95 tests、Server 242 tests，ESLint/Ruff/format、TypeScript/mypy 152 source files、Next.js production build 与 Python compile 全部通过。
+- 真实本地 TCP API 完成 setup→687 模板导入→NPD 282 项实例化→幂等重放 0 新增→Gate blocker→证据完成→非硬闸豁免；服务随后关闭。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 首轮资产校验假设每个检查项都必须有 binding，但 manifest 有 99 个库级未绑定项 | 1 | 修正为 687 条全部入模板库、仅明确绑定项实例化；720 binding/131 gate 计数锁入测试 |
+| 聚焦组合中 initial-schema 全链降级遇到前序安全测试遗留的非 risk Finding | 1 | 确认 0012 有数据拒绝损失降级的保护正确；仅清空显式 `pdos_test` 后分别重跑，全链往返和完整套件均绿 |
+
+## In Progress: S3-6 前端 Gate / Document
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S3-6、UI baseline v0.2、`Workflow.md` 与 S3-2/S3-5 已冻结 API
+- [x] 依赖项：Gate readiness/签核与 687 检查项库已完成；现有 Project Workspace 有 Overview/Tasks/Issues & Risks/Product Engineering/AI Chat
+- [x] 范围冻结：增加 Gate 与 Document 标签；Gate 默认只显缺项/风险，完整材料按需展开；不提前实现 OCR 或 S4 能力
+
+**Implementation slices**
+
+- [ ] S3-6a：建立同源 BFF 与 runtime guard，覆盖 Gate/Document loading/empty/error/retry/RBAC
+- [ ] S3-6b：实现例外优先 Gate readiness、阶段切换、材料清单按需展开与可访问状态
+- [ ] S3-6c：实现 Document 列表/上传入口，沿用 S2 私有对象存储与抽取状态
+- [ ] S3-6d：完成组件测试、真实浏览器桌面/移动/双主题与 console 验收
+- [ ] S3-6e：完成完整门禁，更新 canonical checkbox 和当前指针

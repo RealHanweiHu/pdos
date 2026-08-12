@@ -128,6 +128,11 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
     assert change_record.producer == "change_service"
     assert change_record.payload_schema["required"] == ["record_type", "action"]
 
+    deliverable_check = definition_for("DELIVERABLE_CHECK_CHANGED")
+    assert deliverable_check.entity == "deliverable_check"
+    assert deliverable_check.producer == "deliverable_check_service"
+    assert deliverable_check.payload_schema["required"] == ["record_type", "action", "count"]
+
     bom_created = definition_for("DEVELOPMENT_BOM_CREATED")
     assert bom_created.entity == "development_bom"
     assert bom_created.payload_schema["required"] == ["bom_code", "bom_type", "version"]

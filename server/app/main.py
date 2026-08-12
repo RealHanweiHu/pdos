@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.api.ai import router as ai_router
 from app.api.auth import router as auth_router
 from app.api.change_governance import router as change_governance_router
+from app.api.deliverable_checks import router as deliverable_checks_router
 from app.api.development_cases import router as development_cases_router
 from app.api.events import router as events_router
 from app.api.findings import router as findings_router
@@ -29,6 +30,7 @@ app.include_router(gates_router)
 app.include_router(product_engineering_router)
 app.include_router(npi_execution_router)
 app.include_router(change_governance_router)
+app.include_router(deliverable_checks_router)
 app.include_router(requirements_router)
 app.include_router(development_cases_router)
 app.include_router(events_router)

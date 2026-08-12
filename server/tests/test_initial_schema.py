@@ -62,6 +62,8 @@ EXPECTED_TABLES = {
     ("cehub_product", "ecr_affected_boms"),
     ("cehub_product", "engineering_change_notices"),
     ("cehub_product", "erp_handoffs"),
+    ("cehub_project", "deliverable_check_templates"),
+    ("cehub_project", "project_check_items"),
     ("cehub_quality", "sample_signoffs"),
     ("cehub_quality", "sample_signoff_samples"),
     ("cehub_quality", "test_plans"),

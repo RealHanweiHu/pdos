@@ -153,6 +153,14 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(record_type="string", action="string"),
     ),
     EventDefinition(
+        event_type="DELIVERABLE_CHECK_CHANGED",
+        version=1,
+        entity="deliverable_check",
+        producer="deliverable_check_service",
+        consumers=("timeline_projection", "gate_projection"),
+        payload_schema=_payload_schema(record_type="string", action="string", count="integer"),
+    ),
+    EventDefinition(
         event_type="ISSUE_CREATED",
         version=1,
         entity="issue",

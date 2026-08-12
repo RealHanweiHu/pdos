@@ -503,6 +503,26 @@ class GateService:
                 {"key": f"{kind}:{row.id}", "kind": kind, "label": row.title}
                 for row in connection.execute(statement)
             )
+        check_item_statement = select(
+            tables.project_check_items.c.id,
+            tables.project_check_items.c.requirement,
+        ).where(
+            tables.project_check_items.c.tenant_id == tenant_id,
+            tables.project_check_items.c.project_id == project_id,
+            tables.project_check_items.c.stage_id == stage_id,
+            tables.project_check_items.c.is_gate.is_(True),
+            tables.project_check_items.c.status != "completed",
+        )
+        if for_update:
+            check_item_statement = check_item_statement.with_for_update()
+        blockers.extend(
+            {
+                "key": f"deliverable_check:{row.id}",
+                "kind": "deliverable_check",
+                "label": row.requirement,
+            }
+            for row in connection.execute(check_item_statement)
+        )
         stage_code = connection.execute(
             select(tables.stages.c.code).where(
                 tables.stages.c.tenant_id == tenant_id,
