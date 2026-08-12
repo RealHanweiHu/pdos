@@ -1026,8 +1026,9 @@
 
 - 经人授权，生产 PDOS 已从 `0014_finding_quality_controls` 升级到 `0020_cehub_migration_v1`；迁移后四个现有服务容器保持 healthy、restart count 0，公网登录入口返回 HTTP 200。应用镜像未在本步骤重部署。
 - 真实源库只读预检确认 `C4s` / `S18-01` 是项目编号，真实源 ID 分别为 `zGpNH0Xq` / `aBnbEdQG`；C4s 为 OBT/intake，S18-01 为 NPD/concept。导入器已据此补齐选择器解析和 OBT 契约测试。
-- 经人授权已创建独立角色 `pdos_cehub_readonly` 并写入生产私有执行环境：默认事务只读、五表 SELECT-only、无高权限/角色继承，四项变量各唯一一份，`.env.production` 保持 `0600`；真实源连接、active `beepump` 租户与 `admin` Owner 操作人均验证通过。尚未执行正式 dry-run；正式 apply 仍只允许在 dry-run 报告与数据 Owner 抽查通过后另行授权。
-- 最新 `5a82d0023cf1b5255d1ae9e2c7262c4c0d34b0e2` API 候选已完成本地真实镜像 smoke：OCI revision 与 commit 一致、非 root `pdos` 用户、镜像内六类非 SELECT 权限校验和迁移 CLI 均存在；未上传 ECS、未连接生产数据库。
+- 经人授权已创建独立角色 `pdos_cehub_readonly` 并写入生产私有执行环境：默认事务只读、五表 SELECT-only、无高权限/角色继承，四项变量各唯一一份，`.env.production` 保持 `0600`；真实源连接、active `beepump` 租户与 `admin` Owner 操作人均验证通过。
+- `e1d0b2aaaff1ef9cf0b49e27f59464554aac80e3` 候选已由完整 Git bundle 在 ECS 独立 release 中验证；Linux/amd64 API 与 Web OCI revision、非 root runtime、production preflight 均通过，未替换线上容器。
+- C4s / S18-01 正式生产 dry-run 已通过：fingerprint `d37ac192c4c318b540f6beb74d3340ee8bbfd04f7776f4f0f1112b1760abe71d`，5 User / 2 Project / 53 Task / 0 Gate Review / 10 File Reference，`target_writes=0`、errors 为空。独立源五表抽查一致，目标 11 表前后 count+内容 SHA-256 完全相同，线上容器 ID/健康无变化。证据见 `docs/reports/2026-08-12-s3-7-production-dry-run.md`；正式 apply 正等待数据 Owner 对该 fingerprint 的单独批准。
 - 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表 DML/REFERENCES/TRIGGER 零权限缺一不可；可写应用账号或仍持有表级非 SELECT 权限的账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
 - 真实 CEHub URL 的 Prisma-only `uselibpqcompat` 参数已在迁移源连接入口定点移除，`sslmode` 等真实 PostgreSQL 参数保持不变；避免只读账号就绪后被 psycopg 连接参数阻断。
 - `c39b2b4` 候选已只读上传 ECS；对真实 CEHub 现役可写账号的负向 smoke 先成功完成 URL 规范化，再在任何项目快照读取前返回 `blocked_write_capable_role`。未连接目标 PDOS、未写生产数据、未替换运行容器。
