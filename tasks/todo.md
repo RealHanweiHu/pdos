@@ -1026,7 +1026,8 @@
 
 - 经人授权，生产 PDOS 已从 `0014_finding_quality_controls` 升级到 `0020_cehub_migration_v1`；迁移后四个现有服务容器保持 healthy、restart count 0，公网登录入口返回 HTTP 200。应用镜像未在本步骤重部署。
 - 真实源库只读预检确认 `C4s` / `S18-01` 是项目编号，真实源 ID 分别为 `zGpNH0Xq` / `aBnbEdQG`；C4s 为 OBT/intake，S18-01 为 NPD/concept。导入器已据此补齐选择器解析和 OBT 契约测试。
-- 当前仍缺 CEHub 五张源表的独立只读登录账号/`CEHUB_SOURCE_DATABASE_URL`；现役 CEHub 应用账号可写，不得用于正式验收。需 DBA 创建/确认只读账号并由人授权生产 dry-run。正式 apply 仅在 dry-run 报告与数据 Owner 抽查通过后执行。
+- 经人授权已创建独立角色 `pdos_cehub_readonly` 并写入生产私有执行环境：默认事务只读、五表 SELECT-only、无高权限/角色继承，四项变量各唯一一份，`.env.production` 保持 `0600`；真实源连接、active `beepump` 租户与 `admin` Owner 操作人均验证通过。尚未执行正式 dry-run；正式 apply 仍只允许在 dry-run 报告与数据 Owner 抽查通过后另行授权。
+- 最新 `5a82d0023cf1b5255d1ae9e2c7262c4c0d34b0e2` API 候选已完成本地真实镜像 smoke：OCI revision 与 commit 一致、非 root `pdos` 用户、镜像内六类非 SELECT 权限校验和迁移 CLI 均存在；未上传 ECS、未连接生产数据库。
 - 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表 DML/REFERENCES/TRIGGER 零权限缺一不可；可写应用账号或仍持有表级非 SELECT 权限的账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
 - 真实 CEHub URL 的 Prisma-only `uselibpqcompat` 参数已在迁移源连接入口定点移除，`sslmode` 等真实 PostgreSQL 参数保持不变；避免只读账号就绪后被 psycopg 连接参数阻断。
 - `c39b2b4` 候选已只读上传 ECS；对真实 CEHub 现役可写账号的负向 smoke 先成功完成 URL 规范化，再在任何项目快照读取前返回 `blocked_write_capable_role`。未连接目标 PDOS、未写生产数据、未替换运行容器。
@@ -1042,4 +1043,4 @@
 | 前端 `.next/types` 有带 ` 2` 后缀的重复缓存，清理后 tsbuildinfo 仍引用旧路径 | 2 | 将 `.next` 与 `tsconfig.tsbuildinfo` 移至 `/tmp` 可恢复位置，重新生成后 type/build 全绿；未改源码 |
 | 真实试点使用项目编号而非主键，且 C4s 为 OBT 四阶段 | 1 | 选择器改为 ID/唯一项目编号双解析，审计固化真实 ID；新增 OBT Workflow 与 `obt-gate-v1`，双项目合成验收覆盖 11 Stage/Gate |
 | 固定摘要基础镜像的 registry 元数据在本机无响应 | 1 | 终止无进展构建后，以本机缓存的相同版本 tag、`--pull=false` 重跑 Dockerfile；新增 SQL COPY、非 root 用户和 CLI 入口均完成真实镜像 smoke，正式发布仍使用 Compose 中冻结的摘要 |
-| 全仓门禁首次 TypeScript 检查在旧 `.next` 缓存上静默且 CPU 为 0 | 1 | 中止停滞进程，把生成缓存移动到 `/tmp` 可恢复目录后单独 typecheck 通过；再从头执行完整 `make check`，274/99 tests 与 build 全绿 |
+| 全仓门禁首次 TypeScript 检查在旧 `.next` 缓存上静默且 CPU 为 0 | 1 | 中止停滞进程，把生成缓存移动到 `/tmp` 可恢复目录后单独 typecheck 通过；再从头执行完整 `make check`，276/99 tests 与 build 全绿 |

@@ -47,13 +47,14 @@
 
 只读角色复核还发现运行手册撤销了 `REFERENCES/TRIGGER`，但运行时代码最初只检查四种 DML 权限；因此仍持有表级引用或触发器权限的账号会被错误描述为 SELECT-only。现五张源表统一检查 `INSERT/UPDATE/DELETE/TRUNCATE/REFERENCES/TRIGGER`，并用真实 PostgreSQL 角色分别授予后验证在读取项目快照前 fail-close。
 
+生产环境门禁随后经人授权完成：`pdos_cehub_readonly` 已创建为 NOINHERIT、无高权限的独立登录角色，五张源表真实连接复核为 SELECT-only 且默认事务只读；生产私有环境中的源 URL、目标租户和 active Owner 操作人均唯一写入并验证。环境文件保持 `0600`，运行容器未重启且全部 healthy；该动作不等于正式 dry-run 授权。
+
 ## 当前开放门禁
 
-1. RDS 尚不存在符合“五表全读、五表零写、`default_transaction_read_only=on`”的 CEHub 登录角色；ECS 也未设置 `CEHUB_SOURCE_DATABASE_URL`。
-2. 生产 PDOS schema 已是 `0020_cehub_migration_v1 (head)`，但真实 C4s（`zGpNH0Xq`）/S18-01（`aBnbEdQG`）尚未 dry-run 或写入。
-3. 只读账号就绪后：先 dry-run 并由数据 Owner 核对五类计数/抽样；正式 apply 必须再次取得生产授权。
-4. apply 后必须原参数重放，证明五类 `created_counts=0`、mapping/业务行不增长，并执行抽样 SQL。
-5. 完成后才能勾选 canonical S3-7、提交正式 Sprint 3 Exit 报告，等待人工确认；在此之前不得进入 Sprint 4。
+1. 生产 PDOS schema 已是 `0020_cehub_migration_v1 (head)`，独立只读账号与执行上下文已就绪，但真实 C4s（`zGpNH0Xq`）/S18-01（`aBnbEdQG`）尚未正式 dry-run 或写入。
+2. 收到 production dry-run 确认后先运行并由数据 Owner 核对五类计数/抽样；正式 apply 必须再次取得生产授权。
+3. apply 后必须原参数重放，证明五类 `created_counts=0`、mapping/业务行不增长，并执行抽样 SQL。
+4. 完成后才能勾选 canonical S3-7、提交正式 Sprint 3 Exit 报告，等待人工确认；在此之前不得进入 Sprint 4。
 
 生产 schema 与真实源预检的详细证据见 `docs/reports/2026-08-12-s3-7-production-migration-preflight.md`。
 
