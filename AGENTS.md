@@ -31,7 +31,8 @@
 - [x] S2-6 前端 AI 面、S2-7 质量遥测与 Sprint 2 人工出口已完成
 - [x] S3-1 Specification + Development BOM 三型已完成
 - [x] S3-2 Gate 硬闸与签核已完成：版本化三槽策略、轮次快照、同事务 readiness 硬闸、只升不降加签与历史 grandfather 均验收通过
-- [ ] **当前：S3-3 Build / Sample / Test / Certification**，按 `tasks/todo.md` 交付 Build 批次、样机谱系、Sample 签核、Test/Certification 与 `TEST_FAILED` 事件闭环
+- [x] S3-3 Build / Sample / Test / Certification 已完成：EVT/DVT/PVT 批次与样机谱系、audience 签核、Test/Certification、`TEST_FAILED` 与 Gate readiness 均验收通过
+- [ ] **当前：S3-4 变更链后段**，按 `tasks/todo.md` 交付 ECR→影响分析→审批→ECN→生效决策→ERP Handoff 状态机与数据边界
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

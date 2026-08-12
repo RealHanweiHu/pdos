@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S3-3 Build / Sample / Test / Certification。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-2 已完成；双跑试点为 C4s 与 S18-01。
+> 唯一当前指针：**S3-4 变更链后段。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-3 已完成；双跑试点为 C4s 与 S18-01。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -805,3 +805,57 @@
 | 首次全量 pytest 等待结果被误判后重复启动，两个套件并发 TRUNCATE 产生假失败 | 1 | 终止重复本地测试进程、恢复 Alembic head，单实例从头重跑 231 项全绿 |
 | 三份旧的未跟踪 `* 2` 源码副本被 TypeScript 纳入编译并使用过期组件契约 | 1 | 未删除；原样移至被忽略的 `output/quarantine/duplicate-source-copies/`，可恢复，正式源码 type/build 转绿 |
 | 从仓库根目录直接调用 server venv 的 `uv run ruff` 找不到命令 | 1 | 未产生修改；回到 `server/` 执行格式化，再从根目录跑统一 `make typecheck/check` |
+
+## Completed: S3-3 Build / Sample / Test / Certification
+
+**Definition of Ready**
+
+- [x] 规格出处：`PostgreSQL_Schema_Design.md`、`System_of_Record_Matrix.md`、`Event_Catalog.md`、canonical S3-3 与老 CEHub Sample/Test/Certification 成熟语义
+- [x] 依赖项：S3-2 已完成；EVT/DVT/PVT Stage/Gate、Project 锁序、Event/Audit、RBAC 与产品工程对象已就绪
+- [x] 范围冻结：Build 批次、样机序列号与谱系、Sample 签核、Test 计划/用例/报告、Certification 台账与到期扫描；不提前实现 S3-5 交付物清单或 S3-6 前端
+- [x] 下一迁移号冻结为 `0017`，单调递增且不复用
+
+**Frozen contract**
+
+- Build 只能绑定项目的 EVT/DVT/PVT Stage；序列号在租户内唯一，Sample 必须属于同项目 Build，父样机谱系不可自指或成环，Prototype BOM 引用必须同项目且类型正确
+- Sample 签核受 `internal / supplier / customer` audience 限制；外部角色只能看到并响应自身 audience，响应形成不可覆盖的 actor/time 留痕
+- Test Plan 绑定 EVT/DVT/PVT；Test Case 的 `failed` 转换与 `TEST_FAILED`、audit 同事务，事件 payload 使用冻结的 `test_record_id + severity`，由既有 dispatcher 喂 Project Intelligence/Quality 观察面
+- Test Report 只有 Quality/治理角色可完成 review；Gate 只接受 approved 且结果为 pass/conditional 的报告，failed/blocked Test Case 始终是确定性阻塞
+- EVT/DVT/PVT Gate 要求对应 completed Build、至少一个 Sample、合格 Test Report 且已创建的 Sample 签核全部闭环；PVT 另要求全部 `is_required` Certification 当前有效
+- Certification 扫描以显式 `as_of` 日期确定性运行；valid 且过期的证书转 expired，90/30/0 天提醒按证书有效期和 lead day 幂等去重，不依赖 LLM
+
+**Implementation slices**
+
+- [x] S3-3a：建立 migration/metadata、状态机、谱系、RBAC、事件与 Gate 联动的会失败测试
+- [x] S3-3b：migration 0017 建立 Build/Sample/Test/Certification tenant-safe 数据边界与受限 Agent 零写边界
+- [x] S3-3c：实现 Build/Sample/Sample Signoff/Test/Certification 服务与 API，写路径同事务 event + audit
+- [x] S3-3d：把 NPI 事实接入 Gate readiness，并实现幂等证书到期扫描与并发/跨租户负例
+- [x] S3-3e：完成迁移往返、聚焦/完整门禁、真实 HTTP 与数据库事件审计证据，更新 canonical checkbox 和当前指针
+
+**Acceptance evidence required**
+
+- [x] EVT/DVT/PVT 批次可建立租户隔离的样机序列号与无环谱系，跨项目/BOM 引用 fail-close
+- [x] Sample audience 与响应权限正确；测试失败同事务产出唯一 `TEST_FAILED`，失败/阻塞测试阻断 Gate
+- [x] 合格报告、批次/样机、签核及 PVT 证书真值全部在 Gate 决策事务内复核，无 TOCTOU 穿透
+- [x] 到期扫描可重复执行且不重复提醒；过期/撤销的必需证书不能通过 PVT Gate
+- [x] migration 0017 downgrade→upgrade 保持单 head/无 metadata drift；聚焦测试、完整门禁与真实 HTTP 路径全绿
+
+**Completion evidence（2026-08-12）**
+
+- migration `0017_npi_quality` 建立 10 张 tenant-safe NPI 表：Build/Sample 位于 `cehub_product`，Sample Signoff/Test/Certification 位于 `cehub_quality`；downgrade→upgrade、唯一 head 与 metadata drift 全绿。
+- Build 只绑定 EVT/DVT/PVT Stage；批次数量限制、租户唯一序列号、同项目 Prototype BOM、不可变父样机谱系及跨项目引用均 fail-close。Sample Signoff 对 Supplier/Customer 仅暴露自身 audience，并只允许一次响应。
+- Test Plan/Case/Report 完成执行与 QA review 边界；`failed` 在同事务写唯一 `TEST_FAILED` 与 audit，既有 dispatcher 可消费。failed/blocked Case、缺 Build/Sample/合格报告、未闭环 Signoff 与 PVT 无效必需证书均进入 Gate 实时/审批事务 readiness。
+- Certification 以显式 `as_of` 确定性扫描；90/30/0 天提醒按证书+有效期+lead day 幂等，过期状态、提醒、event/audit 同事务。首次 30 天扫描创建 1 条，重放创建 0 条，越过有效期后首次转 expired、再次扫描 0 变更。
+- `pdos_agent` 对新增 Build 业务表真实 INSERT 被拒；Supplier 创建 Build 返回 403；项目锁序使 NPI 写与 Gate 审批串行复核，未开放 Agent 业务写出口。
+- `make check` 全绿：Web 95 tests、Server 235 tests，ESLint/Ruff/format、TypeScript/mypy 144 source files、Next.js production build 与 Python compile 全部通过。
+- 真实本地 TCP API 在 `pdos_test` 完成 setup→Build→Sample→Supplier Signoff→Test failed→报告 review→Build completed→重测 passed→Certification→扫描重放；failed blocker 可见，重测后仅剩 `round:not_open`，`TEST_FAILED` 恰好 1 条且全部 NPI event/audit 对称；本地服务随后关闭。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 首个 S3-3 端到端测试命中 NPI 路由 404 | 1 | 预期 RED；实现 NPI service/router 并注册到 FastAPI 后纵切转绿 |
+| `test_cases.related_issue_id` 初版三列 FK 缺少 Issue 对应唯一键 | 1 | 在 0017 单调迁移中补 `uq_issues_tenant_project_id`，保持项目级 tenant FK 可证明 |
+| 新增 join/alert 表的直接 Tenant FK 在已处于 0017 的本地库产生临时 drift | 1 | 完善 0017 后执行 downgrade→upgrade 重建隔离库；metadata drift 归零 |
+| audit snapshot 内的 UUID 列表无法 JSON 序列化 | 1 | 将 snapshot normalizer 扩展为递归处理 UUID/date/list/dict，事件与审计恢复原子写入 |
+| PostgreSQL `ON CONFLICT DO NOTHING` 的 psycopg rowcount 为 -1 | 1 | 改用 `RETURNING id` 判断是否真实插入，证书提醒幂等计数稳定为 1→0 |
