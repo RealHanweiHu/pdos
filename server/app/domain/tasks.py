@@ -11,6 +11,7 @@ from sqlalchemy import Connection, Engine, delete, select
 from sqlalchemy.engine import RowMapping
 
 from app.db.schema import tables
+from app.domain.project_write_lock import lock_project_write_scope
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 
@@ -443,6 +444,8 @@ class TaskService:
         task_id = uuid4()
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise TaskNotFoundError
             workflow_id = self._project_workflow(
                 connection, tenant_id=tenant_id, project_id=project_id
             )
@@ -533,6 +536,8 @@ class TaskService:
     ) -> TaskRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise TaskNotFoundError
             current = self._get_record(
                 connection, tenant_id=tenant_id, project_id=project_id, task_id=task_id
             )
@@ -664,6 +669,8 @@ class TaskService:
     ) -> TaskRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise TaskNotFoundError
             before = self._get_record(
                 connection, tenant_id=tenant_id, project_id=project_id, task_id=task_id
             )

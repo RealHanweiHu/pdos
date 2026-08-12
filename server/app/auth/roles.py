@@ -44,6 +44,9 @@ class Action(StrEnum):
     EVENT_INGEST = "event.ingest"
     PRODUCT_ENGINEERING_VIEW = "product_engineering.view"
     PRODUCT_ENGINEERING_EDIT = "product_engineering.edit"
+    GATE_VIEW = "gate.view"
+    GATE_MANAGE = "gate.manage"
+    GATE_SIGN = "gate.sign"
     QUALITY_MANAGE = "quality.manage"
     EXTERNAL_RESPOND = "external.respond"
 
@@ -78,6 +81,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.EVENT_INGEST,
                 Action.PRODUCT_ENGINEERING_VIEW,
                 Action.PRODUCT_ENGINEERING_EDIT,
+                Action.GATE_VIEW,
+                Action.GATE_MANAGE,
+                Action.GATE_SIGN,
             }
         ),
         Role.ENGINEER: frozenset(
@@ -95,6 +101,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.RISK_SUGGESTION_CREATE,
                 Action.PRODUCT_ENGINEERING_VIEW,
                 Action.PRODUCT_ENGINEERING_EDIT,
+                Action.GATE_VIEW,
+                Action.GATE_SIGN,
             }
         ),
         Role.QUALITY: frozenset(
@@ -112,6 +120,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.DOCUMENT_ANALYZE,
                 Action.RISK_SUGGESTION_CREATE,
                 Action.PRODUCT_ENGINEERING_VIEW,
+                Action.GATE_VIEW,
+                Action.GATE_SIGN,
             }
         ),
         Role.SUPPLIER: frozenset(

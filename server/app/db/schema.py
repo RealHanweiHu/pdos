@@ -1054,6 +1054,331 @@ gates = Table(
     schema=PROJECT_SCHEMA,
 )
 
+gate_signoff_rounds = Table(
+    "gate_signoff_rounds",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("gate_id", Uuid, nullable=False),
+    Column("round_number", Integer, nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'open'")),
+    Column("policy_version", String(64), nullable=False),
+    Column("requirements", json_type, nullable=False),
+    Column("risk_snapshot", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("readiness_snapshot", json_type),
+    Column("opened_by_user_id", Uuid, nullable=False),
+    Column(
+        "opened_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("superseded_by_user_id", Uuid),
+    Column("superseded_at", DateTime(timezone=True)),
+    Column("supersede_reason", Text),
+    Column("completed_by_user_id", Uuid),
+    Column("completed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("round_number > 0", name="round_number_positive"),
+    CheckConstraint("status IN ('open', 'superseded', 'completed')", name="status_allowed"),
+    CheckConstraint("btrim(policy_version) <> ''", name="policy_version_nonblank"),
+    CheckConstraint("jsonb_typeof(requirements) = 'object'", name="requirements_object"),
+    CheckConstraint("jsonb_typeof(risk_snapshot) = 'object'", name="risk_snapshot_object"),
+    CheckConstraint(
+        "readiness_snapshot IS NULL OR jsonb_typeof(readiness_snapshot) = 'object'",
+        name="readiness_snapshot_object",
+    ),
+    CheckConstraint(
+        "(status = 'open' AND superseded_at IS NULL AND completed_at IS NULL) OR "
+        "(status = 'superseded' AND superseded_at IS NOT NULL "
+        "AND superseded_by_user_id IS NOT NULL AND completed_at IS NULL) OR "
+        "(status = 'completed' AND completed_at IS NOT NULL "
+        "AND completed_by_user_id IS NOT NULL AND readiness_snapshot IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [
+            f"{PROJECT_SCHEMA}.gates.tenant_id",
+            f"{PROJECT_SCHEMA}.gates.project_id",
+            f"{PROJECT_SCHEMA}.gates.id",
+        ],
+        name="fk_gate_rounds_tenant_project_gate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "opened_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_rounds_tenant_opener",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "superseded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_rounds_tenant_superseder",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "completed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_rounds_tenant_completer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_gate_rounds_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "id",
+        name="uq_gate_rounds_tenant_project_gate_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "round_number",
+        name="uq_gate_rounds_tenant_project_gate_number",
+    ),
+    Index(
+        "uq_gate_rounds_one_open",
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        unique=True,
+        postgresql_where=text("status = 'open'"),
+    ),
+    Index(
+        "ix_gate_rounds_tenant_project_gate_number",
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "round_number",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+gate_signoffs = Table(
+    "gate_signoffs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("gate_id", Uuid, nullable=False),
+    Column("round_id", Uuid, nullable=False),
+    Column("slot", String(32), nullable=False),
+    Column("requirement", String(32), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'pending'")),
+    Column("signed_by_user_id", Uuid),
+    Column("signer_role", String(32)),
+    Column("signed_at", DateTime(timezone=True)),
+    Column("note", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("slot IN ('product', 'engineering', 'quality')", name="slot_allowed"),
+    CheckConstraint(
+        "requirement IN ('required', 'conditional', 'not_applicable')",
+        name="requirement_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('pending', 'approved', 'conditional', 'rejected', 'not_applicable')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "(status = 'pending' AND signed_by_user_id IS NULL AND signed_at IS NULL) OR "
+        "(status = 'not_applicable' AND requirement = 'not_applicable' "
+        "AND signed_by_user_id IS NULL AND signed_at IS NULL) OR "
+        "(status IN ('approved', 'conditional', 'rejected') "
+        "AND signed_by_user_id IS NOT NULL AND signer_role IS NOT NULL "
+        "AND signed_at IS NOT NULL)",
+        name="signature_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id", "round_id"],
+        [
+            f"{PROJECT_SCHEMA}.gate_signoff_rounds.tenant_id",
+            f"{PROJECT_SCHEMA}.gate_signoff_rounds.project_id",
+            f"{PROJECT_SCHEMA}.gate_signoff_rounds.gate_id",
+            f"{PROJECT_SCHEMA}.gate_signoff_rounds.id",
+        ],
+        name="fk_gate_signoffs_tenant_project_gate_round",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "signed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_signoffs_tenant_signer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_gate_signoffs_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "round_id",
+        "slot",
+        name="uq_gate_signoffs_tenant_round_slot",
+    ),
+    Index(
+        "ix_gate_signoffs_tenant_project_gate_round",
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "round_id",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+gate_signoff_additions = Table(
+    "gate_signoff_additions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("gate_id", Uuid, nullable=False),
+    Column("slot", String(32), nullable=False),
+    Column("requirement", String(32), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("active", Boolean, nullable=False, server_default=text("true")),
+    Column("added_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("slot IN ('product', 'engineering', 'quality')", name="slot_allowed"),
+    CheckConstraint("requirement IN ('conditional', 'required')", name="requirement_allowed"),
+    CheckConstraint("btrim(reason) <> ''", name="reason_nonblank"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [
+            f"{PROJECT_SCHEMA}.gates.tenant_id",
+            f"{PROJECT_SCHEMA}.gates.project_id",
+            f"{PROJECT_SCHEMA}.gates.id",
+        ],
+        name="fk_gate_additions_tenant_project_gate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "added_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_additions_tenant_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_gate_additions_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "slot",
+        name="uq_gate_additions_tenant_gate_slot",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+gate_grandfather_exemptions = Table(
+    "gate_grandfather_exemptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("gate_id", Uuid, nullable=False),
+    Column("requirement_key", String(128), nullable=False),
+    Column("policy_version", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("approved_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(requirement_key) <> ''", name="requirement_key_nonblank"),
+    CheckConstraint("btrim(policy_version) <> ''", name="policy_version_nonblank"),
+    CheckConstraint("btrim(reason) <> ''", name="reason_nonblank"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [
+            f"{PROJECT_SCHEMA}.gates.tenant_id",
+            f"{PROJECT_SCHEMA}.gates.project_id",
+            f"{PROJECT_SCHEMA}.gates.id",
+        ],
+        name="fk_gate_grandfather_tenant_project_gate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_grandfather_tenant_approver",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_gate_grandfather_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "policy_version",
+        "requirement_key",
+        name="uq_gate_grandfather_tenant_gate_policy_key",
+    ),
+    Index(
+        "ix_gate_grandfather_tenant_project_gate",
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "created_at",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
 tasks = Table(
     "tasks",
     metadata,
@@ -2246,6 +2571,10 @@ class Tables:
     workflows: Table
     stages: Table
     gates: Table
+    gate_signoff_rounds: Table
+    gate_signoffs: Table
+    gate_signoff_additions: Table
+    gate_grandfather_exemptions: Table
     tasks: Table
     task_dependencies: Table
     issues: Table
@@ -2281,6 +2610,10 @@ tables = Tables(
     workflows=workflows,
     stages=stages,
     gates=gates,
+    gate_signoff_rounds=gate_signoff_rounds,
+    gate_signoffs=gate_signoffs,
+    gate_signoff_additions=gate_signoff_additions,
+    gate_grandfather_exemptions=gate_grandfather_exemptions,
     tasks=tasks,
     task_dependencies=task_dependencies,
     issues=issues,

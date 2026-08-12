@@ -28,6 +28,7 @@ from app.domain.projects import (
     ProjectCodeConflictError,
     ProjectDateOrderError,
     ProjectDraft,
+    ProjectGateNotApprovedError,
     ProjectInvalidTransitionError,
     ProjectNotActiveError,
     ProjectNotFoundError,
@@ -509,6 +510,14 @@ def transition_project_stage(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={"code": "PROJECT_NOT_ACTIVE", "message": "Project must be active"},
+        ) from error
+    except ProjectGateNotApprovedError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "PROJECT_GATE_NOT_APPROVED",
+                "message": "Current Stage Gate must be approved before advancement",
+            },
         ) from error
     except ProjectStageInvalidTransitionError as error:
         raise HTTPException(

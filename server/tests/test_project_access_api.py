@@ -216,6 +216,8 @@ def test_project_access_http_path_is_tenant_bound_and_membership_gated(
         "finding.apply",
         "finding.review",
         "finding.view",
+        "gate.sign",
+        "gate.view",
         "product_engineering.edit",
         "product_engineering.view",
         "project.view",

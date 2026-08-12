@@ -32,6 +32,9 @@ EXPECTED_ACTIONS = {
     "event.ingest",
     "product_engineering.view",
     "product_engineering.edit",
+    "gate.view",
+    "gate.manage",
+    "gate.sign",
     "quality.manage",
     "external.respond",
 }
@@ -63,6 +66,9 @@ EXPECTED_MATRIX = {
         "event.ingest",
         "product_engineering.view",
         "product_engineering.edit",
+        "gate.view",
+        "gate.manage",
+        "gate.sign",
     },
     Role.ENGINEER: {
         "project.view",
@@ -78,6 +84,8 @@ EXPECTED_MATRIX = {
         "risk_suggestion.create",
         "product_engineering.view",
         "product_engineering.edit",
+        "gate.view",
+        "gate.sign",
     },
     Role.QUALITY: {
         "project.view",
@@ -93,6 +101,8 @@ EXPECTED_MATRIX = {
         "document.analyze",
         "risk_suggestion.create",
         "product_engineering.view",
+        "gate.view",
+        "gate.sign",
     },
     Role.SUPPLIER: {"project.view", "external.respond"},
     Role.CUSTOMER: {"project.view", "external.respond"},

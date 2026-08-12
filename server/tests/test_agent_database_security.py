@@ -368,6 +368,36 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             )
             denied(
                 connection,
+                "INSERT INTO cehub_project.gate_signoff_rounds "
+                "(id, tenant_id, project_id, gate_id, round_number, policy_version, "
+                "requirements, opened_by_user_id) VALUES "
+                "(:id, :tenant_id, :project_id, :gate_id, 1, 'injected', "
+                "'{}'::jsonb, :actor_id)",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "gate_id": uuid4(),
+                    "actor_id": uuid4(),
+                },
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_project.gate_grandfather_exemptions "
+                "(id, tenant_id, project_id, gate_id, requirement_key, policy_version, "
+                "reason, approved_by_user_id) VALUES "
+                "(:id, :tenant_id, :project_id, :gate_id, 'injected', 'v2', "
+                "'injected', :actor_id)",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "gate_id": uuid4(),
+                    "actor_id": uuid4(),
+                },
+            )
+            denied(
+                connection,
                 "INSERT INTO cehub_ai.model_invocations "
                 "(id, tenant_id, project_id, run_id, agent_key, prompt_version, provider, "
                 "model, protocol, status, structured_attempts) VALUES "

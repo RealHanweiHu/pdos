@@ -11,6 +11,7 @@ from sqlalchemy import Connection, Engine, select
 from sqlalchemy.engine import RowMapping
 
 from app.db.schema import tables
+from app.domain.project_write_lock import lock_project_write_scope
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 
@@ -262,6 +263,8 @@ class IssueService:
         issue_id = uuid4()
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise IssueNotFoundError
             workflow_id = self._project_workflow(
                 connection, tenant_id=tenant_id, project_id=project_id
             )
@@ -330,6 +333,8 @@ class IssueService:
     ) -> IssueRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise IssueNotFoundError
             before = self._get_record(
                 connection, tenant_id=tenant_id, project_id=project_id, issue_id=issue_id
             )
@@ -409,6 +414,8 @@ class IssueService:
     ) -> IssueRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise IssueNotFoundError
             before = self._get_record(
                 connection, tenant_id=tenant_id, project_id=project_id, issue_id=issue_id
             )

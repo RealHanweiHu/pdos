@@ -53,6 +53,10 @@ class ProjectStageInvalidTransitionError(ValueError):
     """Raised when a Stage transition is not the adjacent Workflow Stage."""
 
 
+class ProjectGateNotApprovedError(ValueError):
+    """Raised when Stage advancement attempts to bypass its hard Gate."""
+
+
 class ProjectTerminalError(ValueError):
     """Raised when content mutation is attempted on an archived Project."""
 
@@ -425,6 +429,23 @@ class ProjectService:
                     },
                 )
                 connection.execute(
+                    tables.gates.insert(),
+                    [
+                        {
+                            "id": uuid4(),
+                            "tenant_id": tenant_id,
+                            "project_id": project_id,
+                            "stage_id": stage_id,
+                            "code": stage.code,
+                            "name": f"{stage.name} Gate",
+                            "status": "preparing",
+                            "created_at": occurred_at,
+                            "updated_at": occurred_at,
+                        }
+                        for stage_id, stage in zip(stage_ids, template.stages, strict=True)
+                    ],
+                )
+                connection.execute(
                     tables.development_cases.update()
                     .where(
                         tables.development_cases.c.tenant_id == tenant_id,
@@ -643,6 +664,15 @@ class ProjectService:
                 raise ProjectNotFoundError
             if locked["status"] != "active":
                 raise ProjectNotActiveError
+            current_gate_status = connection.execute(
+                select(tables.gates.c.status).where(
+                    tables.gates.c.tenant_id == tenant_id,
+                    tables.gates.c.project_id == project_id,
+                    tables.gates.c.stage_id == locked["current_stage_id"],
+                )
+            ).scalar_one_or_none()
+            if current_gate_status != "approved":
+                raise ProjectGateNotApprovedError
             current_sequence = connection.execute(
                 select(tables.stages.c.sequence).where(
                     tables.stages.c.tenant_id == tenant_id,

@@ -283,6 +283,16 @@ def test_project_state_stage_and_member_permissions(
     project = create_project(client, manager_headers, case["id"], code="PRJ-STATE").json()
     project_url = f"/api/projects/{project['id']}"
 
+    with create_engine(psycopg_database_url(isolated_project_database)).connect() as connection:
+        assert (
+            connection.execute(
+                select(func.count())
+                .select_from(tables.gates)
+                .where(tables.gates.c.project_id == UUID(project["id"]))
+            ).scalar_one()
+            == 7
+        )
+
     assert client.get("/api/projects", headers=owner_headers).json()["items"] == [project]
     assert client.get("/api/projects", headers=manager_headers).json()["items"] == [project]
     assert client.get("/api/projects", headers=engineer_headers).json() == {"items": []}
@@ -325,6 +335,15 @@ def test_project_state_stage_and_member_permissions(
         assert response.json()["status"] == state
 
     stages = project["workflow"]["stages"]
+    with create_engine(psycopg_database_url(isolated_project_database)).begin() as connection:
+        connection.execute(
+            tables.gates.update()
+            .where(
+                tables.gates.c.project_id == UUID(project["id"]),
+                tables.gates.c.stage_id == UUID(stages[0]["id"]),
+            )
+            .values(status="approved")
+        )
     skipped = client.post(
         f"{project_url}/stage-transitions",
         headers=manager_headers,
@@ -357,6 +376,15 @@ def test_project_state_stage_and_member_permissions(
         ).status_code
         == 200
     )
+    with create_engine(psycopg_database_url(isolated_project_database)).begin() as connection:
+        connection.execute(
+            tables.gates.update()
+            .where(
+                tables.gates.c.project_id == UUID(project["id"]),
+                tables.gates.c.stage_id == UUID(stages[1]["id"]),
+            )
+            .values(status="approved")
+        )
     assert (
         client.post(
             f"{project_url}/stage-transitions",
