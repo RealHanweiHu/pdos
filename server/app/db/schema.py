@@ -1015,6 +1015,207 @@ tenant_model_settings = Table(
     schema=AI_SCHEMA,
 )
 
+agent_dispatcher_cursors = Table(
+    "agent_dispatcher_cursors",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("consumer_key", String(64), nullable=False),
+    Column("last_event_row_id", BigInteger, nullable=False, server_default=text("0")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(consumer_key) <> ''", name="consumer_key_nonblank"),
+    CheckConstraint("last_event_row_id >= 0", name="last_event_nonnegative"),
+    UniqueConstraint(
+        "tenant_id",
+        "consumer_key",
+        name="uq_agent_dispatcher_cursors_tenant_consumer",
+    ),
+    schema=AI_SCHEMA,
+)
+
+agent_subscriptions = Table(
+    "agent_subscriptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("agent_key", String(64), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'active'")),
+    Column(
+        "consecutive_failure_count",
+        SmallInteger,
+        nullable=False,
+        server_default=text("0"),
+    ),
+    Column("failure_threshold", SmallInteger, nullable=False, server_default=text("3")),
+    Column("paused_reason", String(256)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "agent_key IN ('project_intelligence', 'knowledge_lite')",
+        name="agent_key_allowed",
+    ),
+    CheckConstraint("status IN ('active', 'paused')", name="status_allowed"),
+    CheckConstraint(
+        "consecutive_failure_count >= 0",
+        name="failure_count_nonnegative",
+    ),
+    CheckConstraint(
+        "failure_threshold BETWEEN 1 AND 20",
+        name="failure_threshold_range",
+    ),
+    CheckConstraint(
+        "(status = 'active' AND paused_reason IS NULL) OR "
+        "(status = 'paused' AND paused_reason IS NOT NULL AND btrim(paused_reason) <> '')",
+        name="pause_reason_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_agent_subscriptions_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "id",
+        "agent_key",
+        name="uq_agent_subscriptions_tenant_id_agent",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "agent_key",
+        name="uq_agent_subscriptions_tenant_agent",
+    ),
+    schema=AI_SCHEMA,
+)
+
+agent_runs = Table(
+    "agent_runs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("subscription_id", Uuid, nullable=False),
+    Column("agent_key", String(64), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'debouncing'")),
+    Column("window_started_at", DateTime(timezone=True), nullable=False),
+    Column("window_ended_at", DateTime(timezone=True), nullable=False),
+    Column("first_event_row_id", BigInteger, nullable=False),
+    Column("last_event_row_id", BigInteger, nullable=False),
+    Column("event_count", Integer, nullable=False),
+    Column("event_row_ids", json_type, nullable=False),
+    Column("context_version", String(64), nullable=False, server_default=text("'run-context-v1'")),
+    Column("run_context", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("started_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    Column("error_code", String(64)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "agent_key IN ('project_intelligence', 'knowledge_lite')",
+        name="agent_key_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('debouncing', 'queued', 'running', 'succeeded', 'degraded', 'failed')",
+        name="status_allowed",
+    ),
+    CheckConstraint("window_started_at <= window_ended_at", name="window_order"),
+    CheckConstraint(
+        "CASE WHEN jsonb_typeof(event_row_ids) = 'array' THEN "
+        "event_count > 0 AND first_event_row_id > 0 "
+        "AND last_event_row_id >= first_event_row_id "
+        "AND jsonb_array_length(event_row_ids) = event_count "
+        "AND (event_row_ids->>0)::bigint = first_event_row_id "
+        "AND (event_row_ids->>(event_count - 1))::bigint = last_event_row_id "
+        "ELSE false END",
+        name="event_bounds_consistent",
+    ),
+    CheckConstraint("jsonb_typeof(event_row_ids) = 'array'", name="event_ids_array"),
+    CheckConstraint("jsonb_typeof(run_context) = 'object'", name="context_object"),
+    CheckConstraint("btrim(context_version) <> ''", name="context_version_nonblank"),
+    CheckConstraint(
+        "(status IN ('debouncing', 'queued') AND started_at IS NULL AND completed_at IS NULL) "
+        "OR (status = 'running' AND started_at IS NOT NULL AND completed_at IS NULL) "
+        "OR (status IN ('succeeded', 'degraded', 'failed') "
+        "AND started_at IS NOT NULL AND completed_at IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    CheckConstraint(
+        "(status IN ('degraded', 'failed') AND error_code IS NOT NULL "
+        "AND btrim(error_code) <> '') OR "
+        "(status NOT IN ('degraded', 'failed') AND error_code IS NULL)",
+        name="error_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_agent_runs_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "subscription_id", "agent_key"],
+        [
+            f"{AI_SCHEMA}.agent_subscriptions.tenant_id",
+            f"{AI_SCHEMA}.agent_subscriptions.id",
+            f"{AI_SCHEMA}.agent_subscriptions.agent_key",
+        ],
+        name="fk_agent_runs_tenant_subscription_agent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_agent_runs_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "agent_key",
+        "window_started_at",
+        name="uq_agent_runs_tenant_project_agent_window",
+    ),
+    Index("ix_agent_runs_tenant_status_created", "tenant_id", "status", "created_at", "id"),
+    Index("ix_agent_runs_tenant_project_created", "tenant_id", "project_id", "created_at", "id"),
+    Index("ix_agent_runs_tenant_agent_created", "tenant_id", "agent_key", "created_at", "id"),
+    schema=AI_SCHEMA,
+)
+
 model_invocations = Table(
     "model_invocations",
     metadata,
@@ -1099,6 +1300,12 @@ model_invocations = Table(
         ["tenant_id", "project_id"],
         [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
         name="fk_model_invocations_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        name="fk_model_invocations_tenant_run",
         ondelete="RESTRICT",
     ),
     Index("ix_model_invocations_tenant_created", "tenant_id", "created_at", "id"),
@@ -1234,6 +1441,9 @@ class Tables:
     risks: Table
     decisions: Table
     tenant_model_settings: Table
+    agent_dispatcher_cursors: Table
+    agent_subscriptions: Table
+    agent_runs: Table
     model_invocations: Table
     events: Table
     audit_log: Table
@@ -1256,6 +1466,9 @@ tables = Tables(
     risks=risks,
     decisions=decisions,
     tenant_model_settings=tenant_model_settings,
+    agent_dispatcher_cursors=agent_dispatcher_cursors,
+    agent_subscriptions=agent_subscriptions,
+    agent_runs=agent_runs,
     model_invocations=model_invocations,
     events=events,
     audit_log=audit_log,

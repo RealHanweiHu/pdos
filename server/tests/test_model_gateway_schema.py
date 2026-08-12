@@ -280,7 +280,7 @@ def test_model_gateway_migration_round_trip(model_gateway_database_url: str) -> 
     try:
         command.downgrade(config, "0007_work_item_lifecycle")
         assert inspect(engine).get_table_names(schema="cehub_ai") == []
-        command.upgrade(config, "head")
+        command.upgrade(config, "0009_invocation_cache_tokens")
         assert set(inspect(engine).get_table_names(schema="cehub_ai")) == {
             "model_invocations",
             "tenant_model_settings",

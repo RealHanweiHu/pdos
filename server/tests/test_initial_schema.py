@@ -50,6 +50,9 @@ EXPECTED_TABLES = {
     ("cehub_audit", "audit_log"),
     ("cehub_ai", "model_invocations"),
     ("cehub_ai", "tenant_model_settings"),
+    ("cehub_ai", "agent_dispatcher_cursors"),
+    ("cehub_ai", "agent_subscriptions"),
+    ("cehub_ai", "agent_runs"),
 }
 
 
