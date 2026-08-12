@@ -15,6 +15,12 @@ import type {
   SpecificationCreateInput,
 } from "@/components/product-engineering/product-engineering-types";
 import { requestProjectActivity, type ProjectActivity } from "./project-activity";
+import {
+  requestProjectDocuments,
+  requestProjectGates,
+  uploadProjectDocument,
+} from "./project-gate-document-api";
+import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
 
 import { requestProjects } from "./project-api";
 import {
@@ -57,6 +63,8 @@ const deepLinkTabs = new Set<ProjectWorkspaceTab>([
   "issues",
   "risks",
   "product-engineering",
+  "gates",
+  "documents",
   "ai-chat",
 ]);
 
@@ -84,10 +92,18 @@ export function ProjectWorkspace() {
   const [productEngineeringBusy, setProductEngineeringBusy] = useState(false);
   const [productEngineeringError, setProductEngineeringError] = useState<string | null>(null);
   const [productEngineeringStatus, setProductEngineeringStatus] = useState<string | null>(null);
+  const [gateState, setGateState] = useState<WorkItemLoadState>("idle");
+  const [gates, setGates] = useState<ProjectGate[] | null>(null);
+  const [documentState, setDocumentState] = useState<WorkItemLoadState>("idle");
+  const [documents, setDocuments] = useState<ProjectDocument[] | null>(null);
+  const [documentBusy, setDocumentBusy] = useState(false);
+  const [documentError, setDocumentError] = useState<string | null>(null);
   const [highlightedEntityId, setHighlightedEntityId] = useState<string | null>(null);
   const [highlightedEventId, setHighlightedEventId] = useState<number | null>(null);
   const requestSequence = useRef(0);
   const productRequestSequence = useRef(0);
+  const gateRequestSequence = useRef(0);
+  const documentRequestSequence = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -151,6 +167,24 @@ export function ProjectWorkspace() {
               },
             );
           }
+          if (deepLinkedTab === "gates" && workItemRoles.includes(loaded.identity.user.role)) {
+            const sequence = gateRequestSequence.current + 1;
+            gateRequestSequence.current = sequence;
+            setGateState("loading");
+            requestProjectGates(deepLinkedProject.id).then(
+              (items) => { if (active && gateRequestSequence.current === sequence) { setGates(items); setGateState("ready"); } },
+              () => { if (active && gateRequestSequence.current === sequence) setGateState("error"); },
+            );
+          }
+          if (deepLinkedTab === "documents" && workItemRoles.includes(loaded.identity.user.role)) {
+            const sequence = documentRequestSequence.current + 1;
+            documentRequestSequence.current = sequence;
+            setDocumentState("loading");
+            requestProjectDocuments(deepLinkedProject.id).then(
+              (items) => { if (active && documentRequestSequence.current === sequence) { setDocuments(items); setDocumentState("ready"); } },
+              () => { if (active && documentRequestSequence.current === sequence) setDocumentState("error"); },
+            );
+          }
         }
       },
       () => {
@@ -195,6 +229,37 @@ export function ProjectWorkspace() {
     }
   }
 
+  async function loadGates(projectId: string) {
+    const sequence = gateRequestSequence.current + 1;
+    gateRequestSequence.current = sequence;
+    setGateState("loading");
+    setGates(null);
+    try {
+      const items = await requestProjectGates(projectId);
+      if (gateRequestSequence.current !== sequence) return;
+      setGates(items);
+      setGateState("ready");
+    } catch {
+      if (gateRequestSequence.current === sequence) setGateState("error");
+    }
+  }
+
+  async function loadDocuments(projectId: string) {
+    const sequence = documentRequestSequence.current + 1;
+    documentRequestSequence.current = sequence;
+    setDocumentState("loading");
+    setDocuments(null);
+    setDocumentError(null);
+    try {
+      const items = await requestProjectDocuments(projectId);
+      if (documentRequestSequence.current !== sequence) return;
+      setDocuments(items);
+      setDocumentState("ready");
+    } catch {
+      if (documentRequestSequence.current === sequence) setDocumentState("error");
+    }
+  }
+
   function selectProject(project: Project) {
     actions.selectProject(project);
     setActiveTab("overview");
@@ -205,6 +270,13 @@ export function ProjectWorkspace() {
     setProductEngineeringState("idle");
     setProductEngineeringError(null);
     setProductEngineeringStatus(null);
+    gateRequestSequence.current += 1;
+    setGates(null);
+    setGateState("idle");
+    documentRequestSequence.current += 1;
+    setDocuments(null);
+    setDocumentState("idle");
+    setDocumentError(null);
     setHighlightedEventId(null);
     setHighlightedEntityId(null);
     requestProjectActivity(project.id).then(
@@ -336,6 +408,28 @@ export function ProjectWorkspace() {
     ) {
       void loadProductEngineering(actions.selectedProject.id);
     }
+    if (tab === "gates" && canViewWorkItems && actions.selectedProject && gateState === "idle") {
+      void loadGates(actions.selectedProject.id);
+    }
+    if (tab === "documents" && canViewWorkItems && actions.selectedProject && documentState === "idle") {
+      void loadDocuments(actions.selectedProject.id);
+    }
+  }
+
+  async function uploadDocument(file: File, classification: string) {
+    if (!actions.selectedProject) return false;
+    setDocumentBusy(true);
+    setDocumentError(null);
+    try {
+      const document = await uploadProjectDocument(actions.selectedProject.id, file, classification);
+      setDocuments((current) => current ? [document, ...current] : [document]);
+      return true;
+    } catch (error) {
+      setDocumentError(messageFrom(error));
+      return false;
+    } finally {
+      setDocumentBusy(false);
+    }
   }
 
   async function addSpecification(input: SpecificationCreateInput) {
@@ -424,6 +518,20 @@ export function ProjectWorkspace() {
         },
         register: productEngineering,
         status: productEngineeringStatus,
+      }}
+      gateSurface={{
+        gates,
+        loadState: gateState,
+        onRetry: () => { if (actions.selectedProject) void loadGates(actions.selectedProject.id); },
+      }}
+      documentSurface={{
+        busy: documentBusy,
+        canUpload: canViewWorkItems,
+        documents,
+        error: documentError,
+        loadState: documentState,
+        onRetry: () => { if (actions.selectedProject) void loadDocuments(actions.selectedProject.id); },
+        onUpload: uploadDocument,
       }}
       saving={actions.saving}
       selectedProject={actions.selectedProject}

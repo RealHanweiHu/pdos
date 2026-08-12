@@ -58,6 +58,26 @@ class DocumentAnalysisResponse(BaseModel):
     fragments: list[DocumentFragmentResponse]
 
 
+class DocumentSummaryResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    document_id: UUID
+    project_id: UUID
+    filename: str
+    media_type: str
+    classification: str
+    size_bytes: int
+    sha256: str
+    extraction_status: str
+    created_at: datetime
+
+
+class DocumentListResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[DocumentSummaryResponse]
+
+
 class ChatRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -169,6 +189,42 @@ def get_application_gateway(
 ) -> Iterator[ApplicationModelGateway]:
     with configured_application_gateway(engine) as gateway:
         yield gateway
+
+
+@router.get("/projects/{project_id}/documents", response_model=DocumentListResponse)
+def list_documents(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> DocumentListResponse:
+    require_ai_action(context, Action.DOCUMENT_ANALYZE)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.PROJECT_VIEW,
+    )
+    no_store(response)
+    return DocumentListResponse(
+        items=[
+            DocumentSummaryResponse(
+                document_id=document.id,
+                project_id=document.project_id,
+                filename=document.filename,
+                media_type=document.media_type,
+                classification=document.classification,
+                size_bytes=document.size_bytes,
+                sha256=document.sha256,
+                extraction_status=document.extraction_status,
+                created_at=document.created_at,
+            )
+            for document in DocumentService(engine).list(
+                tenant_id=context.tenant.id,
+                project_id=project_id,
+            )
+        ]
+    )
 
 
 @router.get("/brief", response_model=AiBriefResponse)

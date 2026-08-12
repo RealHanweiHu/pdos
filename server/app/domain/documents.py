@@ -15,7 +15,7 @@ from zipfile import BadZipFile, ZipFile
 from openpyxl import load_workbook
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
-from sqlalchemy import Engine
+from sqlalchemy import Engine, select
 
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
@@ -208,7 +208,7 @@ def extract_document(*, filename: str, content: bytes) -> tuple[str, tuple[Extra
 
 
 class DocumentService:
-    def __init__(self, engine: Engine, *, object_store: DocumentObjectStore) -> None:
+    def __init__(self, engine: Engine, *, object_store: DocumentObjectStore | None = None) -> None:
         self._engine = engine
         self._object_store = object_store
 
@@ -232,6 +232,8 @@ class DocumentService:
             f"tenants/{tenant_id}/projects/{project_id}/documents/{document_id}/{safe_name}"
         )
         extraction_status = "extracted" if fragments else "ocr_required"
+        if self._object_store is None:
+            raise DocumentExtractionError("document object store is unavailable")
         self._object_store.put(
             object_key=object_key,
             content=content,
@@ -307,6 +309,7 @@ class DocumentService:
                 )
         except Exception:
             with suppress(Exception):
+                assert self._object_store is not None
                 self._object_store.delete(object_key=object_key)
             raise
         return DocumentRecord(
@@ -321,3 +324,37 @@ class DocumentService:
             fragments=fragments,
             created_at=created_at,
         )
+
+    def list(self, *, tenant_id: UUID, project_id: UUID) -> tuple[DocumentRecord, ...]:
+        with self._engine.connect() as connection:
+            project = connection.execute(
+                select(tables.projects.c.id).where(
+                    tables.projects.c.tenant_id == tenant_id,
+                    tables.projects.c.id == project_id,
+                )
+            ).scalar_one_or_none()
+            if project is None:
+                return ()
+            rows = connection.execute(
+                select(tables.documents)
+                .where(
+                    tables.documents.c.tenant_id == tenant_id,
+                    tables.documents.c.project_id == project_id,
+                )
+                .order_by(tables.documents.c.created_at.desc(), tables.documents.c.id.desc())
+            ).mappings()
+            return tuple(
+                DocumentRecord(
+                    id=row["id"],
+                    project_id=row["project_id"],
+                    filename=row["filename"],
+                    media_type=row["media_type"],
+                    classification=row["classification"],
+                    size_bytes=row["size_bytes"],
+                    sha256=row["sha256"],
+                    extraction_status=row["extraction_status"],
+                    fragments=(),
+                    created_at=row["created_at"],
+                )
+                for row in rows
+            )

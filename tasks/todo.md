@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S3-6 前端。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-5 已完成；双跑试点为 C4s 与 S18-01。
+> 唯一当前指针：**S3-7 迁移工具 v1。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-6 已完成；双跑试点为 C4s 与 S18-01。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -953,7 +953,7 @@
 | 首轮资产校验假设每个检查项都必须有 binding，但 manifest 有 99 个库级未绑定项 | 1 | 修正为 687 条全部入模板库、仅明确绑定项实例化；720 binding/131 gate 计数锁入测试 |
 | 聚焦组合中 initial-schema 全链降级遇到前序安全测试遗留的非 risk Finding | 1 | 确认 0012 有数据拒绝损失降级的保护正确；仅清空显式 `pdos_test` 后分别重跑，全链往返和完整套件均绿 |
 
-## In Progress: S3-6 前端 Gate / Document
+## Completed: S3-6 前端 Gate / Document
 
 **Definition of Ready**
 
@@ -963,8 +963,47 @@
 
 **Implementation slices**
 
-- [ ] S3-6a：建立同源 BFF 与 runtime guard，覆盖 Gate/Document loading/empty/error/retry/RBAC
-- [ ] S3-6b：实现例外优先 Gate readiness、阶段切换、材料清单按需展开与可访问状态
-- [ ] S3-6c：实现 Document 列表/上传入口，沿用 S2 私有对象存储与抽取状态
-- [ ] S3-6d：完成组件测试、真实浏览器桌面/移动/双主题与 console 验收
-- [ ] S3-6e：完成完整门禁，更新 canonical checkbox 和当前指针
+- [x] S3-6a：建立同源 BFF 与 runtime guard，覆盖 Gate/Document loading/empty/error/retry/RBAC
+- [x] S3-6b：实现例外优先 Gate readiness、阶段切换、材料清单按需展开与可访问状态
+- [x] S3-6c：实现 Document 列表/上传入口，沿用 S2 私有对象存储与抽取状态
+- [x] S3-6d：完成组件测试、真实浏览器桌面/移动/双主题与 console 验收
+- [x] S3-6e：完成完整门禁，更新 canonical checkbox 和当前指针
+
+**Acceptance evidence required**
+
+- [x] Project Workspace 内部成员可见 Gate/文档标签；外部成员零请求、零标签
+- [x] Gate 默认仅呈现首个例外与总数，其余材料按需展开；加载失败不伪装成零缺项
+- [x] 文档列表只暴露安全元数据/抽取状态，不含 object key；上传仅接受 PDF/XLSX 并沿用 S2 私有存储链
+- [x] 同源 BFF 只转发 HttpOnly session bearer，项目 ID 编码、无会话/错误路径 fail-close
+- [x] 桌面/320px、亮/暗主题无横向页面溢出，交互控件 44px，console 0 error/0 warning；完整门禁全绿
+
+**Completion evidence（2026-08-12）**
+
+- Project Workspace 从 7 个内部标签扩展为 9 个，新增 Gate 与文档；外部 Supplier/Customer 仍仅见概览/时间线，组件测试保持零工程请求。
+- Gate 面按阶段展示缺项总数，详情默认只渲染首项，用户显式展开其余材料；error/retry 与 empty 状态分离。真实 Concept Gate 7 个例外中 6 个来自检查项资产，完整展开可见。
+- Document 面增加安全列表 API、同源 BFF、PDF/XLSX 上传与 internal/confidential/restricted 密级选择；响应不暴露对象存储键，空库、loading、error/retry 和 OCR-required 状态均有明确文案。
+- `make check` 全绿：Web 99 tests、Server 242 tests，ESLint/Ruff/format、TypeScript/mypy 152 source files、Next.js production build 与 Python compile 全部通过。
+- Playwright 真实浏览器在 1440px 亮主题与 320px 暗主题完成 Gate/Document 验收；320px `scrollWidth == clientWidth == 320`，全部可见按钮/标签高度至少 44px，console 0 error/0 warning。截图位于 `output/playwright/s3-6-*.png`（忽略不入库）。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 首次 Playwright wrapper 命令把同一行临时变量当作已展开路径，得到空命令 permission denied | 1 | 改用明确 wrapper 绝对路径并保持命名 session，后续真实浏览器流程全绿 |
+
+## In Progress: S3-7 迁移工具 v1
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S3-7、SoR/RBAC/Project/Gate 既有模型与生产迁移纪律
+- [x] 依赖项：User/Project/Task/Gate/Document 目标模型已就绪；同 RDS 实例跨库只读源账号属于人执行配置
+- [x] 范围冻结：CEHub projects→Project、project_tasks→Task、Gate 历史→Gate、users→User、文件→OSS 引用；dry-run + 幂等 + 抽查报告
+- [x] 安全边界：工具不创建 RDS 账号、不改生产连接、不复制文件正文；真实生产运行必须另行人确认
+
+**Implementation slices**
+
+- [ ] S3-7a：冻结源快照契约、字段映射、稳定 external key、dry-run 与错误报告格式
+- [ ] S3-7b：实现只读源 adapter、目标幂等 upsert 与事务/批次边界
+- [ ] S3-7c：实现 User/Project/Task/Gate/File-reference 映射及跨实体引用解析
+- [ ] S3-7d：建立合成 CEHub 源库正反例、重放 0 重复、dry-run 0 写与抽查一致性测试
+- [ ] S3-7e：交付运行手册与完整门禁，等待 Sprint 3 Exit Gate 人工确认

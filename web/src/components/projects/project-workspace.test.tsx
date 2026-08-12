@@ -177,6 +177,43 @@ const erpReference = {
   created_at: workItemTimestamps.created_at,
 };
 
+const projectGate = {
+  id: "gate-1",
+  project_id: "project-1",
+  stage: { id: "stage-1", code: "concept", name: "概念阶段", sequence: 1 },
+  code: "concept",
+  name: "Concept Gate",
+  status: "preparing",
+  review_due_at: null,
+  decided_at: null,
+  decided_by_user_id: null,
+  is_current: true,
+  round: null,
+  readiness: {
+    ready: false,
+    blocker_keys: ["deliverable_check:1", "risk:1"],
+    blockers: [
+      { key: "deliverable_check:1", kind: "deliverable_check", label: "确认概念评审材料" },
+      { key: "risk:1", kind: "risk", label: "供应商交期风险" },
+    ],
+    evaluated_at: "2026-08-12T16:00:00Z",
+  },
+  additions: [],
+  grandfather_exemptions: [],
+};
+
+const projectDocument = {
+  document_id: "document-1",
+  project_id: "project-1",
+  filename: "concept-review.pdf",
+  media_type: "application/pdf",
+  classification: "internal",
+  size_bytes: 2048,
+  sha256: "a".repeat(64),
+  extraction_status: "extracted",
+  created_at: "2026-08-12T16:00:00Z",
+};
+
 function workItemResponse(path: string) {
   if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask] });
   if (path.endsWith("/issues")) return jsonResponse({ items: [openIssue] });
@@ -313,7 +350,7 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
-    expect(await screen.findAllByRole("tab")).toHaveLength(7);
+    expect(await screen.findAllByRole("tab")).toHaveLength(9);
     expect(screen.getByRole("tab", { name: "AI 对话" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "产品工程" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "概览" })).toHaveAttribute("aria-selected", "true");
@@ -324,6 +361,59 @@ describe("ProjectWorkspace", () => {
     expect(screen.getByText("等待前置")).toBeInTheDocument();
     expect(screen.queryByText("已阻塞", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "开始任务" })).not.toBeInTheDocument();
+  });
+
+  it("loads exception-first Gate readiness and private document metadata lazily", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/gates")) return jsonResponse({ items: [projectGate] });
+      if (path.endsWith("/documents")) return jsonResponse({ items: [projectDocument] });
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/gates"))).toBe(false);
+
+    await user.click(screen.getByRole("tab", { name: "Gate" }));
+    expect(await screen.findByRole("heading", { name: "2 个例外需要处理" })).toBeInTheDocument();
+    expect(screen.getByText("确认概念评审材料")).toBeInTheDocument();
+    expect(screen.queryByText("供应商交期风险")).not.toBeVisible();
+    await user.click(screen.getByRole("button", { name: "展开其余 1 项" }));
+    expect(screen.getByText("供应商交期风险")).toBeVisible();
+
+    await user.click(screen.getByRole("tab", { name: "文档" }));
+    expect(await screen.findByText("concept-review.pdf")).toBeInTheDocument();
+    expect(screen.getByText(/已抽取/)).toBeInTheDocument();
+    expect(screen.queryByText(/object_key/)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "上传并抽取" })).toBeDisabled();
+  });
+
+  it("keeps Gate load failures explicit and retryable", async () => {
+    const user = userEvent.setup();
+    let unavailable = true;
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/gates")) return unavailable ? jsonResponse({}, 503) : jsonResponse({ items: [] });
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    await user.click(screen.getByRole("tab", { name: "Gate" }));
+    expect(await screen.findByRole("heading", { name: "Gate 就绪度暂不可用" })).toBeInTheDocument();
+    expect(screen.queryByText("尚未实例化 Gate")).not.toBeInTheDocument();
+    unavailable = false;
+    await user.click(screen.getByRole("button", { name: "重新加载 Gate" }));
+    expect(await screen.findByRole("heading", { name: "尚未实例化 Gate" })).toBeInTheDocument();
   });
 
   it("loads the product register lazily and creates a specification and typed BOM", async () => {

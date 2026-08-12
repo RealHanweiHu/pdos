@@ -305,6 +305,20 @@ def test_document_analysis_persists_object_fragments_and_event(
     assert body["fragments"][0]["href"].startswith(f"/projects?project={project_id}")
     assert len(object_store.objects) == 1
     assert body["sha256"] not in str(body["fragments"])
+    listed = client.get(f"/api/ai/projects/{project_id}/documents", headers=headers)
+    assert listed.status_code == 200
+    assert listed.json()["items"][0] == {
+        "document_id": body["document_id"],
+        "project_id": str(project_id),
+        "filename": "risks.xlsx",
+        "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "classification": "internal",
+        "size_bytes": body["size_bytes"],
+        "sha256": body["sha256"],
+        "extraction_status": "extracted",
+        "created_at": listed.json()["items"][0]["created_at"],
+    }
+    assert "object_key" not in listed.text
     engine = create_engine(psycopg_database_url(isolated_ai_api_database))
     try:
         with engine.connect() as connection:

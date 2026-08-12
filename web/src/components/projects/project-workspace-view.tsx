@@ -19,6 +19,9 @@ import { ProjectOverview } from "./project-overview";
 import { ProjectTimeline } from "./project-timeline";
 import type { Project } from "./project-types";
 import type { ProjectActivity } from "./project-activity";
+import { ProjectDocumentPanel } from "./project-document-panel";
+import { ProjectGatePanel } from "./project-gate-panel";
+import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
 import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
 import type {
   IssueCreateInput,
@@ -40,6 +43,8 @@ export type ProjectWorkspaceTab =
   | "issues"
   | "risks"
   | "product-engineering"
+  | "gates"
+  | "documents"
   | "ai-chat";
 export type WorkItemLoadState = "idle" | "loading" | "ready" | "error";
 
@@ -62,6 +67,8 @@ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[
   { key: "issues", label: "问题", internalOnly: true },
   { key: "risks", label: "风险", internalOnly: true },
   { key: "product-engineering", label: "产品工程", internalOnly: true },
+  { key: "gates", label: "Gate", internalOnly: true },
+  { key: "documents", label: "文档", internalOnly: true },
   { key: "ai-chat", label: "AI 对话", internalOnly: true },
 ];
 
@@ -108,6 +115,8 @@ export function ProjectWorkspaceView({
   onUpdate,
   projects,
   productEngineering,
+  gateSurface,
+  documentSurface,
   saving,
   selectedProject,
   statusMessage,
@@ -142,6 +151,20 @@ export function ProjectWorkspaceView({
   onUpdate: (project: Project, values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
   projects: Project[];
   productEngineering: ProductEngineeringWorkspaceProps;
+  gateSurface: {
+    gates: ProjectGate[] | null;
+    loadState: WorkItemLoadState;
+    onRetry: () => void;
+  };
+  documentSurface: {
+    busy: boolean;
+    canUpload: boolean;
+    documents: ProjectDocument[] | null;
+    error: string | null;
+    loadState: WorkItemLoadState;
+    onRetry: () => void;
+    onUpload: (file: File, classification: string) => Promise<boolean>;
+  };
   saving: boolean;
   selectedProject: Project | null;
   statusMessage: string | null;
@@ -236,6 +259,24 @@ export function ProjectWorkspaceView({
             {activeTab === "risks" && workItems ? <RiskPanel busy={workItemBusy} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks} /> : null}
             {activeTab === "product-engineering" ? (
               <ProductEngineeringPanel {...productEngineering} />
+            ) : null}
+            {activeTab === "gates" ? (
+              <ProjectGatePanel
+                gates={gateSurface.gates}
+                onRetry={gateSurface.onRetry}
+                state={gateSurface.loadState}
+              />
+            ) : null}
+            {activeTab === "documents" ? (
+              <ProjectDocumentPanel
+                busy={documentSurface.busy}
+                canUpload={documentSurface.canUpload}
+                documents={documentSurface.documents}
+                error={documentSurface.error}
+                onRetry={documentSurface.onRetry}
+                onUpload={documentSurface.onUpload}
+                state={documentSurface.loadState}
+              />
             ) : null}
             {activeTab === "ai-chat" ? <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id} /> : null}
           </div>

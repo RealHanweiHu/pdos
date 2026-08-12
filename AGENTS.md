@@ -32,7 +32,7 @@
 - [x] S3-1 Specification + Development BOM 三型已完成
 - [x] S3-2 Gate 硬闸与签核已完成：版本化三槽策略、轮次快照、同事务 readiness 硬闸、只升不降加签与历史 grandfather 均验收通过
 - [x] S3-3 Build / Sample / Test / Certification 已完成：EVT/DVT/PVT 批次与样机谱系、audience 签核、Test/Certification、`TEST_FAILED` 与 Gate readiness 均验收通过
-- [ ] **当前：S3-6 前端**，按 `tasks/todo.md` 补 Project Workspace Gate/Document 标签与例外优先 Gate 就绪度视图
+- [ ] **当前：S3-7 迁移工具 v1**，按 `tasks/todo.md` 交付 CEHub→pdos 同 RDS 跨库 dry-run/幂等 ETL 与抽查报告
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
