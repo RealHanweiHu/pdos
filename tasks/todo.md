@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 1 Exit Gate。** S1-1～S1-6 已于 2026-08-11 完成全部验收；汇报验收结果并等待人明确确认后，方可进入 Sprint 2。
+> 唯一当前指针：**S2-1 LLM Gateway（多供应商）。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；当前只实施 S2-1，不提前混入 LangGraph 执行环或 Finding。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -446,4 +446,36 @@
 - [x] S1-1～S1-6 的工作项验收条款与项目级 Definition of Done 全部满足
 - [x] Requirement→Case（Decision）→Project→Task/Issue 的真实业务闭环、事件回放与七阶段 Timeline 验收通过
 - [x] Sprint 1 的完整质量门禁、权限边界、双主题与响应式浏览器验收通过
-- [ ] 汇报 Sprint 1 验收结果并获得人明确确认，进入 Sprint 2
+- [x] 汇报 Sprint 1 验收结果并获得人明确确认，进入 Sprint 2
+
+## Current: S2-1 Multi-provider LLM Gateway
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S2-1、`AI_Runtime_Architecture.md`、`RBAC_and_Audit.md` 与执行计划 §11 学习环纪律
+- [x] 依赖项：Sprint 1 出口已确认；`cehub_ai` namespace、租户认证/RBAC、FastAPI/Next.js 同源 BFF 与隔离测试库已就绪
+- [x] 协议边界冻结：MiniMax/GLM/OpenAI/DeepSeek 仅走 OpenAI-compatible；Anthropic 仅走原生协议；不增加第三种协议或供应商 SDK
+- [x] 模型治理冻结：默认 MiniMax；租户只可选择“env 有凭据 + golden-case 全量通过”的候选，API 永不返回 key/base_url
+- [x] 路由边界冻结：Sprint 2 单模型跑通，保留 Agent tier 参数；模型/租户/项目自报值不作为政策事实
+- [x] 输出边界冻结：网关统一解析 JSON、执行 schema 校验并有限重试；失败有稳定降级结果，不让业务错误路径再次调用 LLM
+- [x] 数据边界冻结：只允许白名单投影离库，密级字段、对象存储键和原文不进入供应商请求；出口主机来自配置白名单
+- [x] 迁移号冻结为 `0008`，建立租户模型设置与 `cehub_ai.model_invocations`，不复用或修改旧迁移
+
+**Implementation slices**
+
+- [ ] S2-1a：用测试冻结 provider catalog、credential+golden 双门禁、默认 MiniMax 与 Agent tier 路由合同
+- [ ] S2-1b：migration 0008 建立 tenant model settings 与 model invocation 留痕，覆盖约束、索引、租户 FK 和往返
+- [ ] S2-1c：实现上下文白名单投影、日预算计算/熔断及租户模型治理服务/API
+- [ ] S2-1d：实现 OpenAI-compatible/Anthropic 两个 adapter、结构化 schema 校验有限重试及完整 invocation 记录
+- [ ] S2-1e：实现治理页「模型与预算」及同源 BFF，仅展示合格候选与非敏感调用摘要
+- [ ] S2-1f：固化 golden-case runner、出口白名单校验、真实本地 fake-provider/API/浏览器路径与完整质量门禁
+
+**Acceptance evidence required**
+
+- [ ] 只有 env 配置凭据且 golden-case 通过的模型进入租户候选；未配置、未评测或退化模型不可选择，API/UI 不泄露任何 key/base_url
+- [ ] 两类协议均通过真实 HTTP fake-provider 合同；结构化输出首轮无效时按固定预算重试，耗尽后稳定降级且错误路径零额外 LLM 调用
+- [ ] 每次成功、供应商失败、schema 失败和预算熔断均产生可归因的 model invocation；token、耗时、prompt 版本、Agent、供应商/模型与归一成本完整
+- [ ] 租户日预算超限时不调用供应商、不阻塞业务；不同租户预算与用量严格隔离
+- [ ] 白名单投影阻止密级字段、对象存储键和原文离库；请求目标不在已配置供应商 host 白名单时 fail-close
+- [ ] 治理页可选择合格模型和调整预算，刷新后保持；Owner/Admin 可写，其他角色只读或拒绝，跨租户稳定 fail-close
+- [ ] golden-case 全量通过才可发布模型资格，可信根与阈值不在运行时自动化写路径内；完整 lint/type/test/build、migration 往返与浏览器验收全绿
