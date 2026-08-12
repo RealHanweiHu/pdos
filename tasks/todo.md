@@ -705,7 +705,7 @@
 - [x] 由人选择 C4s 与 S18-01 两个真实双跑项目，并填写 `docs/runbooks/sprint-2-pilot.md`
 - [x] 获得人明确确认，进入 Sprint 3（2026-08-12）
 
-## Current: S3-1 Specification + Development BOM 三型
+## Completed: S3-1 Specification + Development BOM 三型
 
 **Definition of Ready**
 
@@ -720,14 +720,22 @@
 - [x] S3-1b：migration 0015 建立 Specification、BOM 与 BOM Item 数据边界、租户完整性和 ERP 引用约束；聚焦 schema/往返/drift/lint/type 全绿
 - [x] S3-1c：实现 Specification 与三型 BOM 的服务/API 写读路径，写操作同事务产出事件与审计；15 项聚焦测试及服务端 220 项完整回归全绿
 - [x] S3-1d：实现 Project Workspace 中 Specification/BOM 最小纵向界面与同源 BFF；三型语义、ERP 引用边界、内部读写/只读/外部零请求、loading/empty/error/retry 均有测试，web 95 项与生产构建全绿
-- [ ] S3-1e：完成聚焦测试、迁移往返、完整门禁和真实 API/浏览器路径验收
+- [x] S3-1e：完成聚焦测试、迁移往返、完整门禁和真实 API/浏览器路径验收
 
 **Acceptance evidence required**
 
-- [ ] 同一项目可建立 Specification 与 EBOM / Prototype BOM / Cost BOM，三型语义和版本可区分
-- [ ] PDOS 不创建 MBOM/Routing 业务真值；仅允许经过约束的外部 ERP 引用
-- [ ] 跨租户对象与 BOM 引用 fail-close；所有写入同事务落版本化 event + immutable audit
-- [ ] migration 0015 downgrade→upgrade 保持单 head/无 metadata drift；完整门禁与运行时路径全绿
+- [x] 同一项目可建立 Specification 与 EBOM / Prototype BOM / Cost BOM，三型语义和版本可区分
+- [x] PDOS 不创建 MBOM/Routing 业务真值；仅允许经过约束的外部 ERP 引用
+- [x] 跨租户对象与 BOM 引用 fail-close；所有写入同事务落版本化 event + immutable audit
+- [x] migration 0015 downgrade→upgrade 保持单 head/无 metadata drift；完整门禁与运行时路径全绿
+
+**Completion evidence（2026-08-12）**
+
+- migration `0015_specification_boms` 在隔离 `pdos_test` 完成 downgrade→upgrade，唯一 head 为 `0015_specification_boms`；schema/往返/drift 7 项全绿。
+- `make check` 全绿：web 95 tests、server 220 tests，ESLint/Ruff/format/mypy/TypeScript/Next.js build/Python compile 全部通过；测试库 fail-close 明确验证为 `pdos_test`。
+- 真实本地 HTTP/浏览器闭环在 C4s 测试项目建立 1 个 Specification 与 EBOM/Prototype/Cost 各 1 个；Cost BOM 成本条目 201、同成本写入 EBOM 409、Routing 仅以 ERP reference 201 保存。
+- 事件与审计各自形成 `1 Specification + 3 BOM + 1 item + 1 ERP reference` 对称记录；跨租户/外部角色/Quality 只读边界由服务端与前端测试覆盖。
+- 隔离 Playwright 会话在 1440/768/320px、亮/暗主题完成验收；320px `scrollWidth == clientWidth == 320`，产品面 11 个交互控件最小高度 44px，控制台 0 error/0 warning。截图位于 `output/playwright/s3-1-product-engineering-*.png`（按 `.gitignore` 不入库）。
 
 **Errors encountered**
 
@@ -741,3 +749,5 @@
 | 完整回归仍断言 Engineer 的旧项目权限清单，未包含新增产品工程权限 | 1 | 同步冻结 HTTP 权限响应契约；聚焦 3 项与服务端完整 220 项测试全绿 |
 | S3-1d RED：产品工程 BFF 路由不存在、Workspace 缺产品工程标签与三类状态 | 1 | 实现同源会话 BFF、运行时响应守卫、懒加载容器及可访问面板；15 项聚焦测试转绿 |
 | React lint 拒绝 effect 内同步修正规格选择状态 | 1 | 改为从当前规格集派生有效 selection，不再用 effect 镜像 props；lint/typecheck 全绿 |
+| migration 往返首次使用了不存在的 0014 revision 名 | 1 | 读取迁移文件确认实际基线 `0014_finding_quality_controls` 后重跑，downgrade→upgrade 与唯一 head 全绿 |
+| 首轮 `make check` 捕获旧权限测试列表缩进未格式化，随后又在 `server/` 目录误调用根 Makefile | 1 | Ruff 机械格式化单文件，并回到仓库根目录从头执行完整门禁，全绿 |

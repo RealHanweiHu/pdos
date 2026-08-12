@@ -121,7 +121,7 @@ ai-native-R&D-platform/
 
 | # | 工作项 | 说明 |
 |---|---|---|
-| [~] S3-1 | Specification + Development BOM 三型 | EBOM/Prototype BOM/Cost BOM（cehub_product/cehub_cost）；BOM 边界=规格 SoR 矩阵（MBOM/Routing 属 ERP，只存引用） |
+| [x] S3-1 | Specification + Development BOM 三型 | EBOM/Prototype BOM/Cost BOM（cehub_product/cehub_cost）；BOM 边界=规格 SoR 矩阵（MBOM/Routing 属 ERP，只存引用） |
 | [ ] S3-2 | Gate 硬闸与签核 | 签核轮次/就绪度/硬闸/grandfather 豁免——**直接参考 CEHub projectGateSignoffRounds 等成熟设计重实现**（这是最值钱的域知识复用）；Gate 4 态按规格 |
 | [ ] S3-3 | Build / Sample / Test / Certification | Build 批次+样机谱系+序列号（EVT/DVT/PVT）；Sample 签核；Test 计划/用例/报告（TEST_FAILED 事件接通，喂 Quality Agent）；Certification+到期扫描 |
 | [ ] S3-4 | 变更链后段 | ECR→影响分析→审批→**ECN→生效决策→ERP Handoff 状态**（Handoff 执行体在 Sprint 5，此处状态机与数据就位） |

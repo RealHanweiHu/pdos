@@ -4,7 +4,7 @@
 
 本文件是执行控制视图，不是第二份产品计划。产品范围、Sprint 工作项与验收只以 `docs/design/2026-08-09-preview-execution-plan.md` 为准；这里负责把当前工作项拆成单次可实现、可验证的小任务，并在每次交接后保持唯一当前指针。
 
-当前唯一指针：**S3-1 Specification + Development BOM 三型**。S0～S2 已实现并通过人工出口；双跑试点已选定 C4s 与 S18-01。Sprint 3 严格按 S3-1→S3-7 顺序推进。
+当前唯一指针：**S3-2 Gate 硬闸与签核**。S0～S2 已实现并通过人工出口，S3-1 已完成；双跑试点已选定 C4s 与 S18-01。Sprint 3 严格按 S3-2→S3-7 顺序推进。
 
 ## Architecture Decisions
 
@@ -73,7 +73,7 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Nginx/DNS smoke 必须
 
 ### Phase 3+: Canonical Sprint Sequence
 
-S0-3～S2-7 已按唯一执行计划完成，Sprint 2 出口于 2026-08-12 经人明确确认。当前执行 S3-1；此后按 S3-2→S3-7、Sprint 4、Sprint 5 与切换退役的 canonical 顺序展开。开始每个工作项时，在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
+S0-3～S2-7 已按唯一执行计划完成，Sprint 2 出口于 2026-08-12 经人明确确认；S3-1 已完成。当前执行 S3-2；此后按 S3-3→S3-7、Sprint 4、Sprint 5 与切换退役的 canonical 顺序展开。开始每个工作项时，在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
 
 ## Risks and Mitigations
 
@@ -87,4 +87,4 @@ S0-3～S2-7 已按唯一执行计划完成，Sprint 2 出口于 2026-08-12 经�
 
 ## Open Questions
 
-- S3-1 无开放产品决策；实体、状态、SoR 边界与验收以冻结规格为准。双跑试点迁移仍留待 canonical S3-7，迁移前生产 PDOS Project 数为 0 是已知基线。
+- S3-2 无开放产品决策；Gate 四态、签核轮次、硬闸与 grandfather 豁免以冻结规格和老 CEHub 成熟语义为准。双跑试点迁移仍留待 canonical S3-7，迁移前生产 PDOS Project 数为 0 是已知基线。
