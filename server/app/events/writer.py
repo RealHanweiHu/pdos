@@ -24,6 +24,16 @@ SENSITIVE_KEY_PARTS = frozenset(
         "token",
     }
 )
+NON_SENSITIVE_METRIC_KEYS = frozenset(
+    {
+        "daily_token_budget",
+        "input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "used_tokens_today",
+        "remaining_tokens_today",
+    }
+)
 
 
 class EventSourceMismatchError(ValueError):
@@ -66,7 +76,9 @@ def _contains_sensitive_key(value: object) -> bool:
     if isinstance(value, Mapping):
         for key, nested in value.items():
             normalized_key = str(key).lower()
-            if any(part in normalized_key for part in SENSITIVE_KEY_PARTS):
+            if normalized_key not in NON_SENSITIVE_METRIC_KEYS and any(
+                part in normalized_key for part in SENSITIVE_KEY_PARTS
+            ):
                 return True
             if _contains_sensitive_key(nested):
                 return True
