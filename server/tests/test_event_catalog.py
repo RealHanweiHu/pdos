@@ -115,6 +115,28 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
         "daily_token_budget",
     ]
 
+    specification_created = definition_for("SPECIFICATION_CREATED")
+    assert specification_created.entity == "specification"
+    assert specification_created.producer == "product_engineering_service"
+    assert specification_created.payload_schema["required"] == [
+        "specification_code",
+        "version",
+    ]
+
+    bom_created = definition_for("DEVELOPMENT_BOM_CREATED")
+    assert bom_created.entity == "development_bom"
+    assert bom_created.payload_schema["required"] == ["bom_code", "bom_type", "version"]
+
+    item_added = definition_for("DEVELOPMENT_BOM_ITEM_ADDED")
+    assert item_added.payload_schema["required"] == ["bom_id", "part_number", "line_number"]
+
+    erp_reference_added = definition_for("ERP_BOM_REFERENCE_ADDED")
+    assert erp_reference_added.payload_schema["required"] == [
+        "reference_type",
+        "source_system",
+        "external_id",
+    ]
+
 
 def test_unknown_event_types_fail_closed() -> None:
     with pytest.raises(UnknownEventTypeError):

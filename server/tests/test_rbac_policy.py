@@ -30,6 +30,8 @@ EXPECTED_ACTIONS = {
     "document.analyze",
     "risk_suggestion.create",
     "event.ingest",
+    "product_engineering.view",
+    "product_engineering.edit",
     "quality.manage",
     "external.respond",
 }
@@ -59,6 +61,8 @@ EXPECTED_MATRIX = {
         "document.analyze",
         "risk_suggestion.create",
         "event.ingest",
+        "product_engineering.view",
+        "product_engineering.edit",
     },
     Role.ENGINEER: {
         "project.view",
@@ -72,6 +76,8 @@ EXPECTED_MATRIX = {
         "ai_chat.use",
         "document.analyze",
         "risk_suggestion.create",
+        "product_engineering.view",
+        "product_engineering.edit",
     },
     Role.QUALITY: {
         "project.view",
@@ -86,6 +92,7 @@ EXPECTED_MATRIX = {
         "ai_chat.use",
         "document.analyze",
         "risk_suggestion.create",
+        "product_engineering.view",
     },
     Role.SUPPLIER: {"project.view", "external.respond"},
     Role.CUSTOMER: {"project.view", "external.respond"},

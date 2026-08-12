@@ -718,7 +718,7 @@
 
 - [x] S3-1a：从冻结规格提取 Specification/BOM 字段、关系、SoR 与 RBAC 契约，建立会失败的迁移/模型契约测试（RED：metadata/0015 缺失；另发现本地测试库凭据与现存容器不一致）
 - [x] S3-1b：migration 0015 建立 Specification、BOM 与 BOM Item 数据边界、租户完整性和 ERP 引用约束；聚焦 schema/往返/drift/lint/type 全绿
-- [ ] S3-1c：实现 Specification 与三型 BOM 的服务/API 写读路径，写操作同事务产出事件与审计
+- [x] S3-1c：实现 Specification 与三型 BOM 的服务/API 写读路径，写操作同事务产出事件与审计；15 项聚焦测试及服务端 220 项完整回归全绿
 - [ ] S3-1d：实现 Project Workspace 中 Specification/BOM 最小纵向界面与同源 BFF，权限/错误/空态可用
 - [ ] S3-1e：完成聚焦测试、迁移往返、完整门禁和真实 API/浏览器路径验收
 
@@ -738,3 +738,4 @@
 | Alembic revision `0015_specification_development_boms` 超过既有 `varchar(32)` | 1 | 事务 DDL 已自动回滚；缩短 revision 为 `0015_specification_boms`，保持迁移号和语义不变 |
 | migration check constraint 被 naming convention 二次加前缀，metadata drift 44 项 | 1 | 用 `op.f(...)` 标记完整名称已格式化，保持 migration 与 metadata 同名 |
 | 机械替换命令在 `server/` 目录误用了 `server/...` 路径 | 1 | 改用当前目录相对路径 `migrations/...`；原命令未产生文件修改 |
+| 完整回归仍断言 Engineer 的旧项目权限清单，未包含新增产品工程权限 | 1 | 同步冻结 HTTP 权限响应契约；聚焦 3 项与服务端完整 220 项测试全绿 |

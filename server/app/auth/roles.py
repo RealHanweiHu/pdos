@@ -42,6 +42,8 @@ class Action(StrEnum):
     DOCUMENT_ANALYZE = "document.analyze"
     RISK_SUGGESTION_CREATE = "risk_suggestion.create"
     EVENT_INGEST = "event.ingest"
+    PRODUCT_ENGINEERING_VIEW = "product_engineering.view"
+    PRODUCT_ENGINEERING_EDIT = "product_engineering.edit"
     QUALITY_MANAGE = "quality.manage"
     EXTERNAL_RESPOND = "external.respond"
 
@@ -74,6 +76,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.DOCUMENT_ANALYZE,
                 Action.RISK_SUGGESTION_CREATE,
                 Action.EVENT_INGEST,
+                Action.PRODUCT_ENGINEERING_VIEW,
+                Action.PRODUCT_ENGINEERING_EDIT,
             }
         ),
         Role.ENGINEER: frozenset(
@@ -89,6 +93,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.AI_CHAT_USE,
                 Action.DOCUMENT_ANALYZE,
                 Action.RISK_SUGGESTION_CREATE,
+                Action.PRODUCT_ENGINEERING_VIEW,
+                Action.PRODUCT_ENGINEERING_EDIT,
             }
         ),
         Role.QUALITY: frozenset(
@@ -105,6 +111,7 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.AI_CHAT_USE,
                 Action.DOCUMENT_ANALYZE,
                 Action.RISK_SUGGESTION_CREATE,
+                Action.PRODUCT_ENGINEERING_VIEW,
             }
         ),
         Role.SUPPLIER: frozenset(
