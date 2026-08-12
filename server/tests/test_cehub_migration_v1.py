@@ -9,6 +9,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import Table, create_engine, func, select, text
+from sqlalchemy.engine import make_url
 
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
@@ -25,6 +26,8 @@ from app.migrations.cehub_v1 import (
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SCHEMA = "legacy_cehub_s37"
+SOURCE_ROLE = "pdos_cehub_source_test"
+SOURCE_PASSWORD = "pdos-cehub-source-test"
 
 
 @pytest.fixture(scope="module")
@@ -207,8 +210,35 @@ def _create_source_fixture(engine_url: str) -> None:
                     '''
                 )
             )
+            connection.execute(
+                text(
+                    f'''
+                    DO $$
+                    BEGIN
+                        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{SOURCE_ROLE}') THEN
+                            CREATE ROLE {SOURCE_ROLE} LOGIN NOINHERIT
+                                PASSWORD '{SOURCE_PASSWORD}';
+                        END IF;
+                    END
+                    $$;
+                    ALTER ROLE {SOURCE_ROLE} SET default_transaction_read_only = on;
+                    GRANT USAGE ON SCHEMA "{SOURCE_SCHEMA}" TO {SOURCE_ROLE};
+                    GRANT SELECT ON ALL TABLES IN SCHEMA "{SOURCE_SCHEMA}" TO {SOURCE_ROLE};
+                    REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
+                        ON ALL TABLES IN SCHEMA "{SOURCE_SCHEMA}" FROM {SOURCE_ROLE};
+                    '''
+                )
+            )
     finally:
         engine.dispose()
+
+
+def _source_engine(engine_url: str):  # type: ignore[no-untyped-def]
+    url = make_url(psycopg_database_url(engine_url)).set(
+        username=SOURCE_ROLE,
+        password=SOURCE_PASSWORD,
+    )
+    return create_engine(url)
 
 
 def _create_target_context(engine_url: str) -> tuple[UUID, UUID]:
@@ -272,12 +302,35 @@ def test_unknown_source_values_are_rejected() -> None:
             raise AssertionError(f"{function.__name__} accepted {value}")
 
 
+def test_write_capable_source_role_is_rejected_before_snapshot(
+    migration_database_url: str,
+) -> None:
+    _create_source_fixture(migration_database_url)
+    tenant_id, actor_id = _create_target_context(migration_database_url)
+    write_capable_source = create_engine(psycopg_database_url(migration_database_url))
+    target_engine = create_engine(psycopg_database_url(migration_database_url))
+    try:
+        with pytest.raises(ValueError, match="independent read-only role"):
+            migrate_cehub_v1(
+                source_engine=write_capable_source,
+                target_engine=target_engine,
+                tenant_id=tenant_id,
+                actor_user_id=actor_id,
+                project_ids=("S18-01",),
+                source_schema=SOURCE_SCHEMA,
+                dry_run=True,
+            )
+    finally:
+        write_capable_source.dispose()
+        target_engine.dispose()
+
+
 def test_snapshot_dry_run_apply_replay_and_source_drift(
     migration_database_url: str,
 ) -> None:
     _create_source_fixture(migration_database_url)
     tenant_id, actor_id = _create_target_context(migration_database_url)
-    source_engine = create_engine(psycopg_database_url(migration_database_url))
+    source_engine = _source_engine(migration_database_url)
     target_engine = create_engine(psycopg_database_url(migration_database_url))
     try:
         before = {
@@ -396,7 +449,7 @@ def test_project_number_selection_imports_npd_and_obt_workflow_shapes(
 ) -> None:
     _create_source_fixture(migration_database_url)
     tenant_id, actor_id = _create_target_context(migration_database_url)
-    source_engine = create_engine(psycopg_database_url(migration_database_url))
+    source_engine = _source_engine(migration_database_url)
     target_engine = create_engine(psycopg_database_url(migration_database_url))
     try:
         report = migrate_cehub_v1(

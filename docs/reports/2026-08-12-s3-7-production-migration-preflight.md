@@ -25,5 +25,6 @@
 
 - `cehub_audit.migration_runs` / `migration_mappings` 尚未写入试点迁移记录；生产业务数据 apply 尚未开始。
 - 现役 CEHub 应用登录账号具备写权限，不能作为 S3-7 正式验收凭据。
+- RDS 角色元数据复核未发现同时满足“五表全读、五表零写、`default_transaction_read_only=on`”的登录角色；迁移器已增加同等运行时校验，误配可写账号会在读取项目数据前 fail-close。
 - DBA 仍需创建或确认只对 `users`、`projects`、`project_tasks`、`project_gate_reviews`、`project_files` 授予 `SELECT`，且 `default_transaction_read_only=on` 的独立账号，并以 `CEHUB_SOURCE_DATABASE_URL` 注入私有执行环境。
 - 获得该账号和生产 dry-run 授权后，严格执行 `dry-run → 数据 Owner 抽查 → apply 再授权 → apply → 幂等重放 → 抽样 SQL`。

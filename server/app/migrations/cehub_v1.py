@@ -54,6 +54,13 @@ _WORKFLOW_TEMPLATES: dict[str, WorkflowTemplate] = {
     NPD_WORKFLOW_TEMPLATE.code: NPD_WORKFLOW_TEMPLATE,
     OBT_WORKFLOW_TEMPLATE.code: OBT_WORKFLOW_TEMPLATE,
 }
+_SOURCE_TABLES = (
+    "users",
+    "projects",
+    "project_tasks",
+    "project_gate_reviews",
+    "project_files",
+)
 _TASK_STATUSES = frozenset(
     {"todo", "in_progress", "blocked", "done", "skipped", "pending_approval"}
 )
@@ -140,6 +147,7 @@ class CeHubSourceAdapter:
         try:
             with connection.begin():
                 connection.execute(text("SET TRANSACTION READ ONLY"))
+                self._assert_readonly_role(connection)
                 candidates = self._project_rows(connection, normalized_refs)
                 projects = self._resolve_project_rows(candidates, normalized_refs)
                 resolved_ids = tuple(str(row["source_id"]) for row in projects)
@@ -175,6 +183,40 @@ class CeHubSourceAdapter:
             file_references=file_dicts,
             fingerprint=_content_hash(snapshot_payload),
         )
+
+    def _assert_readonly_role(self, connection: Connection) -> None:
+        default_read_only = connection.execute(
+            text("SELECT current_setting('default_transaction_read_only') = 'on'")
+        ).scalar_one()
+        privileges = []
+        for table_name in _SOURCE_TABLES:
+            qualified_name = f'"{self._schema}"."{table_name}"'
+            privileges.append(
+                connection.execute(
+                    text(
+                        """
+                        SELECT has_table_privilege(current_user, :table_name, 'SELECT')
+                                   AS can_select,
+                               has_table_privilege(
+                                   current_user,
+                                   :table_name,
+                                   'INSERT,UPDATE,DELETE,TRUNCATE'
+                               ) AS can_write
+                        """
+                    ),
+                    {"table_name": qualified_name},
+                )
+                .mappings()
+                .one()
+            )
+        if not default_read_only or any(
+            not bool(privilege["can_select"]) or bool(privilege["can_write"])
+            for privilege in privileges
+        ):
+            raise ValueError(
+                "CEHub source must use an independent read-only role with SELECT-only "
+                "access to the five migration tables and default_transaction_read_only=on"
+            )
 
     def _project_rows(
         self, connection: Connection, project_refs: tuple[str, ...]

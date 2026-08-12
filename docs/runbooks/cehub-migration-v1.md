@@ -21,6 +21,22 @@
 
 源库与目标库名称必须不同。命令行入口不会输出连接 URL，报告文件权限固定为 `0600`。
 
+DBA 可在 CEHub 数据库中按以下模板创建账号（密码通过 RDS 安全渠道生成和交付，不把成品 SQL 写入仓库）：
+
+```sql
+CREATE ROLE pdos_cehub_readonly LOGIN NOINHERIT PASSWORD '<generated-secret>';
+ALTER ROLE pdos_cehub_readonly SET default_transaction_read_only = on;
+GRANT CONNECT ON DATABASE cehub TO pdos_cehub_readonly;
+GRANT USAGE ON SCHEMA public TO pdos_cehub_readonly;
+GRANT SELECT ON public.users, public.projects, public.project_tasks,
+  public.project_gate_reviews, public.project_files TO pdos_cehub_readonly;
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
+  ON public.users, public.projects, public.project_tasks,
+  public.project_gate_reviews, public.project_files FROM pdos_cehub_readonly;
+```
+
+迁移器会在读取项目数据前再次验证：当前登录的默认事务必须为只读、五张源表均可 `SELECT` 且均无写权限。使用现役 CEHub 可写应用账号会 fail-close，即使代码随后执行了 `SET TRANSACTION READ ONLY` 也不会放行。
+
 ## 2. Dry-run（强制先执行）
 
 从仓库根目录运行：
