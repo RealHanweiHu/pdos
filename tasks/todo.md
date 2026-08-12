@@ -1002,8 +1002,33 @@
 
 **Implementation slices**
 
-- [ ] S3-7a：冻结源快照契约、字段映射、稳定 external key、dry-run 与错误报告格式
-- [ ] S3-7b：实现只读源 adapter、目标幂等 upsert 与事务/批次边界
-- [ ] S3-7c：实现 User/Project/Task/Gate/File-reference 映射及跨实体引用解析
-- [ ] S3-7d：建立合成 CEHub 源库正反例、重放 0 重复、dry-run 0 写与抽查一致性测试
-- [ ] S3-7e：交付运行手册与完整门禁，等待 Sprint 3 Exit Gate 人工确认
+- [x] S3-7a：冻结源快照契约、字段映射、稳定 external key、dry-run 与错误报告格式
+- [x] S3-7b：实现只读源 adapter、目标幂等 upsert 与事务/批次边界
+- [x] S3-7c：实现 User/Project/Task/Gate/File-reference 映射及跨实体引用解析
+- [x] S3-7d：建立合成 CEHub 源库正反例、重放 0 重复、dry-run 0 写与抽查一致性测试
+- [x] S3-7e：交付运行手册，完成 migration 往返、metadata drift 与完整本地门禁
+- [ ] S3-7f：经人授权配置 CEHub 只读账号，对 C4s / S18-01 执行正式 dry-run→apply→重放与数据 Owner 抽查
+- [ ] S3-7g：真实试点一致后更新 canonical S3-7，并汇报 Sprint 3 Exit Gate 等待人工确认
+
+**Local completion evidence（2026-08-12）**
+
+- migration `0020_cehub_migration_v1` 建立 `migration_runs` / `migration_mappings` 审计边界、完整 Gate 历史与外部 OSS 文件引用；downgrade→upgrade、单一 head 与 metadata drift 全绿。
+- 源 adapter 在 `REPEATABLE READ` 事务中强制 `SET TRANSACTION READ ONLY`，且要求显式项目 ID；v1 仅接受 NPD 与冻结七阶段，未知类型/状态/引用、目标冲突和源行漂移全部 fail-close。
+- 旧账号只迁移身份且默认禁用，不复用密码哈希；每个项目实例化独立 NPD Workflow/7 Stage/7 Gate，Gate 全轮历史保留，文件只保留旧 OSS 引用而不复制正文或伪装成新文档。
+- 合成 CEHub 源库完成 S18-01 形态验收：2 User、1 Project、2 Task、2 Gate review、1 File reference；dry-run `target_writes=0`，apply 建立 8 个稳定映射，第二次 apply 五类 created 均为 0，修改已迁移源行后 `SOURCE_CHANGED` 阻断。
+- CLI 强制 `--dry-run` / `--apply` 二选一、至少一个 `--project-id`、源/目标数据库名不同；JSON 报告不输出连接串，落盘权限为 `0600`。运行手册见 `docs/runbooks/cehub-migration-v1.md`。
+- 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 247 tests，ESLint/Ruff/format、TypeScript/mypy 157 source files、Next.js production build 与 Python compile 全部通过。
+
+**Human-authorized environment gate（pending）**
+
+- 当前 shell 未配置 `CEHUB_SOURCE_DATABASE_URL`、`DATABASE_URL`、`PDOS_TENANT_ID`、`PDOS_MIGRATION_ACTOR_USER_ID`；未连接老 CEHub 或生产 PDOS，未执行 migration 0020 生产升级。
+- 需 DBA 创建/确认 CEHub 五张源表的独立只读账号，并由人再次授权生产 dry-run。正式 apply 仅在 dry-run 报告与数据 Owner 抽查通过后执行。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 首轮 TDD 导入不存在的 `app.migrations` | 1 | 预期 RED；补冻结映射、只读 source adapter 与原子 target importer 后转绿 |
+| 合成 Gate review 首条 fixture 少一个 `createdBy` 值 | 1 | 修正测试数据列值对齐，随后完整映射/重放/漂移用例全绿 |
+| 首次全仓门禁命中新测试单处 Ruff 格式差异 | 1 | 使用项目格式化器修正并从头重跑 |
+| 前端 `.next/types` 有带 ` 2` 后缀的重复缓存，清理后 tsbuildinfo 仍引用旧路径 | 2 | 将 `.next` 与 `tsconfig.tsbuildinfo` 移至 `/tmp` 可恢复位置，重新生成后 type/build 全绿；未改源码 |

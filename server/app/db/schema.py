@@ -565,6 +565,75 @@ documents = Table(
     schema=PROJECT_SCHEMA,
 )
 
+external_file_references = Table(
+    "external_file_references",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("uploaded_by_user_id", Uuid),
+    Column("source_system", String(64), nullable=False),
+    Column("source_id", String(128), nullable=False),
+    Column("source_hash", String(64), nullable=False),
+    Column("object_key", String(1024), nullable=False),
+    Column("source_url", String(1024)),
+    Column("filename", String(512), nullable=False),
+    Column("media_type", String(128), nullable=False),
+    Column("size_bytes", BigInteger, nullable=False),
+    Column("classification", String(32), nullable=False),
+    Column("stage_code", String(64)),
+    Column("task_source_id", String(128)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(source_system) <> ''", name="source_system_nonblank"),
+    CheckConstraint("btrim(source_id) <> ''", name="source_id_nonblank"),
+    CheckConstraint("source_hash ~ '^[0-9a-f]{64}$'", name="source_hash_hex"),
+    CheckConstraint("btrim(object_key) <> ''", name="object_key_nonblank"),
+    CheckConstraint("btrim(filename) <> ''", name="filename_nonblank"),
+    CheckConstraint("btrim(media_type) <> ''", name="media_type_nonblank"),
+    CheckConstraint("size_bytes >= 0", name="size_nonnegative"),
+    CheckConstraint(
+        "classification IN ('internal', 'confidential', 'restricted')",
+        name="classification_allowed",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_external_file_references_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "uploaded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_external_file_references_tenant_uploader",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_external_file_references_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "source_system",
+        "source_id",
+        name="uq_external_file_references_tenant_source",
+    ),
+    Index(
+        "ix_external_file_references_tenant_project_created",
+        "tenant_id",
+        "project_id",
+        "created_at",
+        "id",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
 document_fragments = Table(
     "document_fragments",
     metadata,
@@ -2281,6 +2350,75 @@ gates = Table(
     schema=PROJECT_SCHEMA,
 )
 
+gate_history_records = Table(
+    "gate_history_records",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("gate_id", Uuid, nullable=False),
+    Column("reviewed_by_user_id", Uuid),
+    Column("source_system", String(64), nullable=False),
+    Column("source_id", String(128), nullable=False),
+    Column("source_hash", String(64), nullable=False),
+    Column("round_number", Integer, nullable=False),
+    Column("reviewed_at", DateTime(timezone=True), nullable=False),
+    Column("participants", Text),
+    Column("decision", String(32), nullable=False),
+    Column("conditions", Text),
+    Column("notes", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(source_system) <> ''", name="source_system_nonblank"),
+    CheckConstraint("btrim(source_id) <> ''", name="source_id_nonblank"),
+    CheckConstraint("source_hash ~ '^[0-9a-f]{64}$'", name="source_hash_hex"),
+    CheckConstraint("round_number > 0", name="round_number_positive"),
+    CheckConstraint(
+        "decision IN ('approved', 'conditional', 'rejected')",
+        name="decision_allowed",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [
+            f"{PROJECT_SCHEMA}.gates.tenant_id",
+            f"{PROJECT_SCHEMA}.gates.project_id",
+            f"{PROJECT_SCHEMA}.gates.id",
+        ],
+        name="fk_gate_history_records_tenant_project_gate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_gate_history_records_tenant_reviewer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_gate_history_records_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "source_system",
+        "source_id",
+        name="uq_gate_history_records_tenant_source",
+    ),
+    Index(
+        "ix_gate_history_records_tenant_project_gate_round",
+        "tenant_id",
+        "project_id",
+        "gate_id",
+        "round_number",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
 gate_signoff_rounds = Table(
     "gate_signoff_rounds",
     metadata,
@@ -3779,6 +3917,98 @@ audit_log = Table(
     schema=AUDIT_SCHEMA,
 )
 
+migration_runs = Table(
+    "migration_runs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("source_system", String(64), nullable=False),
+    Column("source_schema", String(64), nullable=False),
+    Column("source_fingerprint", String(64), nullable=False),
+    Column("selected_project_ids", json_type, nullable=False),
+    Column("status", String(32), nullable=False),
+    Column("stats", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("source_system = 'cehub-v3'", name="source_system_allowed"),
+    CheckConstraint("btrim(source_schema) <> ''", name="source_schema_nonblank"),
+    CheckConstraint("source_fingerprint ~ '^[0-9a-f]{64}$'", name="source_fingerprint_hex"),
+    CheckConstraint("jsonb_typeof(selected_project_ids) = 'array'", name="project_ids_array"),
+    CheckConstraint("status = 'completed'", name="status_allowed"),
+    CheckConstraint("jsonb_typeof(stats) = 'object'", name="stats_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_migration_runs_tenant_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_migration_runs_tenant_id_id"),
+    Index("ix_migration_runs_tenant_created", "tenant_id", "created_at", "id"),
+    schema=AUDIT_SCHEMA,
+)
+
+migration_mappings = Table(
+    "migration_mappings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("run_id", Uuid, nullable=False),
+    Column("source_system", String(64), nullable=False),
+    Column("entity_type", String(32), nullable=False),
+    Column("source_id", String(128), nullable=False),
+    Column("target_id", Uuid, nullable=False),
+    Column("source_hash", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("source_system = 'cehub-v3'", name="source_system_allowed"),
+    CheckConstraint(
+        "entity_type IN ('user', 'project', 'task', 'gate_review', 'file_reference')",
+        name="entity_type_allowed",
+    ),
+    CheckConstraint("btrim(source_id) <> ''", name="source_id_nonblank"),
+    CheckConstraint("source_hash ~ '^[0-9a-f]{64}$'", name="source_hash_hex"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AUDIT_SCHEMA}.migration_runs.tenant_id", f"{AUDIT_SCHEMA}.migration_runs.id"],
+        name="fk_migration_mappings_tenant_run",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_migration_mappings_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "source_system",
+        "entity_type",
+        "source_id",
+        name="uq_migration_mappings_tenant_source_entity",
+    ),
+    Index(
+        "ix_migration_mappings_tenant_target",
+        "tenant_id",
+        "entity_type",
+        "target_id",
+    ),
+    schema=AUDIT_SCHEMA,
+)
+
 
 @dataclass(frozen=True)
 class Tables:
@@ -3790,6 +4020,7 @@ class Tables:
     projects: Table
     project_members: Table
     documents: Table
+    external_file_references: Table
     document_fragments: Table
     specifications: Table
     development_boms: Table
@@ -3815,6 +4046,7 @@ class Tables:
     workflows: Table
     stages: Table
     gates: Table
+    gate_history_records: Table
     gate_signoff_rounds: Table
     gate_signoffs: Table
     gate_signoff_additions: Table
@@ -3834,6 +4066,8 @@ class Tables:
     finding_actions: Table
     events: Table
     audit_log: Table
+    migration_runs: Table
+    migration_mappings: Table
 
 
 tables = Tables(
@@ -3845,6 +4079,7 @@ tables = Tables(
     projects=projects,
     project_members=project_members,
     documents=documents,
+    external_file_references=external_file_references,
     document_fragments=document_fragments,
     specifications=specifications,
     development_boms=development_boms,
@@ -3870,6 +4105,7 @@ tables = Tables(
     workflows=workflows,
     stages=stages,
     gates=gates,
+    gate_history_records=gate_history_records,
     gate_signoff_rounds=gate_signoff_rounds,
     gate_signoffs=gate_signoffs,
     gate_signoff_additions=gate_signoff_additions,
@@ -3889,4 +4125,6 @@ tables = Tables(
     finding_actions=finding_actions,
     events=events,
     audit_log=audit_log,
+    migration_runs=migration_runs,
+    migration_mappings=migration_mappings,
 )
