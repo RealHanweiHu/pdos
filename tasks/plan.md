@@ -4,7 +4,7 @@
 
 本文件是执行控制视图，不是第二份产品计划。产品范围、Sprint 工作项与验收只以 `docs/design/2026-08-09-preview-execution-plan.md` 为准；这里负责把当前工作项拆成单次可实现、可验证的小任务，并在每次交接后保持唯一当前指针。
 
-当前唯一指针：**Sprint 2 Exit Gate**。S0～S2 已实现，Sprint 2 生产部署与人工 smoke 已通过；进入 S3-1 前仍需选择或建立 1–2 个真实双跑项目，并获得人的明确出口确认。
+当前唯一指针：**S3-1 Specification + Development BOM 三型**。S0～S2 已实现并通过人工出口；双跑试点已选定 C4s 与 S18-01。Sprint 3 严格按 S3-1→S3-7 顺序推进。
 
 ## Architecture Decisions
 
@@ -73,7 +73,7 @@ RDS/pgvector/OSS 人工准备可与 S0-1 并行，但 ECS/Nginx/DNS smoke 必须
 
 ### Phase 3+: Canonical Sprint Sequence
 
-S0-3～S2-7 已按唯一执行计划完成。当前执行 Sprint 2 出口：真实项目双跑选择与人工确认；出口通过后再按 S3-1→S3-7、Sprint 4、Sprint 5 与切换退役的 canonical 顺序展开。开始每个工作项时，在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
+S0-3～S2-7 已按唯一执行计划完成，Sprint 2 出口于 2026-08-12 经人明确确认。当前执行 S3-1；此后按 S3-2→S3-7、Sprint 4、Sprint 5 与切换退役的 canonical 顺序展开。开始每个工作项时，在 `tasks/todo.md` 写入该项的 3–5 个实现切片，不提前复制后续 Sprint 细节。
 
 ## Risks and Mitigations
 
@@ -87,4 +87,4 @@ S0-3～S2-7 已按唯一执行计划完成。当前执行 Sprint 2 出口：真�
 
 ## Open Questions
 
-- Sprint 2 试点需要哪 1–2 个真实 Project？当前生产 PDOS 库在 2026-08-12 部署抽查时 Project 数为 0；对现役 CEHub 的只读盘点已记录 4 个候选，推荐人工评估 `C4s 手持充气泵` + `S18-01 便携户外充气泵`。候选不等于选定，仍需人确认负责人、reviewer、观察窗口与退出条件；迁移留待 canonical S3-7。
+- S3-1 无开放产品决策；实体、状态、SoR 边界与验收以冻结规格为准。双跑试点迁移仍留待 canonical S3-7，迁移前生产 PDOS Project 数为 0 是已知基线。

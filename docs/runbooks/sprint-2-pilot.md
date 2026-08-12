@@ -25,15 +25,17 @@ Sprint 2 出口只完成试点能力与安全门禁；具体选择 1–2 个真�
 
 ## Sprint 2 Exit 人工记录
 
-- 试点项目 1：待产品负责人填写
-- 试点项目 2：可选，待产品负责人填写
-- 负责人 / reviewer：待填写
-- 启动日期：待填写
-- 退出条件：待填写
+- 试点项目 1：C4s 手持充气泵（CEHub `zGpNH0Xq`）
+- 试点项目 2：S18-01 便携户外充气泵（CEHub `aBnbEdQG`）
+- 负责人：董木榮（两个项目的现役 `project_manager`）
+- Engineer reviewer：艾家力（`rd_hw`）、张建营（`rd_mech`）
+- 观察窗口：2026-08-12 至 2026-08-26（至少两周）
+- 退出条件：完成 S3-7 dry-run 与幂等迁移演练；两个项目的 Project/Task/Gate/User/File 引用抽查一致；至少走通一条真实事件→Finding→人工裁决→独立 Apply 链路；无越权、引用失效或伪装降级；形成接受率、实际 Apply 数、拒绝原因、收窄状态与 reviewer 负担复盘记录
+- 人工确认：2026-08-12，产品负责人明确回复“确认采用推荐试点配置，进入 Sprint 3”
 
 ## 现役 CEHub 候选盘点（未选中）
 
-2026-08-12 对现役 CEHub 做只读盘点：共 4 个未归档项目。下表仅用于缩短人工决策，不代表 Agent 已替产品负责人选定项目，也未触发迁移、订阅或生产写入。
+2026-08-12 对现役 CEHub 做只读盘点：共 4 个未归档项目。下表保留选择依据；最终选定结果以上方人工记录为准。确认动作本身未触发迁移、订阅或生产写入。
 
 | 候选 | 生命周期 / 阶段 | 进度 | 可用于试点的数据迹象 | 建议 |
 |---|---|---:|---|---|
@@ -42,6 +44,4 @@ Sprint 2 出口只完成试点能力与安全门禁；具体选择 1–2 个真�
 | D14-04 便携自行车泵（`WqWcl0wK`） | active / concept | 0% | 32 tasks、2 files、2 deliverable reviews、4 members | 备选，与 S18-01 数据量相近 |
 | D15-05 便携自行车泵（`xY8-PGbc`） | active / concept | 0% | 32 tasks、2 files、2 deliverable reviews、4 members | 备选，与 S18-01 数据量相近 |
 
-人工确认时仍需补齐负责人、Engineer reviewer、启动日期、至少两周观察窗口及退出条件；这些信息不能从对象数量推断。
-
-两个推荐项目当前都登记董木榮为 `project_manager`，并都有艾家力（`rd_hw`）与张建营（`rd_mech`）两名工程成员；这些成员关系可作为负责人/reviewer 的人工确认候选，但不自动构成试点任命。S18-01 另登记胡瀚巍为 product owner；C4s 当前未在项目字段中登记 product owner。
+两个选定项目当前都登记董木榮为 `project_manager`，并都有艾家力（`rd_hw`）与张建营（`rd_mech`）两名工程成员。S18-01 另登记胡瀚巍为 product owner；C4s 当前未在项目字段中登记 product owner。

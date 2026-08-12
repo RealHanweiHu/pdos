@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 2 Exit Gate。** S2-1 至 S2-7 已完成；正在执行完整质量门禁与验收汇报，随后必须等待人选择试点项目并明确确认，才能进入 Sprint 3。
+> 唯一当前指针：**S3-1 Specification + Development BOM 三型。** Sprint 2 出口已于 2026-08-12 经人明确确认；双跑试点为 C4s 与 S18-01。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -698,9 +698,33 @@
 - `server/golden/correction-candidates/`、人工学习环 runbook 与静态门禁建立；运行时无任何 golden 根写接口，评测脚本仍只生成报告且不自动发布资格。
 - Sprint 2 试点 runbook 已冻结入选、启动、停止与观测口径。真实 1–2 个项目的选择保留为 Sprint Exit 人工决策，不由 Agent 自行挑选或改变生产状态。
 
-## Sprint 2 Exit Gate — Awaiting explicit human confirmation
+## Completed: Sprint 2 Exit Gate
 
 - [x] 汇报 Sprint 2 验收结果；生产部署与人工 smoke 证据见 `docs/reports/2026-08-12-sprint-2-production-deployment.md`
 - [x] 只读盘点现役 CEHub 的 4 个未归档项目，并在 `docs/runbooks/sprint-2-pilot.md` 记录未选中候选与建议
-- [ ] 由人选择 1–2 个真实双跑项目并填写 `docs/runbooks/sprint-2-pilot.md`
-- [ ] 获得人明确确认后才进入 Sprint 3
+- [x] 由人选择 C4s 与 S18-01 两个真实双跑项目，并填写 `docs/runbooks/sprint-2-pilot.md`
+- [x] 获得人明确确认，进入 Sprint 3（2026-08-12）
+
+## Current: S3-1 Specification + Development BOM 三型
+
+**Definition of Ready**
+
+- [x] 规格出处：`PostgreSQL_Schema_Design.md`、`Product_Flow.md`、`System_of_Record_Matrix.md`、`RBAC_and_Audit.md` 与 canonical S3-1
+- [x] 依赖项：Sprint 2 出口已确认；Project、Event/Audit、RBAC 与人工写路径已就绪
+- [x] 范围冻结：Specification + EBOM / Prototype BOM / Cost BOM；MBOM/Routing 仅保存 ERP 引用，不成为 PDOS SoR
+- [x] 下一迁移号冻结为 `0015`，单调递增且不复用
+
+**Implementation slices**
+
+- [ ] S3-1a：从冻结规格提取 Specification/BOM 字段、状态、关系、SoR 与 RBAC 契约，建立会失败的迁移/模型契约测试
+- [ ] S3-1b：migration 0015 建立 Specification、BOM 与 BOM Item 数据边界、租户完整性和 ERP 引用约束
+- [ ] S3-1c：实现 Specification 与三型 BOM 的服务/API 写读路径，写操作同事务产出事件与审计
+- [ ] S3-1d：实现 Project Workspace 中 Specification/BOM 最小纵向界面与同源 BFF，权限/错误/空态可用
+- [ ] S3-1e：完成聚焦测试、迁移往返、完整门禁和真实 API/浏览器路径验收
+
+**Acceptance evidence required**
+
+- [ ] 同一项目可建立 Specification 与 EBOM / Prototype BOM / Cost BOM，三型语义和版本可区分
+- [ ] PDOS 不创建 MBOM/Routing 业务真值；仅允许经过约束的外部 ERP 引用
+- [ ] 跨租户对象与 BOM 引用 fail-close；所有写入同事务落版本化 event + immutable audit
+- [ ] migration 0015 downgrade→upgrade 保持单 head/无 metadata drift；完整门禁与运行时路径全绿
