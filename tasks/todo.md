@@ -1017,8 +1017,9 @@
 - 旧账号只迁移身份且默认禁用，不复用密码哈希；每个项目按源类型实例化独立版本化 Workflow/Stage/Gate，OBT 使用独立 `obt-gate-v1` 策略，Gate 全轮历史保留，文件只保留旧 OSS 引用而不复制正文或伪装成新文档。
 - 合成 CEHub 源库完成 S18-01 形态验收：2 User、1 Project、2 Task、2 Gate review、1 File reference；dry-run `target_writes=0`，apply 建立 8 个稳定映射，第二次 apply 五类 created 均为 0，修改已迁移源行后 `SOURCE_CHANGED` 阻断。
 - CLI 强制 `--dry-run` / `--apply` 二选一、至少一个 `--project-id`、源/目标数据库名不同；JSON 报告不输出连接串，落盘权限为 `0600`。运行手册见 `docs/runbooks/cehub-migration-v1.md`。
-- 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 261 tests，ESLint/Ruff/format、TypeScript/mypy 159 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮、可写源账号 fail-close、Prisma-only URL 参数兼容，以及同一项目 EVT→DVT→PVT/ECN 出口纵向闭环。
+- 显式隔离库执行 `make check` 全绿并在容器化运行手册契约加入后复跑后端：Web 99 tests、Server 273 tests，ESLint/Ruff/format、TypeScript/mypy 160 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮、可写源账号 fail-close、Prisma-only URL 参数兼容，以及同一项目 EVT→DVT→PVT/ECN 出口纵向闭环。
 - intended-vs-implemented 审计补齐 canonical 冻结但仓库缺失的 `scripts/deploy-ecs.sh`：生产入口分为 preflight/build/deploy/status/rollback，deploy/rollback 均要求与 git SHA 绑定的人工确认；固定执行 migration→Agent 最小权限重施加/验证→无依赖运行服务→本机/公网健康与限时日志扫描，回滚不运行旧迁移器或数据库 downgrade。API 候选镜像以本地缓存的同版本基础镜像真实构建成功，非 root UID、内置 SQL 与两个 CLI 入口 smoke 通过。
+- S3-7 apply 已与人审 dry-run 真值绑定：CLI 要求完整获批 `source_fingerprint`，并以租户+fingerprint+有序项目选择器生成二次确认口令；源快照变化在目标写入前以 `SOURCE_SNAPSHOT_NOT_APPROVED` 阻断。生产入口同时验证同一批准 RDS、独立账号、异库与 verify-full/固定 CA；报告以原子 `0600` 文件落盘并拒绝 symlink，消除先写后 chmod 窗口。
 
 **Human-authorized environment gate（pending）**
 

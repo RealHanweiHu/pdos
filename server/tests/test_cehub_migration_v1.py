@@ -375,6 +375,37 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
             "runs": _tenant_count(migration_database_url, tables.migration_runs, tenant_id),
         }
 
+        with pytest.raises(ValueError, match="approved dry-run source fingerprint"):
+            migrate_cehub_v1(
+                source_engine=source_engine,
+                target_engine=target_engine,
+                tenant_id=tenant_id,
+                actor_user_id=actor_id,
+                project_ids=("S18-01",),
+                source_schema=SOURCE_SCHEMA,
+                dry_run=False,
+            )
+
+        with pytest.raises(MigrationValidationError) as unapproved_snapshot:
+            migrate_cehub_v1(
+                source_engine=source_engine,
+                target_engine=target_engine,
+                tenant_id=tenant_id,
+                actor_user_id=actor_id,
+                project_ids=("S18-01",),
+                source_schema=SOURCE_SCHEMA,
+                dry_run=False,
+                expected_source_fingerprint="0" * 64,
+            )
+        assert {error.code for error in unapproved_snapshot.value.report.errors} == {
+            "SOURCE_SNAPSHOT_NOT_APPROVED"
+        }
+        assert before == {
+            "projects": _tenant_count(migration_database_url, tables.projects, tenant_id),
+            "mappings": _tenant_count(migration_database_url, tables.migration_mappings, tenant_id),
+            "runs": _tenant_count(migration_database_url, tables.migration_runs, tenant_id),
+        }
+
         applied = migrate_cehub_v1(
             source_engine=source_engine,
             target_engine=target_engine,
@@ -383,6 +414,7 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
             project_ids=("S18-01",),
             source_schema=SOURCE_SCHEMA,
             dry_run=False,
+            expected_source_fingerprint=dry_run.source_fingerprint,
         )
         assert applied.status == "completed"
         assert applied.created_counts == {
@@ -416,6 +448,7 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
             project_ids=("S18-01",),
             source_schema=SOURCE_SCHEMA,
             dry_run=False,
+            expected_source_fingerprint=dry_run.source_fingerprint,
         )
         assert replay.created_counts == {key: 0 for key in applied.created_counts}
         assert replay.skipped_counts == applied.created_counts
@@ -450,6 +483,7 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
                 project_ids=("S18-01",),
                 source_schema=SOURCE_SCHEMA,
                 dry_run=False,
+                expected_source_fingerprint=dry_run.source_fingerprint,
             )
     finally:
         source_engine.dispose()
@@ -464,6 +498,15 @@ def test_project_number_selection_imports_npd_and_obt_workflow_shapes(
     source_engine = _source_engine(migration_database_url)
     target_engine = create_engine(psycopg_database_url(migration_database_url))
     try:
+        dry_run = migrate_cehub_v1(
+            source_engine=source_engine,
+            target_engine=target_engine,
+            tenant_id=tenant_id,
+            actor_user_id=actor_id,
+            project_ids=("C4s", "S18-01"),
+            source_schema=SOURCE_SCHEMA,
+            dry_run=True,
+        )
         report = migrate_cehub_v1(
             source_engine=source_engine,
             target_engine=target_engine,
@@ -472,6 +515,7 @@ def test_project_number_selection_imports_npd_and_obt_workflow_shapes(
             project_ids=("C4s", "S18-01"),
             source_schema=SOURCE_SCHEMA,
             dry_run=False,
+            expected_source_fingerprint=dry_run.source_fingerprint,
         )
         assert report.status == "completed"
         assert report.selected_project_ids == ("zGpNH0Xq", "aBnbEdQG")

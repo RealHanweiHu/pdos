@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime, time
 from typing import Any
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
@@ -23,6 +24,7 @@ from app.domain.workflow_templates import (
 
 SOURCE_SYSTEM = "cehub-v3"
 SOURCE_SCHEMA_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+SOURCE_FINGERPRINT_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 _USER_ROLE_MAP = {
     "owner": "admin",
@@ -1481,6 +1483,7 @@ def migrate_cehub_v1(
     project_ids: tuple[str, ...],
     source_schema: str = "public",
     dry_run: bool = True,
+    expected_source_fingerprint: str | None = None,
 ) -> MigrationReport:
     """Validate or atomically import a bounded CEHub project snapshot.
 
@@ -1489,6 +1492,11 @@ def migrate_cehub_v1(
     all-or-nothing batch plus immutable source-to-target mapping rows.
     """
 
+    if not dry_run and (
+        expected_source_fingerprint is None
+        or SOURCE_FINGERPRINT_PATTERN.fullmatch(expected_source_fingerprint) is None
+    ):
+        raise ValueError("apply requires the approved dry-run source fingerprint")
     source_schema = validate_source_schema(source_schema)
     snapshot = CeHubSourceAdapter(source_engine, source_schema=source_schema).read_snapshot(
         project_ids=project_ids
@@ -1501,6 +1509,24 @@ def migrate_cehub_v1(
         source_schema=source_schema,
         dry_run=dry_run,
     )
+    if (
+        not dry_run
+        and expected_source_fingerprint is not None
+        and not hmac.compare_digest(snapshot.fingerprint, expected_source_fingerprint)
+    ):
+        report = replace(
+            report,
+            status="invalid",
+            errors=report.errors
+            + (
+                MigrationError(
+                    code="SOURCE_SNAPSHOT_NOT_APPROVED",
+                    entity_type="source_snapshot",
+                    source_id=snapshot.fingerprint,
+                    message=("current source snapshot differs from the human-approved dry-run"),
+                ),
+            ),
+        )
     if report.errors:
         if dry_run:
             return report
