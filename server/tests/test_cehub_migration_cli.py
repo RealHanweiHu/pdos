@@ -182,4 +182,6 @@ def test_runbook_uses_the_exact_non_root_candidate_image_and_read_only_container
     assert "docker run --rm --read-only --security-opt no-new-privileges" in runbook
     assert "--env-file .env.production" in runbook
     assert "dst=/reports" in runbook
+    assert "PDOS_MIGRATION_REPORT_DIR" in runbook
+    assert "$(pwd)/output/migrations" not in runbook
     assert "不能在宿主机直接运行 Python" in runbook

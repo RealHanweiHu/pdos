@@ -12,11 +12,30 @@
 
 ## 2. 发布前检查
 
-1. 记录待部署 commit 和当前线上 commit；设置唯一镜像标签，例如 `PDOS_IMAGE_TAG=<git-sha>`。
+1. 记录待部署完整 commit SHA 和当前线上 commit。本地只用 `./scripts/package-release.sh` 从该 git commit 生成 Git bundle；禁止 rsync/cp 当前工作树。bundle 保留 Git commit/tree 对象，传输或内容被修改后不能继续解析为同一 SHA。
 2. 确认 `DATABASE_URL` 使用 `pdos_app`、数据库名 `pdos`、`sslmode=verify-full` 与容器内 CA 路径。
 3. 确认 `JWT_SECRET` 至少 32 字节且与开发值不同；确认 `APP_PORT=3002`。
-4. 在本地隔离的 `pdos_test` 运行 `make verify-sprint-0`，全部门禁全绿后才上传代码。
-5. 在 ECS 先把 `.env.production` 权限设为 `0600`，再运行 `./scripts/deploy-ecs.sh build`。该动作先校验发布文件与 Compose，再构建以 commit SHA 标记的镜像，并在隔离容器内校验完整生产配置；失败时禁止执行 migration/up。检查不打印配置值或 secrets。
+4. 在本地隔离的 `pdos_test` 运行 `make verify-sprint-0`，全部门禁全绿后执行 `./scripts/package-release.sh`，只上传生成的 `pdos-<full-git-sha>.bundle`。
+5. ECS 必须先 `git bundle verify`，再从 bundle clone 到一个全新、以完整 SHA 命名的目录；复制现有 `.env.production` 后保持 `0600`，并把其中 `PDOS_IMAGE_TAG` 设置为同一完整 SHA。不得覆盖旧目录。示例：
+
+   ```bash
+   export PDOS_RELEASE_SHA='<full-git-sha>'
+   export PDOS_RELEASE_DIR="/opt/pdos-releases/${PDOS_RELEASE_SHA}"
+   export PDOS_VERIFY_DIR="/opt/pdos-release-verification/${PDOS_RELEASE_SHA}"
+   test ! -e "$PDOS_RELEASE_DIR"
+   test ! -e "$PDOS_VERIFY_DIR"
+   install --directory --mode 0750 /opt/pdos-release-verification
+   git init --bare "$PDOS_VERIFY_DIR"
+   git -C "$PDOS_VERIFY_DIR" bundle verify "/secure-upload/pdos-${PDOS_RELEASE_SHA}.bundle"
+   git clone "/secure-upload/pdos-${PDOS_RELEASE_SHA}.bundle" "$PDOS_RELEASE_DIR"
+   test "$(git -C "$PDOS_RELEASE_DIR" rev-parse HEAD)" = "$PDOS_RELEASE_SHA"
+   install --mode 0600 /opt/pdos/.env.production "$PDOS_RELEASE_DIR/.env.production"
+   cd "$PDOS_RELEASE_DIR"
+   # 用权限保持型编辑器将 PDOS_IMAGE_TAG 改为 $PDOS_RELEASE_SHA
+   ./scripts/deploy-ecs.sh build
+   ```
+
+   `build` 会先验证 Git HEAD 等于配置 SHA，且除 `.env.production` 外不存在 tracked 修改、untracked 或 ignored 文件；再构建带 `org.opencontainers.image.revision` 标签的 API/Web 镜像并复核标签。任一不一致都禁止 migration/up，检查不打印配置值或 secrets。
 
 ## 3. ECS 启动顺序
 
@@ -147,6 +166,8 @@ export PDOS_ROLLBACK_CONFIRM=rollback:<previous-git-sha>
 ./scripts/deploy-ecs.sh rollback
 unset PDOS_ROLLBACK_CONFIRM PDOS_ROLLBACK_IMAGE_TAG
 ```
+
+首次采用 revision 标签前的旧镜像没有 OCI revision。该一次性兼容回滚会额外给出同时绑定旧 tag、API image ID、Web image ID 的 `PDOS_LEGACY_ROLLBACK_CONFIRM` 期望值；必须由人核对部署前记录的两个 image ID 后再设置。标签存在但与 tag 不同的镜像永不允许回滚。
 
 3. 若新 Nginx 配置导致故障，恢复 Nginx Compose、TLS 配置和 hook 备份，校验后只强制重建 Nginx。
 4. 复查 `/healthz`、`/login`、`/api/session/status` 与日志；记录故障时间、commit、迁移 head 和处置结果。

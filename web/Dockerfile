@@ -24,6 +24,10 @@ RUN pnpm build
 
 FROM ${NODE_BASE_IMAGE} AS runtime
 
+ARG PDOS_IMAGE_REVISION
+
+LABEL org.opencontainers.image.revision=${PDOS_IMAGE_REVISION}
+
 ENV HOSTNAME="0.0.0.0" \
     NODE_ENV="production" \
     NEXT_TELEMETRY_DISABLED=1 \

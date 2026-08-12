@@ -37,11 +37,13 @@
 5. PVT Gate 未批准时 Handoff ready 返回 `HANDOFF_PVT_GATE_REQUIRED`；完成 PVT 事实和 Gate 后 Handoff 进入 ready，再推进 MP；
 6. 数据库终态复核三个 Gate 全 approved、一个 ECN、Handoff ready、当前 Stage=MP、`GATE_APPROVED` 恰好三条。
 
-加入该测试、真实 CEHub URL 兼容回归及生产部署链契约后，全仓 `make check` 已从头通过，并在容器化迁移运行手册契约加入后复跑后端：Web 99 tests、Server 273 tests，ESLint/Ruff/format、TypeScript、mypy 160 source files、Next.js production build 与 Python compile 全绿。
+加入该测试、真实 CEHub URL 兼容回归及生产部署链契约后，全仓 `make check` 已从头通过：Web 99 tests、Server 274 tests，ESLint/Ruff/format、TypeScript、mypy 160 source files、Next.js production build 与 Python compile 全绿。
 
 同一轮 intended-vs-implemented 审计还发现 canonical 冻结的 `scripts/deploy-ecs.sh` 尚未落库。现已补齐分阶段 preflight/build/deploy/status/rollback 入口：生产 deploy/rollback 使用与 git SHA 绑定的人工确认，migration 后强制重施加并验证 Agent 数据库最小权限，运行服务以 `--no-deps` 启动，回滚只切换已存在镜像且不执行旧迁移或数据库 downgrade。API 候选镜像完成真实非 root/内置安全 SQL/CLI smoke；该能力交付不构成当前生产应用部署授权。
 
 审计进一步证明首次 apply 原先只绑定项目选择器，没有绑定数据 Owner 已审 dry-run 的源快照；源行若在签字与首次 apply 之间变化，旧 mapping 尚不存在，`SOURCE_CHANGED` 无法阻断。现生产 CLI 强制提供获批完整 `source_fingerprint`，二次确认口令绑定租户/fingerprint/有序项目范围；当前快照不一致时在目标写入前返回 `SOURCE_SNAPSHOT_NOT_APPROVED`。同一入口还在连接前验证批准 RDS/异库/独立角色/TLS+CA，迁移报告原子以 `0600` 落盘并拒绝 symlink。
+
+发布链复核又发现仅以环境变量给镜像打 SHA tag，不能证明 ECS 工作目录和镜像内容来自该 commit。现只允许从 `HEAD` 生成并验证 Git bundle，ECS 在独立 bare repository 验证后 clone 到全新目录；部署入口要求完整 40 位 SHA，核对 Git HEAD 并拒绝除 `.env.production` 外的全部文件漂移。API/Web 镜像写入且复核同一 OCI revision；一次性旧镜像兼容回滚另绑定两个实际 image ID。迁移报告目录移出 release 工作树，两个候选镜像的 revision label 已真实 inspect，相关聚焦 24 tests 与全仓门禁均通过。
 
 ## 当前开放门禁
 

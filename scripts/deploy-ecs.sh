@@ -23,13 +23,18 @@ require_release_files() {
     echo "Deployment refused: environment file must be owned by the deploy user with mode 0600" >&2
     return 1
   fi
-  for required_file in compose.production.yaml server/Dockerfile web/Dockerfile; do
+  if [[ ! -d .git ]]; then
+    echo "Deployment refused: release directory must be cloned from a verified git bundle" >&2
+    return 1
+  fi
+  for required_file in \
+    compose.production.yaml scripts/verify-release-source.sh server/Dockerfile web/Dockerfile; do
     if [[ ! -f "$required_file" ]]; then
       echo "Deployment refused: release file is missing: $required_file" >&2
       return 1
     fi
   done
-  for command_name in docker curl python3; do
+  for command_name in docker curl git python3; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
       echo "Deployment refused: required command is missing: $command_name" >&2
       return 1
@@ -85,13 +90,45 @@ compose_config() {
 release_identity() {
   image_tag="$(env_value PDOS_IMAGE_TAG)"
   app_port="$(env_value APP_PORT)"
-  if [[ ! "$image_tag" =~ ^[0-9a-f]{7,40}$ ]]; then
-    echo "Deployment refused: PDOS_IMAGE_TAG must be a git commit SHA" >&2
+  if [[ ! "$image_tag" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Deployment refused: PDOS_IMAGE_TAG must be a full git commit SHA" >&2
     return 1
   fi
+  scripts/verify-release-source.sh "$image_tag" >/dev/null
   if [[ "$app_port" != "3002" ]]; then
     echo "Deployment refused: APP_PORT must remain 3002" >&2
     return 1
+  fi
+}
+
+verify_image_revisions() {
+  local expected_revision="$1"
+  local allow_legacy="${2:-false}"
+  local image_name
+  local image_revision
+  local image_id
+  local legacy_ids=()
+  for image_name in "pdos-api:${expected_revision}" "pdos-web:${expected_revision}"; do
+    image_revision="$(
+      docker image inspect \
+        --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}' \
+        "$image_name"
+    )"
+    if [[ "$image_revision" == "$expected_revision" ]]; then
+      continue
+    fi
+    if [[ "$allow_legacy" == "true" && \
+          ( -z "$image_revision" || "$image_revision" == "<no value>" ) ]]; then
+      image_id="$(docker image inspect --format '{{.Id}}' "$image_name")"
+      legacy_ids+=("${image_id#sha256:}")
+      continue
+    fi
+    echo "Release refused: image revision label does not match its tag" >&2
+    return 1
+  done
+  if [[ "${#legacy_ids[@]}" -gt 0 ]]; then
+    require_confirmation PDOS_LEGACY_ROLLBACK_CONFIRM \
+      "legacy-rollback:${expected_revision}:$(IFS=:; echo "${legacy_ids[*]}")"
   fi
 }
 
@@ -107,7 +144,7 @@ require_confirmation() {
 
 container_preflight() {
   local api_image="pdos-api:${image_tag}"
-  docker image inspect "$api_image" >/dev/null
+  verify_image_revisions "$image_tag"
   docker run --rm --read-only --env-file "$env_file" "$api_image" \
     python -m scripts.check_production_env --from-environment
 }
@@ -175,12 +212,12 @@ rollback_release() {
   require_release_files
   release_identity
   local rollback_tag="${PDOS_ROLLBACK_IMAGE_TAG:-}"
-  if [[ ! "$rollback_tag" =~ ^[0-9a-f]{7,40}$ ]]; then
-    echo "Rollback refused: PDOS_ROLLBACK_IMAGE_TAG must be a prior git commit SHA" >&2
+  if [[ ! "$rollback_tag" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Rollback refused: PDOS_ROLLBACK_IMAGE_TAG must be a prior full git commit SHA" >&2
     return 1
   fi
   require_confirmation PDOS_ROLLBACK_CONFIRM "rollback:${rollback_tag}"
-  docker image inspect "pdos-api:${rollback_tag}" "pdos-web:${rollback_tag}" >/dev/null
+  verify_image_revisions "$rollback_tag" true
   PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
     up -d --no-deps --no-build --wait api dispatcher executor
   PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \

@@ -28,6 +28,10 @@ COPY certs/ApsaraDB-CA-Chain.pem /app/certs/ApsaraDB-CA-Chain.pem
 
 FROM ${PYTHON_BASE_IMAGE} AS runtime
 
+ARG PDOS_IMAGE_REVISION
+
+LABEL org.opencontainers.image.revision=${PDOS_IMAGE_REVISION}
+
 ENV PATH="/app/server/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1

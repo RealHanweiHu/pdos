@@ -1,3 +1,4 @@
+import subprocess
 from pathlib import Path
 from typing import cast
 
@@ -101,6 +102,8 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     next_config = (REPOSITORY_ROOT / "web" / "next.config.ts").read_text()
     api_build = cast(dict[str, object], services["api"]["build"])
     api_build_args = cast(dict[str, str], api_build["args"])
+    web_build = cast(dict[str, object], services["web"]["build"])
+    web_build_args = cast(dict[str, str], web_build["args"])
 
     assert "USER pdos" in server_dockerfile
     assert "COPY server/golden ./golden" in server_dockerfile
@@ -113,6 +116,14 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     assert api_build_args["UV_DEFAULT_INDEX"] == (
         "${PDOS_UV_DEFAULT_INDEX:-https://pypi.org/simple}"
     )
+    assert api_build_args["PDOS_IMAGE_REVISION"] == (
+        "${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"
+    )
+    assert web_build_args["PDOS_IMAGE_REVISION"] == (
+        "${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"
+    )
+    assert "org.opencontainers.image.revision=${PDOS_IMAGE_REVISION}" in server_dockerfile
+    assert "org.opencontainers.image.revision=${PDOS_IMAGE_REVISION}" in web_dockerfile
     assert "ARG NODE_BASE_IMAGE=" in web_dockerfile
     assert server_dockerfile.count("@sha256:") == 2
     assert web_dockerfile.count("@sha256:") == 1
@@ -143,6 +154,12 @@ def test_sprint_zero_runbook_has_preflight_smoke_and_rollback_gates() -> None:
     assert "公开前" in runbook
     assert "SSH 端口转发" in runbook
     assert "scripts/deploy-ecs.sh" in runbook
+    assert "scripts/package-release.sh" in runbook
+    assert 'git -C "$PDOS_VERIFY_DIR" bundle verify' in runbook
+    assert 'git init --bare "$PDOS_VERIFY_DIR"' in runbook
+    assert "git clone" in runbook
+    assert "org.opencontainers.image.revision" in runbook
+    assert 'test ! -e "$PDOS_RELEASE_DIR"' in runbook
     assert "PDOS_DEPLOY_CONFIRM" in runbook
     assert "PDOS_ROLLBACK_CONFIRM" in runbook
     assert "重施加并验证 Agent 最小权限" in runbook
@@ -199,6 +216,8 @@ def test_ecs_deploy_entrypoint_is_staged_confirmed_and_observable() -> None:
     assert "PDOS_DEPLOY_CONFIRM" in source
     assert "mode 0600" in source
     assert "env -i" in source
+    assert "scripts/verify-release-source.sh" in source
+    assert "org.opencontainers.image.revision" in source
     assert "PDOS_COMPOSE_IMAGE_TAG_OVERRIDE" in source
     assert "compose_config run --rm --no-deps migrate" in source
     assert "scripts.apply_agent_runtime_security" in source
@@ -220,10 +239,93 @@ def test_ecs_rollback_never_runs_an_old_migrator_or_downgrades_the_database() ->
 
     assert "PDOS_ROLLBACK_CONFIRM" in rollback
     assert "PDOS_ROLLBACK_IMAGE_TAG" in rollback
+    assert "PDOS_LEGACY_ROLLBACK_CONFIRM" in source
+    assert 'verify_image_revisions "$rollback_tag" true' in rollback
     assert "--no-deps --no-build --wait api dispatcher executor" in rollback
     assert "--no-deps --no-build --wait web" in rollback
     assert "migrate" not in rollback
     assert "downgrade" not in rollback
+
+
+def test_release_packager_creates_a_commit_exact_verified_git_bundle(tmp_path: Path) -> None:
+    package_script = REPOSITORY_ROOT / "scripts" / "package-release.sh"
+    source = package_script.read_text()
+
+    assert package_script.stat().st_mode & 0o111
+    assert 'git -C "$repository_root" bundle create' in source
+    assert "bundle verify" in source
+    assert "bundle list-heads" in source
+    assert "mktemp" in source
+    assert "cp -R" not in source
+
+    result = subprocess.run(
+        [str(package_script), str(tmp_path)],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    bundle = Path(result.stdout.strip())
+    repeated_result = subprocess.run(
+        [str(package_script), str(tmp_path)],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert Path(repeated_result.stdout.strip()) == bundle
+    verification_repository = tmp_path / "verification.git"
+    subprocess.run(
+        ["git", "init", "--quiet", "--bare", str(verification_repository)],
+        check=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(verification_repository), "bundle", "verify", str(bundle)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    bundled_head = subprocess.run(
+        ["git", "bundle", "list-heads", str(bundle)],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.split()[0]
+    repository_head = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert bundled_head == repository_head
+
+    clone = tmp_path / "clone"
+    subprocess.run(
+        ["git", "clone", "--quiet", str(bundle), str(clone)],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+    )
+    (clone / ".env.production").write_text("SECRET=not-printed\n")
+    verifier = REPOSITORY_ROOT / "scripts" / "verify-release-source.sh"
+    subprocess.run([str(verifier), repository_head], cwd=clone, check=True)
+
+    (clone / "README.md").write_text("tampered\n")
+    tracked_drift = subprocess.run(
+        [str(verifier), repository_head], cwd=clone, capture_output=True, text=True
+    )
+    assert tracked_drift.returncode != 0
+    subprocess.run(
+        ["git", "restore", "--source=HEAD", "--", "README.md"],
+        cwd=clone,
+        check=True,
+    )
+    (clone / "unexpected.txt").write_text("unexpected\n")
+    untracked_drift = subprocess.run(
+        [str(verifier), repository_head], cwd=clone, capture_output=True, text=True
+    )
+    assert untracked_drift.returncode != 0
 
 
 def test_runtime_security_apply_helper_is_fail_closed_and_does_not_log_database_url() -> None:

@@ -46,12 +46,13 @@ REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
 ./scripts/deploy-ecs.sh build
 export PDOS_MIGRATION_IMAGE='pdos-api:<approved-git-sha>'
 docker image inspect "$PDOS_MIGRATION_IMAGE" >/dev/null
-install --directory --mode 0700 --owner 10001 --group 10001 output/migrations
+export PDOS_MIGRATION_REPORT_DIR="/opt/pdos-migration-reports/${PDOS_MIGRATION_IMAGE#pdos-api:}"
+install --directory --mode 0700 --owner 10001 --group 10001 "$PDOS_MIGRATION_REPORT_DIR"
 
 docker run --rm --read-only --security-opt no-new-privileges \
   --tmpfs /tmp:rw,noexec,nosuid,size=64m \
   --env-file .env.production \
-  --mount type=bind,src="$(pwd)/output/migrations",dst=/reports \
+  --mount type=bind,src="$PDOS_MIGRATION_REPORT_DIR",dst=/reports \
   "$PDOS_MIGRATION_IMAGE" python -m scripts.migrate_cehub_v1 \
   --dry-run \
   --project-id C4s \
@@ -83,7 +84,7 @@ docker run --rm --read-only --security-opt no-new-privileges \
   --env-file .env.production \
   --env PDOS_MIGRATION_APPROVED_SOURCE_FINGERPRINT \
   --env PDOS_MIGRATION_APPLY_CONFIRM \
-  --mount type=bind,src="$(pwd)/output/migrations",dst=/reports \
+  --mount type=bind,src="$PDOS_MIGRATION_REPORT_DIR",dst=/reports \
   "$PDOS_MIGRATION_IMAGE" python -m scripts.migrate_cehub_v1 \
   --apply \
   --project-id C4s \
@@ -100,7 +101,7 @@ apply 会在任何目标写入前重新冻结源快照，并与获批 fingerprin
 
 ## 4. 幂等重放与抽样 SQL
 
-以相同 `PDOS_MIGRATION_APPROVED_SOURCE_FINGERPRINT` 和相同确认口令原命令再次 `--apply`，仅把报告文件名改为 `cehub-v1-replay.json`。通过条件：`created_counts` 五类全部为 `0`，`skipped_counts == source_counts`，业务表和 mapping 行数不增加；只新增一条成功运行审计记录。重放验证完成后执行 `unset PDOS_MIGRATION_APPLY_CONFIRM PDOS_MIGRATION_APPROVED_SOURCE_FINGERPRINT PDOS_MIGRATION_TENANT_CONFIRM PDOS_MIGRATION_IMAGE`。
+以相同 `PDOS_MIGRATION_APPROVED_SOURCE_FINGERPRINT` 和相同确认口令原命令再次 `--apply`，仅把报告文件名改为 `cehub-v1-replay.json`。通过条件：`created_counts` 五类全部为 `0`，`skipped_counts == source_counts`，业务表和 mapping 行数不增加；只新增一条成功运行审计记录。重放验证完成后执行 `unset PDOS_MIGRATION_APPLY_CONFIRM PDOS_MIGRATION_APPROVED_SOURCE_FINGERPRINT PDOS_MIGRATION_TENANT_CONFIRM PDOS_MIGRATION_IMAGE PDOS_MIGRATION_REPORT_DIR`。
 
 以下 SQL 仅示意，参数由 DBA 绑定，不直接拼接：
 
