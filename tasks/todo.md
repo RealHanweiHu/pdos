@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S3-1 Specification + Development BOM 三型。** Sprint 2 出口已于 2026-08-12 经人明确确认；双跑试点为 C4s 与 S18-01。
+> 唯一当前指针：**S3-3 Build / Sample / Test / Certification。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-2 已完成；双跑试点为 C4s 与 S18-01。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -751,3 +751,57 @@
 | React lint 拒绝 effect 内同步修正规格选择状态 | 1 | 改为从当前规格集派生有效 selection，不再用 effect 镜像 props；lint/typecheck 全绿 |
 | migration 往返首次使用了不存在的 0014 revision 名 | 1 | 读取迁移文件确认实际基线 `0014_finding_quality_controls` 后重跑，downgrade→upgrade 与唯一 head 全绿 |
 | 首轮 `make check` 捕获旧权限测试列表缩进未格式化，随后又在 `server/` 目录误调用根 Makefile | 1 | Ruff 机械格式化单文件，并回到仓库根目录从头执行完整门禁，全绿 |
+
+## Completed: S3-2 Gate 硬闸与签核
+
+**Definition of Ready**
+
+- [x] 规格出处：`Workflow.md`、`System_of_Record_Matrix.md`、`Event_Catalog.md`、`RBAC_and_Audit.md`、canonical S3-2 与老 CEHub `projectGateSignoffRounds` 成熟语义
+- [x] 依赖项：S3-1 已完成；Project/Stage/Gate、Decision、Event/Audit、RBAC 与 Work Item/Risk 真值已就绪
+- [x] 范围冻结：NPD v1 三槽签核、轮次快照、就绪度、同事务硬闸、只增不减的项目级加签、历史 Gate grandfather 留痕；不提前实现 S3-5 交付物清单
+- [x] 下一迁移号冻结为 `0016`，单调递增且不复用
+
+**Frozen contract**
+
+- Gate 仅有 `preparing / reviewing / approved / rejected` 四态；一个 Stage 对应一个 Gate，新建 Project 原子实例化七个 Gate
+- NPD v1 槽位仅为 `product / engineering / quality`；要求为 `required / conditional / not_applicable`，签核为 `pending / approved / conditional / rejected / not_applicable`
+- Owner/Admin 可治理并代签；Project Manager 可治理并签 product；Engineer/Quality 仅可签各自专业槽；Supplier/Customer 无 Gate 面
+- 打开轮次冻结 policy/requirements/risk snapshot；项目级加签只能提升要求且使当前 open round superseded，不能降级、重复或改历史 Gate
+- Approved 决策在持有项目/Gate/轮次锁的同一事务内复核签核、Stage 阻塞任务、Critical Issue 与 16+ Risk，随后写 Gate、Round、Decision、`GATE_APPROVED` 与 audit
+- grandfather 仅允许 `approved` 且其 Stage 已早于项目 current Stage 的历史 Gate；它是追加式政策留痕，不参与当前/未来 Gate 的 readiness 绕过
+
+**Implementation slices**
+
+- [x] S3-2a：冻结契约并建立 migration/metadata、状态机、RBAC、竞态与 grandfather 的会失败测试
+- [x] S3-2b：migration 0016 建立轮次、签核、项目加签与 grandfather 边界；Project 创建补齐七 Gate，保持 tenant-safe / 单 head / 无 drift
+- [x] S3-2c：实现 Gate 查询、开轮、签核、加签、拒绝/复审与同事务 Approved 硬闸；Stage 推进必须由当前 Gate Approved 守门
+- [x] S3-2d：完成 API/RBAC/跨租户/事件审计/并发正反例及完整门禁
+- [x] S3-2e：完成真实 HTTP 闭环与数据库证据，更新 canonical checkbox 和当前指针
+
+**Acceptance evidence required**
+
+- [x] 七 Stage Gate 可按四态流转；轮次要求和完成时 readiness 快照不可被后续变更重写
+- [x] 未满足必签、存在 rejected 签核或确定性阻塞时，Approved 与 Stage 推进均 fail-close；同事务复核关闭 TOCTOU 窗口
+- [x] 加签只升不降并产生新轮次；历史 grandfather 追加可追溯，当前/未来 Gate 豁免稳定拒绝
+- [x] 跨租户/非成员/不合格签核角色 fail-close；Approved 同事务落 Decision、`GATE_APPROVED` 与 immutable audit
+- [x] migration 0016 downgrade→upgrade 保持单 head/无 metadata drift；聚焦测试、完整门禁与真实 HTTP 路径全绿
+
+**Completion evidence（2026-08-12）**
+
+- migration `0016_gate_signoffs` 建立 Gate signoff round/signoff/addition/grandfather 四张 tenant-safe 表；部分唯一索引保证每个 Gate 最多一个 open round，完成轮次冻结 requirements/risk/readiness，downgrade→upgrade 后唯一 head 与 metadata drift 均全绿。
+- NPD v1 三槽策略、四态、角色签核边界与只升不降加签已版本化；新建 Project 同事务实例化七个 Gate，Stage 推进对当前 Gate `approved` fail-close。
+- Approved 在项目/Gate/轮次/签核与 readiness 真值的统一锁序下复核；Critical Issue、16+ Risk、Stage blocked Task 和未满足签核均阻断。并发双审批仅产生一个 Decision/Event/Audit，readiness 变更与审批序列化，无 TOCTOU 穿透。
+- Owner/Admin、PM、Engineer、Quality 的治理/专业槽签核边界通过；Supplier/Customer 零 Gate 面；`pdos_agent` 对新增 Gate 业务表 INSERT 仍被数据库拒绝。
+- `make check` 全绿：Web 95 tests、Server 231 tests，ESLint/Ruff/format、TypeScript/mypy 140 source files、Next.js production build 与 Python compile 全部通过。
+- 真实本地 TCP API 在 `pdos_test` 完成 setup→开轮→三槽签核→Critical Issue 阻断 409→Approved 200→Stage 推进 200→历史 grandfather 201；当前 Gate grandfather 409，数据库 Decision / `GATE_APPROVED` / `gate.approve` 各 1 条；本地服务随后关闭。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| Gate policy/schema 首次收集缺 `app.domain.gates` | 1 | 预期 RED；实现版本化 NPD v1 策略、0016 metadata 与 migration 后 8 项聚焦测试转绿 |
+| 本地 `.env` 仍指向旧 55432，而当前隔离 PG 暴露于 57432 | 1 | 只对测试命令显式覆盖 `TEST_DATABASE_URL`，确认库名 `pdos_test`；未修改用户环境模板或生产配置 |
+| grandfather audit 将 Python `None` 序列化为 JSON null，触发 audit SQL NULL 约束 | 1 | 与既有 EventAuditWriter 对齐：仅在快照存在时写列；真实 201 路径与不可变 audit 转绿 |
+| 首次全量 pytest 等待结果被误判后重复启动，两个套件并发 TRUNCATE 产生假失败 | 1 | 终止重复本地测试进程、恢复 Alembic head，单实例从头重跑 231 项全绿 |
+| 三份旧的未跟踪 `* 2` 源码副本被 TypeScript 纳入编译并使用过期组件契约 | 1 | 未删除；原样移至被忽略的 `output/quarantine/duplicate-source-copies/`，可恢复，正式源码 type/build 转绿 |
+| 从仓库根目录直接调用 server venv 的 `uv run ruff` 找不到命令 | 1 | 未产生修改；回到 `server/` 执行格式化，再从根目录跑统一 `make typecheck/check` |

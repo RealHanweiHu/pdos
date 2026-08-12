@@ -28,7 +28,10 @@
 - [x] S2-3 AI Finding 状态机已完成：受限 Agent 创建、确定性预检、pending_review→accepted/rejected→applied、两次人工动作、apply 真值复核与全链路留痕均验收通过
 - [x] S2-4 Phase 1 双 Agent 已完成：两份版本化静态 prompt、Project Intelligence 三类 Finding、Knowledge Lite 知识草稿、订阅/受限写入/评测合同与完整门禁均验收通过
 - [x] S2-5 API 面已完成：引用强制的只读 Chat、PDF/XLSX 抽取与私有对象存储、风险建议 pending Finding 通道、幂等外部 Event 接口均验收通过
-- [ ] **当前：S2-6 前端 AI 面**，按 `tasks/todo.md` 交付 AI Review 收件箱、Dashboard AI Brief 与 Project AI Chat 标签
+- [x] S2-6 前端 AI 面、S2-7 质量遥测与 Sprint 2 人工出口已完成
+- [x] S3-1 Specification + Development BOM 三型已完成
+- [x] S3-2 Gate 硬闸与签核已完成：版本化三槽策略、轮次快照、同事务 readiness 硬闸、只升不降加签与历史 grandfather 均验收通过
+- [ ] **当前：S3-3 Build / Sample / Test / Certification**，按 `tasks/todo.md` 交付 Build 批次、样机谱系、Sample 签核、Test/Certification 与 `TEST_FAILED` 事件闭环
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
