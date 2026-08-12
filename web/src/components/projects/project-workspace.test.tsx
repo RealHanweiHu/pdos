@@ -140,6 +140,43 @@ const openRisk = {
   ...workItemTimestamps,
 };
 
+const specification = {
+  id: "specification-1",
+  project_id: "project-1",
+  created_by_user_id: "user-1",
+  code: "SPEC-C4S",
+  title: "C4s performance specification",
+  version: 1,
+  content: { rated_pressure_kpa: 1034 },
+  ...workItemTimestamps,
+};
+
+const developmentBom = {
+  id: "bom-1",
+  project_id: "project-1",
+  specification_id: "specification-1",
+  created_by_user_id: "user-1",
+  bom_type: "ebom",
+  code: "C4S-EBOM",
+  name: "C4s engineering BOM",
+  version: 1,
+  notes: null,
+  items: [],
+  ...workItemTimestamps,
+};
+
+const erpReference = {
+  id: "erp-reference-1",
+  project_id: "project-1",
+  bom_id: "bom-1",
+  reference_type: "routing",
+  source_system: "ERP",
+  external_id: "ROUTING-9001",
+  external_url: null,
+  metadata: {},
+  created_at: workItemTimestamps.created_at,
+};
+
 function workItemResponse(path: string) {
   if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask] });
   if (path.endsWith("/issues")) return jsonResponse({ items: [openIssue] });
@@ -276,8 +313,9 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
-    expect(await screen.findAllByRole("tab")).toHaveLength(6);
+    expect(await screen.findAllByRole("tab")).toHaveLength(7);
     expect(screen.getByRole("tab", { name: "AI 对话" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "产品工程" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "概览" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByText("1", { selector: "[data-metric='task']" })).toBeInTheDocument();
 
@@ -286,6 +324,131 @@ describe("ProjectWorkspace", () => {
     expect(screen.getByText("等待前置")).toBeInTheDocument();
     expect(screen.queryByText("已阻塞", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "开始任务" })).not.toBeInTheDocument();
+  });
+
+  it("loads the product register lazily and creates a specification and typed BOM", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/product-engineering/specifications")) {
+        if (init?.method === "POST") return jsonResponse(specification, 201);
+        return jsonResponse({ items: [] });
+      }
+      if (path.endsWith("/product-engineering/boms")) {
+        if (init?.method === "POST") return jsonResponse(developmentBom, 201);
+        return jsonResponse({ items: [] });
+      }
+      if (path.endsWith("/product-engineering/erp-references")) {
+        return jsonResponse({ items: [] });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(fetchMock.mock.calls.some(([input]) => String(input).includes("product-engineering"))).toBe(false);
+
+    await user.click(screen.getByRole("tab", { name: "产品工程" }));
+    expect(await screen.findByRole("heading", { name: "尚未建立产品规格" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "尚未建立开发 BOM" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "EBOM" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Prototype BOM" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Cost BOM" })).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText("规格编号"), "SPEC-C4S");
+    await user.type(screen.getByLabelText("规格标题"), "C4s performance specification");
+    await user.click(screen.getByRole("button", { name: "创建规格" }));
+    expect(await screen.findByText("规格已创建")).toBeInTheDocument();
+    expect(screen.getByText("C4s performance specification")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/product-engineering/specifications",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          code: "SPEC-C4S",
+          title: "C4s performance specification",
+          version: 1,
+          content: {},
+        }),
+      }),
+    );
+
+    await user.type(screen.getByLabelText("BOM 编号"), "C4S-EBOM");
+    await user.type(screen.getByLabelText("BOM 名称"), "C4s engineering BOM");
+    await user.click(screen.getByRole("button", { name: "创建 BOM" }));
+    expect(await screen.findByText("BOM 已创建")).toBeInTheDocument();
+    expect(screen.getByText("C4s engineering BOM")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/product-engineering/boms",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          specification_id: "specification-1",
+          bom_type: "ebom",
+          code: "C4S-EBOM",
+          name: "C4s engineering BOM",
+          version: 1,
+          notes: null,
+        }),
+      }),
+    );
+  });
+
+  it("keeps the product register read-only for Quality", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") {
+        return jsonResponse({ ...identity, user: { ...identity.user, role: "quality" } });
+      }
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/product-engineering/specifications")) {
+        return jsonResponse({ items: [specification] });
+      }
+      if (path.endsWith("/product-engineering/boms")) {
+        return jsonResponse({ items: [developmentBom] });
+      }
+      if (path.endsWith("/product-engineering/erp-references")) {
+        return jsonResponse({ items: [erpReference] });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    await user.click(screen.getByRole("tab", { name: "产品工程" }));
+
+    expect(await screen.findByText("C4s performance specification")).toBeInTheDocument();
+    expect(screen.getByText("C4s engineering BOM")).toBeInTheDocument();
+    expect(screen.getByText("ROUTING-9001")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "创建规格" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "创建 BOM" })).not.toBeInTheDocument();
+  });
+
+  it("shows a retryable product-engineering error without presenting zero counts", async () => {
+    const user = userEvent.setup();
+    let unavailable = true;
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.includes("/product-engineering/")) {
+        return unavailable ? jsonResponse({}, 503) : jsonResponse({ items: [] });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    await user.click(screen.getByRole("tab", { name: "产品工程" }));
+    expect(await screen.findByRole("heading", { name: "产品工程数据暂不可用" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "尚未建立产品规格" })).not.toBeInTheDocument();
+
+    unavailable = false;
+    await user.click(screen.getByRole("button", { name: "重新加载产品工程数据" }));
+    expect(await screen.findByRole("heading", { name: "尚未建立产品规格" })).toBeInTheDocument();
   });
 
   it("creates work items and advances only explicit lifecycle actions", async () => {
@@ -382,7 +545,7 @@ describe("ProjectWorkspace", () => {
 
     expect(screen.getAllByRole("tab")).toHaveLength(2);
     expect(screen.queryByRole("tab", { name: "任务" })).not.toBeInTheDocument();
-    expect(fetchMock.mock.calls.some(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toBe(false);
+    expect(fetchMock.mock.calls.some(([input]) => /\/(tasks|issues|risks)$/.test(String(input)) || String(input).includes("product-engineering"))).toBe(false);
   });
 
   it("opens the project selected by the dashboard deep link", async () => {

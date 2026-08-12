@@ -3,6 +3,15 @@ import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ProjectAiChat } from "@/components/ai/project-ai-chat";
+import {
+  ProductEngineeringPanel,
+  type ProductEngineeringLoadState,
+} from "@/components/product-engineering/product-engineering-panel";
+import type {
+  DevelopmentBomCreateInput,
+  ProductEngineeringRegister,
+  SpecificationCreateInput,
+} from "@/components/product-engineering/product-engineering-types";
 
 import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form";
 import { ProjectList, projectStatusLabels } from "./project-list";
@@ -24,8 +33,27 @@ import type {
   TaskTransitionInput,
 } from "./project-work-item-types";
 
-export type ProjectWorkspaceTab = "overview" | "timeline" | "tasks" | "issues" | "risks" | "ai-chat";
+export type ProjectWorkspaceTab =
+  | "overview"
+  | "timeline"
+  | "tasks"
+  | "issues"
+  | "risks"
+  | "product-engineering"
+  | "ai-chat";
 export type WorkItemLoadState = "idle" | "loading" | "ready" | "error";
+
+type ProductEngineeringWorkspaceProps = {
+  busy: boolean;
+  canEdit: boolean;
+  error: string | null;
+  loadState: ProductEngineeringLoadState;
+  onCreateBom: (input: DevelopmentBomCreateInput) => Promise<boolean>;
+  onCreateSpecification: (input: SpecificationCreateInput) => Promise<boolean>;
+  onRetry: () => void;
+  register: ProductEngineeringRegister | null;
+  status: string | null;
+};
 
 const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[] = [
   { key: "overview", label: "概览" },
@@ -33,6 +61,7 @@ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[
   { key: "tasks", label: "任务", internalOnly: true },
   { key: "issues", label: "问题", internalOnly: true },
   { key: "risks", label: "风险", internalOnly: true },
+  { key: "product-engineering", label: "产品工程", internalOnly: true },
   { key: "ai-chat", label: "AI 对话", internalOnly: true },
 ];
 
@@ -78,6 +107,7 @@ export function ProjectWorkspaceView({
   onTransitionTask,
   onUpdate,
   projects,
+  productEngineering,
   saving,
   selectedProject,
   statusMessage,
@@ -111,6 +141,7 @@ export function ProjectWorkspaceView({
   onTransitionTask: (task: ProjectTask, input: TaskTransitionInput) => Promise<boolean>;
   onUpdate: (project: Project, values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
   projects: Project[];
+  productEngineering: ProductEngineeringWorkspaceProps;
   saving: boolean;
   selectedProject: Project | null;
   statusMessage: string | null;
@@ -203,6 +234,9 @@ export function ProjectWorkspaceView({
             {activeTab === "issues" && workItems ? <IssuePanel busy={workItemBusy} issues={workItems.issues} onCreate={onCreateIssue} onTransition={onTransitionIssue} /> : null}
             {activeTab === "risks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "risks" && workItems ? <RiskPanel busy={workItemBusy} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks} /> : null}
+            {activeTab === "product-engineering" ? (
+              <ProductEngineeringPanel {...productEngineering} />
+            ) : null}
             {activeTab === "ai-chat" ? <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id} /> : null}
           </div>
         </section>

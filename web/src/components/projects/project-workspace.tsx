@@ -4,6 +4,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import type { WorkspaceIdentity } from "@/components/workspace-types";
+import {
+  createDevelopmentBom,
+  createSpecification,
+  requestProductEngineering,
+} from "@/components/product-engineering/product-engineering-api";
+import type {
+  DevelopmentBomCreateInput,
+  ProductEngineeringRegister,
+  SpecificationCreateInput,
+} from "@/components/product-engineering/product-engineering-types";
 import { requestProjectActivity, type ProjectActivity } from "./project-activity";
 
 import { requestProjects } from "./project-api";
@@ -39,7 +49,16 @@ import { useProjectActions } from "./use-project-actions";
 
 type LoadState = "loading" | "ready" | "error" | "redirecting";
 const workItemRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
-const deepLinkTabs = new Set<ProjectWorkspaceTab>(["overview", "timeline", "tasks", "issues", "risks", "ai-chat"]);
+const productEngineeringEditRoles = ["owner", "admin", "project_manager", "engineer"];
+const deepLinkTabs = new Set<ProjectWorkspaceTab>([
+  "overview",
+  "timeline",
+  "tasks",
+  "issues",
+  "risks",
+  "product-engineering",
+  "ai-chat",
+]);
 
 function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
@@ -60,9 +79,15 @@ export function ProjectWorkspace() {
   const [workItemStatus, setWorkItemStatus] = useState<string | null>(null);
   const [activities, setActivities] = useState<ProjectActivity[]>([]);
   const [activityError, setActivityError] = useState(false);
+  const [productEngineeringState, setProductEngineeringState] = useState<WorkItemLoadState>("idle");
+  const [productEngineering, setProductEngineering] = useState<ProductEngineeringRegister | null>(null);
+  const [productEngineeringBusy, setProductEngineeringBusy] = useState(false);
+  const [productEngineeringError, setProductEngineeringError] = useState<string | null>(null);
+  const [productEngineeringStatus, setProductEngineeringStatus] = useState<string | null>(null);
   const [highlightedEntityId, setHighlightedEntityId] = useState<string | null>(null);
   const [highlightedEventId, setHighlightedEventId] = useState<number | null>(null);
   const requestSequence = useRef(0);
+  const productRequestSequence = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -106,6 +131,26 @@ export function ProjectWorkspace() {
               },
             );
           }
+          if (
+            deepLinkedTab === "product-engineering" &&
+            workItemRoles.includes(loaded.identity.user.role)
+          ) {
+            const sequence = productRequestSequence.current + 1;
+            productRequestSequence.current = sequence;
+            setProductEngineeringState("loading");
+            requestProductEngineering(deepLinkedProject.id).then(
+              (register) => {
+                if (!active || productRequestSequence.current !== sequence) return;
+                setProductEngineering(register);
+                setProductEngineeringState("ready");
+              },
+              () => {
+                if (active && productRequestSequence.current === sequence) {
+                  setProductEngineeringState("error");
+                }
+              },
+            );
+          }
         }
       },
       () => {
@@ -116,6 +161,7 @@ export function ProjectWorkspace() {
   }, [replace, setProjects, setSelectedProjectId]);
 
   const canViewWorkItems = identity !== null && workItemRoles.includes(identity.user.role);
+  const canViewProductEngineering = canViewWorkItems;
 
   async function loadWorkItems(projectId: string) {
     const sequence = requestSequence.current + 1;
@@ -133,11 +179,32 @@ export function ProjectWorkspace() {
     }
   }
 
+  async function loadProductEngineering(projectId: string) {
+    const sequence = productRequestSequence.current + 1;
+    productRequestSequence.current = sequence;
+    setProductEngineeringState("loading");
+    setProductEngineering(null);
+    setProductEngineeringError(null);
+    try {
+      const loaded = await requestProductEngineering(projectId);
+      if (productRequestSequence.current !== sequence) return;
+      setProductEngineering(loaded);
+      setProductEngineeringState("ready");
+    } catch {
+      if (productRequestSequence.current === sequence) setProductEngineeringState("error");
+    }
+  }
+
   function selectProject(project: Project) {
     actions.selectProject(project);
     setActiveTab("overview");
     setWorkItemError(null);
     setWorkItemStatus(null);
+    productRequestSequence.current += 1;
+    setProductEngineering(null);
+    setProductEngineeringState("idle");
+    setProductEngineeringError(null);
+    setProductEngineeringStatus(null);
     setHighlightedEventId(null);
     setHighlightedEntityId(null);
     requestProjectActivity(project.id).then(
@@ -259,12 +326,65 @@ export function ProjectWorkspace() {
     );
   }
 
+  function changeTab(tab: ProjectWorkspaceTab) {
+    setActiveTab(tab);
+    if (
+      tab === "product-engineering" &&
+      canViewProductEngineering &&
+      actions.selectedProject &&
+      productEngineeringState === "idle"
+    ) {
+      void loadProductEngineering(actions.selectedProject.id);
+    }
+  }
+
+  async function addSpecification(input: SpecificationCreateInput) {
+    if (!actions.selectedProject) return false;
+    setProductEngineeringBusy(true);
+    setProductEngineeringError(null);
+    setProductEngineeringStatus(null);
+    try {
+      const created = await createSpecification(actions.selectedProject.id, input);
+      setProductEngineering((current) =>
+        current ? { ...current, specifications: [created, ...current.specifications] } : current,
+      );
+      setProductEngineeringStatus("规格已创建");
+      return true;
+    } catch (error) {
+      setProductEngineeringError(messageFrom(error));
+      return false;
+    } finally {
+      setProductEngineeringBusy(false);
+    }
+  }
+
+  async function addDevelopmentBom(input: DevelopmentBomCreateInput) {
+    if (!actions.selectedProject) return false;
+    setProductEngineeringBusy(true);
+    setProductEngineeringError(null);
+    setProductEngineeringStatus(null);
+    try {
+      const created = await createDevelopmentBom(actions.selectedProject.id, input);
+      setProductEngineering((current) =>
+        current ? { ...current, boms: [created, ...current.boms] } : current,
+      );
+      setProductEngineeringStatus("BOM 已创建");
+      return true;
+    } catch (error) {
+      setProductEngineeringError(messageFrom(error));
+      return false;
+    } finally {
+      setProductEngineeringBusy(false);
+    }
+  }
+
   if (loadState === "redirecting") return null;
   if (loadState === "loading") return <ProjectWorkspaceLoading />;
   if (loadState === "error" || identity === null) {
     return <ProjectWorkspaceError onRetry={() => { setLoadState("loading"); void retryLoad(); }} />;
   }
   const canEdit = ["owner", "admin", "project_manager"].includes(identity.user.role);
+  const canEditProductEngineering = productEngineeringEditRoles.includes(identity.user.role);
   return (
     <ProjectWorkspaceView
       activeTab={activeTab}
@@ -286,12 +406,25 @@ export function ProjectWorkspace() {
       onSelect={selectProject}
       onStageTransition={(project, stageId) => void actions.transitionStage(project, stageId)}
       onStatusTransition={(project, status) => void actions.transitionStatus(project, status)}
-      onTabChange={setActiveTab}
+      onTabChange={changeTab}
       onTransitionIssue={moveIssue}
       onTransitionRisk={moveRisk}
       onTransitionTask={moveTask}
       onUpdate={actions.updateProject}
       projects={actions.projects}
+      productEngineering={{
+        busy: productEngineeringBusy,
+        canEdit: canEditProductEngineering,
+        error: productEngineeringError,
+        loadState: productEngineeringState,
+        onCreateBom: addDevelopmentBom,
+        onCreateSpecification: addSpecification,
+        onRetry: () => {
+          if (actions.selectedProject) void loadProductEngineering(actions.selectedProject.id);
+        },
+        register: productEngineering,
+        status: productEngineeringStatus,
+      }}
       saving={actions.saving}
       selectedProject={actions.selectedProject}
       statusMessage={workItemStatus ?? actions.statusMessage}
