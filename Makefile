@@ -5,7 +5,7 @@ PYTHON := uv run --python 3.12
 
 .DEFAULT_GOAL := help
 
-.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev production-preflight smoke-app smoke-production test lint type typecheck build check verify-s0-1 verify-sprint-0
+.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev production-preflight smoke-app smoke-production test lint type typecheck build check sprint2-removal-drill sprint2-redteam verify-s0-1 verify-sprint-0
 
 help:
 	@printf '%s\n' \
@@ -22,6 +22,8 @@ help:
 		'  make type       Run all static type checks' \
 		'  make build      Build/compile all applications' \
 		'  make check      Run lint, type, test, and build gates' \
+		'  make sprint2-removal-drill  Verify visible model removal degradation' \
+		'  make sprint2-redteam  Verify Agent write and tenant boundaries' \
 		'  make verify-sprint-0  Run every local Sprint 0 gate, including production containers'
 
 check-env:
@@ -85,6 +87,12 @@ build:
 	cd server && $(PYTHON) python -m compileall -q app migrations
 
 check: lint typecheck test build
+
+sprint2-removal-drill: check-test-db
+	cd server && $(PYTHON) python -m scripts.sprint2_removal_drill
+
+sprint2-redteam: check-test-db
+	cd server && $(PYTHON) pytest tests/test_agent_database_security.py
 
 verify-s0-1:
 	@$(MAKE) check-env

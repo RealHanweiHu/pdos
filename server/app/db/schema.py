@@ -1454,6 +1454,86 @@ model_invocations = Table(
     schema=AI_SCHEMA,
 )
 
+finding_quality_controls = Table(
+    "finding_quality_controls",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("agent_key", String(64), nullable=False),
+    Column("finding_type", String(64), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'active'")),
+    Column("minimum_review_count", SmallInteger, nullable=False, server_default=text("5")),
+    Column(
+        "acceptance_threshold_basis_points",
+        SmallInteger,
+        nullable=False,
+        server_default=text("5000"),
+    ),
+    Column("reviewed_count", Integer, nullable=False, server_default=text("0")),
+    Column("accepted_count", Integer, nullable=False, server_default=text("0")),
+    Column("applied_count", Integer, nullable=False, server_default=text("0")),
+    Column("last_evaluated_at", DateTime(timezone=True)),
+    Column("narrowed_at", DateTime(timezone=True)),
+    Column("narrowed_reason", String(256)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "(agent_key = 'project_intelligence' AND finding_type IN "
+        "('risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly')) OR "
+        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft')",
+        name="type_allowed",
+    ),
+    CheckConstraint("status IN ('active', 'narrowed')", name="status_allowed"),
+    CheckConstraint(
+        "minimum_review_count BETWEEN 1 AND 1000",
+        name="minimum_reviews_range",
+    ),
+    CheckConstraint(
+        "acceptance_threshold_basis_points BETWEEN 0 AND 10000",
+        name="threshold_range",
+    ),
+    CheckConstraint(
+        "reviewed_count >= 0 AND accepted_count BETWEEN 0 AND reviewed_count "
+        "AND applied_count BETWEEN 0 AND accepted_count",
+        name="counts_consistent",
+    ),
+    CheckConstraint(
+        "(status = 'active' AND narrowed_at IS NULL AND narrowed_reason IS NULL) OR "
+        "(status = 'narrowed' AND narrowed_at IS NOT NULL "
+        "AND narrowed_reason IS NOT NULL AND btrim(narrowed_reason) <> '')",
+        name="narrowing_consistent",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "agent_key",
+        "finding_type",
+        name="uq_finding_quality_controls_tenant_agent_type",
+    ),
+    Index(
+        "ix_finding_quality_controls_tenant_status",
+        "tenant_id",
+        "status",
+        "agent_key",
+        "finding_type",
+    ),
+    schema=AI_SCHEMA,
+)
+
 findings = Table(
     "findings",
     metadata,
@@ -1782,6 +1862,7 @@ class Tables:
     agent_dispatcher_cursors: Table
     agent_subscriptions: Table
     agent_runs: Table
+    finding_quality_controls: Table
     model_invocations: Table
     findings: Table
     finding_actions: Table
@@ -1811,6 +1892,7 @@ tables = Tables(
     agent_dispatcher_cursors=agent_dispatcher_cursors,
     agent_subscriptions=agent_subscriptions,
     agent_runs=agent_runs,
+    finding_quality_controls=finding_quality_controls,
     model_invocations=model_invocations,
     findings=findings,
     finding_actions=finding_actions,

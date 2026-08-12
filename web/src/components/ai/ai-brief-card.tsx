@@ -48,6 +48,25 @@ export function AiBriefCard({
           <div className="flex items-start gap-2"><PauseCircleIcon aria-hidden="true" className="mt-0.5 shrink-0 text-pending" /><div><p className="font-medium text-pending">AI 已暂停</p><p className="mt-1 text-xs text-muted-foreground">模型或预算当前不可用；最近可追溯 Finding 为 {elapsedLabel(brief.latest_finding_at)}。系统不会把失能伪装成正常。</p></div></div>
         </div>
       ) : null}
+      {state === "ready" && brief ? (
+        <dl className="grid grid-cols-3 border-b bg-muted/20">
+          <div className="border-r px-4 py-3">
+            <dt className="text-[11px] text-muted-foreground">Finding 接受率</dt>
+            <dd className="mt-1 font-mono text-lg font-semibold">{brief.acceptance_rate_basis_points === null ? "—" : `${Math.round(brief.acceptance_rate_basis_points / 100)}%`}</dd>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">{brief.accepted_count}/{brief.reviewed_count} 人工裁决</p>
+          </div>
+          <div className="border-r px-4 py-3">
+            <dt className="text-[11px] text-muted-foreground">被采取行动</dt>
+            <dd className="mt-1 font-mono text-lg font-semibold">{brief.applied_count}</dd>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">实际 Apply 次数</p>
+          </div>
+          <div className="px-4 py-3">
+            <dt className="text-[11px] text-muted-foreground">已收窄输出</dt>
+            <dd className="mt-1 font-mono text-lg font-semibold">{brief.narrowed_output_count}</dd>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">低质类型暂停入箱</p>
+          </div>
+        </dl>
+      ) : null}
       {state === "ready" && brief && brief.items.length === 0 ? (
         <div className="px-4 py-10 text-center">
           <p className="font-medium">Agent 正在值守</p>

@@ -432,6 +432,11 @@ def test_risk_suggestion_creates_only_pending_finding_and_is_idempotent(
     assert brief.json()["status"] == "unavailable"
     assert brief.json()["error_code"] == "MODEL_UNAVAILABLE"
     assert brief.json()["pending_review_count"] == 1
+    assert brief.json()["reviewed_count"] == 0
+    assert brief.json()["accepted_count"] == 0
+    assert brief.json()["applied_count"] == 0
+    assert brief.json()["acceptance_rate_basis_points"] is None
+    assert brief.json()["narrowed_output_count"] == 0
     assert brief.json()["items"][0]["finding_id"] == created.json()["finding_id"]
     assert brief.json()["items"][0]["evidence"][0]["href"] == (
         f"/projects?project={project_id}&tab=timeline&event_id={event_row_id}"

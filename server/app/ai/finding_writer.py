@@ -21,6 +21,10 @@ class FindingPreflightError(ValueError):
     pass
 
 
+class FindingOutputNarrowedError(ValueError):
+    pass
+
+
 @dataclass(frozen=True)
 class FindingCandidate:
     finding_type: str
@@ -105,6 +109,18 @@ class RestrictedAgentFindingWriter:
         finding_id = uuid4()
         with self._engine.begin() as connection:
             self._run_store.bind(connection)
+            control_status = connection.execute(
+                text(
+                    "SELECT status FROM cehub_ai.agent_finding_quality_projection "
+                    "WHERE agent_key = :agent_key AND finding_type = :finding_type"
+                ),
+                {
+                    "agent_key": context.agent_key.value,
+                    "finding_type": candidate.finding_type,
+                },
+            ).scalar_one_or_none()
+            if control_status == "narrowed":
+                raise FindingOutputNarrowedError(candidate.finding_type)
             connection.execute(
                 text(
                     "SELECT cehub_ai.create_agent_finding("

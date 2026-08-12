@@ -10,6 +10,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import Connection, Engine, RowMapping, select, update
 
+from app.ai.quality import FindingQualityService
 from app.auth.roles import Action, Role, is_allowed
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
@@ -323,6 +324,11 @@ class FindingService:
                 decision=review.decision,
                 occurred_at=reviewed_at,
             )
+            FindingQualityService(self._engine).evaluate_connection(
+                connection,
+                tenant_id=tenant_id,
+                evaluated_at=reviewed_at,
+            )
             return after
 
     def apply(
@@ -448,6 +454,11 @@ class FindingService:
                 actor_user_id=actor_user_id,
                 decision="applied",
                 occurred_at=applied_at,
+            )
+            FindingQualityService(self._engine).evaluate_connection(
+                connection,
+                tenant_id=tenant_id,
+                evaluated_at=applied_at,
             )
             return FindingApplyResult(
                 finding=after,

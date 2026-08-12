@@ -8,6 +8,7 @@ DROP POLICY IF EXISTS pdos_agent_insert_model_invocations
 ALTER TABLE cehub_ai.model_invocations DISABLE ROW LEVEL SECURITY;
 
 DROP VIEW IF EXISTS
+    cehub_ai.agent_finding_quality_projection,
     cehub_ai.agent_run_usage_projection,
     cehub_ai.agent_model_usage_projection,
     cehub_ai.agent_model_settings_projection,

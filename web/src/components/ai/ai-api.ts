@@ -7,6 +7,7 @@ import {
   type AiBriefItem,
   type AiChatResponse,
   type AiFinding,
+  type AiQualityControl,
   type ChatCitation,
   type FindingEvidence,
   type FindingStatus,
@@ -134,6 +135,34 @@ function parseCitation(value: unknown): ChatCitation {
   return value as ChatCitation;
 }
 
+function parseQualityControl(value: unknown): AiQualityControl {
+  if (
+    !isRecord(value) ||
+    typeof value.agent_key !== "string" ||
+    !isFindingType(value.finding_type) ||
+    (value.status !== "active" && value.status !== "narrowed") ||
+    ![
+      "minimum_review_count",
+      "acceptance_threshold_basis_points",
+      "reviewed_count",
+      "accepted_count",
+      "applied_count",
+    ].every(
+      (key) => typeof value[key] === "number" && Number.isSafeInteger(value[key]),
+    ) ||
+    !(
+      value.acceptance_rate_basis_points === null ||
+      (typeof value.acceptance_rate_basis_points === "number" &&
+        Number.isSafeInteger(value.acceptance_rate_basis_points))
+    ) ||
+    !isStringOrNull(value.narrowed_at) ||
+    !isStringOrNull(value.narrowed_reason)
+  ) {
+    throw new Error("invalid AI quality control");
+  }
+  return value as AiQualityControl;
+}
+
 async function requireOk(response: Response, fallback: string): Promise<unknown> {
   if (!response.ok) {
     const body = await responseBody(response).catch(() => null);
@@ -205,6 +234,15 @@ export async function requestAiBrief(): Promise<AiBrief> {
     typeof body.pending_review_count !== "number" ||
     !Number.isSafeInteger(body.pending_review_count) ||
     !isStringOrNull(body.latest_finding_at) ||
+    !["reviewed_count", "accepted_count", "applied_count", "narrowed_output_count"].every(
+      (key) => typeof body[key] === "number" && Number.isSafeInteger(body[key]),
+    ) ||
+    !(
+      body.acceptance_rate_basis_points === null ||
+      (typeof body.acceptance_rate_basis_points === "number" &&
+        Number.isSafeInteger(body.acceptance_rate_basis_points))
+    ) ||
+    !Array.isArray(body.quality_controls) ||
     !Array.isArray(body.items)
   ) {
     throw new Error("invalid AI brief response");
@@ -214,6 +252,12 @@ export async function requestAiBrief(): Promise<AiBrief> {
     error_code: body.error_code,
     pending_review_count: body.pending_review_count,
     latest_finding_at: body.latest_finding_at,
+    reviewed_count: body.reviewed_count as number,
+    accepted_count: body.accepted_count as number,
+    applied_count: body.applied_count as number,
+    acceptance_rate_basis_points: body.acceptance_rate_basis_points as number | null,
+    narrowed_output_count: body.narrowed_output_count as number,
+    quality_controls: body.quality_controls.map(parseQualityControl),
     items: body.items.map(parseBriefItem),
   };
 }

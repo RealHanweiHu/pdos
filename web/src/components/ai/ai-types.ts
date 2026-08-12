@@ -66,7 +66,27 @@ export type AiBrief = {
   error_code: string | null;
   pending_review_count: number;
   latest_finding_at: string | null;
+  reviewed_count: number;
+  accepted_count: number;
+  applied_count: number;
+  acceptance_rate_basis_points: number | null;
+  narrowed_output_count: number;
+  quality_controls: AiQualityControl[];
   items: AiBriefItem[];
+};
+
+export type AiQualityControl = {
+  agent_key: string;
+  finding_type: FindingType;
+  status: "active" | "narrowed";
+  minimum_review_count: number;
+  acceptance_threshold_basis_points: number;
+  reviewed_count: number;
+  accepted_count: number;
+  applied_count: number;
+  acceptance_rate_basis_points: number | null;
+  narrowed_at: string | null;
+  narrowed_reason: string | null;
 };
 
 export type ChatCitation = {

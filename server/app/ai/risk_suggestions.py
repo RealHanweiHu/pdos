@@ -14,9 +14,14 @@ from sqlalchemy import Engine, RowMapping, select, update
 from app.ai.application_gateway import ApplicationModelGateway
 from app.ai.context_builder import RunContextBuilder
 from app.ai.executor import AgentAssessment, PromptFile
-from app.ai.finding_writer import FindingCandidate, preflight_assessment
+from app.ai.finding_writer import (
+    FindingCandidate,
+    FindingOutputNarrowedError,
+    preflight_assessment,
+)
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
+from app.ai.quality import FindingQualityService
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
 from app.db.schema import tables
 from app.domain.findings import FINDING_PREFLIGHT_VERSION
@@ -179,6 +184,8 @@ class RiskSuggestionService:
                     candidate=candidate,
                     created_at=requested_at,
                 )
+            except FindingOutputNarrowedError:
+                finding_id = None
             except Exception:
                 self._finish_run(
                     run_id=context.run_id,
@@ -385,6 +392,13 @@ class RiskSuggestionService:
         finding_id = uuid4()
         origin_key = f"api:{request_id}:{candidate.origin_key}"[:128]
         with self._engine.begin() as connection:
+            if not FindingQualityService.is_output_allowed_connection(
+                connection,
+                tenant_id=tenant_id,
+                agent_key=AgentKey.PROJECT_INTELLIGENCE.value,
+                finding_type=candidate.finding_type,
+            ):
+                raise FindingOutputNarrowedError(candidate.finding_type)
             connection.execute(
                 tables.findings.insert(),
                 {

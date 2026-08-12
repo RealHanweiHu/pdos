@@ -21,6 +21,12 @@ const emptyBrief = {
   error_code: null,
   pending_review_count: 0,
   latest_finding_at: null,
+  reviewed_count: 0,
+  accepted_count: 0,
+  applied_count: 0,
+  acceptance_rate_basis_points: null,
+  narrowed_output_count: 0,
+  quality_controls: [],
   items: [],
 };
 

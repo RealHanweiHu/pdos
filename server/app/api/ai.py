@@ -16,6 +16,7 @@ from app.ai.application_gateway import (
     configured_application_gateway,
 )
 from app.ai.chat import ChatEvidence, ChatService
+from app.ai.quality import FindingQualityService
 from app.ai.risk_suggestions import (
     RiskSuggestionEvidenceError,
     RiskSuggestionRequestConflictError,
@@ -123,6 +124,22 @@ class AiBriefItemResponse(BaseModel):
     href: str
 
 
+class AiQualityControlResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    agent_key: str
+    finding_type: str
+    status: str
+    minimum_review_count: int
+    acceptance_threshold_basis_points: int
+    reviewed_count: int
+    accepted_count: int
+    applied_count: int
+    acceptance_rate_basis_points: int | None
+    narrowed_at: datetime | None
+    narrowed_reason: str | None
+
+
 class AiBriefResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -130,6 +147,12 @@ class AiBriefResponse(BaseModel):
     error_code: str | None
     pending_review_count: int
     latest_finding_at: datetime | None
+    reviewed_count: int
+    accepted_count: int
+    applied_count: int
+    acceptance_rate_basis_points: int | None
+    narrowed_output_count: int
+    quality_controls: list[AiQualityControlResponse]
     items: list[AiBriefItemResponse]
 
 
@@ -171,12 +194,21 @@ def ai_brief(
         active = False
         error_code = "MODEL_CATALOG_UNAVAILABLE"
     pending_count = sum(record.status == "pending_review" for record in records)
+    quality = FindingQualityService(engine).snapshot(tenant_id=context.tenant.id)
     no_store(response)
     return AiBriefResponse(
         status="active" if active else "unavailable",
         error_code=error_code,
         pending_review_count=pending_count,
         latest_finding_at=records[0].created_at if records else None,
+        reviewed_count=quality.reviewed_count,
+        accepted_count=quality.accepted_count,
+        applied_count=quality.applied_count,
+        acceptance_rate_basis_points=quality.acceptance_rate_basis_points,
+        narrowed_output_count=quality.narrowed_output_count,
+        quality_controls=[
+            AiQualityControlResponse(**control.__dict__) for control in quality.controls
+        ],
         items=[
             AiBriefItemResponse(
                 finding_id=record.id,

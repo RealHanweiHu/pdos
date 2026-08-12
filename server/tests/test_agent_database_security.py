@@ -278,6 +278,24 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
     try:
         with owner_engine.begin() as connection:
             ids = seed_two_tenants(connection)
+            connection.execute(
+                tables.finding_quality_controls.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "agent_key": "project_intelligence",
+                    "finding_type": "blocker_alert",
+                    "status": "narrowed",
+                    "minimum_review_count": 5,
+                    "acceptance_threshold_basis_points": 5000,
+                    "reviewed_count": 5,
+                    "accepted_count": 1,
+                    "applied_count": 0,
+                    "last_evaluated_at": datetime.now(UTC),
+                    "narrowed_at": datetime.now(UTC),
+                    "narrowed_reason": "test quality threshold",
+                },
+            )
         with engine.begin() as connection:
             assert (
                 connection.execute(
@@ -435,6 +453,17 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                     "origin_key": "cross-agent-type",
                     "finding_type": "knowledge_draft",
                     "payload": '{"title":"Injected","draft_text":"Injected"}',
+                    "evidence": f"[{ids['event_a']}]",
+                },
+            )
+            denied(
+                connection,
+                str(create_finding_sql),
+                {
+                    **finding_parameters,
+                    "finding_id": uuid4(),
+                    "origin_key": "narrowed-blocker",
+                    "finding_type": "blocker_alert",
                     "evidence": f"[{ids['event_a']}]",
                 },
             )

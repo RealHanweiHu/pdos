@@ -351,6 +351,17 @@ SELECT run.tenant_id, run.agent_key, run.created_at
 FROM cehub_ai.agent_runs AS run
 WHERE cehub_ai.agent_tenant_scope_allows(run.tenant_id);
 
+CREATE OR REPLACE VIEW cehub_ai.agent_finding_quality_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    control.tenant_id,
+    control.agent_key,
+    control.finding_type,
+    control.status
+FROM cehub_ai.finding_quality_controls AS control
+WHERE cehub_ai.agent_tenant_scope_allows(control.tenant_id);
+
 CREATE OR REPLACE FUNCTION cehub_ai.persist_agent_run_context(
     bound_run_id uuid,
     bound_lease_token uuid,
@@ -532,6 +543,10 @@ BEGIN
         RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE = '42501';
     END IF;
 
+    PERFORM pg_advisory_xact_lock(
+        hashtextextended('finding-quality:' || scoped_run.tenant_id::text, 0)
+    );
+
     SELECT EXISTS (
         SELECT 1
         FROM cehub_ai.model_invocations AS invocation
@@ -544,6 +559,14 @@ BEGIN
     ) INTO invocation_matches;
 
     IF NOT invocation_matches
+       OR EXISTS (
+           SELECT 1
+           FROM cehub_ai.finding_quality_controls AS control
+           WHERE control.tenant_id = scoped_run.tenant_id
+             AND control.agent_key = scoped_run.agent_key
+             AND control.finding_type = new_finding_type
+             AND control.status = 'narrowed'
+       )
        OR NOT (
            (scoped_run.agent_key = 'project_intelligence' AND new_finding_type IN (
                'risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly'
@@ -732,7 +755,8 @@ GRANT SELECT ON
     cehub_ai.agent_document_fragment_projection,
     cehub_ai.agent_model_settings_projection,
     cehub_ai.agent_model_usage_projection,
-    cehub_ai.agent_run_usage_projection
+    cehub_ai.agent_run_usage_projection,
+    cehub_ai.agent_finding_quality_projection
     TO pdos_agent;
 GRANT INSERT ON cehub_ai.model_invocations TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.agent_scope_allows(uuid, uuid) TO pdos_agent;

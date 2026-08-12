@@ -15,7 +15,11 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from sqlalchemy import Engine
 
 from app.ai.context_builder import RunContextBuilder
-from app.ai.finding_writer import AgentFindingWriter, preflight_assessment
+from app.ai.finding_writer import (
+    AgentFindingWriter,
+    FindingOutputNarrowedError,
+    preflight_assessment,
+)
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
 from app.ai.run_store import AgentRunStore, ClaimedAgentRun, OwnerAgentRunStore
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
@@ -166,12 +170,15 @@ class AgentExecutor:
                 context = self._load_context(claim=claim, built_at=current_time)
                 final_state = self._graph.invoke({"run_context": context})
                 result = final_state["gateway_result"]
-                finding_id = self._create_finding(
-                    claim=claim,
-                    context=context,
-                    result=result,
-                    created_at=current_time,
-                )
+                try:
+                    finding_id = self._create_finding(
+                        claim=claim,
+                        context=context,
+                        result=result,
+                        created_at=current_time,
+                    )
+                except FindingOutputNarrowedError:
+                    finding_id = None
             except Exception as error:
                 error_code = self._error_code(error)
                 self._run_store.fail(

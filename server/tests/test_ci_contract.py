@@ -18,6 +18,8 @@ def test_ci_enforces_quality_and_isolated_migration_gates() -> None:
     assert "make lint" in commands
     assert "make type" in commands
     assert "make test" in commands
+    assert "make sprint2-removal-drill" in commands
+    assert "make sprint2-redteam" in commands
     assert "make build" in commands
     assert "make smoke-app" in commands
     assert "scripts.migrate_test" in commands
@@ -30,3 +32,20 @@ def test_web_typecheck_generates_route_types_in_a_clean_checkout() -> None:
     scripts = json.loads(package_path.read_text())["scripts"]
 
     assert scripts["typecheck"] == "next typegen && tsc --noEmit"
+
+
+def test_runtime_cannot_mutate_the_golden_trust_root() -> None:
+    runtime_roots = [
+        REPOSITORY_ROOT / "server" / "app",
+        REPOSITORY_ROOT / "server" / "scripts",
+    ]
+    disallowed = []
+    for root in runtime_roots:
+        for path in root.rglob("*.py"):
+            source = path.read_text()
+            if "golden" in source.lower() and any(
+                token in source for token in ("write_text(", "write_bytes(", 'open("w')
+            ):
+                disallowed.append(path.relative_to(REPOSITORY_ROOT))
+
+    assert disallowed == []

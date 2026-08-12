@@ -82,6 +82,12 @@ jobs:
       - name: Unit tests
         run: make test
 
+      - name: Sprint 2 model removal drill
+        run: make sprint2-removal-drill
+
+      - name: Sprint 2 Agent boundary red team
+        run: make sprint2-redteam
+
       - name: Production build
         run: make build
 

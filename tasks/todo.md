@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-7 纪律收口。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 至 S2-6 已验收完成，下一项实施拆除测试、golden-case 学习环、北极星遥测与低质输出自动收窄。
+> 唯一当前指针：**Sprint 2 Exit Gate。** S2-1 至 S2-7 已完成；正在执行完整质量门禁与验收汇报，随后必须等待人选择试点项目并明确确认，才能进入 Sprint 3。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -671,20 +671,35 @@
 - Event 引用已在真实浏览器中验证落到项目 Timeline 的指定活动并高亮；亮/暗主题视觉核对通过。自动化门禁：web 90 tests、server 定向 12 tests，Ruff/format/mypy/ESLint/TypeScript/Next.js build 全绿。
 - 本地完整 `make check` 首次运行误读 `.env` 的 55432（该端口属于现有 CEHub），属于环境指向问题；S2-7 收口将以显式隔离的 57432 `pdos_test` 重跑全量门禁。
 
-## Current: S2-7 Discipline Closeout
+## Completed: S2-7 Discipline Closeout
 
 **Definition of Ready**
 
-- [ ] 拆除测试冻结“无新 Finding / Brief 明确失能 / Chat 降级”三项观测，且错误路径零 LLM
-- [ ] golden-case 可信根与人工修正积累边界冻结，任何运行时自动化均无写权限
-- [ ] finding 接受率与被采取行动数的服务端口径、权限范围和 Dashboard 呈现冻结
-- [ ] 低质阈值只在达到最小人工样本量后按 Agent + Finding 类型收窄，不用产出量替代质量
-- [ ] Sprint 2 红队、端到端、迁移、浏览器与试点启动清单冻结
+- [x] 拆除测试冻结“无新 Finding / Brief 明确失能 / Chat 降级”三项观测，且错误路径零 LLM
+- [x] golden-case 可信根与人工修正积累边界冻结，任何运行时自动化均无写权限
+- [x] finding 接受率与被采取行动数的服务端口径、权限范围和 Dashboard 呈现冻结
+- [x] 低质阈值只在达到最小人工样本量后按 Agent + Finding 类型收窄，不用产出量替代质量
+- [x] Sprint 2 红队、端到端、迁移、浏览器与试点启动清单冻结
 
 **Implementation slices**
 
-- [ ] S2-7a：增加质量遥测与按输出类型的确定性自动收窄
-- [ ] S2-7b：把拆除演练与红队边界验证接入 CI 旁路脚本
-- [ ] S2-7c：建立只读 golden-case 修正积累/人工晋级流程与回归门禁
-- [ ] S2-7d：Dashboard 呈现接受率、采取行动数与收窄状态
-- [ ] S2-7e：完成 Sprint 2 端到端验收、试点启动清单与完整质量门禁
+- [x] S2-7a：增加质量遥测与按输出类型的确定性自动收窄
+- [x] S2-7b：把拆除演练与红队边界验证接入 CI 旁路脚本
+- [x] S2-7c：建立只读 golden-case 修正积累/人工晋级流程与回归门禁
+- [x] S2-7d：Dashboard 呈现接受率、采取行动数与收窄状态
+- [x] S2-7e：完成 Sprint 2 端到端验收、试点启动清单与完整质量门禁
+
+**Completion evidence（2026-08-12）**
+
+- migration `0014_finding_quality_controls` 建立租户内 Agent + Finding type 质量控制；口径只统计已人工裁决样本，默认至少 5 条后才以 50% 阈值收窄，收窄状态 sticky，恢复必须人工处置。
+- Review/Apply 同事务刷新质量遥测；Dashboard AI Brief 显示接受率、人工裁决分母、实际 Apply 数与已收窄类型数，Finding 产量未作为成功指标。
+- 应用面与受限 `pdos_agent` 的 `create_agent_finding` 双重阻断 narrowed 类型；其他类型和 Agent 仍可运行，避免粗暴停掉整份订阅。
+- `make sprint2-removal-drill` 已进入 CI 旁路：清除全部模型凭据后模型目录为空、Chat 降级、Finding 数不变且 provider 调用为 0；Dashboard 的真实浏览器降级态已在 S2-6 验证。
+- `server/golden/correction-candidates/`、人工学习环 runbook 与静态门禁建立；运行时无任何 golden 根写接口，评测脚本仍只生成报告且不自动发布资格。
+- Sprint 2 试点 runbook 已冻结入选、启动、停止与观测口径。真实 1–2 个项目的选择保留为 Sprint Exit 人工决策，不由 Agent 自行挑选或改变生产状态。
+
+## Sprint 2 Exit Gate — Awaiting explicit human confirmation
+
+- [ ] 汇报 Sprint 2 验收结果
+- [ ] 由人选择 1–2 个真实双跑项目并填写 `docs/runbooks/sprint-2-pilot.md`
+- [ ] 获得人明确确认后才进入 Sprint 3
