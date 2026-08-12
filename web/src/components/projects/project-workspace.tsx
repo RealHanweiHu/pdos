@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import type { WorkspaceIdentity } from "@/components/workspace-types";
+import { requestProjectActivity, type ProjectActivity } from "./project-activity";
 
 import { requestProjects } from "./project-api";
 import {
@@ -38,6 +39,7 @@ import { useProjectActions } from "./use-project-actions";
 
 type LoadState = "loading" | "ready" | "error" | "redirecting";
 const workItemRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
+const deepLinkTabs = new Set<ProjectWorkspaceTab>(["overview", "timeline", "tasks", "issues", "risks", "ai-chat"]);
 
 function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
@@ -56,6 +58,10 @@ export function ProjectWorkspace() {
   const [workItemBusy, setWorkItemBusy] = useState(false);
   const [workItemError, setWorkItemError] = useState<string | null>(null);
   const [workItemStatus, setWorkItemStatus] = useState<string | null>(null);
+  const [activities, setActivities] = useState<ProjectActivity[]>([]);
+  const [activityError, setActivityError] = useState(false);
+  const [highlightedEntityId, setHighlightedEntityId] = useState<string | null>(null);
+  const [highlightedEventId, setHighlightedEventId] = useState<number | null>(null);
   const requestSequence = useRef(0);
 
   useEffect(() => {
@@ -72,9 +78,19 @@ export function ProjectWorkspace() {
         setProjects(loaded.projects);
         setLoadState("ready");
         const deepLinkedId = new URLSearchParams(window.location.search).get("project");
+        const deepLinkedTab = new URLSearchParams(window.location.search).get("tab") as ProjectWorkspaceTab | null;
+        const deepLinkedEvent = Number(new URLSearchParams(window.location.search).get("event_id"));
+        const deepLinkedEntity = new URLSearchParams(window.location.search).get("entity_id");
         const deepLinkedProject = loaded.projects.find((project) => project.id === deepLinkedId);
         if (deepLinkedProject) {
           setSelectedProjectId(deepLinkedProject.id);
+          if (deepLinkedTab && deepLinkTabs.has(deepLinkedTab)) setActiveTab(deepLinkedTab);
+          setHighlightedEventId(Number.isSafeInteger(deepLinkedEvent) && deepLinkedEvent > 0 ? deepLinkedEvent : null);
+          setHighlightedEntityId(deepLinkedEntity);
+          requestProjectActivity(deepLinkedProject.id).then(
+            (items) => { if (active) { setActivities(items); setActivityError(false); } },
+            () => { if (active) { setActivities([]); setActivityError(true); } },
+          );
           if (workItemRoles.includes(loaded.identity.user.role)) {
             const sequence = requestSequence.current + 1;
             requestSequence.current = sequence;
@@ -122,6 +138,12 @@ export function ProjectWorkspace() {
     setActiveTab("overview");
     setWorkItemError(null);
     setWorkItemStatus(null);
+    setHighlightedEventId(null);
+    setHighlightedEntityId(null);
+    requestProjectActivity(project.id).then(
+      (items) => { setActivities(items); setActivityError(false); },
+      () => { setActivities([]); setActivityError(true); },
+    );
     if (canViewWorkItems) {
       void loadWorkItems(project.id);
     } else {
@@ -246,8 +268,12 @@ export function ProjectWorkspace() {
   return (
     <ProjectWorkspaceView
       activeTab={activeTab}
+      activities={activities}
+      activityError={activityError}
       canEdit={canEdit}
       canViewWorkItems={canViewWorkItems}
+      highlightedEntityId={highlightedEntityId}
+      highlightedEventId={highlightedEventId}
       errorMessage={actions.errorMessage}
       identity={identity}
       loggingOut={loggingOut}

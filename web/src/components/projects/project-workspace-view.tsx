@@ -2,12 +2,14 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ProjectAiChat } from "@/components/ai/project-ai-chat";
 
 import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form";
 import { ProjectList, projectStatusLabels } from "./project-list";
 import { ProjectOverview } from "./project-overview";
 import { ProjectTimeline } from "./project-timeline";
 import type { Project } from "./project-types";
+import type { ProjectActivity } from "./project-activity";
 import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
 import type {
   IssueCreateInput,
@@ -22,7 +24,7 @@ import type {
   TaskTransitionInput,
 } from "./project-work-item-types";
 
-export type ProjectWorkspaceTab = "overview" | "timeline" | "tasks" | "issues" | "risks";
+export type ProjectWorkspaceTab = "overview" | "timeline" | "tasks" | "issues" | "risks" | "ai-chat";
 export type WorkItemLoadState = "idle" | "loading" | "ready" | "error";
 
 const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[] = [
@@ -31,6 +33,7 @@ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[
   { key: "tasks", label: "任务", internalOnly: true },
   { key: "issues", label: "问题", internalOnly: true },
   { key: "risks", label: "风险", internalOnly: true },
+  { key: "ai-chat", label: "AI 对话", internalOnly: true },
 ];
 
 function WorkItemState({ onRetry, state }: { onRetry: () => void; state: WorkItemLoadState }) {
@@ -51,8 +54,12 @@ function WorkItemState({ onRetry, state }: { onRetry: () => void; state: WorkIte
 
 export function ProjectWorkspaceView({
   activeTab,
+  activities,
+  activityError,
   canEdit,
   canViewWorkItems,
+  highlightedEntityId,
+  highlightedEventId,
   errorMessage,
   identity,
   loggingOut,
@@ -80,8 +87,12 @@ export function ProjectWorkspaceView({
   workItems,
 }: {
   activeTab: ProjectWorkspaceTab;
+  activities: ProjectActivity[];
+  activityError: boolean;
   canEdit: boolean;
   canViewWorkItems: boolean;
+  highlightedEntityId: string | null;
+  highlightedEventId: number | null;
   errorMessage: string | null;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
@@ -185,13 +196,14 @@ export function ProjectWorkspaceView({
                 workItems={workItems}
               />
             ) : null}
-            {activeTab === "timeline" ? <ProjectTimeline project={selectedProject} /> : null}
+            {activeTab === "timeline" ? <ProjectTimeline activities={activities} activityError={activityError} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject} /> : null}
             {activeTab === "tasks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "tasks" && workItems ? <TaskPanel busy={workItemBusy} onCreate={onCreateTask} onTransition={onTransitionTask} tasks={workItems.tasks} /> : null}
             {activeTab === "issues" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "issues" && workItems ? <IssuePanel busy={workItemBusy} issues={workItems.issues} onCreate={onCreateIssue} onTransition={onTransitionIssue} /> : null}
             {activeTab === "risks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "risks" && workItems ? <RiskPanel busy={workItemBusy} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks} /> : null}
+            {activeTab === "ai-chat" ? <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id} /> : null}
           </div>
         </section>
       ) : null}

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import Annotated
+from datetime import datetime
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
@@ -21,11 +22,13 @@ from app.ai.risk_suggestions import (
     RiskSuggestionService,
 )
 from app.api.auth import current_context, no_store
+from app.api.model_governance import get_model_governance_service
 from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
 from app.db.engine import get_engine
 from app.domain.documents import MAX_DOCUMENT_BYTES, DocumentError, DocumentService
+from app.domain.findings import FindingService
 from app.storage.documents import DocumentObjectStore, get_document_object_store
 
 router = APIRouter(prefix="/api/ai", tags=["ai"])
@@ -98,6 +101,38 @@ class RiskSuggestionResponse(BaseModel):
     error_code: str | None
 
 
+class AiBriefEvidenceResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    event_row_id: int
+    label: str
+    href: str
+
+
+class AiBriefItemResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    finding_id: UUID
+    project_id: UUID
+    finding_type: str
+    finding_status: str
+    title: str
+    summary: str
+    evidence: list[AiBriefEvidenceResponse]
+    created_at: datetime
+    href: str
+
+
+class AiBriefResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    status: Literal["active", "unavailable"]
+    error_code: str | None
+    pending_review_count: int
+    latest_finding_at: datetime | None
+    items: list[AiBriefItemResponse]
+
+
 def require_ai_action(context: AuthContext, action: Action) -> None:
     if not is_allowed(context.user.role, action):
         raise HTTPException(
@@ -111,6 +146,62 @@ def get_application_gateway(
 ) -> Iterator[ApplicationModelGateway]:
     with configured_application_gateway(engine) as gateway:
         yield gateway
+
+
+@router.get("/brief", response_model=AiBriefResponse)
+def ai_brief(
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> AiBriefResponse:
+    require_ai_action(context, Action.FINDING_VIEW)
+    records = FindingService(engine).list(
+        tenant_id=context.tenant.id,
+        member_user_id=(None if context.user.role in {"owner", "admin"} else context.user.id),
+    )
+    try:
+        governance = get_model_governance_service(engine).get(tenant_id=context.tenant.id)
+        active = (
+            governance.selection is not None
+            and governance.selection.available
+            and not governance.budget.exhausted
+        )
+        error_code = None if active else "MODEL_UNAVAILABLE"
+    except HTTPException:
+        active = False
+        error_code = "MODEL_CATALOG_UNAVAILABLE"
+    pending_count = sum(record.status == "pending_review" for record in records)
+    no_store(response)
+    return AiBriefResponse(
+        status="active" if active else "unavailable",
+        error_code=error_code,
+        pending_review_count=pending_count,
+        latest_finding_at=records[0].created_at if records else None,
+        items=[
+            AiBriefItemResponse(
+                finding_id=record.id,
+                project_id=record.project_id,
+                finding_type=record.finding_type,
+                finding_status=record.status,
+                title=record.title,
+                summary=record.summary,
+                evidence=[
+                    AiBriefEvidenceResponse(
+                        event_row_id=event_id,
+                        label=f"事件 #{event_id}",
+                        href=(
+                            f"/projects?project={record.project_id}"
+                            f"&tab=timeline&event_id={event_id}"
+                        ),
+                    )
+                    for event_id in record.evidence_event_ids
+                ],
+                created_at=record.created_at,
+                href=f"/ai-review?finding={record.id}",
+            )
+            for record in records[:5]
+        ],
+    )
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -242,7 +333,8 @@ async def analyze_document(
                 ordinal=fragment.ordinal,
                 locator=fragment.locator,
                 href=(
-                    f"/projects/{document.project_id}?tab=documents&document_id={document.id}"
+                    f"/projects?project={document.project_id}"
+                    f"&tab=timeline&document_id={document.id}&entity_id={document.id}"
                     f"&fragment={fragment.ordinal}"
                 ),
                 excerpt=fragment.text[:500],

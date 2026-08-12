@@ -8,7 +8,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-from sqlalchemy import Engine
+from sqlalchemy import Engine, select
 
 from app.api.auth import current_context, no_store
 from app.auth.errors import ObjectPermissionDeniedError
@@ -20,6 +20,7 @@ from app.auth.project_access import (
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, Role, is_allowed
 from app.db.engine import get_engine
+from app.db.schema import tables
 from app.domain.projects import (
     DevelopmentCaseNotFoundForProjectError,
     ProjectAlreadyExistsError,
@@ -175,6 +176,22 @@ class ProjectAccessResponse(BaseModel):
     allowed_actions: list[Action]
 
 
+class ProjectActivityResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    id: int
+    event_type: str
+    entity: str
+    entity_id: UUID
+    timestamp: datetime
+
+
+class ProjectActivityListResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[ProjectActivityResponse]
+
+
 def stage_response(record: StageRecord) -> StageResponse:
     return StageResponse(
         id=record.id,
@@ -327,6 +344,41 @@ def project_access(
         role=access.role,
         allowed_actions=sorted(access.allowed_actions, key=lambda action: action.value),
     )
+
+
+@router.get("/{project_id}/activity", response_model=ProjectActivityListResponse)
+def project_activity(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectActivityListResponse:
+    require_project_action(
+        project_id=project_id,
+        context=context,
+        engine=engine,
+        action=Action.PROJECT_VIEW,
+    )
+    with engine.connect() as connection:
+        rows = list(
+            connection.execute(
+                select(
+                    tables.events.c.id,
+                    tables.events.c.event_type,
+                    tables.events.c.entity,
+                    tables.events.c.entity_id,
+                    tables.events.c.timestamp,
+                )
+                .where(
+                    tables.events.c.tenant_id == context.tenant.id,
+                    tables.events.c.project_id == project_id,
+                )
+                .order_by(tables.events.c.id.desc())
+                .limit(100)
+            ).mappings()
+        )
+    no_store(response)
+    return ProjectActivityListResponse(items=[ProjectActivityResponse(**row) for row in rows])
 
 
 @router.get("/{project_id}", response_model=ProjectResponse)

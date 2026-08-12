@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-6 前端 AI 面。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 至 S2-5 已验收完成，下一项实施 AI Review 收件箱、Dashboard AI Brief 与 Project AI Chat 标签。
+> 唯一当前指针：**S2-7 纪律收口。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 至 S2-6 已验收完成，下一项实施拆除测试、golden-case 学习环、北极星遥测与低质输出自动收窄。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -644,20 +644,47 @@
 - 完整门禁全绿：server 211 tests、web 82 tests，Ruff/format/mypy/ESLint/TypeScript/Next.js build/Python compile 全部通过；`0013` 降级再升级、真实受限角色安全测试与隔离生产容器 smoke 全绿。
 - 测试仅连接本地 `pdos_test`（端口 57432，因 55432 被现有 CEHub 占用）；生产 RDS/OSS/ECS/Nginx/DNS 均未变更，测试角色口令与权限对象已清理。
 
-## Current: S2-6 Frontend AI Surface
+## Completed: S2-6 Frontend AI Surface
 
 **Definition of Ready**
 
-- [ ] 逐条映射 canonical S2-6、UI baseline、Finding/Chat API 与现有 Dashboard/Project Workspace 结构
-- [ ] AI Review 收件箱冻结 Accept/Edit/Reject、逐字段 diff、证据跳转与 accepted 后独立 Apply
-- [ ] Dashboard AI Brief 只呈现真实 Agent/Finding 事实，降级与空态不可伪装为正常
-- [ ] Project Workspace AI Chat 标签使用 S2-5 引用合同，不在前端自行生成或信任链接
-- [ ] 权限、双主题、320/768/1440 响应式、键盘可达与真实浏览器验收范围冻结
+- [x] 逐条映射 canonical S2-6、UI baseline、Finding/Chat API 与现有 Dashboard/Project Workspace 结构
+- [x] AI Review 收件箱冻结 Accept/Edit/Reject、逐字段 diff、证据跳转与 accepted 后独立 Apply
+- [x] Dashboard AI Brief 只呈现真实 Agent/Finding 事实，降级与空态不可伪装为正常
+- [x] Project Workspace AI Chat 标签使用 S2-5 引用合同，不在前端自行生成或信任链接
+- [x] 权限、双主题、320/768/1440 响应式、键盘可达与真实浏览器验收范围冻结
 
 **Implementation slices**
 
-- [ ] S2-6a：冻结前端类型、同源 BFF、权限与交互合同
-- [ ] S2-6b：实现 AI Review 收件箱及 Accept/Edit/Reject/Apply 两阶段交互
-- [ ] S2-6c：实现 Dashboard AI Brief 卡片与可观测降级/空态
-- [ ] S2-6d：实现 Project Workspace AI Chat 标签、引用跳转与无据拒答态
-- [ ] S2-6e：完成测试、真实浏览器、双主题响应式与完整质量门禁验收
+- [x] S2-6a：冻结前端类型、同源 BFF、权限与交互合同
+- [x] S2-6b：实现 AI Review 收件箱及 Accept/Edit/Reject/Apply 两阶段交互
+- [x] S2-6c：实现 Dashboard AI Brief 卡片与可观测降级/空态
+- [x] S2-6d：实现 Project Workspace AI Chat 标签、引用跳转与无据拒答态
+- [x] S2-6e：完成测试、真实浏览器、双主题响应式与完整质量门禁验收
+
+**Completion evidence（2026-08-11）**
+
+- `/ai-review` 交付跨项目 Finding 队列、类型筛选、逐字段 diff、真实 Event 引用深链，以及 Accept/Edit/Reject 键盘操作；Reject 强制人工原因。
+- Accept 与 Apply 维持两个独立动作：浏览器实测 Accept 后业务 Risk 数不变，最终载荷预览与二次确认后才由服务端复核并创建 Risk；Knowledge draft 明确不可 Apply。
+- Dashboard AI Brief 只读取服务端可见 Finding；模型不可用时显示“AI 已暂停”及最近可追溯事实，不把降级伪装为正常。
+- Project Workspace 增加内部用户可见的 AI Chat；只消费服务端映射的同源引用，无证据拒答，模型移除时明确降级；外部角色不显示 AI 面。
+- Event 引用已在真实浏览器中验证落到项目 Timeline 的指定活动并高亮；亮/暗主题视觉核对通过。自动化门禁：web 90 tests、server 定向 12 tests，Ruff/format/mypy/ESLint/TypeScript/Next.js build 全绿。
+- 本地完整 `make check` 首次运行误读 `.env` 的 55432（该端口属于现有 CEHub），属于环境指向问题；S2-7 收口将以显式隔离的 57432 `pdos_test` 重跑全量门禁。
+
+## Current: S2-7 Discipline Closeout
+
+**Definition of Ready**
+
+- [ ] 拆除测试冻结“无新 Finding / Brief 明确失能 / Chat 降级”三项观测，且错误路径零 LLM
+- [ ] golden-case 可信根与人工修正积累边界冻结，任何运行时自动化均无写权限
+- [ ] finding 接受率与被采取行动数的服务端口径、权限范围和 Dashboard 呈现冻结
+- [ ] 低质阈值只在达到最小人工样本量后按 Agent + Finding 类型收窄，不用产出量替代质量
+- [ ] Sprint 2 红队、端到端、迁移、浏览器与试点启动清单冻结
+
+**Implementation slices**
+
+- [ ] S2-7a：增加质量遥测与按输出类型的确定性自动收窄
+- [ ] S2-7b：把拆除演练与红队边界验证接入 CI 旁路脚本
+- [ ] S2-7c：建立只读 golden-case 修正积累/人工晋级流程与回归门禁
+- [ ] S2-7d：Dashboard 呈现接受率、采取行动数与收窄状态
+- [ ] S2-7e：完成 Sprint 2 端到端验收、试点启动清单与完整质量门禁

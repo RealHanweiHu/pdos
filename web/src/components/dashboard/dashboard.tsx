@@ -14,6 +14,9 @@ import { requestProjectRisks } from "@/components/projects/project-work-item-api
 import type { ProjectRisk } from "@/components/projects/project-work-item-types";
 import type { Project } from "@/components/projects/project-types";
 import { cn } from "@/lib/utils";
+import { requestAiBrief } from "@/components/ai/ai-api";
+import { AiBriefCard, type AiBriefLoadState } from "@/components/ai/ai-brief-card";
+import type { AiBrief } from "@/components/ai/ai-types";
 
 type DashboardState = "loading" | "ready" | "error" | "redirecting";
 type RiskState = "loading" | "ready" | "error" | "restricted";
@@ -43,6 +46,8 @@ export function Dashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [risks, setRisks] = useState<RankedRisk[]>([]);
   const [riskState, setRiskState] = useState<RiskState>("loading");
+  const [brief, setBrief] = useState<AiBrief | null>(null);
+  const [briefState, setBriefState] = useState<AiBriefLoadState>("loading");
   const [loggingOut, setLoggingOut] = useState(false);
 
   async function loadDashboard() {
@@ -60,9 +65,11 @@ export function Dashboard() {
       if (!riskRoles.includes(loaded.identity.user.role)) {
         setRisks([]);
         setRiskState("restricted");
+        setBrief(null);
+        setBriefState("restricted");
         return;
       }
-      await loadRisks(loaded.projects);
+      await Promise.all([loadRisks(loaded.projects), loadBrief()]);
     } catch {
       setState("error");
     }
@@ -76,6 +83,17 @@ export function Dashboard() {
     } catch {
       setRisks([]);
       setRiskState("error");
+    }
+  }
+
+  async function loadBrief() {
+    setBriefState("loading");
+    try {
+      setBrief(await requestAiBrief());
+      setBriefState("ready");
+    } catch {
+      setBrief(null);
+      setBriefState("error");
     }
   }
 
@@ -95,6 +113,8 @@ export function Dashboard() {
         if (!riskRoles.includes(loaded.identity.user.role)) {
           setRisks([]);
           setRiskState("restricted");
+          setBrief(null);
+          setBriefState("restricted");
           return;
         }
         requestRankedRisks(loaded.projects).then(
@@ -107,6 +127,18 @@ export function Dashboard() {
             if (!active) return;
             setRisks([]);
             setRiskState("error");
+          },
+        );
+        requestAiBrief().then(
+          (loadedBrief) => {
+            if (!active) return;
+            setBrief(loadedBrief);
+            setBriefState("ready");
+          },
+          () => {
+            if (!active) return;
+            setBrief(null);
+            setBriefState("error");
           },
         );
       },
@@ -234,6 +266,7 @@ export function Dashboard() {
             </ol>
           ) : null}
         </section>
+        <AiBriefCard brief={brief} onRetry={() => void loadBrief()} state={briefState} />
       </div>
     </WorkspaceShell>
   );

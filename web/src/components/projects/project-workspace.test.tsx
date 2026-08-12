@@ -262,7 +262,7 @@ describe("ProjectWorkspace", () => {
     expect(screen.queryByRole("button", { name: "提交立项" })).not.toBeInTheDocument();
   });
 
-  it("renders the five internal tabs and keeps dependency waiting distinct from blocked", async () => {
+  it("renders the internal tabs and keeps dependency waiting distinct from blocked", async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation(async (input) => {
       const path = String(input);
@@ -276,7 +276,8 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
-    expect(await screen.findAllByRole("tab")).toHaveLength(5);
+    expect(await screen.findAllByRole("tab")).toHaveLength(6);
+    expect(screen.getByRole("tab", { name: "AI 对话" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "概览" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByText("1", { selector: "[data-metric='task']" })).toBeInTheDocument();
 
@@ -385,11 +386,12 @@ describe("ProjectWorkspace", () => {
   });
 
   it("opens the project selected by the dashboard deep link", async () => {
-    window.history.replaceState({}, "", "/projects?project=project-1");
+    window.history.replaceState({}, "", "/projects?project=project-1&tab=timeline&event_id=41");
     fetchMock.mockImplementation(async (input) => {
       const path = String(input);
       if (path === "/api/session/me") return jsonResponse(identity);
       if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/activity")) return jsonResponse({ items: [{ id: 41, event_type: "TEST_FAILED", entity: "test_report", entity_id: "report-1", timestamp: "2026-08-11T16:00:00Z" }] });
       const response = workItemResponse(path);
       if (response) return response;
       throw new Error(`unexpected request: ${path}`);
@@ -398,6 +400,9 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
 
     expect(await screen.findByRole("heading", { name: "Next pump platform" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "时间线" })).toHaveAttribute("aria-selected", "true");
+    expect(await screen.findByText("TEST_FAILED")).toBeInTheDocument();
+    expect(screen.getByText("TEST_FAILED").closest("li")).toHaveAttribute("aria-current", "true");
     await waitFor(() => expect(fetchMock.mock.calls.filter(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toHaveLength(3));
   });
 

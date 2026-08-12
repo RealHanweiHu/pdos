@@ -302,7 +302,7 @@ def test_document_analysis_persists_object_fragments_and_event(
     body = response.json()
     assert body["extraction_status"] == "extracted"
     assert body["fragments"][0]["locator"] == "sheet:Risks,rows:1-2"
-    assert body["fragments"][0]["href"].startswith(f"/projects/{project_id}")
+    assert body["fragments"][0]["href"].startswith(f"/projects?project={project_id}")
     assert len(object_store.objects) == 1
     assert body["sha256"] not in str(body["fragments"])
     engine = create_engine(psycopg_database_url(isolated_ai_api_database))
@@ -368,7 +368,7 @@ def test_chat_only_returns_server_mapped_citations_and_fail_closes_unknown_ids(
 
     assert answered.status_code == 200
     assert answered.json()["status"] == "answered"
-    assert answered.json()["citations"][0]["href"] == f"/projects/{project_id}?tab=overview"
+    assert answered.json()["citations"][0]["href"] == f"/projects?project={project_id}&tab=overview"
     invocation_context = gateway.invocations[-1].context
     assert "href" not in str(invocation_context)
     assert "object_key" not in str(invocation_context)
@@ -426,6 +426,16 @@ def test_risk_suggestion_creates_only_pending_finding_and_is_idempotent(
     assert created.status_code == replay.status_code == 200
     assert created.json() == replay.json()
     assert created.json()["status"] == "created"
+    brief = client.get("/api/ai/brief", headers=headers)
+    assert brief.status_code == 200
+    assert brief.headers["cache-control"] == "no-store"
+    assert brief.json()["status"] == "unavailable"
+    assert brief.json()["error_code"] == "MODEL_UNAVAILABLE"
+    assert brief.json()["pending_review_count"] == 1
+    assert brief.json()["items"][0]["finding_id"] == created.json()["finding_id"]
+    assert brief.json()["items"][0]["evidence"][0]["href"] == (
+        f"/projects?project={project_id}&tab=timeline&event_id={event_row_id}"
+    )
     engine = create_engine(psycopg_database_url(isolated_ai_api_database))
     try:
         with engine.connect() as connection:

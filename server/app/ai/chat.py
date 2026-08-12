@@ -81,7 +81,7 @@ def _excerpt(*parts: object, limit: int = 1_000) -> str:
 
 def _base_href(project_id: UUID, tab: str, **params: object) -> str:
     query = "&".join(f"{name}={value}" for name, value in params.items())
-    return f"/projects/{project_id}?tab={tab}" + (f"&{query}" if query else "")
+    return f"/projects?project={project_id}&tab={tab}" + (f"&{query}" if query else "")
 
 
 class ChatEvidenceRepository:
@@ -188,7 +188,7 @@ class ChatEvidenceRepository:
                 "gate",
                 tables.gates,
                 (tables.gates.c.name, tables.gates.c.status, tables.gates.c.review_due_at),
-                "gates",
+                "timeline",
             ),
         )
         evidence: list[ChatEvidence] = []
@@ -303,8 +303,9 @@ class ChatEvidenceRepository:
                     label=f"{row['filename']} · {row['locator']}",
                     href=_base_href(
                         project_id,
-                        "documents",
+                        "timeline",
                         document_id=document_id,
+                        entity_id=document_id,
                         fragment=ordinal,
                     ),
                     excerpt=_excerpt(row["text"]),

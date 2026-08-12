@@ -16,6 +16,14 @@ const identity = {
   user: { id: "user-1", tenant_id: "tenant-1", username: "owner", display_name: "Initial Owner", role: "owner", email: null, is_active: true },
 };
 
+const emptyBrief = {
+  status: "active",
+  error_code: null,
+  pending_review_count: 0,
+  latest_finding_at: null,
+  items: [],
+};
+
 const stages = [
   ["stage-1", "concept", "概念阶段", 1],
   ["stage-2", "planning", "规划阶段", 2],
@@ -85,6 +93,7 @@ describe("Dashboard", () => {
       const path = String(input);
       if (path === "/api/session/me") return jsonResponse(identity);
       if (path === "/api/projects") return jsonResponse({ items: projects });
+      if (path === "/api/ai/brief") return jsonResponse(emptyBrief);
       if (path.endsWith("project-1/risks")) return jsonResponse({ items: [risk("risk-1", "project-1", "Supplier slip", 15)] });
       if (path.endsWith("project-2/risks")) return jsonResponse({ items: [risk("risk-2", "project-2", "Motor validation", 20)] });
       throw new Error(`unexpected request: ${path}`);
@@ -106,12 +115,13 @@ describe("Dashboard", () => {
       const path = String(input);
       if (path === "/api/session/me") return jsonResponse(identity);
       if (path === "/api/projects") return jsonResponse({ items: projects });
+      if (path === "/api/ai/brief") return jsonResponse(emptyBrief);
       if (path.endsWith("/risks")) return jsonResponse({}, 503);
       throw new Error(`unexpected request: ${path}`);
     });
 
     render(<Dashboard />);
-    expect(await screen.findByRole("alert")).toHaveTextContent("风险聚合暂不可用");
+    expect(await screen.findByText("风险聚合暂不可用")).toBeInTheDocument();
     expect(screen.queryByText("当前没有开放风险")).not.toBeInTheDocument();
   });
 

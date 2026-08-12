@@ -220,8 +220,15 @@ class FindingService:
         tenant_id: UUID,
         project_id: UUID | None = None,
         status: str | None = None,
+        member_user_id: UUID | None = None,
     ) -> list[FindingRecord]:
         statement = select(tables.findings).where(tables.findings.c.tenant_id == tenant_id)
+        if member_user_id is not None:
+            statement = statement.join(
+                tables.project_members,
+                (tables.project_members.c.tenant_id == tables.findings.c.tenant_id)
+                & (tables.project_members.c.project_id == tables.findings.c.project_id),
+            ).where(tables.project_members.c.user_id == member_user_id)
         if project_id is not None:
             statement = statement.where(tables.findings.c.project_id == project_id)
         if status is not None:

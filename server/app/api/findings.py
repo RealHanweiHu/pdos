@@ -13,7 +13,7 @@ from sqlalchemy import Engine
 from app.api.auth import current_context, no_store
 from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
-from app.auth.roles import Action
+from app.auth.roles import Action, is_allowed
 from app.db.engine import get_engine
 from app.domain.findings import (
     FindingApplyNotSupportedError,
@@ -44,6 +44,14 @@ class RiskSuggestionPayloadResponse(BaseModel):
     target_date: date | None
 
 
+class FindingEvidenceResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    event_row_id: int
+    label: str
+    href: str
+
+
 class FindingResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -60,6 +68,7 @@ class FindingResponse(BaseModel):
     proposed_payload: dict[str, object]
     accepted_payload: dict[str, object] | None
     evidence_event_ids: list[int]
+    evidence: list[FindingEvidenceResponse]
     confidence_basis_points: int
     preflight_version: str
     reviewed_by_user_id: UUID | None
@@ -98,6 +107,8 @@ class FindingReviewRequest(BaseModel):
     def reject_payload_only_on_accept(self) -> FindingReviewRequest:
         if self.decision == "rejected" and self.edited_payload is not None:
             raise ValueError("edited_payload is only valid for accepted findings")
+        if self.decision == "rejected" and self.comment is None:
+            raise ValueError("comment is required for rejected findings")
         return self
 
 
@@ -124,6 +135,16 @@ def response_from_record(record: FindingRecord) -> FindingResponse:
         proposed_payload=record.proposed_payload,
         accepted_payload=record.accepted_payload,
         evidence_event_ids=list(record.evidence_event_ids),
+        evidence=[
+            FindingEvidenceResponse(
+                event_row_id=event_row_id,
+                label=f"事件 #{event_row_id}",
+                href=(
+                    f"/projects?project={record.project_id}&tab=timeline&event_id={event_row_id}"
+                ),
+            )
+            for event_row_id in record.evidence_event_ids
+        ],
         confidence_basis_points=record.confidence_basis_points,
         preflight_version=record.preflight_version,
         reviewed_by_user_id=record.reviewed_by_user_id,
@@ -193,6 +214,11 @@ def list_findings(
     ] = None,
 ) -> FindingListResponse:
     no_store(response)
+    if not is_allowed(context.user.role, Action.FINDING_VIEW):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "FINDING_ACCESS_DENIED", "message": "Finding access denied"},
+        )
     if project_id is not None:
         authorize_project(
             engine=engine,
@@ -200,15 +226,11 @@ def list_findings(
             project_id=project_id,
             action=Action.FINDING_VIEW,
         )
-    elif context.user.role not in {"owner", "admin"}:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"code": "FINDING_ACCESS_DENIED", "message": "Project scope is required"},
-        )
     records = FindingService(engine).list(
         tenant_id=context.tenant.id,
         project_id=project_id,
         status=finding_status,
+        member_user_id=(None if context.user.role in {"owner", "admin"} else context.user.id),
     )
     return FindingListResponse(items=[response_from_record(record) for record in records])
 

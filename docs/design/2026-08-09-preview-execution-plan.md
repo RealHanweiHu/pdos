@@ -110,7 +110,7 @@ ai-native-R&D-platform/
 | [x] S2-3 | **AI Finding 状态机** | pending_review→accepted/rejected→applied（语义移植自 cehub-v3-2 已验证设计）；Agent 唯一写出口=创建 finding；**接受与应用不得合并为一个动作**：人先裁决 accepted/rejected，accepted 后再由有权限的人发起第二次“应用到业务对象”并二次鉴权。apply handler 把 finding 载荷当不可信输入：落库前服务端从数据库地面真相重查全部引用/范围/状态，不采信 finding 内容中的任何政策事实 |
 | [x] S2-4 | **Phase 1 双 Agent** | Project Intelligence Agent（风险建议/阻塞预警/Gate 就绪异常，订阅 PROJECT_STAGE_CHANGED/ISSUE_CREATED/TEST_FAILED）；Knowledge Agent Lite（GATE_APPROVED/DOCUMENT_UPLOADED→知识草稿）。prompt 文件版本化入库 |
 | [x] S2-5 | **API 面** | `/ai/chat`（只读问答，回答强制携带引用，无据不答）；`/ai/analyze-document` v0（PDF/Excel 文本抽取→DOCUMENT_UPLOADED 事件→Agent 消费；OCR 后置）；`/ai/create-risk-suggestion`（经 finding 人审通道）；`POST /events`（外部接入口，event_id 去重） |
-| [ ] S2-6 | **前端 AI 面** | Engineer Workspace：AI Review 收件箱（Accept/Edit/Reject + diff + 引用跳转；accepted 后独立 Apply 动作）；Dashboard AI Brief 卡片；Project Workspace AI Chat 标签 |
+| [x] S2-6 | **前端 AI 面** | Engineer Workspace：AI Review 收件箱（Accept/Edit/Reject + diff + 引用跳转；accepted 后独立 Apply 动作）；Dashboard AI Brief 卡片；Project Workspace AI Chat 标签 |
 | [ ] S2-7 | 纪律收口 | **拆除测试**（停 LLM→系统可见失能：无新 finding/无 Brief/Chat 降级）演练入 CI 旁路脚本；golden-case 目录随人工修正积累（评测非可选）；**北极星从 Day-1 定为 finding 接受率与被采取行动数（不是产出量）**——接受率遥测入 Dashboard，低于阈值自动收窄该 Agent 输出类型，防收件箱灌爆→人审疲劳→盲批 |
 
 **架构红线（Sprint 2 起永久生效）**：六 Agent = 一个运行时 + 六份订阅配置，**永远不引入 Agent 互审 Agent**（同文本审读零信息增益）；本系统合格的新信息源只有两个——人审判定、真实系统状态（测试结果/数据库事实）。

@@ -199,6 +199,11 @@ def test_project_creation_atomically_instantiates_workflow_stages_and_case_trans
 
     assert client.get(f"/api/projects/{project['id']}", headers=headers).json() == project
     assert client.get("/api/projects", headers=headers).json() == {"items": [project]}
+    activity = client.get(f"/api/projects/{project['id']}/activity", headers=headers)
+    assert activity.status_code == 200
+    assert activity.headers["cache-control"] == "no-store"
+    assert "PROJECT_CREATED" in [item["event_type"] for item in activity.json()["items"]]
+    assert all("payload" not in item for item in activity.json()["items"])
     case_after = client.get(f"/api/development-cases/{case['id']}", headers=headers)
     assert case_after.json()["status"] == "converted"
 

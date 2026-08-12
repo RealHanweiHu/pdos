@@ -8,6 +8,7 @@ import {
   KanbanIcon,
   PulseIcon,
   SignOutIcon,
+  TrayIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -22,6 +23,13 @@ const navigation = [
   { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
   { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
   { href: "/projects", label: "项目", icon: KanbanIcon, key: "projects" },
+  {
+    href: "/ai-review",
+    label: "AI Review",
+    icon: TrayIcon,
+    key: "ai-review",
+    internalOnly: true,
+  },
   { href: "/events", label: "事件流", icon: PulseIcon, key: "events", adminOnly: true },
   {
     href: "/governance/models",
@@ -39,14 +47,16 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active: "dashboard" | "requirements" | "cases" | "projects" | "events" | "model-governance";
+  active: "dashboard" | "requirements" | "cases" | "projects" | "ai-review" | "events" | "model-governance";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
   onLogout: () => void;
 }) {
   const visibleNavigation = navigation.filter(
-    (item) => !("adminOnly" in item) || ["owner", "admin"].includes(identity.user.role),
+    (item) =>
+      (!("adminOnly" in item) || ["owner", "admin"].includes(identity.user.role)) &&
+      (!("internalOnly" in item) || !["supplier", "customer"].includes(identity.user.role)),
   );
   return (
     <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
@@ -132,7 +142,7 @@ export function WorkspaceShell({
           <ul
             className={cn(
               "grid",
-              visibleNavigation.length === 6 ? "grid-cols-3 sm:grid-cols-6" : "grid-cols-4",
+              visibleNavigation.length >= 6 ? "grid-cols-4 sm:grid-cols-7" : "grid-cols-4",
             )}
             role="list"
           >

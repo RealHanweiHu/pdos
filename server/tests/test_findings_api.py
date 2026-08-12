@@ -260,6 +260,21 @@ def test_findings_http_keeps_accept_and_apply_separate(
     assert inbox.status_code == 200
     assert inbox.headers["cache-control"] == "no-store"
     assert [item["id"] for item in inbox.json()["items"]] == [str(ids["finding_id"])]
+    assert inbox.json()["items"][0]["evidence"] == [
+        {
+            "event_row_id": ids["event_id"],
+            "label": f"事件 #{ids['event_id']}",
+            "href": (
+                f"/projects?project={ids['project_id']}&tab=timeline&event_id={ids['event_id']}"
+            ),
+        }
+    ]
+    tenant_inbox = client.get(
+        "/api/ai/findings?status=pending_review",
+        headers=headers,
+    )
+    assert tenant_inbox.status_code == 200
+    assert [item["id"] for item in tenant_inbox.json()["items"]] == [str(ids["finding_id"])]
 
     accepted = client.post(
         f"/api/ai/findings/{ids['finding_id']}/review",
@@ -303,6 +318,7 @@ def test_external_role_cannot_view_review_or_apply_findings(
         client.get(f"/api/ai/findings?project_id={ids['project_id']}", headers=headers).status_code
         == 403
     )
+    assert client.get("/api/ai/findings", headers=headers).status_code == 403
     assert (
         client.post(
             f"/api/ai/findings/{ids['finding_id']}/review",
@@ -315,3 +331,27 @@ def test_external_role_cannot_view_review_or_apply_findings(
         client.post(f"/api/ai/findings/{ids['finding_id']}/apply", headers=headers).status_code
         == 403
     )
+
+
+def test_reject_requires_a_human_reason(
+    client: TestClient,
+    isolated_findings_api_database: str,
+) -> None:
+    ids = seed_api_finding(isolated_findings_api_database)
+    headers = login_headers(client, "engineer")
+
+    missing = client.post(
+        f"/api/ai/findings/{ids['finding_id']}/review",
+        headers=headers,
+        json={"decision": "rejected"},
+    )
+    rejected = client.post(
+        f"/api/ai/findings/{ids['finding_id']}/review",
+        headers=headers,
+        json={"decision": "rejected", "comment": "证据不足"},
+    )
+
+    assert missing.status_code == 422
+    assert rejected.status_code == 200
+    assert rejected.json()["status"] == "rejected"
+    assert rejected.json()["review_comment"] == "证据不足"

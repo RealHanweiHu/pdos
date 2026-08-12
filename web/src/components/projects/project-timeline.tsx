@@ -3,8 +3,25 @@ import { CheckIcon } from "@phosphor-icons/react/ssr";
 import { cn } from "@/lib/utils";
 
 import type { Project } from "./project-types";
+import type { ProjectActivity } from "./project-activity";
 
-export function ProjectTimeline({ project }: { project: Project }) {
+function formatTimestamp(value: string) {
+  return new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+}
+
+export function ProjectTimeline({
+  activities,
+  activityError,
+  highlightedEntityId,
+  highlightedEventId,
+  project,
+}: {
+  activities: ProjectActivity[];
+  activityError: boolean;
+  highlightedEntityId: string | null;
+  highlightedEventId: number | null;
+  project: Project;
+}) {
   return (
     <section aria-label="项目阶段 Timeline" className="rounded-lg border bg-card p-4">
       <div className="flex items-end justify-between gap-4">
@@ -30,6 +47,30 @@ export function ProjectTimeline({ project }: { project: Project }) {
           );
         })}
       </ol>
+      <div className="mt-5 border-t pt-4">
+        <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">近期项目活动</h3><span className="font-mono text-[10px] text-muted-foreground">最新 {activities.length} 条</span></div>
+        {activityError ? <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/8 px-3 py-3 text-sm text-destructive" role="alert">项目活动暂不可用；证据不会被显示为不存在。</p> : null}
+        {!activityError && activities.length === 0 ? <p className="mt-3 rounded-lg border border-dashed px-3 py-8 text-center text-sm text-muted-foreground">还没有项目活动。</p> : null}
+        {!activityError && activities.length > 0 ? (
+          <ol className="mt-3 divide-y overflow-hidden rounded-lg border" role="list">
+            {activities.map((activity) => {
+              const highlighted = activity.id === highlightedEventId || activity.entity_id === highlightedEntityId;
+              return (
+                <li
+                  aria-current={highlighted ? "true" : undefined}
+                  className={cn("grid gap-1 px-3 py-3 sm:grid-cols-[84px_minmax(0,1fr)_160px] sm:items-center", highlighted && "bg-primary/8 shadow-[inset_3px_0_0_var(--primary)]")}
+                  id={`event-${activity.id}`}
+                  key={activity.id}
+                >
+                  <span className="font-mono text-[11px] text-muted-foreground">#{activity.id}</span>
+                  <span className="font-mono text-xs font-semibold text-primary">{activity.event_type}</span>
+                  <span className="text-[11px] text-muted-foreground sm:text-right">{formatTimestamp(activity.timestamp)}</span>
+                </li>
+              );
+            })}
+          </ol>
+        ) : null}
+      </div>
     </section>
   );
 }
