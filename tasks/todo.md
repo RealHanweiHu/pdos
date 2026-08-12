@@ -1017,7 +1017,7 @@
 - 旧账号只迁移身份且默认禁用，不复用密码哈希；每个项目按源类型实例化独立版本化 Workflow/Stage/Gate，OBT 使用独立 `obt-gate-v1` 策略，Gate 全轮历史保留，文件只保留旧 OSS 引用而不复制正文或伪装成新文档。
 - 合成 CEHub 源库完成 S18-01 形态验收：2 User、1 Project、2 Task、2 Gate review、1 File reference；dry-run `target_writes=0`，apply 建立 8 个稳定映射，第二次 apply 五类 created 均为 0，修改已迁移源行后 `SOURCE_CHANGED` 阻断。
 - CLI 强制 `--dry-run` / `--apply` 二选一、至少一个 `--project-id`、源/目标数据库名不同；JSON 报告不输出连接串，落盘权限为 `0600`。运行手册见 `docs/runbooks/cehub-migration-v1.md`。
-- 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 250 tests，ESLint/Ruff/format、TypeScript/mypy 157 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮及可写源账号 fail-close。
+- 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 251 tests，ESLint/Ruff/format、TypeScript/mypy 158 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮、可写源账号 fail-close，以及同一项目 EVT→DVT→PVT/ECN 出口纵向闭环。
 
 **Human-authorized environment gate（pending）**
 
@@ -1025,6 +1025,7 @@
 - 真实源库只读预检确认 `C4s` / `S18-01` 是项目编号，真实源 ID 分别为 `zGpNH0Xq` / `aBnbEdQG`；C4s 为 OBT/intake，S18-01 为 NPD/concept。导入器已据此补齐选择器解析和 OBT 契约测试。
 - 当前仍缺 CEHub 五张源表的独立只读登录账号/`CEHUB_SOURCE_DATABASE_URL`；现役 CEHub 应用账号可写，不得用于正式验收。需 DBA 创建/确认只读账号并由人授权生产 dry-run。正式 apply 仅在 dry-run 报告与数据 Owner 抽查通过后执行。
 - 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表零写缺一不可；可写应用账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
+- Sprint 3 intended-vs-implemented 出口审计发现并补齐“同一项目 EVT→DVT→PVT + 硬闸 + 一次 ECN”的跨模块证据：新增真实 FastAPI 纵向验收，终态为 EVT/DVT/PVT 三 Gate approved、恰好 1 个 ECN、Handoff ready、当前 Stage=MP；出口草案见 `docs/reports/2026-08-12-sprint-3-exit-draft.md`。
 
 **Errors encountered**
 
