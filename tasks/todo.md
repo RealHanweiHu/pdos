@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S3-4 变更链后段。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-3 已完成；双跑试点为 C4s 与 S18-01。
+> 唯一当前指针：**S3-5 检查项资产库。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-4 已完成；双跑试点为 C4s 与 S18-01。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -859,3 +859,72 @@
 | 新增 join/alert 表的直接 Tenant FK 在已处于 0017 的本地库产生临时 drift | 1 | 完善 0017 后执行 downgrade→upgrade 重建隔离库；metadata drift 归零 |
 | audit snapshot 内的 UUID 列表无法 JSON 序列化 | 1 | 将 snapshot normalizer 扩展为递归处理 UUID/date/list/dict，事件与审计恢复原子写入 |
 | PostgreSQL `ON CONFLICT DO NOTHING` 的 psycopg rowcount 为 -1 | 1 | 改用 `RETURNING id` 判断是否真实插入，证书提醒幂等计数稳定为 1→0 |
+
+## Completed: S3-4 变更链后段
+
+**Definition of Ready**
+
+- [x] 规格出处：`Workflow.md`、`System_of_Record_Matrix.md`、`PostgreSQL_Schema_Design.md` 与 canonical S3-4
+- [x] 依赖项：S3-1 Development BOM、S3-2 Gate/Decision、S3-3 PVT readiness 已完成
+- [x] 范围冻结：ECR→影响分析→人工审批→ECN→人工生效决策→ERP Handoff 状态就位；S5 前不执行 ERP outbox/发送/重放/对账
+- [x] 下一迁移号冻结为 `0018`，单调递增且不复用
+
+**Frozen contract**
+
+- ECR 状态为 `request → impact_analysis → approval → approved/rejected`，可在前三态人工取消；影响 BOM 采用 tenant/project-safe 关系表，不以不可信 JSON 代替引用
+- ECR 申请人不得审批自己的申请；批准/拒绝同事务写 Decision、change event 与 immutable audit
+- 仅 approved ECR 可一对一生成 ECN；ECN 状态为 `ecn → effectivity_decision → erp_handoff`，生效拒绝则进入 cancelled
+- 生效批准必须选择同项目 EBOM，冻结 BOM header/items snapshot，并同事务创建 effectivity Decision 与 `pending` ERP Handoff
+- Handoff 状态预留 `pending / ready / queued / sent / confirmed / failed`；S3-4 只允许 pending→ready，且必须 PVT Gate approved；queued 及之后由 S5 执行体拥有
+
+**Implementation slices**
+
+- [x] S3-4a：以测试冻结 ECR/ECN/Handoff schema、状态机、四眼审批与 SoR 边界
+- [x] S3-4b：migration 0018 建立 tenant-safe ECR、影响 BOM、ECN 与 Handoff 数据边界
+- [x] S3-4c：实现变更服务/API、Decision/event/audit 原子路径与 RBAC/跨租户负例
+- [x] S3-4d：实现 Frozen EBOM snapshot、PVT Gate→Handoff ready 硬闸及 S5 状态所有权阻断
+- [x] S3-4e：完成迁移往返、完整门禁与真实 HTTP 变更闭环，更新 canonical checkbox 和当前指针
+
+**Acceptance evidence required**
+
+- [x] ECR 影响分析只能引用同项目 BOM；申请人自审 fail-close，批准/拒绝形成独立 Decision
+- [x] approved ECR 才能一对一生成 ECN；生效批准只接受同项目 EBOM，并冻结 header/items 快照
+- [x] PVT Gate 未 approved 时 Handoff `pending→ready` 被硬阻断；S3 无 queued/sent/confirmed 写入口
+- [x] 变更写入同事务落 `CHANGE_RECORD_CHANGED` 与 immutable audit；`pdos_agent` 对新增业务表零写
+- [x] migration 0018 downgrade→upgrade 保持单 head/无 metadata drift；完整门禁与真实 TCP HTTP 路径全绿
+
+**Completion evidence（2026-08-12）**
+
+- migration `0018_change_governance` 建立 ECR、受影响 BOM 关系、ECN 与 ERP Handoff 四张 tenant/project-safe 表；唯一 head、metadata drift 和迁移往返全绿。
+- ECR 固化 request→impact_analysis→approval→approved/rejected；申请人自审返回 409，Manager 独立审批同事务写 Decision、change event 与 audit。仅 approved ECR 可一对一创建 ECN。
+- ECN 生效决策对 Prototype BOM 返回 409，只接受同项目 EBOM；批准时冻结 BOM header 与有序 items，并创建 pending Handoff。PVT Gate 未批准时 ready 返回 409，批准后 ready 200。
+- Sprint 5 所有权边界已实证：没有 queue API，`/queue` 返回 404；预留 queued/sent/confirmed/failed 仅为后续执行体状态，不由 Sprint 3 业务入口写入。
+- `pdos_agent` 对 ECR 真实 INSERT 被数据库拒绝；CHANGE event/audit 在端到端闭环各 9 条且对称。
+- 显式隔离库执行 `make check` 全绿：Web 95 tests、Server 238 tests，ESLint/Ruff/format、TypeScript/mypy 148 source files、Next.js production build 与 Python compile 全部通过。
+- 真实本地 TCP API 完成 setup→ECR→影响分析→四眼审批→ECN→生效决策→Frozen EBOM→Handoff；自审/非 EBOM/PVT 未批均 409，PVT 批准后 ready 200，服务随后关闭。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| Alembic 状态复核首次未显式设置 `DATABASE_URL` | 1 | 按测试隔离纪律显式指向 `pdos_test@57432`，未修改用户环境文件 |
+| 初次全仓 `make check` 读取 `.env` 的旧 55432，后端统一连接失败 | 1 | 确认 lint/type/web 全绿且错误同源后，以 `TEST_DATABASE_URL`/`DATABASE_URL` 显式覆盖 57432 从头重跑，238 项全绿 |
+| 自动生成 migration/schema 的长约束字符串未通过 Ruff E501 | 1 | 仅拆分 Python 字符串字面量，不改变 SQL 约束语义；Ruff、drift 与往返测试全绿 |
+
+## In Progress: S3-5 检查项资产库
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S3-5、`System_of_Record_Matrix.md` 与随仓库资产 `assets/cehub/deliverable-guide-manifest.json`
+- [x] 依赖项：S3-2 Gate/Stage 已完成；S3-4 已完成且完整门禁全绿
+- [x] 资产事实：manifest schemaVersion=3，含 2 个模板版本，deliverables 为名称索引对象，合计恰好 687 条 checkItems
+- [x] 范围冻结：直接消费 JSON manifest，不解析或反推 xlsx；绑定 projectType/phase/isGate，并接入 Gate 确定性 readiness
+- [x] 下一迁移号冻结为 `0019`，单调递增且不复用
+
+**Implementation slices**
+
+- [ ] S3-5a：冻结 manifest 校验、687 条完整性、稳定 ID/绑定/硬闸语义与导入幂等契约
+- [ ] S3-5b：migration 0019 建立版本化检查项模板与项目实例/完成证据的 tenant-safe 数据边界
+- [ ] S3-5c：实现直接导入器、项目实例化与查询/完成 API，保持 event/audit 和 RBAC 边界
+- [ ] S3-5d：将 isGate 未完成项接入对应 Stage Gate readiness，验证非硬闸项不阻断
+- [ ] S3-5e：完成迁移往返、完整门禁与真实 HTTP 验收，更新 canonical checkbox 和当前指针

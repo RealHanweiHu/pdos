@@ -1722,6 +1722,341 @@ certification_expiry_alerts = Table(
     schema=QUALITY_SCHEMA,
 )
 
+engineering_change_requests = Table(
+    "engineering_change_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("analyzed_by_user_id", Uuid),
+    Column("approved_by_user_id", Uuid),
+    Column("approval_decision_id", Uuid),
+    Column("code", String(64), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'request'")),
+    Column("impact_analysis", json_type),
+    Column("approval_note", Text),
+    Column("analyzed_at", DateTime(timezone=True)),
+    Column("approved_at", DateTime(timezone=True)),
+    Column("cancelled_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "btrim(code) <> '' AND btrim(title) <> '' AND btrim(reason) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint(
+        "status IN ('request', 'impact_analysis', 'approval', 'approved', 'rejected', 'cancelled')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "impact_analysis IS NULL OR jsonb_typeof(impact_analysis) = 'object'", name="impact_object"
+    ),
+    CheckConstraint(
+        "(status IN ('request', 'impact_analysis') AND approval_decision_id IS NULL "
+        "AND approved_by_user_id IS NULL AND approved_at IS NULL) OR "
+        "(status = 'approval' AND impact_analysis IS NOT NULL AND analyzed_by_user_id IS NOT NULL "
+        "AND analyzed_at IS NOT NULL AND approval_decision_id IS NULL) OR "
+        "(status IN ('approved', 'rejected') AND impact_analysis IS NOT NULL "
+        "AND approval_decision_id IS NOT NULL AND approved_by_user_id IS NOT NULL "
+        "AND approved_at IS NOT NULL) OR (status = 'cancelled' AND cancelled_at IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_ecrs_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ecrs_tenant_requester",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "analyzed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ecrs_tenant_analyzer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ecrs_tenant_approver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approval_decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.tenant_id", f"{PROJECT_SCHEMA}.decisions.id"],
+        name="fk_ecrs_tenant_approval_decision",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ecrs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ecrs_tenant_project_id"),
+    UniqueConstraint("tenant_id", "project_id", "code", name="uq_ecrs_tenant_project_code"),
+    Index("ix_ecrs_tenant_project_status", "tenant_id", "project_id", "status", "updated_at"),
+    schema=PRODUCT_SCHEMA,
+)
+
+ecr_affected_boms = Table(
+    "ecr_affected_boms",
+    metadata,
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("bom_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        name="fk_ecr_boms_tenant_project_ecr",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_ecr_boms_tenant_project_bom",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "ecr_id", "bom_id", name="uq_ecr_boms_tenant_ecr_bom"),
+    Index("ix_ecr_boms_tenant_project_bom", "tenant_id", "project_id", "bom_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+engineering_change_notices = Table(
+    "engineering_change_notices",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("effectivity_decided_by_user_id", Uuid),
+    Column("effectivity_decision_id", Uuid),
+    Column("released_bom_id", Uuid),
+    Column("released_bom_type", String(32)),
+    Column("code", String(64), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'ecn'")),
+    Column("implementation_plan", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("effectivity", json_type),
+    Column("effectivity_decided_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(code) <> '' AND btrim(title) <> ''", name="required_text_nonblank"),
+    CheckConstraint(
+        "status IN ('ecn', 'effectivity_decision', 'erp_handoff', 'cancelled')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(implementation_plan) = 'object'", name="implementation_plan_object"
+    ),
+    CheckConstraint(
+        "effectivity IS NULL OR jsonb_typeof(effectivity) = 'object'", name="effectivity_object"
+    ),
+    CheckConstraint(
+        "released_bom_type IS NULL OR released_bom_type = 'ebom'", name="released_bom_ebom_only"
+    ),
+    CheckConstraint(
+        "(status IN ('ecn', 'effectivity_decision') AND effectivity_decision_id IS NULL) OR "
+        "(status IN ('erp_handoff', 'cancelled') AND effectivity_decision_id IS NOT NULL "
+        "AND effectivity_decided_by_user_id IS NOT NULL AND effectivity_decided_at IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        name="fk_ecns_tenant_project_ecr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "released_bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_ecns_tenant_project_bom",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "released_bom_id", "released_bom_type"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+            f"{PRODUCT_SCHEMA}.development_boms.bom_type",
+        ],
+        name="fk_ecns_tenant_bom_type",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ecns_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "effectivity_decided_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ecns_tenant_effectivity_decider",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "effectivity_decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.tenant_id", f"{PROJECT_SCHEMA}.decisions.id"],
+        name="fk_ecns_tenant_effectivity_decision",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ecns_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ecns_tenant_project_id"),
+    UniqueConstraint("tenant_id", "ecr_id", name="uq_ecns_tenant_ecr"),
+    UniqueConstraint("tenant_id", "project_id", "code", name="uq_ecns_tenant_project_code"),
+    Index("ix_ecns_tenant_project_status", "tenant_id", "project_id", "status", "updated_at"),
+    schema=PRODUCT_SCHEMA,
+)
+
+erp_handoffs = Table(
+    "erp_handoffs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecn_id", Uuid, nullable=False),
+    Column("source_bom_id", Uuid, nullable=False),
+    Column("prepared_by_user_id", Uuid, nullable=False),
+    Column("ready_by_user_id", Uuid),
+    Column("status", String(32), nullable=False, server_default=text("'pending'")),
+    Column("source_system", String(64), nullable=False, server_default=text("'pdos'")),
+    Column("target_system", String(64), nullable=False),
+    Column("source_bom_snapshot", json_type, nullable=False),
+    Column("effectivity_snapshot", json_type, nullable=False),
+    Column("ready_at", DateTime(timezone=True)),
+    Column("external_reference", String(256)),
+    Column("last_error", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "status IN ('pending', 'ready', 'queued', 'sent', 'confirmed', 'failed')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "btrim(source_system) <> '' AND btrim(target_system) <> ''", name="systems_nonblank"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(source_bom_snapshot) = 'object' "
+        "AND jsonb_typeof(effectivity_snapshot) = 'object'",
+        name="snapshots_object",
+    ),
+    CheckConstraint(
+        "(status = 'pending' AND ready_at IS NULL AND ready_by_user_id IS NULL) OR "
+        "(status <> 'pending' AND ready_at IS NOT NULL AND ready_by_user_id IS NOT NULL)",
+        name="ready_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecn_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.id",
+        ],
+        name="fk_erp_handoffs_tenant_project_ecn",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_erp_handoffs_tenant_project_bom",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "prepared_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_erp_handoffs_tenant_preparer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "ready_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_erp_handoffs_tenant_ready_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_erp_handoffs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_erp_handoffs_tenant_project_id"),
+    UniqueConstraint("tenant_id", "ecn_id", name="uq_erp_handoffs_tenant_ecn"),
+    Index(
+        "ix_erp_handoffs_tenant_project_status", "tenant_id", "project_id", "status", "updated_at"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
 gates = Table(
     "gates",
     metadata,
@@ -3306,6 +3641,10 @@ class Tables:
     test_reports: Table
     certifications: Table
     certification_expiry_alerts: Table
+    engineering_change_requests: Table
+    ecr_affected_boms: Table
+    engineering_change_notices: Table
+    erp_handoffs: Table
     workflows: Table
     stages: Table
     gates: Table
@@ -3355,6 +3694,10 @@ tables = Tables(
     test_reports=test_reports,
     certifications=certifications,
     certification_expiry_alerts=certification_expiry_alerts,
+    engineering_change_requests=engineering_change_requests,
+    ecr_affected_boms=ecr_affected_boms,
+    engineering_change_notices=engineering_change_notices,
+    erp_handoffs=erp_handoffs,
     workflows=workflows,
     stages=stages,
     gates=gates,

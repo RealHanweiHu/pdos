@@ -123,6 +123,11 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
         "version",
     ]
 
+    change_record = definition_for("CHANGE_RECORD_CHANGED")
+    assert change_record.entity == "change_record"
+    assert change_record.producer == "change_service"
+    assert change_record.payload_schema["required"] == ["record_type", "action"]
+
     bom_created = definition_for("DEVELOPMENT_BOM_CREATED")
     assert bom_created.entity == "development_bom"
     assert bom_created.payload_schema["required"] == ["bom_code", "bom_type", "version"]

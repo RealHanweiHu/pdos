@@ -414,6 +414,18 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             )
             denied(
                 connection,
+                "INSERT INTO cehub_product.engineering_change_requests "
+                "(id, tenant_id, project_id, requested_by_user_id, code, title, reason) "
+                "VALUES (:id, :tenant_id, :project_id, :actor_id, 'ECR-X', 'injected', 'injected')",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "actor_id": uuid4(),
+                },
+            )
+            denied(
+                connection,
                 "INSERT INTO cehub_ai.model_invocations "
                 "(id, tenant_id, project_id, run_id, agent_key, prompt_version, provider, "
                 "model, protocol, status, structured_attempts) VALUES "

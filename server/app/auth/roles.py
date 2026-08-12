@@ -48,6 +48,11 @@ class Action(StrEnum):
     GATE_MANAGE = "gate.manage"
     GATE_SIGN = "gate.sign"
     QUALITY_MANAGE = "quality.manage"
+    CHANGE_VIEW = "change.view"
+    CHANGE_EDIT = "change.edit"
+    CHANGE_APPROVE = "change.approve"
+    HANDOFF_VIEW = "handoff.view"
+    HANDOFF_PREPARE = "handoff.prepare"
     EXTERNAL_RESPOND = "external.respond"
 
 
@@ -84,6 +89,11 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.GATE_VIEW,
                 Action.GATE_MANAGE,
                 Action.GATE_SIGN,
+                Action.CHANGE_VIEW,
+                Action.CHANGE_EDIT,
+                Action.CHANGE_APPROVE,
+                Action.HANDOFF_VIEW,
+                Action.HANDOFF_PREPARE,
             }
         ),
         Role.ENGINEER: frozenset(
@@ -103,6 +113,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.PRODUCT_ENGINEERING_EDIT,
                 Action.GATE_VIEW,
                 Action.GATE_SIGN,
+                Action.CHANGE_VIEW,
+                Action.CHANGE_EDIT,
+                Action.HANDOFF_VIEW,
             }
         ),
         Role.QUALITY: frozenset(
@@ -122,6 +135,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.PRODUCT_ENGINEERING_VIEW,
                 Action.GATE_VIEW,
                 Action.GATE_SIGN,
+                Action.CHANGE_VIEW,
+                Action.HANDOFF_VIEW,
             }
         ),
         Role.SUPPLIER: frozenset(

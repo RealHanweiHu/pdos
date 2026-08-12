@@ -145,6 +145,14 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(record_type="string", action="string"),
     ),
     EventDefinition(
+        event_type="CHANGE_RECORD_CHANGED",
+        version=1,
+        entity="change_record",
+        producer="change_service",
+        consumers=("timeline_projection", "product_projection"),
+        payload_schema=_payload_schema(record_type="string", action="string"),
+    ),
+    EventDefinition(
         event_type="ISSUE_CREATED",
         version=1,
         entity="issue",

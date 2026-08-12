@@ -36,6 +36,11 @@ EXPECTED_ACTIONS = {
     "gate.manage",
     "gate.sign",
     "quality.manage",
+    "change.view",
+    "change.edit",
+    "change.approve",
+    "handoff.view",
+    "handoff.prepare",
     "external.respond",
 }
 
@@ -69,6 +74,11 @@ EXPECTED_MATRIX = {
         "gate.view",
         "gate.manage",
         "gate.sign",
+        "change.view",
+        "change.edit",
+        "change.approve",
+        "handoff.view",
+        "handoff.prepare",
     },
     Role.ENGINEER: {
         "project.view",
@@ -86,6 +96,9 @@ EXPECTED_MATRIX = {
         "product_engineering.edit",
         "gate.view",
         "gate.sign",
+        "change.view",
+        "change.edit",
+        "handoff.view",
     },
     Role.QUALITY: {
         "project.view",
@@ -103,6 +116,8 @@ EXPECTED_MATRIX = {
         "product_engineering.view",
         "gate.view",
         "gate.sign",
+        "change.view",
+        "handoff.view",
     },
     Role.SUPPLIER: {"project.view", "external.respond"},
     Role.CUSTOMER: {"project.view", "external.respond"},

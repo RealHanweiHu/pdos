@@ -10,4 +10,4 @@ def test_migration_history_has_one_append_only_head() -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0017_npi_quality"]
+    assert scripts.get_heads() == ["0018_change_governance"]
