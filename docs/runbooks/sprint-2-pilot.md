@@ -43,3 +43,5 @@ Sprint 2 出口只完成试点能力与安全门禁；具体选择 1–2 个真�
 | D15-05 便携自行车泵（`xY8-PGbc`） | active / concept | 0% | 32 tasks、2 files、2 deliverable reviews、4 members | 备选，与 S18-01 数据量相近 |
 
 人工确认时仍需补齐负责人、Engineer reviewer、启动日期、至少两周观察窗口及退出条件；这些信息不能从对象数量推断。
+
+两个推荐项目当前都登记董木榮为 `project_manager`，并都有艾家力（`rd_hw`）与张建营（`rd_mech`）两名工程成员；这些成员关系可作为负责人/reviewer 的人工确认候选，但不自动构成试点任命。S18-01 另登记胡瀚巍为 product owner；C4s 当前未在项目字段中登记 product owner。
