@@ -39,6 +39,11 @@ _GATE_STATUS_MAP = {
     "conditional": "reviewing",
     "rejected": "rejected",
 }
+_FILE_VISIBILITY_MAP = {
+    "internal": "internal",
+    "confidential": "confidential",
+    "restricted": "restricted",
+}
 _ENTITY_COUNT_KEYS = (
     "users",
     "projects",
@@ -296,7 +301,8 @@ class CeHubSourceAdapter:
                        "phaseId" AS phase_id, "taskId" AS task_id, completed,
                        instructions, completion_note, "assigneeUserId" AS assignee_user_id,
                        "dueDate" AS due_date, "startDate" AS start_date,
-                       "actualStartedAt" AS actual_started_at, status, blocked_reason,
+                       "actualStartedAt" AS actual_started_at, status,
+                       NULL::text AS blocked_reason,
                        priority, "completedAt" AS completed_at, "createdAt" AS created_at,
                        "updatedAt" AS updated_at
                   FROM "{self._schema}"."project_tasks"
@@ -317,8 +323,7 @@ class CeHubSourceAdapter:
             "project_files": f'''
                 SELECT CAST(id AS text) AS source_id, "projectId" AS project_id,
                        "phaseId" AS phase_id, "taskId" AS task_id, visibility,
-                       "securityClassification" AS security_classification, name,
-                       "mimeType" AS mime_type, size, "storageKey" AS storage_key,
+                       name, "mimeType" AS mime_type, size, "storageKey" AS storage_key,
                        "storageUrl" AS storage_url, "uploadedBy" AS uploaded_by,
                        "createdAt" AS created_at
                   FROM "{self._schema}"."project_files"
@@ -865,6 +870,16 @@ def _validate_snapshot(
                 source_id=source_id,
                 message="file size must be nonnegative",
             )
+        try:
+            map_file_classification(str(row["visibility"]))
+        except ValueError as exc:
+            _append_error(
+                errors,
+                code="UNSUPPORTED_VALUE",
+                entity_type="file_reference",
+                source_id=source_id,
+                message=str(exc),
+            )
 
     for entity_type, row in _records_by_entity(snapshot):
         source_id = str(row["source_id"])
@@ -1403,14 +1418,6 @@ def _insert_gate_history(
     return writes
 
 
-def _file_classification(value: object) -> str:
-    if value == "confidential":
-        return "confidential"
-    if value in {"restricted", "unknown"}:
-        return "restricted"
-    return "internal"
-
-
 def _insert_file_references(
     connection: Connection,
     *,
@@ -1451,7 +1458,7 @@ def _insert_file_references(
                 "filename": str(row["name"]),
                 "media_type": str(row["mime_type"]),
                 "size_bytes": int(row["size"]),
-                "classification": _file_classification(row["security_classification"]),
+                "classification": map_file_classification(str(row["visibility"])),
                 "stage_code": row["phase_id"],
                 "task_source_id": row["task_id"],
                 "created_at": _parse_datetime(
@@ -1660,6 +1667,13 @@ def map_gate_decision(source_decision: str) -> str:
         return _GATE_STATUS_MAP[source_decision]
     except KeyError as exc:
         raise ValueError(f"unsupported CEHub Gate decision: {source_decision}") from exc
+
+
+def map_file_classification(source_visibility: str) -> str:
+    try:
+        return _FILE_VISIBILITY_MAP[source_visibility]
+    except KeyError as exc:
+        raise ValueError(f"unsupported CEHub file visibility: {source_visibility}") from exc
 
 
 def normalize_project_code(*, project_number: str | None, source_id: str) -> str:

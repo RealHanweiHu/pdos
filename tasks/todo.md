@@ -1044,3 +1044,4 @@
 | 真实试点使用项目编号而非主键，且 C4s 为 OBT 四阶段 | 1 | 选择器改为 ID/唯一项目编号双解析，审计固化真实 ID；新增 OBT Workflow 与 `obt-gate-v1`，双项目合成验收覆盖 11 Stage/Gate |
 | 固定摘要基础镜像的 registry 元数据在本机无响应 | 1 | 终止无进展构建后，以本机缓存的相同版本 tag、`--pull=false` 重跑 Dockerfile；新增 SQL COPY、非 root 用户和 CLI 入口均完成真实镜像 smoke，正式发布仍使用 Compose 中冻结的摘要 |
 | 全仓门禁首次 TypeScript 检查在旧 `.next` 缓存上静默且 CPU 为 0 | 1 | 中止停滞进程，把生成缓存移动到 `/tmp` 可恢复目录后单独 typecheck 通过；再从头执行完整 `make check`，276/99 tests 与 build 全绿 |
+| 正式生产 dry-run 读取真实 `project_tasks` 时命中不存在的 `blocked_reason`，并发现 `project_files.securityClassification` 同样不在真实 schema | 1 | 只读固化五表列契约；缺失任务原因固定投影为 NULL，文件密级改由真实 `visibility` 同名白名单映射且未知值 fail-close；合成源 fixture 改为真实列形态后迁移/重放/漂移回归转绿 |

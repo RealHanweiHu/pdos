@@ -38,6 +38,8 @@ REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
 
 迁移器会在读取项目数据前再次验证：当前登录的默认事务必须为只读、五张源表均可 `SELECT` 且均无写权限。使用现役 CEHub 可写应用账号会 fail-close，即使代码随后执行了 `SET TRANSACTION READ ONLY` 也不会放行。
 
+真实 CEHub schema 契约以生产五表列定义为准：`project_tasks` 不含 `blocked_reason`，迁移时普通任务保持空值，源状态为 blocked 时才写入固定的迁移说明；`project_files` 不含 `securityClassification`，其 `visibility` 只允许 `internal` / `confidential` / `restricted` 并同名映射到目标密级，未知值在 dry-run 以 `UNSUPPORTED_VALUE` 阻断。不得为缺失源字段臆造值或从文件名推断密级。
+
 ## 2. Dry-run（强制先执行）
 
 正式 ECS 操作必须使用待审 commit 构建出的 API 候选镜像，不能借用当前线上旧镜像，也不能在宿主机直接运行 Python（连接串中的 CA 路径是容器内路径）。`build` 只产生本地镜像，不替换运行容器；确认镜像标签等于待审 git SHA 后，为 UID/GID 10001 的非 root 容器准备唯一可写报告目录：

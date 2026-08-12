@@ -18,6 +18,7 @@ from app.domain.gates import GateService
 from app.migrations.cehub_v1 import (
     MigrationValidationError,
     cehub_psycopg_database_url,
+    map_file_classification,
     map_gate_decision,
     map_project_status,
     map_user_role,
@@ -95,7 +96,6 @@ def _create_source_fixture(engine_url: str) -> None:
                         "startDate" date,
                         "actualStartedAt" timestamptz,
                         status varchar(32) NOT NULL,
-                        blocked_reason text,
                         priority varchar(16) NOT NULL,
                         "completedAt" timestamptz,
                         "createdAt" timestamptz NOT NULL,
@@ -123,7 +123,6 @@ def _create_source_fixture(engine_url: str) -> None:
                         "phaseId" varchar(32),
                         "taskId" varchar(32),
                         visibility varchar(32) NOT NULL,
-                        "securityClassification" varchar(24) NOT NULL,
                         name varchar(256) NOT NULL,
                         "mimeType" varchar(128) NOT NULL,
                         size bigint NOT NULL,
@@ -159,29 +158,29 @@ def _create_source_fixture(engine_url: str) -> None:
                     INSERT INTO "{SOURCE_SCHEMA}"."project_tasks"
                         (id, "projectId", "phaseId", "taskId", completed, instructions,
                          completion_note, "assigneeUserId", "dueDate", "startDate",
-                         "actualStartedAt", status, blocked_reason, priority, "completedAt",
+                         "actualStartedAt", status, priority, "completedAt",
                          "createdAt", "updatedAt")
                     VALUES
                         (101, 'aBnbEdQG', 'evt', 'evt-verify', true, '完成 EVT 验证', '证据已归档',
-                         2, '2026-05-30', '2026-05-01', '2026-05-01T08:00:00Z', 'done', null,
-                         'high', '2026-05-28T08:00:00Z', '2026-05-01T00:00:00Z',
+                         2, '2026-05-30', '2026-05-01', '2026-05-01T08:00:00Z', 'done', 'high',
+                         '2026-05-28T08:00:00Z', '2026-05-01T00:00:00Z',
                          '2026-05-28T08:00:00Z'),
                         (102, 'aBnbEdQG', 'dvt', 'dvt-verify', false, '执行 DVT', null,
                          2, '2026-08-31', '2026-08-01', '2026-08-01T08:00:00Z', 'in_progress',
-                         null, 'critical', null, '2026-08-01T00:00:00Z',
+                         'critical', null, '2026-08-01T00:00:00Z',
                          '2026-08-10T00:00:00Z'),
                         (401, 'zGpNH0Xq', 'intake', 'intake-review', false,
                          '完成 DFM 输入评审', null,
-                         1, '2026-08-31', '2026-08-01', null, 'todo', null,
+                         1, '2026-08-31', '2026-08-01', null, 'todo',
                          'high', null, '2026-08-01T00:00:00Z', '2026-08-11T00:00:00Z'),
                         (402, 'zGpNH0Xq', 'sample', 'sample-fai', false, '完成首件确认', null,
-                         2, '2026-09-15', '2026-09-01', null, 'todo', null,
+                         2, '2026-09-15', '2026-09-01', null, 'todo',
                          'medium', null, '2026-08-01T00:00:00Z', '2026-08-11T00:00:00Z'),
                         (403, 'zGpNH0Xq', 'pvt', 'pvt-trial', false, '完成小批试产', null,
-                         2, '2026-10-01', '2026-09-16', null, 'todo', null,
+                         2, '2026-10-01', '2026-09-16', null, 'todo',
                          'high', null, '2026-08-01T00:00:00Z', '2026-08-11T00:00:00Z'),
                         (404, 'zGpNH0Xq', 'mp', 'mp-handoff', false, '完成量产移交', null,
-                         1, '2026-10-31', '2026-10-02', null, 'todo', null,
+                         1, '2026-10-31', '2026-10-02', null, 'todo',
                          'medium', null, '2026-08-01T00:00:00Z', '2026-08-11T00:00:00Z');
                     INSERT INTO "{SOURCE_SCHEMA}"."project_gate_reviews"
                         (id, "projectId", "phaseId", "phaseName", "gateName", "reviewDate",
@@ -196,15 +195,15 @@ def _create_source_fixture(engine_url: str) -> None:
                          '2026-06-08T08:00:00Z', '2026-06-08T08:00:00Z');
                     INSERT INTO "{SOURCE_SCHEMA}"."project_files"
                         (id, "projectId", "phaseId", "taskId", visibility,
-                         "securityClassification", name, "mimeType", size, "storageKey",
+                         name, "mimeType", size, "storageKey",
                          "storageUrl", "uploadedBy", "createdAt")
                     VALUES
-                        (301, 'aBnbEdQG', 'evt', 'evt-verify', 'internal', 'confidential',
+                        (301, 'aBnbEdQG', 'evt', 'evt-verify', 'internal',
                          'EVT-report.pdf', 'application/pdf', 4096,
                          'projects/S18-01/evt-report.pdf',
                          '/storage/projects/S18-01/evt-report.pdf',
                          2, '2026-05-28T08:00:00Z'),
-                        (501, 'zGpNH0Xq', 'intake', 'intake-review', 'internal', 'internal',
+                        (501, 'zGpNH0Xq', 'intake', 'intake-review', 'internal',
                          'C4s-DFM.pdf', 'application/pdf', 2048,
                          'projects/C4s/dfm.pdf', '/storage/projects/C4s/dfm.pdf',
                          1, '2026-08-11T08:00:00Z');
@@ -287,6 +286,7 @@ def test_frozen_cehub_v1_value_mapping_is_fail_closed() -> None:
     assert map_project_status(archived=False, lifecycle="paused") == "on_hold"
     assert map_project_status(archived=True, lifecycle="active") == "archived"
     assert map_gate_decision("conditional") == "reviewing"
+    assert map_file_classification("internal") == "internal"
     assert normalize_project_code(project_number="", source_id="S18-01") == "S18-01"
 
 
@@ -294,6 +294,7 @@ def test_unknown_source_values_are_rejected() -> None:
     for function, value in (
         (map_user_role, "superuser"),
         (map_gate_decision, "waived"),
+        (map_file_classification, "unknown"),
     ):
         try:
             function(value)
@@ -467,6 +468,15 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
         assert (
             _tenant_count(migration_database_url, tables.external_file_references, tenant_id) == 1
         )
+        with target_engine.connect() as connection:
+            assert (
+                connection.execute(
+                    select(tables.external_file_references.c.classification).where(
+                        tables.external_file_references.c.tenant_id == tenant_id
+                    )
+                ).scalar_one()
+                == "internal"
+            )
         assert applied.selected_project_ids == ("aBnbEdQG",)
         assert applied.samples[0]["source_project_id"] == "aBnbEdQG"
         assert applied.samples[0]["project_name"] == "S18 试点项目"
