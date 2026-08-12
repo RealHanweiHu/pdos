@@ -716,8 +716,8 @@
 
 **Implementation slices**
 
-- [ ] S3-1a：从冻结规格提取 Specification/BOM 字段、状态、关系、SoR 与 RBAC 契约，建立会失败的迁移/模型契约测试
-- [ ] S3-1b：migration 0015 建立 Specification、BOM 与 BOM Item 数据边界、租户完整性和 ERP 引用约束
+- [x] S3-1a：从冻结规格提取 Specification/BOM 字段、关系、SoR 与 RBAC 契约，建立会失败的迁移/模型契约测试（RED：metadata/0015 缺失；另发现本地测试库凭据与现存容器不一致）
+- [x] S3-1b：migration 0015 建立 Specification、BOM 与 BOM Item 数据边界、租户完整性和 ERP 引用约束；聚焦 schema/往返/drift/lint/type 全绿
 - [ ] S3-1c：实现 Specification 与三型 BOM 的服务/API 写读路径，写操作同事务产出事件与审计
 - [ ] S3-1d：实现 Project Workspace 中 Specification/BOM 最小纵向界面与同源 BFF，权限/错误/空态可用
 - [ ] S3-1e：完成聚焦测试、迁移往返、完整门禁和真实 API/浏览器路径验收
@@ -728,3 +728,13 @@
 - [ ] PDOS 不创建 MBOM/Routing 业务真值；仅允许经过约束的外部 ERP 引用
 - [ ] 跨租户对象与 BOM 引用 fail-close；所有写入同事务落版本化 event + immutable audit
 - [ ] migration 0015 downgrade→upgrade 保持单 head/无 metadata drift；完整门禁与运行时路径全绿
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| `tables.specifications` 不存在、Alembic head 仍为 0014 | 1 | 预期 RED，进入 S3-1b 实现 0015 与 canonical metadata |
+| 本地 `pdos_test` 对 `pdos` 用户报 password authentication failed | 1 | 与业务 RED 分离；只读核对 compose/容器契约后恢复隔离测试库，不修改生产配置 |
+| Alembic revision `0015_specification_development_boms` 超过既有 `varchar(32)` | 1 | 事务 DDL 已自动回滚；缩短 revision 为 `0015_specification_boms`，保持迁移号和语义不变 |
+| migration check constraint 被 naming convention 二次加前缀，metadata drift 44 项 | 1 | 用 `op.f(...)` 标记完整名称已格式化，保持 migration 与 metadata 同名 |
+| 机械替换命令在 `server/` 目录误用了 `server/...` 路径 | 1 | 改用当前目录相对路径 `migrations/...`；原命令未产生文件修改 |

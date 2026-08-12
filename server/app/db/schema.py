@@ -18,6 +18,7 @@ from sqlalchemy import (
     Index,
     Integer,
     MetaData,
+    Numeric,
     SmallInteger,
     String,
     Table,
@@ -28,7 +29,15 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 
-from app.db.namespaces import AI_SCHEMA, AUDIT_SCHEMA, CORE_SCHEMA, EVENT_SCHEMA, PROJECT_SCHEMA
+from app.db.namespaces import (
+    AI_SCHEMA,
+    AUDIT_SCHEMA,
+    CORE_SCHEMA,
+    COST_SCHEMA,
+    EVENT_SCHEMA,
+    PRODUCT_SCHEMA,
+    PROJECT_SCHEMA,
+)
 
 NAMING_CONVENTION = {
     "ix": "ix_%(table_name)s_%(column_0_name)s",
@@ -605,6 +614,385 @@ document_fragments = Table(
         "ordinal",
     ),
     schema=PROJECT_SCHEMA,
+)
+
+specifications = Table(
+    "specifications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("code", String(64), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("content", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("version > 0", name="version_positive"),
+    CheckConstraint("jsonb_typeof(content) = 'object'", name="content_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_specifications_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_specifications_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_specifications_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "id",
+        name="uq_specifications_tenant_project_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "code",
+        "version",
+        name="uq_specifications_tenant_project_code_version",
+    ),
+    Index(
+        "ix_specifications_tenant_project_updated",
+        "tenant_id",
+        "project_id",
+        "updated_at",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+development_boms = Table(
+    "development_boms",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("specification_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("bom_type", String(32), nullable=False),
+    Column("code", String(64), nullable=False),
+    Column("name", String(256), nullable=False),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("notes", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("bom_type IN ('ebom', 'prototype', 'cost')", name="type_allowed"),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
+    CheckConstraint("version > 0", name="version_positive"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_development_boms_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "specification_id"],
+        [
+            f"{PRODUCT_SCHEMA}.specifications.tenant_id",
+            f"{PRODUCT_SCHEMA}.specifications.project_id",
+            f"{PRODUCT_SCHEMA}.specifications.id",
+        ],
+        name="fk_development_boms_tenant_project_specification",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_development_boms_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_development_boms_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "id",
+        name="uq_development_boms_tenant_project_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "id",
+        "bom_type",
+        name="uq_development_boms_tenant_id_type",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "code",
+        "version",
+        name="uq_development_boms_tenant_project_code_version",
+    ),
+    Index(
+        "ix_development_boms_tenant_project_type",
+        "tenant_id",
+        "project_id",
+        "bom_type",
+        "updated_at",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+development_bom_items = Table(
+    "development_bom_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("bom_id", Uuid, nullable=False),
+    Column("parent_item_id", Uuid),
+    Column("line_number", Integer, nullable=False),
+    Column("part_number", String(128), nullable=False),
+    Column("description", String(512), nullable=False),
+    Column("quantity", Numeric(18, 6), nullable=False),
+    Column("unit", String(32), nullable=False),
+    Column("material_reference", String(256)),
+    Column("attributes", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("line_number > 0", name="line_number_positive"),
+    CheckConstraint("btrim(part_number) <> ''", name="part_number_nonblank"),
+    CheckConstraint("btrim(description) <> ''", name="description_nonblank"),
+    CheckConstraint("quantity > 0", name="quantity_positive"),
+    CheckConstraint("btrim(unit) <> ''", name="unit_nonblank"),
+    CheckConstraint("parent_item_id IS NULL OR parent_item_id <> id", name="parent_not_self"),
+    CheckConstraint("jsonb_typeof(attributes) = 'object'", name="attributes_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_development_bom_items_tenant_project_bom",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "bom_id", "parent_item_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_bom_items.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_bom_items.bom_id",
+            f"{PRODUCT_SCHEMA}.development_bom_items.id",
+        ],
+        name="fk_development_bom_items_tenant_bom_parent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_development_bom_items_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "bom_id",
+        "id",
+        name="uq_development_bom_items_tenant_bom_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "bom_id",
+        "line_number",
+        name="uq_development_bom_items_tenant_bom_line",
+    ),
+    Index(
+        "ix_development_bom_items_tenant_bom_parent",
+        "tenant_id",
+        "bom_id",
+        "parent_item_id",
+        "line_number",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+erp_bom_references = Table(
+    "erp_bom_references",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("bom_id", Uuid),
+    Column("reference_type", String(32), nullable=False),
+    Column("source_system", String(64), nullable=False),
+    Column("external_id", String(256), nullable=False),
+    Column("external_url", String(2048)),
+    Column("metadata", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "reference_type IN ('mbom', 'routing', 'production_version')",
+        name="type_allowed",
+    ),
+    CheckConstraint("btrim(source_system) <> ''", name="source_system_nonblank"),
+    CheckConstraint("btrim(external_id) <> ''", name="external_id_nonblank"),
+    CheckConstraint("jsonb_typeof(metadata) = 'object'", name="metadata_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_erp_bom_references_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_erp_bom_references_tenant_project_bom",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_erp_bom_references_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "source_system",
+        "reference_type",
+        "external_id",
+        name="uq_erp_bom_references_tenant_source_type_external",
+    ),
+    Index(
+        "ix_erp_bom_references_tenant_project_type",
+        "tenant_id",
+        "project_id",
+        "reference_type",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+cost_bom_items = Table(
+    "cost_bom_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("bom_id", Uuid, nullable=False),
+    Column("bom_type", String(32), nullable=False),
+    Column("bom_item_id", Uuid, nullable=False),
+    Column("currency", String(3), nullable=False),
+    Column("unit_cost", Numeric(18, 4), nullable=False),
+    Column("cost_category", String(64)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("bom_type = 'cost'", name="cost_bom_only"),
+    CheckConstraint("currency ~ '^[A-Z]{3}$'", name="currency_iso_like"),
+    CheckConstraint("unit_cost >= 0", name="unit_cost_nonnegative"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_cost_bom_items_tenant_project_bom",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "bom_id", "bom_type"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+            f"{PRODUCT_SCHEMA}.development_boms.bom_type",
+        ],
+        name="fk_cost_bom_items_tenant_bom_type",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "bom_id", "bom_item_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_bom_items.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_bom_items.bom_id",
+            f"{PRODUCT_SCHEMA}.development_bom_items.id",
+        ],
+        name="fk_cost_bom_items_tenant_bom_item",
+        ondelete="CASCADE",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_cost_bom_items_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "bom_item_id",
+        name="uq_cost_bom_items_tenant_bom_item",
+    ),
+    Index(
+        "ix_cost_bom_items_tenant_project_bom",
+        "tenant_id",
+        "project_id",
+        "bom_id",
+        "bom_item_id",
+    ),
+    schema=COST_SCHEMA,
 )
 
 gates = Table(
@@ -1850,6 +2238,11 @@ class Tables:
     project_members: Table
     documents: Table
     document_fragments: Table
+    specifications: Table
+    development_boms: Table
+    development_bom_items: Table
+    erp_bom_references: Table
+    cost_bom_items: Table
     workflows: Table
     stages: Table
     gates: Table
@@ -1880,6 +2273,11 @@ tables = Tables(
     project_members=project_members,
     documents=documents,
     document_fragments=document_fragments,
+    specifications=specifications,
+    development_boms=development_boms,
+    development_bom_items=development_bom_items,
+    erp_bom_references=erp_bom_references,
+    cost_bom_items=cost_bom_items,
     workflows=workflows,
     stages=stages,
     gates=gates,
