@@ -35,9 +35,13 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
     },
     "execution": {
         "open_issue_count": None,
+        "issues_created_last_7_days": None,
         "open_risk_count": None,
         "overdue_task_count": None,
         "stage_progress_percent": None,
+        "next_gate_due_in_days": None,
+        "remaining_tokens_today": None,
+        "agent_runs_today": None,
     },
     "trigger": {
         "event_type": None,

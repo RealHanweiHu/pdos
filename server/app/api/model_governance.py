@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-from sqlalchemy import Engine
+from sqlalchemy import Engine, select
 
 from app.ai.golden_suite import GoldenSuiteFileError, load_golden_suite
 from app.ai.model_catalog import ModelCatalog, ProtocolKind, ProviderName
@@ -17,6 +18,7 @@ from app.api.auth import current_context, no_store
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
 from app.db.engine import get_engine
+from app.db.schema import tables
 from app.domain.model_governance import (
     BudgetSnapshot,
     ModelGovernanceService,
@@ -77,6 +79,17 @@ class ModelGovernanceUpdateRequest(BaseModel):
     @classmethod
     def normalize_model(cls, value: object) -> object:
         return value.strip() if isinstance(value, str) else value
+
+
+class AgentSubscriptionResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    agent_key: str
+    status: str
+    consecutive_failure_count: int
+    failure_threshold: int
+    paused_reason: str | None
+    updated_at: datetime
 
 
 def require_action(context: AuthContext, action: Action) -> None:
@@ -195,3 +208,32 @@ def update_model_governance(
         ) from error
     no_store(response)
     return governance_response(snapshot)
+
+
+@router.get("/agents", response_model=list[AgentSubscriptionResponse])
+def get_agent_subscriptions(
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> list[AgentSubscriptionResponse]:
+    require_action(context, Action.MODEL_GOVERNANCE_VIEW)
+    with engine.connect() as connection:
+        rows = list(
+            connection.execute(
+                select(tables.agent_subscriptions)
+                .where(tables.agent_subscriptions.c.tenant_id == context.tenant.id)
+                .order_by(tables.agent_subscriptions.c.agent_key)
+            ).mappings()
+        )
+    no_store(response)
+    return [
+        AgentSubscriptionResponse(
+            agent_key=str(row["agent_key"]),
+            status=str(row["status"]),
+            consecutive_failure_count=int(row["consecutive_failure_count"]),
+            failure_threshold=int(row["failure_threshold"]),
+            paused_reason=row["paused_reason"],
+            updated_at=row["updated_at"],
+        )
+        for row in rows
+    ]

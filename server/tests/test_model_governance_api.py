@@ -150,6 +150,73 @@ def seed_roles_and_other_tenant(database_url: str, *, tenant_id: UUID) -> UUID:
     return other_tenant_id
 
 
+def test_agent_subscription_failures_are_admin_visible_and_tenant_bound(
+    client: TestClient,
+    isolated_model_governance_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    other_tenant_id = seed_roles_and_other_tenant(
+        isolated_model_governance_database,
+        tenant_id=tenant_id,
+    )
+    engine = create_engine(psycopg_database_url(isolated_model_governance_database))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.agent_subscriptions.insert(),
+                [
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "agent_key": "project_intelligence",
+                        "status": "paused",
+                        "consecutive_failure_count": 3,
+                        "failure_threshold": 3,
+                        "paused_reason": (
+                            "AGENT_RUN_FAILURE_THRESHOLD_REACHED:"
+                            "EXECUTOR_INTERNAL_ERROR:count=3:threshold=3"
+                        ),
+                    },
+                    {
+                        "id": uuid4(),
+                        "tenant_id": other_tenant_id,
+                        "agent_key": "knowledge_lite",
+                        "status": "active",
+                        "consecutive_failure_count": 0,
+                        "failure_threshold": 3,
+                        "paused_reason": None,
+                    },
+                ],
+            )
+    finally:
+        engine.dispose()
+
+    owner_headers = bearer_headers(client, tenant_slug="model-governance", username="owner")
+    manager_headers = bearer_headers(
+        client,
+        tenant_slug="model-governance",
+        username="manager",
+    )
+    visible = client.get("/api/ai/governance/agents", headers=owner_headers)
+
+    assert visible.status_code == 200
+    assert visible.headers["cache-control"] == "no-store"
+    assert len(visible.json()) == 1
+    assert visible.json()[0] == {
+        "agent_key": "project_intelligence",
+        "status": "paused",
+        "consecutive_failure_count": 3,
+        "failure_threshold": 3,
+        "paused_reason": (
+            "AGENT_RUN_FAILURE_THRESHOLD_REACHED:EXECUTOR_INTERNAL_ERROR:count=3:threshold=3"
+        ),
+        "updated_at": visible.json()[0]["updated_at"],
+    }
+    denied = client.get("/api/ai/governance/agents", headers=manager_headers)
+    assert denied.status_code == 403
+
+
 def test_model_governance_is_qualified_secret_free_tenant_bound_and_audited(
     client: TestClient,
     isolated_model_governance_database: str,

@@ -18,9 +18,13 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
             },
             "execution": {
                 "open_issue_count": 2,
+                "issues_created_last_7_days": 1,
                 "open_risk_count": 1,
                 "overdue_task_count": 3,
                 "stage_progress_percent": 71,
+                "next_gate_due_in_days": 4,
+                "remaining_tokens_today": 1_500_000,
+                "agent_runs_today": 2,
                 "raw_issue_text": "sensitive original text",
             },
             "trigger": {
@@ -53,9 +57,13 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
         },
         "execution": {
             "open_issue_count": 2,
+            "issues_created_last_7_days": 1,
             "open_risk_count": 1,
             "overdue_task_count": 3,
             "stage_progress_percent": 71,
+            "next_gate_due_in_days": 4,
+            "remaining_tokens_today": 1_500_000,
+            "agent_runs_today": 2,
         },
         "trigger": {
             "event_type": "ISSUE_CREATED",

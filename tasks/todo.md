@@ -511,8 +511,8 @@
 - [x] S2-2a：以测试冻结静态 Agent 路由、run context、状态机、debounce/幂等与失败熔断合同
 - [x] S2-2b：migration 0010 建立 dispatcher cursor、Agent subscription 与 agent_runs，覆盖租户 FK、唯一键、状态约束、索引和往返
 - [x] S2-2c：实现 id-cursor dispatcher、tenant+project debounce、静态路由和原子 run 创建
-- [ ] S2-2d：实现 executor LangGraph 骨架、冻结前缀/动态 context 末尾、三只读工具及服务端范围绑定
-- [ ] S2-2e：实现 run 失败分类、错误路径零 LLM、连续失败暂停订阅与告警记录
+- [x] S2-2d：实现 executor LangGraph 骨架、冻结前缀/动态 context 末尾、三只读工具及服务端范围绑定
+- [x] S2-2e：实现 run 失败分类、错误路径零 LLM、连续失败暂停订阅与告警记录
 - [ ] S2-2f：完成 dispatcher/executor 分进程配置、真实事件→run fake-model 路径、迁移往返与完整质量门禁
 
 **Acceptance evidence required**
