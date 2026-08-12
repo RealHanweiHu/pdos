@@ -37,6 +37,7 @@ from app.db.namespaces import (
     EVENT_SCHEMA,
     PRODUCT_SCHEMA,
     PROJECT_SCHEMA,
+    QUALITY_SCHEMA,
 )
 
 NAMING_CONVENTION = {
@@ -995,6 +996,732 @@ cost_bom_items = Table(
     schema=COST_SCHEMA,
 )
 
+build_batches = Table(
+    "build_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("workflow_id", Uuid, nullable=False),
+    Column("stage_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("phase", String(8), nullable=False),
+    Column("code", String(64), nullable=False),
+    Column("planned_quantity", Integer, nullable=False),
+    Column("completed_quantity", Integer, nullable=False, server_default=text("0")),
+    Column("status", String(32), nullable=False, server_default=text("'planned'")),
+    Column("started_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    Column("notes", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("phase IN ('evt', 'dvt', 'pvt')", name="phase_allowed"),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint(
+        "planned_quantity > 0 AND completed_quantity BETWEEN 0 AND planned_quantity",
+        name="quantities_valid",
+    ),
+    CheckConstraint(
+        "status IN ('planned', 'in_progress', 'completed', 'cancelled')", name="status_allowed"
+    ),
+    CheckConstraint(
+        "(status = 'planned' AND started_at IS NULL AND completed_at IS NULL) OR "
+        "(status = 'in_progress' AND started_at IS NOT NULL AND completed_at IS NULL) OR "
+        "(status = 'completed' AND started_at IS NOT NULL AND completed_at IS NOT NULL "
+        "AND completed_quantity > 0) OR (status = 'cancelled' AND completed_at IS NULL)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.projects.tenant_id",
+            f"{PROJECT_SCHEMA}.projects.workflow_id",
+            f"{PROJECT_SCHEMA}.projects.id",
+        ],
+        name="fk_build_batches_tenant_workflow_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "stage_id"],
+        [
+            f"{PROJECT_SCHEMA}.stages.tenant_id",
+            f"{PROJECT_SCHEMA}.stages.workflow_id",
+            f"{PROJECT_SCHEMA}.stages.id",
+        ],
+        name="fk_build_batches_tenant_workflow_stage",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_build_batches_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_build_batches_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_build_batches_tenant_project_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "phase",
+        "code",
+        name="uq_build_batches_tenant_project_phase_code",
+    ),
+    Index(
+        "ix_build_batches_tenant_project_phase_status", "tenant_id", "project_id", "phase", "status"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+samples = Table(
+    "samples",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("build_batch_id", Uuid, nullable=False),
+    Column("parent_sample_id", Uuid),
+    Column("prototype_bom_id", Uuid),
+    Column("prototype_bom_type", String(32), nullable=False, server_default=text("'prototype'")),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("serial_number", String(128), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'built'")),
+    Column(
+        "built_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("notes", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(serial_number) <> ''", name="serial_nonblank"),
+    CheckConstraint(
+        "status IN ('built', 'testing', 'accepted', 'scrapped')", name="status_allowed"
+    ),
+    CheckConstraint("parent_sample_id IS NULL OR parent_sample_id <> id", name="parent_not_self"),
+    CheckConstraint("prototype_bom_type = 'prototype'", name="prototype_bom_only"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "build_batch_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_batches.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_batches.project_id",
+            f"{PRODUCT_SCHEMA}.build_batches.id",
+        ],
+        name="fk_samples_tenant_project_build",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "parent_sample_id"],
+        [
+            f"{PRODUCT_SCHEMA}.samples.tenant_id",
+            f"{PRODUCT_SCHEMA}.samples.project_id",
+            f"{PRODUCT_SCHEMA}.samples.id",
+        ],
+        name="fk_samples_tenant_project_parent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "prototype_bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_samples_tenant_project_bom",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "prototype_bom_id", "prototype_bom_type"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+            f"{PRODUCT_SCHEMA}.development_boms.bom_type",
+        ],
+        name="fk_samples_tenant_bom_type",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_samples_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_samples_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_samples_tenant_project_id"),
+    UniqueConstraint("tenant_id", "serial_number", name="uq_samples_tenant_serial"),
+    Index("ix_samples_tenant_project_build", "tenant_id", "project_id", "build_batch_id", "id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+sample_signoffs = Table(
+    "sample_signoffs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("responded_by_user_id", Uuid),
+    Column("phase", String(8), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("signoff_type", String(32), nullable=False),
+    Column("audience", String(32), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'pending'")),
+    Column("due_date", Date),
+    Column("response_note", Text),
+    Column("responded_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("phase IN ('evt', 'dvt', 'pvt')", name="phase_allowed"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint(
+        "signoff_type IN ('evt_sample', 'dvt_sample', 'pvt_sample', "
+        "'golden_sample', 'first_article', 'other')",
+        name="type_allowed",
+    ),
+    CheckConstraint("audience IN ('internal', 'supplier', 'customer')", name="audience_allowed"),
+    CheckConstraint(
+        "status IN ('pending', 'approved', 'rejected', 'waived')", name="status_allowed"
+    ),
+    CheckConstraint(
+        "(status = 'pending' AND responded_by_user_id IS NULL AND responded_at IS NULL) OR "
+        "(status <> 'pending' AND responded_by_user_id IS NOT NULL AND responded_at IS NOT NULL)",
+        name="response_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_sample_signoffs_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_sample_signoffs_tenant_requester",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "responded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_sample_signoffs_tenant_responder",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_sample_signoffs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_sample_signoffs_tenant_project_id"),
+    Index(
+        "ix_sample_signoffs_tenant_project_phase_status",
+        "tenant_id",
+        "project_id",
+        "phase",
+        "status",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+sample_signoff_samples = Table(
+    "sample_signoff_samples",
+    metadata,
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("signoff_id", Uuid, nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "signoff_id"],
+        [
+            f"{QUALITY_SCHEMA}.sample_signoffs.tenant_id",
+            f"{QUALITY_SCHEMA}.sample_signoffs.project_id",
+            f"{QUALITY_SCHEMA}.sample_signoffs.id",
+        ],
+        name="fk_sample_signoff_samples_tenant_project_signoff",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "sample_id"],
+        [
+            f"{PRODUCT_SCHEMA}.samples.tenant_id",
+            f"{PRODUCT_SCHEMA}.samples.project_id",
+            f"{PRODUCT_SCHEMA}.samples.id",
+        ],
+        name="fk_sample_signoff_samples_tenant_project_sample",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "signoff_id",
+        "sample_id",
+        name="uq_sample_signoff_samples_tenant_signoff_sample",
+    ),
+    Index(
+        "ix_sample_signoff_samples_tenant_project_sample", "tenant_id", "project_id", "sample_id"
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+test_plans = Table(
+    "test_plans",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("workflow_id", Uuid, nullable=False),
+    Column("stage_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("phase", String(8), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("scope", Text),
+    Column("sample_size", Integer, nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'draft'")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("phase IN ('evt', 'dvt', 'pvt')", name="phase_allowed"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("sample_size > 0", name="sample_size_positive"),
+    CheckConstraint("status IN ('draft', 'active', 'completed')", name="status_allowed"),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.projects.tenant_id",
+            f"{PROJECT_SCHEMA}.projects.workflow_id",
+            f"{PROJECT_SCHEMA}.projects.id",
+        ],
+        name="fk_test_plans_tenant_workflow_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "workflow_id", "stage_id"],
+        [
+            f"{PROJECT_SCHEMA}.stages.tenant_id",
+            f"{PROJECT_SCHEMA}.stages.workflow_id",
+            f"{PROJECT_SCHEMA}.stages.id",
+        ],
+        name="fk_test_plans_tenant_workflow_stage",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_plans_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_test_plans_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_test_plans_tenant_project_id"),
+    Index(
+        "ix_test_plans_tenant_project_phase_status", "tenant_id", "project_id", "phase", "status"
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+test_cases = Table(
+    "test_cases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("plan_id", Uuid, nullable=False),
+    Column("related_issue_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("category", String(64), nullable=False),
+    Column("acceptance_criteria", Text, nullable=False),
+    Column("method", Text),
+    Column("severity", String(16), nullable=False, server_default=text("'major'")),
+    Column("status", String(32), nullable=False, server_default=text("'planned'")),
+    Column("result_notes", Text),
+    Column("executed_by_user_id", Uuid),
+    Column("executed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "btrim(title) <> '' AND btrim(category) <> '' AND btrim(acceptance_criteria) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint("severity IN ('minor', 'major', 'critical')", name="severity_allowed"),
+    CheckConstraint(
+        "status IN ('planned', 'passed', 'failed', 'blocked', 'waived')", name="status_allowed"
+    ),
+    CheckConstraint(
+        "(status = 'planned' AND executed_by_user_id IS NULL AND executed_at IS NULL) OR "
+        "(status <> 'planned' AND executed_by_user_id IS NOT NULL "
+        "AND executed_at IS NOT NULL)",
+        name="execution_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "plan_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_plans.tenant_id",
+            f"{QUALITY_SCHEMA}.test_plans.project_id",
+            f"{QUALITY_SCHEMA}.test_plans.id",
+        ],
+        name="fk_test_cases_tenant_project_plan",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "related_issue_id"],
+        [
+            f"{PROJECT_SCHEMA}.issues.tenant_id",
+            f"{PROJECT_SCHEMA}.issues.project_id",
+            f"{PROJECT_SCHEMA}.issues.id",
+        ],
+        name="fk_test_cases_tenant_project_issue",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_cases_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "executed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_cases_tenant_executor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_test_cases_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_test_cases_tenant_project_id"),
+    Index(
+        "ix_test_cases_tenant_project_plan_status", "tenant_id", "project_id", "plan_id", "status"
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+test_case_samples = Table(
+    "test_case_samples",
+    metadata,
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("test_case_id", Uuid, nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_case_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_cases.tenant_id",
+            f"{QUALITY_SCHEMA}.test_cases.project_id",
+            f"{QUALITY_SCHEMA}.test_cases.id",
+        ],
+        name="fk_test_case_samples_tenant_project_case",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "sample_id"],
+        [
+            f"{PRODUCT_SCHEMA}.samples.tenant_id",
+            f"{PRODUCT_SCHEMA}.samples.project_id",
+            f"{PRODUCT_SCHEMA}.samples.id",
+        ],
+        name="fk_test_case_samples_tenant_project_sample",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "test_case_id", "sample_id", name="uq_test_case_samples_tenant_case_sample"
+    ),
+    Index("ix_test_case_samples_tenant_project_sample", "tenant_id", "project_id", "sample_id"),
+    schema=QUALITY_SCHEMA,
+)
+
+test_reports = Table(
+    "test_reports",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("plan_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("reviewed_by_user_id", Uuid),
+    Column("report_number", String(128), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("result", String(32), nullable=False),
+    Column("review_status", String(32), nullable=False, server_default=text("'pending'")),
+    Column("summary", Text, nullable=False),
+    Column("review_note", Text),
+    Column("reviewed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "btrim(report_number) <> '' AND btrim(title) <> '' AND btrim(summary) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint("result IN ('pass', 'fail', 'conditional')", name="result_allowed"),
+    CheckConstraint(
+        "review_status IN ('pending', 'approved', 'rejected')", name="review_status_allowed"
+    ),
+    CheckConstraint(
+        "(review_status = 'pending' AND reviewed_by_user_id IS NULL "
+        "AND reviewed_at IS NULL) OR (review_status <> 'pending' "
+        "AND reviewed_by_user_id IS NOT NULL AND reviewed_at IS NOT NULL)",
+        name="review_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "plan_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_plans.tenant_id",
+            f"{QUALITY_SCHEMA}.test_plans.project_id",
+            f"{QUALITY_SCHEMA}.test_plans.id",
+        ],
+        name="fk_test_reports_tenant_project_plan",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_reports_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_reports_tenant_reviewer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_test_reports_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "report_number", name="uq_test_reports_tenant_project_number"
+    ),
+    Index(
+        "ix_test_reports_tenant_project_plan_review",
+        "tenant_id",
+        "project_id",
+        "plan_id",
+        "review_status",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+certifications = Table(
+    "certifications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("certificate_type", String(48), nullable=False),
+    Column("certificate_number", String(256)),
+    Column("issuing_body", String(256)),
+    Column("target_markets", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("status", String(32), nullable=False, server_default=text("'draft'")),
+    Column("is_required", Boolean, nullable=False, server_default=text("false")),
+    Column("valid_from", Date),
+    Column("valid_until", Date),
+    Column("evidence_reference", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "certificate_type IN ('un38_3', 'msds', 'battery_safety', 'product_safety', "
+        "'component_safety', 'market_access', 'regulatory_compliance')",
+        name="type_allowed",
+    ),
+    CheckConstraint("status IN ('draft', 'valid', 'expired', 'revoked')", name="status_allowed"),
+    CheckConstraint("jsonb_typeof(target_markets) = 'array'", name="target_markets_array"),
+    CheckConstraint(
+        "valid_until IS NULL OR valid_from IS NULL OR valid_until >= valid_from",
+        name="validity_order",
+    ),
+    CheckConstraint(
+        "status <> 'valid' OR (certificate_number IS NOT NULL "
+        "AND btrim(certificate_number) <> '' AND valid_until IS NOT NULL)",
+        name="valid_has_identity_and_expiry",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_certifications_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_certifications_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_certifications_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_certifications_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_certifications_tenant_project_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "certificate_type",
+        "certificate_number",
+        name="uq_certifications_tenant_project_type_number",
+    ),
+    Index(
+        "ix_certifications_tenant_project_status_expiry",
+        "tenant_id",
+        "project_id",
+        "status",
+        "valid_until",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+certification_expiry_alerts = Table(
+    "certification_expiry_alerts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("certification_id", Uuid, nullable=False),
+    Column("valid_until", Date, nullable=False),
+    Column("lead_days", Integer, nullable=False),
+    Column("recipient_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("lead_days IN (0, 30, 90)", name="lead_days_allowed"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "certification_id"],
+        [
+            f"{QUALITY_SCHEMA}.certifications.tenant_id",
+            f"{QUALITY_SCHEMA}.certifications.project_id",
+            f"{QUALITY_SCHEMA}.certifications.id",
+        ],
+        name="fk_cert_alerts_tenant_project_certification",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_cert_alerts_tenant_recipient",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "certification_id",
+        "valid_until",
+        "lead_days",
+        name="uq_cert_alerts_tenant_cert_expiry_lead",
+    ),
+    Index("ix_cert_alerts_tenant_project_created", "tenant_id", "project_id", "created_at", "id"),
+    schema=QUALITY_SCHEMA,
+)
+
 gates = Table(
     "gates",
     metadata,
@@ -1635,6 +2362,7 @@ issues = Table(
         ondelete="RESTRICT",
     ),
     UniqueConstraint("tenant_id", "id", name="uq_issues_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_issues_tenant_project_id"),
     Index(
         "ix_issues_tenant_project_status_severity",
         "tenant_id",
@@ -2568,6 +3296,16 @@ class Tables:
     development_bom_items: Table
     erp_bom_references: Table
     cost_bom_items: Table
+    build_batches: Table
+    samples: Table
+    sample_signoffs: Table
+    sample_signoff_samples: Table
+    test_plans: Table
+    test_cases: Table
+    test_case_samples: Table
+    test_reports: Table
+    certifications: Table
+    certification_expiry_alerts: Table
     workflows: Table
     stages: Table
     gates: Table
@@ -2607,6 +3345,16 @@ tables = Tables(
     development_bom_items=development_bom_items,
     erp_bom_references=erp_bom_references,
     cost_bom_items=cost_bom_items,
+    build_batches=build_batches,
+    samples=samples,
+    sample_signoffs=sample_signoffs,
+    sample_signoff_samples=sample_signoff_samples,
+    test_plans=test_plans,
+    test_cases=test_cases,
+    test_case_samples=test_case_samples,
+    test_reports=test_reports,
+    certifications=certifications,
+    certification_expiry_alerts=certification_expiry_alerts,
     workflows=workflows,
     stages=stages,
     gates=gates,

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from types import MappingProxyType
 from typing import Any, Literal, cast
 from uuid import UUID, uuid4
@@ -503,6 +503,142 @@ class GateService:
                 {"key": f"{kind}:{row.id}", "kind": kind, "label": row.title}
                 for row in connection.execute(statement)
             )
+        stage_code = connection.execute(
+            select(tables.stages.c.code).where(
+                tables.stages.c.tenant_id == tenant_id,
+                tables.stages.c.id == stage_id,
+            )
+        ).scalar_one_or_none()
+        if stage_code in {"evt", "dvt", "pvt"}:
+            build_statement = select(
+                tables.build_batches.c.id,
+                tables.build_batches.c.code,
+                tables.build_batches.c.status,
+            ).where(
+                tables.build_batches.c.tenant_id == tenant_id,
+                tables.build_batches.c.project_id == project_id,
+                tables.build_batches.c.phase == stage_code,
+            )
+            test_case_statement = (
+                select(tables.test_cases.c.id, tables.test_cases.c.title)
+                .join(tables.test_plans, tables.test_plans.c.id == tables.test_cases.c.plan_id)
+                .where(
+                    tables.test_cases.c.tenant_id == tenant_id,
+                    tables.test_cases.c.project_id == project_id,
+                    tables.test_plans.c.phase == stage_code,
+                    tables.test_cases.c.status.in_(("failed", "blocked")),
+                )
+            )
+            signoff_statement = select(
+                tables.sample_signoffs.c.id,
+                tables.sample_signoffs.c.title,
+                tables.sample_signoffs.c.status,
+            ).where(
+                tables.sample_signoffs.c.tenant_id == tenant_id,
+                tables.sample_signoffs.c.project_id == project_id,
+                tables.sample_signoffs.c.phase == stage_code,
+                tables.sample_signoffs.c.status.in_(("pending", "rejected")),
+            )
+            report_statement = (
+                select(tables.test_reports.c.id)
+                .join(tables.test_plans, tables.test_plans.c.id == tables.test_reports.c.plan_id)
+                .where(
+                    tables.test_reports.c.tenant_id == tenant_id,
+                    tables.test_reports.c.project_id == project_id,
+                    tables.test_plans.c.phase == stage_code,
+                    tables.test_reports.c.review_status == "approved",
+                    tables.test_reports.c.result.in_(("pass", "conditional")),
+                )
+            )
+            if for_update:
+                build_statement = build_statement.with_for_update()
+                test_case_statement = test_case_statement.with_for_update(of=tables.test_cases)
+                signoff_statement = signoff_statement.with_for_update()
+                report_statement = report_statement.with_for_update(of=tables.test_reports)
+            build_rows = tuple(connection.execute(build_statement))
+            completed_build_ids = tuple(row.id for row in build_rows if row.status == "completed")
+            if not completed_build_ids:
+                blockers.append(
+                    {
+                        "key": f"build:{stage_code}:completed_missing",
+                        "kind": "build",
+                        "label": f"{stage_code.upper()} completed Build is missing",
+                    }
+                )
+            else:
+                sample_statement = select(tables.samples.c.id).where(
+                    tables.samples.c.tenant_id == tenant_id,
+                    tables.samples.c.project_id == project_id,
+                    tables.samples.c.build_batch_id.in_(completed_build_ids),
+                    tables.samples.c.status != "scrapped",
+                )
+                if for_update:
+                    sample_statement = sample_statement.with_for_update()
+                if connection.execute(sample_statement.limit(1)).first() is None:
+                    blockers.append(
+                        {
+                            "key": f"sample:{stage_code}:missing",
+                            "kind": "sample",
+                            "label": f"{stage_code.upper()} Sample is missing",
+                        }
+                    )
+            for row in connection.execute(test_case_statement):
+                blockers.append(
+                    {
+                        "key": f"test_case:{row.id}",
+                        "kind": "test_case",
+                        "label": row.title,
+                    }
+                )
+            if connection.execute(report_statement.limit(1)).first() is None:
+                blockers.append(
+                    {
+                        "key": f"test_report:{stage_code}:approved_missing",
+                        "kind": "test_report",
+                        "label": (
+                            f"{stage_code.upper()} approved pass/conditional report is missing"
+                        ),
+                    }
+                )
+            for row in connection.execute(signoff_statement):
+                blockers.append(
+                    {
+                        "key": f"sample_signoff:{row.id}",
+                        "kind": "sample_signoff",
+                        "label": row.title,
+                    }
+                )
+            if stage_code == "pvt":
+                certification_statement = select(
+                    tables.certifications.c.id,
+                    tables.certifications.c.certificate_type,
+                    tables.certifications.c.status,
+                    tables.certifications.c.valid_from,
+                    tables.certifications.c.valid_until,
+                ).where(
+                    tables.certifications.c.tenant_id == tenant_id,
+                    tables.certifications.c.project_id == project_id,
+                    tables.certifications.c.is_required.is_(True),
+                )
+                if for_update:
+                    certification_statement = certification_statement.with_for_update()
+                for row in connection.execute(certification_statement):
+                    if (
+                        row.status != "valid"
+                        or row.valid_from is not None
+                        and row.valid_from > date.today()
+                        or row.valid_until is None
+                        or row.valid_until < date.today()
+                    ):
+                        blockers.append(
+                            {
+                                "key": f"certification:{row.id}",
+                                "kind": "certification",
+                                "label": (
+                                    f"Required {row.certificate_type} certification is not valid"
+                                ),
+                            }
+                        )
         return blockers
 
     @classmethod
@@ -637,16 +773,22 @@ class GateService:
             )
         else:
             now = datetime.now(UTC)
+            live_blockers = cls._live_non_signoff_blockers(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                stage_id=row["stage_id"],
+            )
+            round_blocker = {
+                "key": "round:not_open",
+                "kind": "round",
+                "label": "Gate signoff round is not open",
+            }
+            all_blockers = (round_blocker, *live_blockers)
             readiness = GateReadinessRecord(
                 ready=False,
-                blocker_keys=("round:not_open",),
-                blockers=(
-                    {
-                        "key": "round:not_open",
-                        "kind": "round",
-                        "label": "Gate signoff round is not open",
-                    },
-                ),
+                blocker_keys=tuple(blocker["key"] for blocker in all_blockers),
+                blockers=all_blockers,
                 evaluated_at=now,
             )
 

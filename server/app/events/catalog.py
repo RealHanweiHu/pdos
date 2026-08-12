@@ -137,6 +137,14 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(test_record_id="string", severity="string"),
     ),
     EventDefinition(
+        event_type="NPI_RECORD_CHANGED",
+        version=1,
+        entity="npi_record",
+        producer="npi_service",
+        consumers=("timeline_projection", "quality_projection"),
+        payload_schema=_payload_schema(record_type="string", action="string"),
+    ),
+    EventDefinition(
         event_type="ISSUE_CREATED",
         version=1,
         entity="issue",

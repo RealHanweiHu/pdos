@@ -398,6 +398,22 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             )
             denied(
                 connection,
+                "INSERT INTO cehub_product.build_batches "
+                "(id, tenant_id, project_id, workflow_id, stage_id, "
+                "created_by_user_id, phase, code, planned_quantity) VALUES "
+                "(:id, :tenant_id, :project_id, :workflow_id, :stage_id, "
+                ":actor_id, 'evt', 'injected', 1)",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "workflow_id": uuid4(),
+                    "stage_id": uuid4(),
+                    "actor_id": uuid4(),
+                },
+            )
+            denied(
+                connection,
                 "INSERT INTO cehub_ai.model_invocations "
                 "(id, tenant_id, project_id, run_id, agent_key, prompt_version, provider, "
                 "model, protocol, status, structured_attempts) VALUES "
