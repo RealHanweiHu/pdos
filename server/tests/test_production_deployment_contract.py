@@ -142,6 +142,10 @@ def test_sprint_zero_runbook_has_preflight_smoke_and_rollback_gates() -> None:
     assert "明确授权" in runbook
     assert "公开前" in runbook
     assert "SSH 端口转发" in runbook
+    assert "scripts/deploy-ecs.sh" in runbook
+    assert "PDOS_DEPLOY_CONFIRM" in runbook
+    assert "PDOS_ROLLBACK_CONFIRM" in runbook
+    assert "重施加并验证 Agent 最小权限" in runbook
 
 
 def test_production_smoke_is_isolated_and_available_from_the_root_makefile() -> None:
@@ -183,3 +187,54 @@ def test_agent_database_security_runbook_keeps_production_actions_human_owned() 
     assert "agent-runtime.sql" in runbook
     assert "agent-runtime-revert.sql" in runbook
     assert "不得临时把 `pdos_app` 凭据交给 executor" in runbook
+
+
+def test_ecs_deploy_entrypoint_is_staged_confirmed_and_observable() -> None:
+    deploy_script = REPOSITORY_ROOT / "scripts" / "deploy-ecs.sh"
+    source = deploy_script.read_text()
+
+    assert deploy_script.stat().st_mode & 0o111
+    assert "set -euo pipefail" in source
+    assert "preflight|build|deploy|status|rollback" in source
+    assert "PDOS_DEPLOY_CONFIRM" in source
+    assert "mode 0600" in source
+    assert "env -i" in source
+    assert "PDOS_COMPOSE_IMAGE_TAG_OVERRIDE" in source
+    assert "compose_config run --rm --no-deps migrate" in source
+    assert "scripts.apply_agent_runtime_security" in source
+    assert (
+        source.index("compose_config run --rm --no-deps migrate")
+        < source.index("scripts.apply_agent_runtime_security")
+        < source.index("compose_config up -d --no-build --wait")
+    )
+    assert "http://127.0.0.1:${app_port}/api/session/status" in source
+    assert "https://pdos.beepump.net/login" in source
+    assert "docker compose logs" not in source
+    assert "compose_config logs --since" in source
+    assert "Traceback|fatal|panic|permission denied|connection refused" in source
+
+
+def test_ecs_rollback_never_runs_an_old_migrator_or_downgrades_the_database() -> None:
+    source = (REPOSITORY_ROOT / "scripts" / "deploy-ecs.sh").read_text()
+    rollback = source[source.index("rollback_release()") : source.index('case "$action"')]
+
+    assert "PDOS_ROLLBACK_CONFIRM" in rollback
+    assert "PDOS_ROLLBACK_IMAGE_TAG" in rollback
+    assert "--no-deps --no-build --wait api dispatcher executor" in rollback
+    assert "--no-deps --no-build --wait web" in rollback
+    assert "migrate" not in rollback
+    assert "downgrade" not in rollback
+
+
+def test_runtime_security_apply_helper_is_fail_closed_and_does_not_log_database_url() -> None:
+    source = (
+        REPOSITORY_ROOT / "server" / "scripts" / "apply_agent_runtime_security.py"
+    ).read_text()
+
+    assert "required environment variable is missing: DATABASE_URL" in source
+    assert 'username != "pdos_app"' in source
+    assert 'database != "pdos"' in source
+    assert "prepare=False" in source
+    assert "has_table_privilege" in source
+    assert "Production Agent runtime security boundary applied" in source
+    assert "print(database_url)" not in source

@@ -7,6 +7,11 @@ from app.deployment.preflight import (
     validate_production_environment,
     validate_production_environment_file,
 )
+from scripts.apply_agent_runtime_security import (
+    UnsafeSecurityApplyError,
+    _production_connection_info,
+)
+from scripts.check_production_env import main as production_preflight_main
 
 VALID_ENVIRONMENT = {
     "APP_PORT": "3002",
@@ -114,3 +119,51 @@ def test_production_environment_file_must_be_owner_only(tmp_path: Path) -> None:
 
     environment_file.chmod(0o600)
     validate_production_environment_file(environment_file)
+
+
+def test_container_preflight_validates_injected_environment_without_echoing_values(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    for key, value in VALID_ENVIRONMENT.items():
+        monkeypatch.setenv(key, value)
+    monkeypatch.setattr("sys.argv", ["check_production_env", "--from-environment"])
+
+    assert production_preflight_main() == 0
+
+    output = capsys.readouterr().out
+    assert "preflight passed" in output
+    assert VALID_ENVIRONMENT["JWT_SECRET"] not in output
+    assert VALID_ENVIRONMENT["DATABASE_URL"] not in output
+
+
+@pytest.mark.parametrize(
+    "database_url",
+    [
+        VALID_ENVIRONMENT["DATABASE_URL"].replace("pdos_app:", "pdos_agent:"),
+        VALID_ENVIRONMENT["DATABASE_URL"].replace("/pdos?", "/pdos_test?"),
+        VALID_ENVIRONMENT["DATABASE_URL"].replace(
+            "pgm-2ze135h6045td5ujvo.pg.rds.aliyuncs.com", "localhost"
+        ),
+        VALID_ENVIRONMENT["DATABASE_URL"].replace("sslmode=verify-full", "sslmode=require"),
+    ],
+)
+def test_runtime_security_helper_rejects_non_production_database_scope(
+    monkeypatch: pytest.MonkeyPatch,
+    database_url: str,
+) -> None:
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    with pytest.raises(UnsafeSecurityApplyError):
+        _production_connection_info()
+
+
+def test_runtime_security_helper_normalizes_only_an_approved_production_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("DATABASE_URL", VALID_ENVIRONMENT["DATABASE_URL"])
+
+    connection_info = _production_connection_info()
+
+    assert connection_info.startswith("postgresql://pdos_app:")
+    assert "sslmode=verify-full" in connection_info

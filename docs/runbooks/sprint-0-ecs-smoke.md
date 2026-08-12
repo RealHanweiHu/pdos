@@ -16,19 +16,22 @@
 2. 确认 `DATABASE_URL` 使用 `pdos_app`、数据库名 `pdos`、`sslmode=verify-full` 与容器内 CA 路径。
 3. 确认 `JWT_SECRET` 至少 32 字节且与开发值不同；确认 `APP_PORT=3002`。
 4. 在本地隔离的 `pdos_test` 运行 `make verify-sprint-0`，全部门禁全绿后才上传代码。
-5. 在 ECS 先把 `.env.production` 权限设为 `0600`，再运行 `make production-preflight`；失败时禁止执行 migration/build/up。该检查不打印配置值或 secrets。
+5. 在 ECS 先把 `.env.production` 权限设为 `0600`，再运行 `./scripts/deploy-ecs.sh build`。该动作先校验发布文件与 Compose，再构建以 commit SHA 标记的镜像，并在隔离容器内校验完整生产配置；失败时禁止执行 migration/up。检查不打印配置值或 secrets。
 
 ## 3. ECS 启动顺序
 
-在取得本次部署授权后，使用 `compose.production.yaml`：
+`scripts/deploy-ecs.sh` 是生产发布的唯一受控入口。构建通过后，记录授权对应的 commit SHA；只有取得本次生产部署的明确授权，才设置一次性确认口令并执行：
 
 ```bash
-docker compose --env-file .env.production -f compose.production.yaml build
-docker compose --env-file .env.production -f compose.production.yaml up -d
-docker compose --env-file .env.production -f compose.production.yaml ps
+export PDOS_DEPLOY_CONFIRM=deploy:<git-sha>
+./scripts/deploy-ecs.sh deploy
+unset PDOS_DEPLOY_CONFIRM
+./scripts/deploy-ecs.sh status
 ```
 
-Compose 必须按 `migrate → api healthy → web healthy` 启动。`api` 仅在容器网络暴露 8000；宿主机只绑定 `127.0.0.1:3002`。
+脚本固定按 `生产配置预检 → Alembic migrate → 重施加并验证 Agent 最小权限 → api/dispatcher/executor healthy → web healthy → 本机/公网 smoke → 最近 10 分钟错误模式扫描` 执行。任何一步失败即停止。运行服务使用 `--no-deps`，不会隐式重跑迁移器；`api` 仅在容器网络暴露 8000，宿主机只绑定 `127.0.0.1:3002`。
+
+只需检查现状时运行 `./scripts/deploy-ecs.sh status`；只需在已构建镜像上重跑完整配置预检时运行 `./scripts/deploy-ecs.sh preflight`。禁止绕过脚本直接执行 `docker compose up`。
 
 ## 4. 公开前初始化、Nginx 与 smoke
 
@@ -120,7 +123,7 @@ certbot certonly --webroot \
 - 宿主机 `/api/session/status` 返回 `needs_setup` 布尔值。
 - 公网 HTTPS `/login` 返回 200，证书有效，HTTP 自动跳转 HTTPS。
 - 浏览器完成 login→me→首页；密码与 JWT 不出现在页面、响应体或日志。
-- `docker compose logs api web` 无 traceback、hydration error 或连续 5xx。
+- `./scripts/deploy-ecs.sh status` 通过，最近 10 分钟的 api/dispatcher/executor/web 日志无 traceback、fatal、panic、权限拒绝或连接拒绝。
 
 setup 会创建生产管理员，是一次性业务写操作；必须由人确认账号信息并在私有隧道的浏览器中执行，Agent 不代填生产密码。
 
@@ -135,8 +138,16 @@ setup 会创建生产管理员，是一次性业务写操作；必须由人确�
 
 触发条件：健康检查失败、持续 5xx、登录不可用、数据完整性异常或安全边界异常。
 
-1. 保留数据库，不在事故处理中执行 Alembic downgrade。
-2. 把 `PDOS_IMAGE_TAG` 恢复到部署前记录的镜像标签，重新执行 `docker compose ... up -d --no-build`。
+1. 保留数据库，不在事故处理中执行 Alembic downgrade；先确认旧应用镜像与当前 schema 前向兼容。
+2. 取得本次回滚的明确授权，使用部署前记录的镜像标签执行下列命令。回滚入口只替换运行服务，明确不启动旧迁移器：
+
+```bash
+export PDOS_ROLLBACK_IMAGE_TAG=<previous-git-sha>
+export PDOS_ROLLBACK_CONFIRM=rollback:<previous-git-sha>
+./scripts/deploy-ecs.sh rollback
+unset PDOS_ROLLBACK_CONFIRM PDOS_ROLLBACK_IMAGE_TAG
+```
+
 3. 若新 Nginx 配置导致故障，恢复 Nginx Compose、TLS 配置和 hook 备份，校验后只强制重建 Nginx。
 4. 复查 `/healthz`、`/login`、`/api/session/status` 与日志；记录故障时间、commit、迁移 head 和处置结果。
 

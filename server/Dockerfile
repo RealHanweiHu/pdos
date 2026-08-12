@@ -23,6 +23,7 @@ COPY server/app ./app
 COPY server/golden ./golden
 COPY server/migrations ./migrations
 COPY server/scripts ./scripts
+COPY infra/postgres/security/agent-runtime.sql ./infra/postgres/security/agent-runtime.sql
 COPY certs/ApsaraDB-CA-Chain.pem /app/certs/ApsaraDB-CA-Chain.pem
 
 FROM ${PYTHON_BASE_IMAGE} AS runtime

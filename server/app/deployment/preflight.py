@@ -44,7 +44,7 @@ def _required(values: Mapping[str, str | None], key: str) -> str:
     return value
 
 
-def _validate_database_url(value: str, *, username: str) -> None:
+def validate_production_database_url(value: str, *, username: str) -> None:
     try:
         url = make_url(value)
     except ArgumentError as error:
@@ -69,9 +69,9 @@ def _validate_database_url(value: str, *, username: str) -> None:
 
 def validate_production_environment(values: Mapping[str, str | None]) -> None:
     resolved = {key: _required(values, key) for key in REQUIRED_VALUES}
-    _validate_database_url(resolved["DATABASE_URL"], username="pdos_app")
-    _validate_database_url(resolved["PDOS_WORKER_DATABASE_URL"], username="pdos_worker")
-    _validate_database_url(resolved["PDOS_AGENT_DATABASE_URL"], username="pdos_agent")
+    validate_production_database_url(resolved["DATABASE_URL"], username="pdos_app")
+    validate_production_database_url(resolved["PDOS_WORKER_DATABASE_URL"], username="pdos_worker")
+    validate_production_database_url(resolved["PDOS_AGENT_DATABASE_URL"], username="pdos_agent")
     if (
         len(
             {

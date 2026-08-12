@@ -37,7 +37,9 @@
 5. PVT Gate 未批准时 Handoff ready 返回 `HANDOFF_PVT_GATE_REQUIRED`；完成 PVT 事实和 Gate 后 Handoff 进入 ready，再推进 MP；
 6. 数据库终态复核三个 Gate 全 approved、一个 ECN、Handoff ready、当前 Stage=MP、`GATE_APPROVED` 恰好三条。
 
-加入该测试及真实 CEHub URL 兼容回归后，全仓 `make check` 已从头通过：Web 99 tests、Server 252 tests，ESLint/Ruff/format、TypeScript、mypy 158 source files、Next.js production build 与 Python compile 全绿。
+加入该测试、真实 CEHub URL 兼容回归及生产部署链契约后，全仓 `make check` 已从头通过：Web 99 tests、Server 261 tests，ESLint/Ruff/format、TypeScript、mypy 159 source files、Next.js production build 与 Python compile 全绿。
+
+同一轮 intended-vs-implemented 审计还发现 canonical 冻结的 `scripts/deploy-ecs.sh` 尚未落库。现已补齐分阶段 preflight/build/deploy/status/rollback 入口：生产 deploy/rollback 使用与 git SHA 绑定的人工确认，migration 后强制重施加并验证 Agent 数据库最小权限，运行服务以 `--no-deps` 启动，回滚只切换已存在镜像且不执行旧迁移或数据库 downgrade。API 候选镜像完成真实非 root/内置安全 SQL/CLI smoke；该能力交付不构成当前生产应用部署授权。
 
 ## 当前开放门禁
 
