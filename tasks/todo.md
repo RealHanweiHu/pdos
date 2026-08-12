@@ -467,10 +467,13 @@
 - [x] S2-1b：migration 0008 建立 tenant model settings 与 model invocation 留痕，覆盖约束、索引、租户 FK 和往返
 - [x] S2-1c：实现上下文白名单投影、日预算计算/熔断及租户模型治理服务/API
 - [x] S2-1d：实现 OpenAI-compatible/Anthropic 两个 adapter、结构化 schema 校验有限重试及完整 invocation 记录
-- [ ] S2-1e：实现治理页「模型与预算」及同源 BFF，仅展示合格候选与非敏感调用摘要
+- [x] S2-1e：实现治理页「模型与预算」及同源 BFF，仅展示合格候选与非敏感调用摘要
 - [ ] S2-1f：固化 golden-case runner、出口白名单校验、真实本地 fake-provider/API/浏览器路径与完整质量门禁
 
 **Acceptance evidence required**
+
+- S2-1e 前端证据：同源 BFF 缺 session 时 fail-close 且不访问上游；Owner/Admin 才请求治理数据，非管理员不显示导航且不产生治理请求；页面只解析合格模型、选择状态与聚合预算，不接受或呈现连接密钥/地址
+- S2-1e 质量证据：82 个 web tests、ESLint 与 TypeScript 严格检查全绿；保存请求精确包含 provider/model/daily token budget，空合格池明确显示且禁用保存
 
 - [ ] 只有 env 配置凭据且 golden-case 通过的模型进入租户候选；未配置、未评测或退化模型不可选择，API/UI 不泄露任何 key/base_url
 - [ ] 两类协议均通过真实 HTTP fake-provider 合同；结构化输出首轮无效时按固定预算重试，耗尽后稳定降级且错误路径零额外 LLM 调用

@@ -4,6 +4,7 @@ import {
   ClipboardTextIcon,
   FolderOpenIcon,
   GaugeIcon,
+  GearSixIcon,
   KanbanIcon,
   PulseIcon,
   SignOutIcon,
@@ -22,6 +23,13 @@ const navigation = [
   { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
   { href: "/projects", label: "项目", icon: KanbanIcon, key: "projects" },
   { href: "/events", label: "事件流", icon: PulseIcon, key: "events", adminOnly: true },
+  {
+    href: "/governance/models",
+    label: "模型治理",
+    icon: GearSixIcon,
+    key: "model-governance",
+    adminOnly: true,
+  },
 ] as const;
 
 export function WorkspaceShell({
@@ -31,7 +39,7 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active: "dashboard" | "requirements" | "cases" | "projects" | "events";
+  active: "dashboard" | "requirements" | "cases" | "projects" | "events" | "model-governance";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
@@ -121,7 +129,13 @@ export function WorkspaceShell({
           </div>
         </header>
         <nav aria-label="移动端主导航" className="border-b bg-card px-2 lg:hidden">
-          <ul className={cn("grid", visibleNavigation.length === 5 ? "grid-cols-3 sm:grid-cols-5" : "grid-cols-4")} role="list">
+          <ul
+            className={cn(
+              "grid",
+              visibleNavigation.length === 6 ? "grid-cols-3 sm:grid-cols-6" : "grid-cols-4",
+            )}
+            role="list"
+          >
             {visibleNavigation.map(({ href, icon: Icon, key, label }) => (
               <li key={key}>
                 <Link
