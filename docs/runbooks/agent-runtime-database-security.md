@@ -12,6 +12,7 @@
 ## 2. 上线前置条件
 
 1. 由应用发布流程先执行 `alembic upgrade head`。
+   每次 migration 改变 Finding 类型或 Agent 订阅合同时，都必须在启动 executor 前重新执行当前版本的 `agent-runtime.sql`；受控函数与 schema 约束必须同版。
 2. RDS 管理员确认连接的是目标 PDOS 数据库，执行登录角色模板；再由 `pdos_app`（schema owner）执行权限对象模板。
 3. 在密码管理系统中分别生成两个高熵密码；不要把密码写进仓库、shell history 或 SQL 模板。
 4. 维护窗口内暂停 dispatcher/executor；FastAPI 可保持运行。
@@ -64,6 +65,7 @@ SELECT has_table_privilege('pdos_agent', 'cehub_ai.model_invocations', 'INSERT')
 - 使用有效 lease 时只返回该 run 的 tenant/project；手工伪造 `pdos.tenant_id` 后仍返回 0 行。
 - worker 对任一业务表 INSERT/UPDATE/DELETE 均收到 permission denied。
 - agent 对业务表读写、跨租户 invocation 和直接 UPDATE `agent_runs` 均收到 permission denied。
+- Project Intelligence 的受控函数只接受 risk_suggestion/blocker_alert/gate_readiness_anomaly；Knowledge Lite 只接受 knowledge_draft，跨 Agent 类型必须 permission denied。
 - 注入文档只能影响模型文本，不能改变数据库授权结果。
 
 仓库 CI 在隔离的 `pdos_test` 上执行同一模板、真实受限角色完整链路和上述正反向测试。生产验收需保存 DBA 执行日志、权限查询结果及服务启动日志，但不得保存 DSN 或密码。

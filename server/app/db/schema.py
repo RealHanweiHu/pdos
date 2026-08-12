@@ -1381,7 +1381,12 @@ findings = Table(
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
     ),
-    CheckConstraint("finding_type IN ('risk_suggestion')", name="type_allowed"),
+    CheckConstraint(
+        "(agent_key = 'project_intelligence' AND finding_type IN "
+        "('risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly')) OR "
+        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft')",
+        name="type_allowed",
+    ),
     CheckConstraint(
         "status IN ('pending_review', 'accepted', 'rejected', 'applied')",
         name="status_allowed",

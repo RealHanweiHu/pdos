@@ -16,6 +16,7 @@ from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.engine import get_engine
 from app.domain.findings import (
+    FindingApplyNotSupportedError,
     FindingApplyPermissionError,
     FindingGroundTruthConflictError,
     FindingInvalidTransitionError,
@@ -24,6 +25,7 @@ from app.domain.findings import (
     FindingRecord,
     FindingReview,
     FindingService,
+    KnowledgeDraftPayload,
     RiskSuggestionPayload,
 )
 
@@ -81,7 +83,7 @@ class FindingReviewRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     decision: Literal["accepted", "rejected"]
-    edited_payload: RiskSuggestionPayload | None = None
+    edited_payload: RiskSuggestionPayload | KnowledgeDraftPayload | None = None
     comment: str | None = Field(default=None, max_length=20_000)
 
     @field_validator("comment", mode="before")
@@ -153,6 +155,14 @@ def finding_error(error: Exception) -> HTTPException:
             detail={
                 "code": "FINDING_INVALID_TRANSITION",
                 "message": "Finding transition is not allowed",
+            },
+        )
+    if isinstance(error, FindingApplyNotSupportedError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "FINDING_APPLY_NOT_SUPPORTED",
+                "message": "This Finding type cannot be applied to a business record",
             },
         )
     if isinstance(error, FindingGroundTruthConflictError):

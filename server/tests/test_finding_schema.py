@@ -17,6 +17,7 @@ from sqlalchemy import (
     UniqueConstraint,
     create_engine,
     inspect,
+    select,
     text,
 )
 from sqlalchemy.exc import DBAPIError, IntegrityError
@@ -116,9 +117,11 @@ def finding_database_url() -> Iterator[str]:
     previous_database_url = os.environ.get("DATABASE_URL")
     os.environ["DATABASE_URL"] = test_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
+    engine = create_engine(psycopg_database_url(test_url))
+    with engine.begin() as connection:
+        connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
     command.downgrade(config, "0010_agent_runtime")
     command.upgrade(config, "head")
-    engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
             connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
@@ -131,7 +134,11 @@ def finding_database_url() -> Iterator[str]:
             os.environ["DATABASE_URL"] = previous_database_url
 
 
-def seed_finding_dependencies(database_url: str) -> dict[str, UUID | int]:
+def seed_finding_dependencies(
+    database_url: str,
+    *,
+    agent_key: str = "project_intelligence",
+) -> dict[str, UUID | int]:
     tenant_id = uuid4()
     workflow_id = uuid4()
     project_id = uuid4()
@@ -184,7 +191,7 @@ def seed_finding_dependencies(database_url: str) -> dict[str, UUID | int]:
                 {
                     "id": subscription_id,
                     "tenant_id": tenant_id,
-                    "agent_key": "project_intelligence",
+                    "agent_key": agent_key,
                 },
             )
             connection.execute(
@@ -194,7 +201,7 @@ def seed_finding_dependencies(database_url: str) -> dict[str, UUID | int]:
                     "tenant_id": tenant_id,
                     "project_id": project_id,
                     "subscription_id": subscription_id,
-                    "agent_key": "project_intelligence",
+                    "agent_key": agent_key,
                     "status": "succeeded",
                     "window_started_at": now - timedelta(minutes=30),
                     "window_ended_at": now - timedelta(minutes=15),
@@ -213,7 +220,7 @@ def seed_finding_dependencies(database_url: str) -> dict[str, UUID | int]:
                     "tenant_id": tenant_id,
                     "project_id": project_id,
                     "run_id": run_id,
-                    "agent_key": "project_intelligence",
+                    "agent_key": agent_key,
                     "prompt_version": "v1",
                     "provider": "minimax",
                     "model": "MiniMax-M2.7",
@@ -227,6 +234,7 @@ def seed_finding_dependencies(database_url: str) -> dict[str, UUID | int]:
     return {
         "tenant_id": tenant_id,
         "project_id": project_id,
+        "subscription_id": subscription_id,
         "run_id": run_id,
         "invocation_id": invocation_id,
         "event_id": event_id,
@@ -321,4 +329,40 @@ def test_finding_migration_round_trip(finding_database_url: str) -> None:
         command.upgrade(config, "head")
     finally:
         command.upgrade(config, "head")
+        engine.dispose()
+
+
+def test_phase_one_migration_refuses_lossy_downgrade(finding_database_url: str) -> None:
+    ids = seed_finding_dependencies(finding_database_url, agent_key="knowledge_lite")
+    engine = create_engine(psycopg_database_url(finding_database_url))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.findings.insert(),
+                {
+                    **pending_finding(ids),
+                    "agent_key": "knowledge_lite",
+                    "finding_type": "knowledge_draft",
+                    "origin_key": "knowledge-draft-1",
+                    "proposed_payload": {
+                        "title": "Draft lesson",
+                        "draft_text": "Retain only for human verification.",
+                    },
+                },
+            )
+
+        with pytest.raises(DBAPIError):
+            command.downgrade(Config(str(SERVER_ROOT / "alembic.ini")), "0011_ai_findings")
+
+        with engine.connect() as connection:
+            assert (
+                connection.execute(
+                    select(tables.findings.c.id).where(
+                        tables.findings.c.origin_key == "knowledge-draft-1"
+                    )
+                ).scalar_one()
+                is not None
+            )
+    finally:
+        command.upgrade(Config(str(SERVER_ROOT / "alembic.ini")), "head")
         engine.dispose()

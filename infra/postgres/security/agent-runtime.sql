@@ -523,7 +523,13 @@ BEGIN
     ) INTO invocation_matches;
 
     IF NOT invocation_matches
-       OR new_finding_type <> 'risk_suggestion'
+       OR NOT (
+           (scoped_run.agent_key = 'project_intelligence' AND new_finding_type IN (
+               'risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly'
+           ))
+           OR (scoped_run.agent_key = 'knowledge_lite'
+               AND new_finding_type = 'knowledge_draft')
+       )
        OR nullif(btrim(new_origin_key), '') IS NULL
        OR nullif(btrim(new_title), '') IS NULL
        OR nullif(btrim(new_summary), '') IS NULL

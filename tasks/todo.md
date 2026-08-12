@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-4 Phase 1 双 Agent。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1、S2-2、S2-2b、S2-3 已验收完成，当前只实施双 Agent prompt/输出/订阅，不提前混入 AI API 或前端。
+> 唯一当前指针：**S2-5 API 面。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 至 S2-4 已验收完成，当前只实施 `/ai/chat`、Document AI v0、风险建议入口与外部事件接入，不提前混入 S2-6 前端。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -588,20 +588,48 @@
 - `make check` 全绿：server 192 tests、web 82 tests，ruff/format/mypy/TypeScript/Next.js build/Python compile 全部通过；隔离生产容器 smoke 全绿。
 - 生产 RDS 未变更；测试临时角色口令与权限对象已清理。
 
-## Current: S2-4 Phase 1 Dual Agents
+## Completed: S2-4 Phase 1 Dual Agents
 
 **Definition of Ready**
 
-- [ ] 规格出处：AI Runtime/路线图/canonical S2-4 与当前 Event Catalog/工具/Finding 合同逐条映射
-- [ ] Agent 边界冻结：同一运行时两份静态配置，不新增 Agent 互审、自由 SQL/HTTP/shell 或第二套 runtime
-- [ ] Project Intelligence 输出冻结：风险建议/阻塞预警/Gate 就绪异常统一进入 Finding，人审前不改业务
-- [ ] Knowledge Lite 输出冻结：GATE_APPROVED/DOCUMENT_UPLOADED 只创建知识草稿候选，不进入 verified memory
-- [ ] prompt 版本化与前缀冻结：system prompt/工具定义文件入库，动态 context 只追加末尾；变更需 golden-case
+- [x] 规格出处：AI Runtime/路线图/canonical S2-4 与当前 Event Catalog/工具/Finding 合同逐条映射
+- [x] Agent 边界冻结：同一运行时两份静态配置，不新增 Agent 互审、自由 SQL/HTTP/shell 或第二套 runtime
+- [x] Project Intelligence 输出冻结：风险建议/阻塞预警/Gate 就绪异常统一进入 Finding，人审前不改业务
+- [x] Knowledge Lite 输出冻结：GATE_APPROVED/DOCUMENT_UPLOADED 只创建知识草稿候选，不进入 verified memory
+- [x] prompt 版本化与前缀冻结：system prompt/工具定义文件入库，动态 context 只追加末尾；变更需 golden-case
 
 **Implementation slices**
 
-- [ ] S2-4a：冻结双 Agent prompt/结构化输出/订阅/负例与评测合同
-- [ ] S2-4b：版本化 Project Intelligence prompt 与风险/阻塞/Gate 三类 Finding candidate 映射
-- [ ] S2-4c：版本化 Knowledge Lite prompt 与知识草稿 Finding 类型/预检/受限创建路径
-- [ ] S2-4d：接通 PROJECT_STAGE_CHANGED/ISSUE_CREATED/TEST_FAILED 与 GATE_APPROVED/DOCUMENT_UPLOADED 事件路由
-- [ ] S2-4e：真实受限角色、双 Agent fake-provider、错误路径零 LLM、完整质量门禁验收
+- [x] S2-4a：冻结双 Agent prompt/结构化输出/订阅/负例与评测合同
+- [x] S2-4b：版本化 Project Intelligence prompt 与风险/阻塞/Gate 三类 Finding candidate 映射
+- [x] S2-4c：版本化 Knowledge Lite prompt 与知识草稿 Finding 类型/预检/受限创建路径
+- [x] S2-4d：接通 PROJECT_STAGE_CHANGED/ISSUE_CREATED/TEST_FAILED 与 GATE_APPROVED/DOCUMENT_UPLOADED 事件路由
+- [x] S2-4e：真实受限角色、双 Agent fake-provider、错误路径零 LLM、完整质量门禁验收
+
+**Completion evidence（2026-08-11）**
+
+- 两份独立 JSON prompt 固定为 `project-intelligence-v1` / `knowledge-lite-v1`，与只读工具定义组成不可变前缀；运行时租户/项目/事件上下文仍只追加到末尾。
+- `0012_phase_one_agents` 将 Agent↔Finding 类型约束下沉到数据库：Project Intelligence 仅三类项目候选，Knowledge Lite 仅 `knowledge_draft`；降级遇到新类型数据时 fail closed，不静默删数据。
+- 确定性 preflight 同时校验 Agent 类型、静态事件订阅、冻结 evidence、payload schema 与租户 run 范围；受限 SQL 函数再次执行同类白名单，跨 Agent 类型与跨租户均拒绝。
+- Knowledge 草稿可经人 Accept/Edit/Reject，但 S4-2 verified memory 就绪前不可 Apply，不创建 Risk、不进入检索；Project Intelligence 三类候选继续通过独立 Apply 落成 Risk。
+- `phase-one-agents-v1.json` 固化 6 个正/负 golden cases；真实 `pdos_agent` + fake provider 分别完成双 Agent Event→Finding 全链路。
+- `make check` 全绿：server 204 tests、web 82 tests，ruff/format/mypy/TypeScript/Next.js build/Python compile 全部通过；隔离生产容器 smoke（本地端口 57432）全绿。
+- 生产 RDS 未变更；测试临时角色口令与权限对象已清理。
+
+## Current: S2-5 API Surface
+
+**Definition of Ready**
+
+- [ ] 逐条映射 canonical S2-5、现有 Gateway/Finding/Event/Document 边界与 API 命名
+- [ ] `/ai/chat` 冻结为只读回答；每个主张必须带可点击引用，无据拒答
+- [ ] `/ai/analyze-document` v0 仅做 PDF/Excel 文本抽取并发 DOCUMENT_UPLOADED，OCR 后置
+- [ ] `/ai/create-risk-suggestion` 只创建 pending Finding，不直接写 Risk
+- [ ] 外部 `POST /events` 由 tenant-bound server context 绑定范围，event_id 幂等去重
+
+**Implementation slices**
+
+- [ ] S2-5a：冻结四个 API 的 request/response/error/权限/引用合同与负例
+- [ ] S2-5b：实现引用强制的只读 `/ai/chat`
+- [ ] S2-5c：实现 Document AI v0 文本抽取与 DOCUMENT_UPLOADED 事件
+- [ ] S2-5d：实现风险建议 Finding 入口与幂等外部 Event 接入
+- [ ] S2-5e：HTTP、注入/越权、错误路径零 LLM、完整质量门禁验收

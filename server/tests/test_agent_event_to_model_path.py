@@ -42,9 +42,9 @@ class FakeProviderAdapter:
         self.calls.append((route, messages))
         return ProviderResponse(
             content=(
-                '{"disposition":"human_review_candidate",'
-                '"summary":"Review the new issue.",'
-                '"evidence_event_ids":[],"confidence":0.8}'
+                '{"disposition":"no_action","candidate_type":null,'
+                '"summary":"No evidence-backed action is warranted.",'
+                '"proposed_payload":null,"evidence_event_ids":[],"confidence":0.8}'
             ),
             input_tokens=21,
             output_tokens=9,

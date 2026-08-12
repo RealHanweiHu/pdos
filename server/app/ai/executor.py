@@ -5,12 +5,13 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from pathlib import Path
 from types import MappingProxyType
 from typing import Literal, Protocol, TypedDict, cast
 from uuid import UUID
 
 from langgraph.graph import END, START, StateGraph
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 from sqlalchemy import Engine
 
 from app.ai.context_builder import RunContextBuilder
@@ -19,53 +20,90 @@ from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGate
 from app.ai.run_store import AgentRunStore, ClaimedAgentRun, OwnerAgentRunStore
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
 from app.ai.tools import TOOL_DEFINITIONS, AgentReadTools, ProjectContextResult, ToolPage
+from app.domain.findings import KnowledgeDraftPayload, RiskSuggestionPayload
 
-PROMPT_VERSION = "agent-runtime-v1"
+PROMPT_DIRECTORY = Path(__file__).with_name("prompts")
 _TOOL_PREFIX = json.dumps(
     [definition.model_dump(mode="json") for definition in TOOL_DEFINITIONS],
     ensure_ascii=False,
     separators=(",", ":"),
     sort_keys=True,
 )
+
+
+class PromptFile(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    version: str = Field(min_length=1, max_length=128)
+    agent_key: AgentKey
+    system_prompt: str = Field(min_length=1, max_length=100_000)
+    instruction: str = Field(min_length=1, max_length=100_000)
+
+
+def _load_prompt(filename: str, *, expected_agent: AgentKey) -> PromptFile:
+    prompt = PromptFile.model_validate_json((PROMPT_DIRECTORY / filename).read_text())
+    if prompt.agent_key is not expected_agent:
+        raise RuntimeError(f"prompt {filename} has the wrong Agent key")
+    return prompt
+
+
+_PROMPTS = {
+    AgentKey.PROJECT_INTELLIGENCE: _load_prompt(
+        "project_intelligence_v1.json",
+        expected_agent=AgentKey.PROJECT_INTELLIGENCE,
+    ),
+    AgentKey.KNOWLEDGE_LITE: _load_prompt(
+        "knowledge_lite_v1.json",
+        expected_agent=AgentKey.KNOWLEDGE_LITE,
+    ),
+}
+PROMPT_VERSIONS = MappingProxyType({key: prompt.version for key, prompt in _PROMPTS.items()})
 SYSTEM_PROMPTS = MappingProxyType(
     {
-        AgentKey.PROJECT_INTELLIGENCE: (
-            "You are the PDOS Project Intelligence Agent. Analyze only the supplied run-scoped "
-            "Project evidence. Never claim to update business records. Any future business change "
-            "must be proposed for human review through the controlled finding workflow. "
-            f"FROZEN_READ_ONLY_TOOLS\n{_TOOL_PREFIX}"
-        ),
-        AgentKey.KNOWLEDGE_LITE: (
-            "You are the PDOS Knowledge Agent Lite. Analyze only the supplied run-scoped Project "
-            "evidence and verified memory. Never claim an unverified document is organizational "
-            "knowledge and never claim to update business records. Any future business change must "
-            "be proposed for human review through the controlled finding workflow. "
-            f"FROZEN_READ_ONLY_TOOLS\n{_TOOL_PREFIX}"
-        ),
+        key: f"{prompt.system_prompt}\nFROZEN_READ_ONLY_TOOLS\n{_TOOL_PREFIX}"
+        for key, prompt in _PROMPTS.items()
     }
 )
-INSTRUCTIONS = MappingProxyType(
-    {
-        AgentKey.PROJECT_INTELLIGENCE: (
-            "Assess the frozen Project state and recent event references. Return one concise, "
-            "evidence-linked assessment. Do not perform or imply a business update."
-        ),
-        AgentKey.KNOWLEDGE_LITE: (
-            "Assess whether the frozen references support a knowledge candidate. "
-            "Return one concise, evidence-linked assessment. "
-            "Do not treat unverified content as memory."
-        ),
-    }
-)
+INSTRUCTIONS = MappingProxyType({key: prompt.instruction for key, prompt in _PROMPTS.items()})
+
+FindingCandidateType = Literal[
+    "risk_suggestion",
+    "blocker_alert",
+    "gate_readiness_anomaly",
+    "knowledge_draft",
+]
 
 
 class AgentAssessment(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     disposition: Literal["no_action", "human_review_candidate"]
+    candidate_type: FindingCandidateType | None
     summary: str = Field(min_length=1, max_length=2_000)
+    proposed_payload: RiskSuggestionPayload | KnowledgeDraftPayload | None
     evidence_event_ids: tuple[int, ...] = Field(max_length=100)
     confidence: float = Field(ge=0, le=1)
+
+    @model_validator(mode="after")
+    def validate_candidate_shape(self) -> AgentAssessment:
+        if self.disposition == "no_action":
+            if (
+                self.candidate_type is not None
+                or self.proposed_payload is not None
+                or self.evidence_event_ids
+            ):
+                raise ValueError("no_action cannot carry a candidate, payload, or evidence")
+            return self
+        if self.candidate_type is None or self.proposed_payload is None:
+            raise ValueError("human_review_candidate requires a type and payload")
+        if self.candidate_type == "knowledge_draft":
+            if not isinstance(self.proposed_payload, KnowledgeDraftPayload):
+                raise ValueError("knowledge_draft requires a knowledge draft payload")
+        elif not isinstance(self.proposed_payload, RiskSuggestionPayload):
+            raise ValueError("Project Intelligence candidates require a risk payload")
+        if not self.evidence_event_ids:
+            raise ValueError("human_review_candidate requires evidence")
+        return self
 
 
 class AgentModelInvoker(Protocol):
@@ -248,7 +286,7 @@ class AgentExecutor:
             project_id=context.project_id,
             run_id=context.run_id,
             agent_key=context.agent_key.value,
-            prompt_version=PROMPT_VERSION,
+            prompt_version=PROMPT_VERSIONS[context.agent_key],
             system_prompt=SYSTEM_PROMPTS[context.agent_key],
             instruction=INSTRUCTIONS[context.agent_key],
             context={

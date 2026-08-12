@@ -14,7 +14,7 @@ from app.auth.roles import Action, Role, is_allowed
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
-FINDING_PREFLIGHT_VERSION = "finding-preflight-v1"
+FINDING_PREFLIGHT_VERSION = "finding-preflight-v2"
 
 
 class FindingNotFoundError(LookupError):
@@ -34,6 +34,10 @@ class FindingGroundTruthConflictError(ValueError):
 
 
 class FindingApplyPermissionError(PermissionError):
+    pass
+
+
+class FindingApplyNotSupportedError(ValueError):
     pass
 
 
@@ -65,6 +69,32 @@ class RiskSuggestionPayload(BaseModel):
             normalized = value.strip()
             return normalized or None
         return value
+
+
+class KnowledgeDraftPayload(BaseModel):
+    """Unverified knowledge proposed by Knowledge Lite; never trusted memory."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    title: str = Field(min_length=1, max_length=512)
+    draft_text: str = Field(min_length=1, max_length=20_000)
+    applicability: str | None = Field(default=None, max_length=5_000)
+
+    @field_validator("title", "draft_text", mode="before")
+    @classmethod
+    def normalize_required_text(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+    @field_validator("applicability", mode="before")
+    @classmethod
+    def normalize_applicability(cls, value: object) -> object:
+        if isinstance(value, str):
+            normalized = value.strip()
+            return normalized or None
+        return value
+
+
+type FindingPayload = RiskSuggestionPayload | KnowledgeDraftPayload
 
 
 @dataclass(frozen=True)
@@ -99,7 +129,7 @@ class FindingRecord:
 @dataclass(frozen=True)
 class FindingReview:
     decision: Literal["accepted", "rejected"]
-    edited_payload: RiskSuggestionPayload | None = None
+    edited_payload: FindingPayload | None = None
     comment: str | None = None
 
 
@@ -235,11 +265,12 @@ class FindingService:
             accepted_payload = None
             if review.decision == "accepted":
                 try:
-                    accepted = (
-                        review.edited_payload
+                    raw_payload = (
+                        review.edited_payload.model_dump(mode="json")
                         if review.edited_payload is not None
-                        else RiskSuggestionPayload.model_validate(before.proposed_payload)
+                        else before.proposed_payload
                     )
+                    accepted = self._validated_payload(before.finding_type, raw_payload)
                 except ValueError as error:
                     raise FindingPayloadInvalidError from error
                 accepted_payload = accepted.model_dump(mode="json")
@@ -318,6 +349,8 @@ class FindingService:
                 )
             if before.status != "accepted" or before.accepted_payload is None:
                 raise FindingInvalidTransitionError
+            if before.finding_type == "knowledge_draft":
+                raise FindingApplyNotSupportedError
             payload = self._revalidate_ground_truth(connection, finding=before)
             risk_id = uuid4()
             connection.execute(
@@ -507,10 +540,34 @@ class FindingService:
             or event_ids != set(finding.evidence_event_ids)
         ):
             raise FindingGroundTruthConflictError
+        accepted_payload = finding.accepted_payload
+        if accepted_payload is None:
+            raise FindingPayloadInvalidError
         try:
-            return RiskSuggestionPayload.model_validate(finding.accepted_payload)
+            payload = FindingService._validated_payload(
+                finding.finding_type,
+                accepted_payload,
+            )
         except ValueError as error:
             raise FindingPayloadInvalidError from error
+        if not isinstance(payload, RiskSuggestionPayload):
+            raise FindingApplyNotSupportedError
+        return payload
+
+    @staticmethod
+    def _validated_payload(
+        finding_type: str,
+        payload: dict[str, Any],
+    ) -> FindingPayload:
+        if finding_type in {
+            "risk_suggestion",
+            "blocker_alert",
+            "gate_readiness_anomaly",
+        }:
+            return RiskSuggestionPayload.model_validate(payload)
+        if finding_type == "knowledge_draft":
+            return KnowledgeDraftPayload.model_validate(payload)
+        raise FindingPayloadInvalidError
 
     @staticmethod
     def _feedback_event(

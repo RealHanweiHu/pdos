@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from collections.abc import Iterator, Sequence
 from datetime import UTC, datetime, timedelta
@@ -48,18 +49,24 @@ def role_engine(database_url: str, role: str) -> Engine:
 
 
 class FakeAgentAdapter:
-    def __init__(self, event_id: int) -> None:
+    def __init__(self, event_id: int, *, candidate_type: str, payload: dict[str, object]) -> None:
         self.event_id = event_id
+        self.candidate_type = candidate_type
+        self.payload = payload
         self.calls: list[tuple[object, Sequence[ChatMessage]]] = []
 
     def complete(self, route: object, messages: Sequence[ChatMessage]) -> ProviderResponse:
         self.calls.append((route, messages))
         return ProviderResponse(
-            content=(
-                '{"disposition":"human_review_candidate",'
-                '"summary":"Review the scoped issue.",'
-                f'"evidence_event_ids":[{self.event_id}],'
-                '"confidence":0.9}'
+            content=json.dumps(
+                {
+                    "disposition": "human_review_candidate",
+                    "candidate_type": self.candidate_type,
+                    "summary": "Review the scoped Agent candidate.",
+                    "proposed_payload": self.payload,
+                    "evidence_event_ids": [self.event_id],
+                    "confidence": 0.9,
+                }
             ),
             input_tokens=20,
             output_tokens=10,
@@ -98,7 +105,12 @@ def secured_agent_database_url() -> Iterator[str]:
             os.environ["DATABASE_URL"] = previous_database_url
 
 
-def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
+def seed_two_tenants(
+    connection: Connection,
+    *,
+    agent_key: str = "project_intelligence",
+    event_type: str = "ISSUE_CREATED",
+) -> dict[str, UUID | int]:
     tenant_a = uuid4()
     tenant_b = uuid4()
     workflow_a = uuid4()
@@ -150,7 +162,7 @@ def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
                 tenant_id=tenant_a,
                 project_id=project_a,
                 event_id=f"issue:{uuid4()}",
-                event_type="ISSUE_CREATED",
+                event_type=event_type,
                 schema_version=1,
                 source="security_test",
                 entity="issue",
@@ -168,7 +180,7 @@ def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
                 tenant_id=tenant_b,
                 project_id=project_b,
                 event_id=f"issue:{uuid4()}",
-                event_type="ISSUE_CREATED",
+                event_type=event_type,
                 schema_version=1,
                 source="security_test",
                 entity="issue",
@@ -184,7 +196,7 @@ def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
         {
             "id": subscription_a,
             "tenant_id": tenant_a,
-            "agent_key": "project_intelligence",
+            "agent_key": agent_key,
         },
     )
     connection.execute(
@@ -194,7 +206,7 @@ def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
             "tenant_id": tenant_a,
             "project_id": project_a,
             "subscription_id": subscription_a,
-            "agent_key": "project_intelligence",
+            "agent_key": agent_key,
             "status": "queued",
             "window_started_at": now - timedelta(minutes=30),
             "window_ended_at": now - timedelta(minutes=15),
@@ -408,6 +420,18 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 str(create_finding_sql),
                 {**finding_parameters, "evidence": f"[{ids['event_b']}]"},
             )
+            denied(
+                connection,
+                str(create_finding_sql),
+                {
+                    **finding_parameters,
+                    "finding_id": uuid4(),
+                    "origin_key": "cross-agent-type",
+                    "finding_type": "knowledge_draft",
+                    "payload": '{"title":"Injected","draft_text":"Injected"}',
+                    "evidence": f"[{ids['event_a']}]",
+                },
+            )
             connection.execute(
                 create_finding_sql,
                 {**finding_parameters, "evidence": f"[{ids['event_a']}]"},
@@ -451,15 +475,52 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
         owner_engine.dispose()
 
 
+@pytest.mark.parametrize(
+    ("agent_key", "event_type", "candidate_type", "payload", "prompt_version"),
+    [
+        (
+            "project_intelligence",
+            "ISSUE_CREATED",
+            "risk_suggestion",
+            {
+                "title": "Review the scoped issue",
+                "description": "The scoped issue may affect delivery",
+                "likelihood": 3,
+                "impact": 4,
+            },
+            "project-intelligence-v1",
+        ),
+        (
+            "knowledge_lite",
+            "DOCUMENT_UPLOADED",
+            "knowledge_draft",
+            {
+                "title": "Review the scoped source",
+                "draft_text": "Retain this lesson only as an unverified draft.",
+                "applicability": "Projects with the same evidence pattern.",
+            },
+            "knowledge-lite-v1",
+        ),
+    ],
+)
 def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
     secured_agent_database_url: str,
+    agent_key: str,
+    event_type: str,
+    candidate_type: str,
+    payload: dict[str, object],
+    prompt_version: str,
 ) -> None:
     owner_engine = create_engine(psycopg_database_url(secured_agent_database_url))
     agent_engine = role_engine(secured_agent_database_url, "pdos_agent")
     now = datetime.now(UTC)
     try:
         with owner_engine.begin() as connection:
-            ids = seed_two_tenants(connection)
+            ids = seed_two_tenants(
+                connection,
+                agent_key=agent_key,
+                event_type=event_type,
+            )
         run_store = RestrictedAgentRunStore(agent_engine)
         catalog = ModelCatalog.from_environment(
             {
@@ -485,7 +546,11 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
             default_daily_token_budget=2_000_000,
             run_store=run_store,
         )
-        adapter = FakeAgentAdapter(int(ids["event_a"]))
+        adapter = FakeAgentAdapter(
+            int(ids["event_a"]),
+            candidate_type=candidate_type,
+            payload=payload,
+        )
         gateway = StructuredModelGateway(
             agent_engine,
             catalog=catalog,
@@ -543,7 +608,10 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
         assert run["run_context"]["tenant_id"] == str(ids["tenant_a"])
         assert invocation["tenant_id"] == ids["tenant_a"]
         assert invocation["status"] == "succeeded"
+        assert invocation["prompt_version"] == prompt_version
         assert finding["status"] == "pending_review"
+        assert finding["agent_key"] == agent_key
+        assert finding["finding_type"] == candidate_type
         assert finding["model_invocation_id"] == invocation["id"]
     finally:
         agent_engine.dispose()

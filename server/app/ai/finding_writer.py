@@ -10,8 +10,8 @@ from uuid import UUID, uuid4
 from sqlalchemy import Engine, text
 
 from app.ai.run_store import AgentRunStore, ClaimedAgentRun
-from app.ai.runtime_contract import FrozenRunContext
-from app.domain.findings import FINDING_PREFLIGHT_VERSION, RiskSuggestionPayload
+from app.ai.runtime_contract import FrozenRunContext, agents_for_event
+from app.domain.findings import FINDING_PREFLIGHT_VERSION, FindingPayload
 
 if TYPE_CHECKING:
     from app.ai.executor import AgentAssessment
@@ -23,10 +23,11 @@ class FindingPreflightError(ValueError):
 
 @dataclass(frozen=True)
 class FindingCandidate:
+    finding_type: str
     origin_key: str
     title: str
     summary: str
-    payload: RiskSuggestionPayload
+    payload: FindingPayload
     evidence_event_ids: tuple[int, ...]
     confidence_basis_points: int
 
@@ -38,6 +39,23 @@ def preflight_assessment(
 ) -> FindingCandidate | None:
     if assessment.disposition == "no_action":
         return None
+    if assessment.candidate_type is None or assessment.proposed_payload is None:
+        raise FindingPreflightError("Finding candidate is incomplete")
+    allowed_types = {
+        "project_intelligence": {
+            "risk_suggestion",
+            "blocker_alert",
+            "gate_readiness_anomaly",
+        },
+        "knowledge_lite": {"knowledge_draft"},
+    }
+    if assessment.candidate_type not in allowed_types[context.agent_key.value]:
+        raise FindingPreflightError("Finding type is outside the Agent contract")
+    if any(
+        context.agent_key not in agents_for_event(event.event_type)
+        for event in context.trigger_events
+    ):
+        raise FindingPreflightError("Finding evidence is outside the Agent event subscription")
     evidence = tuple(dict.fromkeys(assessment.evidence_event_ids))
     run_evidence = {event.id for event in context.trigger_events}
     if not evidence or not set(evidence).issubset(run_evidence):
@@ -46,15 +64,11 @@ def preflight_assessment(
     if not summary:
         raise FindingPreflightError("Finding summary is blank")
     return FindingCandidate(
-        origin_key=f"assessment:{evidence[-1]}",
-        title=summary[:512],
+        finding_type=assessment.candidate_type,
+        origin_key=f"{assessment.candidate_type}:{evidence[-1]}",
+        title=assessment.proposed_payload.title,
         summary=summary,
-        payload=RiskSuggestionPayload(
-            title=summary[:512],
-            description=summary,
-            likelihood=3,
-            impact=3,
-        ),
+        payload=assessment.proposed_payload,
         evidence_event_ids=evidence,
         confidence_basis_points=round(assessment.confidence * 10_000),
     )
@@ -95,7 +109,7 @@ class RestrictedAgentFindingWriter:
                 text(
                     "SELECT cehub_ai.create_agent_finding("
                     ":finding_id, :run_id, :lease_token, :invocation_id, :origin_key, "
-                    "'risk_suggestion', :title, :summary, CAST(:payload AS jsonb), "
+                    ":finding_type, :title, :summary, CAST(:payload AS jsonb), "
                     "CAST(:evidence AS jsonb), :confidence, :preflight_version, :created_at)"
                 ),
                 {
@@ -104,6 +118,7 @@ class RestrictedAgentFindingWriter:
                     "lease_token": claim.lease_token,
                     "invocation_id": model_invocation_id,
                     "origin_key": candidate.origin_key,
+                    "finding_type": candidate.finding_type,
                     "title": candidate.title,
                     "summary": candidate.summary,
                     "payload": candidate.payload.model_dump_json(),

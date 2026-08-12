@@ -13,7 +13,7 @@ from sqlalchemy import Connection, Engine, create_engine, select, text
 
 from app.ai.executor import (
     INSTRUCTIONS,
-    PROMPT_VERSION,
+    PROMPT_VERSIONS,
     SYSTEM_PROMPTS,
     AgentAssessment,
     AgentExecutor,
@@ -23,6 +23,7 @@ from app.ai.runtime_contract import AgentKey
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from app.domain.findings import RiskSuggestionPayload
 from app.worker.dispatcher import AgentDispatcher
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
@@ -146,7 +147,14 @@ def test_langgraph_executes_frozen_prefix_then_appends_project_context(
                 status="succeeded",
                 output=AgentAssessment(
                     disposition="human_review_candidate",
+                    candidate_type="blocker_alert",
                     summary="Review the new issue.",
+                    proposed_payload=RiskSuggestionPayload(
+                        title="Review the new issue",
+                        description="The issue may block delivery.",
+                        likelihood=3,
+                        impact=4,
+                    ),
                     evidence_event_ids=(event_id,),
                     confidence=0.8,
                 ),
@@ -164,7 +172,7 @@ def test_langgraph_executes_frozen_prefix_then_appends_project_context(
         invocation = invoker.invocations[0]
         assert invocation.run_id == run_id
         assert invocation.project_id == project_id
-        assert invocation.prompt_version == PROMPT_VERSION
+        assert invocation.prompt_version == PROMPT_VERSIONS[AgentKey.PROJECT_INTELLIGENCE]
         assert invocation.system_prompt == SYSTEM_PROMPTS[AgentKey.PROJECT_INTELLIGENCE]
         assert invocation.instruction == INSTRUCTIONS[AgentKey.PROJECT_INTELLIGENCE]
         assert str(project_id) not in invocation.system_prompt

@@ -17,11 +17,13 @@ from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.findings import (
+    FindingApplyNotSupportedError,
     FindingApplyPermissionError,
     FindingGroundTruthConflictError,
     FindingInvalidTransitionError,
     FindingReview,
     FindingService,
+    KnowledgeDraftPayload,
     RiskSuggestionPayload,
 )
 
@@ -47,7 +49,14 @@ def findings_database_url() -> Iterator[str]:
             os.environ["DATABASE_URL"] = previous_database_url
 
 
-def seed_reviewable_finding(database_url: str) -> dict[str, UUID | int | datetime]:
+def seed_reviewable_finding(
+    database_url: str,
+    *,
+    agent_key: str = "project_intelligence",
+    event_type: str = "ISSUE_CREATED",
+    finding_type: str = "risk_suggestion",
+    proposed_payload: dict[str, object] | None = None,
+) -> dict[str, UUID | int | datetime]:
     tenant_id = uuid4()
     workflow_id = uuid4()
     project_id = uuid4()
@@ -124,7 +133,7 @@ def seed_reviewable_finding(database_url: str) -> dict[str, UUID | int | datetim
                         tenant_id=tenant_id,
                         project_id=project_id,
                         event_id=f"issue:{uuid4()}",
-                        event_type="ISSUE_CREATED",
+                        event_type=event_type,
                         schema_version=1,
                         source="finding_service_test",
                         entity="issue",
@@ -140,7 +149,7 @@ def seed_reviewable_finding(database_url: str) -> dict[str, UUID | int | datetim
                 {
                     "id": subscription_id,
                     "tenant_id": tenant_id,
-                    "agent_key": "project_intelligence",
+                    "agent_key": agent_key,
                 },
             )
             connection.execute(
@@ -150,7 +159,7 @@ def seed_reviewable_finding(database_url: str) -> dict[str, UUID | int | datetim
                     "tenant_id": tenant_id,
                     "project_id": project_id,
                     "subscription_id": subscription_id,
-                    "agent_key": "project_intelligence",
+                    "agent_key": agent_key,
                     "status": "succeeded",
                     "window_started_at": now - timedelta(minutes=30),
                     "window_ended_at": now - timedelta(minutes=15),
@@ -169,7 +178,7 @@ def seed_reviewable_finding(database_url: str) -> dict[str, UUID | int | datetim
                     "tenant_id": tenant_id,
                     "project_id": project_id,
                     "run_id": run_id,
-                    "agent_key": "project_intelligence",
+                    "agent_key": agent_key,
                     "prompt_version": "v1",
                     "provider": "minimax",
                     "model": "MiniMax-M2.7",
@@ -186,12 +195,13 @@ def seed_reviewable_finding(database_url: str) -> dict[str, UUID | int | datetim
                     "project_id": project_id,
                     "run_id": run_id,
                     "model_invocation_id": invocation_id,
-                    "agent_key": "project_intelligence",
-                    "finding_type": "risk_suggestion",
+                    "agent_key": agent_key,
+                    "finding_type": finding_type,
                     "origin_key": "schedule-risk",
                     "title": "Review schedule risk",
                     "summary": "The issue may delay delivery.",
-                    "proposed_payload": {
+                    "proposed_payload": proposed_payload
+                    or {
                         "title": "Schedule risk",
                         "description": "The current issue may delay delivery.",
                         "likelihood": 3,
@@ -308,6 +318,69 @@ def test_accept_and_apply_are_two_audited_human_actions(
         assert risk["likelihood"] == 4
         assert actions == ["created", "accepted", "applied"]
         assert [item["decision"] for item in feedback] == ["accepted", "applied"]
+    finally:
+        engine.dispose()
+
+
+def test_knowledge_draft_can_be_accepted_but_never_applied_as_business_truth(
+    findings_database_url: str,
+) -> None:
+    ids = seed_reviewable_finding(
+        findings_database_url,
+        agent_key="knowledge_lite",
+        event_type="DOCUMENT_UPLOADED",
+        finding_type="knowledge_draft",
+        proposed_payload={
+            "title": "Connector validation lesson",
+            "draft_text": "Validate connector pin mapping before the DVT build.",
+            "applicability": "Projects using the same connector family.",
+        },
+    )
+    engine = create_engine(psycopg_database_url(findings_database_url))
+    service = FindingService(engine)
+    try:
+        accepted = service.review(
+            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
+            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
+            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            review=FindingReview(
+                decision="accepted",
+                edited_payload=KnowledgeDraftPayload(
+                    title="Reviewed connector validation lesson",
+                    draft_text="Validate connector pin mapping before the DVT build.",
+                    applicability="Projects using the same connector family.",
+                ),
+            ),
+            now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+        )
+
+        assert accepted.status == "accepted"
+        assert accepted.finding_type == "knowledge_draft"
+        with pytest.raises(FindingApplyNotSupportedError):
+            service.apply(
+                tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
+                actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
+                finding_id=ids["finding_id"],  # type: ignore[arg-type]
+                now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+            )
+
+        with engine.connect() as connection:
+            finding_status = connection.execute(
+                select(tables.findings.c.status).where(tables.findings.c.id == ids["finding_id"])
+            ).scalar_one()
+            risk_count = connection.execute(
+                select(text("count(*)")).select_from(tables.risks)
+            ).scalar_one()
+            actions = list(
+                connection.execute(
+                    select(tables.finding_actions.c.action)
+                    .where(tables.finding_actions.c.finding_id == ids["finding_id"])
+                    .order_by(tables.finding_actions.c.created_at)
+                ).scalars()
+            )
+        assert finding_status == "accepted"
+        assert risk_count == 0
+        assert actions == ["created", "accepted"]
     finally:
         engine.dispose()
 
