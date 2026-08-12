@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from typing import Any
 
 type JsonScalar = str | int | float | bool | None
 type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
@@ -59,7 +60,7 @@ def _path(parent: str, child: str) -> str:
 
 
 def _project_mapping(
-    source: Mapping[object, object],
+    source: Mapping[Any, object],
     policy: dict[str, ProjectionPolicy],
     *,
     parent_path: str,
@@ -120,7 +121,7 @@ def _project_value(
     return projected_items
 
 
-def project_gateway_context(source: Mapping[object, object]) -> ContextProjection:
+def project_gateway_context(source: Mapping[str, object]) -> ContextProjection:
     """Return the only context shape permitted to cross the model gateway."""
 
     removed_paths: list[str] = []
