@@ -30,3 +30,16 @@ Sprint 2 出口只完成试点能力与安全门禁；具体选择 1–2 个真�
 - 负责人 / reviewer：待填写
 - 启动日期：待填写
 - 退出条件：待填写
+
+## 现役 CEHub 候选盘点（未选中）
+
+2026-08-12 对现役 CEHub 做只读盘点：共 4 个未归档项目。下表仅用于缩短人工决策，不代表 Agent 已替产品负责人选定项目，也未触发迁移、订阅或生产写入。
+
+| 候选 | 生命周期 / 阶段 | 进度 | 可用于试点的数据迹象 | 建议 |
+|---|---|---:|---|---|
+| C4s 手持充气泵（`zGpNH0Xq`） | active / intake | 29% | 21 tasks、8 files、4 deliverable reviews、4 members | 主候选：现有材料与进度最丰富 |
+| S18-01 便携户外充气泵（`aBnbEdQG`） | active / concept | 0% | 32 tasks、2 files、2 deliverable reviews、4 members | 对照候选：早期阶段，适合观察 AI 面从冷启动到持续活动 |
+| D14-04 便携自行车泵（`WqWcl0wK`） | active / concept | 0% | 32 tasks、2 files、2 deliverable reviews、4 members | 备选，与 S18-01 数据量相近 |
+| D15-05 便携自行车泵（`xY8-PGbc`） | active / concept | 0% | 32 tasks、2 files、2 deliverable reviews、4 members | 备选，与 S18-01 数据量相近 |
+
+人工确认时仍需补齐负责人、Engineer reviewer、启动日期、至少两周观察窗口及退出条件；这些信息不能从对象数量推断。
