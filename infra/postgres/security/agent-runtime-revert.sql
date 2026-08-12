@@ -40,15 +40,40 @@ DROP FUNCTION IF EXISTS cehub_ai.agent_invocation_scope_allows(
 DROP FUNCTION IF EXISTS cehub_ai.agent_tenant_scope_allows(uuid);
 DROP FUNCTION IF EXISTS cehub_ai.agent_scope_allows(uuid, uuid);
 
-REVOKE ALL ON ALL TABLES IN SCHEMA cehub_core, cehub_project, cehub_product,
-    cehub_quality, cehub_supplier, cehub_cost, cehub_memory, cehub_event,
-    cehub_audit, cehub_ai FROM pdos_worker, pdos_agent;
-REVOKE ALL ON ALL SEQUENCES IN SCHEMA cehub_core, cehub_project, cehub_product,
-    cehub_quality, cehub_supplier, cehub_cost, cehub_memory, cehub_event,
-    cehub_audit, cehub_ai FROM pdos_worker, pdos_agent;
-REVOKE ALL ON ALL FUNCTIONS IN SCHEMA cehub_ai FROM pdos_worker, pdos_agent;
-REVOKE USAGE ON SCHEMA cehub_core, cehub_project, cehub_product, cehub_quality,
-    cehub_supplier, cehub_cost, cehub_memory, cehub_event, cehub_audit, cehub_ai
-    FROM pdos_worker, pdos_agent;
+-- A fresh cluster has neither runtime role yet. Keep this rollback safe before
+-- bootstrap as well as after bootstrap by revoking only from roles that exist.
+DO $revoke_runtime_roles$
+DECLARE
+    runtime_role text;
+BEGIN
+    FOREACH runtime_role IN ARRAY ARRAY['pdos_worker', 'pdos_agent']
+    LOOP
+        IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = runtime_role) THEN
+            EXECUTE format(
+                'REVOKE ALL ON ALL TABLES IN SCHEMA cehub_core, cehub_project, '
+                'cehub_product, cehub_quality, cehub_supplier, cehub_cost, '
+                'cehub_memory, cehub_event, cehub_audit, cehub_ai FROM %I',
+                runtime_role
+            );
+            EXECUTE format(
+                'REVOKE ALL ON ALL SEQUENCES IN SCHEMA cehub_core, cehub_project, '
+                'cehub_product, cehub_quality, cehub_supplier, cehub_cost, '
+                'cehub_memory, cehub_event, cehub_audit, cehub_ai FROM %I',
+                runtime_role
+            );
+            EXECUTE format(
+                'REVOKE ALL ON ALL FUNCTIONS IN SCHEMA cehub_ai FROM %I',
+                runtime_role
+            );
+            EXECUTE format(
+                'REVOKE USAGE ON SCHEMA cehub_core, cehub_project, cehub_product, '
+                'cehub_quality, cehub_supplier, cehub_cost, cehub_memory, '
+                'cehub_event, cehub_audit, cehub_ai FROM %I',
+                runtime_role
+            );
+        END IF;
+    END LOOP;
+END
+$revoke_runtime_roles$;
 
 COMMIT;
