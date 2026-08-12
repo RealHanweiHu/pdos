@@ -12,6 +12,7 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, select, text
 
+from app.ai.golden_suite import load_golden_suite
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
 from app.db.engine import get_engine
@@ -40,12 +41,13 @@ def isolated_model_governance_database(
 ) -> Iterator[str]:
     test_url = configured_test_database_url()
     qualification_path = tmp_path / "model-qualifications.json"
+    trusted_suite = load_golden_suite(SERVER_ROOT / "golden" / "model-gateway-v1.json")
     qualification_path.write_text(
         json.dumps(
             {
                 "schema_version": 1,
-                "suite_version": "s2-v1",
-                "suite_digest": "sha256:trusted-suite",
+                "suite_version": trusted_suite.suite.suite_version,
+                "suite_digest": trusted_suite.digest,
                 "models": [
                     {"provider": "minimax", "model": "MiniMax-M2.7", "status": "passed"},
                     {"provider": "openai", "model": "gpt-5.1", "status": "failed"},

@@ -146,6 +146,8 @@ class StructuredModelGateway:
 
         input_tokens = 0
         output_tokens = 0
+        cache_read_tokens = 0
+        cache_creation_tokens = 0
         last_response: ProviderResponse | None = None
         schema_json = json.dumps(
             output_type.model_json_schema(),
@@ -161,8 +163,9 @@ class StructuredModelGateway:
         )
         started_at = perf_counter()
         for attempt in range(1, self._max_structured_attempts + 1):
-            messages = self._messages(
-                invocation,
+            messages = structured_messages(
+                system_prompt=invocation.system_prompt,
+                instruction=invocation.instruction,
                 context_json=context_json,
                 schema_json=schema_json,
                 retry=attempt > 1,
@@ -177,6 +180,8 @@ class StructuredModelGateway:
                     status="provider_error",
                     input_tokens=input_tokens,
                     output_tokens=output_tokens,
+                    cache_read_tokens=cache_read_tokens,
+                    cache_creation_tokens=cache_creation_tokens,
                     latency_ms=self._elapsed_ms(started_at),
                     structured_attempts=attempt,
                     error_code=error_code,
@@ -191,8 +196,10 @@ class StructuredModelGateway:
             last_response = response
             input_tokens += response.input_tokens
             output_tokens += response.output_tokens
+            cache_read_tokens += response.cache_read_tokens
+            cache_creation_tokens += response.cache_creation_tokens
             try:
-                output = output_type.model_validate_json(_json_document(response.content))
+                output = output_type.model_validate_json(json_document(response.content))
             except ValidationError:
                 continue
 
@@ -202,6 +209,8 @@ class StructuredModelGateway:
                 status="succeeded",
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
+                cache_read_tokens=cache_read_tokens,
+                cache_creation_tokens=cache_creation_tokens,
                 latency_ms=self._elapsed_ms(started_at),
                 structured_attempts=attempt,
                 request_id=response.request_id,
@@ -221,6 +230,8 @@ class StructuredModelGateway:
             status="schema_error",
             input_tokens=input_tokens,
             output_tokens=output_tokens,
+            cache_read_tokens=cache_read_tokens,
+            cache_creation_tokens=cache_creation_tokens,
             latency_ms=self._elapsed_ms(started_at),
             structured_attempts=self._max_structured_attempts,
             error_code="STRUCTURED_OUTPUT_INVALID",
@@ -236,32 +247,6 @@ class StructuredModelGateway:
         )
 
     @staticmethod
-    def _messages(
-        invocation: GatewayInvocation,
-        *,
-        context_json: str,
-        schema_json: str,
-        retry: bool,
-    ) -> list[ChatMessage]:
-        retry_instruction = (
-            "\nThe previous response failed schema validation. Correct the format; "
-            "do not add commentary."
-            if retry
-            else ""
-        )
-        return [
-            ChatMessage(role="system", content=invocation.system_prompt),
-            ChatMessage(
-                role="user",
-                content=(
-                    f"{invocation.instruction}{retry_instruction}\n\n"
-                    f"OUTPUT_JSON_SCHEMA\n{schema_json}\n\n"
-                    f"PDOS_CONTEXT_JSON\n{context_json}"
-                ),
-            ),
-        ]
-
-    @staticmethod
     def _elapsed_ms(started_at: float) -> int:
         return max(0, int((perf_counter() - started_at) * 1000))
 
@@ -273,6 +258,8 @@ class StructuredModelGateway:
         status: str,
         input_tokens: int,
         output_tokens: int,
+        cache_read_tokens: int = 0,
+        cache_creation_tokens: int = 0,
         latency_ms: int,
         structured_attempts: int,
         error_code: str | None = None,
@@ -300,6 +287,8 @@ class StructuredModelGateway:
                     "input_tokens": input_tokens,
                     "output_tokens": output_tokens,
                     "total_tokens": input_tokens + output_tokens,
+                    "cache_read_tokens": cache_read_tokens,
+                    "cache_creation_tokens": cache_creation_tokens,
                     "latency_ms": latency_ms,
                     "normalized_cost_microusd": rate_card.cost(
                         input_tokens=input_tokens,
@@ -311,7 +300,34 @@ class StructuredModelGateway:
             )
 
 
-def _json_document(content: str) -> str:
+def structured_messages(
+    *,
+    system_prompt: str,
+    instruction: str,
+    context_json: str,
+    schema_json: str,
+    retry: bool,
+) -> list[ChatMessage]:
+    retry_instruction = (
+        "\nThe previous response failed schema validation. Correct the format; "
+        "do not add commentary."
+        if retry
+        else ""
+    )
+    return [
+        ChatMessage(role="system", content=system_prompt),
+        ChatMessage(
+            role="user",
+            content=(
+                f"{instruction}{retry_instruction}\n\n"
+                f"OUTPUT_JSON_SCHEMA\n{schema_json}\n\n"
+                f"PDOS_CONTEXT_JSON\n{context_json}"
+            ),
+        ),
+    ]
+
+
+def json_document(content: str) -> str:
     document = content.strip()
     if not document.startswith("```"):
         return document

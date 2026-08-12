@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "suite_version": "s2-model-gateway-v1",
+  "pass_threshold": 1.0,
+  "cases": [
+    {
+      "id": "project-risk-high",
+      "system_prompt": "You are the frozen PDOS model qualification evaluator. Use only PDOS_CONTEXT_JSON and return only JSON matching OUTPUT_JSON_SCHEMA.",
+      "instruction": "Classify risk as high when open_issue_count is at least 3 or overdue_task_count is at least 2. Return evidence_codes in this fixed order: OPEN_ISSUES when the issue rule matches, then OVERDUE_TASKS when the overdue rule matches. Otherwise classify low with an empty list.",
+      "context": {
+        "project": {
+          "id": "golden-project-1",
+          "code": "PRJ-GOLD-001",
+          "name": "Motor Controller",
+          "status": "active",
+          "confidential_notes": "must not leave PDOS"
+        },
+        "execution": {
+          "open_issue_count": 4,
+          "open_risk_count": 1,
+          "overdue_task_count": 2,
+          "stage_progress_percent": 64
+        },
+        "document_original": "must not leave PDOS"
+      },
+      "expected": {
+        "label": "high",
+        "evidence_codes": [
+          "OPEN_ISSUES",
+          "OVERDUE_TASKS"
+        ]
+      }
+    },
+    {
+      "id": "project-risk-low",
+      "system_prompt": "You are the frozen PDOS model qualification evaluator. Use only PDOS_CONTEXT_JSON and return only JSON matching OUTPUT_JSON_SCHEMA.",
+      "instruction": "Classify risk as high when open_issue_count is at least 3 or overdue_task_count is at least 2. Return evidence_codes in this fixed order: OPEN_ISSUES when the issue rule matches, then OVERDUE_TASKS when the overdue rule matches. Otherwise classify low with an empty list.",
+      "context": {
+        "project": {
+          "id": "golden-project-2",
+          "code": "PRJ-GOLD-002",
+          "name": "Hydraulic Pump",
+          "status": "active"
+        },
+        "execution": {
+          "open_issue_count": 0,
+          "open_risk_count": 0,
+          "overdue_task_count": 0,
+          "stage_progress_percent": 82
+        }
+      },
+      "expected": {
+        "label": "low",
+        "evidence_codes": []
+      }
+    },
+    {
+      "id": "project-risk-boundary",
+      "system_prompt": "You are the frozen PDOS model qualification evaluator. Use only PDOS_CONTEXT_JSON and return only JSON matching OUTPUT_JSON_SCHEMA.",
+      "instruction": "Classify risk as high when open_issue_count is at least 3 or overdue_task_count is at least 2. Return evidence_codes in this fixed order: OPEN_ISSUES when the issue rule matches, then OVERDUE_TASKS when the overdue rule matches. Otherwise classify low with an empty list.",
+      "context": {
+        "project": {
+          "id": "golden-project-3",
+          "code": "PRJ-GOLD-003",
+          "name": "Seal Validation",
+          "status": "active"
+        },
+        "execution": {
+          "open_issue_count": 3,
+          "open_risk_count": 0,
+          "overdue_task_count": 1,
+          "stage_progress_percent": 51
+        }
+      },
+      "expected": {
+        "label": "high",
+        "evidence_codes": [
+          "OPEN_ISSUES"
+        ]
+      }
+    }
+  ]
+}

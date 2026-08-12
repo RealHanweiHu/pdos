@@ -10,4 +10,4 @@ def test_migration_history_has_one_model_gateway_head() -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0008_model_gateway"]
+    assert scripts.get_heads() == ["0009_invocation_cache_tokens"]

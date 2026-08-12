@@ -157,13 +157,22 @@ def gateway(
     )
 
 
-def provider_response(content: str, *, input_tokens: int, output_tokens: int) -> ProviderResponse:
+def provider_response(
+    content: str,
+    *,
+    input_tokens: int,
+    output_tokens: int,
+    cache_read_tokens: int = 0,
+    cache_creation_tokens: int = 0,
+) -> ProviderResponse:
     return ProviderResponse(
         content=content,
         input_tokens=input_tokens,
         output_tokens=output_tokens,
         request_id="provider-request",
         model_version="MiniMax-M2.7-20260811",
+        cache_read_tokens=cache_read_tokens,
+        cache_creation_tokens=cache_creation_tokens,
     )
 
 
@@ -203,8 +212,15 @@ def test_gateway_retries_invalid_structure_records_aggregate_usage_and_projects_
     tenant_id = seed_tenant(model_gateway_database)
     adapter = FakeAdapter(
         [
-            provider_response("not-json", input_tokens=10, output_tokens=5),
-            provider_response('```json\n{"risk":"high"}\n```', input_tokens=12, output_tokens=8),
+            provider_response(
+                "not-json", input_tokens=10, output_tokens=5, cache_creation_tokens=4
+            ),
+            provider_response(
+                '```json\n{"risk":"high"}\n```',
+                input_tokens=12,
+                output_tokens=8,
+                cache_read_tokens=6,
+            ),
         ]
     )
 
@@ -235,6 +251,8 @@ def test_gateway_retries_invalid_structure_records_aggregate_usage_and_projects_
     assert rows[0]["input_tokens"] == 22
     assert rows[0]["output_tokens"] == 13
     assert rows[0]["total_tokens"] == 35
+    assert rows[0]["cache_read_tokens"] == 6
+    assert rows[0]["cache_creation_tokens"] == 4
     assert rows[0]["normalized_cost_microusd"] == 48
     assert rows[0]["structured_attempts"] == 2
     assert rows[0]["error_code"] is None

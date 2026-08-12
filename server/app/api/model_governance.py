@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import Engine
 
+from app.ai.golden_suite import GoldenSuiteFileError, load_golden_suite
 from app.ai.model_catalog import ModelCatalog, ProtocolKind, ProviderName
 from app.ai.qualifications import GoldenQualificationFileError, load_golden_qualifications
 from app.api.auth import current_context, no_store
@@ -29,6 +30,7 @@ router = APIRouter(prefix="/api/ai/governance", tags=["ai-governance"])
 DEFAULT_QUALIFICATIONS_PATH = (
     Path(__file__).resolve().parents[2] / "golden" / "model-qualifications.json"
 )
+DEFAULT_GOLDEN_SUITE_PATH = Path(__file__).resolve().parents[2] / "golden" / "model-gateway-v1.json"
 
 
 class EligibleModelResponse(BaseModel):
@@ -98,7 +100,11 @@ def get_model_governance_service(
         )
     )
     try:
-        qualifications = load_golden_qualifications(qualification_path)
+        trusted_suite = load_golden_suite(DEFAULT_GOLDEN_SUITE_PATH)
+        qualifications = load_golden_qualifications(
+            qualification_path,
+            trusted_suite=trusted_suite,
+        )
         default_budget = int(os.environ.get("PDOS_AI_DAILY_TOKEN_BUDGET", "2000000"))
         return ModelGovernanceService(
             engine,
@@ -106,7 +112,7 @@ def get_model_governance_service(
             qualifications=qualifications,
             default_daily_token_budget=default_budget,
         )
-    except (GoldenQualificationFileError, ValueError) as error:
+    except (GoldenQualificationFileError, GoldenSuiteFileError, ValueError) as error:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={

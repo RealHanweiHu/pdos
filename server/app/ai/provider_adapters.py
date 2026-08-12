@@ -9,7 +9,8 @@ from typing import Literal
 import httpx2
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.ai.model_catalog import ProtocolKind, ResolvedModelRoute
+from app.ai.egress import EgressDeniedError, ProviderEgressPolicy
+from app.ai.model_catalog import ModelCatalog, ProtocolKind, ResolvedModelRoute
 
 
 class ChatMessage(BaseModel):
@@ -26,6 +27,8 @@ class ProviderResponse:
     output_tokens: int
     request_id: str | None
     model_version: str | None
+    cache_read_tokens: int = 0
+    cache_creation_tokens: int = 0
 
 
 class ProviderRequestError(RuntimeError):
@@ -47,8 +50,9 @@ def _text(value: object) -> str:
 
 
 class OpenAICompatibleAdapter:
-    def __init__(self, client: httpx2.Client) -> None:
+    def __init__(self, client: httpx2.Client, egress_policy: ProviderEgressPolicy) -> None:
         self._client = client
+        self._egress_policy = egress_policy
 
     def complete(
         self,
@@ -57,8 +61,10 @@ class OpenAICompatibleAdapter:
     ) -> ProviderResponse:
         if route.protocol is not ProtocolKind.OPENAI_COMPATIBLE:
             raise ProviderRequestError("provider_protocol_mismatch", "provider protocol mismatch")
+        target_url = f"{route.base_url}/chat/completions"
+        self._assert_egress(route, target_url)
         response = self._post(
-            f"{route.base_url}/chat/completions",
+            target_url,
             headers={
                 "Authorization": f"Bearer {route.api_key.get_secret_value()}",
                 "Content-Type": "application/json",
@@ -85,12 +91,16 @@ class OpenAICompatibleAdapter:
             usage = body["usage"]
             if not isinstance(usage, Mapping):
                 raise ValueError
+            details = usage.get("prompt_tokens_details", {})
+            if not isinstance(details, Mapping):
+                raise ValueError
             return ProviderResponse(
                 content=_text(message["content"]),
                 input_tokens=_token_count(usage["prompt_tokens"]),
                 output_tokens=_token_count(usage["completion_tokens"]),
                 request_id=response.headers.get("x-request-id") or _optional_text(body.get("id")),
                 model_version=_optional_text(body.get("model")),
+                cache_read_tokens=_optional_token_count(details.get("cached_tokens")),
             )
         except (KeyError, TypeError, ValueError) as error:
             raise ProviderRequestError(
@@ -119,10 +129,19 @@ class OpenAICompatibleAdapter:
             )
         return response
 
+    def _assert_egress(self, route: ResolvedModelRoute, target_url: str) -> None:
+        try:
+            self._egress_policy.assert_request_allowed(route, target_url)
+        except EgressDeniedError as error:
+            raise ProviderRequestError(
+                "provider_egress_denied", "provider egress denied"
+            ) from error
+
 
 class AnthropicNativeAdapter:
-    def __init__(self, client: httpx2.Client) -> None:
+    def __init__(self, client: httpx2.Client, egress_policy: ProviderEgressPolicy) -> None:
         self._client = client
+        self._egress_policy = egress_policy
 
     def complete(
         self,
@@ -143,8 +162,10 @@ class AnthropicNativeAdapter:
         }
         if system:
             payload["system"] = system
+        target_url = f"{route.base_url}/v1/messages"
+        self._assert_egress(route, target_url)
         response = self._post(
-            f"{route.base_url}/v1/messages",
+            target_url,
             headers={
                 "x-api-key": route.api_key.get_secret_value(),
                 "anthropic-version": "2023-06-01",
@@ -175,6 +196,10 @@ class AnthropicNativeAdapter:
                 output_tokens=_token_count(usage["output_tokens"]),
                 request_id=_optional_text(body.get("id")),
                 model_version=_optional_text(body.get("model")),
+                cache_read_tokens=_optional_token_count(usage.get("cache_read_input_tokens")),
+                cache_creation_tokens=_optional_token_count(
+                    usage.get("cache_creation_input_tokens")
+                ),
             )
         except (KeyError, TypeError, ValueError) as error:
             raise ProviderRequestError(
@@ -203,6 +228,29 @@ class AnthropicNativeAdapter:
             )
         return response
 
+    def _assert_egress(self, route: ResolvedModelRoute, target_url: str) -> None:
+        try:
+            self._egress_policy.assert_request_allowed(route, target_url)
+        except EgressDeniedError as error:
+            raise ProviderRequestError(
+                "provider_egress_denied", "provider egress denied"
+            ) from error
+
 
 def _optional_text(value: object) -> str | None:
     return value if isinstance(value, str) and value else None
+
+
+def _optional_token_count(value: object) -> int:
+    return 0 if value is None else _token_count(value)
+
+
+def configured_provider_adapters(
+    catalog: ModelCatalog,
+    client: httpx2.Client,
+) -> dict[ProtocolKind, OpenAICompatibleAdapter | AnthropicNativeAdapter]:
+    policy = ProviderEgressPolicy.from_catalog(catalog)
+    return {
+        ProtocolKind.OPENAI_COMPATIBLE: OpenAICompatibleAdapter(client, policy),
+        ProtocolKind.ANTHROPIC_NATIVE: AnthropicNativeAdapter(client, policy),
+    }

@@ -44,6 +44,19 @@ def test_production_startup_orders_migration_api_and_web() -> None:
     assert web_healthcheck["test"]
 
 
+def test_production_api_receives_only_server_side_model_configuration() -> None:
+    api_environment = cast(dict[str, str], production_services()["api"]["environment"])
+
+    assert api_environment["PDOS_LLM_PROVIDER"] == "${PDOS_LLM_PROVIDER:-minimax}"
+    assert api_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
+    assert api_environment["PDOS_LLM_ANTHROPIC_API_KEY"] == ("${PDOS_LLM_ANTHROPIC_API_KEY:-}")
+    assert api_environment["PDOS_AI_DAILY_TOKEN_BUDGET"] == (
+        "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
+    )
+    web_environment = cast(dict[str, str], production_services()["web"]["environment"])
+    assert not any(name.startswith("PDOS_LLM_") for name in web_environment)
+
+
 def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> None:
     services = production_services()
     server_dockerfile = (REPOSITORY_ROOT / "server" / "Dockerfile").read_text()
@@ -53,6 +66,7 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     api_build_args = cast(dict[str, str], api_build["args"])
 
     assert "USER pdos" in server_dockerfile
+    assert "COPY server/golden ./golden" in server_dockerfile
     assert "USER nextjs" in web_dockerfile
     assert "ARG PYTHON_BASE_IMAGE=" in server_dockerfile
     assert "ARG UV_BASE_IMAGE=" in server_dockerfile

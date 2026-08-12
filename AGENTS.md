@@ -22,7 +22,8 @@
 - [x] S1-5 事件全覆盖 + 调试页已完成：22 类已实现事件覆盖、tenant-bound cursor API、只读调试页与管理员权限验收全绿
 - [x] S1-6 前端第一版已完成：Dashboard Portfolio/Risk 两卡、Project Workspace 五标签及 Sprint 1 真实浏览器闭环验收全绿
 - [x] Sprint 1 Exit Gate 已于 2026-08-11 经人确认通过
-- [ ] **当前：S2-1 LLM Gateway（多供应商）**，按 `tasks/todo.md` 交付租户模型治理、两类协议、结构化输出、调用留痕、预算熔断、上下文与出口白名单、golden-case 门禁
+- [x] S2-1 LLM Gateway（多供应商）已完成：租户模型治理、两类协议、结构化输出、调用留痕、预算熔断、上下文/出口白名单与 golden-case 人工发布门禁均验收通过
+- [ ] **当前：S2-2 LangGraph 执行环**，按 `tasks/todo.md` 交付 dispatcher/executor 分离、项目级 debounce、静态 Agent 路由、run context、三只读工具与失败侧熔断；不提前实现 Finding 状态机
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

@@ -1039,6 +1039,8 @@ model_invocations = Table(
     Column("input_tokens", BigInteger, nullable=False, server_default=text("0")),
     Column("output_tokens", BigInteger, nullable=False, server_default=text("0")),
     Column("total_tokens", BigInteger, nullable=False, server_default=text("0")),
+    Column("cache_read_tokens", BigInteger, nullable=False, server_default=text("0")),
+    Column("cache_creation_tokens", BigInteger, nullable=False, server_default=text("0")),
     Column("latency_ms", Integer, nullable=False, server_default=text("0")),
     Column(
         "normalized_cost_microusd",
@@ -1077,6 +1079,10 @@ model_invocations = Table(
         "input_tokens >= 0 AND output_tokens >= 0 AND total_tokens >= 0 "
         "AND total_tokens = input_tokens + output_tokens",
         name="token_totals_consistent",
+    ),
+    CheckConstraint(
+        "cache_read_tokens >= 0 AND cache_creation_tokens >= 0",
+        name="cache_tokens_nonnegative",
     ),
     CheckConstraint("latency_ms >= 0", name="latency_nonnegative"),
     CheckConstraint("normalized_cost_microusd >= 0", name="cost_nonnegative"),

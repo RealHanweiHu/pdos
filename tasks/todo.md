@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-1 LLM Gateway（多供应商）。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；当前只实施 S2-1，不提前混入 LangGraph 执行环或 Finding。
+> 唯一当前指针：**S2-2 LangGraph 执行环。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 已验收完成，当前只实施 S2-2，不提前混入 Finding 状态机。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -448,7 +448,7 @@
 - [x] Sprint 1 的完整质量门禁、权限边界、双主题与响应式浏览器验收通过
 - [x] 汇报 Sprint 1 验收结果并获得人明确确认，进入 Sprint 2
 
-## Current: S2-1 Multi-provider LLM Gateway
+## Completed: S2-1 Multi-provider LLM Gateway
 
 **Definition of Ready**
 
@@ -468,17 +468,59 @@
 - [x] S2-1c：实现上下文白名单投影、日预算计算/熔断及租户模型治理服务/API
 - [x] S2-1d：实现 OpenAI-compatible/Anthropic 两个 adapter、结构化 schema 校验有限重试及完整 invocation 记录
 - [x] S2-1e：实现治理页「模型与预算」及同源 BFF，仅展示合格候选与非敏感调用摘要
-- [ ] S2-1f：固化 golden-case runner、出口白名单校验、真实本地 fake-provider/API/浏览器路径与完整质量门禁
+- [x] S2-1f：固化 golden-case runner、出口白名单校验、真实本地 fake-provider/API/浏览器路径与完整质量门禁
 
 **Acceptance evidence required**
 
 - S2-1e 前端证据：同源 BFF 缺 session 时 fail-close 且不访问上游；Owner/Admin 才请求治理数据，非管理员不显示导航且不产生治理请求；页面只解析合格模型、选择状态与聚合预算，不接受或呈现连接密钥/地址
 - S2-1e 质量证据：82 个 web tests、ESLint 与 TypeScript 严格检查全绿；保存请求精确包含 provider/model/daily token budget，空合格池明确显示且禁用保存
 
-- [ ] 只有 env 配置凭据且 golden-case 通过的模型进入租户候选；未配置、未评测或退化模型不可选择，API/UI 不泄露任何 key/base_url
-- [ ] 两类协议均通过真实 HTTP fake-provider 合同；结构化输出首轮无效时按固定预算重试，耗尽后稳定降级且错误路径零额外 LLM 调用
-- [ ] 每次成功、供应商失败、schema 失败和预算熔断均产生可归因的 model invocation；token、耗时、prompt 版本、Agent、供应商/模型与归一成本完整
-- [ ] 租户日预算超限时不调用供应商、不阻塞业务；不同租户预算与用量严格隔离
-- [ ] 白名单投影阻止密级字段、对象存储键和原文离库；请求目标不在已配置供应商 host 白名单时 fail-close
-- [ ] 治理页可选择合格模型和调整预算，刷新后保持；Owner/Admin 可写，其他角色只读或拒绝，跨租户稳定 fail-close
-- [ ] golden-case 全量通过才可发布模型资格，可信根与阈值不在运行时自动化写路径内；完整 lint/type/test/build、migration 往返与浏览器验收全绿
+- [x] 只有 env 配置凭据且 golden-case 通过的模型进入租户候选；未配置、未评测或退化模型不可选择，API/UI 不泄露任何 key/base_url
+- [x] 两类协议均通过真实 HTTP fake-provider 合同；结构化输出首轮无效时按固定预算重试，耗尽后稳定降级且错误路径零额外 LLM 调用
+- [x] 每次成功、供应商失败、schema 失败和预算熔断均产生可归因的 model invocation；token、缓存 token、耗时、prompt 版本、Agent、供应商/模型与归一成本完整
+- [x] 租户日预算超限时不调用供应商、不阻塞业务；不同租户预算与用量严格隔离
+- [x] 白名单投影阻止密级字段、对象存储键和原文离库；请求目标不在已配置供应商 host 白名单时 fail-close
+- [x] 治理页可选择合格模型和调整预算，刷新后保持；Owner/Admin 可写，其他角色只读或拒绝，跨租户稳定 fail-close
+- [x] golden-case 全量通过才可发布模型资格，可信根与阈值不在运行时自动化写路径内；完整 lint/type/test/build、migration 往返与浏览器验收全绿
+
+**Acceptance evidence (2026-08-11)**
+
+- `make check`：146 个 server tests、82 个 web tests、Ruff/ESLint、Python/TypeScript 严格类型、Next.js production build 与 Python compile 全绿；Alembic 唯一 head 为 `0009_invocation_cache_tokens`，0007→0009 往返通过
+- Provider/runtime：OpenAI-compatible 与 Anthropic-native 均跨真实 loopback HTTP socket 完成合同；注入非配置 route 时 transport 调用数为 0；schema 首轮失败后固定重试、耗尽降级、provider 失败与预算熔断均有测试和不可变 invocation 证据
+- Golden gate：可信 suite 内容摘要与 100% 阈值入库；runner 执行完整 suite、只输出 secret-free 报告且没有发布写口；运行时拒绝 suite version/digest 不一致的资格文件；默认人工发布清单为空
+- 浏览器：Owner 从导航进入治理页并把租户预算保存为 3,000,000，PATCH 仅含 provider/model/budget，设置/event/audit 三方一致；Supplier 直达显示管理员限制且治理请求数为 0
+- 响应式与可访问性：亮/暗主题、320/768/1440px 无横向溢出；320px 可见交互目标均至少 44px，干净浏览器会话 0 warning/0 error；截图位于 `output/playwright/s2-1-governance-*.png`（按 `.gitignore` 不入库）
+- 环境门禁：本地所有真实供应商 key 均为空，因此没有伪造或发布 MiniMax 真实资格；当前验收使用 fake-provider，真实模型接入须按 `docs/runbooks/model-qualification.md` 人工全量评测后另行发布
+
+## Current: S2-2 LangGraph Execution Loop
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S2-2、`AI_Runtime_Architecture.md`、`Event_Catalog.md`、`RBAC_and_Audit.md` 与执行计划 §11 Context/错误/工具纪律
+- [x] 依赖项：S2-1 已完成；事件表、租户/项目权限、模型网关与 `cehub_ai` namespace 已就绪
+- [x] 进程边界冻结：dispatcher 是控制面，executor 是执行面；生产配置与凭据分离，executor 只接收服务端冻结的 run context
+- [x] 触发边界冻结：按 tenant+project 聚合，默认 15 分钟 debounce；id-cursor 单调消费并通过唯一键保证重复事件不重复建 run
+- [x] 路由边界冻结：事件类型→Agent 静态表；模型、tenant、project 自报参数都不是政策事实
+- [x] 工具边界冻结：仅 get_project_context / search_memory / get_recent_events 三个只读端口；范围只能来自 run context，越界参数直接拒绝且显式标注截断
+- [x] 失败边界冻结：run 错误路径零 LLM 调用；单 Agent 连续失败达到阈值后暂停订阅并记录告警，不做无限重试
+- [x] 范围冻结：本项只交付运行控制、上下文和只读工具；Finding 写出口、Human Review 状态机与业务 apply 留在 S2-3
+- [x] 迁移号冻结为 `0010`，建立 dispatcher cursor/subscription/agent run 控制面记录，不修改或复用既有迁移
+
+**Implementation slices**
+
+- [ ] S2-2a：以测试冻结静态 Agent 路由、run context、状态机、debounce/幂等与失败熔断合同
+- [ ] S2-2b：migration 0010 建立 dispatcher cursor、Agent subscription 与 agent_runs，覆盖租户 FK、唯一键、状态约束、索引和往返
+- [ ] S2-2c：实现 id-cursor dispatcher、tenant+project debounce、静态路由和原子 run 创建
+- [ ] S2-2d：实现 executor LangGraph 骨架、冻结前缀/动态 context 末尾、三只读工具及服务端范围绑定
+- [ ] S2-2e：实现 run 失败分类、错误路径零 LLM、连续失败暂停订阅与告警记录
+- [ ] S2-2f：完成 dispatcher/executor 分进程配置、真实事件→run fake-model 路径、迁移往返与完整质量门禁
+
+**Acceptance evidence required**
+
+- [ ] 同一 tenant+project+Agent 的窗口内事件合并为一个 run，游标单调推进；重复消费不重复建 run，跨租户事件永不合并
+- [ ] 静态路由只为订阅事件选择 Agent；冻结 run context 由服务端绑定 tenant/project/event 范围，executor 不接受客户端政策事实
+- [ ] 三只读工具只读取 run context 范围；越界 ID fail-close，截断显式返回“已显示 X 之 Y 条”及续读方式
+- [ ] system prompt/工具定义前缀稳定，动态项目状态只追加到 context 尾部；代码预聚合值有确定性测试
+- [ ] 成功/失败/降级 run 状态与 invocation 可关联；错误处理与告警路径零额外 LLM 调用
+- [ ] 单 Agent 连续失败达到阈值后订阅自动暂停，后续事件不建 run，管理员可见暂停原因
+- [ ] dispatcher 与 executor 配置/凭据分离；完整 lint/type/test/build、migration 往返与真实事件路径全绿

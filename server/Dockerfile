@@ -20,6 +20,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 
 COPY server/alembic.ini ./
 COPY server/app ./app
+COPY server/golden ./golden
 COPY server/migrations ./migrations
 COPY certs/ApsaraDB-CA-Chain.pem /app/certs/ApsaraDB-CA-Chain.pem
 

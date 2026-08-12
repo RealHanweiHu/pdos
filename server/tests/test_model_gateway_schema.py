@@ -87,6 +87,8 @@ def test_model_gateway_metadata_freezes_settings_and_invocation_contracts() -> N
         "input_tokens",
         "output_tokens",
         "total_tokens",
+        "cache_read_tokens",
+        "cache_creation_tokens",
         "latency_ms",
         "normalized_cost_microusd",
         "structured_attempts",
@@ -98,6 +100,7 @@ def test_model_gateway_metadata_freezes_settings_and_invocation_contracts() -> N
         "ck_model_invocations_protocol_allowed",
         "ck_model_invocations_status_allowed",
         "ck_model_invocations_token_totals_consistent",
+        "ck_model_invocations_cache_tokens_nonnegative",
         "ck_model_invocations_error_consistent",
         "ck_model_invocations_structured_attempts_range",
     } <= constraint_names(tables.model_invocations, CheckConstraint)

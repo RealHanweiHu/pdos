@@ -7,6 +7,7 @@ from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
+from app.ai.golden_suite import LoadedGoldenSuite
 from app.ai.model_catalog import GoldenQualification, ProviderName
 
 
@@ -38,11 +39,22 @@ class QualificationDocument(BaseModel):
         return self
 
 
-def load_golden_qualifications(path: Path) -> list[GoldenQualification]:
+def load_golden_qualifications(
+    path: Path,
+    *,
+    trusted_suite: LoadedGoldenSuite | None = None,
+) -> list[GoldenQualification]:
     try:
         document = QualificationDocument.model_validate_json(path.read_text())
     except (OSError, UnicodeError, ValidationError) as error:
         raise GoldenQualificationFileError("golden qualification document is invalid") from error
+    if trusted_suite is not None and (
+        document.suite_version != trusted_suite.suite.suite_version
+        or document.suite_digest != trusted_suite.digest
+    ):
+        raise GoldenQualificationFileError(
+            "golden qualification document does not match the trusted suite"
+        )
     return [
         GoldenQualification(
             provider=entry.provider,

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 
 import httpx2
 import pytest
 from pydantic import SecretStr
 
+from app.ai.egress import ProviderEgressPolicy
 from app.ai.model_catalog import AgentTier, ProtocolKind, ProviderName, ResolvedModelRoute
 from app.ai.provider_adapters import (
     AnthropicNativeAdapter,
@@ -35,6 +37,10 @@ def route(protocol: ProtocolKind) -> ResolvedModelRoute:
     )
 
 
+def policy(resolved_route: ResolvedModelRoute) -> ProviderEgressPolicy:
+    return ProviderEgressPolicy.from_routes([resolved_route])
+
+
 def test_openai_compatible_adapter_uses_plain_chat_completions_contract() -> None:
     def handler(request: httpx2.Request) -> httpx2.Response:
         assert request.url == "https://fake-openai.local/v1/chat/completions"
@@ -55,13 +61,18 @@ def test_openai_compatible_adapter_uses_plain_chat_completions_contract() -> Non
                 "id": "completion-1",
                 "model": "minimax-test-20260811",
                 "choices": [{"message": {"content": '{"risk":"high"}'}}],
-                "usage": {"prompt_tokens": 12, "completion_tokens": 8},
+                "usage": {
+                    "prompt_tokens": 12,
+                    "completion_tokens": 8,
+                    "prompt_tokens_details": {"cached_tokens": 7},
+                },
             },
         )
 
     client = httpx2.Client(transport=httpx2.MockTransport(handler), follow_redirects=False)
-    response = OpenAICompatibleAdapter(client).complete(
-        route(ProtocolKind.OPENAI_COMPATIBLE),
+    resolved_route = route(ProtocolKind.OPENAI_COMPATIBLE)
+    response = OpenAICompatibleAdapter(client, policy(resolved_route)).complete(
+        resolved_route,
         [
             ChatMessage(role="system", content="Frozen system"),
             ChatMessage(role="user", content="Return JSON"),
@@ -71,6 +82,8 @@ def test_openai_compatible_adapter_uses_plain_chat_completions_contract() -> Non
     assert response.content == '{"risk":"high"}'
     assert response.input_tokens == 12
     assert response.output_tokens == 8
+    assert response.cache_read_tokens == 7
+    assert response.cache_creation_tokens == 0
     assert response.request_id == "req-openai"
     assert response.model_version == "minimax-test-20260811"
 
@@ -94,13 +107,19 @@ def test_anthropic_adapter_uses_native_messages_contract() -> None:
                 "id": "req-anthropic",
                 "model": "claude-test-20260811",
                 "content": [{"type": "text", "text": '{"risk":"low"}'}],
-                "usage": {"input_tokens": 9, "output_tokens": 4},
+                "usage": {
+                    "input_tokens": 9,
+                    "output_tokens": 4,
+                    "cache_read_input_tokens": 5,
+                    "cache_creation_input_tokens": 3,
+                },
             },
         )
 
     client = httpx2.Client(transport=httpx2.MockTransport(handler), follow_redirects=False)
-    response = AnthropicNativeAdapter(client).complete(
-        route(ProtocolKind.ANTHROPIC_NATIVE),
+    resolved_route = route(ProtocolKind.ANTHROPIC_NATIVE)
+    response = AnthropicNativeAdapter(client, policy(resolved_route)).complete(
+        resolved_route,
         [
             ChatMessage(role="system", content="Frozen system"),
             ChatMessage(role="user", content="Return JSON"),
@@ -110,6 +129,8 @@ def test_anthropic_adapter_uses_native_messages_contract() -> None:
     assert response.content == '{"risk":"low"}'
     assert response.input_tokens == 9
     assert response.output_tokens == 4
+    assert response.cache_read_tokens == 5
+    assert response.cache_creation_tokens == 3
     assert response.request_id == "req-anthropic"
     assert response.model_version == "claude-test-20260811"
 
@@ -124,8 +145,9 @@ def test_adapters_fail_closed_without_following_redirects_or_exposing_secrets(
 
     client = httpx2.Client(transport=httpx2.MockTransport(handler), follow_redirects=False)
     with pytest.raises(ProviderRequestError) as captured:
-        OpenAICompatibleAdapter(client).complete(
-            route(ProtocolKind.OPENAI_COMPATIBLE),
+        resolved_route = route(ProtocolKind.OPENAI_COMPATIBLE)
+        OpenAICompatibleAdapter(client, policy(resolved_route)).complete(
+            resolved_route,
             [ChatMessage(role="user", content="Return JSON")],
         )
 
@@ -143,9 +165,32 @@ def test_adapter_rejects_malformed_success_payload() -> None:
         ProviderRequestError,
         match="provider returned an invalid response",
     ) as error:
-        OpenAICompatibleAdapter(client).complete(
-            route(ProtocolKind.OPENAI_COMPATIBLE),
+        resolved_route = route(ProtocolKind.OPENAI_COMPATIBLE)
+        OpenAICompatibleAdapter(client, policy(resolved_route)).complete(
+            resolved_route,
             [ChatMessage(role="user", content="Return JSON")],
         )
 
     assert error.value.code == "provider_invalid_response"
+
+
+def test_adapter_denies_an_injected_route_before_the_http_transport() -> None:
+    transport_calls = 0
+
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        nonlocal transport_calls
+        transport_calls += 1
+        return httpx2.Response(200, json={})
+
+    allowed_route = route(ProtocolKind.OPENAI_COMPATIBLE)
+    injected_route = replace(allowed_route, base_url="https://untrusted.example/v1")
+    client = httpx2.Client(transport=httpx2.MockTransport(handler), follow_redirects=False)
+
+    with pytest.raises(ProviderRequestError) as error:
+        OpenAICompatibleAdapter(client, policy(allowed_route)).complete(
+            injected_route,
+            [ChatMessage(role="user", content="Return JSON")],
+        )
+
+    assert error.value.code == "provider_egress_denied"
+    assert transport_calls == 0
