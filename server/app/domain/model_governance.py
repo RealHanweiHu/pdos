@@ -6,9 +6,10 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, time, timedelta
 from uuid import UUID, uuid4
 
-from sqlalchemy import Connection, Engine, RowMapping, func, select, update
+from sqlalchemy import Connection, Engine, RowMapping, func, select, text, update
 
 from app.ai.model_catalog import EligibleModel, GoldenQualification, ModelCatalog, ProviderName
+from app.ai.run_store import AgentRunStore
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
@@ -54,6 +55,7 @@ class ModelGovernanceService:
         catalog: ModelCatalog,
         qualifications: list[GoldenQualification],
         default_daily_token_budget: int,
+        run_store: AgentRunStore | None = None,
     ) -> None:
         if not 1 <= default_daily_token_budget <= 1_000_000_000:
             raise ValueError("default daily token budget is invalid")
@@ -61,6 +63,7 @@ class ModelGovernanceService:
         self._catalog = catalog
         self._qualifications = qualifications
         self._default_daily_token_budget = default_daily_token_budget
+        self._run_store = run_store
 
     def get(
         self,
@@ -72,20 +75,42 @@ class ModelGovernanceService:
         eligible = self._catalog.eligible_models(self._qualifications)
         eligible_identities = {(item.provider, item.model) for item in eligible}
         with self._engine.connect() as connection:
-            row = (
-                connection.execute(
-                    select(tables.tenant_model_settings).where(
-                        tables.tenant_model_settings.c.tenant_id == tenant_id
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                row = (
+                    connection.execute(
+                        text("SELECT * FROM cehub_ai.agent_model_settings_projection")
                     )
+                    .mappings()
+                    .one_or_none()
                 )
-                .mappings()
-                .one_or_none()
-            )
-            used_tokens = self._used_tokens_today(
-                connection,
-                tenant_id=tenant_id,
-                now=current_time,
-            )
+                day_start = datetime.combine(current_time.date(), time.min, tzinfo=UTC)
+                day_end = day_start + timedelta(days=1)
+                used_tokens = int(
+                    connection.execute(
+                        text(
+                            "SELECT coalesce(sum(total_tokens), 0) "
+                            "FROM cehub_ai.agent_model_usage_projection "
+                            "WHERE created_at >= :day_start AND created_at < :day_end"
+                        ),
+                        {"day_start": day_start, "day_end": day_end},
+                    ).scalar_one()
+                )
+            else:
+                row = (
+                    connection.execute(
+                        select(tables.tenant_model_settings).where(
+                            tables.tenant_model_settings.c.tenant_id == tenant_id
+                        )
+                    )
+                    .mappings()
+                    .one_or_none()
+                )
+                used_tokens = self._used_tokens_today(
+                    connection,
+                    tenant_id=tenant_id,
+                    now=current_time,
+                )
 
         if row is None:
             default_candidate = next(

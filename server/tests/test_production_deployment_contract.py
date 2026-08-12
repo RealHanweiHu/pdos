@@ -156,9 +156,30 @@ def test_production_smoke_is_isolated_and_available_from_the_root_makefile() -> 
     assert "/api/session/status" in smoke_script
     assert "compose.production.yaml" in smoke_script
     assert "compose.production-smoke.yaml" in smoke_script
-    assert 'PDOS_AGENT_DATABASE_URL="$test_database_url"' in smoke_script
-    assert 'PDOS_WORKER_DATABASE_URL="$test_database_url"' in smoke_script
+    assert 'PDOS_AGENT_DATABASE_URL="$agent_database_url"' in smoke_script
+    assert 'PDOS_WORKER_DATABASE_URL="$worker_database_url"' in smoke_script
+    assert 'username="pdos_agent"' in smoke_script
+    assert 'username="pdos_worker"' in smoke_script
+    assert "scripts.manage_test_agent_security" in smoke_script
     assert "content-security-policy" in smoke_script.lower()
     assert "strict-transport-security" in smoke_script.lower()
     assert "x-content-type-options" in smoke_script.lower()
     assert "make smoke-production" in workflow
+
+
+def test_agent_database_security_runbook_keeps_production_actions_human_owned() -> None:
+    runbook = (
+        REPOSITORY_ROOT / "docs" / "runbooks" / "agent-runtime-database-security.md"
+    ).read_text()
+
+    assert "pdos_worker" in runbook
+    assert "pdos_agent" in runbook
+    assert "pdos_app" in runbook
+    assert "人工" in runbook
+    assert "幂等" in runbook
+    assert "0 行" in runbook
+    assert "permission denied" in runbook
+    assert "agent-runtime-roles.sql" in runbook
+    assert "agent-runtime.sql" in runbook
+    assert "agent-runtime-revert.sql" in runbook
+    assert "不得临时把 `pdos_app` 凭据交给 executor" in runbook

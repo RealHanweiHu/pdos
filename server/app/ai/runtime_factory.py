@@ -19,6 +19,7 @@ from app.ai.golden_suite import load_golden_suite
 from app.ai.model_catalog import ModelCatalog, ProviderName
 from app.ai.provider_adapters import configured_provider_adapters
 from app.ai.qualifications import load_golden_qualifications
+from app.ai.run_store import RestrictedAgentRunStore
 from app.db.url import psycopg_database_url
 from app.domain.model_governance import ModelGovernanceService
 
@@ -80,11 +81,13 @@ def configured_agent_runtime(
         trusted_suite=trusted_suite,
     )
     default_budget = int(values.get("PDOS_AI_DAILY_TOKEN_BUDGET", "2000000"))
+    run_store = RestrictedAgentRunStore(engine)
     governance = ModelGovernanceService(
         engine,
         catalog=catalog,
         qualifications=qualifications,
         default_daily_token_budget=default_budget,
+        run_store=run_store,
     )
     rate_cards = {provider: ProviderRateCard(0, 0) for provider in ProviderName}
     try:
@@ -96,12 +99,14 @@ def configured_agent_runtime(
                 governance=governance,
                 adapters=configured_provider_adapters(catalog, client),
                 rate_cards=rate_cards,
+                run_store=run_store,
             )
             yield AgentRuntime(
                 engine=engine,
                 executor=AgentExecutor(
                     engine,
                     model_invoker=GatewayAgentModelInvoker(gateway),
+                    run_store=run_store,
                 ),
             )
     finally:

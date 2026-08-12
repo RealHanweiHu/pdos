@@ -22,6 +22,7 @@ from app.ai.model_catalog import (
     ResolvedModelRoute,
 )
 from app.ai.provider_adapters import ChatMessage, ProviderRequestError, ProviderResponse
+from app.ai.run_store import AgentRunStore
 from app.db.schema import tables
 from app.domain.model_governance import ModelGovernanceService
 
@@ -88,6 +89,7 @@ class StructuredModelGateway:
         adapters: Mapping[ProtocolKind, ModelProviderAdapter],
         rate_cards: Mapping[ProviderName, ProviderRateCard],
         max_structured_attempts: int = 2,
+        run_store: AgentRunStore | None = None,
     ) -> None:
         if not 1 <= max_structured_attempts <= 3:
             raise ValueError("structured attempt budget must be between 1 and 3")
@@ -98,6 +100,7 @@ class StructuredModelGateway:
         self._adapters = adapters
         self._rate_cards = rate_cards
         self._max_structured_attempts = max_structured_attempts
+        self._run_store = run_store
 
     def invoke_structured[OutputT: BaseModel](
         self,
@@ -268,6 +271,8 @@ class StructuredModelGateway:
     ) -> None:
         rate_card = self._rate_cards.get(route.provider, ProviderRateCard(0, 0))
         with self._engine.begin() as connection:
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
             connection.execute(
                 tables.model_invocations.insert(),
                 {

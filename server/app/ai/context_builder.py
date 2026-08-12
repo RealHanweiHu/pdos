@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, time, timedelta
+from typing import Any
 from uuid import UUID
 
-from sqlalchemy import Connection, RowMapping, func, select
+from sqlalchemy import Connection, RowMapping, func, select, text
 
 from app.ai.runtime_contract import AgentKey, EventReference, FrozenRunContext
 from app.db.schema import tables
@@ -25,20 +26,26 @@ class RunContextBuilder:
         self,
         connection: Connection,
         *,
-        run: RowMapping,
+        run: RowMapping | dict[str, Any],
         built_at: datetime,
+        projection_only: bool = False,
     ) -> FrozenRunContext:
         now = built_at.astimezone(UTC)
         tenant_id = UUID(str(run["tenant_id"]))
         project_id = UUID(str(run["project_id"]))
         run_id = UUID(str(run["id"]))
-        project = self._project(connection, tenant_id=tenant_id, project_id=project_id)
-        events = self._events(
-            connection,
-            tenant_id=tenant_id,
-            project_id=project_id,
-            event_row_ids=[int(value) for value in run["event_row_ids"]],
-        )
+        event_row_ids = [int(value) for value in run["event_row_ids"]]
+        if projection_only:
+            project = self._project_projection(connection, project_id=project_id)
+            events = self._event_projection(connection, event_row_ids=event_row_ids)
+        else:
+            project = self._project(connection, tenant_id=tenant_id, project_id=project_id)
+            events = self._events(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                event_row_ids=event_row_ids,
+            )
         if len(events) != int(run["event_count"]):
             raise RunContextIntegrityError("Agent run event references are incomplete")
 
@@ -60,15 +67,151 @@ class RunContextBuilder:
                 )
                 for event in events
             ),
-            project=self._project_payload(connection, project=project),
-            execution=self._execution_metrics(
-                connection,
-                tenant_id=tenant_id,
-                project_id=project_id,
-                agent_key=AgentKey(str(run["agent_key"])),
-                now=now,
+            project=(
+                self._project_projection_payload(project)
+                if projection_only
+                else self._project_payload(connection, project=project)
+            ),
+            execution=(
+                self._projection_execution_metrics(
+                    connection,
+                    agent_key=AgentKey(str(run["agent_key"])),
+                    now=now,
+                )
+                if projection_only
+                else self._execution_metrics(
+                    connection,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    agent_key=AgentKey(str(run["agent_key"])),
+                    now=now,
+                )
             ),
         )
+
+    @staticmethod
+    def _project_projection(connection: Connection, *, project_id: UUID) -> RowMapping:
+        row = (
+            connection.execute(
+                text("SELECT * FROM cehub_ai.agent_project_projection WHERE id = :project_id"),
+                {"project_id": project_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if row is None:
+            raise RunContextIntegrityError("Agent run Project projection is unavailable")
+        return row
+
+    @staticmethod
+    def _event_projection(
+        connection: Connection,
+        *,
+        event_row_ids: list[int],
+    ) -> list[RowMapping]:
+        return list(
+            connection.execute(
+                text(
+                    "SELECT * FROM cehub_ai.agent_event_projection "
+                    "WHERE id = ANY(:event_row_ids) ORDER BY id"
+                ),
+                {"event_row_ids": event_row_ids},
+            ).mappings()
+        )
+
+    @staticmethod
+    def _project_projection_payload(project: RowMapping) -> dict[str, object]:
+        current_stage = {
+            "code": str(project["current_stage_code"] or "unassigned"),
+            "name": str(project["current_stage_name"] or "Unassigned"),
+            "sequence": int(project["current_stage_sequence"] or 0),
+        }
+        return {
+            "id": str(project["id"]),
+            "code": str(project["code"]),
+            "name": str(project["name"]),
+            "status": str(project["status"]),
+            "current_stage": current_stage,
+        }
+
+    def _projection_execution_metrics(
+        self,
+        connection: Connection,
+        *,
+        agent_key: AgentKey,
+        now: datetime,
+    ) -> dict[str, object]:
+        seven_days_ago = now - timedelta(days=7)
+        day_start = datetime.combine(now.date(), time.min, tzinfo=UTC)
+        day_end = day_start + timedelta(days=1)
+        issues = connection.execute(
+            text(
+                "SELECT count(*) FILTER (WHERE status <> 'closed') AS open_count, "
+                "count(*) FILTER (WHERE created_at >= :seven_days_ago "
+                "AND created_at <= :now) AS recent_count "
+                "FROM cehub_ai.agent_issue_projection"
+            ),
+            {"seven_days_ago": seven_days_ago, "now": now},
+        ).one()
+        open_risk_count = connection.execute(
+            text("SELECT count(*) FROM cehub_ai.agent_risk_projection WHERE status <> 'closed'")
+        ).scalar_one()
+        overdue_task_count = connection.execute(
+            text(
+                "SELECT count(*) FROM cehub_ai.agent_task_projection "
+                "WHERE due_date < :today AND status NOT IN ('done', 'skipped')"
+            ),
+            {"today": now.date()},
+        ).scalar_one()
+        next_gate_due_at = connection.execute(
+            text(
+                "SELECT min(review_due_at) FROM cehub_ai.agent_gate_projection "
+                "WHERE status IN ('preparing', 'reviewing') AND review_due_at IS NOT NULL"
+            )
+        ).scalar_one()
+        project = (
+            connection.execute(text("SELECT * FROM cehub_ai.agent_project_projection"))
+            .mappings()
+            .one()
+        )
+        current_sequence = int(project["current_stage_sequence"] or 0)
+        max_sequence = int(project["max_stage_sequence"] or 0)
+        configured_budget = connection.execute(
+            text("SELECT daily_token_budget FROM cehub_ai.agent_model_settings_projection")
+        ).scalar_one_or_none()
+        daily_budget = int(configured_budget or self._default_daily_token_budget)
+        used_tokens = connection.execute(
+            text(
+                "SELECT coalesce(sum(total_tokens), 0) "
+                "FROM cehub_ai.agent_model_usage_projection "
+                "WHERE created_at >= :day_start AND created_at < :day_end"
+            ),
+            {"day_start": day_start, "day_end": day_end},
+        ).scalar_one()
+        agent_runs_today = connection.execute(
+            text(
+                "SELECT count(*) FROM cehub_ai.agent_run_usage_projection "
+                "WHERE agent_key = :agent_key AND created_at >= :day_start "
+                "AND created_at < :day_end"
+            ),
+            {"agent_key": agent_key.value, "day_start": day_start, "day_end": day_end},
+        ).scalar_one()
+        return {
+            "open_issue_count": int(issues.open_count),
+            "issues_created_last_7_days": int(issues.recent_count),
+            "open_risk_count": int(open_risk_count),
+            "overdue_task_count": int(overdue_task_count),
+            "stage_progress_percent": (
+                round(current_sequence * 100 / max_sequence) if max_sequence else 0
+            ),
+            "next_gate_due_in_days": (
+                (next_gate_due_at.date() - now.date()).days
+                if next_gate_due_at is not None
+                else None
+            ),
+            "remaining_tokens_today": max(0, daily_budget - int(used_tokens)),
+            "agent_runs_today": int(agent_runs_today),
+        }
 
     @staticmethod
     def _project(

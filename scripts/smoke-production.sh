@@ -5,16 +5,26 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd -- "$script_dir/.." && pwd)"
 compose_project="pdos-s0-production-smoke"
 smoke_port="3302"
-test_database_url="$(
+host_test_database_url="$(
   cd "$repository_root/server"
   uv run --python 3.12 python -c \
     'from app.db.test_safety import configured_test_database_url; from sqlalchemy.engine import make_url; print(make_url(configured_test_database_url()).set(host="host.docker.internal").render_as_string(hide_password=False))'
 )"
+worker_database_url="$(
+  cd "$repository_root/server"
+  uv run --python 3.12 python -c \
+    'from app.db.test_safety import configured_test_database_url; from sqlalchemy.engine import make_url; print(make_url(configured_test_database_url()).set(host="host.docker.internal", username="pdos_worker", password="pdos_worker_test_only").render_as_string(hide_password=False))'
+)"
+agent_database_url="$(
+  cd "$repository_root/server"
+  uv run --python 3.12 python -c \
+    'from app.db.test_safety import configured_test_database_url; from sqlalchemy.engine import make_url; print(make_url(configured_test_database_url()).set(host="host.docker.internal", username="pdos_agent", password="pdos_agent_test_only").render_as_string(hide_password=False))'
+)"
 
 export APP_PORT="$smoke_port"
-export DATABASE_URL="$test_database_url"
-export PDOS_AGENT_DATABASE_URL="$test_database_url"
-export PDOS_WORKER_DATABASE_URL="$test_database_url"
+export DATABASE_URL="$host_test_database_url"
+export PDOS_AGENT_DATABASE_URL="$agent_database_url"
+export PDOS_WORKER_DATABASE_URL="$worker_database_url"
 export JWT_ACCESS_TOKEN_MINUTES=30
 export JWT_AUDIENCE=pdos-production-smoke
 export JWT_ISSUER=pdos-production-smoke
@@ -38,6 +48,12 @@ show_logs() {
 cleanup() {
   trap - EXIT INT TERM
   "${compose[@]}" down --remove-orphans >/dev/null 2>&1 || true
+  if [[ "$security_applied" == "true" ]]; then
+    (
+      cd "$repository_root/server"
+      uv run --python 3.12 python -m scripts.manage_test_agent_security --revert
+    ) >/dev/null 2>&1 || true
+  fi
 }
 
 assert_security_headers() {
@@ -54,6 +70,12 @@ assert_security_headers() {
 
 trap cleanup EXIT INT TERM
 trap show_logs ERR
+
+security_applied=true
+(
+  cd "$repository_root/server"
+  uv run --python 3.12 python -m scripts.manage_test_agent_security
+)
 
 "${compose[@]}" config --quiet
 "${compose[@]}" up --build --detach --wait --wait-timeout 240

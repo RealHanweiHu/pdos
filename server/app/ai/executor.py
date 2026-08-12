@@ -11,13 +11,13 @@ from uuid import UUID
 
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
-from sqlalchemy import Engine, select, update
+from sqlalchemy import Engine
 
 from app.ai.context_builder import RunContextBuilder
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
+from app.ai.run_store import AgentRunStore, ClaimedAgentRun, OwnerAgentRunStore
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
 from app.ai.tools import TOOL_DEFINITIONS, AgentReadTools, ProjectContextResult, ToolPage
-from app.db.schema import tables
 
 PROMPT_VERSION = "agent-runtime-v1"
 _TOOL_PREFIX = json.dumps(
@@ -105,47 +105,49 @@ class AgentExecutor:
         *,
         model_invoker: AgentModelInvoker,
         context_builder: RunContextBuilder | None = None,
+        run_store: AgentRunStore | None = None,
     ) -> None:
         self._engine = engine
         self._model_invoker = model_invoker
         self._context_builder = context_builder or RunContextBuilder()
+        self._run_store = run_store or OwnerAgentRunStore(engine)
         self._graph = self._build_graph()
 
     def execute_next(self, *, now: datetime | None = None) -> ExecutionResult:
         current_time = (now or datetime.now(UTC)).astimezone(UTC)
-        run_id = self._claim_next(current_time)
-        if run_id is None:
+        claim = self._run_store.claim(started_at=current_time)
+        if claim is None:
             return ExecutionResult(run_id=None, status="idle", error_code=None)
 
-        try:
-            context = self._load_context(run_id=run_id, built_at=current_time)
-            final_state = self._graph.invoke({"run_context": context})
-            result = final_state["gateway_result"]
-        except Exception as error:
-            error_code = self._error_code(error)
-            self._fail(
-                run_id=run_id,
-                error_code=error_code,
+        with self._run_store.scope(claim):
+            try:
+                context = self._load_context(claim=claim, built_at=current_time)
+                final_state = self._graph.invoke({"run_context": context})
+                result = final_state["gateway_result"]
+            except Exception as error:
+                error_code = self._error_code(error)
+                self._run_store.fail(
+                    claim=claim,
+                    error_code=error_code,
+                    completed_at=current_time,
+                )
+                return ExecutionResult(
+                    run_id=claim.id,
+                    status="failed",
+                    error_code=error_code,
+                )
+            status: Literal["succeeded", "degraded"] = result.status
+            self._run_store.complete(
+                claim=claim,
+                status=status,
+                error_code=result.error_code,
                 completed_at=current_time,
             )
             return ExecutionResult(
-                run_id=run_id,
-                status="failed",
-                error_code=error_code,
+                run_id=context.run_id,
+                status=status,
+                error_code=result.error_code,
             )
-
-        status: Literal["succeeded", "degraded"] = result.status
-        self._complete(
-            run_id=context.run_id,
-            status=status,
-            error_code=result.error_code,
-            completed_at=current_time,
-        )
-        return ExecutionResult(
-            run_id=context.run_id,
-            status=status,
-            error_code=result.error_code,
-        )
 
     def _build_graph(self) -> CompiledExecutorGraph:
         graph = StateGraph(ExecutorState)
@@ -162,14 +164,22 @@ class AgentExecutor:
 
     def _get_project_context(self, state: ExecutorState) -> dict[str, ProjectContextResult]:
         context = state["run_context"]
-        tools = AgentReadTools(self._engine, run_context=context)
+        tools = AgentReadTools(
+            self._engine,
+            run_context=context,
+            run_store=self._run_store,
+        )
         return {
             "project_context": tools.get_project_context(project_id=context.project_id),
         }
 
     def _get_recent_events(self, state: ExecutorState) -> dict[str, ToolPage]:
         context = state["run_context"]
-        tools = AgentReadTools(self._engine, run_context=context)
+        tools = AgentReadTools(
+            self._engine,
+            run_context=context,
+            run_store=self._run_store,
+        )
         return {
             "recent_events": tools.get_recent_events(
                 project_id=context.project_id,
@@ -179,7 +189,11 @@ class AgentExecutor:
 
     def _search_memory(self, state: ExecutorState) -> dict[str, ToolPage]:
         context = state["run_context"]
-        tools = AgentReadTools(self._engine, run_context=context)
+        tools = AgentReadTools(
+            self._engine,
+            run_context=context,
+            run_store=self._run_store,
+        )
         return {
             "memory": tools.search_memory(
                 project_id=context.project_id,
@@ -219,166 +233,33 @@ class AgentExecutor:
         )
         return {"gateway_result": self._model_invoker.invoke(invocation)}
 
-    def _claim_next(self, started_at: datetime) -> UUID | None:
+    def _load_context(
+        self,
+        *,
+        claim: ClaimedAgentRun,
+        built_at: datetime,
+    ) -> FrozenRunContext:
         with self._engine.begin() as connection:
-            run = (
-                connection.execute(
-                    select(tables.agent_runs)
-                    .where(tables.agent_runs.c.status == "queued")
-                    .order_by(tables.agent_runs.c.created_at, tables.agent_runs.c.id)
-                    .limit(1)
-                    .with_for_update(skip_locked=True)
-                )
-                .mappings()
-                .one_or_none()
+            self._run_store.bind(connection)
+            context = self._context_builder.build(
+                connection,
+                run=claim.values,
+                built_at=built_at,
+                projection_only=self._run_store.projection_only,
             )
-            if run is None:
-                return None
-            connection.execute(
-                update(tables.agent_runs)
-                .where(
-                    tables.agent_runs.c.id == run["id"],
-                    tables.agent_runs.c.status == "queued",
-                )
-                .values(status="running", started_at=started_at, updated_at=started_at)
-            )
-            return UUID(str(run["id"]))
-
-    def _load_context(self, *, run_id: UUID, built_at: datetime) -> FrozenRunContext:
-        with self._engine.begin() as connection:
-            run = (
-                connection.execute(
-                    select(tables.agent_runs)
-                    .where(
-                        tables.agent_runs.c.id == run_id,
-                        tables.agent_runs.c.status == "running",
-                    )
-                    .with_for_update()
-                )
-                .mappings()
-                .one()
-            )
-            context = self._context_builder.build(connection, run=run, built_at=built_at)
             if (
-                context.run_id != run["id"]
-                or context.tenant_id != run["tenant_id"]
-                or context.project_id != run["project_id"]
-                or context.agent_key.value != run["agent_key"]
+                context.run_id != claim.id
+                or context.tenant_id != claim.values["tenant_id"]
+                or context.project_id != claim.values["project_id"]
+                or context.agent_key.value != claim.values["agent_key"]
             ):
                 raise RuntimeError("persisted Agent run context does not match its control record")
-            connection.execute(
-                update(tables.agent_runs)
-                .where(
-                    tables.agent_runs.c.id == context.run_id,
-                    tables.agent_runs.c.status == "running",
-                )
-                .values(run_context=context.model_dump(mode="json"), updated_at=built_at)
-            )
-            return context
-
-    def _complete(
-        self,
-        *,
-        run_id: UUID,
-        status: Literal["succeeded", "degraded"],
-        error_code: str | None,
-        completed_at: datetime,
-    ) -> None:
-        if status == "succeeded" and error_code is not None:
-            raise ValueError("successful Agent run cannot carry an error")
-        if status == "degraded" and not error_code:
-            raise ValueError("degraded Agent run must carry an error")
-        with self._engine.begin() as connection:
-            run = (
-                connection.execute(
-                    select(tables.agent_runs)
-                    .where(tables.agent_runs.c.id == run_id)
-                    .with_for_update()
-                )
-                .mappings()
-                .one()
-            )
-            connection.execute(
-                update(tables.agent_runs)
-                .where(
-                    tables.agent_runs.c.id == run_id,
-                    tables.agent_runs.c.status == "running",
-                )
-                .values(
-                    status=status,
-                    completed_at=completed_at,
-                    error_code=error_code,
-                    updated_at=completed_at,
-                )
-            )
-            connection.execute(
-                update(tables.agent_subscriptions)
-                .where(tables.agent_subscriptions.c.id == run["subscription_id"])
-                .values(
-                    consecutive_failure_count=0,
-                    updated_at=completed_at,
-                )
-            )
-
-    def _fail(
-        self,
-        *,
-        run_id: UUID,
-        error_code: str,
-        completed_at: datetime,
-    ) -> None:
-        with self._engine.begin() as connection:
-            run = (
-                connection.execute(
-                    select(tables.agent_runs)
-                    .where(tables.agent_runs.c.id == run_id)
-                    .with_for_update()
-                )
-                .mappings()
-                .one()
-            )
-            subscription = (
-                connection.execute(
-                    select(tables.agent_subscriptions)
-                    .where(tables.agent_subscriptions.c.id == run["subscription_id"])
-                    .with_for_update()
-                )
-                .mappings()
-                .one()
-            )
-            failure_count = int(subscription["consecutive_failure_count"]) + 1
-            threshold = int(subscription["failure_threshold"])
-            pause = failure_count >= threshold
-            connection.execute(
-                update(tables.agent_runs)
-                .where(
-                    tables.agent_runs.c.id == run_id,
-                    tables.agent_runs.c.status == "running",
-                )
-                .values(
-                    status="failed",
-                    completed_at=completed_at,
-                    error_code=error_code,
-                    updated_at=completed_at,
-                )
-            )
-            subscription_values: dict[str, object] = {
-                "consecutive_failure_count": failure_count,
-                "updated_at": completed_at,
-            }
-            if pause:
-                subscription_values.update(
-                    status="paused",
-                    paused_reason=(
-                        "AGENT_RUN_FAILURE_THRESHOLD_REACHED:"
-                        f"{error_code}:count={failure_count}:threshold={threshold}"
-                    ),
-                )
-            connection.execute(
-                update(tables.agent_subscriptions)
-                .where(tables.agent_subscriptions.c.id == subscription["id"])
-                .values(**subscription_values)
-            )
+        self._run_store.persist_context(
+            claim=claim,
+            context=context,
+            persisted_at=built_at,
+        )
+        return context
 
     @staticmethod
     def _error_code(error: Exception) -> str:

@@ -6,8 +6,9 @@ from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import Engine, func, select
+from sqlalchemy import Engine, func, select, text
 
+from app.ai.run_store import AgentRunStore
 from app.ai.runtime_contract import FrozenRunContext
 from app.db.schema import tables
 
@@ -91,9 +92,16 @@ class ProjectContextResult(BaseModel):
 
 
 class AgentReadTools:
-    def __init__(self, engine: Engine, *, run_context: FrozenRunContext) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        *,
+        run_context: FrozenRunContext,
+        run_store: AgentRunStore | None = None,
+    ) -> None:
         self._engine = engine
         self._context = run_context
+        self._run_store = run_store
 
     def get_project_context(self, *, project_id: UUID) -> ProjectContextResult:
         self._assert_scope(project_id)
@@ -111,31 +119,53 @@ class AgentReadTools:
     ) -> ToolPage:
         self._assert_scope(project_id)
         self._validate_page(after_id=after_id, limit=limit)
-        filters = (
-            tables.events.c.tenant_id == self._context.tenant_id,
-            tables.events.c.project_id == self._context.project_id,
-            tables.events.c.id > after_id,
-        )
         with self._engine.connect() as connection:
-            total = int(
-                connection.execute(
-                    select(func.count()).select_from(tables.events).where(*filters)
-                ).scalar_one()
-            )
-            rows = list(
-                connection.execute(
-                    select(
-                        tables.events.c.id,
-                        tables.events.c.event_type,
-                        tables.events.c.entity,
-                        tables.events.c.entity_id,
-                        tables.events.c.timestamp,
-                    )
-                    .where(*filters)
-                    .order_by(tables.events.c.id)
-                    .limit(limit)
-                ).mappings()
-            )
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                total = int(
+                    connection.execute(
+                        text(
+                            "SELECT count(*) FROM cehub_ai.agent_event_projection "
+                            "WHERE id > :after_id"
+                        ),
+                        {"after_id": after_id},
+                    ).scalar_one()
+                )
+                rows = list(
+                    connection.execute(
+                        text(
+                            "SELECT id, event_type, entity, entity_id, timestamp "
+                            "FROM cehub_ai.agent_event_projection WHERE id > :after_id "
+                            "ORDER BY id LIMIT :limit"
+                        ),
+                        {"after_id": after_id, "limit": limit},
+                    ).mappings()
+                )
+            else:
+                filters = (
+                    tables.events.c.tenant_id == self._context.tenant_id,
+                    tables.events.c.project_id == self._context.project_id,
+                    tables.events.c.id > after_id,
+                )
+                total = int(
+                    connection.execute(
+                        select(func.count()).select_from(tables.events).where(*filters)
+                    ).scalar_one()
+                )
+                rows = list(
+                    connection.execute(
+                        select(
+                            tables.events.c.id,
+                            tables.events.c.event_type,
+                            tables.events.c.entity,
+                            tables.events.c.entity_id,
+                            tables.events.c.timestamp,
+                        )
+                        .where(*filters)
+                        .order_by(tables.events.c.id)
+                        .limit(limit)
+                    ).mappings()
+                )
         items = tuple(
             {
                 "id": int(row["id"]),
