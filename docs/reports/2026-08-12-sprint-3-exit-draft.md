@@ -48,3 +48,5 @@
 5. 完成后才能勾选 canonical S3-7、提交正式 Sprint 3 Exit 报告，等待人工确认；在此之前不得进入 Sprint 4。
 
 生产 schema 与真实源预检的详细证据见 `docs/reports/2026-08-12-s3-7-production-migration-preflight.md`。
+
+真实源负向 smoke 已证明候选代码能处理现役 Prisma URL，并会在读取项目数据前拒绝可写账号；该结果不能替代独立只读账号的正式 dry-run。

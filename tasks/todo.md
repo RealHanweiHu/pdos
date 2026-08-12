@@ -1026,6 +1026,7 @@
 - 当前仍缺 CEHub 五张源表的独立只读登录账号/`CEHUB_SOURCE_DATABASE_URL`；现役 CEHub 应用账号可写，不得用于正式验收。需 DBA 创建/确认只读账号并由人授权生产 dry-run。正式 apply 仅在 dry-run 报告与数据 Owner 抽查通过后执行。
 - 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表零写缺一不可；可写应用账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
 - 真实 CEHub URL 的 Prisma-only `uselibpqcompat` 参数已在迁移源连接入口定点移除，`sslmode` 等真实 PostgreSQL 参数保持不变；避免只读账号就绪后被 psycopg 连接参数阻断。
+- `c39b2b4` 候选已只读上传 ECS；对真实 CEHub 现役可写账号的负向 smoke 先成功完成 URL 规范化，再在任何项目快照读取前返回 `blocked_write_capable_role`。未连接目标 PDOS、未写生产数据、未替换运行容器。
 - Sprint 3 intended-vs-implemented 出口审计发现并补齐“同一项目 EVT→DVT→PVT + 硬闸 + 一次 ECN”的跨模块证据：新增真实 FastAPI 纵向验收，终态为 EVT/DVT/PVT 三 Gate approved、恰好 1 个 ECN、Handoff ready、当前 Stage=MP；出口草案见 `docs/reports/2026-08-12-sprint-3-exit-draft.md`。
 
 **Errors encountered**

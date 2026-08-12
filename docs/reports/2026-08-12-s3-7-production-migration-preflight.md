@@ -27,5 +27,6 @@
 - 现役 CEHub 应用登录账号具备写权限，不能作为 S3-7 正式验收凭据。
 - RDS 角色元数据复核未发现同时满足“五表全读、五表零写、`default_transaction_read_only=on`”的登录角色；迁移器已增加同等运行时校验，误配可写账号会在读取项目数据前 fail-close。
 - 现役 CEHub URL 含 Prisma 专用 `uselibpqcompat` 参数，psycopg 原生连接会拒绝；迁移入口现仅剔除该参数，并保留 `sslmode` 等 PostgreSQL 参数，已有回归测试。
+- 提交 `c39b2b4` 的只读候选已上传至 `/opt/pdos-migration-c39b2b4`（444 个受版本控制文件），未替换运行容器。以该候选对真实 CEHub 现役可写账号执行负向 smoke，连接参数规范化成功后在项目快照读取前得到 `blocked_write_capable_role`；目标 PDOS 数据库未参与该 smoke。
 - DBA 仍需创建或确认只对 `users`、`projects`、`project_tasks`、`project_gate_reviews`、`project_files` 授予 `SELECT`，且 `default_transaction_read_only=on` 的独立账号，并以 `CEHUB_SOURCE_DATABASE_URL` 注入私有执行环境。
 - 获得该账号和生产 dry-run 授权后，严格执行 `dry-run → 数据 Owner 抽查 → apply 再授权 → apply → 幂等重放 → 抽样 SQL`。
