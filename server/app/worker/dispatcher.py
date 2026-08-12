@@ -10,7 +10,6 @@ from sqlalchemy import Engine, Select, select, text, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.engine import Connection, RowMapping
 
-from app.ai.context_builder import RunContextBuilder
 from app.ai.runtime_contract import AgentKey, agents_for_event
 from app.db.schema import tables
 
@@ -31,6 +30,16 @@ class SealResult:
     queued_run_ids: tuple[UUID, ...]
 
 
+@dataclass(frozen=True)
+class DispatchCycleResult:
+    tenant_count: int
+    scanned_event_count: int
+    routed_event_count: int
+    created_run_count: int
+    merged_event_count: int
+    queued_run_count: int
+
+
 class AgentDispatcher:
     def __init__(
         self,
@@ -39,7 +48,6 @@ class AgentDispatcher:
         debounce_minutes: int = 15,
         batch_size: int = 500,
         consumer_key: str = DEFAULT_CONSUMER_KEY,
-        context_builder: RunContextBuilder | None = None,
     ) -> None:
         if not 1 <= debounce_minutes <= 24 * 60:
             raise ValueError("debounce window must be between 1 minute and 1 day")
@@ -51,7 +59,6 @@ class AgentDispatcher:
         self._debounce_minutes = debounce_minutes
         self._batch_size = batch_size
         self._consumer_key = consumer_key
-        self._context_builder = context_builder or RunContextBuilder()
 
     def dispatch_tenant(self, *, tenant_id: UUID) -> DispatchResult:
         with self._engine.begin() as connection:
@@ -110,6 +117,25 @@ class AgentDispatcher:
             last_event_row_id=last_event_row_id,
         )
 
+    def dispatch_once(self, *, now: datetime | None = None) -> DispatchCycleResult:
+        with self._engine.connect() as connection:
+            tenant_ids = tuple(
+                UUID(str(value))
+                for value in connection.execute(
+                    select(tables.events.c.tenant_id).distinct().order_by(tables.events.c.tenant_id)
+                ).scalars()
+            )
+        results = [self.dispatch_tenant(tenant_id=tenant_id) for tenant_id in tenant_ids]
+        sealed = self.seal_due_runs(now=now)
+        return DispatchCycleResult(
+            tenant_count=len(tenant_ids),
+            scanned_event_count=sum(result.scanned_event_count for result in results),
+            routed_event_count=sum(result.routed_event_count for result in results),
+            created_run_count=sum(result.created_run_count for result in results),
+            merged_event_count=sum(result.merged_event_count for result in results),
+            queued_run_count=len(sealed.queued_run_ids),
+        )
+
     def seal_due_runs(
         self,
         *,
@@ -134,11 +160,6 @@ class AgentDispatcher:
                 ).mappings()
             )
             for run in due_runs:
-                context = self._context_builder.build(
-                    connection,
-                    run=run,
-                    built_at=current_time,
-                )
                 connection.execute(
                     update(tables.agent_runs)
                     .where(
@@ -147,11 +168,10 @@ class AgentDispatcher:
                     )
                     .values(
                         status="queued",
-                        run_context=context.model_dump(mode="json"),
                         updated_at=current_time,
                     )
                 )
-                queued_run_ids.append(context.run_id)
+                queued_run_ids.append(run["id"])
         return SealResult(queued_run_ids=tuple(queued_run_ids))
 
     def _lock_tenant_consumer(self, connection: Connection, *, tenant_id: UUID) -> None:

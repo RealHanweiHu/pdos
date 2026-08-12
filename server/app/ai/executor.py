@@ -13,6 +13,7 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import Engine, select, update
 
+from app.ai.context_builder import RunContextBuilder
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
 from app.ai.tools import TOOL_DEFINITIONS, AgentReadTools, ProjectContextResult, ToolPage
@@ -98,29 +99,37 @@ class ExecutionResult:
 
 
 class AgentExecutor:
-    def __init__(self, engine: Engine, *, model_invoker: AgentModelInvoker) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        *,
+        model_invoker: AgentModelInvoker,
+        context_builder: RunContextBuilder | None = None,
+    ) -> None:
         self._engine = engine
         self._model_invoker = model_invoker
+        self._context_builder = context_builder or RunContextBuilder()
         self._graph = self._build_graph()
 
     def execute_next(self, *, now: datetime | None = None) -> ExecutionResult:
         current_time = (now or datetime.now(UTC)).astimezone(UTC)
-        context = self._claim_next(current_time)
-        if context is None:
+        run_id = self._claim_next(current_time)
+        if run_id is None:
             return ExecutionResult(run_id=None, status="idle", error_code=None)
 
         try:
+            context = self._load_context(run_id=run_id, built_at=current_time)
             final_state = self._graph.invoke({"run_context": context})
             result = final_state["gateway_result"]
         except Exception as error:
             error_code = self._error_code(error)
             self._fail(
-                run_id=context.run_id,
+                run_id=run_id,
                 error_code=error_code,
                 completed_at=current_time,
             )
             return ExecutionResult(
-                run_id=context.run_id,
+                run_id=run_id,
                 status="failed",
                 error_code=error_code,
             )
@@ -210,7 +219,7 @@ class AgentExecutor:
         )
         return {"gateway_result": self._model_invoker.invoke(invocation)}
 
-    def _claim_next(self, started_at: datetime) -> FrozenRunContext | None:
+    def _claim_next(self, started_at: datetime) -> UUID | None:
         with self._engine.begin() as connection:
             run = (
                 connection.execute(
@@ -225,7 +234,31 @@ class AgentExecutor:
             )
             if run is None:
                 return None
-            context = FrozenRunContext.model_validate(run["run_context"])
+            connection.execute(
+                update(tables.agent_runs)
+                .where(
+                    tables.agent_runs.c.id == run["id"],
+                    tables.agent_runs.c.status == "queued",
+                )
+                .values(status="running", started_at=started_at, updated_at=started_at)
+            )
+            return UUID(str(run["id"]))
+
+    def _load_context(self, *, run_id: UUID, built_at: datetime) -> FrozenRunContext:
+        with self._engine.begin() as connection:
+            run = (
+                connection.execute(
+                    select(tables.agent_runs)
+                    .where(
+                        tables.agent_runs.c.id == run_id,
+                        tables.agent_runs.c.status == "running",
+                    )
+                    .with_for_update()
+                )
+                .mappings()
+                .one()
+            )
+            context = self._context_builder.build(connection, run=run, built_at=built_at)
             if (
                 context.run_id != run["id"]
                 or context.tenant_id != run["tenant_id"]
@@ -237,9 +270,9 @@ class AgentExecutor:
                 update(tables.agent_runs)
                 .where(
                     tables.agent_runs.c.id == context.run_id,
-                    tables.agent_runs.c.status == "queued",
+                    tables.agent_runs.c.status == "running",
                 )
-                .values(status="running", started_at=started_at, updated_at=started_at)
+                .values(run_context=context.model_dump(mode="json"), updated_at=built_at)
             )
             return context
 

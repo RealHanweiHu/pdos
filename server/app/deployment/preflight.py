@@ -21,6 +21,8 @@ REQUIRED_VALUES = (
     "JWT_SECRET",
     "PDOS_API_INTERNAL_URL",
     "PDOS_IMAGE_TAG",
+    "PDOS_WORKER_DATABASE_URL",
+    "PDOS_AGENT_DATABASE_URL",
     "S3_ACCESS_KEY_ID",
     "S3_BUCKET",
     "S3_ENDPOINT",
@@ -42,7 +44,7 @@ def _required(values: Mapping[str, str | None], key: str) -> str:
     return value
 
 
-def _validate_database_url(value: str) -> None:
+def _validate_database_url(value: str, *, username: str) -> None:
     try:
         url = make_url(value)
     except ArgumentError as error:
@@ -53,9 +55,9 @@ def _validate_database_url(value: str) -> None:
         raise UnsafeProductionConfigurationError("Production database must use PostgreSQL")
     if url.host != EXPECTED_DATABASE_HOST or url.port != 5432:
         raise UnsafeProductionConfigurationError("Production database host is not the approved RDS")
-    if url.database != "pdos" or url.username != "pdos_app" or not url.password:
+    if url.database != "pdos" or url.username != username or not url.password:
         raise UnsafeProductionConfigurationError(
-            "Production database must target pdos with the pdos_app account"
+            f"Production database must target pdos with the {username} account"
         )
     if url.password.lower() in {"password", "pdos", "secret"}:
         raise UnsafeProductionConfigurationError("Production database password is a known default")
@@ -67,7 +69,22 @@ def _validate_database_url(value: str) -> None:
 
 def validate_production_environment(values: Mapping[str, str | None]) -> None:
     resolved = {key: _required(values, key) for key in REQUIRED_VALUES}
-    _validate_database_url(resolved["DATABASE_URL"])
+    _validate_database_url(resolved["DATABASE_URL"], username="pdos_app")
+    _validate_database_url(resolved["PDOS_WORKER_DATABASE_URL"], username="pdos_worker")
+    _validate_database_url(resolved["PDOS_AGENT_DATABASE_URL"], username="pdos_agent")
+    if (
+        len(
+            {
+                resolved["DATABASE_URL"],
+                resolved["PDOS_WORKER_DATABASE_URL"],
+                resolved["PDOS_AGENT_DATABASE_URL"],
+            }
+        )
+        != 3
+    ):
+        raise UnsafeProductionConfigurationError(
+            "Production app, worker, and Agent database URLs must be distinct"
+        )
 
     if len(resolved["JWT_SECRET"].encode("utf-8")) < 32:
         raise UnsafeProductionConfigurationError("Production JWT_SECRET must contain 32 bytes")

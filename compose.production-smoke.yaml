@@ -6,3 +6,15 @@ services:
   api:
     extra_hosts:
       - host.docker.internal:host-gateway
+
+  dispatcher:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      PDOS_ALLOW_SHARED_RUNTIME_DATABASE_URL: "true"
+
+  executor:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      PDOS_ALLOW_SHARED_RUNTIME_DATABASE_URL: "true"

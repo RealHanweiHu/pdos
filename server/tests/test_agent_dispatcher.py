@@ -11,6 +11,7 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy import Connection, create_engine, select, text
 
+from app.ai.context_builder import RunContextBuilder
 from app.ai.runtime_contract import AgentKey
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
@@ -153,9 +154,7 @@ def test_dispatcher_atomically_debounces_by_tenant_project_and_agent(
                     select(tables.agent_runs).order_by(tables.agent_runs.c.tenant_id)
                 ).mappings()
             )
-            cursors = list(
-                connection.execute(select(tables.agent_dispatcher_cursors)).mappings()
-            )
+            cursors = list(connection.execute(select(tables.agent_dispatcher_cursors)).mappings())
 
         alpha_run = next(row for row in runs if row["tenant_id"] == tenant_a)
         beta_run = next(row for row in runs if row["tenant_id"] == tenant_b)
@@ -239,9 +238,7 @@ def test_configurable_debounce_uses_epoch_aligned_windows_across_clock_hours(
                 )
             ]
 
-        result = AgentDispatcher(engine, debounce_minutes=90).dispatch_tenant(
-            tenant_id=tenant_id
-        )
+        result = AgentDispatcher(engine, debounce_minutes=90).dispatch_tenant(tenant_id=tenant_id)
 
         assert result.created_run_count == 1
         assert result.merged_event_count == 1
@@ -351,17 +348,19 @@ def test_due_run_is_sealed_with_server_preaggregated_frozen_context(
         with engine.connect() as connection:
             run = connection.execute(select(tables.agent_runs)).mappings().one()
         assert run["status"] == "queued"
+        assert run["run_context"] == {}
         assert run["event_row_ids"] == [event_id]
-        context = run["run_context"]
-        assert context["tenant_id"] == str(tenant_id)
-        assert context["project_id"] == str(project_id)
-        assert context["run_id"] == str(run["id"])
-        assert context["project"]["current_stage"] == {
+        with engine.connect() as connection:
+            context = RunContextBuilder().build(connection, run=run, built_at=now)
+        assert context.tenant_id == tenant_id
+        assert context.project_id == project_id
+        assert context.run_id == run["id"]
+        assert context.project["current_stage"] == {
             "code": "s2",
             "name": "Stage 2",
             "sequence": 2,
         }
-        assert context["execution"] == {
+        assert context.execution == {
             "open_issue_count": 2,
             "issues_created_last_7_days": 1,
             "open_risk_count": 1,

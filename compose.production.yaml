@@ -76,6 +76,68 @@ services:
     tmpfs:
       - /tmp
 
+  dispatcher:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_dispatcher"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PDOS_WORKER_DATABASE_URL: "${PDOS_WORKER_DATABASE_URL:?PDOS_WORKER_DATABASE_URL must be set}"
+      PDOS_AGENT_DEBOUNCE_MINUTES: "${PDOS_AGENT_DEBOUNCE_MINUTES:-15}"
+      PDOS_DISPATCHER_POLL_SECONDS: "${PDOS_DISPATCHER_POLL_SECONDS:-2}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_dispatcher' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  executor:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_executor"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PDOS_AGENT_DATABASE_URL: "${PDOS_AGENT_DATABASE_URL:?PDOS_AGENT_DATABASE_URL must be set}"
+      PDOS_EXECUTOR_POLL_SECONDS: "${PDOS_EXECUTOR_POLL_SECONDS:-2}"
+      PDOS_AI_DAILY_TOKEN_BUDGET: "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
+      PDOS_LLM_PROVIDER: "${PDOS_LLM_PROVIDER:-minimax}"
+      PDOS_LLM_BASE_URL: "${PDOS_LLM_BASE_URL:-https://api.minimaxi.com/v1}"
+      PDOS_LLM_API_KEY: "${PDOS_LLM_API_KEY:-}"
+      PDOS_LLM_MODEL: "${PDOS_LLM_MODEL:-MiniMax-M2.7}"
+      PDOS_LLM_MINIMAX_BASE_URL: "${PDOS_LLM_MINIMAX_BASE_URL:-https://api.minimaxi.com/v1}"
+      PDOS_LLM_MINIMAX_MODEL: "${PDOS_LLM_MINIMAX_MODEL:-MiniMax-M2.7}"
+      PDOS_LLM_MINIMAX_API_KEY: "${PDOS_LLM_MINIMAX_API_KEY:-}"
+      PDOS_LLM_DEEPSEEK_BASE_URL: "${PDOS_LLM_DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
+      PDOS_LLM_DEEPSEEK_MODEL: "${PDOS_LLM_DEEPSEEK_MODEL:-deepseek-v4-flash}"
+      PDOS_LLM_DEEPSEEK_API_KEY: "${PDOS_LLM_DEEPSEEK_API_KEY:-}"
+      PDOS_LLM_GLM_BASE_URL: "${PDOS_LLM_GLM_BASE_URL:-https://open.bigmodel.cn/api/paas/v4}"
+      PDOS_LLM_GLM_MODEL: "${PDOS_LLM_GLM_MODEL:-glm-5.2}"
+      PDOS_LLM_GLM_API_KEY: "${PDOS_LLM_GLM_API_KEY:-}"
+      PDOS_LLM_OPENAI_BASE_URL: "${PDOS_LLM_OPENAI_BASE_URL:-https://api.openai.com/v1}"
+      PDOS_LLM_OPENAI_MODEL: "${PDOS_LLM_OPENAI_MODEL:-gpt-5.1}"
+      PDOS_LLM_OPENAI_API_KEY: "${PDOS_LLM_OPENAI_API_KEY:-}"
+      PDOS_LLM_ANTHROPIC_BASE_URL: "${PDOS_LLM_ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+      PDOS_LLM_ANTHROPIC_MODEL: "${PDOS_LLM_ANTHROPIC_MODEL:-claude-sonnet-5}"
+      PDOS_LLM_ANTHROPIC_API_KEY: "${PDOS_LLM_ANTHROPIC_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_executor' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
   web:
     <<: *service-hardening
     image: "pdos-web:${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"

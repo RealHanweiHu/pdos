@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-2 LangGraph 执行环。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 已验收完成，当前只实施 S2-2，不提前混入 Finding 状态机。
+> 唯一当前指针：**S2-2b 数据库层安全边界。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1、S2-2 已验收完成，当前只实施角色/投影视图/权限模板与正反向数据库测试，不提前混入 Finding 状态机。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -513,14 +513,39 @@
 - [x] S2-2c：实现 id-cursor dispatcher、tenant+project debounce、静态路由和原子 run 创建
 - [x] S2-2d：实现 executor LangGraph 骨架、冻结前缀/动态 context 末尾、三只读工具及服务端范围绑定
 - [x] S2-2e：实现 run 失败分类、错误路径零 LLM、连续失败暂停订阅与告警记录
-- [ ] S2-2f：完成 dispatcher/executor 分进程配置、真实事件→run fake-model 路径、迁移往返与完整质量门禁
+- [x] S2-2f：完成 dispatcher/executor 分进程配置、真实事件→run fake-model 路径、迁移往返与完整质量门禁
 
 **Acceptance evidence required**
 
-- [ ] 同一 tenant+project+Agent 的窗口内事件合并为一个 run，游标单调推进；重复消费不重复建 run，跨租户事件永不合并
-- [ ] 静态路由只为订阅事件选择 Agent；冻结 run context 由服务端绑定 tenant/project/event 范围，executor 不接受客户端政策事实
-- [ ] 三只读工具只读取 run context 范围；越界 ID fail-close，截断显式返回“已显示 X 之 Y 条”及续读方式
-- [ ] system prompt/工具定义前缀稳定，动态项目状态只追加到 context 尾部；代码预聚合值有确定性测试
-- [ ] 成功/失败/降级 run 状态与 invocation 可关联；错误处理与告警路径零额外 LLM 调用
-- [ ] 单 Agent 连续失败达到阈值后订阅自动暂停，后续事件不建 run，管理员可见暂停原因
-- [ ] dispatcher 与 executor 配置/凭据分离；完整 lint/type/test/build、migration 往返与真实事件路径全绿
+- [x] 同一 tenant+project+Agent 的窗口内事件合并为一个 run，游标单调推进；重复消费不重复建 run，跨租户事件永不合并
+- [x] 静态路由只为订阅事件选择 Agent；冻结 run context 由服务端绑定 tenant/project/event 范围，executor 不接受客户端政策事实
+- [x] 三只读工具只读取 run context 范围；越界 ID fail-close，截断显式返回“已显示 X 之 Y 条”及续读方式
+- [x] system prompt/工具定义前缀稳定，动态项目状态只追加到 context 尾部；代码预聚合值有确定性测试
+- [x] 成功/失败/降级 run 状态与 invocation 可关联；错误处理与告警路径零额外 LLM 调用
+- [x] 单 Agent 连续失败达到阈值后订阅自动暂停，后续事件不建 run，管理员可见暂停原因
+- [x] dispatcher 与 executor 配置/凭据分离；完整 lint/type/test/build、migration 往返与真实事件路径全绿
+
+**Completion evidence（2026-08-11）**
+
+- `make check` 全绿：server 179 tests、web 82 tests，ruff/format/mypy/TypeScript/Next.js build/Python compile 全部通过。
+- migration `0010` 升级、降级、metadata drift、append-only 历史兼容与租户 FK 约束回归全绿。
+- 真实 PostgreSQL 事件路径通过：Event→id-cursor dispatcher→15 分钟 debounce→queued run→SQL 预聚合 context→LangGraph→fake provider→immutable model invocation；run/invocation 关联正确，原始 payload 与密钥未出门。
+- 连续失败阈值测试通过：错误收口零额外模型调用；达到阈值后订阅 paused，新事件只推进游标、不再创建 run；Owner/Admin 可见暂停原因。
+- 隔离生产容器 smoke 全绿：migrate/API/dispatcher/executor/web/BFF 健康，Python 服务 UID 10001 非 root；只连接本地 `pdos_test`，未触碰 RDS/生产。
+
+## Current: S2-2b Database Security Boundary
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S2-2b、RBAC/Audit 规格、AGENTS 安全红线与 S2-2 已冻结的进程/工具合同
+- [x] 依赖项：migration 0010、dispatcher/executor 分进程、专用 DSN 启动前校验已完成
+- [x] 权限边界冻结：`pdos_worker` 只读 event stream 并管理 dispatcher 控制记录；`pdos_agent` 只读租户投影视图并写 AI 运行记录；两者业务表零写
+- [x] 运维边界冻结：只交付幂等 SQL 模板与隔离数据库正反向测试；不创建生产 RDS 角色、不发放凭据、不部署
+- [x] 迁移纪律冻结：数据库角色/GRANT 不进入 Alembic schema migration；独立幂等权限模板可由 DBA 审阅执行
+
+**Implementation slices**
+
+- [ ] S2-2b-a：冻结 worker/agent 投影视图与最小权限矩阵，建立独立幂等 SQL 模板
+- [ ] S2-2b-b：在 `pdos_test` 创建临时角色并验证允许路径（event→run、context projection、invocation）
+- [ ] S2-2b-c：红队验证业务表 INSERT/UPDATE/DELETE、跨租户投影与自由 schema/table 读取 0 穿透
+- [ ] S2-2b-d：验证 executor 配置拿不到 app/worker DSN，补齐 DBA 运行手册、完整质量门禁与安全证据

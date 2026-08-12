@@ -13,6 +13,8 @@ test_database_url="$(
 
 export APP_PORT="$smoke_port"
 export DATABASE_URL="$test_database_url"
+export PDOS_AGENT_DATABASE_URL="$test_database_url"
+export PDOS_WORKER_DATABASE_URL="$test_database_url"
 export JWT_ACCESS_TOKEN_MINUTES=30
 export JWT_AUDIENCE=pdos-production-smoke
 export JWT_ISSUER=pdos-production-smoke
@@ -74,9 +76,19 @@ if [[ "$("${compose[@]}" exec -T api id -u)" != "10001" ]]; then
   exit 1
 fi
 
+if [[ "$("${compose[@]}" exec -T dispatcher id -u)" != "10001" ]]; then
+  printf '%s\n' 'Production dispatcher image is not running as the pdos user' >&2
+  exit 1
+fi
+
+if [[ "$("${compose[@]}" exec -T executor id -u)" != "10001" ]]; then
+  printf '%s\n' 'Production executor image is not running as the pdos user' >&2
+  exit 1
+fi
+
 if [[ "$("${compose[@]}" exec -T web id -u)" != "1001" ]]; then
   printf '%s\n' 'Production web image is not running as the nextjs user' >&2
   exit 1
 fi
 
-printf '%s\n' 'Production container smoke passed: migrate, API, web, BFF, and non-root users verified'
+printf '%s\n' 'Production container smoke passed: migrate, API, dispatcher, executor, web, BFF, and non-root users verified'

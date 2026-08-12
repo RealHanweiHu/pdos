@@ -159,14 +159,18 @@ class RunContextBuilder:
         seven_days_ago = now - timedelta(days=7)
 
         open_issue_count = connection.execute(
-            select(func.count()).select_from(tables.issues).where(
+            select(func.count())
+            .select_from(tables.issues)
+            .where(
                 tables.issues.c.tenant_id == tenant_id,
                 tables.issues.c.project_id == project_id,
                 tables.issues.c.status != "closed",
             )
         ).scalar_one()
         recent_issue_count = connection.execute(
-            select(func.count()).select_from(tables.issues).where(
+            select(func.count())
+            .select_from(tables.issues)
+            .where(
                 tables.issues.c.tenant_id == tenant_id,
                 tables.issues.c.project_id == project_id,
                 tables.issues.c.created_at >= seven_days_ago,
@@ -174,14 +178,18 @@ class RunContextBuilder:
             )
         ).scalar_one()
         open_risk_count = connection.execute(
-            select(func.count()).select_from(tables.risks).where(
+            select(func.count())
+            .select_from(tables.risks)
+            .where(
                 tables.risks.c.tenant_id == tenant_id,
                 tables.risks.c.project_id == project_id,
                 tables.risks.c.status != "closed",
             )
         ).scalar_one()
         overdue_task_count = connection.execute(
-            select(func.count()).select_from(tables.tasks).where(
+            select(func.count())
+            .select_from(tables.tasks)
+            .where(
                 tables.tasks.c.tenant_id == tenant_id,
                 tables.tasks.c.project_id == project_id,
                 tables.tasks.c.due_date < now.date(),
@@ -216,7 +224,9 @@ class RunContextBuilder:
             )
         ).scalar_one()
         agent_runs_today = connection.execute(
-            select(func.count()).select_from(tables.agent_runs).where(
+            select(func.count())
+            .select_from(tables.agent_runs)
+            .where(
                 tables.agent_runs.c.tenant_id == tenant_id,
                 tables.agent_runs.c.agent_key == agent_key.value,
                 tables.agent_runs.c.created_at >= day_start,

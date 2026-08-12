@@ -15,6 +15,16 @@ VALID_ENVIRONMENT = {
         "pgm-2ze135h6045td5ujvo.pg.rds.aliyuncs.com:5432/pdos"
         "?sslmode=verify-full&sslrootcert=/app/certs/ApsaraDB-CA-Chain.pem"
     ),
+    "PDOS_WORKER_DATABASE_URL": (
+        "postgresql://pdos_worker:production-worker-password@"
+        "pgm-2ze135h6045td5ujvo.pg.rds.aliyuncs.com:5432/pdos"
+        "?sslmode=verify-full&sslrootcert=/app/certs/ApsaraDB-CA-Chain.pem"
+    ),
+    "PDOS_AGENT_DATABASE_URL": (
+        "postgresql://pdos_agent:production-agent-password@"
+        "pgm-2ze135h6045td5ujvo.pg.rds.aliyuncs.com:5432/pdos"
+        "?sslmode=verify-full&sslrootcert=/app/certs/ApsaraDB-CA-Chain.pem"
+    ),
     "JWT_SECRET": "production-only-jwt-secret-that-is-32-bytes",
     "PDOS_API_INTERNAL_URL": "http://api:8000",
     "PDOS_IMAGE_TAG": "cdfcab4",
@@ -39,6 +49,14 @@ def test_valid_production_environment_passes_without_returning_secrets() -> None
         ("JWT_SECRET", "too-short"),
         ("PDOS_API_INTERNAL_URL", "http://127.0.0.1:8000"),
         ("PDOS_IMAGE_TAG", "latest"),
+        (
+            "PDOS_WORKER_DATABASE_URL",
+            "postgresql://pdos_app:secret@localhost:5432/pdos",
+        ),
+        (
+            "PDOS_AGENT_DATABASE_URL",
+            "postgresql://pdos_worker:secret@localhost:5432/pdos",
+        ),
         ("S3_ACCESS_KEY_ID", "minioadmin"),
         ("S3_BUCKET", "<bucket>"),
         ("S3_FORCE_PATH_STYLE", "true"),
@@ -66,6 +84,22 @@ def test_unsafe_production_values_fail_closed(key: str, value: str) -> None:
 def test_wrong_database_scope_or_tls_fails_closed(database_url: str) -> None:
     with pytest.raises(UnsafeProductionConfigurationError):
         validate_production_environment({**VALID_ENVIRONMENT, "DATABASE_URL": database_url})
+
+
+@pytest.mark.parametrize(
+    ("key", "wrong_username"),
+    [
+        ("PDOS_WORKER_DATABASE_URL", "pdos_app"),
+        ("PDOS_AGENT_DATABASE_URL", "pdos_worker"),
+    ],
+)
+def test_runtime_database_roles_fail_closed(key: str, wrong_username: str) -> None:
+    value = VALID_ENVIRONMENT[key]
+    expected_username = "pdos_worker" if key == "PDOS_WORKER_DATABASE_URL" else "pdos_agent"
+    with pytest.raises(UnsafeProductionConfigurationError):
+        validate_production_environment(
+            {**VALID_ENVIRONMENT, key: value.replace(expected_username, wrong_username)}
+        )
 
 
 def test_production_environment_file_must_be_owner_only(tmp_path: Path) -> None:

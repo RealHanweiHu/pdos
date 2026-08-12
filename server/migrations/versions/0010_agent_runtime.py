@@ -302,16 +302,12 @@ def upgrade() -> None:
     # back with the data change.
     op.execute(
         sa.text(
-            "ALTER TABLE cehub_ai.model_invocations "
-            "DISABLE TRIGGER model_invocations_immutable"
+            "ALTER TABLE cehub_ai.model_invocations DISABLE TRIGGER model_invocations_immutable"
         )
     )
     op.execute(sa.text("UPDATE cehub_ai.model_invocations SET run_id = NULL"))
     op.execute(
-        sa.text(
-            "ALTER TABLE cehub_ai.model_invocations "
-            "ENABLE TRIGGER model_invocations_immutable"
-        )
+        sa.text("ALTER TABLE cehub_ai.model_invocations ENABLE TRIGGER model_invocations_immutable")
     )
     op.create_foreign_key(
         "fk_model_invocations_tenant_run",
