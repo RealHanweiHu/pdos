@@ -1,7 +1,13 @@
+import pytest
+
 from app.auth.roles import Role
 from app.domain.gates import (
     NPD_GATE_POLICY_VERSION,
     NPD_GATE_REQUIREMENTS,
+    OBT_GATE_POLICY_VERSION,
+    OBT_GATE_REQUIREMENTS,
+    GateInvalidStateError,
+    gate_policy_for_workflow,
     gate_signoffs_ready,
     may_sign_gate_slot,
     promote_requirement,
@@ -29,6 +35,21 @@ def test_npd_v1_policy_is_explicit_and_versioned_for_all_seven_stages() -> None:
         "engineering": "conditional",
         "quality": "required",
     }
+
+
+def test_obt_v1_policy_is_explicit_and_selected_by_workflow() -> None:
+    assert OBT_GATE_POLICY_VERSION == "obt-gate-v1"
+    assert tuple(OBT_GATE_REQUIREMENTS) == ("intake", "sample", "pvt", "mp")
+    assert gate_policy_for_workflow("obt-cehub-project", "intake") == (
+        OBT_GATE_POLICY_VERSION,
+        OBT_GATE_REQUIREMENTS["intake"],
+    )
+    assert gate_policy_for_workflow("npd-project", "concept") == (
+        NPD_GATE_POLICY_VERSION,
+        NPD_GATE_REQUIREMENTS["concept"],
+    )
+    with pytest.raises(GateInvalidStateError):
+        gate_policy_for_workflow("unknown-project", "concept")
 
 
 def test_readiness_treats_required_conditional_and_rejected_deterministically() -> None:

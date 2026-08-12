@@ -37,3 +37,27 @@ NPD_WORKFLOW_TEMPLATE = WorkflowTemplate(
         StageTemplate("mp", "量产稳定与移交", "量产爬坡、稳定验证与项目关闭移交", 7),
     ),
 )
+
+
+OBT_WORKFLOW_TEMPLATE = WorkflowTemplate(
+    code="obt",
+    name="OBT",
+    description="设计转制造四阶段基线",
+    version=1,
+    stages=(
+        StageTemplate(
+            "intake",
+            "设计接收与可制造性评审",
+            "核对设计与 openBOM，输出 DFM 反馈并冻结输入",
+            1,
+        ),
+        StageTemplate("sample", "打样与首件确认", "首件制作、FAI 与客户签样", 2),
+        StageTemplate("pvt", "试产验证 PVT", "小批试产、良率改善与切换准备", 3),
+        StageTemplate(
+            "mp",
+            "量产稳定与客户移交",
+            "量产发布后的稳定性监控、客户交付确认与项目关闭移交",
+            4,
+        ),
+    ),
+)

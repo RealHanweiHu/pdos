@@ -1,4 +1,4 @@
-"""Versioned NPD Gate policy and deterministic signoff readiness rules."""
+"""Versioned Gate policies and deterministic signoff readiness rules."""
 
 from __future__ import annotations
 
@@ -53,6 +53,43 @@ NPD_GATE_REQUIREMENTS: Mapping[str, Mapping[GateSlot, GateRequirement]] = Mappin
         ),
     }
 )
+
+OBT_GATE_POLICY_VERSION = "obt-gate-v1"
+OBT_GATE_REQUIREMENTS: Mapping[str, Mapping[GateSlot, GateRequirement]] = MappingProxyType(
+    {
+        "intake": MappingProxyType(
+            {"product": "required", "engineering": "required", "quality": "conditional"}
+        ),
+        "sample": MappingProxyType(
+            {"product": "required", "engineering": "required", "quality": "required"}
+        ),
+        "pvt": MappingProxyType(
+            {"product": "required", "engineering": "required", "quality": "required"}
+        ),
+        "mp": MappingProxyType(
+            {"product": "required", "engineering": "conditional", "quality": "required"}
+        ),
+    }
+)
+
+
+def gate_policy_for_workflow(
+    workflow_code: str,
+    stage_code: str,
+) -> tuple[str, Mapping[GateSlot, GateRequirement]]:
+    workflow_kind = workflow_code.partition("-")[0]
+    if workflow_kind == "obt":
+        policy_version = OBT_GATE_POLICY_VERSION
+        requirements = OBT_GATE_REQUIREMENTS.get(stage_code)
+    elif workflow_kind == "npd":
+        policy_version = NPD_GATE_POLICY_VERSION
+        requirements = NPD_GATE_REQUIREMENTS.get(stage_code)
+    else:
+        raise GateInvalidStateError
+    if requirements is None:
+        raise GateInvalidStateError
+    return policy_version, requirements
+
 
 _REQUIREMENT_RANK: Mapping[GateRequirement, int] = MappingProxyType(
     {"not_applicable": 0, "conditional": 1, "required": 2}
@@ -306,6 +343,7 @@ class GateService:
                 tables.stages.c.name.label("stage_name"),
                 tables.stages.c.sequence.label("stage_sequence"),
                 tables.projects.c.current_stage_id,
+                tables.workflows.c.code.label("workflow_code"),
             )
             .join(
                 tables.stages,
@@ -316,6 +354,11 @@ class GateService:
                 tables.projects,
                 (tables.projects.c.tenant_id == tables.gates.c.tenant_id)
                 & (tables.projects.c.id == tables.gates.c.project_id),
+            )
+            .join(
+                tables.workflows,
+                (tables.workflows.c.tenant_id == tables.projects.c.tenant_id)
+                & (tables.workflows.c.id == tables.projects.c.workflow_id),
             )
         )
 
@@ -375,11 +418,10 @@ class GateService:
         tenant_id: UUID,
         project_id: UUID,
         gate_id: UUID,
+        workflow_code: str,
         stage_code: str,
     ) -> dict[GateSlot, GateRequirement]:
-        base = NPD_GATE_REQUIREMENTS.get(stage_code)
-        if base is None:
-            raise GateInvalidStateError
+        _, base = gate_policy_for_workflow(workflow_code, stage_code)
         requirements = dict(base)
         additions = connection.execute(
             select(
@@ -929,8 +971,10 @@ class GateService:
                 tenant_id=tenant_id,
                 project_id=project_id,
                 gate_id=gate_id,
+                workflow_code=gate["workflow_code"],
                 stage_code=gate["stage_code"],
             )
+            policy_version, _ = gate_policy_for_workflow(gate["workflow_code"], gate["stage_code"])
             risk_blockers = self._live_non_signoff_blockers(
                 connection,
                 tenant_id=tenant_id,
@@ -948,7 +992,7 @@ class GateService:
                     "gate_id": gate_id,
                     "round_number": latest_number + 1,
                     "status": "open",
-                    "policy_version": NPD_GATE_POLICY_VERSION,
+                    "policy_version": policy_version,
                     "requirements": requirements,
                     "risk_snapshot": {"blockers": risk_blockers},
                     "opened_by_user_id": actor_user_id,
@@ -1003,7 +1047,7 @@ class GateService:
                 context={
                     "round_id": str(round_id),
                     "round_number": latest_number + 1,
-                    "policy_version": NPD_GATE_POLICY_VERSION,
+                    "policy_version": policy_version,
                 },
                 occurred_at=occurred_at,
             )
@@ -1153,6 +1197,7 @@ class GateService:
                 tenant_id=tenant_id,
                 project_id=project_id,
                 gate_id=gate_id,
+                workflow_code=gate["workflow_code"],
                 stage_code=gate["stage_code"],
             )
             promoted = promote_requirement(current_requirements[slot], requested)

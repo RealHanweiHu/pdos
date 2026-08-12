@@ -18,14 +18,14 @@ from app.migrations.cehub_v1 import MigrationReport, MigrationValidationError, m
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Migrate selected NPD projects from a read-only CEHub snapshot into PDOS."
+        description=("Migrate selected NPD/OBT projects from a read-only CEHub snapshot into PDOS.")
     )
     parser.add_argument(
         "--project-id",
         action="append",
         required=True,
         dest="project_ids",
-        help="CEHub project id; repeat for a bounded multi-project run",
+        help=("CEHub project id or unique project number; repeat for a bounded multi-project run"),
     )
     parser.add_argument(
         "--source-schema",

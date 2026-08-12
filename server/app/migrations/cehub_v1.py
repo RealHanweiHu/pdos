@@ -14,10 +14,13 @@ from sqlalchemy import Connection, Engine, bindparam, select, text
 from sqlalchemy.engine import RowMapping
 
 from app.db.schema import tables
-from app.domain.workflow_templates import NPD_WORKFLOW_TEMPLATE
+from app.domain.workflow_templates import (
+    NPD_WORKFLOW_TEMPLATE,
+    OBT_WORKFLOW_TEMPLATE,
+    WorkflowTemplate,
+)
 
 SOURCE_SYSTEM = "cehub-v3"
-SUPPORTED_PROJECT_CATEGORY = "npd"
 SOURCE_SCHEMA_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 _USER_ROLE_MAP = {
@@ -47,7 +50,10 @@ _ENTITY_TO_COUNT_KEY = {
     "gate_review": "gate_reviews",
     "file_reference": "file_references",
 }
-_STAGE_CODES = frozenset(stage.code for stage in NPD_WORKFLOW_TEMPLATE.stages)
+_WORKFLOW_TEMPLATES: dict[str, WorkflowTemplate] = {
+    NPD_WORKFLOW_TEMPLATE.code: NPD_WORKFLOW_TEMPLATE,
+    OBT_WORKFLOW_TEMPLATE.code: OBT_WORKFLOW_TEMPLATE,
+}
 _TASK_STATUSES = frozenset(
     {"todo", "in_progress", "blocked", "done", "skipped", "pending_approval"}
 )
@@ -127,17 +133,19 @@ class CeHubSourceAdapter:
         self._schema = validate_source_schema(source_schema)
 
     def read_snapshot(self, *, project_ids: tuple[str, ...]) -> SourceSnapshot:
-        normalized_ids = tuple(dict.fromkeys(project_id.strip() for project_id in project_ids))
-        if not normalized_ids or any(not project_id for project_id in normalized_ids):
-            raise ValueError("at least one nonblank CEHub project id is required")
+        normalized_refs = tuple(dict.fromkeys(project_id.strip() for project_id in project_ids))
+        if not normalized_refs or any(not project_id for project_id in normalized_refs):
+            raise ValueError("at least one nonblank CEHub project id or project number is required")
         connection = self._engine.connect().execution_options(isolation_level="REPEATABLE READ")
         try:
             with connection.begin():
                 connection.execute(text("SET TRANSACTION READ ONLY"))
-                projects = self._project_rows(connection, normalized_ids)
-                tasks_rows = self._scoped_rows(connection, "project_tasks", normalized_ids)
-                gate_rows = self._scoped_rows(connection, "project_gate_reviews", normalized_ids)
-                file_rows = self._scoped_rows(connection, "project_files", normalized_ids)
+                candidates = self._project_rows(connection, normalized_refs)
+                projects = self._resolve_project_rows(candidates, normalized_refs)
+                resolved_ids = tuple(str(row["source_id"]) for row in projects)
+                tasks_rows = self._scoped_rows(connection, "project_tasks", resolved_ids)
+                gate_rows = self._scoped_rows(connection, "project_gate_reviews", resolved_ids)
+                file_rows = self._scoped_rows(connection, "project_files", resolved_ids)
                 users = self._user_rows(
                     connection,
                     _required_user_ids(projects, tasks_rows, gate_rows, file_rows),
@@ -151,7 +159,7 @@ class CeHubSourceAdapter:
         file_dicts = _hash_rows(file_rows)
         user_dicts = _hash_rows(users)
         snapshot_payload = {
-            "requested_project_ids": normalized_ids,
+            "requested_project_ids": resolved_ids,
             "users": user_dicts,
             "projects": project_dicts,
             "tasks": task_dicts,
@@ -159,7 +167,7 @@ class CeHubSourceAdapter:
             "file_references": file_dicts,
         }
         return SourceSnapshot(
-            requested_project_ids=normalized_ids,
+            requested_project_ids=resolved_ids,
             users=user_dicts,
             projects=project_dicts,
             tasks=task_dicts,
@@ -169,7 +177,7 @@ class CeHubSourceAdapter:
         )
 
     def _project_rows(
-        self, connection: Connection, project_ids: tuple[str, ...]
+        self, connection: Connection, project_refs: tuple[str, ...]
     ) -> tuple[RowMapping, ...]:
         statement = text(
             f'''
@@ -180,11 +188,48 @@ class CeHubSourceAdapter:
                    archived, lifecycle, "createdAt" AS created_at,
                    "updatedAt" AS updated_at
               FROM "{self._schema}"."projects"
-             WHERE id IN :project_ids
+             WHERE id IN :project_ids OR "projectNumber" IN :project_numbers
              ORDER BY id
             '''
-        ).bindparams(bindparam("project_ids", expanding=True))
-        return tuple(connection.execute(statement, {"project_ids": project_ids}).mappings())
+        ).bindparams(
+            bindparam("project_ids", expanding=True),
+            bindparam("project_numbers", expanding=True),
+        )
+        return tuple(
+            connection.execute(
+                statement,
+                {"project_ids": project_refs, "project_numbers": project_refs},
+            ).mappings()
+        )
+
+    @staticmethod
+    def _resolve_project_rows(
+        candidates: tuple[RowMapping, ...],
+        project_refs: tuple[str, ...],
+    ) -> tuple[RowMapping, ...]:
+        by_id = {str(row["source_id"]): row for row in candidates}
+        by_number: dict[str, list[RowMapping]] = {}
+        for row in candidates:
+            by_number.setdefault(str(row["project_number"]), []).append(row)
+
+        resolved: list[RowMapping] = []
+        resolved_ids: set[str] = set()
+        for project_ref in project_refs:
+            selected = by_id.get(project_ref)
+            if selected is None:
+                number_matches = by_number.get(project_ref, [])
+                if not number_matches:
+                    raise ValueError(f"CEHub project selector was not found: {project_ref}")
+                if len(number_matches) > 1:
+                    raise ValueError(
+                        f"CEHub project number is ambiguous; use the source id: {project_ref}"
+                    )
+                selected = number_matches[0]
+            source_id = str(selected["source_id"])
+            if source_id not in resolved_ids:
+                resolved.append(selected)
+                resolved_ids.add(source_id)
+        return tuple(resolved)
 
     def _scoped_rows(
         self,
@@ -578,23 +623,31 @@ def _validate_snapshot(
                 )
 
     seen_codes: set[str] = set()
+    project_templates: dict[str, WorkflowTemplate] = {}
     for row in snapshot.projects:
         source_id = str(row["source_id"])
-        if row["category"] != SUPPORTED_PROJECT_CATEGORY:
+        category = str(row["category"])
+        template = _WORKFLOW_TEMPLATES.get(category)
+        if template is None:
             _append_error(
                 errors,
                 code="UNSUPPORTED_PROJECT_CATEGORY",
                 entity_type="project",
                 source_id=source_id,
-                message=f"only npd is supported in migration v1, got {row['category']}",
+                message=(f"migration v1 supports npd and obt project categories; got {category}"),
             )
-        if row["current_phase"] not in _STAGE_CODES:
+        else:
+            project_templates[source_id] = template
+        stage_codes = (
+            frozenset(stage.code for stage in template.stages) if template is not None else ()
+        )
+        if template is not None and row["current_phase"] not in stage_codes:
             _append_error(
                 errors,
                 code="UNSUPPORTED_STAGE",
                 entity_type="project",
                 source_id=source_id,
-                message=f"unknown NPD stage: {row['current_phase']}",
+                message=f"unknown {category.upper()} stage: {row['current_phase']}",
             )
         try:
             map_project_status(archived=bool(row["archived"]), lifecycle=str(row["lifecycle"]))
@@ -641,7 +694,9 @@ def _validate_snapshot(
 
     for row in snapshot.tasks:
         source_id = str(row["source_id"])
-        if str(row["project_id"]) not in found_projects:
+        project_id = str(row["project_id"])
+        template = project_templates.get(project_id)
+        if project_id not in found_projects:
             _append_error(
                 errors,
                 code="SOURCE_REFERENCE_MISSING",
@@ -649,13 +704,15 @@ def _validate_snapshot(
                 source_id=source_id,
                 message="task references a project outside the selected snapshot",
             )
-        if row["phase_id"] not in _STAGE_CODES:
+        if template is not None and row["phase_id"] not in {
+            stage.code for stage in template.stages
+        }:
             _append_error(
                 errors,
                 code="UNSUPPORTED_STAGE",
                 entity_type="task",
                 source_id=source_id,
-                message=f"unknown NPD stage: {row['phase_id']}",
+                message=f"unknown {template.code.upper()} stage: {row['phase_id']}",
             )
         if row["status"] not in _TASK_STATUSES or row["priority"] not in _TASK_PRIORITIES:
             _append_error(
@@ -681,7 +738,9 @@ def _validate_snapshot(
 
     for row in snapshot.gate_reviews:
         source_id = str(row["source_id"])
-        if str(row["project_id"]) not in found_projects:
+        project_id = str(row["project_id"])
+        template = project_templates.get(project_id)
+        if project_id not in found_projects:
             _append_error(
                 errors,
                 code="SOURCE_REFERENCE_MISSING",
@@ -689,13 +748,15 @@ def _validate_snapshot(
                 source_id=source_id,
                 message="Gate review references a project outside the selected snapshot",
             )
-        if row["phase_id"] not in _STAGE_CODES:
+        if template is not None and row["phase_id"] not in {
+            stage.code for stage in template.stages
+        }:
             _append_error(
                 errors,
                 code="UNSUPPORTED_STAGE",
                 entity_type="gate_review",
                 source_id=source_id,
-                message=f"unknown NPD stage: {row['phase_id']}",
+                message=f"unknown {template.code.upper()} stage: {row['phase_id']}",
             )
         try:
             map_gate_decision(str(row["decision"]))
@@ -713,7 +774,9 @@ def _validate_snapshot(
 
     for row in snapshot.file_references:
         source_id = str(row["source_id"])
-        if str(row["project_id"]) not in found_projects:
+        project_id = str(row["project_id"])
+        template = project_templates.get(project_id)
+        if project_id not in found_projects:
             _append_error(
                 errors,
                 code="SOURCE_REFERENCE_MISSING",
@@ -721,13 +784,17 @@ def _validate_snapshot(
                 source_id=source_id,
                 message="file reference points outside the selected project snapshot",
             )
-        if row["phase_id"] is not None and row["phase_id"] not in _STAGE_CODES:
+        if (
+            template is not None
+            and row["phase_id"] is not None
+            and row["phase_id"] not in {stage.code for stage in template.stages}
+        ):
             _append_error(
                 errors,
                 code="UNSUPPORTED_STAGE",
                 entity_type="file_reference",
                 source_id=source_id,
-                message=f"unknown NPD stage: {row['phase_id']}",
+                message=f"unknown {template.code.upper()} stage: {row['phase_id']}",
             )
         if not str(row["storage_key"]).strip() or not str(row["name"]).strip():
             _append_error(
@@ -965,6 +1032,7 @@ def _insert_projects(
         source_id = str(row["source_id"])
         if ("project", source_id) in mappings:
             continue
+        template = _WORKFLOW_TEMPLATES[str(row["category"])]
         target_id = _target_id(tenant_id, "project", source_id)
         workflow_id = _workflow_id(tenant_id, source_id)
         stage_values = [
@@ -977,7 +1045,7 @@ def _insert_projects(
                 "description": stage.description,
                 "sequence": stage.sequence,
             }
-            for stage in NPD_WORKFLOW_TEMPLATE.stages
+            for stage in template.stages
         ]
         owner_source_id = row["pm_user_id"] or row["created_by"]
         owner_user_id = _mapping_target(
@@ -994,10 +1062,10 @@ def _insert_projects(
             {
                 "id": workflow_id,
                 "tenant_id": tenant_id,
-                "code": f"npd-cehub-{target_id.hex}",
-                "name": f"NPD · {project_code}",
-                "description": "CEHub v1 imported NPD workflow",
-                "version": NPD_WORKFLOW_TEMPLATE.version,
+                "code": f"{template.code}-cehub-{target_id.hex}",
+                "name": f"{template.name} · {project_code}",
+                "description": f"CEHub v1 imported {template.name} workflow",
+                "version": template.version,
                 "is_active": True,
             },
         )
@@ -1049,7 +1117,7 @@ def _insert_projects(
                     "name": f"{stage.name} Gate",
                     "status": "preparing",
                 }
-                for stage in NPD_WORKFLOW_TEMPLATE.stages
+                for stage in template.stages
             ],
         )
         writes += 1 + len(stage_values) + 1 + len(member_values) + len(stage_values)
