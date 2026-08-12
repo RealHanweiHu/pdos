@@ -3,18 +3,25 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Sequence
 from dataclasses import dataclass
 from uuid import uuid4
 
 from pydantic import BaseModel
 from sqlalchemy import create_engine, func, select
 
-from app.ai.application_gateway import configured_application_gateway
-from app.ai.gateway import GatewayInvocation, GatewayResult
-from app.ai.model_catalog import ModelCatalog
+from app.ai.gateway import (
+    GatewayInvocation,
+    GatewayResult,
+    ProviderRateCard,
+    StructuredModelGateway,
+)
+from app.ai.model_catalog import ModelCatalog, ProtocolKind, ProviderName, ResolvedModelRoute
+from app.ai.provider_adapters import ChatMessage, ProviderResponse
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from app.domain.model_governance import ModelGovernanceService
 
 
 class ProbeOutput(BaseModel):
@@ -27,6 +34,20 @@ class RemovalDrillReport:
     chat_degraded: bool
     finding_count_unchanged: bool
     provider_calls: int
+
+
+class RejectingAdapter:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def complete(
+        self,
+        route: ResolvedModelRoute,
+        messages: Sequence[ChatMessage],
+    ) -> ProviderResponse:
+        del route, messages
+        self.calls += 1
+        raise AssertionError("removal drill reached a model provider")
 
 
 def run() -> RemovalDrillReport:
@@ -44,20 +65,33 @@ def run() -> RemovalDrillReport:
             )
         catalog = ModelCatalog.from_environment(environment)
         brief_unavailable = not catalog.eligible_models([])
-        with configured_application_gateway(engine, environment) as gateway:
-            chat_result: GatewayResult[ProbeOutput] = gateway.invoke_structured(
-                GatewayInvocation(
-                    tenant_id=tenant_id,
-                    project_id=project_id,
-                    run_id=None,
-                    agent_key="removal_drill",
-                    prompt_version="removal-drill-v1",
-                    system_prompt="Return only the requested schema.",
-                    instruction="Return a result.",
-                    context={},
-                ),
-                ProbeOutput,
-            )
+        adapter = RejectingAdapter()
+        gateway = StructuredModelGateway(
+            engine,
+            catalog=catalog,
+            qualifications=[],
+            governance=ModelGovernanceService(
+                engine,
+                catalog=catalog,
+                qualifications=[],
+                default_daily_token_budget=2_000_000,
+            ),
+            adapters={protocol: adapter for protocol in ProtocolKind},
+            rate_cards={provider: ProviderRateCard(0, 0) for provider in ProviderName},
+        )
+        chat_result: GatewayResult[ProbeOutput] = gateway.invoke_structured(
+            GatewayInvocation(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                run_id=None,
+                agent_key="removal_drill",
+                prompt_version="removal-drill-v1",
+                system_prompt="Return only the requested schema.",
+                instruction="Return a result.",
+                context={},
+            ),
+            ProbeOutput,
+        )
         with engine.connect() as connection:
             finding_count_after = int(
                 connection.execute(select(func.count()).select_from(tables.findings)).scalar_one()
@@ -66,7 +100,7 @@ def run() -> RemovalDrillReport:
             brief_unavailable=brief_unavailable,
             chat_degraded=chat_result.status == "degraded" and chat_result.output is None,
             finding_count_unchanged=finding_count_after == finding_count_before,
-            provider_calls=0,
+            provider_calls=adapter.calls,
         )
     finally:
         engine.dispose()
