@@ -11,9 +11,10 @@ from typing import Any
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from sqlalchemy import Connection, Engine, bindparam, select, text
-from sqlalchemy.engine import RowMapping
+from sqlalchemy.engine import RowMapping, make_url
 
 from app.db.schema import tables
+from app.db.url import psycopg_database_url
 from app.domain.workflow_templates import (
     NPD_WORKFLOW_TEMPLATE,
     OBT_WORKFLOW_TEMPLATE,
@@ -130,6 +131,14 @@ class MigrationValidationError(ValueError):
     def __init__(self, report: MigrationReport) -> None:
         self.report = report
         super().__init__("CEHub migration validation failed")
+
+
+def cehub_psycopg_database_url(value: str) -> str:
+    """Remove the Prisma-only libpq flag while preserving real PostgreSQL options."""
+    url = make_url(value)
+    query = {key: nested for key, nested in url.query.items() if key.lower() != "uselibpqcompat"}
+    normalized = url.set(query=query).render_as_string(hide_password=False)
+    return psycopg_database_url(normalized)
 
 
 class CeHubSourceAdapter:

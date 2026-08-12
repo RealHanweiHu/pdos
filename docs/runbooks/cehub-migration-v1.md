@@ -20,6 +20,7 @@
    ```
 
 源库与目标库名称必须不同。命令行入口不会输出连接 URL，报告文件权限固定为 `0600`。
+如 CEHub 连接串沿用 Prisma 模板并包含 `uselibpqcompat=true`，入口只移除这一 psycopg 不识别的兼容参数；`sslmode` 等真实 PostgreSQL 参数原样保留。
 
 DBA 可在 CEHub 数据库中按以下模板创建账号（密码通过 RDS 安全渠道生成和交付，不把成品 SQL 写入仓库）：
 

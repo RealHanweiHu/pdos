@@ -13,7 +13,12 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.db.url import psycopg_database_url
-from app.migrations.cehub_v1 import MigrationReport, MigrationValidationError, migrate_cehub_v1
+from app.migrations.cehub_v1 import (
+    MigrationReport,
+    MigrationValidationError,
+    cehub_psycopg_database_url,
+    migrate_cehub_v1,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -63,7 +68,7 @@ def main() -> int:
     if make_url(source_url).database == make_url(target_url).database:
         raise SystemExit("source and target database names must differ")
 
-    source_engine = create_engine(psycopg_database_url(source_url), pool_pre_ping=True)
+    source_engine = create_engine(cehub_psycopg_database_url(source_url), pool_pre_ping=True)
     target_engine = create_engine(psycopg_database_url(target_url), pool_pre_ping=True)
     try:
         try:

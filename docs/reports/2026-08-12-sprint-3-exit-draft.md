@@ -37,7 +37,7 @@
 5. PVT Gate 未批准时 Handoff ready 返回 `HANDOFF_PVT_GATE_REQUIRED`；完成 PVT 事实和 Gate 后 Handoff 进入 ready，再推进 MP；
 6. 数据库终态复核三个 Gate 全 approved、一个 ECN、Handoff ready、当前 Stage=MP、`GATE_APPROVED` 恰好三条。
 
-加入该测试后，全仓 `make check` 已从头通过：Web 99 tests、Server 251 tests，ESLint/Ruff/format、TypeScript、mypy 158 source files、Next.js production build 与 Python compile 全绿。
+加入该测试及真实 CEHub URL 兼容回归后，全仓 `make check` 已从头通过：Web 99 tests、Server 252 tests，ESLint/Ruff/format、TypeScript、mypy 158 source files、Next.js production build 与 Python compile 全绿。
 
 ## 当前开放门禁
 

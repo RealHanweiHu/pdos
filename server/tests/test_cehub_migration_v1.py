@@ -17,6 +17,7 @@ from app.db.url import psycopg_database_url
 from app.domain.gates import GateService
 from app.migrations.cehub_v1 import (
     MigrationValidationError,
+    cehub_psycopg_database_url,
     map_gate_decision,
     map_project_status,
     map_user_role,
@@ -300,6 +301,17 @@ def test_unknown_source_values_are_rejected() -> None:
             assert value in str(exc)
         else:
             raise AssertionError(f"{function.__name__} accepted {value}")
+
+
+def test_cehub_source_url_drops_only_prisma_libpq_compatibility_parameter() -> None:
+    normalized = make_url(
+        cehub_psycopg_database_url(
+            "postgresql://readonly:secret@rds.example/cehub?sslmode=require&uselibpqcompat=true"
+        )
+    )
+
+    assert normalized.drivername == "postgresql+psycopg"
+    assert normalized.query == {"sslmode": "require"}
 
 
 def test_write_capable_source_role_is_rejected_before_snapshot(
