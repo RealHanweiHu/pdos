@@ -33,6 +33,8 @@ class Action(StrEnum):
     WORK_ITEM_VIEW = "work_item.view"
     WORK_ITEM_EDIT = "work_item.edit"
     EVENT_DEBUG_VIEW = "event_debug.view"
+    MODEL_GOVERNANCE_VIEW = "model_governance.view"
+    MODEL_GOVERNANCE_MANAGE = "model_governance.manage"
     QUALITY_MANAGE = "quality.manage"
     EXTERNAL_RESPOND = "external.respond"
 

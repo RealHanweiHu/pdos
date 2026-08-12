@@ -287,6 +287,18 @@ _DEFINITIONS = (
         consumers=("decision_projection", "timeline_projection"),
         payload_schema=_payload_schema(decision_kind="string", outcome="string"),
     ),
+    EventDefinition(
+        event_type="TENANT_MODEL_SETTINGS_UPDATED",
+        version=1,
+        entity="tenant_model_settings",
+        producer="model_governance_service",
+        consumers=("security_audit", "ai_runtime"),
+        payload_schema=_payload_schema(
+            provider="string",
+            model="string",
+            daily_token_budget="integer",
+        ),
+    ),
 )
 
 EVENT_REGISTRY = MappingProxyType(

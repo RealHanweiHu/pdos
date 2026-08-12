@@ -106,6 +106,15 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
     risk_created = definition_for("RISK_CREATED")
     assert risk_created.payload_schema["required"] == ["risk_id", "score", "status"]
 
+    model_settings = definition_for("TENANT_MODEL_SETTINGS_UPDATED")
+    assert model_settings.entity == "tenant_model_settings"
+    assert model_settings.producer == "model_governance_service"
+    assert model_settings.payload_schema["required"] == [
+        "provider",
+        "model",
+        "daily_token_budget",
+    ]
+
 
 def test_unknown_event_types_fail_closed() -> None:
     with pytest.raises(UnknownEventTypeError):

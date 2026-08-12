@@ -21,6 +21,8 @@ EXPECTED_ACTIONS = {
     "work_item.view",
     "work_item.edit",
     "event_debug.view",
+    "model_governance.view",
+    "model_governance.manage",
     "quality.manage",
     "external.respond",
 }
