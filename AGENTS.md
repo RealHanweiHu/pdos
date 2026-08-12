@@ -25,7 +25,8 @@
 - [x] S2-1 LLM Gateway（多供应商）已完成：租户模型治理、两类协议、结构化输出、调用留痕、预算熔断、上下文/出口白名单与 golden-case 人工发布门禁均验收通过
 - [x] S2-2 LangGraph 执行环已完成：dispatcher/executor 分离、项目级 debounce、静态路由、冻结 context、三只读工具、失败熔断与隔离容器 smoke 均验收通过
 - [x] S2-2b 数据库层安全边界已完成：独立 worker/agent 登录角色、run lease 租户投影、业务表零写、真实受限账号正反向测试与 DBA 幂等手册均验收通过
-- [ ] **当前：S2-3 AI Finding 状态机**，按 `tasks/todo.md` 实现 pending_review→accepted/rejected→applied、两次人工动作、确定性预检与 apply 时数据库真值复核
+- [x] S2-3 AI Finding 状态机已完成：受限 Agent 创建、确定性预检、pending_review→accepted/rejected→applied、两次人工动作、apply 真值复核与全链路留痕均验收通过
+- [ ] **当前：S2-4 Phase 1 双 Agent**，按 `tasks/todo.md` 交付 Project Intelligence / Knowledge Agent Lite 的版本化 prompt、结构化 Finding/知识草稿输出与事件订阅验证
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.api.auth import router as auth_router
 from app.api.development_cases import router as development_cases_router
 from app.api.events import router as events_router
+from app.api.findings import router as findings_router
 from app.api.health import router as health_router
 from app.api.issue_risks import router as issue_risks_router
 from app.api.model_governance import router as model_governance_router
@@ -24,3 +25,4 @@ app.include_router(events_router)
 app.include_router(work_items_router)
 app.include_router(issue_risks_router)
 app.include_router(model_governance_router)
+app.include_router(findings_router)

@@ -68,6 +68,7 @@ class GatewayResult[OutputT: BaseModel]:
     error_code: str | None
     structured_attempts: int
     removed_context_paths: tuple[str, ...]
+    invocation_id: UUID | None = None
 
 
 class ModelProviderAdapter(Protocol):
@@ -125,7 +126,7 @@ class StructuredModelGateway:
             qualifications=self._qualifications,
         )
         if snapshot.budget.exhausted:
-            self._record(
+            invocation_id = self._record(
                 invocation,
                 route=route,
                 status="budget_exceeded",
@@ -141,6 +142,7 @@ class StructuredModelGateway:
                 error_code="DAILY_BUDGET_EXCEEDED",
                 structured_attempts=0,
                 removed_context_paths=projection.removed_paths,
+                invocation_id=invocation_id,
             )
 
         adapter = self._adapters.get(route.protocol)
@@ -177,7 +179,7 @@ class StructuredModelGateway:
                 response = adapter.complete(route, messages)
             except ProviderRequestError as error:
                 error_code = error.code.upper()
-                self._record(
+                invocation_id = self._record(
                     invocation,
                     route=route,
                     status="provider_error",
@@ -195,6 +197,7 @@ class StructuredModelGateway:
                     error_code=error_code,
                     structured_attempts=attempt,
                     removed_context_paths=projection.removed_paths,
+                    invocation_id=invocation_id,
                 )
             last_response = response
             input_tokens += response.input_tokens
@@ -206,7 +209,7 @@ class StructuredModelGateway:
             except ValidationError:
                 continue
 
-            self._record(
+            invocation_id = self._record(
                 invocation,
                 route=route,
                 status="succeeded",
@@ -225,9 +228,10 @@ class StructuredModelGateway:
                 error_code=None,
                 structured_attempts=attempt,
                 removed_context_paths=projection.removed_paths,
+                invocation_id=invocation_id,
             )
 
-        self._record(
+        invocation_id = self._record(
             invocation,
             route=route,
             status="schema_error",
@@ -247,6 +251,7 @@ class StructuredModelGateway:
             error_code="STRUCTURED_OUTPUT_INVALID",
             structured_attempts=self._max_structured_attempts,
             removed_context_paths=projection.removed_paths,
+            invocation_id=invocation_id,
         )
 
     @staticmethod
@@ -268,15 +273,16 @@ class StructuredModelGateway:
         error_code: str | None = None,
         request_id: str | None = None,
         model_version: str | None = None,
-    ) -> None:
+    ) -> UUID:
         rate_card = self._rate_cards.get(route.provider, ProviderRateCard(0, 0))
+        invocation_id = uuid4()
         with self._engine.begin() as connection:
             if self._run_store is not None and self._run_store.projection_only:
                 self._run_store.bind(connection)
             connection.execute(
                 tables.model_invocations.insert(),
                 {
-                    "id": uuid4(),
+                    "id": invocation_id,
                     "tenant_id": invocation.tenant_id,
                     "project_id": invocation.project_id,
                     "run_id": invocation.run_id,
@@ -303,6 +309,7 @@ class StructuredModelGateway:
                     "error_code": error_code,
                 },
             )
+        return invocation_id
 
 
 def structured_messages(

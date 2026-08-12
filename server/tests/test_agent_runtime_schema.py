@@ -320,6 +320,8 @@ def test_agent_runtime_migration_round_trip(agent_runtime_database_url: str) -> 
             "agent_dispatcher_cursors",
             "agent_runs",
             "agent_subscriptions",
+            "finding_actions",
+            "findings",
             "model_invocations",
             "tenant_model_settings",
         }

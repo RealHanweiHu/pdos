@@ -1206,6 +1206,13 @@ agent_runs = Table(
     UniqueConstraint(
         "tenant_id",
         "project_id",
+        "id",
+        "agent_key",
+        name="uq_agent_runs_tenant_project_id_agent",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
         "agent_key",
         "window_started_at",
         name="uq_agent_runs_tenant_project_agent_window",
@@ -1302,6 +1309,11 @@ model_invocations = Table(
         name="fk_model_invocations_tenant_project",
         ondelete="RESTRICT",
     ),
+    UniqueConstraint(
+        "tenant_id",
+        "id",
+        name="uq_model_invocations_tenant_id_id",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "run_id"],
         [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
@@ -1320,6 +1332,209 @@ model_invocations = Table(
         "ix_model_invocations_tenant_project_created",
         "tenant_id",
         "project_id",
+        "created_at",
+        "id",
+    ),
+    schema=AI_SCHEMA,
+)
+
+findings = Table(
+    "findings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("model_invocation_id", Uuid, nullable=False),
+    Column("agent_key", String(64), nullable=False),
+    Column("finding_type", String(64), nullable=False),
+    Column("origin_key", String(128), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'pending_review'")),
+    Column("title", String(512), nullable=False),
+    Column("summary", Text, nullable=False),
+    Column("proposed_payload", json_type, nullable=False),
+    Column("accepted_payload", json_type),
+    Column("evidence_event_ids", json_type, nullable=False),
+    Column("confidence_basis_points", SmallInteger, nullable=False),
+    Column("preflight_version", String(64), nullable=False),
+    Column("reviewed_by_user_id", Uuid),
+    Column("reviewed_at", DateTime(timezone=True)),
+    Column("review_comment", Text),
+    Column("applied_by_user_id", Uuid),
+    Column("applied_at", DateTime(timezone=True)),
+    Column("applied_entity_type", String(64)),
+    Column("applied_entity_id", Uuid),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("finding_type IN ('risk_suggestion')", name="type_allowed"),
+    CheckConstraint(
+        "status IN ('pending_review', 'accepted', 'rejected', 'applied')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(origin_key) <> ''", name="origin_key_nonblank"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("btrim(summary) <> ''", name="summary_nonblank"),
+    CheckConstraint("btrim(preflight_version) <> ''", name="preflight_version_nonblank"),
+    CheckConstraint("jsonb_typeof(proposed_payload) = 'object'", name="proposed_payload_object"),
+    CheckConstraint(
+        "accepted_payload IS NULL OR jsonb_typeof(accepted_payload) = 'object'",
+        name="accepted_payload_object",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(evidence_event_ids) = 'array' AND jsonb_array_length(evidence_event_ids) > 0",
+        name="evidence_event_ids_array",
+    ),
+    CheckConstraint(
+        "confidence_basis_points BETWEEN 0 AND 10000",
+        name="confidence_range",
+    ),
+    CheckConstraint(
+        "(status = 'pending_review' AND reviewed_by_user_id IS NULL "
+        "AND reviewed_at IS NULL AND accepted_payload IS NULL) OR "
+        "(status = 'accepted' AND reviewed_by_user_id IS NOT NULL "
+        "AND reviewed_at IS NOT NULL AND accepted_payload IS NOT NULL) OR "
+        "(status = 'rejected' AND reviewed_by_user_id IS NOT NULL "
+        "AND reviewed_at IS NOT NULL AND accepted_payload IS NULL) OR "
+        "(status = 'applied' AND reviewed_by_user_id IS NOT NULL "
+        "AND reviewed_at IS NOT NULL AND accepted_payload IS NOT NULL)",
+        name="review_lifecycle_consistent",
+    ),
+    CheckConstraint(
+        "(status <> 'applied' AND applied_by_user_id IS NULL AND applied_at IS NULL "
+        "AND applied_entity_type IS NULL AND applied_entity_id IS NULL) OR "
+        "(status = 'applied' AND applied_by_user_id IS NOT NULL AND applied_at IS NOT NULL "
+        "AND applied_entity_type = 'risk' AND applied_entity_id IS NOT NULL "
+        "AND reviewed_at < applied_at)",
+        name="apply_lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "run_id", "agent_key"],
+        [
+            f"{AI_SCHEMA}.agent_runs.tenant_id",
+            f"{AI_SCHEMA}.agent_runs.project_id",
+            f"{AI_SCHEMA}.agent_runs.id",
+            f"{AI_SCHEMA}.agent_runs.agent_key",
+        ],
+        name="fk_findings_tenant_project_run_agent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "model_invocation_id"],
+        [
+            f"{AI_SCHEMA}.model_invocations.tenant_id",
+            f"{AI_SCHEMA}.model_invocations.id",
+        ],
+        name="fk_findings_tenant_model_invocation",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_findings_tenant_reviewer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "applied_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_findings_tenant_applier",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_findings_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "id",
+        name="uq_findings_tenant_project_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "run_id",
+        "origin_key",
+        name="uq_findings_tenant_run_origin",
+    ),
+    Index("ix_findings_tenant_status_created", "tenant_id", "status", "created_at", "id"),
+    Index("ix_findings_tenant_project_status", "tenant_id", "project_id", "status", "id"),
+    schema=AI_SCHEMA,
+)
+
+finding_actions = Table(
+    "finding_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("action", String(32), nullable=False),
+    Column("actor_user_id", Uuid),
+    Column("from_status", String(32)),
+    Column("to_status", String(32), nullable=False),
+    Column("detail", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "action IN ('created', 'accepted', 'rejected', 'applied')",
+        name="action_allowed",
+    ),
+    CheckConstraint(
+        "(action = 'created' AND actor_user_id IS NULL AND from_status IS NULL "
+        "AND to_status = 'pending_review') OR "
+        "(action IN ('accepted', 'rejected') AND actor_user_id IS NOT NULL "
+        "AND from_status = 'pending_review' AND to_status = action) OR "
+        "(action = 'applied' AND actor_user_id IS NOT NULL "
+        "AND from_status = 'accepted' AND to_status = 'applied')",
+        name="transition_consistent",
+    ),
+    CheckConstraint("jsonb_typeof(detail) = 'object'", name="detail_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "finding_id"],
+        [
+            f"{AI_SCHEMA}.findings.tenant_id",
+            f"{AI_SCHEMA}.findings.project_id",
+            f"{AI_SCHEMA}.findings.id",
+        ],
+        name="fk_finding_actions_tenant_project_finding",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_finding_actions_tenant_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "finding_id",
+        "action",
+        name="uq_finding_actions_tenant_finding_action",
+    ),
+    Index(
+        "ix_finding_actions_tenant_finding_created",
+        "tenant_id",
+        "finding_id",
         "created_at",
         "id",
     ),
@@ -1445,6 +1660,8 @@ class Tables:
     agent_subscriptions: Table
     agent_runs: Table
     model_invocations: Table
+    findings: Table
+    finding_actions: Table
     events: Table
     audit_log: Table
 
@@ -1470,6 +1687,8 @@ tables = Tables(
     agent_subscriptions=agent_subscriptions,
     agent_runs=agent_runs,
     model_invocations=model_invocations,
+    findings=findings,
+    finding_actions=finding_actions,
     events=events,
     audit_log=audit_log,
 )

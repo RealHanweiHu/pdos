@@ -20,6 +20,10 @@ DROP VIEW IF EXISTS
     cehub_ai.agent_run_projection;
 
 DROP FUNCTION IF EXISTS cehub_ai.fail_agent_run(uuid, uuid, varchar, timestamptz);
+DROP FUNCTION IF EXISTS cehub_ai.create_agent_finding(
+    uuid, uuid, uuid, uuid, varchar, varchar, varchar, text, jsonb, jsonb,
+    smallint, varchar, timestamptz
+);
 DROP FUNCTION IF EXISTS cehub_ai.complete_agent_run(
     uuid, uuid, varchar, varchar, timestamptz
 );

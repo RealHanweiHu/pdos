@@ -475,6 +475,208 @@ BEGIN
 END
 $function$;
 
+CREATE OR REPLACE FUNCTION cehub_ai.create_agent_finding(
+    new_finding_id uuid,
+    bound_run_id uuid,
+    bound_lease_token uuid,
+    bound_model_invocation_id uuid,
+    new_origin_key varchar,
+    new_finding_type varchar,
+    new_title varchar,
+    new_summary text,
+    new_proposed_payload jsonb,
+    new_evidence_event_ids jsonb,
+    new_confidence_basis_points smallint,
+    new_preflight_version varchar,
+    created_at timestamptz
+) RETURNS void
+LANGUAGE plpgsql
+VOLATILE
+SECURITY DEFINER
+SET search_path = pg_catalog
+AS $function$
+DECLARE
+    scoped_run cehub_ai.agent_runs%ROWTYPE;
+    invocation_matches boolean;
+    evidence_count integer;
+    persisted_event_id varchar := 'ai-finding:' || new_finding_id::text || ':created';
+BEGIN
+    SELECT * INTO scoped_run
+    FROM cehub_ai.agent_runs AS run
+    WHERE run.id = bound_run_id
+      AND run.status = 'running'
+      AND run.run_context->>'_lease_token' = bound_lease_token::text
+    FOR UPDATE;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE = '42501';
+    END IF;
+
+    SELECT EXISTS (
+        SELECT 1
+        FROM cehub_ai.model_invocations AS invocation
+        WHERE invocation.id = bound_model_invocation_id
+          AND invocation.tenant_id = scoped_run.tenant_id
+          AND invocation.project_id = scoped_run.project_id
+          AND invocation.run_id = scoped_run.id
+          AND invocation.agent_key = scoped_run.agent_key
+          AND invocation.status = 'succeeded'
+    ) INTO invocation_matches;
+
+    IF NOT invocation_matches
+       OR new_finding_type <> 'risk_suggestion'
+       OR nullif(btrim(new_origin_key), '') IS NULL
+       OR nullif(btrim(new_title), '') IS NULL
+       OR nullif(btrim(new_summary), '') IS NULL
+       OR nullif(btrim(new_preflight_version), '') IS NULL
+       OR jsonb_typeof(new_proposed_payload) <> 'object'
+       OR jsonb_typeof(new_evidence_event_ids) <> 'array'
+       OR jsonb_array_length(new_evidence_event_ids) = 0
+       OR new_confidence_basis_points NOT BETWEEN 0 AND 10000 THEN
+        RAISE EXCEPTION 'Agent finding preflight is invalid' USING ERRCODE = '42501';
+    END IF;
+
+    SELECT count(DISTINCT evidence.value::bigint)
+    INTO evidence_count
+    FROM jsonb_array_elements_text(new_evidence_event_ids) AS evidence(value)
+    WHERE evidence.value ~ '^[1-9][0-9]*$'
+      AND EXISTS (
+          SELECT 1
+          FROM cehub_event.events AS event
+          WHERE event.id = evidence.value::bigint
+            AND event.tenant_id = scoped_run.tenant_id
+            AND event.project_id = scoped_run.project_id
+            AND scoped_run.event_row_ids @> to_jsonb(ARRAY[event.id])
+      );
+    IF evidence_count <> jsonb_array_length(new_evidence_event_ids) THEN
+        RAISE EXCEPTION 'Agent finding evidence is outside the run scope'
+            USING ERRCODE = '42501';
+    END IF;
+
+    INSERT INTO cehub_ai.findings (
+        id,
+        tenant_id,
+        project_id,
+        run_id,
+        model_invocation_id,
+        agent_key,
+        finding_type,
+        origin_key,
+        status,
+        title,
+        summary,
+        proposed_payload,
+        evidence_event_ids,
+        confidence_basis_points,
+        preflight_version,
+        created_at,
+        updated_at
+    ) VALUES (
+        new_finding_id,
+        scoped_run.tenant_id,
+        scoped_run.project_id,
+        scoped_run.id,
+        bound_model_invocation_id,
+        scoped_run.agent_key,
+        new_finding_type,
+        new_origin_key,
+        'pending_review',
+        new_title,
+        new_summary,
+        new_proposed_payload,
+        new_evidence_event_ids,
+        new_confidence_basis_points,
+        new_preflight_version,
+        created_at,
+        created_at
+    );
+
+    INSERT INTO cehub_ai.finding_actions (
+        id,
+        tenant_id,
+        project_id,
+        finding_id,
+        action,
+        actor_user_id,
+        from_status,
+        to_status,
+        detail,
+        created_at
+    ) VALUES (
+        gen_random_uuid(),
+        scoped_run.tenant_id,
+        scoped_run.project_id,
+        new_finding_id,
+        'created',
+        NULL,
+        NULL,
+        'pending_review',
+        jsonb_build_object('preflight_version', new_preflight_version),
+        created_at
+    );
+
+    INSERT INTO cehub_event.events (
+        tenant_id,
+        project_id,
+        event_id,
+        event_type,
+        schema_version,
+        source,
+        entity,
+        entity_id,
+        payload,
+        timestamp
+    ) VALUES (
+        scoped_run.tenant_id,
+        scoped_run.project_id,
+        persisted_event_id,
+        'AI_FINDING_CREATED',
+        1,
+        'ai_runtime',
+        'ai_finding',
+        new_finding_id,
+        jsonb_build_object(
+            'finding_id', new_finding_id::text,
+            'agent_run_id', scoped_run.id::text
+        ),
+        created_at
+    );
+
+    INSERT INTO cehub_audit.audit_log (
+        tenant_id,
+        project_id,
+        actor_user_id,
+        event_id,
+        action,
+        entity,
+        entity_id,
+        before_snapshot,
+        after_snapshot,
+        context,
+        timestamp
+    ) VALUES (
+        scoped_run.tenant_id,
+        scoped_run.project_id,
+        NULL,
+        persisted_event_id,
+        'finding.create',
+        'ai_finding',
+        new_finding_id,
+        NULL,
+        jsonb_build_object(
+            'status', 'pending_review',
+            'finding_type', new_finding_type,
+            'title', new_title
+        ),
+        jsonb_build_object(
+            'agent_key', scoped_run.agent_key,
+            'run_id', scoped_run.id::text,
+            'model_invocation_id', bound_model_invocation_id::text
+        ),
+        created_at
+    );
+END
+$function$;
+
 ALTER TABLE cehub_ai.model_invocations ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS pdos_agent_insert_model_invocations
     ON cehub_ai.model_invocations;
@@ -521,6 +723,10 @@ GRANT EXECUTE ON FUNCTION cehub_ai.complete_agent_run(
 GRANT EXECUTE ON FUNCTION cehub_ai.fail_agent_run(
     uuid, uuid, varchar, timestamptz
 ) TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.create_agent_finding(
+    uuid, uuid, uuid, uuid, varchar, varchar, varchar, text, jsonb, jsonb,
+    smallint, varchar, timestamptz
+) TO pdos_agent;
 
 REVOKE ALL ON FUNCTION cehub_ai.agent_scope_allows(uuid, uuid) FROM PUBLIC;
 REVOKE ALL ON FUNCTION cehub_ai.agent_tenant_scope_allows(uuid) FROM PUBLIC;
@@ -537,6 +743,10 @@ REVOKE ALL ON FUNCTION cehub_ai.complete_agent_run(
 ) FROM PUBLIC;
 REVOKE ALL ON FUNCTION cehub_ai.fail_agent_run(
     uuid, uuid, varchar, timestamptz
+) FROM PUBLIC;
+REVOKE ALL ON FUNCTION cehub_ai.create_agent_finding(
+    uuid, uuid, uuid, uuid, varchar, varchar, varchar, text, jsonb, jsonb,
+    smallint, varchar, timestamptz
 ) FROM PUBLIC;
 
 COMMIT;

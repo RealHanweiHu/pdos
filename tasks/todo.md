@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-3 AI Finding 状态机。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1、S2-2、S2-2b 已验收完成，当前只实施 Finding 人审与受控 apply，不提前混入双 Agent prompt 或 AI 前端。
+> 唯一当前指针：**S2-4 Phase 1 双 Agent。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1、S2-2、S2-2b、S2-3 已验收完成，当前只实施双 Agent prompt/输出/订阅，不提前混入 AI API 或前端。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -559,21 +559,49 @@
 - 隔离生产容器 smoke 全绿：migrate/API/dispatcher/executor/web/BFF 健康，dispatcher/executor 使用真实独立登录角色且 Python 服务 UID 10001 非 root；只连接本地 `pdos_test`。
 - 生产 RDS 未变更；角色创建、密码发放、模板执行和回滚步骤已交付 `docs/runbooks/agent-runtime-database-security.md`，继续由人和 DBA 执行。
 
-## Current: S2-3 AI Finding State Machine
+## Completed: S2-3 AI Finding State Machine
 
 **Definition of Ready**
 
-- [ ] 规格出处：canonical S2-3、AI Integration/RBAC/Audit/Event Catalog 规格与 S2-2b 数据库边界逐条映射
-- [ ] 状态机冻结：pending_review→accepted/rejected；仅 accepted 可独立 applied；裁决与应用不得合并
-- [ ] 权限冻结：Agent 只创建 finding；Reviewer 裁决；有项目写权限的人二次鉴权后 apply；executor 仍无业务表写权限
-- [ ] 真值边界冻结：finding payload 全部不可信；preflight 与 apply 均从数据库重查 tenant/project/reference/status
-- [ ] 迁移号冻结为 `0011`，事件/审计/幂等键/状态约束与回滚验收先于业务实现
+- [x] 规格出处：canonical S2-3、AI Integration/RBAC/Audit/Event Catalog 规格与 S2-2b 数据库边界逐条映射
+- [x] 状态机冻结：pending_review→accepted/rejected；仅 accepted 可独立 applied；裁决与应用不得合并
+- [x] 权限冻结：Agent 只创建 finding；Reviewer 裁决；有项目写权限的人二次鉴权后 apply；executor 仍无业务表写权限
+- [x] 真值边界冻结：finding payload 全部不可信；preflight 与 apply 均从数据库重查 tenant/project/reference/status
+- [x] 迁移号冻结为 `0011`，事件/审计/幂等键/状态约束与回滚验收先于业务实现
 
 **Implementation slices**
 
-- [ ] S2-3a：以测试冻结 Finding schema、状态机、事件、RBAC、预检与 apply 真值复核合同
-- [ ] S2-3b：migration 0011 建立 findings 与 append-only review/apply 留痕，并扩展 `pdos_agent` 受控创建出口
-- [ ] S2-3c：实现 Agent deterministic preflight 与 finding 创建，非法引用/跨租户/schema 错误 fail closed
-- [ ] S2-3d：实现 Reviewer accept/edit/reject 与独立 apply handler，二次鉴权并只支持风险建议落为 Risk
-- [ ] S2-3e：实现 FastAPI inbox/detail/review/apply API、事件审计与幂等冲突处理
-- [ ] S2-3f：完整正反向、迁移往返、受限角色、HTTP 与质量门禁验收
+- [x] S2-3a：以测试冻结 Finding schema、状态机、事件、RBAC、预检与 apply 真值复核合同
+- [x] S2-3b：migration 0011 建立 findings 与 append-only review/apply 留痕，并扩展 `pdos_agent` 受控创建出口
+- [x] S2-3c：实现 Agent deterministic preflight 与 finding 创建，非法引用/跨租户/schema 错误 fail closed
+- [x] S2-3d：实现 Reviewer accept/edit/reject 与独立 apply handler，二次鉴权并只支持风险建议落为 Risk
+- [x] S2-3e：实现 FastAPI inbox/detail/review/apply API、事件审计与幂等冲突处理
+- [x] S2-3f：完整正反向、迁移往返、受限角色、HTTP 与质量门禁验收
+
+**Completion evidence（2026-08-11）**
+
+- migration `0011` 建立 `findings` / append-only `finding_actions`、租户复合 FK、状态/人审/apply 时序约束、run+origin 幂等键；升级/降级/metadata drift 全绿。
+- 真实 `pdos_agent` 只能经 `create_agent_finding` 函数提交当前 run 的候选；自由读写 findings、跨租户 evidence、越界 invocation 全部被拒。
+- Event→dispatcher→受限 executor→model invocation→确定性 preflight→pending Finding 全链路通过；原始 payload 未进入模型消息，Finding 可追溯到 run/invocation/evidence。
+- Review 与 Apply 是两个独立 HTTP/服务动作：Accept/Edit/Reject 写不可变 action 与 AI_FEEDBACK_RECEIVED；Accept 不改业务，独立 Apply 才创建 Risk，重复 Apply 幂等。
+- Apply 在持锁事务中二次鉴权并重查用户、项目状态、run、invocation、evidence 和 accepted payload；外部角色/非成员/终态项目/失效引用均 fail closed。
+- `make check` 全绿：server 192 tests、web 82 tests，ruff/format/mypy/TypeScript/Next.js build/Python compile 全部通过；隔离生产容器 smoke 全绿。
+- 生产 RDS 未变更；测试临时角色口令与权限对象已清理。
+
+## Current: S2-4 Phase 1 Dual Agents
+
+**Definition of Ready**
+
+- [ ] 规格出处：AI Runtime/路线图/canonical S2-4 与当前 Event Catalog/工具/Finding 合同逐条映射
+- [ ] Agent 边界冻结：同一运行时两份静态配置，不新增 Agent 互审、自由 SQL/HTTP/shell 或第二套 runtime
+- [ ] Project Intelligence 输出冻结：风险建议/阻塞预警/Gate 就绪异常统一进入 Finding，人审前不改业务
+- [ ] Knowledge Lite 输出冻结：GATE_APPROVED/DOCUMENT_UPLOADED 只创建知识草稿候选，不进入 verified memory
+- [ ] prompt 版本化与前缀冻结：system prompt/工具定义文件入库，动态 context 只追加末尾；变更需 golden-case
+
+**Implementation slices**
+
+- [ ] S2-4a：冻结双 Agent prompt/结构化输出/订阅/负例与评测合同
+- [ ] S2-4b：版本化 Project Intelligence prompt 与风险/阻塞/Gate 三类 Finding candidate 映射
+- [ ] S2-4c：版本化 Knowledge Lite prompt 与知识草稿 Finding 类型/预检/受限创建路径
+- [ ] S2-4d：接通 PROJECT_STAGE_CHANGED/ISSUE_CREATED/TEST_FAILED 与 GATE_APPROVED/DOCUMENT_UPLOADED 事件路由
+- [ ] S2-4e：真实受限角色、双 Agent fake-provider、错误路径零 LLM、完整质量门禁验收

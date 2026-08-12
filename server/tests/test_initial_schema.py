@@ -53,6 +53,8 @@ EXPECTED_TABLES = {
     ("cehub_ai", "agent_dispatcher_cursors"),
     ("cehub_ai", "agent_subscriptions"),
     ("cehub_ai", "agent_runs"),
+    ("cehub_ai", "findings"),
+    ("cehub_ai", "finding_actions"),
 }
 
 

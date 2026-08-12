@@ -14,6 +14,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
 from app.ai.executor import AgentExecutor, GatewayAgentModelInvoker
+from app.ai.finding_writer import RestrictedAgentFindingWriter
 from app.ai.gateway import ProviderRateCard, StructuredModelGateway
 from app.ai.golden_suite import load_golden_suite
 from app.ai.model_catalog import ModelCatalog, ProviderName
@@ -107,6 +108,10 @@ def configured_agent_runtime(
                     engine,
                     model_invoker=GatewayAgentModelInvoker(gateway),
                     run_store=run_store,
+                    finding_writer=RestrictedAgentFindingWriter(
+                        engine,
+                        run_store=run_store,
+                    ),
                 ),
             )
     finally:

@@ -35,6 +35,9 @@ class Action(StrEnum):
     EVENT_DEBUG_VIEW = "event_debug.view"
     MODEL_GOVERNANCE_VIEW = "model_governance.view"
     MODEL_GOVERNANCE_MANAGE = "model_governance.manage"
+    FINDING_VIEW = "finding.view"
+    FINDING_REVIEW = "finding.review"
+    FINDING_APPLY = "finding.apply"
     QUALITY_MANAGE = "quality.manage"
     EXTERNAL_RESPOND = "external.respond"
 
@@ -60,6 +63,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,
+                Action.FINDING_VIEW,
+                Action.FINDING_REVIEW,
+                Action.FINDING_APPLY,
             }
         ),
         Role.ENGINEER: frozenset(
@@ -69,6 +75,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.DEVELOPMENT_CASE_VIEW,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
+                Action.FINDING_VIEW,
+                Action.FINDING_REVIEW,
+                Action.FINDING_APPLY,
             }
         ),
         Role.QUALITY: frozenset(
@@ -79,6 +88,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,
+                Action.FINDING_VIEW,
+                Action.FINDING_REVIEW,
+                Action.FINDING_APPLY,
             }
         ),
         Role.SUPPLIER: frozenset(

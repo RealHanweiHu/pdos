@@ -14,6 +14,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import Engine
 
 from app.ai.context_builder import RunContextBuilder
+from app.ai.finding_writer import AgentFindingWriter, preflight_assessment
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
 from app.ai.run_store import AgentRunStore, ClaimedAgentRun, OwnerAgentRunStore
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
@@ -96,6 +97,7 @@ class ExecutionResult:
     run_id: UUID | None
     status: Literal["idle", "succeeded", "degraded", "failed"]
     error_code: str | None
+    finding_id: UUID | None = None
 
 
 class AgentExecutor:
@@ -106,11 +108,13 @@ class AgentExecutor:
         model_invoker: AgentModelInvoker,
         context_builder: RunContextBuilder | None = None,
         run_store: AgentRunStore | None = None,
+        finding_writer: AgentFindingWriter | None = None,
     ) -> None:
         self._engine = engine
         self._model_invoker = model_invoker
         self._context_builder = context_builder or RunContextBuilder()
         self._run_store = run_store or OwnerAgentRunStore(engine)
+        self._finding_writer = finding_writer
         self._graph = self._build_graph()
 
     def execute_next(self, *, now: datetime | None = None) -> ExecutionResult:
@@ -124,6 +128,12 @@ class AgentExecutor:
                 context = self._load_context(claim=claim, built_at=current_time)
                 final_state = self._graph.invoke({"run_context": context})
                 result = final_state["gateway_result"]
+                finding_id = self._create_finding(
+                    claim=claim,
+                    context=context,
+                    result=result,
+                    created_at=current_time,
+                )
             except Exception as error:
                 error_code = self._error_code(error)
                 self._run_store.fail(
@@ -147,7 +157,31 @@ class AgentExecutor:
                 run_id=context.run_id,
                 status=status,
                 error_code=result.error_code,
+                finding_id=finding_id,
             )
+
+    def _create_finding(
+        self,
+        *,
+        claim: ClaimedAgentRun,
+        context: FrozenRunContext,
+        result: GatewayResult[AgentAssessment],
+        created_at: datetime,
+    ) -> UUID | None:
+        if self._finding_writer is None or result.status != "succeeded" or result.output is None:
+            return None
+        candidate = preflight_assessment(result.output, context=context)
+        if candidate is None:
+            return None
+        if result.invocation_id is None:
+            raise RuntimeError("successful Agent result has no model invocation trace")
+        return self._finding_writer.create(
+            claim=claim,
+            context=context,
+            model_invocation_id=result.invocation_id,
+            candidate=candidate,
+            created_at=created_at,
+        )
 
     def _build_graph(self) -> CompiledExecutorGraph:
         graph = StateGraph(ExecutorState)

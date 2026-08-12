@@ -15,6 +15,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import DBAPIError
 
 from app.ai.executor import AgentExecutor, GatewayAgentModelInvoker
+from app.ai.finding_writer import RestrictedAgentFindingWriter
 from app.ai.gateway import ProviderRateCard, StructuredModelGateway
 from app.ai.model_catalog import GoldenQualification, ModelCatalog, ProtocolKind, ProviderName
 from app.ai.provider_adapters import ChatMessage, ProviderResponse
@@ -160,20 +161,23 @@ def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
             .returning(tables.events.c.id)
         ).scalar_one()
     )
-    connection.execute(
-        tables.events.insert(),
-        {
-            "tenant_id": tenant_b,
-            "project_id": project_b,
-            "event_id": f"issue:{uuid4()}",
-            "event_type": "ISSUE_CREATED",
-            "schema_version": 1,
-            "source": "security_test",
-            "entity": "issue",
-            "entity_id": uuid4(),
-            "payload": {"description": "other tenant private"},
-            "timestamp": now - timedelta(minutes=16),
-        },
+    event_b = int(
+        connection.execute(
+            tables.events.insert()
+            .values(
+                tenant_id=tenant_b,
+                project_id=project_b,
+                event_id=f"issue:{uuid4()}",
+                event_type="ISSUE_CREATED",
+                schema_version=1,
+                source="security_test",
+                entity="issue",
+                entity_id=uuid4(),
+                payload={"description": "other tenant private"},
+                timestamp=now - timedelta(minutes=16),
+            )
+            .returning(tables.events.c.id)
+        ).scalar_one()
     )
     connection.execute(
         tables.agent_subscriptions.insert(),
@@ -207,6 +211,7 @@ def seed_two_tenants(connection: Connection) -> dict[str, UUID | int]:
         "project_b": project_b,
         "run_a": run_a,
         "event_a": event_a,
+        "event_b": event_b,
     }
 
 
@@ -339,6 +344,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                     "run_id": ids["run_a"],
                 },
             )
+            invocation_id = uuid4()
             connection.execute(
                 text(
                     "INSERT INTO cehub_ai.model_invocations "
@@ -348,11 +354,63 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                     "'minimax', 'MiniMax-M2.7', 'openai-compatible', 'succeeded', 1)"
                 ),
                 {
-                    "id": uuid4(),
+                    "id": invocation_id,
                     "tenant_a": ids["tenant_a"],
                     "project_a": ids["project_a"],
                     "run_id": ids["run_a"],
                 },
+            )
+            denied(
+                connection,
+                "SELECT * FROM cehub_ai.findings",
+                {},
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_ai.findings "
+                "(id, tenant_id, project_id, run_id, model_invocation_id, agent_key, "
+                "finding_type, origin_key, title, summary, proposed_payload, "
+                "evidence_event_ids, confidence_basis_points, preflight_version) VALUES "
+                "(:id, :tenant_id, :project_id, :run_id, :invocation_id, "
+                "'project_intelligence', 'risk_suggestion', 'direct', 'Direct', 'Direct', "
+                "'{}'::jsonb, CAST(:evidence AS jsonb), 8000, 'finding-preflight-v1')",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "run_id": ids["run_a"],
+                    "invocation_id": invocation_id,
+                    "evidence": f"[{ids['event_a']}]",
+                },
+            )
+            finding_parameters = {
+                "finding_id": uuid4(),
+                "run_id": claim["id"],
+                "lease_token": claim["lease_token"],
+                "invocation_id": invocation_id,
+                "origin_key": "schedule-risk",
+                "finding_type": "risk_suggestion",
+                "title": "Review schedule risk",
+                "summary": "Scoped evidence indicates a schedule risk.",
+                "payload": ('{"title":"Schedule risk","likelihood":3,"impact":4}'),
+                "confidence": 8500,
+                "preflight_version": "finding-preflight-v1",
+                "created_at": datetime.now(UTC),
+            }
+            create_finding_sql = text(
+                "SELECT cehub_ai.create_agent_finding("
+                ":finding_id, :run_id, :lease_token, :invocation_id, :origin_key, "
+                ":finding_type, :title, :summary, CAST(:payload AS jsonb), "
+                "CAST(:evidence AS jsonb), :confidence, :preflight_version, :created_at)"
+            )
+            denied(
+                connection,
+                str(create_finding_sql),
+                {**finding_parameters, "evidence": f"[{ids['event_b']}]"},
+            )
+            connection.execute(
+                create_finding_sql,
+                {**finding_parameters, "evidence": f"[{ids['event_a']}]"},
             )
             connection.execute(
                 text(
@@ -370,6 +428,24 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 select(tables.agent_runs.c.status).where(tables.agent_runs.c.id == ids["run_a"])
             ).scalar_one()
             assert status == "succeeded"
+            finding = (
+                connection.execute(
+                    select(tables.findings).where(
+                        tables.findings.c.id == finding_parameters["finding_id"]
+                    )
+                )
+                .mappings()
+                .one()
+            )
+            actions = list(
+                connection.execute(
+                    select(tables.finding_actions.c.action).where(
+                        tables.finding_actions.c.finding_id == finding["id"]
+                    )
+                ).scalars()
+            )
+            assert finding["status"] == "pending_review"
+            assert actions == ["created"]
     finally:
         engine.dispose()
         owner_engine.dispose()
@@ -424,11 +500,16 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
             agent_engine,
             model_invoker=GatewayAgentModelInvoker(gateway),
             run_store=run_store,
+            finding_writer=RestrictedAgentFindingWriter(
+                agent_engine,
+                run_store=run_store,
+            ),
         ).execute_next(now=now)
 
         assert result.status == "succeeded"
         assert result.run_id == ids["run_a"]
         assert len(adapter.calls) == 1
+        assert result.finding_id is not None
         serialized_messages = " ".join(
             message.content for _, messages in adapter.calls for message in messages
         )
@@ -451,10 +532,19 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 .mappings()
                 .one()
             )
+            finding = (
+                connection.execute(
+                    select(tables.findings).where(tables.findings.c.id == result.finding_id)
+                )
+                .mappings()
+                .one()
+            )
         assert run["status"] == "succeeded"
         assert run["run_context"]["tenant_id"] == str(ids["tenant_a"])
         assert invocation["tenant_id"] == ids["tenant_a"]
         assert invocation["status"] == "succeeded"
+        assert finding["status"] == "pending_review"
+        assert finding["model_invocation_id"] == invocation["id"]
     finally:
         agent_engine.dispose()
         owner_engine.dispose()

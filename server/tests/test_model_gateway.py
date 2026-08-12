@@ -296,9 +296,10 @@ def test_gateway_budget_circuit_records_degradation_without_provider_call(
     assert result.error_code == "DAILY_BUDGET_EXCEEDED"
     assert adapter.calls == []
     rows = invocation_rows(model_gateway_database, tenant_id)
-    assert [row["status"] for row in rows] == ["succeeded", "budget_exceeded"]
-    assert rows[-1]["total_tokens"] == 0
-    assert rows[-1]["structured_attempts"] == 0
+    assert {row["status"] for row in rows} == {"succeeded", "budget_exceeded"}
+    budget_row = next(row for row in rows if row["status"] == "budget_exceeded")
+    assert budget_row["total_tokens"] == 0
+    assert budget_row["structured_attempts"] == 0
 
 
 def test_gateway_provider_failure_is_not_retried_and_is_recorded(
