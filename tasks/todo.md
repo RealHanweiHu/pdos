@@ -1017,7 +1017,7 @@
 - 旧账号只迁移身份且默认禁用，不复用密码哈希；每个项目按源类型实例化独立版本化 Workflow/Stage/Gate，OBT 使用独立 `obt-gate-v1` 策略，Gate 全轮历史保留，文件只保留旧 OSS 引用而不复制正文或伪装成新文档。
 - 合成 CEHub 源库完成 S18-01 形态验收：2 User、1 Project、2 Task、2 Gate review、1 File reference；dry-run `target_writes=0`，apply 建立 8 个稳定映射，第二次 apply 五类 created 均为 0，修改已迁移源行后 `SOURCE_CHANGED` 阻断。
 - CLI 强制 `--dry-run` / `--apply` 二选一、至少一个 `--project-id`、源/目标数据库名不同；JSON 报告不输出连接串，落盘权限为 `0600`。运行手册见 `docs/runbooks/cehub-migration-v1.md`。
-- 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 274 tests，ESLint/Ruff/format、TypeScript/mypy 160 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮、可写源账号 fail-close、Prisma-only URL 参数兼容、同一项目 EVT→DVT→PVT/ECN 出口纵向闭环，以及 Git bundle/源码漂移/镜像 revision 发布契约。
+- 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 276 tests，ESLint/Ruff/format、TypeScript/mypy 160 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮、DML/REFERENCES/TRIGGER 任一非只读权限 fail-close、Prisma-only URL 参数兼容、同一项目 EVT→DVT→PVT/ECN 出口纵向闭环，以及 Git bundle/源码漂移/镜像 revision 发布契约。
 - intended-vs-implemented 审计补齐 canonical 冻结但仓库缺失的 `scripts/deploy-ecs.sh`：生产入口分为 preflight/build/deploy/status/rollback，deploy/rollback 均要求与 git SHA 绑定的人工确认；固定执行 migration→Agent 最小权限重施加/验证→无依赖运行服务→本机/公网健康与限时日志扫描，回滚不运行旧迁移器或数据库 downgrade。API 候选镜像以本地缓存的同版本基础镜像真实构建成功，非 root UID、内置 SQL 与两个 CLI 入口 smoke 通过。
 - S3-7 apply 已与人审 dry-run 真值绑定：CLI 要求完整获批 `source_fingerprint`，并以租户+fingerprint+有序项目选择器生成二次确认口令；源快照变化在目标写入前以 `SOURCE_SNAPSHOT_NOT_APPROVED` 阻断。生产入口同时验证同一批准 RDS、独立账号、异库与 verify-full/固定 CA；报告以原子 `0600` 文件落盘并拒绝 symlink，消除先写后 chmod 窗口。
 - 生产发布输入已绑定不可伪装的 Git 对象：本地只从 `HEAD` 生成并复核 `pdos-<40位SHA>.bundle`，ECS 必须在独立 bare repository 验证 bundle 后 clone 到全新目录；deploy 会核对 Git HEAD、拒绝除 `.env.production` 外的 tracked/untracked/ignored 漂移，并复核 API/Web 镜像的 OCI revision 等于同一 SHA。首轮旧镜像回滚额外绑定 API/Web image ID，迁移报告移到 release 工作树之外。两个候选镜像已完成真实 label inspect，聚焦 24 tests 与完整门禁全绿。
@@ -1027,7 +1027,7 @@
 - 经人授权，生产 PDOS 已从 `0014_finding_quality_controls` 升级到 `0020_cehub_migration_v1`；迁移后四个现有服务容器保持 healthy、restart count 0，公网登录入口返回 HTTP 200。应用镜像未在本步骤重部署。
 - 真实源库只读预检确认 `C4s` / `S18-01` 是项目编号，真实源 ID 分别为 `zGpNH0Xq` / `aBnbEdQG`；C4s 为 OBT/intake，S18-01 为 NPD/concept。导入器已据此补齐选择器解析和 OBT 契约测试。
 - 当前仍缺 CEHub 五张源表的独立只读登录账号/`CEHUB_SOURCE_DATABASE_URL`；现役 CEHub 应用账号可写，不得用于正式验收。需 DBA 创建/确认只读账号并由人授权生产 dry-run。正式 apply 仅在 dry-run 报告与数据 Owner 抽查通过后执行。
-- 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表零写缺一不可；可写应用账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
+- 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表 DML/REFERENCES/TRIGGER 零权限缺一不可；可写应用账号或仍持有表级非 SELECT 权限的账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
 - 真实 CEHub URL 的 Prisma-only `uselibpqcompat` 参数已在迁移源连接入口定点移除，`sslmode` 等真实 PostgreSQL 参数保持不变；避免只读账号就绪后被 psycopg 连接参数阻断。
 - `c39b2b4` 候选已只读上传 ECS；对真实 CEHub 现役可写账号的负向 smoke 先成功完成 URL 规范化，再在任何项目快照读取前返回 `blocked_write_capable_role`。未连接目标 PDOS、未写生产数据、未替换运行容器。
 - Sprint 3 intended-vs-implemented 出口审计发现并补齐“同一项目 EVT→DVT→PVT + 硬闸 + 一次 ECN”的跨模块证据：新增真实 FastAPI 纵向验收，终态为 EVT/DVT/PVT 三 Gate approved、恰好 1 个 ECN、Handoff ready、当前 Stage=MP；出口草案见 `docs/reports/2026-08-12-sprint-3-exit-draft.md`。

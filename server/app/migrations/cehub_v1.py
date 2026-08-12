@@ -211,7 +211,7 @@ class CeHubSourceAdapter:
                                has_table_privilege(
                                    current_user,
                                    :table_name,
-                                   'INSERT,UPDATE,DELETE,TRUNCATE'
+                                   'INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER'
                                ) AS can_write
                         """
                     ),

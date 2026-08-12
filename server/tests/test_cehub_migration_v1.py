@@ -337,6 +337,41 @@ def test_write_capable_source_role_is_rejected_before_snapshot(
         target_engine.dispose()
 
 
+@pytest.mark.parametrize("table_privilege", ["REFERENCES", "TRIGGER"])
+def test_non_select_table_privileges_are_rejected_before_snapshot(
+    migration_database_url: str,
+    table_privilege: str,
+) -> None:
+    _create_source_fixture(migration_database_url)
+    tenant_id, actor_id = _create_target_context(migration_database_url)
+    administrator = create_engine(psycopg_database_url(migration_database_url))
+    source_engine = _source_engine(migration_database_url)
+    target_engine = create_engine(psycopg_database_url(migration_database_url))
+    try:
+        with administrator.begin() as connection:
+            connection.execute(
+                text(f'GRANT {table_privilege} ON "{SOURCE_SCHEMA}"."projects" TO {SOURCE_ROLE}')
+            )
+        with pytest.raises(ValueError, match="independent read-only role"):
+            migrate_cehub_v1(
+                source_engine=source_engine,
+                target_engine=target_engine,
+                tenant_id=tenant_id,
+                actor_user_id=actor_id,
+                project_ids=("S18-01",),
+                source_schema=SOURCE_SCHEMA,
+                dry_run=True,
+            )
+    finally:
+        with administrator.begin() as connection:
+            connection.execute(
+                text(f'REVOKE {table_privilege} ON "{SOURCE_SCHEMA}"."projects" FROM {SOURCE_ROLE}')
+            )
+        source_engine.dispose()
+        target_engine.dispose()
+        administrator.dispose()
+
+
 def test_snapshot_dry_run_apply_replay_and_source_drift(
     migration_database_url: str,
 ) -> None:
