@@ -463,7 +463,7 @@
 
 **Implementation slices**
 
-- [ ] S2-1a：用测试冻结 provider catalog、credential+golden 双门禁、默认 MiniMax 与 Agent tier 路由合同
+- [x] S2-1a：用测试冻结 provider catalog、credential+golden 双门禁、默认 MiniMax 与 Agent tier 路由合同
 - [ ] S2-1b：migration 0008 建立 tenant model settings 与 model invocation 留痕，覆盖约束、索引、租户 FK 和往返
 - [ ] S2-1c：实现上下文白名单投影、日预算计算/熔断及租户模型治理服务/API
 - [ ] S2-1d：实现 OpenAI-compatible/Anthropic 两个 adapter、结构化 schema 校验有限重试及完整 invocation 记录
