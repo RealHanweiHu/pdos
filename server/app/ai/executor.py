@@ -281,6 +281,44 @@ class AgentExecutor:
         context = state["run_context"]
         project_context = state["project_context"]
         recent_events = state["recent_events"]
+        references = [
+            {
+                "reference_id": f"event:{item['id']}",
+                "entity": item["entity"],
+                "entity_id": item["entity_id"],
+                "label": item["event_type"],
+            }
+            for item in recent_events.items
+        ]
+        document_event = next(
+            (
+                event
+                for event in reversed(context.trigger_events)
+                if event.event_type == "DOCUMENT_UPLOADED"
+            ),
+            None,
+        )
+        if document_event is not None:
+            tools = AgentReadTools(
+                self._engine,
+                run_context=context,
+                run_store=self._run_store,
+            )
+            document_fragments = tools.get_document_fragments(
+                project_id=context.project_id,
+                document_id=document_event.entity_id,
+                limit=20,
+            )
+            references.extend(
+                {
+                    "reference_id": (f"document:{item['document_id']}:fragment:{item['ordinal']}"),
+                    "entity": "document_fragment",
+                    "entity_id": item["document_id"],
+                    "label": f"{item['filename']} · {item['locator']}",
+                    "excerpt": str(item["text"])[:1_000],
+                }
+                for item in document_fragments.items
+            )
         invocation = GatewayInvocation(
             tenant_id=context.tenant_id,
             project_id=context.project_id,
@@ -293,14 +331,7 @@ class AgentExecutor:
                 "project": project_context.project,
                 "execution": project_context.execution,
                 "trigger": self._trigger(context),
-                "references": [
-                    {
-                        "entity": item["entity"],
-                        "entity_id": item["entity_id"],
-                        "label": item["event_type"],
-                    }
-                    for item in recent_events.items
-                ],
+                "references": references,
             },
         )
         return {"gateway_result": self._model_invoker.invoke(invocation)}

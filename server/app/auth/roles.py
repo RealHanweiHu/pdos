@@ -38,6 +38,10 @@ class Action(StrEnum):
     FINDING_VIEW = "finding.view"
     FINDING_REVIEW = "finding.review"
     FINDING_APPLY = "finding.apply"
+    AI_CHAT_USE = "ai_chat.use"
+    DOCUMENT_ANALYZE = "document.analyze"
+    RISK_SUGGESTION_CREATE = "risk_suggestion.create"
+    EVENT_INGEST = "event.ingest"
     QUALITY_MANAGE = "quality.manage"
     EXTERNAL_RESPOND = "external.respond"
 
@@ -66,6 +70,10 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
+                Action.AI_CHAT_USE,
+                Action.DOCUMENT_ANALYZE,
+                Action.RISK_SUGGESTION_CREATE,
+                Action.EVENT_INGEST,
             }
         ),
         Role.ENGINEER: frozenset(
@@ -78,6 +86,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
+                Action.AI_CHAT_USE,
+                Action.DOCUMENT_ANALYZE,
+                Action.RISK_SUGGESTION_CREATE,
             }
         ),
         Role.QUALITY: frozenset(
@@ -91,6 +102,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
+                Action.AI_CHAT_USE,
+                Action.DOCUMENT_ANALYZE,
+                Action.RISK_SUGGESTION_CREATE,
             }
         ),
         Role.SUPPLIER: frozenset(

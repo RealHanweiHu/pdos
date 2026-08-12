@@ -36,9 +36,12 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
             },
             "references": [
                 {
+                    "reference_id": "issue:issue-1",
                     "entity": "issue",
                     "entity_id": "issue-1",
                     "label": "ISS-001",
+                    "href": "/projects/project-1?tab=issues&issue_id=issue-1",
+                    "excerpt": "Issue remains open.",
                     "object_storage_key": "tenant/project/private.pdf",
                 }
             ],
@@ -71,7 +74,16 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
             "entity_id": "issue-1",
             "timestamp": "2026-08-11T20:00:00Z",
         },
-        "references": [{"entity": "issue", "entity_id": "issue-1", "label": "ISS-001"}],
+        "references": [
+            {
+                "reference_id": "issue:issue-1",
+                "entity": "issue",
+                "entity_id": "issue-1",
+                "label": "ISS-001",
+                "href": "/projects/project-1?tab=issues&issue_id=issue-1",
+                "excerpt": "Issue remains open.",
+            }
+        ],
     }
     assert set(projection.removed_paths) == {
         "api_key",

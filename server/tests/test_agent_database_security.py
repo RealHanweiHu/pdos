@@ -309,6 +309,12 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 ).mappings()
             )
             assert events == [{"id": ids["event_a"], "tenant_id": ids["tenant_a"]}]
+            assert (
+                connection.execute(
+                    text("SELECT count(*) FROM cehub_ai.agent_document_fragment_projection")
+                ).scalar_one()
+                == 0
+            )
 
             connection.execute(
                 text("SELECT set_config('pdos.tenant_id', CAST(:tenant_b AS text), true)"),

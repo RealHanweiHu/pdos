@@ -309,6 +309,27 @@ SELECT
 FROM cehub_event.events AS event
 WHERE cehub_ai.agent_scope_allows(event.tenant_id, event.project_id);
 
+CREATE OR REPLACE VIEW cehub_ai.agent_document_fragment_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    fragment.id,
+    fragment.tenant_id,
+    fragment.project_id,
+    fragment.document_id,
+    fragment.ordinal,
+    fragment.locator,
+    fragment.text,
+    document.filename,
+    document.classification
+FROM cehub_project.document_fragments AS fragment
+JOIN cehub_project.documents AS document
+  ON document.tenant_id = fragment.tenant_id
+ AND document.project_id = fragment.project_id
+ AND document.id = fragment.document_id
+WHERE cehub_ai.agent_scope_allows(fragment.tenant_id, fragment.project_id)
+  AND document.classification = 'internal';
+
 CREATE OR REPLACE VIEW cehub_ai.agent_model_settings_projection
 WITH (security_barrier = true)
 AS
@@ -708,6 +729,7 @@ GRANT SELECT ON
     cehub_ai.agent_task_projection,
     cehub_ai.agent_gate_projection,
     cehub_ai.agent_event_projection,
+    cehub_ai.agent_document_fragment_projection,
     cehub_ai.agent_model_settings_projection,
     cehub_ai.agent_model_usage_projection,
     cehub_ai.agent_run_usage_projection

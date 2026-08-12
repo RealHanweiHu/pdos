@@ -109,7 +109,7 @@ ai-native-R&D-platform/
 | [x] S2-2b | **数据库层边界（PEDO 式，红线的最终居所）** | 角色分离：`pdos_worker` 仅可读事件并写 worker 游标/订阅/运行控制记录，`pdos_agent` 仅可 SELECT 租户投影视图并 INSERT `cehub_ai.findings/agent_runs/model_invocations`，两者均对业务表零写权限；AI executor 只持 `pdos_agent`，不得注入 `pdos_app`/`pdos_worker` 凭据。finding 的业务应用只由 FastAPI 的人工 apply handler 使用 `pdos_app` 完成。生产 RDS 的角色创建/凭据发放属于人执行的一次性动作；代码交付幂等权限模板与正反向权限测试，Agent 不自行用高权限账号执行。工具注册表/prompt 规则是降错器，不计入安全边界——即使将来加工具、改 prompt、被注入，业务表也写不进去 |
 | [x] S2-3 | **AI Finding 状态机** | pending_review→accepted/rejected→applied（语义移植自 cehub-v3-2 已验证设计）；Agent 唯一写出口=创建 finding；**接受与应用不得合并为一个动作**：人先裁决 accepted/rejected，accepted 后再由有权限的人发起第二次“应用到业务对象”并二次鉴权。apply handler 把 finding 载荷当不可信输入：落库前服务端从数据库地面真相重查全部引用/范围/状态，不采信 finding 内容中的任何政策事实 |
 | [x] S2-4 | **Phase 1 双 Agent** | Project Intelligence Agent（风险建议/阻塞预警/Gate 就绪异常，订阅 PROJECT_STAGE_CHANGED/ISSUE_CREATED/TEST_FAILED）；Knowledge Agent Lite（GATE_APPROVED/DOCUMENT_UPLOADED→知识草稿）。prompt 文件版本化入库 |
-| [ ] S2-5 | **API 面** | `/ai/chat`（只读问答，回答强制携带引用，无据不答）；`/ai/analyze-document` v0（PDF/Excel 文本抽取→DOCUMENT_UPLOADED 事件→Agent 消费；OCR 后置）；`/ai/create-risk-suggestion`（经 finding 人审通道）；`POST /events`（外部接入口，event_id 去重） |
+| [x] S2-5 | **API 面** | `/ai/chat`（只读问答，回答强制携带引用，无据不答）；`/ai/analyze-document` v0（PDF/Excel 文本抽取→DOCUMENT_UPLOADED 事件→Agent 消费；OCR 后置）；`/ai/create-risk-suggestion`（经 finding 人审通道）；`POST /events`（外部接入口，event_id 去重） |
 | [ ] S2-6 | **前端 AI 面** | Engineer Workspace：AI Review 收件箱（Accept/Edit/Reject + diff + 引用跳转；accepted 后独立 Apply 动作）；Dashboard AI Brief 卡片；Project Workspace AI Chat 标签 |
 | [ ] S2-7 | 纪律收口 | **拆除测试**（停 LLM→系统可见失能：无新 finding/无 Brief/Chat 降级）演练入 CI 旁路脚本；golden-case 目录随人工修正积累（评测非可选）；**北极星从 Day-1 定为 finding 接受率与被采取行动数（不是产出量）**——接受率遥测入 Dashboard，低于阈值自动收窄该 Agent 输出类型，防收件箱灌爆→人审疲劳→盲批 |
 

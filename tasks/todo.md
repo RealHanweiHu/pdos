@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S2-5 API 面。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 至 S2-4 已验收完成，当前只实施 `/ai/chat`、Document AI v0、风险建议入口与外部事件接入，不提前混入 S2-6 前端。
+> 唯一当前指针：**S2-6 前端 AI 面。** Sprint 1 Exit Gate 已于 2026-08-11 经人明确确认通过；S2-1 至 S2-5 已验收完成，下一项实施 AI Review 收件箱、Dashboard AI Brief 与 Project AI Chat 标签。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -616,20 +616,48 @@
 - `make check` 全绿：server 204 tests、web 82 tests，ruff/format/mypy/TypeScript/Next.js build/Python compile 全部通过；隔离生产容器 smoke（本地端口 57432）全绿。
 - 生产 RDS 未变更；测试临时角色口令与权限对象已清理。
 
-## Current: S2-5 API Surface
+## Completed: S2-5 API Surface
 
 **Definition of Ready**
 
-- [ ] 逐条映射 canonical S2-5、现有 Gateway/Finding/Event/Document 边界与 API 命名
-- [ ] `/ai/chat` 冻结为只读回答；每个主张必须带可点击引用，无据拒答
-- [ ] `/ai/analyze-document` v0 仅做 PDF/Excel 文本抽取并发 DOCUMENT_UPLOADED，OCR 后置
-- [ ] `/ai/create-risk-suggestion` 只创建 pending Finding，不直接写 Risk
-- [ ] 外部 `POST /events` 由 tenant-bound server context 绑定范围，event_id 幂等去重
+- [x] 逐条映射 canonical S2-5、现有 Gateway/Finding/Event/Document 边界与 API 命名
+- [x] `/ai/chat` 冻结为只读回答；每个主张必须带可点击引用，无据拒答
+- [x] `/ai/analyze-document` v0 仅做 PDF/Excel 文本抽取并发 DOCUMENT_UPLOADED，OCR 后置
+- [x] `/ai/create-risk-suggestion` 只创建 pending Finding，不直接写 Risk
+- [x] 外部 `POST /events` 由 tenant-bound server context 绑定范围，event_id 幂等去重
 
 **Implementation slices**
 
-- [ ] S2-5a：冻结四个 API 的 request/response/error/权限/引用合同与负例
-- [ ] S2-5b：实现引用强制的只读 `/ai/chat`
-- [ ] S2-5c：实现 Document AI v0 文本抽取与 DOCUMENT_UPLOADED 事件
-- [ ] S2-5d：实现风险建议 Finding 入口与幂等外部 Event 接入
-- [ ] S2-5e：HTTP、注入/越权、错误路径零 LLM、完整质量门禁验收
+- [x] S2-5a：冻结四个 API 的 request/response/error/权限/引用合同与负例
+- [x] S2-5b：实现引用强制的只读 `/ai/chat`
+- [x] S2-5c：实现 Document AI v0 文本抽取与 DOCUMENT_UPLOADED 事件
+- [x] S2-5d：实现风险建议 Finding 入口与幂等外部 Event 接入
+- [x] S2-5e：HTTP、注入/越权、错误路径零 LLM、完整质量门禁验收
+
+**Completion evidence（2026-08-11）**
+
+- migration `0013_ai_api_documents` 建立私有 Document 元数据与有序抽取片段；原文件写 S3 兼容 MinIO/OSS，数据库仅留对象键、摘要和 `page` / `sheet+rows` 无损指针；扫描型 PDF 显式返回 `ocr_required`。
+- `/api/ai/chat` 以结构化 claim 强制每条主张至少一个引用；模型只收到服务端白名单 evidence ID/摘录，站内 href 由服务端映射，未知或跨范围引用 fail closed 为 `insufficient_evidence`。
+- `/api/ai/create-risk-suggestion` 建立可追溯 run/invocation，只产生 `pending_review` Finding；重复 request_id 幂等，Accept 与 Apply 仍保持两个独立人工动作，API 不直接创建 Risk。
+- `POST /api/events` 仅开放 TEST_FAILED/SUPPLIER_DELAY_REPORTED/COMPLAINT_CREATED 三类外部事实，tenant/project 由认证上下文与成员权限绑定；相同 event_id 同载荷返回 replay，异载荷返回 409，内部事件冒充被拒。
+- DOCUMENT_UPLOADED 会由 dispatcher 路由 Knowledge Lite；受限 `pdos_agent` 只能经 run lease 读取 document fragment projection，原文件与 object_key 不可见，业务表写入仍为 0 穿透。
+- 完整门禁全绿：server 211 tests、web 82 tests，Ruff/format/mypy/ESLint/TypeScript/Next.js build/Python compile 全部通过；`0013` 降级再升级、真实受限角色安全测试与隔离生产容器 smoke 全绿。
+- 测试仅连接本地 `pdos_test`（端口 57432，因 55432 被现有 CEHub 占用）；生产 RDS/OSS/ECS/Nginx/DNS 均未变更，测试角色口令与权限对象已清理。
+
+## Current: S2-6 Frontend AI Surface
+
+**Definition of Ready**
+
+- [ ] 逐条映射 canonical S2-6、UI baseline、Finding/Chat API 与现有 Dashboard/Project Workspace 结构
+- [ ] AI Review 收件箱冻结 Accept/Edit/Reject、逐字段 diff、证据跳转与 accepted 后独立 Apply
+- [ ] Dashboard AI Brief 只呈现真实 Agent/Finding 事实，降级与空态不可伪装为正常
+- [ ] Project Workspace AI Chat 标签使用 S2-5 引用合同，不在前端自行生成或信任链接
+- [ ] 权限、双主题、320/768/1440 响应式、键盘可达与真实浏览器验收范围冻结
+
+**Implementation slices**
+
+- [ ] S2-6a：冻结前端类型、同源 BFF、权限与交互合同
+- [ ] S2-6b：实现 AI Review 收件箱及 Accept/Edit/Reject/Apply 两阶段交互
+- [ ] S2-6c：实现 Dashboard AI Brief 卡片与可观测降级/空态
+- [ ] S2-6d：实现 Project Workspace AI Chat 标签、引用跳转与无据拒答态
+- [ ] S2-6e：完成测试、真实浏览器、双主题响应式与完整质量门禁验收

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -83,6 +84,8 @@ def seed_roles_projects_and_events(
     other_workflow_id = uuid4()
     other_project_id = uuid4()
     password_hash = PasswordService().hash(PASSWORD)
+    admin_id = uuid4()
+    manager_id = uuid4()
     engine = create_engine(psycopg_database_url(database_url))
     try:
         with engine.begin() as connection:
@@ -90,7 +93,7 @@ def seed_roles_projects_and_events(
                 tables.users.insert(),
                 [
                     {
-                        "id": uuid4(),
+                        "id": admin_id,
                         "tenant_id": tenant_id,
                         "username": "admin",
                         "display_name": "Administrator",
@@ -98,7 +101,7 @@ def seed_roles_projects_and_events(
                         "password_hash": password_hash,
                     },
                     {
-                        "id": uuid4(),
+                        "id": manager_id,
                         "tenant_id": tenant_id,
                         "username": "manager",
                         "display_name": "Project Manager",
@@ -124,6 +127,16 @@ def seed_roles_projects_and_events(
                     "workflow_id": workflow_id,
                     "code": "PRJ-EVENT-LOCAL",
                     "name": "Local Event Project",
+                },
+            )
+            connection.execute(
+                tables.project_members.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "user_id": manager_id,
+                    "added_by_user_id": owner_id,
                 },
             )
             EventAuditWriter(
@@ -199,6 +212,82 @@ def seed_roles_projects_and_events(
     finally:
         engine.dispose()
     return project_id, other_project_id
+
+
+def test_external_event_ingress_is_idempotent_rejects_conflicts_and_internal_types(
+    client: TestClient,
+    isolated_event_api_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _ = seed_roles_projects_and_events(
+        isolated_event_api_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+    )
+    owner_headers = bearer_headers(client, username="owner")
+    manager_headers = bearer_headers(client, username="manager")
+    occurred_at = datetime(2026, 8, 12, 3, 0, tzinfo=UTC).isoformat()
+    request = {
+        "project_id": str(project_id),
+        "event_id": "external-test-failed-1",
+        "event_type": "TEST_FAILED",
+        "entity_id": str(uuid4()),
+        "payload": {"test_record_id": "TEST-001", "severity": "high"},
+        "occurred_at": occurred_at,
+    }
+
+    created = client.post("/api/events", headers=manager_headers, json=request)
+    replay = client.post("/api/events", headers=manager_headers, json=request)
+
+    assert created.status_code == 201
+    assert created.json()["created"] is True
+    assert replay.status_code == 200
+    assert replay.json()["created"] is False
+    assert replay.json()["event"] == created.json()["event"]
+
+    conflict_request = {**request, "payload": {"test_record_id": "TEST-001", "severity": "low"}}
+    conflict = client.post("/api/events", headers=manager_headers, json=conflict_request)
+    assert conflict.status_code == 409
+    assert conflict.json()["detail"]["code"] == "EVENT_IDEMPOTENCY_CONFLICT"
+
+    internal = client.post(
+        "/api/events",
+        headers=owner_headers,
+        json={
+            **request,
+            "event_id": "impersonation-attempt",
+            "event_type": "PROJECT_CREATED",
+            "payload": {"project_code": "FAKE", "project_name": "Fake"},
+        },
+    )
+    assert internal.status_code == 422
+    assert internal.json()["detail"]["code"] == "EXTERNAL_EVENT_TYPE_DENIED"
+
+    engine = create_engine(psycopg_database_url(isolated_event_api_database))
+    try:
+        with engine.connect() as connection:
+            assert (
+                connection.execute(
+                    text(
+                        "SELECT count(*) FROM cehub_event.events "
+                        "WHERE event_id = 'external-test-failed-1'"
+                    )
+                ).scalar_one()
+                == 1
+            )
+            assert (
+                connection.execute(
+                    text(
+                        "SELECT count(*) FROM cehub_audit.audit_log "
+                        "WHERE event_id = 'external-test-failed-1'"
+                    )
+                ).scalar_one()
+                == 1
+            )
+    finally:
+        engine.dispose()
 
 
 def test_event_catalog_and_stream_are_admin_only_tenant_bound_and_cursor_stable(

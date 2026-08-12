@@ -27,6 +27,16 @@ class Settings(BaseSettings):
         le=1440,
         validation_alias="JWT_ACCESS_TOKEN_MINUTES",
     )
+    s3_endpoint: str = Field(default="http://localhost:9000", validation_alias="S3_ENDPOINT")
+    s3_region: str = Field(default="us-east-1", validation_alias="S3_REGION")
+    s3_bucket: str = Field(default="pdos-files", validation_alias="S3_BUCKET")
+    s3_access_key_id: SecretStr = Field(
+        default=SecretStr("minioadmin"), validation_alias="S3_ACCESS_KEY_ID"
+    )
+    s3_secret_access_key: SecretStr = Field(
+        default=SecretStr("minioadmin"), validation_alias="S3_SECRET_ACCESS_KEY"
+    )
+    s3_force_path_style: bool = Field(default=True, validation_alias="S3_FORCE_PATH_STYLE")
 
     @field_validator("jwt_secret")
     @classmethod

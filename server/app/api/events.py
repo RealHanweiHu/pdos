@@ -7,14 +7,24 @@ from typing import Annotated, Any
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import Engine
 
 from app.api.auth import current_context, no_store
+from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
 from app.db.engine import get_engine
-from app.domain.events import EventProjectNotFoundError, EventQueryService, EventRecord
+from app.domain.events import (
+    EventIdempotencyConflictError,
+    EventProjectNotFoundError,
+    EventQueryService,
+    EventRecord,
+    ExternalEventService,
+    ExternalEventTypeDeniedError,
+    InvalidEventPayloadError,
+    SensitiveAuditDataError,
+)
 from app.events.catalog import (
     EVENT_REGISTRY,
     SPRINT_1_IMPLEMENTED_EVENT_TYPES,
@@ -67,6 +77,36 @@ class EventListResponse(BaseModel):
     has_more: bool
 
 
+class EventIngestRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    project_id: UUID
+    event_id: str = Field(min_length=1, max_length=128)
+    event_type: str = Field(min_length=1, max_length=64)
+    entity_id: UUID
+    payload: dict[str, Any]
+    occurred_at: datetime
+
+    @field_validator("event_id", "event_type", mode="before")
+    @classmethod
+    def normalize_text(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+    @field_validator("occurred_at")
+    @classmethod
+    def require_timezone(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("occurred_at must include a timezone")
+        return value
+
+
+class EventIngestResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    created: bool
+    event: EventResponse
+
+
 def require_event_debug(context: AuthContext) -> None:
     if not is_allowed(context.user.role, Action.EVENT_DEBUG_VIEW):
         raise HTTPException(
@@ -105,6 +145,61 @@ def event_response(record: EventRecord) -> EventResponse:
         timestamp=record.timestamp,
         consumers=list(record.consumers),
     )
+
+
+@router.post("", response_model=EventIngestResponse, status_code=status.HTTP_201_CREATED)
+def ingest_event(
+    request: EventIngestRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> EventIngestResponse:
+    if not is_allowed(context.user.role, Action.EVENT_INGEST):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "OBJECT_PERMISSION_DENIED", "message": "Event ingestion is denied"},
+        )
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=request.project_id,
+        action=Action.PROJECT_VIEW,
+    )
+    try:
+        result = ExternalEventService(engine).ingest(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            project_id=request.project_id,
+            event_id=request.event_id,
+            event_type=request.event_type,
+            entity_id=request.entity_id,
+            payload=request.payload,
+            occurred_at=request.occurred_at,
+        )
+    except ExternalEventTypeDeniedError as error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail={
+                "code": "EXTERNAL_EVENT_TYPE_DENIED",
+                "message": "Event type is not accepted by the external ingress",
+            },
+        ) from error
+    except (InvalidEventPayloadError, SensitiveAuditDataError) as error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail={"code": "INVALID_EVENT_PAYLOAD", "message": "Event payload is invalid"},
+        ) from error
+    except EventIdempotencyConflictError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "EVENT_IDEMPOTENCY_CONFLICT",
+                "message": "event_id was already used with a different request",
+            },
+        ) from error
+    response.status_code = status.HTTP_201_CREATED if result.created else status.HTTP_200_OK
+    no_store(response)
+    return EventIngestResponse(created=result.created, event=event_response(result.record))
 
 
 @router.get("/catalog", response_model=EventCatalogResponse)

@@ -27,7 +27,8 @@
 - [x] S2-2b 数据库层安全边界已完成：独立 worker/agent 登录角色、run lease 租户投影、业务表零写、真实受限账号正反向测试与 DBA 幂等手册均验收通过
 - [x] S2-3 AI Finding 状态机已完成：受限 Agent 创建、确定性预检、pending_review→accepted/rejected→applied、两次人工动作、apply 真值复核与全链路留痕均验收通过
 - [x] S2-4 Phase 1 双 Agent 已完成：两份版本化静态 prompt、Project Intelligence 三类 Finding、Knowledge Lite 知识草稿、订阅/受限写入/评测合同与完整门禁均验收通过
-- [ ] **当前：S2-5 API 面**，按 `tasks/todo.md` 交付引用强制的只读 Chat、Document AI v0、风险建议入口与幂等外部 Event 接口
+- [x] S2-5 API 面已完成：引用强制的只读 Chat、PDF/XLSX 抽取与私有对象存储、风险建议 pending Finding 通道、幂等外部 Event 接口均验收通过
+- [ ] **当前：S2-6 前端 AI 面**，按 `tasks/todo.md` 交付 AI Review 收件箱、Dashboard AI Brief 与 Project AI Chat 标签
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

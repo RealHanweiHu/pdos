@@ -210,12 +210,15 @@ def test_project_access_http_path_is_tenant_bound_and_membership_gated(
     )
     assert member_access.status_code == 200
     assert member_access.json()["allowed_actions"] == [
+        "ai_chat.use",
         "development_case.view",
+        "document.analyze",
         "finding.apply",
         "finding.review",
         "finding.view",
         "project.view",
         "requirement.view",
+        "risk_suggestion.create",
         "work_item.edit",
         "work_item.view",
     ]

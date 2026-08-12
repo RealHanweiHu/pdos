@@ -22,6 +22,7 @@ class ContextProjection:
 
 
 PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
+    "question": None,
     "project": {
         "id": None,
         "code": None,
@@ -51,9 +52,12 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
     },
     "references": (
         {
+            "reference_id": None,
             "entity": None,
             "entity_id": None,
             "label": None,
+            "href": None,
+            "excerpt": None,
         },
     ),
 }

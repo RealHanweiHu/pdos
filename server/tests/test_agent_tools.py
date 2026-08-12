@@ -208,3 +208,87 @@ def test_recent_events_are_tenant_bound_payload_free_and_explicitly_paginated(
         assert second.next_after_id is None
     finally:
         engine.dispose()
+
+
+def test_document_fragments_are_tenant_bound_and_never_expose_object_keys(
+    agent_tools_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(agent_tools_database_url))
+    document_id = uuid4()
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection, slug="document")
+            user_id = uuid4()
+            connection.execute(
+                tables.users.insert(),
+                {
+                    "id": user_id,
+                    "tenant_id": tenant_id,
+                    "username": "uploader",
+                    "display_name": "Uploader",
+                    "role": "engineer",
+                },
+            )
+            connection.execute(
+                tables.documents.insert(),
+                {
+                    "id": document_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "uploaded_by_user_id": user_id,
+                    "object_key": "private/source.xlsx",
+                    "filename": "source.xlsx",
+                    "media_type": (
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    ),
+                    "classification": "internal",
+                    "size_bytes": 10,
+                    "sha256": "a" * 64,
+                    "extraction_status": "extracted",
+                    "fragment_count": 1,
+                },
+            )
+            connection.execute(
+                tables.document_fragments.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "document_id": document_id,
+                    "ordinal": 1,
+                    "locator": "sheet:Risk,rows:1-2",
+                    "text": "Connector delay\tHigh",
+                },
+            )
+        tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(tenant_id=tenant_id, project_id=project_id),
+        )
+
+        page = tools.get_document_fragments(
+            project_id=project_id,
+            document_id=document_id,
+        )
+
+        assert page.shown_count == page.total_count == 1
+        assert page.items[0]["locator"] == "sheet:Risk,rows:1-2"
+        assert "object_key" not in page.items[0]
+        assert "private/source.xlsx" not in str(page.items)
+        with pytest.raises(ToolScopeViolationError):
+            tools.get_document_fragments(project_id=uuid4(), document_id=document_id)
+
+        with engine.begin() as connection:
+            connection.execute(
+                tables.documents.update()
+                .where(tables.documents.c.id == document_id)
+                .values(classification="confidential")
+            )
+        assert (
+            tools.get_document_fragments(
+                project_id=project_id,
+                document_id=document_id,
+            ).shown_count
+            == 0
+        )
+    finally:
+        engine.dispose()

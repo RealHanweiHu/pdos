@@ -214,6 +214,116 @@ class AgentReadTools:
             source_status="not_enabled",
         )
 
+    def get_document_fragments(
+        self,
+        *,
+        project_id: UUID,
+        document_id: UUID,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> ToolPage:
+        """Return extracted text fragments; object keys and original files never cross this port."""
+        self._assert_scope(project_id)
+        self._validate_page(after_id=offset, limit=limit)
+        with self._engine.connect() as connection:
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                filters = "document_id = :document_id AND ordinal > :offset"
+                total = int(
+                    connection.execute(
+                        text(
+                            "SELECT count(*) FROM cehub_ai.agent_document_fragment_projection "
+                            f"WHERE {filters}"
+                        ),
+                        {"document_id": document_id, "offset": offset},
+                    ).scalar_one()
+                )
+                rows = list(
+                    connection.execute(
+                        text(
+                            "SELECT document_id, ordinal, locator, text, filename, classification "
+                            "FROM cehub_ai.agent_document_fragment_projection "
+                            f"WHERE {filters} ORDER BY ordinal LIMIT :limit"
+                        ),
+                        {"document_id": document_id, "offset": offset, "limit": limit},
+                    ).mappings()
+                )
+            else:
+                scoped = (
+                    tables.document_fragments.c.tenant_id == self._context.tenant_id,
+                    tables.document_fragments.c.project_id == self._context.project_id,
+                    tables.document_fragments.c.document_id == document_id,
+                    tables.document_fragments.c.ordinal > offset,
+                    tables.documents.c.classification == "internal",
+                )
+                total = int(
+                    connection.execute(
+                        select(func.count())
+                        .select_from(
+                            tables.document_fragments.join(
+                                tables.documents,
+                                (
+                                    tables.documents.c.tenant_id
+                                    == tables.document_fragments.c.tenant_id
+                                )
+                                & (
+                                    tables.documents.c.id == tables.document_fragments.c.document_id
+                                ),
+                            )
+                        )
+                        .where(*scoped)
+                    ).scalar_one()
+                )
+                rows = list(
+                    connection.execute(
+                        select(
+                            tables.document_fragments.c.document_id,
+                            tables.document_fragments.c.ordinal,
+                            tables.document_fragments.c.locator,
+                            tables.document_fragments.c.text,
+                            tables.documents.c.filename,
+                            tables.documents.c.classification,
+                        )
+                        .select_from(
+                            tables.document_fragments.join(
+                                tables.documents,
+                                (
+                                    tables.documents.c.tenant_id
+                                    == tables.document_fragments.c.tenant_id
+                                )
+                                & (
+                                    tables.documents.c.id == tables.document_fragments.c.document_id
+                                ),
+                            )
+                        )
+                        .where(*scoped)
+                        .order_by(tables.document_fragments.c.ordinal)
+                        .limit(limit)
+                    ).mappings()
+                )
+        items = tuple(
+            {
+                "document_id": str(row["document_id"]),
+                "ordinal": int(row["ordinal"]),
+                "locator": str(row["locator"]),
+                "text": str(row["text"]),
+                "filename": str(row["filename"]),
+                "classification": str(row["classification"]),
+            }
+            for row in rows
+        )
+        next_after_id = int(rows[-1]["ordinal"]) if total > len(rows) and rows else None
+        return ToolPage(
+            items=items,
+            shown_count=len(items),
+            total_count=total,
+            truncated=total > len(items),
+            next_after_id=next_after_id,
+            continuation=self._continuation(
+                shown=len(items), total=total, next_after_id=next_after_id
+            ),
+        )
+
     def _assert_scope(self, claimed_project_id: UUID) -> None:
         if claimed_project_id != self._context.project_id:
             raise ToolScopeViolationError("tool Project scope does not match the Agent run")

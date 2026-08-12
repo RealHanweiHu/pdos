@@ -491,6 +491,122 @@ project_members = Table(
     schema=PROJECT_SCHEMA,
 )
 
+documents = Table(
+    "documents",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("uploaded_by_user_id", Uuid, nullable=False),
+    Column("object_key", String(1024), nullable=False),
+    Column("filename", String(512), nullable=False),
+    Column("media_type", String(128), nullable=False),
+    Column("classification", String(32), nullable=False),
+    Column("size_bytes", BigInteger, nullable=False),
+    Column("sha256", String(64), nullable=False),
+    Column("extraction_status", String(32), nullable=False),
+    Column("fragment_count", Integer, nullable=False, server_default=text("0")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(object_key) <> ''", name="object_key_nonblank"),
+    CheckConstraint("btrim(filename) <> ''", name="filename_nonblank"),
+    CheckConstraint("btrim(media_type) <> ''", name="media_type_nonblank"),
+    CheckConstraint(
+        "classification IN ('internal', 'confidential', 'restricted')",
+        name="classification_allowed",
+    ),
+    CheckConstraint(
+        "extraction_status IN ('extracted', 'ocr_required')",
+        name="extraction_status_allowed",
+    ),
+    CheckConstraint("size_bytes > 0", name="size_positive"),
+    CheckConstraint("sha256 ~ '^[0-9a-f]{64}$'", name="sha256_hex"),
+    CheckConstraint("fragment_count >= 0", name="fragment_count_nonnegative"),
+    CheckConstraint(
+        "(extraction_status = 'extracted' AND fragment_count > 0) OR "
+        "(extraction_status = 'ocr_required' AND fragment_count = 0)",
+        name="extraction_fragment_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_documents_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "uploaded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_documents_tenant_uploader",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_documents_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_documents_tenant_project_id"),
+    UniqueConstraint("tenant_id", "object_key", name="uq_documents_tenant_object_key"),
+    Index("ix_documents_tenant_project_created", "tenant_id", "project_id", "created_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+document_fragments = Table(
+    "document_fragments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("ordinal", Integer, nullable=False),
+    Column("locator", String(256), nullable=False),
+    Column("text", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("ordinal > 0", name="ordinal_positive"),
+    CheckConstraint("btrim(locator) <> ''", name="locator_nonblank"),
+    CheckConstraint("btrim(text) <> ''", name="text_nonblank"),
+    CheckConstraint("char_length(text) <= 20000", name="text_size"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_document_fragments_tenant_project_document",
+        ondelete="CASCADE",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_document_fragments_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "document_id",
+        "ordinal",
+        name="uq_document_fragments_tenant_document_ordinal",
+    ),
+    Index(
+        "ix_document_fragments_tenant_project_document",
+        "tenant_id",
+        "project_id",
+        "document_id",
+        "ordinal",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
 gates = Table(
     "gates",
     metadata,
@@ -1652,6 +1768,8 @@ class Tables:
     development_cases: Table
     projects: Table
     project_members: Table
+    documents: Table
+    document_fragments: Table
     workflows: Table
     stages: Table
     gates: Table
@@ -1679,6 +1797,8 @@ tables = Tables(
     development_cases=development_cases,
     projects=projects,
     project_members=project_members,
+    documents=documents,
+    document_fragments=document_fragments,
     workflows=workflows,
     stages=stages,
     gates=gates,

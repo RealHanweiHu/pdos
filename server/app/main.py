@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.api.ai import router as ai_router
 from app.api.auth import router as auth_router
 from app.api.development_cases import router as development_cases_router
 from app.api.events import router as events_router
@@ -18,6 +19,7 @@ app = FastAPI(
 )
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(ai_router)
 app.include_router(projects_router)
 app.include_router(requirements_router)
 app.include_router(development_cases_router)
