@@ -1,10 +1,10 @@
-# Sprint 3 Exit Gate 审计草案
+# Sprint 3 Exit Gate 审计报告
 
 日期：2026-08-12
 
-状态：**尚未达到 Sprint 3 Exit**。S3-1～S3-6 与本地 S3-7 实现已具备可部署证据；同一项目的跨模块 NPI/ECN 连续验收已补齐。唯一 canonical 硬缺口仍是 S3-7 真实 CEHub 试点 dry-run、数据 Owner 抽查、apply 与幂等重放。
+状态：**技术与数据验收已达到 Sprint 3 Exit 条件，等待人工 Exit Gate 确认。** S3-1～S3-7 canonical 工作项全部完成；同一项目的跨模块 NPI/ECN 连续验收与真实 CEHub 双项目试点均已闭环。
 
-本文件是出口草案，不代表人工 Exit Gate 已确认，也不授权进入 Sprint 4。
+本文件不代表人工 Exit Gate 已确认，也不授权自行进入 Sprint 4。
 
 ## 审计依据与方法
 
@@ -22,7 +22,7 @@
 | S3-4 ECR→ECN→Handoff | 四眼审批、EBOM 冻结、PVT Gate 批准后才 ready；S3 不写 queue 以后状态 | `server/app/domain/change_governance.py:382-449` 拒绝申请人自审；`:550-689` 只接受同项目 EBOM 并冻结快照；`:693-752` 仅当 PVT Gate approved 才 pending→ready | `server/tests/test_change_governance_api.py:221` | 已匹配 |
 | S3-5 687 检查项 | 直接消费 JSON，绑定 Stage/isGate，硬闸项进入 Gate | `server/app/domain/deliverable_checks.py:20-88` 固化资产路径与 687 唯一数；`:287-306` 实例化 `isGate`；`:391-425` 硬闸不可 not-applicable；Gate 查询 `server/app/domain/gates.py:548-567` | `server/tests/test_deliverable_checks_api.py:158` | 已匹配 |
 | S3-6 Gate/Document 前端 | 内部成员懒加载；外部成员零标签/零请求；异常优先且不泄露 object key | `web/src/components/projects/project-workspace.tsx:55-68,170-186,400-415` 角色与懒加载边界；`web/src/components/projects/project-workspace.test.tsx:366-415,622-639` 验证例外优先、错误态、无 object key 与外部零请求 | `tasks/todo.md` S3-6 桌面/移动/双主题真实浏览器证据 | 已匹配 |
-| S3-7 迁移工具 | CEHub 五类数据只读导入、dry-run 0 写、稳定映射、幂等重放 | `server/app/migrations/cehub_v1.py:181-218` 强制独立 SELECT-only/default-read-only 账号；`:867-965` 阻断源漂移并生成 0 写计划；`:1503-1600` 以租户 advisory lock 原子 apply；migration `0020` 建审计/映射/外部文件引用表 | 合成源测试与生产 schema 升级已完成；真实试点尚未运行 | **未完成** |
+| S3-7 迁移工具 | CEHub 五类数据只读导入、dry-run 0 写、稳定映射、幂等重放 | `server/app/migrations/cehub_v1.py:181-218` 强制独立 SELECT-only/default-read-only 账号；`:867-965` 阻断源漂移并生成 0 写计划；`:1503-1600` 以租户 advisory lock 原子 apply；migration `0020` 建审计/映射/外部文件引用表 | 合成源门禁全绿；生产 C4s/S18-01 dry-run、数据 Owner 抽查、apply、目标抽查与原参数重放全部通过，见 `docs/reports/2026-08-12-s3-7-production-apply.md` | 已匹配 |
 
 ## 跨模块 Sprint 3 验收
 
@@ -49,13 +49,21 @@
 
 生产环境门禁随后经人授权完成：`pdos_cehub_readonly` 已创建为 NOINHERIT、无高权限的独立登录角色，五张源表真实连接复核为 SELECT-only 且默认事务只读；生产私有环境中的源 URL、目标租户和 active Owner 操作人均唯一写入并验证。环境文件保持 `0600`，运行容器未重启且全部 healthy；该动作不等于正式 dry-run 授权。
 
+## 真实试点闭环
+
+数据 Owner 明确批准 release `e1d0b2aaaff1ef9cf0b49e27f59464554aac80e3`、source fingerprint `d37ac192c4c318b540f6beb74d3340ee8bbfd04f7776f4f0f1112b1760abe71d` 与有序范围 C4s/S18-01 后完成：
+
+1. apply 创建 5 User、2 Project、53 Task、0 Gate Review、10 File Reference，errors 为空；
+2. 独立目标库抽查验证 70 条 mapping 全部落到存在的目标对象，用户安全默认值、项目结构、任务与文件样本均与源 Owner 抽查一致；
+3. 原参数重放五类 created 全为 0，十张业务/映射表 count 与内容 SHA-256 完全不变，仅新增第二条成功 Migration Run；
+4. 线上应用容器未替换、restart count 全为 0、全部 healthy，公网登录页 HTTP 200。
+
+生产预检、dry-run 与 apply/replay 证据分别见：
+
+- `docs/reports/2026-08-12-s3-7-production-migration-preflight.md`；
+- `docs/reports/2026-08-12-s3-7-production-dry-run.md`；
+- `docs/reports/2026-08-12-s3-7-production-apply.md`。
+
 ## 当前开放门禁
 
-1. 生产 PDOS schema 已是 `0020_cehub_migration_v1 (head)`，独立只读账号与执行上下文已就绪，但真实 C4s（`zGpNH0Xq`）/S18-01（`aBnbEdQG`）尚未正式 dry-run 或写入。
-2. 收到 production dry-run 确认后先运行并由数据 Owner 核对五类计数/抽样；正式 apply 必须再次取得生产授权。
-3. apply 后必须原参数重放，证明五类 `created_counts=0`、mapping/业务行不增长，并执行抽样 SQL。
-4. 完成后才能勾选 canonical S3-7、提交正式 Sprint 3 Exit 报告，等待人工确认；在此之前不得进入 Sprint 4。
-
-生产 schema 与真实源预检的详细证据见 `docs/reports/2026-08-12-s3-7-production-migration-preflight.md`。
-
-真实源负向 smoke 已证明候选代码能处理现役 Prisma URL，并会在读取项目数据前拒绝可写账号；该结果不能替代独立只读账号的正式 dry-run。
+仅剩人工确认 Sprint 3 Exit Gate。确认前不得进入 Sprint 4；确认后当前指针才移动到 S4-1。

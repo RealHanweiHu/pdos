@@ -2,7 +2,7 @@
 
 日期：2026-08-12
 范围：CEHub `C4s`（`zGpNH0Xq`）与 `S18-01`（`aBnbEdQG`）→ PDOS `beepump` 租户
-状态：dry-run 与独立抽查通过；**尚未执行 apply**
+状态：dry-run 与独立抽查通过；后续 apply 与幂等重放亦已通过，见 `docs/reports/2026-08-12-s3-7-production-apply.md`
 
 ## 1. 候选制品与运行边界
 
@@ -53,11 +53,11 @@
 
 ## 6. Data Owner 批准门禁
 
-apply 只能在项目负责人 / 数据 Owner 明确批准本报告后执行，批准必须同时绑定：
+apply 已在项目负责人 / 数据 Owner 明确批准本报告后执行；批准同时绑定：
 
 1. release revision `e1d0b2aaaff1ef9cf0b49e27f59464554aac80e3`；
 2. source fingerprint `d37ac192c4c318b540f6beb74d3340ee8bbfd04f7776f4f0f1112b1760abe71d`；
 3. 有序选择器 `C4s,S18-01`；
 4. 目标租户 `e340c240-d8f0-429c-aac5-69ab9b42fac5`。
 
-批准后仍需在任何目标写入前重新冻结源快照；fingerprint 变化必须重新 dry-run 与抽查，禁止直接批准新值。apply 成功后必须原命令重放一次，并验证五类 created 全为 0、业务表与 mapping 不增加，仅新增成功运行审计。
+批准后已在任何目标写入前重新冻结源快照，fingerprint 保持一致；apply 成功后已原命令重放一次，五类 created 全为 0、业务表与 mapping 不增加，仅新增成功运行审计。完整结果见 `docs/reports/2026-08-12-s3-7-production-apply.md`。

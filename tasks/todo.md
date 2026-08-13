@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S3-7 迁移工具 v1。** Sprint 2 出口已于 2026-08-12 经人明确确认；S3-1～S3-6 已完成；双跑试点为 C4s 与 S18-01。
+> 唯一当前指针：**Sprint 3 Exit Gate 等待人工确认。** S3-1～S3-7 已完成；确认前不得进入 Sprint 4。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -991,7 +991,7 @@
 |---|---:|---|
 | 首次 Playwright wrapper 命令把同一行临时变量当作已展开路径，得到空命令 permission denied | 1 | 改用明确 wrapper 绝对路径并保持命名 session，后续真实浏览器流程全绿 |
 
-## In Progress: S3-7 迁移工具 v1
+## Completed: S3-7 迁移工具 v1
 
 **Definition of Ready**
 
@@ -1007,8 +1007,8 @@
 - [x] S3-7c：实现 User/Project/Task/Gate/File-reference 映射及跨实体引用解析
 - [x] S3-7d：建立合成 CEHub 源库正反例、重放 0 重复、dry-run 0 写与抽查一致性测试
 - [x] S3-7e：交付运行手册，完成 migration 往返、metadata drift 与完整本地门禁
-- [ ] S3-7f：经人授权配置 CEHub 只读账号，对 C4s / S18-01 执行正式 dry-run→apply→重放与数据 Owner 抽查
-- [ ] S3-7g：真实试点一致后更新 canonical S3-7，并汇报 Sprint 3 Exit Gate 等待人工确认
+- [x] S3-7f：经人授权配置 CEHub 只读账号，对 C4s / S18-01 执行正式 dry-run→apply→重放与数据 Owner 抽查
+- [x] S3-7g：真实试点一致后更新 canonical S3-7，并汇报 Sprint 3 Exit Gate 等待人工确认
 
 **Local completion evidence（2026-08-12）**
 
@@ -1022,17 +1022,19 @@
 - S3-7 apply 已与人审 dry-run 真值绑定：CLI 要求完整获批 `source_fingerprint`，并以租户+fingerprint+有序项目选择器生成二次确认口令；源快照变化在目标写入前以 `SOURCE_SNAPSHOT_NOT_APPROVED` 阻断。生产入口同时验证同一批准 RDS、独立账号、异库与 verify-full/固定 CA；报告以原子 `0600` 文件落盘并拒绝 symlink，消除先写后 chmod 窗口。
 - 生产发布输入已绑定不可伪装的 Git 对象：本地只从 `HEAD` 生成并复核 `pdos-<40位SHA>.bundle`，ECS 必须在独立 bare repository 验证 bundle 后 clone 到全新目录；deploy 会核对 Git HEAD、拒绝除 `.env.production` 外的 tracked/untracked/ignored 漂移，并复核 API/Web 镜像的 OCI revision 等于同一 SHA。首轮旧镜像回滚额外绑定 API/Web image ID，迁移报告移到 release 工作树之外。两个候选镜像已完成真实 label inspect，聚焦 24 tests 与完整门禁全绿。
 
-**Human-authorized environment gate（pending）**
+**Human-authorized production gate（completed）**
 
 - 经人授权，生产 PDOS 已从 `0014_finding_quality_controls` 升级到 `0020_cehub_migration_v1`；迁移后四个现有服务容器保持 healthy、restart count 0，公网登录入口返回 HTTP 200。应用镜像未在本步骤重部署。
 - 真实源库只读预检确认 `C4s` / `S18-01` 是项目编号，真实源 ID 分别为 `zGpNH0Xq` / `aBnbEdQG`；C4s 为 OBT/intake，S18-01 为 NPD/concept。导入器已据此补齐选择器解析和 OBT 契约测试。
 - 经人授权已创建独立角色 `pdos_cehub_readonly` 并写入生产私有执行环境：默认事务只读、五表 SELECT-only、无高权限/角色继承，四项变量各唯一一份，`.env.production` 保持 `0600`；真实源连接、active `beepump` 租户与 `admin` Owner 操作人均验证通过。
 - `e1d0b2aaaff1ef9cf0b49e27f59464554aac80e3` 候选已由完整 Git bundle 在 ECS 独立 release 中验证；Linux/amd64 API 与 Web OCI revision、非 root runtime、production preflight 均通过，未替换线上容器。
-- C4s / S18-01 正式生产 dry-run 已通过：fingerprint `d37ac192c4c318b540f6beb74d3340ee8bbfd04f7776f4f0f1112b1760abe71d`，5 User / 2 Project / 53 Task / 0 Gate Review / 10 File Reference，`target_writes=0`、errors 为空。独立源五表抽查一致，目标 11 表前后 count+内容 SHA-256 完全相同，线上容器 ID/健康无变化。证据见 `docs/reports/2026-08-12-s3-7-production-dry-run.md`；正式 apply 正等待数据 Owner 对该 fingerprint 的单独批准。
+- C4s / S18-01 正式生产 dry-run 已通过：fingerprint `d37ac192c4c318b540f6beb74d3340ee8bbfd04f7776f4f0f1112b1760abe71d`，5 User / 2 Project / 53 Task / 0 Gate Review / 10 File Reference，`target_writes=0`、errors 为空。独立源五表抽查一致，目标 11 表前后 count+内容 SHA-256 完全相同，证据见 `docs/reports/2026-08-12-s3-7-production-dry-run.md`。
+- 数据 Owner 明确绑定 release `e1d0b2aaaff1ef9cf0b49e27f59464554aac80e3`、上述 fingerprint、目标租户与有序选择器批准 apply。首次 apply 创建 5 User / 2 Project / 53 Task / 0 Gate Review / 10 File Reference；独立目标审计验证 70 条 mapping 的目标均存在、用户默认禁用、项目结构/任务/文件样本与源抽查一致。
+- 原参数幂等重放五类 created 全为 0、skipped 与源计数完全相等，`target_writes=1` 仅新增成功运行审计；十张业务/映射表 count 与内容 SHA-256 均未改变，Migration Run 从 1 增为 2，Mapping 保持 70。线上容器 ID 未变、restart count 0、全部 healthy，公网登录 HTTP 200。证据见 `docs/reports/2026-08-12-s3-7-production-apply.md`。
 - 迁移器已增加源角色硬校验：`default_transaction_read_only=on`、五表全读、五表 DML/REFERENCES/TRIGGER 零权限缺一不可；可写应用账号或仍持有表级非 SELECT 权限的账号在任何项目快照读取前即被拒绝。运行手册提供 DBA 最小授权 SQL 模板。
 - 真实 CEHub URL 的 Prisma-only `uselibpqcompat` 参数已在迁移源连接入口定点移除，`sslmode` 等真实 PostgreSQL 参数保持不变；避免只读账号就绪后被 psycopg 连接参数阻断。
 - `c39b2b4` 候选已只读上传 ECS；对真实 CEHub 现役可写账号的负向 smoke 先成功完成 URL 规范化，再在任何项目快照读取前返回 `blocked_write_capable_role`。未连接目标 PDOS、未写生产数据、未替换运行容器。
-- Sprint 3 intended-vs-implemented 出口审计发现并补齐“同一项目 EVT→DVT→PVT + 硬闸 + 一次 ECN”的跨模块证据：新增真实 FastAPI 纵向验收，终态为 EVT/DVT/PVT 三 Gate approved、恰好 1 个 ECN、Handoff ready、当前 Stage=MP；出口草案见 `docs/reports/2026-08-12-sprint-3-exit-draft.md`。
+- Sprint 3 intended-vs-implemented 出口审计发现并补齐“同一项目 EVT→DVT→PVT + 硬闸 + 一次 ECN”的跨模块证据：新增真实 FastAPI 纵向验收，终态为 EVT/DVT/PVT 三 Gate approved、恰好 1 个 ECN、Handoff ready、当前 Stage=MP；出口报告见 `docs/reports/2026-08-12-sprint-3-exit-draft.md`。
 
 **Errors encountered**
 
@@ -1046,3 +1048,4 @@
 | 固定摘要基础镜像的 registry 元数据在本机无响应 | 1 | 终止无进展构建后，以本机缓存的相同版本 tag、`--pull=false` 重跑 Dockerfile；新增 SQL COPY、非 root 用户和 CLI 入口均完成真实镜像 smoke，正式发布仍使用 Compose 中冻结的摘要 |
 | 全仓门禁首次 TypeScript 检查在旧 `.next` 缓存上静默且 CPU 为 0 | 1 | 中止停滞进程，把生成缓存移动到 `/tmp` 可恢复目录后单独 typecheck 通过；再从头执行完整 `make check`，276/99 tests 与 build 全绿 |
 | 正式生产 dry-run 读取真实 `project_tasks` 时命中不存在的 `blocked_reason`，并发现 `project_files.securityClassification` 同样不在真实 schema | 1 | 只读固化五表列契约；缺失任务原因固定投影为 NULL，文件密级改由真实 `visibility` 同名白名单映射且未知值 fail-close；合成源 fixture 改为真实列形态后迁移/重放/漂移回归转绿 |
+| 首次生产重放二次确认串漏填 fingerprint | 1 | 安全闸在数据库连接/写入前拒绝；未创建报告、未产生目标写入。改用人工批准绑定的完整租户+fingerprint+有序选择器确认串后重放通过 |

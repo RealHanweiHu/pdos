@@ -33,7 +33,8 @@
 - [x] S3-2 Gate 硬闸与签核已完成：版本化三槽策略、轮次快照、同事务 readiness 硬闸、只升不降加签与历史 grandfather 均验收通过
 - [x] S3-3 Build / Sample / Test / Certification 已完成：EVT/DVT/PVT 批次与样机谱系、audience 签核、Test/Certification、`TEST_FAILED` 与 Gate readiness 均验收通过
 - [x] S3-4 变更链后段、S3-5 687 检查项资产库、S3-6 Gate/Document 前端均已完成并通过完整门禁
-- [ ] **当前：S3-7 真实试点环境门禁**；迁移工具、0020、合成源库、dry-run/幂等/漂移测试与运行手册均已本地完成，等待人授权对 C4s / S18-01 执行生产 dry-run→apply→重放与数据抽查
+- [x] S3-7 真实试点环境门禁已完成：固定 release/fingerprint 的 C4s / S18-01 生产 dry-run、数据 Owner 抽查、apply、独立目标抽查与幂等重放全部通过
+- [ ] **当前：Sprint 3 Exit Gate 等待人工确认**；确认前不得进入 Sprint 4
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
