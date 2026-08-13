@@ -195,9 +195,7 @@ def test_no_action_has_no_candidate_payload() -> None:
 def test_checked_in_phase_one_golden_cases_match_frozen_prompts_and_preflight() -> None:
     suite = load_phase_one_golden_suite(SERVER_ROOT / "golden" / "phase-one-agents-v1.json")
 
-    assert suite.prompt_versions == {
-        key: PROMPT_VERSIONS[key] for key in PHASE_ONE_AGENT_KEYS
-    }
+    assert suite.prompt_versions == {key: PROMPT_VERSIONS[key] for key in PHASE_ONE_AGENT_KEYS}
     assert {case.event_type for case in suite.cases} == {
         "PROJECT_STAGE_CHANGED",
         "ISSUE_CREATED",
