@@ -26,7 +26,7 @@ S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium�
 | Lint / format | PASS | ESLint、Ruff、Ruff format |
 | Static types | PASS | TypeScript；mypy 205 source files |
 | Production build | PASS | Next.js production build 生成 OAuth、AES callback、card callback 与 integration routes；Python compileall 通过 |
-| 部署合同 | PASS | 15 tests；部署后公网 callback edge 探针成为硬门禁，Exit Evidence CLI 进入非 root API 镜像 |
+| 部署合同 | PASS | 15 tests；部署后公网 callback edge 探针成为硬门禁，Exit Evidence CLI 进入非 root API 镜像；生产 build 只构建唯一 `api web` 镜像目标，避免旧 Compose 对共享 API image 重复构建 |
 | Exit Evidence 合同 | PASS | PostgreSQL read-only transaction；完整 SHA + 防篡改 Gate 基线；登录、三类 delivery、审批镜像/Gate 不变、回调、卡片幂等与 outbox 对账 fail-close |
 | 锁文件依赖漏洞 | PASS | 固化 `make audit-dependencies` 与 CI fail-close 门禁；OSV.dev 分两批核查 916 个 npm/PyPI registry 锁定版本，结果 0；`cryptography` 已由 46.0.7 升至统一修复版本 50.0.0，production smoke 强制断言 50.x |
 

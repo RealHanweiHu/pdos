@@ -161,7 +161,7 @@ build_release() {
   require_release_files
   release_identity
   compose_config config --quiet
-  compose_config build
+  compose_config build api web
   container_preflight
   echo "Release images built and validated for tag ${image_tag}"
 }

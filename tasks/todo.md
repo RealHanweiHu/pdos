@@ -1266,4 +1266,4 @@
 | 完整套件共享 `pdos_test` 遗留钉钉数据触发 0026 有损 downgrade guard | 1 | 旧迁移测试先升级到 head 并清空隔离租户后再降级；保留生产有数据 fail-close，完整 343 tests 全绿 |
 | Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
 | 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |
-| 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 固化为先唯一构建 `api web`、再 `up`，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |
+| 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 与 ECS build 入口均固化为只构建唯一 `api web`，再按原顺序启动服务，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |

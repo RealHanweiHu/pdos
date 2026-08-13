@@ -277,6 +277,8 @@ def test_ecs_deploy_entrypoint_is_staged_confirmed_and_observable() -> None:
     assert "scripts/verify-release-source.sh" in source
     assert "org.opencontainers.image.revision" in source
     assert "PDOS_COMPOSE_IMAGE_TAG_OVERRIDE" in source
+    assert "compose_config build api web" in source
+    assert "compose_config build\n" not in source
     assert "compose_config run --rm --no-deps migrate" in source
     assert "scripts.apply_agent_runtime_security" in source
     assert (
