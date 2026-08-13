@@ -78,7 +78,8 @@ security_applied=true
 )
 
 "${compose[@]}" config --quiet
-"${compose[@]}" up --build --detach --wait --wait-timeout 240
+"${compose[@]}" build api web
+"${compose[@]}" up --detach --wait --wait-timeout 240
 
 login_response="$(curl --fail --silent --show-error "http://127.0.0.1:${smoke_port}/login")"
 if [[ "$login_response" != *'<title>登录 · PDOS</title>'* ]]; then
@@ -117,6 +118,11 @@ if [[ "$("${compose[@]}" exec -T api id -u)" != "10001" ]]; then
   exit 1
 fi
 
+if [[ "$("${compose[@]}" exec -T api python -c 'import cryptography; print(cryptography.__version__)')" != 50.* ]]; then
+  printf '%s\n' 'Production API image does not contain the security-qualified cryptography 50.x' >&2
+  exit 1
+fi
+
 if [[ "$("${compose[@]}" exec -T dispatcher id -u)" != "10001" ]]; then
   printf '%s\n' 'Production dispatcher image is not running as the pdos user' >&2
   exit 1
@@ -137,4 +143,4 @@ if [[ "$("${compose[@]}" exec -T web id -u)" != "1001" ]]; then
   exit 1
 fi
 
-printf '%s\n' 'Production container smoke passed: migrate, API, dispatcher, executor, DingTalk, web, public callback BFF, and non-root users verified'
+printf '%s\n' 'Production container smoke passed: migrate, API, dispatcher, executor, DingTalk, web, public callback BFF, cryptography 50.x, and non-root users verified'

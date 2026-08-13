@@ -202,9 +202,14 @@ def test_production_smoke_is_isolated_and_available_from_the_root_makefile() -> 
     assert "/api/session/status" in smoke_script
     assert "DINGTALK_CALLBACK_ROUTE_UNKNOWN" in smoke_script
     assert "exec -T dingtalk id -u" in smoke_script
+    assert "import cryptography; print(cryptography.__version__)" in smoke_script
+    assert "security-qualified cryptography 50.x" in smoke_script
     assert "--max-time 5" in smoke_script
     assert "compose.production.yaml" in smoke_script
     assert "compose.production-smoke.yaml" in smoke_script
+    assert '"${compose[@]}" build api web' in smoke_script
+    assert '"${compose[@]}" up --detach --wait --wait-timeout 240' in smoke_script
+    assert '"${compose[@]}" up --build' not in smoke_script
     assert 'PDOS_AGENT_DATABASE_URL="$agent_database_url"' in smoke_script
     assert 'PDOS_WORKER_DATABASE_URL="$worker_database_url"' in smoke_script
     assert 'username="pdos_agent"' in smoke_script

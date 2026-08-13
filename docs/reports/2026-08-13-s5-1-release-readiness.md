@@ -28,8 +28,11 @@ S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium�
 | Production build | PASS | Next.js production build 生成 OAuth、AES callback、card callback 与 integration routes；Python compileall 通过 |
 | 部署合同 | PASS | 15 tests；部署后公网 callback edge 探针成为硬门禁，Exit Evidence CLI 进入非 root API 镜像 |
 | Exit Evidence 合同 | PASS | PostgreSQL read-only transaction；完整 SHA + 防篡改 Gate 基线；登录、三类 delivery、审批镜像/Gate 不变、回调、卡片幂等与 outbox 对账 fail-close |
+| 锁文件依赖漏洞 | PASS | OSV.dev 批量核查 917 个 npm/PyPI 锁定版本，结果 0；`cryptography` 已由 46.0.7 升至统一修复版本 50.0.0，production smoke 强制断言 50.x |
 
 以上执行只接触本机 `pdos_test`、本机候选容器和只读本地文件；未连接生产 RDS，未修改钉钉、Nginx、DNS 或生产服务。
+
+安全审计曾阻断旧候选 `4180cfaaa975f1135e7386ca6c35094d08e3b272`：OSV 对 `cryptography 46.0.7` 返回的 7 条记录去重为 4 个公告，最高修复线要求 50.0.0。旧 bundle/镜像不得部署；依赖升级、全量门禁和新 bundle 完成后，以新的完整 SHA 替代。
 
 ## 3. GO 前置条件
 
