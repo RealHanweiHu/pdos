@@ -442,6 +442,59 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                     "actor_id": uuid4(),
                 },
             )
+            quality_write_parameters = {
+                "id": uuid4(),
+                "tenant_id": ids["tenant_a"],
+                "project_id": ids["project_a"],
+                "actor_id": uuid4(),
+                "parent_id": uuid4(),
+            }
+            denied(
+                connection,
+                "INSERT INTO cehub_quality.complaints "
+                "(id, tenant_id, project_id, reported_by_user_id, owner_user_id, "
+                "code, title, description, source, severity, occurred_at, reported_at) "
+                "VALUES (:id, :tenant_id, :project_id, :actor_id, :actor_id, "
+                "'CMP-X', 'injected', 'injected', 'internal', 'low', now(), now())",
+                quality_write_parameters,
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_quality.nonconformance_reports "
+                "(id, tenant_id, project_id, complaint_id, owner_user_id, "
+                "created_by_user_id, code, nonconformity, requirement_reference, "
+                "severity, target_date) VALUES (:id, :tenant_id, :project_id, "
+                ":parent_id, :actor_id, :actor_id, 'NCR-X', 'injected', "
+                "'injected', 'low', current_date)",
+                quality_write_parameters,
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_quality.root_cause_analyses "
+                "(id, tenant_id, project_id, ncr_id, analyst_user_id, version, "
+                "method, analysis, root_cause) VALUES (:id, :tenant_id, "
+                ":project_id, :parent_id, :actor_id, 1, '5why', 'injected', 'injected')",
+                quality_write_parameters,
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_quality.capa_actions "
+                "(id, tenant_id, project_id, ncr_id, owner_user_id, "
+                "created_by_user_id, action_type, description, due_date) "
+                "VALUES (:id, :tenant_id, :project_id, :parent_id, :actor_id, "
+                ":actor_id, 'corrective', 'injected', current_date)",
+                quality_write_parameters,
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_quality.effectiveness_reviews "
+                "(id, tenant_id, project_id, ncr_id, reviewer_user_id, "
+                "review_number, criteria, observation_due_at, actual_result, "
+                "result, evidence_refs, reviewed_at) VALUES (:id, :tenant_id, "
+                ":project_id, :parent_id, :actor_id, 1, 'injected', now(), "
+                "'injected', 'effective', '[1]'::jsonb, now())",
+                quality_write_parameters,
+            )
             denied(
                 connection,
                 "INSERT INTO cehub_ai.model_invocations "
