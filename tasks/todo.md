@@ -1093,7 +1093,22 @@
 
 **Definition of Ready**
 
-- [ ] 规格出处：canonical S4-2、Knowledge/Memory 状态机、Context Builder 与租户/项目/状态过滤语义
-- [ ] 依赖项：S4-1 CAPA 链、Document 抽取、Knowledge Lite draft Finding、pgvector 基础设施与模型治理均已就绪
-- [ ] 范围冻结：draft→verified→archived；仅 verified 可检索/进入 AI context；embedding provider 可替换，Knowledge Search 独立入口
-- [ ] 安全边界：tenant/project 范围服务端绑定；未验证 Memory、原文与对象存储键不得进入检索/模型上下文
+- [x] 规格出处：canonical S4-2、Knowledge/Memory 状态机、Context Builder 与租户/项目/状态过滤语义
+- [x] 依赖项：S4-1 CAPA 链、Document 抽取、Knowledge Lite draft Finding、pgvector 基础设施与模型治理均已就绪
+- [x] 范围冻结：draft→verified→archived；仅 verified 可检索/进入 AI context；embedding provider 可替换，Knowledge Search 独立入口
+- [x] 安全边界：tenant/project 范围服务端绑定；未验证 Memory、原文与对象存储键不得进入检索/模型上下文
+
+**Implementation slices**
+
+- [ ] S4-2a：冻结数据/API/RBAC/embedding/search/引用契约与错误码
+- [ ] S4-2b：migration 0022 建立 Memory/Embedding、四眼状态机、来源/项目边界与 pgvector
+- [ ] S4-2c：实现人工 draft/edit/verify/archive/reembed 与 Finding/CAPA 来源闭环
+- [ ] S4-2d：实现可替换 embedding client、verified-only 语义检索与 Agent projection
+- [ ] S4-2e：接入 `/ai/chat` Memory citation、Knowledge Search API/BFF/独立入口
+- [ ] S4-2f：完成迁移/安全/完整门禁、真实 HTTP/浏览器与 Sprint 4 纵向证据
+- [ ] S4-2g：完成 DoD、更新 canonical checkbox 和当前指针到 S4-3
+
+**Current evidence（2026-08-12）**
+
+- 规格与既有 S2 工具合同共同冻结“只有 verified 进入 Search/Agent/Chat”；Knowledge Lite 只产 `knowledge_draft` Finding，当前 Apply 明确 fail-close，正好作为 S4-2 的受控输入。
+- v1 技术合同见 `docs/design/2026-08-12-s4-2-memory-search-contract.md`：项目级、创建/验证四眼、OpenAI-compatible embedding、模型版本留痕与显式 re-embed、无配置不可伪装为空结果。
