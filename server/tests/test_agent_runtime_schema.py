@@ -129,6 +129,7 @@ def test_agent_runtime_metadata_freezes_control_and_execution_records() -> None:
     assert "fk_model_invocations_tenant_run" in constraint_names(
         tables.model_invocations, ForeignKeyConstraint
     )
+    assert str(tables.agent_runs.c.context_version.server_default.arg) == "'run-context-v2'"
 
 
 @pytest.fixture

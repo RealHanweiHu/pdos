@@ -60,6 +60,48 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
             "excerpt": None,
         },
     ),
+    "multimodal": {
+        "status": None,
+        "documents": (
+            {
+                "document_id": None,
+                "filename": None,
+                "media_type": None,
+                "extraction_status": None,
+                "fragments": (
+                    {
+                        "reference_id": None,
+                        "document_id": None,
+                        "ordinal": None,
+                        "locator": None,
+                        "excerpt": None,
+                    },
+                ),
+                "shown_fragment_count": None,
+                "total_fragment_count": None,
+                "truncated": None,
+            },
+        ),
+        "requested_document_count": None,
+        "available_document_count": None,
+        "unavailable_document_count": None,
+        "shown_fragment_count": None,
+        "total_fragment_count": None,
+        "truncated": None,
+    },
+    "user": {
+        "perspective_role": None,
+        "role_lens": None,
+        "project_roles": (
+            {
+                "role": None,
+                "active_member_count": None,
+            },
+        ),
+        "decision_mode": None,
+        "review_required": None,
+        "apply_requires_separate_human_action": None,
+    },
 }
 
 

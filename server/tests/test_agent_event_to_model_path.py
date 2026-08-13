@@ -65,6 +65,8 @@ def event_to_model_database_url() -> Iterator[str]:
             connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
         yield test_url
     finally:
+        with engine.begin() as connection:
+            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
         engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)
@@ -193,6 +195,10 @@ def test_real_event_flows_through_dispatcher_langgraph_fake_provider_and_trace(
                 .one()
             )
         assert run["status"] == "succeeded"
+        assert run["context_version"] == "run-context-v2"
+        assert run["run_context"]["schema_version"] == 2
+        assert run["run_context"]["multimodal"]["status"] == "not_applicable"
+        assert run["run_context"]["user"]["perspective_role"] == "project_manager"
         assert run["event_row_ids"] == [event_id]
         assert run["run_context"]["tenant_id"] == str(tenant_id)
         assert invocation["tenant_id"] == tenant_id

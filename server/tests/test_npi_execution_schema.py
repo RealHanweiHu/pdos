@@ -89,4 +89,4 @@ def test_migration_matches_metadata_and_preserves_single_head(npi_database_url: 
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     command.downgrade(config, "0016_gate_signoffs")
     command.upgrade(config, "head")
-    assert ScriptDirectory.from_config(config).get_heads() == ["0024_phase_two_agents"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["0025_context_builder_v2"]

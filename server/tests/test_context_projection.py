@@ -45,6 +45,46 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
                     "object_storage_key": "tenant/project/private.pdf",
                 }
             ],
+            "multimodal": {
+                "status": "ready",
+                "documents": [
+                    {
+                        "document_id": "document-1",
+                        "filename": "evidence.pdf",
+                        "media_type": "application/pdf",
+                        "extraction_status": "extracted",
+                        "fragments": [
+                            {
+                                "reference_id": "document:document-1:fragment:1",
+                                "document_id": "document-1",
+                                "ordinal": 1,
+                                "locator": "page:1",
+                                "excerpt": "Scoped evidence.",
+                                "object_key": "must-not-leave",
+                            }
+                        ],
+                        "shown_fragment_count": 1,
+                        "total_fragment_count": 1,
+                        "truncated": False,
+                        "sha256": "must-not-leave",
+                    }
+                ],
+                "requested_document_count": 1,
+                "available_document_count": 1,
+                "unavailable_document_count": 0,
+                "shown_fragment_count": 1,
+                "total_fragment_count": 1,
+                "truncated": False,
+            },
+            "user": {
+                "perspective_role": "engineer",
+                "role_lens": "Review engineering evidence without write authority.",
+                "project_roles": [{"role": "engineer", "active_member_count": 2}],
+                "decision_mode": "advisory_only",
+                "review_required": True,
+                "apply_requires_separate_human_action": True,
+                "username": "must-not-leave",
+            },
             "api_key": "must-never-leave",
             "document_original": "must-never-leave",
         }
@@ -84,6 +124,43 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
                 "excerpt": "Issue remains open.",
             }
         ],
+        "multimodal": {
+            "status": "ready",
+            "documents": [
+                {
+                    "document_id": "document-1",
+                    "filename": "evidence.pdf",
+                    "media_type": "application/pdf",
+                    "extraction_status": "extracted",
+                    "fragments": [
+                        {
+                            "reference_id": "document:document-1:fragment:1",
+                            "document_id": "document-1",
+                            "ordinal": 1,
+                            "locator": "page:1",
+                            "excerpt": "Scoped evidence.",
+                        }
+                    ],
+                    "shown_fragment_count": 1,
+                    "total_fragment_count": 1,
+                    "truncated": False,
+                }
+            ],
+            "requested_document_count": 1,
+            "available_document_count": 1,
+            "unavailable_document_count": 0,
+            "shown_fragment_count": 1,
+            "total_fragment_count": 1,
+            "truncated": False,
+        },
+        "user": {
+            "perspective_role": "engineer",
+            "role_lens": "Review engineering evidence without write authority.",
+            "project_roles": [{"role": "engineer", "active_member_count": 2}],
+            "decision_mode": "advisory_only",
+            "review_required": True,
+            "apply_requires_separate_human_action": True,
+        },
     }
     assert set(projection.removed_paths) == {
         "api_key",
@@ -91,7 +168,10 @@ def test_project_gateway_context_only_emits_explicitly_allowlisted_structure() -
         "execution.raw_issue_text",
         "project.confidential_notes",
         "references[0].object_storage_key",
+        "multimodal.documents[0].fragments[0].object_key",
+        "multimodal.documents[0].sha256",
         "trigger.payload",
+        "user.username",
     }
 
 

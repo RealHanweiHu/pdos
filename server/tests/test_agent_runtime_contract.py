@@ -14,6 +14,8 @@ from app.ai.runtime_contract import (
     InvalidRunTransitionError,
     agents_for_event,
     allowed_run_transition,
+    empty_multimodal_context,
+    user_context_for_agent,
 )
 
 
@@ -50,6 +52,8 @@ def context() -> FrozenRunContext:
             "overdue_task_count": 2,
             "stage_progress_percent": 71,
         },
+        multimodal=empty_multimodal_context(),
+        user=user_context_for_agent(AgentKey.PROJECT_INTELLIGENCE),
     )
 
 
@@ -73,7 +77,7 @@ def test_static_phase_one_event_routes_are_exact_and_unknown_events_are_ignored(
 def test_run_context_is_frozen_strict_and_carries_only_server_bound_scope() -> None:
     frozen = context()
 
-    assert frozen.schema_version == 1
+    assert frozen.schema_version == 2
     assert frozen.trigger_events[0].id == 42
     with pytest.raises(ValidationError):
         FrozenRunContext.model_validate({**frozen.model_dump(), "model": "attacker-choice"})

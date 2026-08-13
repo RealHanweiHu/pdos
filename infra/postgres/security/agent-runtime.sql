@@ -321,7 +321,9 @@ SELECT
     fragment.locator,
     fragment.text,
     document.filename,
-    document.classification
+    document.classification,
+    document.media_type,
+    document.extraction_status
 FROM cehub_project.document_fragments AS fragment
 JOIN cehub_project.documents AS document
   ON document.tenant_id = fragment.tenant_id
@@ -329,6 +331,22 @@ JOIN cehub_project.documents AS document
  AND document.id = fragment.document_id
 WHERE cehub_ai.agent_scope_allows(fragment.tenant_id, fragment.project_id)
   AND document.classification = 'internal';
+
+CREATE OR REPLACE VIEW cehub_ai.agent_user_role_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    member.tenant_id,
+    member.project_id,
+    project_user.role,
+    count(*)::integer AS active_member_count
+FROM cehub_project.project_members AS member
+JOIN cehub_core.users AS project_user
+  ON project_user.tenant_id = member.tenant_id
+ AND project_user.id = member.user_id
+WHERE cehub_ai.agent_scope_allows(member.tenant_id, member.project_id)
+  AND project_user.is_active = true
+GROUP BY member.tenant_id, member.project_id, project_user.role;
 
 CREATE OR REPLACE VIEW cehub_ai.agent_memory_projection
 WITH (security_barrier = true)
@@ -529,12 +547,14 @@ BEGIN
        OR frozen_context->>'run_id' <> scoped_run.id::text
        OR frozen_context->>'tenant_id' <> scoped_run.tenant_id::text
        OR frozen_context->>'project_id' <> scoped_run.project_id::text
-       OR frozen_context->>'agent_key' <> scoped_run.agent_key THEN
+       OR frozen_context->>'agent_key' <> scoped_run.agent_key
+       OR frozen_context->>'schema_version' <> '2' THEN
         RAISE EXCEPTION 'Agent run context is invalid' USING ERRCODE = '42501';
     END IF;
 
     UPDATE cehub_ai.agent_runs AS target
-    SET run_context = frozen_context || jsonb_build_object(
+    SET context_version = 'run-context-v2',
+        run_context = frozen_context || jsonb_build_object(
             '_lease_token', bound_lease_token::text
         ),
         updated_at = persisted_at
@@ -902,6 +922,7 @@ GRANT SELECT ON
     cehub_ai.agent_gate_projection,
     cehub_ai.agent_event_projection,
     cehub_ai.agent_document_fragment_projection,
+    cehub_ai.agent_user_role_projection,
     cehub_ai.agent_memory_projection,
     cehub_ai.agent_engineering_evidence_projection,
     cehub_ai.agent_quality_evidence_projection,

@@ -16,6 +16,8 @@ from app.ai.runtime_contract import (
     EventReference,
     FrozenRunContext,
     agents_for_event,
+    empty_multimodal_context,
+    user_context_for_agent,
 )
 from app.domain.findings import RiskSuggestionPayload
 
@@ -43,6 +45,8 @@ def run_context(*, agent_key: AgentKey, event_type: str) -> FrozenRunContext:
         ),
         project={"id": str(uuid4()), "status": "active"},
         execution={},
+        multimodal=empty_multimodal_context(),
+        user=user_context_for_agent(agent_key),
     )
 
 

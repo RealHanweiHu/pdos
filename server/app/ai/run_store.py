@@ -115,6 +115,7 @@ class OwnerAgentRunStore:
                     tables.agent_runs.c.status == "running",
                 )
                 .values(
+                    context_version="run-context-v2",
                     run_context=context.model_dump(mode="json"),
                     updated_at=persisted_at,
                 )

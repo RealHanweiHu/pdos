@@ -12,7 +12,13 @@ from alembic.config import Config
 from sqlalchemy import Connection, create_engine, text
 
 from app.ai.embeddings import EmbeddingResult
-from app.ai.runtime_contract import AgentKey, EventReference, FrozenRunContext
+from app.ai.runtime_contract import (
+    AgentKey,
+    EventReference,
+    FrozenRunContext,
+    empty_multimodal_context,
+    user_context_for_agent,
+)
 from app.ai.tools import (
     TOOL_DEFINITIONS,
     AgentReadTools,
@@ -109,6 +115,8 @@ def frozen_context(
         ),
         project={"id": str(project_id), "code": "PRJ-1", "status": "active"},
         execution={"open_issue_count": 2},
+        multimodal=empty_multimodal_context(),
+        user=user_context_for_agent(agent_key),
     )
 
 

@@ -107,6 +107,7 @@ def secured_agent_database_url() -> Iterator[str]:
     finally:
         with engine.begin() as connection:
             execute_sql_file(connection, SECURITY_REVERT)
+            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
             connection.execute(text("ALTER ROLE pdos_worker PASSWORD NULL"))
             connection.execute(text("ALTER ROLE pdos_agent PASSWORD NULL"))
         engine.dispose()
@@ -390,6 +391,131 @@ def seed_phase_two_evidence(
     return scoped, excluded
 
 
+def seed_context_layers(
+    connection: Connection,
+    *,
+    ids: dict[str, UUID | int],
+    agent_key: str,
+) -> tuple[str | None, str]:
+    role = {
+        "project_intelligence": "project_manager",
+        "knowledge_lite": "engineer",
+        "engineering_intelligence": "engineer",
+        "quality_intelligence": "quality",
+    }[agent_key]
+    member_a = uuid4()
+    member_b = uuid4()
+    private_identity = f"Private Identity {member_a}"
+    connection.execute(
+        tables.users.insert(),
+        [
+            {
+                "id": member_a,
+                "tenant_id": ids["tenant_a"],
+                "username": f"context-a-{member_a}",
+                "email": f"private-{member_a}@example.invalid",
+                "display_name": private_identity,
+                "role": role,
+            },
+            {
+                "id": member_b,
+                "tenant_id": ids["tenant_b"],
+                "username": f"context-b-{member_b}",
+                "email": f"private-{member_b}@example.invalid",
+                "display_name": f"Other Identity {member_b}",
+                "role": role,
+            },
+        ],
+    )
+    connection.execute(
+        tables.project_members.insert(),
+        [
+            {
+                "id": uuid4(),
+                "tenant_id": ids["tenant_a"],
+                "project_id": ids["project_a"],
+                "user_id": member_a,
+                "added_by_user_id": member_a,
+            },
+            {
+                "id": uuid4(),
+                "tenant_id": ids["tenant_b"],
+                "project_id": ids["project_b"],
+                "user_id": member_b,
+                "added_by_user_id": member_b,
+            },
+        ],
+    )
+    if agent_key != "knowledge_lite":
+        return None, private_identity
+
+    internal_document = uuid4()
+    restricted_document = uuid4()
+    internal_excerpt = "Scoped internal document A"
+    connection.execute(
+        tables.documents.insert(),
+        [
+            {
+                "id": internal_document,
+                "tenant_id": ids["tenant_a"],
+                "project_id": ids["project_a"],
+                "uploaded_by_user_id": member_a,
+                "object_key": "private/A/internal.pdf",
+                "filename": "Scoped A.pdf",
+                "media_type": "application/pdf",
+                "classification": "internal",
+                "size_bytes": 100,
+                "sha256": "a" * 64,
+                "extraction_status": "extracted",
+                "fragment_count": 1,
+            },
+            {
+                "id": restricted_document,
+                "tenant_id": ids["tenant_a"],
+                "project_id": ids["project_a"],
+                "uploaded_by_user_id": member_a,
+                "object_key": "private/A/restricted.pdf",
+                "filename": "Restricted A.pdf",
+                "media_type": "application/pdf",
+                "classification": "restricted",
+                "size_bytes": 100,
+                "sha256": "b" * 64,
+                "extraction_status": "extracted",
+                "fragment_count": 1,
+            },
+        ],
+    )
+    connection.execute(
+        tables.document_fragments.insert(),
+        [
+            {
+                "id": uuid4(),
+                "tenant_id": ids["tenant_a"],
+                "project_id": ids["project_a"],
+                "document_id": internal_document,
+                "ordinal": 1,
+                "locator": "page:1",
+                "text": internal_excerpt,
+            },
+            {
+                "id": uuid4(),
+                "tenant_id": ids["tenant_a"],
+                "project_id": ids["project_a"],
+                "document_id": restricted_document,
+                "ordinal": 1,
+                "locator": "page:1",
+                "text": "Restricted document must not cross",
+            },
+        ],
+    )
+    connection.execute(
+        tables.events.update()
+        .where(tables.events.c.id == ids["event_a"])
+        .values(entity="document", entity_id=internal_document)
+    )
+    return internal_excerpt, private_identity
+
+
 def test_worker_permissions_allow_control_plane_and_deny_business_mutation(
     secured_agent_database_url: str,
 ) -> None:
@@ -515,6 +641,12 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 ).scalar_one()
                 == 0
             )
+            assert (
+                connection.execute(
+                    text("SELECT count(*) FROM cehub_ai.agent_user_role_projection")
+                ).scalar_one()
+                == 0
+            )
 
             connection.execute(
                 text("SELECT set_config('pdos.tenant_id', CAST(:tenant_b AS text), true)"),
@@ -536,6 +668,8 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "SELECT * FROM cehub_project.projects",
                 {},
             )
+            denied(connection, "SELECT * FROM cehub_core.users", {})
+            denied(connection, "SELECT * FROM cehub_project.project_members", {})
             denied(connection, "SELECT * FROM cehub_memory.memories", {})
             denied(
                 connection,
@@ -854,7 +988,14 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
 
 
 @pytest.mark.parametrize(
-    ("agent_key", "event_type", "candidate_type", "payload", "prompt_version"),
+    (
+        "agent_key",
+        "event_type",
+        "candidate_type",
+        "payload",
+        "prompt_version",
+        "perspective_role",
+    ),
     [
         (
             "project_intelligence",
@@ -867,6 +1008,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "impact": 4,
             },
             "project-intelligence-v1",
+            "project_manager",
         ),
         (
             "knowledge_lite",
@@ -878,6 +1020,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "applicability": "Projects with the same evidence pattern.",
             },
             "knowledge-lite-v1",
+            "engineer",
         ),
         (
             "engineering_intelligence",
@@ -890,6 +1033,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "impact": 4,
             },
             "engineering-intelligence-v1",
+            "engineer",
         ),
         (
             "quality_intelligence",
@@ -904,6 +1048,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "contingency_plan": "Review preventive controls.",
             },
             "quality-intelligence-v1",
+            "quality",
         ),
     ],
 )
@@ -914,6 +1059,7 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
     candidate_type: str,
     payload: dict[str, object],
     prompt_version: str,
+    perspective_role: str,
 ) -> None:
     owner_engine = create_engine(psycopg_database_url(secured_agent_database_url))
     agent_engine = role_engine(secured_agent_database_url, "pdos_agent")
@@ -938,6 +1084,11 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 suffix="b",
             )
             phase_two_evidence = seed_phase_two_evidence(
+                connection,
+                ids=ids,
+                agent_key=agent_key,
+            )
+            scoped_document, private_identity = seed_context_layers(
                 connection,
                 ids=ids,
                 agent_key=agent_key,
@@ -1010,6 +1161,12 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
             assert excluded_evidence not in serialized_messages
         assert "PRIVATE-A" not in serialized_messages
         assert "private/A/quality.pdf" not in serialized_messages
+        assert private_identity not in serialized_messages
+        assert "example.invalid" not in serialized_messages
+        if scoped_document is not None:
+            assert scoped_document in serialized_messages
+            assert "Restricted document must not cross" not in serialized_messages
+            assert "private/A/internal.pdf" not in serialized_messages
         with owner_engine.connect() as connection:
             run = (
                 connection.execute(
@@ -1035,6 +1192,10 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 .one()
             )
         assert run["status"] == "succeeded"
+        assert run["context_version"] == "run-context-v2"
+        assert run["run_context"]["schema_version"] == 2
+        assert run["run_context"]["user"]["perspective_role"] == perspective_role
+        assert run["run_context"]["user"]["decision_mode"] == "advisory_only"
         assert run["run_context"]["tenant_id"] == str(ids["tenant_a"])
         assert invocation["tenant_id"] == ids["tenant_a"]
         assert invocation["status"] == "succeeded"

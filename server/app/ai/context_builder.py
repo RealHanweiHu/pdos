@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, time, timedelta
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from sqlalchemy import Connection, RowMapping, func, select, text
 
-from app.ai.runtime_contract import AgentKey, EventReference, FrozenRunContext
+from app.ai.runtime_contract import (
+    AgentKey,
+    EventReference,
+    FrozenRunContext,
+    MultimodalContext,
+    MultimodalDocument,
+    MultimodalFragment,
+    ProjectRoleSummary,
+    UserContext,
+    empty_multimodal_context,
+    user_context_for_agent,
+)
 from app.db.schema import tables
 
 
@@ -17,6 +28,11 @@ class RunContextIntegrityError(RuntimeError):
 
 
 class RunContextBuilder:
+    _MAX_DOCUMENTS = 5
+    _MAX_FRAGMENTS = 20
+    _MAX_FRAGMENT_CHARACTERS = 1_000
+    _MAX_TOTAL_FRAGMENT_CHARACTERS = 12_000
+
     def __init__(self, *, default_daily_token_budget: int = 2_000_000) -> None:
         if not 1 <= default_daily_token_budget <= 1_000_000_000:
             raise ValueError("default daily token budget is invalid")
@@ -49,11 +65,12 @@ class RunContextBuilder:
         if len(events) != int(run["event_count"]):
             raise RunContextIntegrityError("Agent run event references are incomplete")
 
+        agent_key = AgentKey(str(run["agent_key"]))
         return FrozenRunContext(
             tenant_id=tenant_id,
             project_id=project_id,
             run_id=run_id,
-            agent_key=AgentKey(str(run["agent_key"])),
+            agent_key=agent_key,
             built_at=now,
             window_started_at=run["window_started_at"],
             window_ended_at=run["window_ended_at"],
@@ -75,7 +92,7 @@ class RunContextBuilder:
             execution=(
                 self._projection_execution_metrics(
                     connection,
-                    agent_key=AgentKey(str(run["agent_key"])),
+                    agent_key=agent_key,
                     now=now,
                 )
                 if projection_only
@@ -83,9 +100,273 @@ class RunContextBuilder:
                     connection,
                     tenant_id=tenant_id,
                     project_id=project_id,
-                    agent_key=AgentKey(str(run["agent_key"])),
+                    agent_key=agent_key,
                     now=now,
                 )
+            ),
+            multimodal=self._multimodal_context(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                events=events,
+                projection_only=projection_only,
+            ),
+            user=self._user_context(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                agent_key=agent_key,
+                projection_only=projection_only,
+            ),
+        )
+
+    def _multimodal_context(
+        self,
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        events: list[RowMapping],
+        projection_only: bool,
+    ) -> MultimodalContext:
+        document_ids: list[UUID] = []
+        for event in events:
+            if event["event_type"] != "DOCUMENT_UPLOADED":
+                continue
+            document_id = UUID(str(event["entity_id"]))
+            if document_id not in document_ids:
+                document_ids.append(document_id)
+        if not document_ids:
+            return empty_multimodal_context()
+
+        documents: list[MultimodalDocument] = []
+        unavailable_count = 0
+        shown_fragment_count = 0
+        total_fragment_count = 0
+        remaining_characters = self._MAX_TOTAL_FRAGMENT_CHARACTERS
+        for document_id in document_ids[: self._MAX_DOCUMENTS]:
+            metadata, total = self._document_metadata_and_count(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                document_id=document_id,
+                projection_only=projection_only,
+            )
+            if metadata is None or total == 0:
+                unavailable_count += 1
+                continue
+            remaining_fragments = max(0, self._MAX_FRAGMENTS - shown_fragment_count)
+            rows = self._document_fragment_rows(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                document_id=document_id,
+                limit=remaining_fragments,
+                projection_only=projection_only,
+            )
+            fragments: list[MultimodalFragment] = []
+            for row in rows:
+                if remaining_characters <= 0:
+                    break
+                excerpt = str(row["text"])[: self._MAX_FRAGMENT_CHARACTERS]
+                excerpt = excerpt[:remaining_characters]
+                if not excerpt:
+                    break
+                ordinal = int(row["ordinal"])
+                fragments.append(
+                    MultimodalFragment(
+                        reference_id=f"document:{document_id}:fragment:{ordinal}",
+                        document_id=document_id,
+                        ordinal=ordinal,
+                        locator=str(row["locator"]),
+                        excerpt=excerpt,
+                    )
+                )
+                remaining_characters -= len(excerpt)
+            shown = len(fragments)
+            shown_fragment_count += shown
+            total_fragment_count += total
+            documents.append(
+                MultimodalDocument(
+                    document_id=document_id,
+                    filename=str(metadata["filename"]),
+                    media_type=str(metadata["media_type"]),
+                    fragments=tuple(fragments),
+                    shown_fragment_count=shown,
+                    total_fragment_count=total,
+                    truncated=total > shown,
+                )
+            )
+
+        status: Literal["ready", "not_available"] = "ready" if documents else "not_available"
+        return MultimodalContext(
+            status=status,
+            documents=tuple(documents),
+            requested_document_count=len(document_ids),
+            available_document_count=len(documents),
+            unavailable_document_count=unavailable_count,
+            shown_fragment_count=shown_fragment_count,
+            total_fragment_count=total_fragment_count,
+            truncated=(
+                len(document_ids) > self._MAX_DOCUMENTS
+                or total_fragment_count > shown_fragment_count
+            ),
+        )
+
+    @staticmethod
+    def _document_metadata_and_count(
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        document_id: UUID,
+        projection_only: bool,
+    ) -> tuple[RowMapping | None, int]:
+        if projection_only:
+            metadata = (
+                connection.execute(
+                    text(
+                        "SELECT document_id, filename, media_type, extraction_status "
+                        "FROM cehub_ai.agent_document_fragment_projection "
+                        "WHERE document_id = :document_id ORDER BY ordinal LIMIT 1"
+                    ),
+                    {"document_id": document_id},
+                )
+                .mappings()
+                .one_or_none()
+            )
+            total = int(
+                connection.execute(
+                    text(
+                        "SELECT count(*) FROM cehub_ai.agent_document_fragment_projection "
+                        "WHERE document_id = :document_id"
+                    ),
+                    {"document_id": document_id},
+                ).scalar_one()
+            )
+            return metadata, total
+        metadata = (
+            connection.execute(
+                select(
+                    tables.documents.c.id.label("document_id"),
+                    tables.documents.c.filename,
+                    tables.documents.c.media_type,
+                    tables.documents.c.extraction_status,
+                ).where(
+                    tables.documents.c.tenant_id == tenant_id,
+                    tables.documents.c.project_id == project_id,
+                    tables.documents.c.id == document_id,
+                    tables.documents.c.classification == "internal",
+                    tables.documents.c.extraction_status == "extracted",
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if metadata is None:
+            return None, 0
+        total = int(
+            connection.execute(
+                select(func.count())
+                .select_from(tables.document_fragments)
+                .where(
+                    tables.document_fragments.c.tenant_id == tenant_id,
+                    tables.document_fragments.c.project_id == project_id,
+                    tables.document_fragments.c.document_id == document_id,
+                )
+            ).scalar_one()
+        )
+        return metadata, total
+
+    @staticmethod
+    def _document_fragment_rows(
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        document_id: UUID,
+        limit: int,
+        projection_only: bool,
+    ) -> list[RowMapping]:
+        if limit == 0:
+            return []
+        if projection_only:
+            return list(
+                connection.execute(
+                    text(
+                        "SELECT ordinal, locator, text "
+                        "FROM cehub_ai.agent_document_fragment_projection "
+                        "WHERE document_id = :document_id ORDER BY ordinal LIMIT :limit"
+                    ),
+                    {"document_id": document_id, "limit": limit},
+                ).mappings()
+            )
+        return list(
+            connection.execute(
+                select(
+                    tables.document_fragments.c.ordinal,
+                    tables.document_fragments.c.locator,
+                    tables.document_fragments.c.text,
+                )
+                .where(
+                    tables.document_fragments.c.tenant_id == tenant_id,
+                    tables.document_fragments.c.project_id == project_id,
+                    tables.document_fragments.c.document_id == document_id,
+                )
+                .order_by(tables.document_fragments.c.ordinal)
+                .limit(limit)
+            ).mappings()
+        )
+
+    def _user_context(
+        self,
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        agent_key: AgentKey,
+        projection_only: bool,
+    ) -> UserContext:
+        if projection_only:
+            rows = list(
+                connection.execute(
+                    text(
+                        "SELECT role, active_member_count "
+                        "FROM cehub_ai.agent_user_role_projection ORDER BY role"
+                    )
+                ).mappings()
+            )
+        else:
+            rows = list(
+                connection.execute(
+                    select(
+                        tables.users.c.role,
+                        func.count().label("active_member_count"),
+                    )
+                    .select_from(
+                        tables.project_members.join(
+                            tables.users,
+                            (tables.users.c.tenant_id == tables.project_members.c.tenant_id)
+                            & (tables.users.c.id == tables.project_members.c.user_id),
+                        )
+                    )
+                    .where(
+                        tables.project_members.c.tenant_id == tenant_id,
+                        tables.project_members.c.project_id == project_id,
+                        tables.users.c.is_active.is_(True),
+                    )
+                    .group_by(tables.users.c.role)
+                    .order_by(tables.users.c.role)
+                ).mappings()
+            )
+        return user_context_for_agent(
+            agent_key,
+            project_roles=tuple(
+                ProjectRoleSummary(
+                    role=str(row["role"]),  # type: ignore[arg-type]
+                    active_member_count=int(row["active_member_count"]),
+                )
+                for row in rows
             ),
         )
 

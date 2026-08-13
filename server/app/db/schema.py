@@ -4015,7 +4015,7 @@ agent_runs = Table(
     Column("last_event_row_id", BigInteger, nullable=False),
     Column("event_count", Integer, nullable=False),
     Column("event_row_ids", json_type, nullable=False),
-    Column("context_version", String(64), nullable=False, server_default=text("'run-context-v1'")),
+    Column("context_version", String(64), nullable=False, server_default=text("'run-context-v2'")),
     Column("run_context", json_type, nullable=False, server_default=text("'{}'::jsonb")),
     Column("started_at", DateTime(timezone=True)),
     Column("completed_at", DateTime(timezone=True)),

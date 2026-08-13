@@ -60,6 +60,8 @@ def executor_database_url() -> Iterator[str]:
             connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
         yield test_url
     finally:
+        with engine.begin() as connection:
+            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
         engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)

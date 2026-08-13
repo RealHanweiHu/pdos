@@ -15,7 +15,14 @@ from app.ai.executor import (
 )
 from app.ai.finding_writer import FindingPreflightError, preflight_assessment
 from app.ai.phase_one_suite import load_phase_one_golden_suite
-from app.ai.runtime_contract import PHASE_ONE_AGENT_KEYS, AgentKey, EventReference, FrozenRunContext
+from app.ai.runtime_contract import (
+    PHASE_ONE_AGENT_KEYS,
+    AgentKey,
+    EventReference,
+    FrozenRunContext,
+    empty_multimodal_context,
+    user_context_for_agent,
+)
 from app.domain.findings import KnowledgeDraftPayload, RiskSuggestionPayload
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +49,8 @@ def run_context(*, agent_key: AgentKey, event_type: str) -> FrozenRunContext:
         ),
         project={"id": str(uuid4()), "status": "active"},
         execution={},
+        multimodal=empty_multimodal_context(),
+        user=user_context_for_agent(agent_key),
     )
 
 
