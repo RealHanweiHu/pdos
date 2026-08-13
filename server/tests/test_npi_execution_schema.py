@@ -89,4 +89,4 @@ def test_migration_matches_metadata_and_preserves_single_head(npi_database_url: 
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     command.downgrade(config, "0016_gate_signoffs")
     command.upgrade(config, "head")
-    assert ScriptDirectory.from_config(config).get_heads() == ["0022_memory_search"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["0023_memory_finding_apply"]

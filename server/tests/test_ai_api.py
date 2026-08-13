@@ -16,9 +16,10 @@ from pypdf import PdfWriter
 from sqlalchemy import create_engine, select, text
 
 from app.ai.chat import ChatAssessment, ChatClaim
+from app.ai.embeddings import EmbeddingResult
 from app.ai.executor import AgentAssessment
 from app.ai.gateway import GatewayInvocation, GatewayResult
-from app.api.ai import get_application_gateway
+from app.api.ai import get_application_gateway, get_optional_embedding_gateway
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
 from app.db.engine import get_engine
@@ -26,6 +27,7 @@ from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.findings import RiskSuggestionPayload
+from app.domain.memories import MemoryDraft, MemoryService
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 from app.main import app
 from app.settings import get_settings
@@ -103,6 +105,16 @@ class FakeGateway:
             removed_context_paths=(),
             invocation_id=invocation_id,
         )
+
+
+class FakeEmbeddingGateway:
+    provider = "test"
+    model = "memory-v1"
+    dimensions = 3
+
+    def embed(self, text_value: str) -> EmbeddingResult:
+        assert text_value.strip()
+        return EmbeddingResult(provider=self.provider, model=self.model, values=(1.0, 0.0, 0.0))
 
 
 @pytest.fixture(autouse=True)
@@ -402,6 +414,86 @@ def test_chat_only_returns_server_mapped_citations_and_fail_closes_unknown_ids(
         "citations": [],
         "error_code": "CITATION_SCOPE_INVALID",
     }
+
+
+def test_chat_can_cite_only_verified_memory_without_exposing_vectors(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+) -> None:
+    client, _, gateway = api_context
+    tenant_id, owner_id, headers = setup_owner(client)
+    project_id, _ = seed_project_and_users(isolated_ai_api_database, tenant_id=tenant_id)
+    engine = create_engine(psycopg_database_url(isolated_ai_api_database))
+    embedding_gateway = FakeEmbeddingGateway()
+    try:
+        with engine.connect() as connection:
+            verifier_id = UUID(
+                str(
+                    connection.execute(
+                        select(tables.users.c.id).where(
+                            tables.users.c.tenant_id == tenant_id,
+                            tables.users.c.username == "manager",
+                        )
+                    ).scalar_one()
+                )
+            )
+        memory = MemoryService(engine).create(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=owner_id,
+            draft=MemoryDraft(
+                title="Connector DVT lesson",
+                content="Validate connector pin mapping before the DVT build.",
+                tags=("DVT", "connector"),
+            ),
+        )
+        MemoryService(engine).verify(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=verifier_id,
+            memory_id=memory.id,
+            gateway=embedding_gateway,
+        )
+    finally:
+        engine.dispose()
+
+    def embedding_dependency() -> Iterator[FakeEmbeddingGateway]:
+        yield embedding_gateway
+
+    app.dependency_overrides[get_optional_embedding_gateway] = embedding_dependency
+    gateway.chat_output = ChatAssessment(
+        disposition="answered",
+        claims=(
+            ChatClaim(
+                text="Validate the connector before DVT.",
+                citation_ids=(f"memory:{memory.id}",),
+            ),
+        ),
+    )
+
+    response = client.post(
+        "/api/ai/chat",
+        headers=headers,
+        json={"project_id": str(project_id), "question": "What was the connector lesson?"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "answered"
+    assert response.json()["citations"] == [
+        {
+            "reference_id": f"memory:{memory.id}",
+            "entity": "memory",
+            "entity_id": str(memory.id),
+            "label": "Connector DVT lesson",
+            "href": f"/knowledge?project={project_id}&memory={memory.id}",
+            "excerpt": (
+                "Validate connector pin mapping before the DVT build. · tags=DVT, connector"
+            ),
+        }
+    ]
+    invocation_context = gateway.invocations[-1].context
+    assert "Connector DVT lesson" in str(invocation_context)
+    assert "embedding" not in str(invocation_context).lower()
 
 
 def test_risk_suggestion_creates_only_pending_finding_and_is_idempotent(

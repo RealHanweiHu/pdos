@@ -116,7 +116,10 @@ class FindingApplyResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     finding: FindingResponse
-    risk_id: UUID
+    applied_entity_type: Literal["risk", "memory"]
+    applied_entity_id: UUID
+    risk_id: UUID | None
+    memory_id: UUID | None
     idempotent_replay: bool
 
 
@@ -302,6 +305,9 @@ def apply_finding(
         raise finding_error(error) from error
     return FindingApplyResponse(
         finding=response_from_record(result.finding),
+        applied_entity_type=result.applied_entity_type,
+        applied_entity_id=result.applied_entity_id,
         risk_id=result.risk_id,
+        memory_id=result.memory_id,
         idempotent_replay=result.idempotent_replay,
     )

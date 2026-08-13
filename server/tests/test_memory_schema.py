@@ -87,4 +87,4 @@ def test_memory_migration_matches_metadata_pgvector_and_single_head(
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     command.downgrade(config, "0021_quality_capa")
     command.upgrade(config, "head")
-    assert ScriptDirectory.from_config(config).get_heads() == ["0022_memory_search"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["0023_memory_finding_apply"]

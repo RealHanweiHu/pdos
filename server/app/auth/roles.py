@@ -53,6 +53,10 @@ class Action(StrEnum):
     CAPA_MANAGE = "capa.manage"
     CAPA_EXECUTE = "capa.execute"
     CAPA_VERIFY = "capa.verify"
+    MEMORY_VIEW = "memory.view"
+    MEMORY_DRAFT = "memory.draft"
+    MEMORY_VERIFY = "memory.verify"
+    MEMORY_ARCHIVE = "memory.archive"
     CHANGE_VIEW = "change.view"
     CHANGE_EDIT = "change.edit"
     CHANGE_APPROVE = "change.approve"
@@ -85,6 +89,10 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.QUALITY_VIEW,
                 Action.COMPLAINT_CREATE,
                 Action.CAPA_EXECUTE,
+                Action.MEMORY_VIEW,
+                Action.MEMORY_DRAFT,
+                Action.MEMORY_VERIFY,
+                Action.MEMORY_ARCHIVE,
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
@@ -114,6 +122,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.QUALITY_VIEW,
                 Action.COMPLAINT_CREATE,
                 Action.CAPA_EXECUTE,
+                Action.MEMORY_VIEW,
+                Action.MEMORY_DRAFT,
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
@@ -142,6 +152,10 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.CAPA_MANAGE,
                 Action.CAPA_EXECUTE,
                 Action.CAPA_VERIFY,
+                Action.MEMORY_VIEW,
+                Action.MEMORY_DRAFT,
+                Action.MEMORY_VERIFY,
+                Action.MEMORY_ARCHIVE,
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,

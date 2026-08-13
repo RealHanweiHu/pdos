@@ -15,6 +15,7 @@ from sqlalchemy import Connection, Engine, create_engine, select, text
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import DBAPIError
 
+from app.ai.embeddings import EmbeddingResult
 from app.ai.executor import AgentExecutor, GatewayAgentModelInvoker
 from app.ai.finding_writer import RestrictedAgentFindingWriter
 from app.ai.gateway import ProviderRateCard, StructuredModelGateway
@@ -73,6 +74,16 @@ class FakeAgentAdapter:
             request_id="restricted-runtime-test",
             model_version="MiniMax-M2.7-test",
         )
+
+
+class FakeEmbeddingGateway:
+    provider = "test"
+    model = "memory-v1"
+    dimensions = 3
+
+    def embed(self, text_value: str) -> EmbeddingResult:
+        assert text_value.strip()
+        return EmbeddingResult(provider=self.provider, model=self.model, values=(1.0, 0.0, 0.0))
 
 
 @pytest.fixture
@@ -232,6 +243,74 @@ def denied(connection: Connection, statement: str, parameters: dict[str, object]
         connection.execute(text(statement), parameters)
 
 
+def seed_verified_memory(
+    connection: Connection,
+    *,
+    tenant_id: UUID,
+    project_id: UUID,
+    suffix: str,
+) -> UUID:
+    creator_id = uuid4()
+    verifier_id = uuid4()
+    memory_id = uuid4()
+    now = datetime.now(UTC)
+    connection.execute(
+        tables.users.insert(),
+        [
+            {
+                "id": creator_id,
+                "tenant_id": tenant_id,
+                "username": f"memory-creator-{suffix}",
+                "display_name": "Memory Creator",
+                "role": "quality",
+            },
+            {
+                "id": verifier_id,
+                "tenant_id": tenant_id,
+                "username": f"memory-verifier-{suffix}",
+                "display_name": "Memory Verifier",
+                "role": "quality",
+            },
+        ],
+    )
+    connection.execute(
+        tables.memories.insert(),
+        {
+            "id": memory_id,
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "created_by_user_id": creator_id,
+            "verified_by_user_id": verifier_id,
+            "title": f"Verified memory {suffix}",
+            "content": "Scoped verified guidance.",
+            "tags": [],
+            "source_refs": [],
+            "content_sha256": suffix[0].lower() * 64,
+            "status": "verified",
+            "verified_at": now,
+            "created_at": now,
+            "updated_at": now,
+        },
+    )
+    connection.execute(
+        tables.memory_embeddings.insert(),
+        {
+            "id": uuid4(),
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "memory_id": memory_id,
+            "created_by_user_id": verifier_id,
+            "provider": "test",
+            "model": "memory-v1",
+            "dimensions": 3,
+            "content_sha256": suffix[0].lower() * 64,
+            "embedding": [1.0, 0.0, 0.0],
+            "created_at": now,
+        },
+    )
+    return memory_id
+
+
 def test_worker_permissions_allow_control_plane_and_deny_business_mutation(
     secured_agent_database_url: str,
 ) -> None:
@@ -278,6 +357,18 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
     try:
         with owner_engine.begin() as connection:
             ids = seed_two_tenants(connection)
+            memory_a = seed_verified_memory(
+                connection,
+                tenant_id=UUID(str(ids["tenant_a"])),
+                project_id=UUID(str(ids["project_a"])),
+                suffix="a",
+            )
+            seed_verified_memory(
+                connection,
+                tenant_id=UUID(str(ids["tenant_b"])),
+                project_id=UUID(str(ids["project_b"])),
+                suffix="b",
+            )
             connection.execute(
                 tables.finding_quality_controls.insert(),
                 {
@@ -300,6 +391,12 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             assert (
                 connection.execute(
                     text("SELECT count(*) FROM cehub_ai.agent_project_projection")
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.execute(
+                    text("SELECT count(*) FROM cehub_ai.agent_memory_projection")
                 ).scalar_one()
                 == 0
             )
@@ -327,6 +424,12 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 ).mappings()
             )
             assert events == [{"id": ids["event_a"], "tenant_id": ids["tenant_a"]}]
+            memories = list(
+                connection.execute(
+                    text("SELECT memory_id, tenant_id FROM cehub_ai.agent_memory_projection")
+                ).mappings()
+            )
+            assert memories == [{"memory_id": memory_a, "tenant_id": ids["tenant_a"]}]
             assert (
                 connection.execute(
                     text("SELECT count(*) FROM cehub_ai.agent_document_fragment_projection")
@@ -353,6 +456,38 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 connection,
                 "SELECT * FROM cehub_project.projects",
                 {},
+            )
+            denied(connection, "SELECT * FROM cehub_memory.memories", {})
+            denied(
+                connection,
+                "INSERT INTO cehub_memory.memories "
+                "(id, tenant_id, project_id, created_by_user_id, title, content, "
+                "content_sha256, status) VALUES "
+                "(:id, :tenant_id, :project_id, :actor_id, 'Injected', 'Injected', "
+                ":content_sha256, 'draft')",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "actor_id": uuid4(),
+                    "content_sha256": "c" * 64,
+                },
+            )
+            denied(
+                connection,
+                "INSERT INTO cehub_memory.memory_embeddings "
+                "(id, tenant_id, project_id, memory_id, created_by_user_id, provider, "
+                "model, dimensions, content_sha256, embedding) VALUES "
+                "(:id, :tenant_id, :project_id, :memory_id, :actor_id, 'test', "
+                "'memory-v1', 3, :content_sha256, '[1,0,0]'::vector)",
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_a"],
+                    "project_id": ids["project_a"],
+                    "memory_id": memory_a,
+                    "actor_id": uuid4(),
+                    "content_sha256": "c" * 64,
+                },
             )
             denied(
                 connection,
@@ -685,6 +820,18 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 agent_key=agent_key,
                 event_type=event_type,
             )
+            seed_verified_memory(
+                connection,
+                tenant_id=UUID(str(ids["tenant_a"])),
+                project_id=UUID(str(ids["project_a"])),
+                suffix="a",
+            )
+            seed_verified_memory(
+                connection,
+                tenant_id=UUID(str(ids["tenant_b"])),
+                project_id=UUID(str(ids["project_b"])),
+                suffix="b",
+            )
         run_store = RestrictedAgentRunStore(agent_engine)
         catalog = ModelCatalog.from_environment(
             {
@@ -733,6 +880,7 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 agent_engine,
                 run_store=run_store,
             ),
+            embedding_gateway=FakeEmbeddingGateway(),
         ).execute_next(now=now)
 
         assert result.status == "succeeded"
@@ -743,6 +891,8 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
             message.content for _, messages in adapter.calls for message in messages
         )
         assert "must remain private" not in serialized_messages
+        assert "Verified memory a" in serialized_messages
+        assert "Verified memory b" not in serialized_messages
         assert str(ids["tenant_b"]) not in serialized_messages
         with owner_engine.connect() as connection:
             run = (

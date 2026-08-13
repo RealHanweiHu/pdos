@@ -8,6 +8,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import Engine, func, select, text
 
+from app.ai.embeddings import EmbeddingGateway
 from app.ai.run_store import AgentRunStore
 from app.ai.runtime_contract import FrozenRunContext
 from app.db.schema import tables
@@ -98,10 +99,12 @@ class AgentReadTools:
         *,
         run_context: FrozenRunContext,
         run_store: AgentRunStore | None = None,
+        embedding_gateway: EmbeddingGateway | None = None,
     ) -> None:
         self._engine = engine
         self._context = run_context
         self._run_store = run_store
+        self._embedding_gateway = embedding_gateway
 
     def get_project_context(self, *, project_id: UUID) -> ProjectContextResult:
         self._assert_scope(project_id)
@@ -202,16 +205,99 @@ class AgentReadTools:
         if not query.strip() or len(query) > 500:
             raise ValueError("memory query must contain between 1 and 500 characters")
         self._validate_page(after_id=offset, limit=limit)
-        # S4-2 owns the verified-memory persistence and retrieval pipeline. Keep
-        # this frozen S2-2 port fail-closed until that trusted source exists.
+        if self._embedding_gateway is None:
+            return ToolPage(
+                items=(),
+                shown_count=0,
+                total_count=0,
+                truncated=False,
+                next_after_id=None,
+                continuation="已显示 0 之 0 条；verified memory 数据源尚未启用，无需续读。",
+                source_status="not_enabled",
+            )
+        embedding = self._embedding_gateway.embed(query.strip())
+        if (
+            embedding.provider != self._embedding_gateway.provider
+            or embedding.model != self._embedding_gateway.model
+            or embedding.dimensions != self._embedding_gateway.dimensions
+            or not embedding.values
+        ):
+            raise ValueError("memory embedding route changed during search")
+        vector = "[" + ",".join(format(value, ".17g") for value in embedding.values) + "]"
+        parameters = {
+            "embedding": vector,
+            "provider": embedding.provider,
+            "model": embedding.model,
+            "dimensions": embedding.dimensions,
+            "offset": offset,
+            "limit": limit,
+        }
+        with self._engine.connect() as connection:
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                source = "cehub_ai.agent_memory_projection"
+                scope = ""
+            else:
+                source = (
+                    "cehub_memory.memories m JOIN cehub_memory.memory_embeddings e "
+                    "ON e.tenant_id = m.tenant_id AND e.project_id = m.project_id "
+                    "AND e.memory_id = m.id AND e.content_sha256 = m.content_sha256"
+                )
+                scope = "m.tenant_id = :tenant_id AND m.project_id = :project_id AND "
+                parameters.update(
+                    {"tenant_id": self._context.tenant_id, "project_id": self._context.project_id}
+                )
+            filters = (
+                f"{scope}m.status = 'verified' AND e.provider = :provider "
+                "AND e.model = :model AND e.dimensions = :dimensions"
+            )
+            if source == "cehub_ai.agent_memory_projection":
+                filters = "provider = :provider AND model = :model AND dimensions = :dimensions"
+                total_statement = f"SELECT count(*) FROM {source} WHERE {filters}"
+                search_statement = (
+                    "SELECT memory_id, title, content, applicability, tags, source_refs, "
+                    "content_sha256, 1 - (embedding <=> CAST(:embedding AS vector)) AS similarity "
+                    f"FROM {source} WHERE {filters} "
+                    "ORDER BY embedding <=> CAST(:embedding AS vector), memory_id "
+                    "OFFSET :offset LIMIT :limit"
+                )
+            else:
+                total_statement = f"SELECT count(*) FROM {source} WHERE {filters}"
+                search_statement = (
+                    "SELECT m.id AS memory_id, m.title, m.content, m.applicability, m.tags, "
+                    "m.source_refs, m.content_sha256, "
+                    "1 - (e.embedding <=> CAST(:embedding AS vector)) AS similarity "
+                    f"FROM {source} WHERE {filters} "
+                    "ORDER BY e.embedding <=> CAST(:embedding AS vector), m.id "
+                    "OFFSET :offset LIMIT :limit"
+                )
+            total = int(connection.execute(text(total_statement), parameters).scalar_one())
+            rows = list(connection.execute(text(search_statement), parameters).mappings())
+        items = tuple(
+            {
+                "memory_id": str(row["memory_id"]),
+                "title": str(row["title"]),
+                "content": str(row["content"])[:4_000],
+                "applicability": row["applicability"],
+                "tags": list(row["tags"]),
+                "source_refs": list(row["source_refs"]),
+                "content_sha256": str(row["content_sha256"]),
+                "similarity": float(row["similarity"]),
+            }
+            for row in rows
+        )
+        next_offset = offset + len(items) if offset + len(items) < total else None
         return ToolPage(
-            items=(),
-            shown_count=0,
-            total_count=0,
-            truncated=False,
-            next_after_id=None,
-            continuation="已显示 0 之 0 条；verified memory 数据源尚未启用，无需续读。",
-            source_status="not_enabled",
+            items=items,
+            shown_count=len(items),
+            total_count=total,
+            truncated=next_offset is not None,
+            next_after_id=next_offset,
+            continuation=(
+                f"已显示 {offset + len(items)} 之 {total} 条；使用 offset={next_offset} 续读。"
+                if next_offset is not None
+                else f"已显示 {offset + len(items)} 之 {total} 条；无需续读。"
+            ),
         )
 
     def get_document_fragments(

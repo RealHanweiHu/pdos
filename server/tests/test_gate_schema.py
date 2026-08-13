@@ -89,4 +89,4 @@ def test_gate_migration_round_trip_preserves_single_head(gate_database_url: str)
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     command.downgrade(config, "0015_specification_boms")
     command.upgrade(config, "head")
-    assert ScriptDirectory.from_config(config).get_heads() == ["0022_memory_search"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["0023_memory_finding_apply"]

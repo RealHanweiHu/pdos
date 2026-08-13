@@ -13,6 +13,7 @@ from sqlalchemy import Connection, Engine, RowMapping, select, update
 from app.ai.quality import FindingQualityService
 from app.auth.roles import Action, Role, is_allowed
 from app.db.schema import tables
+from app.domain.memories import MemoryDraft, memory_content_hash
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 FINDING_PREFLIGHT_VERSION = "finding-preflight-v2"
@@ -137,8 +138,17 @@ class FindingReview:
 @dataclass(frozen=True)
 class FindingApplyResult:
     finding: FindingRecord
-    risk_id: UUID
+    applied_entity_type: Literal["risk", "memory"]
+    applied_entity_id: UUID
     idempotent_replay: bool
+
+    @property
+    def risk_id(self) -> UUID | None:
+        return self.applied_entity_id if self.applied_entity_type == "risk" else None
+
+    @property
+    def memory_id(self) -> UUID | None:
+        return self.applied_entity_id if self.applied_entity_type == "memory" else None
 
 
 def _record(row: RowMapping) -> FindingRecord:
@@ -357,64 +367,33 @@ class FindingService:
             if before.status == "applied" and before.applied_entity_id is not None:
                 return FindingApplyResult(
                     finding=before,
-                    risk_id=before.applied_entity_id,
+                    applied_entity_type=(
+                        "memory" if before.applied_entity_type == "memory" else "risk"
+                    ),
+                    applied_entity_id=before.applied_entity_id,
                     idempotent_replay=True,
                 )
             if before.status != "accepted" or before.accepted_payload is None:
                 raise FindingInvalidTransitionError
-            if before.finding_type == "knowledge_draft":
-                raise FindingApplyNotSupportedError
             payload = self._revalidate_ground_truth(connection, finding=before)
-            risk_id = uuid4()
-            connection.execute(
-                tables.risks.insert(),
-                {
-                    "id": risk_id,
-                    "tenant_id": tenant_id,
-                    "project_id": before.project_id,
-                    "title": payload.title,
-                    "description": payload.description,
-                    "status": "open",
-                    "likelihood": payload.likelihood,
-                    "impact": payload.impact,
-                    "mitigation_plan": payload.mitigation_plan,
-                    "contingency_plan": payload.contingency_plan,
-                    "target_date": payload.target_date,
-                    "created_at": applied_at,
-                    "updated_at": applied_at,
-                },
-            )
-            EventAuditWriter(
-                connection,
-                tenant_id=tenant_id,
-                actor_user_id=actor_user_id,
-                project_id=before.project_id,
-            ).record(
-                EventDraft(
-                    event_id=f"risk:{risk_id}:created",
-                    event_type="RISK_CREATED",
-                    source="risk_service",
-                    entity_id=risk_id,
-                    payload={
-                        "risk_id": str(risk_id),
-                        "score": payload.likelihood * payload.impact,
-                        "status": "open",
-                    },
-                    occurred_at=applied_at,
-                ),
-                AuditDraft(
-                    action="risk.create_from_finding",
-                    after_snapshot={
-                        "id": str(risk_id),
-                        "project_id": str(before.project_id),
-                        "title": payload.title,
-                        "status": "open",
-                        "likelihood": payload.likelihood,
-                        "impact": payload.impact,
-                    },
-                    context={"finding_id": str(before.id)},
-                ),
-            )
+            if isinstance(payload, RiskSuggestionPayload):
+                applied_entity_type: Literal["risk", "memory"] = "risk"
+                applied_entity_id = self._create_risk(
+                    connection,
+                    finding=before,
+                    payload=payload,
+                    actor_user_id=actor_user_id,
+                    applied_at=applied_at,
+                )
+            else:
+                applied_entity_type = "memory"
+                applied_entity_id = self._create_memory_draft(
+                    connection,
+                    finding=before,
+                    payload=payload,
+                    actor_user_id=actor_user_id,
+                    applied_at=applied_at,
+                )
             connection.execute(
                 update(tables.findings)
                 .where(
@@ -426,8 +405,8 @@ class FindingService:
                     status="applied",
                     applied_by_user_id=actor_user_id,
                     applied_at=applied_at,
-                    applied_entity_type="risk",
-                    applied_entity_id=risk_id,
+                    applied_entity_type=applied_entity_type,
+                    applied_entity_id=applied_entity_id,
                     updated_at=applied_at,
                 )
             )
@@ -443,7 +422,10 @@ class FindingService:
                     "actor_user_id": actor_user_id,
                     "from_status": "accepted",
                     "to_status": "applied",
-                    "detail": {"entity_type": "risk", "entity_id": str(risk_id)},
+                    "detail": {
+                        "entity_type": applied_entity_type,
+                        "entity_id": str(applied_entity_id),
+                    },
                     "created_at": applied_at,
                 },
             )
@@ -462,9 +444,153 @@ class FindingService:
             )
             return FindingApplyResult(
                 finding=after,
-                risk_id=risk_id,
+                applied_entity_type=applied_entity_type,
+                applied_entity_id=applied_entity_id,
                 idempotent_replay=False,
             )
+
+    @staticmethod
+    def _create_risk(
+        connection: Connection,
+        *,
+        finding: FindingRecord,
+        payload: RiskSuggestionPayload,
+        actor_user_id: UUID,
+        applied_at: datetime,
+    ) -> UUID:
+        risk_id = uuid4()
+        connection.execute(
+            tables.risks.insert(),
+            {
+                "id": risk_id,
+                "tenant_id": finding.tenant_id,
+                "project_id": finding.project_id,
+                "title": payload.title,
+                "description": payload.description,
+                "status": "open",
+                "likelihood": payload.likelihood,
+                "impact": payload.impact,
+                "mitigation_plan": payload.mitigation_plan,
+                "contingency_plan": payload.contingency_plan,
+                "target_date": payload.target_date,
+                "created_at": applied_at,
+                "updated_at": applied_at,
+            },
+        )
+        EventAuditWriter(
+            connection,
+            tenant_id=finding.tenant_id,
+            actor_user_id=actor_user_id,
+            project_id=finding.project_id,
+        ).record(
+            EventDraft(
+                event_id=f"risk:{risk_id}:created",
+                event_type="RISK_CREATED",
+                source="risk_service",
+                entity_id=risk_id,
+                payload={
+                    "risk_id": str(risk_id),
+                    "score": payload.likelihood * payload.impact,
+                    "status": "open",
+                },
+                occurred_at=applied_at,
+            ),
+            AuditDraft(
+                action="risk.create_from_finding",
+                after_snapshot={
+                    "id": str(risk_id),
+                    "project_id": str(finding.project_id),
+                    "title": payload.title,
+                    "status": "open",
+                    "likelihood": payload.likelihood,
+                    "impact": payload.impact,
+                },
+                context={"finding_id": str(finding.id)},
+            ),
+        )
+        return risk_id
+
+    @staticmethod
+    def _create_memory_draft(
+        connection: Connection,
+        *,
+        finding: FindingRecord,
+        payload: KnowledgeDraftPayload,
+        actor_user_id: UUID,
+        applied_at: datetime,
+    ) -> UUID:
+        memory_id = uuid4()
+        draft = MemoryDraft(
+            title=payload.title,
+            content=payload.draft_text,
+            applicability=payload.applicability,
+        )
+        event_refs = list(
+            connection.execute(
+                select(tables.events.c.event_id)
+                .where(
+                    tables.events.c.tenant_id == finding.tenant_id,
+                    tables.events.c.project_id == finding.project_id,
+                    tables.events.c.id.in_(finding.evidence_event_ids),
+                )
+                .order_by(tables.events.c.id)
+            ).scalars()
+        )
+        connection.execute(
+            tables.memories.insert(),
+            {
+                "id": memory_id,
+                "tenant_id": finding.tenant_id,
+                "project_id": finding.project_id,
+                "source_finding_id": finding.id,
+                "created_by_user_id": actor_user_id,
+                "title": draft.title,
+                "content": draft.content,
+                "applicability": draft.applicability,
+                "tags": [],
+                "source_refs": [
+                    {"kind": "event", "reference": event_id} for event_id in event_refs
+                ],
+                "content_sha256": memory_content_hash(draft),
+                "status": "draft",
+                "created_at": applied_at,
+                "updated_at": applied_at,
+            },
+        )
+        EventAuditWriter(
+            connection,
+            tenant_id=finding.tenant_id,
+            actor_user_id=actor_user_id,
+            project_id=finding.project_id,
+        ).record(
+            EventDraft(
+                event_id=f"memory:{memory_id}:draft-created",
+                event_type="MEMORY_DRAFT_CREATED",
+                source="memory_service",
+                entity_id=memory_id,
+                payload={"memory_id": str(memory_id), "source_type": "finding"},
+                occurred_at=applied_at,
+            ),
+            AuditDraft(
+                action="memory.create_from_finding",
+                after_snapshot={
+                    "id": str(memory_id),
+                    "project_id": str(finding.project_id),
+                    "source_finding_id": str(finding.id),
+                    "title": draft.title,
+                    "content": draft.content,
+                    "applicability": draft.applicability,
+                    "tags": [],
+                    "source_refs": [
+                        {"kind": "event", "reference": event_id} for event_id in event_refs
+                    ],
+                    "content_sha256": memory_content_hash(draft),
+                    "status": "draft",
+                },
+                context={"finding_id": str(finding.id)},
+            ),
+        )
+        return memory_id
 
     @staticmethod
     def _authorize_user(
@@ -506,7 +632,7 @@ class FindingService:
         connection: Connection,
         *,
         finding: FindingRecord,
-    ) -> RiskSuggestionPayload:
+    ) -> FindingPayload:
         project_status = connection.execute(
             select(tables.projects.c.status).where(
                 tables.projects.c.tenant_id == finding.tenant_id,
@@ -568,8 +694,6 @@ class FindingService:
             )
         except ValueError as error:
             raise FindingPayloadInvalidError from error
-        if not isinstance(payload, RiskSuggestionPayload):
-            raise FindingApplyNotSupportedError
         return payload
 
     @staticmethod

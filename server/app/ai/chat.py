@@ -12,9 +12,11 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from sqlalchemy import Connection, Engine, RowMapping, desc, select
 
 from app.ai.application_gateway import ApplicationModelGateway
+from app.ai.embeddings import EmbeddingError, EmbeddingGateway
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
 from app.db.schema import tables
+from app.domain.memories import MemoryService
 
 PROMPT_PATH = Path(__file__).with_name("prompts") / "ai_chat_v1.json"
 
@@ -85,8 +87,11 @@ def _base_href(project_id: UUID, tab: str, **params: object) -> str:
 
 
 class ChatEvidenceRepository:
-    def __init__(self, engine: Engine) -> None:
+    def __init__(
+        self, engine: Engine, *, embedding_gateway: EmbeddingGateway | None = None
+    ) -> None:
         self._engine = engine
+        self._embedding_gateway = embedding_gateway
 
     def collect(
         self,
@@ -139,7 +144,47 @@ class ChatEvidenceRepository:
                     question=question,
                 )
             )
+        if self._embedding_gateway is not None:
+            evidence.extend(
+                self._memory_evidence(
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    question=question,
+                )
+            )
         return tuple(evidence)
+
+    def _memory_evidence(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        question: str,
+    ) -> list[ChatEvidence]:
+        if self._embedding_gateway is None:
+            return []
+        results = MemoryService(self._engine).search(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            query=question,
+            gateway=self._embedding_gateway,
+            limit=5,
+        )
+        return [
+            ChatEvidence(
+                reference_id=f"memory:{result.memory.id}",
+                entity="memory",
+                entity_id=str(result.memory.id),
+                label=result.memory.title,
+                href=f"/knowledge?project={project_id}&memory={result.memory.id}",
+                excerpt=_excerpt(
+                    result.memory.content,
+                    result.memory.applicability,
+                    "tags=" + ", ".join(result.memory.tags) if result.memory.tags else None,
+                ),
+            )
+            for result in results
+        ]
 
     @staticmethod
     def _project_evidence(project: RowMapping, *, project_id: UUID) -> ChatEvidence:
@@ -315,16 +360,34 @@ class ChatEvidenceRepository:
 
 
 class ChatService:
-    def __init__(self, engine: Engine, *, gateway: ApplicationModelGateway) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        *,
+        gateway: ApplicationModelGateway,
+        embedding_gateway: EmbeddingGateway | None = None,
+    ) -> None:
         self._engine = engine
         self._gateway = gateway
+        self._embedding_gateway = embedding_gateway
 
     def answer(self, *, tenant_id: UUID, project_id: UUID, question: str) -> ChatResult:
-        evidence = ChatEvidenceRepository(self._engine).collect(
-            tenant_id=tenant_id,
-            project_id=project_id,
-            question=question,
-        )
+        try:
+            evidence = ChatEvidenceRepository(
+                self._engine,
+                embedding_gateway=self._embedding_gateway,
+            ).collect(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                question=question,
+            )
+        except EmbeddingError as error:
+            return ChatResult(
+                status="unavailable",
+                answer=None,
+                citations=(),
+                error_code=error.code,
+            )
         result = self._gateway.invoke_structured(
             GatewayInvocation(
                 tenant_id=tenant_id,

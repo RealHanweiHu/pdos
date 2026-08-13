@@ -16,6 +16,7 @@ from app.ai.application_gateway import (
     configured_application_gateway,
 )
 from app.ai.chat import ChatEvidence, ChatService
+from app.ai.embeddings import EmbeddingError, EmbeddingGateway, configured_embedding_gateway
 from app.ai.quality import FindingQualityService
 from app.ai.risk_suggestions import (
     RiskSuggestionEvidenceError,
@@ -191,6 +192,20 @@ def get_application_gateway(
         yield gateway
 
 
+def get_optional_embedding_gateway() -> Iterator[EmbeddingGateway | None]:
+    try:
+        with configured_embedding_gateway() as gateway:
+            yield gateway
+    except EmbeddingError as error:
+        if error.code == "EMBEDDING_NOT_CONFIGURED":
+            yield None
+            return
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={"code": error.code, "message": "Memory search is unavailable"},
+        ) from error
+
+
 @router.get("/projects/{project_id}/documents", response_model=DocumentListResponse)
 def list_documents(
     project_id: UUID,
@@ -299,6 +314,10 @@ def chat(
     context: Annotated[AuthContext, Depends(current_context)],
     engine: Annotated[Engine, Depends(get_engine)],
     gateway: Annotated[ApplicationModelGateway, Depends(get_application_gateway)],
+    embedding_gateway: Annotated[
+        EmbeddingGateway | None,
+        Depends(get_optional_embedding_gateway),
+    ],
 ) -> ChatResponse:
     require_ai_action(context, Action.AI_CHAT_USE)
     authorize_project(
@@ -307,7 +326,11 @@ def chat(
         project_id=request.project_id,
         action=Action.PROJECT_VIEW,
     )
-    result = ChatService(engine, gateway=gateway).answer(
+    result = ChatService(
+        engine,
+        gateway=gateway,
+        embedding_gateway=embedding_gateway,
+    ).answer(
         tenant_id=context.tenant.id,
         project_id=request.project_id,
         question=request.question,

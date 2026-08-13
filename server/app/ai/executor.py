@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from sqlalchemy import Engine
 
 from app.ai.context_builder import RunContextBuilder
+from app.ai.embeddings import EmbeddingGateway
 from app.ai.finding_writer import (
     AgentFindingWriter,
     FindingOutputNarrowedError,
@@ -151,12 +152,14 @@ class AgentExecutor:
         context_builder: RunContextBuilder | None = None,
         run_store: AgentRunStore | None = None,
         finding_writer: AgentFindingWriter | None = None,
+        embedding_gateway: EmbeddingGateway | None = None,
     ) -> None:
         self._engine = engine
         self._model_invoker = model_invoker
         self._context_builder = context_builder or RunContextBuilder()
         self._run_store = run_store or OwnerAgentRunStore(engine)
         self._finding_writer = finding_writer
+        self._embedding_gateway = embedding_gateway
         self._graph = self._build_graph()
 
     def execute_next(self, *, now: datetime | None = None) -> ExecutionResult:
@@ -247,6 +250,7 @@ class AgentExecutor:
             self._engine,
             run_context=context,
             run_store=self._run_store,
+            embedding_gateway=self._embedding_gateway,
         )
         return {
             "project_context": tools.get_project_context(project_id=context.project_id),
@@ -258,6 +262,7 @@ class AgentExecutor:
             self._engine,
             run_context=context,
             run_store=self._run_store,
+            embedding_gateway=self._embedding_gateway,
         )
         return {
             "recent_events": tools.get_recent_events(
@@ -272,6 +277,7 @@ class AgentExecutor:
             self._engine,
             run_context=context,
             run_store=self._run_store,
+            embedding_gateway=self._embedding_gateway,
         )
         return {
             "memory": tools.search_memory(
@@ -297,6 +303,16 @@ class AgentExecutor:
             }
             for item in recent_events.items
         ]
+        references.extend(
+            {
+                "reference_id": f"memory:{item['memory_id']}",
+                "entity": "memory",
+                "entity_id": item["memory_id"],
+                "label": item["title"],
+                "excerpt": str(item["content"])[:1_000],
+            }
+            for item in state["memory"].items
+        )
         document_event = next(
             (
                 event
@@ -310,6 +326,7 @@ class AgentExecutor:
                 self._engine,
                 run_context=context,
                 run_store=self._run_store,
+                embedding_gateway=self._embedding_gateway,
             )
             document_fragments = tools.get_document_fragments(
                 project_id=context.project_id,

@@ -17,7 +17,6 @@ from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.findings import (
-    FindingApplyNotSupportedError,
     FindingApplyPermissionError,
     FindingGroundTruthConflictError,
     FindingInvalidTransitionError,
@@ -322,7 +321,7 @@ def test_accept_and_apply_are_two_audited_human_actions(
         engine.dispose()
 
 
-def test_knowledge_draft_can_be_accepted_but_never_applied_as_business_truth(
+def test_knowledge_draft_apply_creates_unverified_memory_not_business_truth(
     findings_database_url: str,
 ) -> None:
     ids = seed_reviewable_finding(
@@ -356,13 +355,12 @@ def test_knowledge_draft_can_be_accepted_but_never_applied_as_business_truth(
 
         assert accepted.status == "accepted"
         assert accepted.finding_type == "knowledge_draft"
-        with pytest.raises(FindingApplyNotSupportedError):
-            service.apply(
-                tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-                actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-                finding_id=ids["finding_id"],  # type: ignore[arg-type]
-                now=cast(datetime, ids["now"]) + timedelta(minutes=2),
-            )
+        applied = service.apply(
+            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
+            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
+            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+        )
 
         with engine.connect() as connection:
             finding_status = connection.execute(
@@ -371,6 +369,13 @@ def test_knowledge_draft_can_be_accepted_but_never_applied_as_business_truth(
             risk_count = connection.execute(
                 select(text("count(*)")).select_from(tables.risks)
             ).scalar_one()
+            memory = (
+                connection.execute(
+                    select(tables.memories).where(tables.memories.c.id == applied.applied_entity_id)
+                )
+                .mappings()
+                .one()
+            )
             actions = list(
                 connection.execute(
                     select(tables.finding_actions.c.action)
@@ -378,9 +383,14 @@ def test_knowledge_draft_can_be_accepted_but_never_applied_as_business_truth(
                     .order_by(tables.finding_actions.c.created_at)
                 ).scalars()
             )
-        assert finding_status == "accepted"
+        assert finding_status == "applied"
         assert risk_count == 0
-        assert actions == ["created", "accepted"]
+        assert applied.applied_entity_type == "memory"
+        assert applied.memory_id == memory["id"]
+        assert applied.risk_id is None
+        assert memory["status"] == "draft"
+        assert memory["source_finding_id"] == ids["finding_id"]
+        assert actions == ["created", "accepted", "applied"]
     finally:
         engine.dispose()
 

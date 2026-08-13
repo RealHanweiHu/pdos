@@ -11,13 +11,25 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy import Connection, create_engine, text
 
+from app.ai.embeddings import EmbeddingResult
 from app.ai.runtime_contract import AgentKey, EventReference, FrozenRunContext
 from app.ai.tools import TOOL_DEFINITIONS, AgentReadTools, ToolScopeViolationError
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from app.domain.memories import MemoryDraft, MemoryService
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
+
+
+class StaticEmbeddingGateway:
+    provider = "test"
+    model = "memory-v1"
+    dimensions = 3
+
+    def embed(self, text_value: str) -> EmbeddingResult:
+        assert text_value.strip()
+        return EmbeddingResult(provider=self.provider, model=self.model, values=(1.0, 0.0, 0.0))
 
 
 @pytest.fixture
@@ -156,6 +168,102 @@ def test_tools_fail_close_on_claimed_scope_and_memory_is_explicitly_not_enabled(
         assert memory.shown_count == memory.total_count == 0
         assert not memory.truncated
         assert "已显示 0 之 0 条" in memory.continuation
+    finally:
+        engine.dispose()
+
+
+def test_memory_search_returns_only_verified_project_scoped_memory(
+    agent_tools_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(agent_tools_database_url))
+    gateway = StaticEmbeddingGateway()
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection, slug="memory")
+            other_tenant_id, other_project_id = seed_project(connection, slug="memory-other")
+            creator_id = uuid4()
+            verifier_id = uuid4()
+            for user_id, username in (
+                (creator_id, "memory-creator"),
+                (verifier_id, "memory-verifier"),
+            ):
+                connection.execute(
+                    tables.users.insert(),
+                    {
+                        "id": user_id,
+                        "tenant_id": tenant_id,
+                        "username": username,
+                        "display_name": username,
+                        "role": "quality",
+                    },
+                )
+            other_creator_id = uuid4()
+            other_verifier_id = uuid4()
+            for user_id, username in (
+                (other_creator_id, "other-creator"),
+                (other_verifier_id, "other-verifier"),
+            ):
+                connection.execute(
+                    tables.users.insert(),
+                    {
+                        "id": user_id,
+                        "tenant_id": other_tenant_id,
+                        "username": username,
+                        "display_name": username,
+                        "role": "quality",
+                    },
+                )
+        service = MemoryService(engine)
+        verified = service.create(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=creator_id,
+            draft=MemoryDraft(
+                title="Gate readiness lesson",
+                content="Validate connector pin mapping before DVT.",
+                tags=("DVT",),
+            ),
+        )
+        service.verify(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=verifier_id,
+            memory_id=verified.id,
+            gateway=gateway,
+        )
+        service.create(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=creator_id,
+            draft=MemoryDraft(title="Draft secret", content="Must not be retrieved."),
+        )
+        other = service.create(
+            tenant_id=other_tenant_id,
+            project_id=other_project_id,
+            actor_user_id=other_creator_id,
+            draft=MemoryDraft(title="Other tenant", content="Must remain isolated."),
+        )
+        service.verify(
+            tenant_id=other_tenant_id,
+            project_id=other_project_id,
+            actor_user_id=other_verifier_id,
+            memory_id=other.id,
+            gateway=gateway,
+        )
+        tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(tenant_id=tenant_id, project_id=project_id),
+            embedding_gateway=gateway,
+        )
+
+        page = tools.search_memory(project_id=project_id, query="connector DVT", limit=10)
+
+        assert page.source_status == "ready"
+        assert page.shown_count == page.total_count == 1
+        assert page.items[0]["memory_id"] == str(verified.id)
+        assert page.items[0]["title"] == "Gate readiness lesson"
+        assert "created_by_user_id" not in page.items[0]
+        assert "embedding" not in page.items[0]
     finally:
         engine.dispose()
 

@@ -4383,7 +4383,7 @@ findings = Table(
         "(status <> 'applied' AND applied_by_user_id IS NULL AND applied_at IS NULL "
         "AND applied_entity_type IS NULL AND applied_entity_id IS NULL) OR "
         "(status = 'applied' AND applied_by_user_id IS NOT NULL AND applied_at IS NOT NULL "
-        "AND applied_entity_type = 'risk' AND applied_entity_id IS NOT NULL "
+        "AND applied_entity_type IN ('risk', 'memory') AND applied_entity_id IS NOT NULL "
         "AND reviewed_at < applied_at)",
         name="apply_lifecycle_consistent",
     ),

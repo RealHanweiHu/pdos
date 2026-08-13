@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator, Mapping
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -13,6 +13,7 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
+from app.ai.embeddings import EmbeddingError, configured_embedding_gateway
 from app.ai.executor import AgentExecutor, GatewayAgentModelInvoker
 from app.ai.finding_writer import RestrictedAgentFindingWriter
 from app.ai.gateway import ProviderRateCard, StructuredModelGateway
@@ -92,7 +93,14 @@ def configured_agent_runtime(
     )
     rate_cards = {provider: ProviderRateCard(0, 0) for provider in ProviderName}
     try:
-        with httpx2.Client(follow_redirects=False, trust_env=False) as client:
+        with ExitStack() as stack:
+            client = stack.enter_context(httpx2.Client(follow_redirects=False, trust_env=False))
+            try:
+                embedding_gateway = stack.enter_context(configured_embedding_gateway(values))
+            except EmbeddingError as error:
+                if error.code != "EMBEDDING_NOT_CONFIGURED":
+                    raise
+                embedding_gateway = None
             gateway = StructuredModelGateway(
                 engine,
                 catalog=catalog,
@@ -112,6 +120,7 @@ def configured_agent_runtime(
                         engine,
                         run_store=run_store,
                     ),
+                    embedding_gateway=embedding_gateway,
                 ),
             )
     finally:

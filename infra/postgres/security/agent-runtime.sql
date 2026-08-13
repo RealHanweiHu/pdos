@@ -330,6 +330,32 @@ JOIN cehub_project.documents AS document
 WHERE cehub_ai.agent_scope_allows(fragment.tenant_id, fragment.project_id)
   AND document.classification = 'internal';
 
+CREATE OR REPLACE VIEW cehub_ai.agent_memory_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    memory.id AS memory_id,
+    memory.tenant_id,
+    memory.project_id,
+    memory.title,
+    memory.content,
+    memory.applicability,
+    memory.tags,
+    memory.source_refs,
+    memory.content_sha256,
+    embedding.provider,
+    embedding.model,
+    embedding.dimensions,
+    embedding.embedding
+FROM cehub_memory.memories AS memory
+JOIN cehub_memory.memory_embeddings AS embedding
+  ON embedding.tenant_id = memory.tenant_id
+ AND embedding.project_id = memory.project_id
+ AND embedding.memory_id = memory.id
+ AND embedding.content_sha256 = memory.content_sha256
+WHERE cehub_ai.agent_scope_allows(memory.tenant_id, memory.project_id)
+  AND memory.status = 'verified';
+
 CREATE OR REPLACE VIEW cehub_ai.agent_model_settings_projection
 WITH (security_barrier = true)
 AS
@@ -753,6 +779,7 @@ GRANT SELECT ON
     cehub_ai.agent_gate_projection,
     cehub_ai.agent_event_projection,
     cehub_ai.agent_document_fragment_projection,
+    cehub_ai.agent_memory_projection,
     cehub_ai.agent_model_settings_projection,
     cehub_ai.agent_model_usage_projection,
     cehub_ai.agent_run_usage_projection,
