@@ -94,6 +94,14 @@ EXPECTED_TABLES = {
     ("cehub_ai", "finding_quality_controls"),
     ("cehub_ai", "findings"),
     ("cehub_ai", "finding_actions"),
+    ("cehub_core", "dingtalk_tenant_bindings"),
+    ("cehub_core", "dingtalk_user_bindings"),
+    ("cehub_core", "dingtalk_oauth_states"),
+    ("cehub_project", "dingtalk_project_channels"),
+    ("cehub_event", "integration_outbox"),
+    ("cehub_event", "integration_receipts"),
+    ("cehub_project", "dingtalk_approval_instances"),
+    ("cehub_project", "dingtalk_interactive_cards"),
 }
 
 

@@ -4516,6 +4516,539 @@ finding_actions = Table(
     schema=AI_SCHEMA,
 )
 
+dingtalk_tenant_bindings = Table(
+    "dingtalk_tenant_bindings",
+    metadata,
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        primary_key=True,
+    ),
+    Column("corp_id", String(128), nullable=False),
+    Column("client_id", String(128), nullable=False),
+    Column("agent_id", String(128)),
+    Column("robot_code", String(128)),
+    Column("oauth_redirect_uri", String(1024), nullable=False),
+    Column("callback_route_key", String(64), nullable=False),
+    Column("approval_process_code", String(128)),
+    Column("card_template_id", String(128)),
+    Column("card_callback_route_key", String(64)),
+    Column("status", String(16), nullable=False, server_default=text("'disabled'")),
+    Column("configured_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("status IN ('disabled', 'active')", name="status_allowed"),
+    CheckConstraint(
+        "btrim(corp_id) <> '' AND btrim(client_id) <> '' "
+        "AND btrim(oauth_redirect_uri) <> '' AND btrim(callback_route_key) <> ''",
+        name="required_text_nonblank",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "configured_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_tenant_bindings_tenant_configured_by",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("corp_id", name="uq_dingtalk_tenant_bindings_corp_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "corp_id",
+        name="uq_dingtalk_tenant_bindings_tenant_corp_id",
+    ),
+    UniqueConstraint(
+        "callback_route_key",
+        name="uq_dingtalk_tenant_bindings_callback_route_key",
+    ),
+    UniqueConstraint(
+        "card_callback_route_key",
+        name="uq_dingtalk_tenant_bindings_card_callback_route_key",
+    ),
+    schema=CORE_SCHEMA,
+)
+
+dingtalk_user_bindings = Table(
+    "dingtalk_user_bindings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("user_id", Uuid, nullable=False),
+    Column("corp_id", String(128), nullable=False),
+    Column("open_id", String(256), nullable=False),
+    Column("union_id", String(256)),
+    Column("status", String(16), nullable=False, server_default=text("'active'")),
+    Column(
+        "bound_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("revoked_at", DateTime(timezone=True)),
+    CheckConstraint("status IN ('active', 'revoked')", name="status_allowed"),
+    CheckConstraint(
+        "(status = 'active' AND revoked_at IS NULL) OR "
+        "(status = 'revoked' AND revoked_at IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    CheckConstraint("btrim(corp_id) <> '' AND btrim(open_id) <> ''", name="identity_nonblank"),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_user_bindings_tenant_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "corp_id"],
+        [
+            f"{CORE_SCHEMA}.dingtalk_tenant_bindings.tenant_id",
+            f"{CORE_SCHEMA}.dingtalk_tenant_bindings.corp_id",
+        ],
+        name="fk_dingtalk_user_bindings_tenant_corp",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_dingtalk_user_bindings_tenant_id_id"),
+    UniqueConstraint("tenant_id", "user_id", name="uq_dingtalk_user_bindings_tenant_user"),
+    UniqueConstraint(
+        "tenant_id",
+        "corp_id",
+        "open_id",
+        name="uq_dingtalk_user_bindings_tenant_external_identity",
+    ),
+    Index("ix_dingtalk_user_bindings_tenant_status", "tenant_id", "status"),
+    schema=CORE_SCHEMA,
+)
+
+dingtalk_oauth_states = Table(
+    "dingtalk_oauth_states",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("state_digest", String(64), nullable=False),
+    Column("mode", String(16), nullable=False),
+    Column("link_user_id", Uuid),
+    Column("return_path", String(512), nullable=False, server_default=text("'/'")),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("consumed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("mode IN ('login', 'link')", name="mode_allowed"),
+    CheckConstraint(
+        "(mode = 'login' AND link_user_id IS NULL) OR (mode = 'link' AND link_user_id IS NOT NULL)",
+        name="mode_user_consistent",
+    ),
+    CheckConstraint("state_digest ~ '^[0-9a-f]{64}$'", name="state_digest_hex"),
+    CheckConstraint("left(return_path, 1) = '/'", name="return_path_relative"),
+    CheckConstraint("expires_at > created_at", name="expiry_after_creation"),
+    ForeignKeyConstraint(
+        ["tenant_id", "link_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_oauth_states_tenant_link_user",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_dingtalk_oauth_states_tenant_id_id"),
+    UniqueConstraint("state_digest", name="uq_dingtalk_oauth_states_state_digest"),
+    Index("ix_dingtalk_oauth_states_tenant_expiry", "tenant_id", "expires_at"),
+    schema=CORE_SCHEMA,
+)
+
+dingtalk_project_channels = Table(
+    "dingtalk_project_channels",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("open_conversation_id", String(256), nullable=False),
+    Column("display_name", String(256), nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'active'")),
+    Column("configured_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("status IN ('active', 'disabled')", name="status_allowed"),
+    CheckConstraint(
+        "btrim(open_conversation_id) <> '' AND btrim(display_name) <> ''",
+        name="required_text_nonblank",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_dingtalk_project_channels_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "configured_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_project_channels_tenant_configured_by",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_dingtalk_project_channels_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "id",
+        name="uq_dingtalk_project_channels_tenant_project_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        name="uq_dingtalk_project_channels_tenant_project",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+integration_outbox = Table(
+    "integration_outbox",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid),
+    Column("provider", String(32), nullable=False, server_default=text("'dingtalk'")),
+    Column("operation", String(64), nullable=False),
+    Column("idempotency_key", String(128), nullable=False),
+    Column("payload", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("status", String(16), nullable=False, server_default=text("'pending'")),
+    Column("attempt_count", Integer, nullable=False, server_default=text("0")),
+    Column("max_attempts", Integer, nullable=False, server_default=text("5")),
+    Column("next_attempt_at", DateTime(timezone=True)),
+    Column("lease_owner", String(128)),
+    Column("lease_expires_at", DateTime(timezone=True)),
+    Column("remote_reference", String(256)),
+    Column("last_error_code", String(64)),
+    Column("last_error_message", String(512)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("completed_at", DateTime(timezone=True)),
+    CheckConstraint("provider = 'dingtalk'", name="provider_allowed"),
+    CheckConstraint(
+        "operation IN ('group_markdown', 'gate_approval_create', "
+        "'interactive_card_create', 'interactive_card_update')",
+        name="operation_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('pending', 'sending', 'succeeded', 'retry_wait', "
+        "'failed', 'uncertain', 'manual')",
+        name="status_allowed",
+    ),
+    CheckConstraint("jsonb_typeof(payload) = 'object'", name="payload_object"),
+    CheckConstraint(
+        "attempt_count >= 0 AND max_attempts > 0 AND attempt_count <= max_attempts",
+        name="attempts_valid",
+    ),
+    CheckConstraint(
+        "(lease_owner IS NULL AND lease_expires_at IS NULL) OR "
+        "(lease_owner IS NOT NULL AND lease_expires_at IS NOT NULL)",
+        name="lease_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_integration_outbox_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_integration_outbox_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "provider",
+        "operation",
+        "idempotency_key",
+        name="uq_integration_outbox_tenant_operation_idempotency",
+    ),
+    Index(
+        "ix_integration_outbox_claim",
+        "provider",
+        "status",
+        "next_attempt_at",
+        "created_at",
+    ),
+    Index("ix_integration_outbox_tenant_project", "tenant_id", "project_id", "created_at"),
+    schema=EVENT_SCHEMA,
+)
+
+integration_receipts = Table(
+    "integration_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("channel", String(32), nullable=False),
+    Column("external_id", String(256)),
+    Column("deduplication_key", String(256), nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'claimed'")),
+    Column("result_code", String(64)),
+    Column(
+        "received_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("processed_at", DateTime(timezone=True)),
+    CheckConstraint("channel IN ('event_aes', 'card_hmac')", name="channel_allowed"),
+    CheckConstraint(
+        "status IN ('claimed', 'processed', 'ignored', 'rejected')",
+        name="status_allowed",
+    ),
+    CheckConstraint("payload_digest ~ '^[0-9a-f]{64}$'", name="payload_digest_hex"),
+    CheckConstraint("btrim(deduplication_key) <> ''", name="deduplication_key_nonblank"),
+    UniqueConstraint("tenant_id", "id", name="uq_integration_receipts_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "channel",
+        "deduplication_key",
+        name="uq_integration_receipts_tenant_channel_deduplication",
+    ),
+    Index("ix_integration_receipts_tenant_received", "tenant_id", "received_at"),
+    schema=EVENT_SCHEMA,
+)
+
+dingtalk_approval_instances = Table(
+    "dingtalk_approval_instances",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("gate_id", Uuid, nullable=False),
+    Column("outbox_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("originator_user_id", Uuid, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("business_type", String(32), nullable=False, server_default=text("'gate_review'")),
+    Column("request_id", String(128), nullable=False),
+    Column("remote_instance_id", String(256)),
+    Column("status", String(16), nullable=False, server_default=text("'queued'")),
+    Column("remote_result", String(32)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("completed_at", DateTime(timezone=True)),
+    CheckConstraint("business_type = 'gate_review'", name="business_type_allowed"),
+    CheckConstraint(
+        "status IN ('queued', 'creating', 'pending', 'approved', 'rejected', "
+        "'terminated', 'sync_failed', 'uncertain', 'manual')",
+        name="status_allowed",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [
+            f"{PROJECT_SCHEMA}.gates.tenant_id",
+            f"{PROJECT_SCHEMA}.gates.project_id",
+            f"{PROJECT_SCHEMA}.gates.id",
+        ],
+        name="fk_dingtalk_approval_instances_tenant_project_gate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "outbox_id"],
+        [f"{EVENT_SCHEMA}.integration_outbox.tenant_id", f"{EVENT_SCHEMA}.integration_outbox.id"],
+        name="fk_dingtalk_approval_instances_tenant_outbox",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_approval_instances_tenant_requester",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "originator_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_approval_instances_tenant_originator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_approval_instances_tenant_approver",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_dingtalk_approvals_tenant_id_id"),
+    UniqueConstraint("tenant_id", "request_id", name="uq_dingtalk_approvals_tenant_request"),
+    UniqueConstraint(
+        "tenant_id",
+        "remote_instance_id",
+        name="uq_dingtalk_approvals_tenant_remote_instance",
+    ),
+    Index(
+        "ix_dingtalk_approvals_tenant_project_status",
+        "tenant_id",
+        "project_id",
+        "status",
+        "updated_at",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+dingtalk_interactive_cards = Table(
+    "dingtalk_interactive_cards",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("outbox_id", Uuid, nullable=False),
+    Column("project_channel_id", Uuid),
+    Column("recipient_user_id", Uuid),
+    Column("out_track_id", String(128), nullable=False),
+    Column("card_template_id", String(128), nullable=False),
+    Column("action_key", String(32), nullable=False),
+    Column("action_path", String(512)),
+    Column("remote_instance_id", String(256)),
+    Column("status", String(16), nullable=False, server_default=text("'queued'")),
+    Column("acknowledged_by_user_id", Uuid),
+    Column("acknowledged_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("action_key IN ('acknowledge', 'open')", name="action_allowed"),
+    CheckConstraint(
+        "(action_key = 'open' AND action_path IS NOT NULL AND left(action_path, 1) = '/') "
+        "OR (action_key = 'acknowledge' AND action_path IS NULL)",
+        name="action_path_consistent",
+    ),
+    CheckConstraint(
+        "status IN ('queued', 'creating', 'sent', 'acknowledged', 'handled', "
+        "'failed', 'uncertain', 'manual')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "(project_channel_id IS NULL) <> (recipient_user_id IS NULL)",
+        name="single_delivery_target",
+    ),
+    CheckConstraint(
+        "(acknowledged_by_user_id IS NULL AND acknowledged_at IS NULL) OR "
+        "(acknowledged_by_user_id IS NOT NULL AND acknowledged_at IS NOT NULL)",
+        name="acknowledgement_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_dingtalk_interactive_cards_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "project_channel_id"],
+        [
+            f"{PROJECT_SCHEMA}.dingtalk_project_channels.tenant_id",
+            f"{PROJECT_SCHEMA}.dingtalk_project_channels.project_id",
+            f"{PROJECT_SCHEMA}.dingtalk_project_channels.id",
+        ],
+        name="fk_dingtalk_interactive_cards_tenant_project_channel",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_interactive_cards_tenant_recipient",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "outbox_id"],
+        [f"{EVENT_SCHEMA}.integration_outbox.tenant_id", f"{EVENT_SCHEMA}.integration_outbox.id"],
+        name="fk_dingtalk_interactive_cards_tenant_outbox",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "acknowledged_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_dingtalk_interactive_cards_tenant_acknowledged_by",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_dingtalk_cards_tenant_id_id"),
+    UniqueConstraint("tenant_id", "out_track_id", name="uq_dingtalk_cards_tenant_out_track"),
+    Index(
+        "ix_dingtalk_cards_tenant_project_status",
+        "tenant_id",
+        "project_id",
+        "status",
+        "updated_at",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
 events = Table(
     "events",
     metadata,
@@ -4766,6 +5299,14 @@ class Tables:
     model_invocations: Table
     findings: Table
     finding_actions: Table
+    dingtalk_tenant_bindings: Table
+    dingtalk_user_bindings: Table
+    dingtalk_oauth_states: Table
+    dingtalk_project_channels: Table
+    integration_outbox: Table
+    integration_receipts: Table
+    dingtalk_approval_instances: Table
+    dingtalk_interactive_cards: Table
     events: Table
     audit_log: Table
     migration_runs: Table
@@ -4832,6 +5373,14 @@ tables = Tables(
     model_invocations=model_invocations,
     findings=findings,
     finding_actions=finding_actions,
+    dingtalk_tenant_bindings=dingtalk_tenant_bindings,
+    dingtalk_user_bindings=dingtalk_user_bindings,
+    dingtalk_oauth_states=dingtalk_oauth_states,
+    dingtalk_project_channels=dingtalk_project_channels,
+    integration_outbox=integration_outbox,
+    integration_receipts=integration_receipts,
+    dingtalk_approval_instances=dingtalk_approval_instances,
+    dingtalk_interactive_cards=dingtalk_interactive_cards,
     events=events,
     audit_log=audit_log,
     migration_runs=migration_runs,

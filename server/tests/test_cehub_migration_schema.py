@@ -85,5 +85,5 @@ def test_migration_0020_matches_metadata_and_single_head(
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0025_context_builder_v2"
+        "0026_dingtalk_connector"
     ]
