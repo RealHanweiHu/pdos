@@ -1165,3 +1165,28 @@
 |---|---:|---|
 | 全量 format gate 发现 Phase 1 golden 断言存在一处仅格式差异 | 1 | 运行项目 formatter，随后 207 个 Python 文件 format check 与 Ruff/mypy/compile 全绿 |
 | 初次以 `127.0.0.1` 打开 Next dev 被开发资源 origin 保护拦截 | 1 | 改用同一临时服务的 `localhost` 入口；真实交互链路与浏览器 console 随后全绿，未放宽生产或仓库安全配置 |
+
+## In Progress: S4-4 Context Builder 补层
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S4-4、AI Runtime 四层 Context 与 §11 前缀冻结/代码预聚合纪律
+- [x] 依赖项：S2 文档抽取、run lease/投影、Phase 1/2 Agent 与 S4 Memory 均已就绪
+- [x] 版本边界：`run-context-v2` 新增 Multimodal/User 两层；历史 v1 不回写
+- [x] 数据边界：Multimodal 仅 trigger-bound internal 抽取片段；User 仅静态 role lens 与当前项目 active role 聚合
+- [x] 安全边界：模型自报 scope/role 无效；PII、object key、原文件与 restricted/confidential 0 穿透
+- [x] migration：`0025_context_builder_v2`；合同见 `docs/design/2026-08-12-s4-4-context-builder-layers-contract.md`
+
+**Implementation slices**
+
+- [x] S4-4a：冻结 v2 schema、Multimodal/User 字段、限额、状态、角色映射与兼容合同
+- [ ] S4-4b：migration 0025 与 run context/version 原子持久化
+- [ ] S4-4c：实现 owner/restricted Multimodal Context 与 trigger/classification/OCR/cap 边界
+- [ ] S4-4d：实现 owner/restricted User Context、role lens 与无 PII 项目角色聚合
+- [ ] S4-4e：把两层接入模型动态 context 尾部并证明 prompt/tool 前缀未变
+- [ ] S4-4f：完成受限账号、no-leak、迁移、完整门禁与真实 worker/API/浏览器验收
+- [ ] S4-4g：更新 canonical checkbox、形成 Sprint 4 Exit Gate 报告并停下等人确认
+
+**Current evidence（2026-08-12）**
+
+- 推荐 v2 不把 event-driven Agent 冒充成登录用户；User Context 是静态 Agent role lens + 当前项目 active role 聚合，权限真值仍在 RBAC/数据库。
