@@ -1816,6 +1816,7 @@ complaints = Table(
     Column("reported_at", DateTime(timezone=True), nullable=False),
     Column("customer_reference", String(128)),
     Column("affected_scope", Text),
+    Column("document_refs", json_type, nullable=False, server_default=text("'[]'::jsonb")),
     Column("resolution_summary", Text),
     Column("closed_at", DateTime(timezone=True)),
     Column(
@@ -1847,6 +1848,7 @@ complaints = Table(
         name="required_text_nonblank",
     ),
     CheckConstraint("reported_at >= occurred_at", name="reported_after_occurrence"),
+    CheckConstraint("jsonb_typeof(document_refs) = 'array'", name="document_refs_array"),
     CheckConstraint(
         "(status IN ('open', 'triaged', 'investigating') AND resolution_summary IS NULL) OR "
         "(status IN ('resolved', 'closed') AND resolution_summary IS NOT NULL "
@@ -1930,6 +1932,8 @@ nonconformance_reports = Table(
     Column("affected_scope", Text),
     Column("preventive_not_applicable_reason", Text),
     Column("preventive_disposition_approved_at", DateTime(timezone=True)),
+    Column("effectiveness_criteria", Text),
+    Column("observation_due_at", DateTime(timezone=True)),
     Column("closed_at", DateTime(timezone=True)),
     Column(
         "created_at",
@@ -1974,6 +1978,12 @@ nonconformance_reports = Table(
         "AND preventive_disposition_approved_by_user_id IS NOT NULL "
         "AND preventive_disposition_approved_at IS NOT NULL)",
         name="preventive_disposition_consistent",
+    ),
+    CheckConstraint(
+        "(effectiveness_criteria IS NULL AND observation_due_at IS NULL) OR "
+        "(effectiveness_criteria IS NOT NULL AND btrim(effectiveness_criteria) <> '' "
+        "AND observation_due_at IS NOT NULL)",
+        name="effectiveness_plan_consistent",
     ),
     CheckConstraint(
         "(status = 'closed' AND closed_by_user_id IS NOT NULL AND closed_at IS NOT NULL) OR "

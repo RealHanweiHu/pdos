@@ -39,6 +39,12 @@ def upgrade() -> None:
         sa.Column("reported_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("customer_reference", sa.String(length=128), nullable=True),
         sa.Column("affected_scope", sa.Text(), nullable=True),
+        sa.Column(
+            "document_refs",
+            postgresql.JSONB(astext_type=sa.Text()),
+            server_default=sa.text("'[]'::jsonb"),
+            nullable=False,
+        ),
         sa.Column("resolution_summary", sa.Text(), nullable=True),
         sa.Column("closed_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column(
@@ -68,6 +74,10 @@ def upgrade() -> None:
         sa.CheckConstraint(
             "btrim(code) <> '' AND btrim(title) <> '' AND btrim(description) <> ''",
             name=op.f("ck_complaints_required_text_nonblank"),
+        ),
+        sa.CheckConstraint(
+            "jsonb_typeof(document_refs) = 'array'",
+            name=op.f("ck_complaints_document_refs_array"),
         ),
         sa.CheckConstraint(
             "severity IN ('critical', 'high', 'medium', 'low')",
@@ -157,6 +167,8 @@ def upgrade() -> None:
         sa.Column("affected_scope", sa.Text(), nullable=True),
         sa.Column("preventive_not_applicable_reason", sa.Text(), nullable=True),
         sa.Column("preventive_disposition_approved_at", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("effectiveness_criteria", sa.Text(), nullable=True),
+        sa.Column("observation_due_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("closed_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column(
             "created_at",
@@ -185,6 +197,12 @@ def upgrade() -> None:
             "AND preventive_disposition_approved_by_user_id IS NOT NULL "
             "AND preventive_disposition_approved_at IS NOT NULL)",
             name=op.f("ck_nonconformance_reports_preventive_disposition_consistent"),
+        ),
+        sa.CheckConstraint(
+            "(effectiveness_criteria IS NULL AND observation_due_at IS NULL) OR "
+            "(effectiveness_criteria IS NOT NULL AND btrim(effectiveness_criteria) <> '' "
+            "AND observation_due_at IS NOT NULL)",
+            name=op.f("ck_nonconformance_reports_effectiveness_plan_consistent"),
         ),
         sa.CheckConstraint(
             "(status = 'closed' AND closed_by_user_id IS NOT NULL "

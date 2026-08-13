@@ -49,7 +49,10 @@ def test_metadata_freezes_the_quality_owner_approved_capa_tables() -> None:
     } >= QUALITY_CAPA_TABLES
     assert not tables.complaints.c.project_id.nullable
     assert tables.complaints.c.status.server_default is not None
+    assert tables.complaints.c.document_refs.nullable is False
     assert tables.nonconformance_reports.c.target_date.nullable is False
+    assert tables.nonconformance_reports.c.effectiveness_criteria.nullable
+    assert tables.nonconformance_reports.c.observation_due_at.nullable
     assert tables.root_cause_analyses.c.version.nullable is False
     assert tables.capa_actions.c.evidence_refs.nullable is False
     assert tables.effectiveness_reviews.c.evidence_refs.nullable is False

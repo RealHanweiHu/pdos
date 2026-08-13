@@ -45,6 +45,7 @@ class ComplaintRecord:
     reported_at: datetime
     customer_reference: str | None
     affected_scope: str | None
+    document_refs: list[dict[str, object]]
     resolution_summary: str | None
     closed_at: datetime | None
     created_at: datetime
@@ -82,6 +83,7 @@ def _complaint_statement() -> Any:
         tables.complaints.c.reported_at,
         tables.complaints.c.customer_reference,
         tables.complaints.c.affected_scope,
+        tables.complaints.c.document_refs,
         tables.complaints.c.resolution_summary,
         tables.complaints.c.closed_at,
         tables.complaints.c.created_at,
@@ -109,6 +111,7 @@ def _snapshot(record: ComplaintRecord) -> dict[str, object]:
         "reported_at": record.reported_at.isoformat(),
         "customer_reference": record.customer_reference,
         "affected_scope": record.affected_scope,
+        "document_refs": record.document_refs,
     }
 
 

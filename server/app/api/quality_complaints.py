@@ -53,6 +53,7 @@ class ComplaintResponse(BaseModel):
     reported_at: datetime
     customer_reference: str | None
     affected_scope: str | None
+    document_refs: list[dict[str, object]]
     resolution_summary: str | None
     closed_at: datetime | None
     created_at: datetime
@@ -123,6 +124,8 @@ class NcrResponse(BaseModel):
     affected_scope: str | None
     preventive_not_applicable_reason: str | None
     preventive_disposition_approved_at: datetime | None
+    effectiveness_criteria: str | None
+    observation_due_at: datetime | None
     closed_at: datetime | None
     created_at: datetime
     updated_at: datetime

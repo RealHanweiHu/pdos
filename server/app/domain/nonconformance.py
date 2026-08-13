@@ -50,6 +50,8 @@ class NcrRecord:
     affected_scope: str | None
     preventive_not_applicable_reason: str | None
     preventive_disposition_approved_at: datetime | None
+    effectiveness_criteria: str | None
+    observation_due_at: datetime | None
     closed_at: datetime | None
     created_at: datetime
     updated_at: datetime
@@ -93,6 +95,8 @@ def _ncr_statement() -> Any:
         tables.nonconformance_reports.c.affected_scope,
         tables.nonconformance_reports.c.preventive_not_applicable_reason,
         tables.nonconformance_reports.c.preventive_disposition_approved_at,
+        tables.nonconformance_reports.c.effectiveness_criteria,
+        tables.nonconformance_reports.c.observation_due_at,
         tables.nonconformance_reports.c.closed_at,
         tables.nonconformance_reports.c.created_at,
         tables.nonconformance_reports.c.updated_at,
@@ -116,6 +120,10 @@ def _snapshot(record: NcrRecord) -> dict[str, object]:
         "target_date": record.target_date.isoformat(),
         "affected_quantity": record.affected_quantity,
         "affected_scope": record.affected_scope,
+        "effectiveness_criteria": record.effectiveness_criteria,
+        "observation_due_at": (
+            record.observation_due_at.isoformat() if record.observation_due_at else None
+        ),
     }
 
 
