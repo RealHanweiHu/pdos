@@ -69,7 +69,13 @@ PY
 }
 
 compose_config() {
-  local -a clean_environment=(env -i "PATH=$PATH" "HOME=$HOME")
+  local deploy_user="${USER:-}"
+  if [[ -z "$deploy_user" ]]; then
+    deploy_user="$(id -un)"
+  fi
+  local -a clean_environment=(
+    env -i "PATH=$PATH" "HOME=$HOME" "USER=$deploy_user" "LOGNAME=$deploy_user"
+  )
   local variable_name
   local variable_value
   for variable_name in \

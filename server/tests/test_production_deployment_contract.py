@@ -274,6 +274,8 @@ def test_ecs_deploy_entrypoint_is_staged_confirmed_and_observable() -> None:
     assert "PDOS_DEPLOY_CONFIRM" in source
     assert "mode 0600" in source
     assert "env -i" in source
+    assert '"USER=$deploy_user"' in source
+    assert '"LOGNAME=$deploy_user"' in source
     assert "scripts/verify-release-source.sh" in source
     assert "org.opencontainers.image.revision" in source
     assert "PDOS_COMPOSE_IMAGE_TAG_OVERRIDE" in source

@@ -1019,6 +1019,7 @@
 - CLI 强制 `--dry-run` / `--apply` 二选一、至少一个 `--project-id`、源/目标数据库名不同；JSON 报告不输出连接串，落盘权限为 `0600`。运行手册见 `docs/runbooks/cehub-migration-v1.md`。
 - 显式隔离库执行 `make check` 全绿：Web 99 tests、Server 276 tests，ESLint/Ruff/format、TypeScript/mypy 160 source files、Next.js production build 与 Python compile 全部通过；新增覆盖 ID/项目编号解析、NPD+OBT 双项目 11 Stage/Gate、OBT Gate 开轮、DML/REFERENCES/TRIGGER 任一非只读权限 fail-close、Prisma-only URL 参数兼容、同一项目 EVT→DVT→PVT/ECN 出口纵向闭环，以及 Git bundle/源码漂移/镜像 revision 发布契约。
 - intended-vs-implemented 审计补齐 canonical 冻结但仓库缺失的 `scripts/deploy-ecs.sh`：生产入口分为 preflight/build/deploy/status/rollback，deploy/rollback 均要求与 git SHA 绑定的人工确认；固定执行 migration→Agent 最小权限重施加/验证→无依赖运行服务→本机/公网健康与限时日志扫描，回滚不运行旧迁移器或数据库 downgrade。API 候选镜像以本地缓存的同版本基础镜像真实构建成功，非 root UID、内置 SQL 与两个 CLI 入口 smoke 通过。
+- S5-1 release 冻结审计从干净 Git bundle 执行真实 `deploy-ecs.sh build`，发现 `env -i` 漏传 `USER` 会令 Docker Desktop credential helper 在固定摘要镜像解析前失败；入口现显式保留最小 `USER`/`LOGNAME` 身份变量并有发布契约回归，未继承业务密钥或放宽生产确认门禁。
 - S3-7 apply 已与人审 dry-run 真值绑定：CLI 要求完整获批 `source_fingerprint`，并以租户+fingerprint+有序项目选择器生成二次确认口令；源快照变化在目标写入前以 `SOURCE_SNAPSHOT_NOT_APPROVED` 阻断。生产入口同时验证同一批准 RDS、独立账号、异库与 verify-full/固定 CA；报告以原子 `0600` 文件落盘并拒绝 symlink，消除先写后 chmod 窗口。
 - 生产发布输入已绑定不可伪装的 Git 对象：本地只从 `HEAD` 生成并复核 `pdos-<40位SHA>.bundle`，ECS 必须在独立 bare repository 验证 bundle 后 clone 到全新目录；deploy 会核对 Git HEAD、拒绝除 `.env.production` 外的 tracked/untracked/ignored 漂移，并复核 API/Web 镜像的 OCI revision 等于同一 SHA。首轮旧镜像回滚额外绑定 API/Web image ID，迁移报告移到 release 工作树之外。两个候选镜像已完成真实 label inspect，聚焦 24 tests 与完整门禁全绿。
 

@@ -51,6 +51,7 @@ S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium�
 ### Stage A — delivery disabled
 
 1. 从已验证 Git bundle 建立全新 release 目录；运行 `scripts/deploy-ecs.sh preflight` 与 `build`。
+   发布脚本在清空继承环境时只保留 Docker 所需的最小身份/连接变量；`USER` 与 `LOGNAME` 必须显式传入，兼容 Docker Desktop/credential helper，且不放宽生产密钥的环境边界。
 2. 保持 `PDOS_DINGTALK_DELIVERY_ENABLED=false`，执行 `0027` migration，重施加 `scripts.apply_agent_runtime_security`。
 3. 启动 API/Web/dispatcher/executor/DingTalk worker。部署脚本必须同时通过 session、login、公网 AES callback edge 与 bounded-log 检查。
 4. 运行只读检查：
