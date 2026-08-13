@@ -7,7 +7,7 @@ from datetime import UTC, date, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import Connection, Engine, select
+from sqlalchemy import Connection, Engine, func, select
 from sqlalchemy.engine import RowMapping
 
 from app.db.schema import tables
@@ -27,6 +27,22 @@ class NcrNotFoundError(LookupError):
 
 class NcrInvalidTransitionError(ValueError):
     """Raised when Complaint triage is attempted from an invalid state."""
+
+
+class NcrContainmentGateError(ValueError):
+    """Raised when containment evidence is missing."""
+
+
+class NcrRootCauseGateError(ValueError):
+    """Raised when no approved Root Cause Analysis exists."""
+
+
+class NcrActionGateError(ValueError):
+    """Raised when corrective/preventive completion is not ready."""
+
+
+class NcrObservationPlanError(ValueError):
+    """Raised when effectiveness criteria or observation timing is invalid."""
 
 
 @dataclass(frozen=True)
@@ -308,3 +324,139 @@ class NonconformanceService:
                     )
                 ).mappings()
             ]
+
+    def transition(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        project_id: UUID,
+        ncr_id: UUID,
+        to_status: str,
+        containment_action: str | None = None,
+        effectiveness_criteria: str | None = None,
+        observation_due_at: datetime | None = None,
+    ) -> NcrRecord:
+        occurred_at = datetime.now(UTC)
+        transitions = {
+            "open": "containment",
+            "containment": "root_cause",
+            "root_cause": "action",
+            "action": "verification",
+            "verification": "closed",
+        }
+        with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise NcrNotFoundError
+            before = self._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+            if transitions.get(before.status) != to_status:
+                raise NcrInvalidTransitionError
+            ComplaintService._validate_member(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                user_id=actor_user_id,
+            )
+            values: dict[str, object] = {"status": to_status, "updated_at": occurred_at}
+            if before.status == "containment":
+                if containment_action is None:
+                    raise NcrContainmentGateError
+                values.update(
+                    containment_action=containment_action,
+                    containment_completed_at=occurred_at,
+                )
+            elif before.status == "root_cause":
+                approved = connection.execute(
+                    select(func.count())
+                    .select_from(tables.root_cause_analyses)
+                    .where(
+                        tables.root_cause_analyses.c.tenant_id == tenant_id,
+                        tables.root_cause_analyses.c.ncr_id == ncr_id,
+                        tables.root_cause_analyses.c.status == "approved",
+                    )
+                ).scalar_one()
+                if approved < 1:
+                    raise NcrRootCauseGateError
+            elif before.status == "action":
+                actions = connection.execute(
+                    select(
+                        tables.capa_actions.c.action_type,
+                        tables.capa_actions.c.status,
+                        tables.capa_actions.c.completed_at,
+                    ).where(
+                        tables.capa_actions.c.tenant_id == tenant_id,
+                        tables.capa_actions.c.project_id == project_id,
+                        tables.capa_actions.c.ncr_id == ncr_id,
+                    )
+                ).mappings().all()
+                completed_types = {
+                    row["action_type"] for row in actions if row["status"] == "completed"
+                }
+                preventive_ready = (
+                    "preventive" in completed_types
+                    or before.preventive_disposition_approved_by_user_id is not None
+                )
+                if (
+                    not actions
+                    or any(row["status"] != "completed" for row in actions)
+                    or "corrective" not in completed_types
+                    or not preventive_ready
+                ):
+                    raise NcrActionGateError
+                completed_at_values = [row["completed_at"] for row in actions]
+                if any(value is None for value in completed_at_values):
+                    raise NcrActionGateError
+                final_completion = max(
+                    value for value in completed_at_values if isinstance(value, datetime)
+                )
+                if effectiveness_criteria is None or observation_due_at is None:
+                    raise NcrObservationPlanError
+                normalized_due = observation_due_at.astimezone(UTC)
+                if normalized_due <= final_completion:
+                    raise NcrObservationPlanError
+                values.update(
+                    effectiveness_criteria=effectiveness_criteria,
+                    observation_due_at=normalized_due,
+                )
+            elif before.status == "verification":
+                raise NcrInvalidTransitionError
+            connection.execute(
+                tables.nonconformance_reports.update()
+                .where(
+                    tables.nonconformance_reports.c.tenant_id == tenant_id,
+                    tables.nonconformance_reports.c.id == ncr_id,
+                )
+                .values(**values)
+            )
+            after = self._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=actor_user_id,
+                project_id=project_id,
+            ).record(
+                EventDraft(
+                    event_id=f"ncr:{ncr_id}:status:{to_status}:{uuid4()}",
+                    event_type="NCR_STATUS_CHANGED",
+                    source="quality_service",
+                    entity_id=ncr_id,
+                    payload={"from_status": before.status, "to_status": after.status},
+                    occurred_at=occurred_at,
+                ),
+                AuditDraft(
+                    action="quality.ncr.transition",
+                    before_snapshot=_snapshot(before),
+                    after_snapshot=_snapshot(after),
+                ),
+            )
+            return after

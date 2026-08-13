@@ -232,6 +232,29 @@ def create_complaint(
     return response.json()
 
 
+def triage_complaint(
+    client: TestClient,
+    project_id: UUID,
+    complaint_id: object,
+    owner_user_id: UUID,
+) -> dict[str, object]:
+    response = client.post(
+        f"/api/projects/{project_id}/quality/complaints/{complaint_id}/triage",
+        headers=login(client, "quality"),
+        json={
+            "nonconformity": "Connector contact resistance exceeds limit.",
+            "requirement_reference": "SPEC-ELEC-04 section 8.2",
+            "severity": "high",
+            "owner_user_id": str(owner_user_id),
+            "target_date": (date.today() + timedelta(days=10)).isoformat(),
+            "affected_quantity": 24,
+            "affected_scope": "Lot C4s",
+        },
+    )
+    assert response.status_code == 201
+    return response.json()
+
+
 def test_engineer_creates_and_lists_complaint_with_same_transaction_event_audit(
     client: TestClient,
     isolated_quality_database: str,
@@ -342,3 +365,146 @@ def test_quality_triage_atomically_creates_ncr_and_advances_complaint(
         engine.dispose()
     assert complaint_events == ["COMPLAINT_CREATED", "COMPLAINT_STATUS_CHANGED"]
     assert ncr_events == ["NCR_CREATED"]
+
+
+def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
+    client: TestClient,
+    isolated_quality_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id, owner_id = UUID(setup["tenant"]["id"]), UUID(setup["user"]["id"])
+    project_id, engineer_id = seed_project_and_engineer(
+        isolated_quality_database,
+        tenant_id,
+        owner_id,
+    )
+    seed_project_user(
+        isolated_quality_database,
+        tenant_id,
+        project_id,
+        owner_id,
+        username="quality",
+        role=Role.QUALITY,
+    )
+    complaint = create_complaint(client, project_id, engineer_id)
+    triaged = triage_complaint(client, project_id, complaint["id"], engineer_id)
+    ncr_id = triaged["ncr"]["id"]
+    quality_headers, engineer_headers = login(client, "quality"), login(client, "engineer")
+
+    containment = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={"to_status": "containment"},
+    )
+    assert containment.status_code == 200
+    root_cause_stage = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={
+            "to_status": "root_cause",
+            "containment_action": "Quarantine lot C4s and inspect all 24 units.",
+        },
+    )
+    assert root_cause_stage.status_code == 200
+    assert root_cause_stage.json()["containment_completed_at"] is not None
+
+    analysis = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/root-causes",
+        headers=engineer_headers,
+        json={
+            "method": "5why",
+            "analysis": "Contact force declined after five thermal cycles.",
+            "root_cause": "Terminal crimp height tolerance was too wide.",
+            "evidence_refs": [
+                {"kind": "event", "reference": f"complaint:{complaint['id']}:created"}
+            ],
+        },
+    )
+    assert analysis.status_code == 201
+    analysis_id = analysis.json()["id"]
+    self_approval = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/root-causes/{analysis_id}/approve",
+        headers=engineer_headers,
+    )
+    assert self_approval.status_code == 403
+    approved = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/root-causes/{analysis_id}/approve",
+        headers=quality_headers,
+    )
+    assert approved.status_code == 200
+    assert approved.json()["status"] == "approved"
+
+    action_stage = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={"to_status": "action"},
+    )
+    assert action_stage.status_code == 200
+
+    action_ids: dict[str, str] = {}
+    for action_type in ("corrective", "preventive"):
+        action = client.post(
+            f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions",
+            headers=engineer_headers,
+            json={
+                "action_type": action_type,
+                "description": f"{action_type.title()} crimp control action",
+                "owner_user_id": str(engineer_id),
+                "due_date": (date.today() + timedelta(days=7)).isoformat(),
+            },
+        )
+        assert action.status_code == 201
+        action_ids[action_type] = action.json()["id"]
+        started = client.post(
+            f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{action.json()['id']}/transitions",
+            headers=engineer_headers,
+            json={"to_status": "in_progress"},
+        )
+        assert started.status_code == 200
+
+    evidence = [{"kind": "event", "reference": f"complaint:{complaint['id']}:created"}]
+    corrective = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{action_ids['corrective']}/transitions",
+        headers=engineer_headers,
+        json={
+            "to_status": "completed",
+            "completion_summary": "Crimp specification and inspection fixture updated.",
+            "evidence_refs": evidence,
+        },
+    )
+    assert corrective.status_code == 200
+    blocked = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={
+            "to_status": "verification",
+            "effectiveness_criteria": "Zero opens across 24 thermal-cycle samples.",
+            "observation_due_at": (datetime.now(UTC) + timedelta(days=1)).isoformat(),
+        },
+    )
+    assert blocked.status_code == 409
+    assert blocked.json()["detail"]["code"] == "CAPA_ACTION_GATE_NOT_READY"
+
+    preventive = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{action_ids['preventive']}/transitions",
+        headers=engineer_headers,
+        json={
+            "to_status": "completed",
+            "completion_summary": "Supplier control plan now monitors crimp capability.",
+            "evidence_refs": evidence,
+        },
+    )
+    assert preventive.status_code == 200
+    due_at = datetime.fromisoformat(preventive.json()["completed_at"]) + timedelta(microseconds=1)
+    verification = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={
+            "to_status": "verification",
+            "effectiveness_criteria": "Zero opens across 24 thermal-cycle samples.",
+            "observation_due_at": due_at.isoformat(),
+        },
+    )
+    assert verification.status_code == 200
+    assert verification.json()["status"] == "verification"
+    assert verification.json()["effectiveness_criteria"].startswith("Zero opens")
