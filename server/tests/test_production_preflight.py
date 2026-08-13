@@ -46,6 +46,36 @@ def test_valid_production_environment_passes_without_returning_secrets() -> None
     validate_production_environment(VALID_ENVIRONMENT)
 
 
+def test_enabled_dingtalk_delivery_requires_complete_callback_configuration() -> None:
+    enabled = {
+        **VALID_ENVIRONMENT,
+        "PDOS_DINGTALK_DELIVERY_ENABLED": "true",
+        "PDOS_DINGTALK_CLIENT_ID": "ding-client",
+        "PDOS_DINGTALK_CLIENT_SECRET": "ding-client-secret",
+        "PDOS_DINGTALK_CALLBACK_TOKEN": "ding-callback-token",
+        "PDOS_DINGTALK_CALLBACK_AES_KEY": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+        "PDOS_DINGTALK_CARD_CALLBACK_SECRET": "ding-card-callback-secret",
+        "PDOS_PUBLIC_BASE_URL": "https://pdos.beepump.net",
+    }
+    validate_production_environment(enabled)
+    for missing in (
+        "PDOS_DINGTALK_CLIENT_SECRET",
+        "PDOS_DINGTALK_CALLBACK_TOKEN",
+        "PDOS_DINGTALK_CALLBACK_AES_KEY",
+        "PDOS_DINGTALK_CARD_CALLBACK_SECRET",
+    ):
+        with pytest.raises(UnsafeProductionConfigurationError):
+            validate_production_environment({**enabled, missing: ""})
+    with pytest.raises(UnsafeProductionConfigurationError):
+        validate_production_environment(
+            {**enabled, "PDOS_PUBLIC_BASE_URL": "https://attacker.example"}
+        )
+    with pytest.raises(UnsafeProductionConfigurationError):
+        validate_production_environment(
+            {**VALID_ENVIRONMENT, "PDOS_DINGTALK_DELIVERY_ENABLED": "yes"}
+        )
+
+
 @pytest.mark.parametrize(
     ("key", "value"),
     [

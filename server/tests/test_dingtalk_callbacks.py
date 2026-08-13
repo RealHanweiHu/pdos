@@ -17,6 +17,7 @@ from app.db.engine import get_engine
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from app.integrations.dingtalk_callbacks import DingTalkCallbackService
 from app.integrations.dingtalk_crypto import (
     DingTalkCallbackCipher,
     DingTalkCallbackVerificationError,
@@ -199,6 +200,33 @@ def test_timestamp_nonce_ciphertext_and_padding_fail_closed() -> None:
             nonce=encrypted["nonce"],
             now=NOW,
         )
+
+
+def test_official_http_approval_event_fields_request_only_remote_evidence_sync() -> None:
+    classified = DingTalkCallbackService._classify(
+        {
+            "EventType": "bpms_instance_change",
+            "EventTime": 1_666_000_000_000,
+            "CorpId": CORP_ID,
+            "BizId": "biz-1",
+            "eventId": "event-approval-1",
+            "processInstanceId": "approval-instance-1",
+            "processCode": "PROC-PDOS-GATE",
+            "type": "finish",
+            "result": "agree",
+        }
+    )
+    assert classified.result_code == "approval_sync_requested"
+    assert classified.process_instance_id == "approval-instance-1"
+
+    nested_guess = DingTalkCallbackService._classify(
+        {
+            "EventType": "bpms_instance_change",
+            "content": {"processInstanceId": "must-not-be-recursively-discovered"},
+        }
+    )
+    assert nested_guess.result_code == "ignored_missing_process_instance_id"
+    assert nested_guess.process_instance_id is None
 
 
 def test_http_callback_challenge_unknown_and_replay_are_idempotent(

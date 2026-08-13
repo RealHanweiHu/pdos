@@ -122,10 +122,11 @@ class EncryptedCallbackResponse(BaseModel):
 class CardCallbackRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    type: Literal["actionCallback"]
     corpId: str = Field(min_length=1, max_length=128)
-    openId: str = Field(min_length=1, max_length=256)
+    userId: str = Field(min_length=1, max_length=256)
     outTrackId: str = Field(min_length=1, max_length=128)
-    action: Literal["acknowledge", "open"]
+    content: str = Field(min_length=1, max_length=16_384)
 
 
 class TenantBindingRequest(BaseModel):
@@ -133,7 +134,7 @@ class TenantBindingRequest(BaseModel):
 
     corp_id: str = Field(min_length=1, max_length=128)
     client_id: str = Field(min_length=1, max_length=128)
-    agent_id: str | None = Field(default=None, max_length=128)
+    agent_id: str | None = Field(default=None, max_length=20, pattern=r"^[1-9][0-9]*$")
     robot_code: str | None = Field(default=None, max_length=128)
     oauth_redirect_uri: str = Field(min_length=1, max_length=1024)
     callback_route_key: str = Field(min_length=16, max_length=64, pattern=r"^[A-Za-z0-9_-]+$")
@@ -366,7 +367,7 @@ def _integration_error(error: DingTalkIntentError | ObjectPermissionDeniedError)
         elif code == "DINGTALK_DELIVERY_DISABLED":
             status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         else:
-            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+            status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     return HTTPException(
         status_code=status_code,
         detail={"code": code, "message": "DingTalk integration request was rejected"},
@@ -458,9 +459,12 @@ def put_tenant_binding(
 ) -> TenantBindingResponse:
     no_store(response)
     _require_tenant_integration_action(context, Action.INTEGRATION_MANAGE)
-    if settings.dingtalk_client_id is not None and payload.client_id != settings.dingtalk_client_id:
+    expected_redirect_uri = f"{settings.public_base_url.rstrip('/')}/dingtalk/callback"
+    if (
+        settings.dingtalk_client_id is not None and payload.client_id != settings.dingtalk_client_id
+    ) or payload.oauth_redirect_uri != expected_redirect_uri:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={
                 "code": "DINGTALK_CONFIGURATION_MISMATCH",
                 "message": "DingTalk integration request was rejected",
@@ -970,7 +974,7 @@ def card_callback(
         str,
         Header(alias="x-ddpaas-signature", min_length=1, max_length=256),
     ],
-) -> dict[str, bool]:
+) -> dict[str, object]:
     no_store(response)
     try:
         service.handle(
@@ -990,4 +994,4 @@ def card_callback(
             ),
             detail={"code": error.code, "message": "DingTalk card callback was rejected"},
         ) from error
-    return {"success": True}
+    return {}

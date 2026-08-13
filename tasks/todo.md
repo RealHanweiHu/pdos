@@ -1233,12 +1233,14 @@
 - 契约见 `docs/design/2026-08-12-s5-1-dingtalk-connector-contract.md`。当前官方授权流与老 CEHub 静默免登存在版本差异：v1 使用 OAuth `authCode→userAccessToken→contact/users/me`，不沿用已不推荐的 `dd.getAuthCode`。
 - 老 CEHub 的 token 提前刷新、AES、outTrackId、create 结果不确定隔离经验可复用；审计同时识别并禁止手机号自动匹配、任意 payload 递归找 ID、缺时间窗/nonce/CorpID 尾校验、远端 approved 直接成为本地业务真值等做法。
 - v1 采用显式 link 后 password-free login；审批只镜像外部协作结果，不直接批准 Gate。所有 outbound 经 durable outbox；不确定 create 不盲重放，未配置时显式降级为 manual。
-- `0026_dingtalk_connector` 建立 8 个租户隔离实体并通过 `0026→0025→0026`、metadata 零漂移、单一 head 与有数据 downgrade fail-close 验收。
+- `0026_dingtalk_connector` 建立 8 个租户隔离实体并通过 `0026→0025→0026`、metadata 零漂移与有数据 downgrade fail-close 验收；后续 `0027_dingtalk_hardening` 成为单一 head。
 - 免登只走固定官方主机；state 原文不落库且在远端交换前原子消费，corp 必须精确匹配，link 只绑定当前会话用户，login 只命中已有绑定。fake transport + 原认证/RBAC/Event 回归 26 项全绿，OAuth code/user token 未进入数据库、Event/Audit 或日志。
 - AES 回调采用 32-byte key、AES-256-CBC、严格 PKCS#7/4-byte 长度/JSON object/尾部 CorpID 校验；签名常量时间比较，timestamp 仅容忍 ±5 分钟，nonce/ciphertext 有界。固定向量、challenge 加密 ACK、同摘要重放零二次处理与异摘要冲突等 7 项验收全绿；未知事件只 ACK，审批固定字段仅形成待同步标记，零 Gate 写入。
 - 审批、群通知与互动卡片统一进入 durable outbox；稳定 idempotency/request/outTrack ID、skip-locked lease、退避重试、确定失败、create 结果 uncertain 隔离、人工对账后重放、lease 过期 quarantine 与 delivery disabled→manual 均有正反例。远端审批只更新镜像，PDOS Gate 状态保持不变。
 - 生产 compose 增加独立 `dingtalk` worker，部署/回滚顺序与运行手册同步；生产安全重施脚本显式断言 `pdos_agent` 对 `integration_outbox` 无 INSERT、对钉钉身份表无 SELECT。数据库安全、迁移、部署合同和连接器聚焦验收 38 项全绿。
 - 真实 Chromium 仅连接 `pdos_test` 与 fake provider：Owner password-free login 成功；集成页显示应用/绑定/manual/outbox 状态；390×844 无横向溢出；Supplier 无导航、直接访问明确拒绝且网络只有 `/api/session/me`，零钉钉集成 API 请求；本地 PDOS 页面 console 0 warning/0 error。临时浏览器与 API/Web 进程已关闭。
+- 真实应用门禁前协议复核已补齐：生产 Web 新增无会话、严格 allowlist 的 AES/card 公网 BFF；OAuth redirect 固定 `/dingtalk/callback` 并与 `PDOS_PUBLIC_BASE_URL` fail-close；卡片按官方 `actionCallback + userId + content.cardPrivateData.params.action` 解析并显式 `callbackType=HTTP/userIdType=1`；应用 token 进程内缓存且提前 5 分钟刷新。
+- `0027_dingtalk_hardening` 以单调递增迁移追加 `agent_id` 约束，保持已提交的 0026 不可变；新增只读 `python -m scripts.check_dingtalk_readiness --tenant-slug <slug>`，不调用钉钉、不写数据库、不输出 secret，一次检查 0026+0027 schema 合同、HTTPS origin、env/binding、回调密码学、2 个用户绑定、项目群与 outbox 基线。扩展后端聚焦 52 项、完整后端 353 项、前端 121 项及 lint/type/webpack production build 全绿；公网构建产物包含 AES/card 两条 callback route。
 - 完整门禁全绿：Server 343 tests，Ruff/format/mypy 117 source files/Python compile；Web 34 files / 116 tests、ESLint/TypeScript 与 webpack production build。
 
 **真实应用 Exit Gate（必须由人创建/配置并单独授权）**

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import os
 import re
 import stat
@@ -121,6 +123,42 @@ def validate_production_environment(values: Mapping[str, str | None]) -> None:
         or len(resolved["S3_SECRET_ACCESS_KEY"]) < 16
     ):
         raise UnsafeProductionConfigurationError("Local object-storage credentials are forbidden")
+
+    dingtalk_delivery = (values.get("PDOS_DINGTALK_DELIVERY_ENABLED") or "false").lower()
+    if dingtalk_delivery not in {"true", "false"}:
+        raise UnsafeProductionConfigurationError(
+            "PDOS_DINGTALK_DELIVERY_ENABLED must be true or false"
+        )
+    if dingtalk_delivery == "true":
+        dingtalk_values = {
+            key: _required(values, key)
+            for key in (
+                "PDOS_DINGTALK_CLIENT_ID",
+                "PDOS_DINGTALK_CLIENT_SECRET",
+                "PDOS_DINGTALK_CALLBACK_TOKEN",
+                "PDOS_DINGTALK_CALLBACK_AES_KEY",
+                "PDOS_DINGTALK_CARD_CALLBACK_SECRET",
+                "PDOS_PUBLIC_BASE_URL",
+            )
+        }
+        if dingtalk_values["PDOS_PUBLIC_BASE_URL"] != "https://pdos.beepump.net":
+            raise UnsafeProductionConfigurationError(
+                "Production DingTalk callbacks must use the approved public origin"
+            )
+        aes_key = dingtalk_values["PDOS_DINGTALK_CALLBACK_AES_KEY"]
+        try:
+            decoded_aes_key = base64.b64decode(
+                aes_key + "=" * (-len(aes_key) % 4),
+                validate=True,
+            )
+        except (binascii.Error, ValueError) as error:
+            raise UnsafeProductionConfigurationError(
+                "Production DingTalk callback AES key is invalid"
+            ) from error
+        if len(decoded_aes_key) != 32:
+            raise UnsafeProductionConfigurationError(
+                "Production DingTalk callback AES key must decode to 32 bytes"
+            )
 
 
 def validate_production_environment_file(path: Path) -> None:

@@ -5,6 +5,7 @@ import os
 from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import cast
 from uuid import UUID, uuid4
 
 import httpx2
@@ -34,6 +35,7 @@ from app.integrations.dingtalk_outbox import (
     DingTalkIntentService,
     DingTalkOutboxProcessor,
 )
+from app.integrations.dingtalk_readiness import assess_dingtalk_readiness
 from app.settings import Settings
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
@@ -181,7 +183,7 @@ def _seed(database_url: str) -> dict[str, UUID]:
                     client_id=CLIENT_ID,
                     agent_id="12345",
                     robot_code="robot-code",
-                    oauth_redirect_uri="https://pdos.example/api/dingtalk/callback",
+                    oauth_redirect_uri="https://pdos.example/dingtalk/callback",
                     callback_route_key="delivery-event-callback",
                     approval_process_code="approval-process",
                     card_template_id="card-template",
@@ -359,14 +361,15 @@ def test_successful_group_approval_and_card_use_server_built_payloads_and_stable
     card_payload = next(body for url, body in seen if url == CARD_CREATE_URL)
     assert card_payload["outTrackId"] == card.out_track_id
     assert card_payload["userId"] == "staff-approver"
-    assert card_payload["cardData"]["cardParamMap"]["actionPath"] == (
-        f"/projects/{ids['project']}/gates"
-    )
+    assert card_payload["callbackType"] == "HTTP"
+    card_data = cast(dict[str, dict[str, str]], card_payload["cardData"])
+    assert card_data["cardParamMap"]["actionPath"] == (f"/projects/{ids['project']}/gates")
     group_payload = next(body for url, body in seen if url == GROUP_MESSAGE_URL)
-    group_params = json.loads(group_payload["msgParam"])
+    group_params = json.loads(cast(str, group_payload["msgParam"]))
     assert group_params["text"].endswith(
         f"[Open PDOS](https://pdos.example/projects/{ids['project']})"
     )
+    assert sum(url == APP_TOKEN_URL for url, _body in seen) == 1
 
     engine = create_engine(psycopg_database_url(isolated_database))
     try:
@@ -393,6 +396,52 @@ def test_successful_group_approval_and_card_use_server_built_payloads_and_stable
                 ).scalar_one()
                 == 3
             )
+    finally:
+        engine.dispose()
+
+
+def test_readiness_is_read_only_and_fails_on_unresolved_outbox(
+    isolated_database: str,
+) -> None:
+    ids = _seed(isolated_database)
+    settings = _settings(enabled=False).model_copy(
+        update={
+            "dingtalk_callback_token": SecretStr("callback-token"),
+            "dingtalk_callback_aes_key": SecretStr("AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8"),
+            "dingtalk_card_callback_secret": SecretStr("card-callback-secret"),
+        }
+    )
+    engine = create_engine(psycopg_database_url(isolated_database))
+    try:
+        ready = assess_dingtalk_readiness(
+            engine=engine,
+            settings=settings,
+            tenant_slug=f"tenant-{ids['tenant']}",
+        )
+        assert ready.ready
+        assert next(check for check in ready.checks if check.name == "delivery_switch").passed
+
+        with engine.begin() as connection:
+            connection.execute(
+                tables.integration_outbox.insert().values(
+                    id=uuid4(),
+                    tenant_id=ids["tenant"],
+                    project_id=ids["project"],
+                    operation="group_markdown",
+                    idempotency_key="readiness-manual-0001",
+                    payload={},
+                    status="manual",
+                )
+            )
+        blocked = assess_dingtalk_readiness(
+            engine=engine,
+            settings=settings,
+            tenant_slug=f"tenant-{ids['tenant']}",
+            require_delivery_enabled=True,
+        )
+        assert not blocked.ready
+        assert not next(check for check in blocked.checks if check.name == "delivery_switch").passed
+        assert not next(check for check in blocked.checks if check.name == "outbox_baseline").passed
     finally:
         engine.dispose()
 
@@ -448,7 +497,10 @@ def test_token_failure_retries_but_ambiguous_create_is_quarantined(
 
     def create_timeout(request: httpx2.Request) -> httpx2.Response:
         if str(request.url) == APP_TOKEN_URL:
-            return httpx2.Response(200, json={"accessToken": "app-token"})
+            return httpx2.Response(
+                200,
+                json={"accessToken": "app-token", "expireIn": 7200},
+            )
         assert str(request.url) == APPROVAL_URL
         return httpx2.Response(503, json={"code": "TEMPORARY"})
 
@@ -632,7 +684,10 @@ def test_remote_approval_sync_and_card_callback_update_only_external_evidence(
 
     def handler(request: httpx2.Request) -> httpx2.Response:
         if str(request.url) == APP_TOKEN_URL:
-            return httpx2.Response(200, json={"accessToken": "app-token"})
+            return httpx2.Response(
+                200,
+                json={"accessToken": "app-token", "expireIn": 7200},
+            )
         assert str(request.url).startswith(APPROVAL_URL)
         assert request.url.params["processInstanceId"] == "approval-remote-sync"
         return httpx2.Response(
@@ -657,10 +712,18 @@ def test_remote_approval_sync_and_card_callback_update_only_external_evidence(
         settings=card_settings,
     )
     payload = {
+        "type": "actionCallback",
         "corpId": "ding-delivery-corp",
-        "openId": "open-approver",
+        "userId": "staff-approver",
         "outTrackId": card.out_track_id,
-        "action": "acknowledge",
+        "content": json.dumps(
+            {
+                "cardPrivateData": {
+                    "actionIds": ["acknowledge"],
+                    "params": {"action": "acknowledge"},
+                }
+            }
+        ),
     }
     assert card_service.handle(
         route_key="delivery-card-callback",

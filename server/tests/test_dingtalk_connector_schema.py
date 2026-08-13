@@ -93,7 +93,7 @@ def test_dingtalk_migration_matches_metadata_and_keeps_one_head(
         engine.dispose()
 
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0026_dingtalk_connector"
+        "0027_dingtalk_hardening"
     ]
 
 
@@ -134,7 +134,7 @@ def test_dingtalk_migration_round_trip_and_lossy_downgrade_guard(
                     tenant_id="00000000-0000-0000-0000-000000000026",
                     corp_id="ding-guard-corp",
                     client_id="ding-guard-client",
-                    oauth_redirect_uri="https://pdos.example/api/integrations/dingtalk/oauth/callback",
+                    oauth_redirect_uri="https://pdos.example/dingtalk/callback",
                     callback_route_key="ding-guard-callback",
                     configured_by_user_id="00000000-0000-0000-0000-000000000126",
                 )

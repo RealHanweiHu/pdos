@@ -42,6 +42,7 @@ def isolated_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     monkeypatch.setenv("JWT_AUDIENCE", "pdos-test-client")
     monkeypatch.setenv("PDOS_DINGTALK_CLIENT_ID", CLIENT_ID)
     monkeypatch.setenv("PDOS_DINGTALK_DELIVERY_ENABLED", "false")
+    monkeypatch.setenv("PDOS_PUBLIC_BASE_URL", "https://pdos.example")
     get_settings.cache_clear()
     get_engine.cache_clear()
     os.environ["DATABASE_URL"] = test_url
@@ -161,24 +162,41 @@ def test_config_project_status_and_manual_outbox_are_tenant_and_role_bound(
         engineer = _headers(client, "engineer")
         supplier = _headers(client, "supplier")
 
+        config_payload = {
+            "corp_id": "ding-api-corp",
+            "client_id": CLIENT_ID,
+            "agent_id": "12345",
+            "robot_code": "robot-code",
+            "oauth_redirect_uri": "https://pdos.example/dingtalk/callback",
+            "callback_route_key": "event-callback-route",
+            "approval_process_code": "gate-approval",
+            "card_template_id": "gate-card",
+            "card_callback_route_key": "card-callback-route",
+            "status": "active",
+        }
         configured = client.put(
             "/api/integrations/dingtalk/config",
             headers=owner,
-            json={
-                "corp_id": "ding-api-corp",
-                "client_id": CLIENT_ID,
-                "agent_id": "12345",
-                "robot_code": "robot-code",
-                "oauth_redirect_uri": "https://pdos.example/dingtalk/oauth/callback",
-                "callback_route_key": "event-callback-route",
-                "approval_process_code": "gate-approval",
-                "card_template_id": "gate-card",
-                "card_callback_route_key": "card-callback-route",
-                "status": "active",
-            },
+            json=config_payload,
         )
         assert configured.status_code == 200
         assert configured.json()["corp_id"] == "ding-api-corp"
+        invalid_agent = client.put(
+            "/api/integrations/dingtalk/config",
+            headers=owner,
+            json={**config_payload, "agent_id": "not-numeric"},
+        )
+        assert invalid_agent.status_code == 422
+        invalid_redirect = client.put(
+            "/api/integrations/dingtalk/config",
+            headers=owner,
+            json={
+                **config_payload,
+                "oauth_redirect_uri": "https://attacker.example/dingtalk/callback",
+            },
+        )
+        assert invalid_redirect.status_code == 422
+        assert invalid_redirect.json()["detail"]["code"] == "DINGTALK_CONFIGURATION_MISMATCH"
 
         channel = client.put(
             f"/api/integrations/dingtalk/projects/{ids['project']}/channel",

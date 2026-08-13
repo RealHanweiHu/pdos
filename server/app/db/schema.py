@@ -4554,6 +4554,10 @@ dingtalk_tenant_bindings = Table(
         "AND btrim(oauth_redirect_uri) <> '' AND btrim(callback_route_key) <> ''",
         name="required_text_nonblank",
     ),
+    CheckConstraint(
+        "agent_id IS NULL OR agent_id ~ '^[1-9][0-9]{0,19}$'",
+        name="agent_id_numeric",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "configured_by_user_id"],
         [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],

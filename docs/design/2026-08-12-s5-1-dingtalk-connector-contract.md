@@ -2,14 +2,14 @@
 
 日期：2026-08-12  
 状态：Local implementation complete; real application gate pending
-迁移：`0026_dingtalk_connector`
+迁移：`0026_dingtalk_connector` + `0027_dingtalk_hardening`
 
 ## 1. 范围与非范围
 
 本项交付同一企业内独立 PDOS 应用的四条纵向能力：
 
 1. 用户通过钉钉 OAuth 授权码登录或显式绑定本地账号，不输入 PDOS 本地密码；
-2. HTTP AES 回调完成 URL challenge、审批状态通知与幂等消费；
+2. HTTP AES 回调完成 URL challenge、审批状态通知与幂等消费；审批事件仅接受官方顶层 `EventType/eventId/processInstanceId` 字段，不递归猜测 ID；
 3. PDOS 可发起 Gate 外部审批、向已绑定项目群发送 Markdown 通知；
 4. PDOS 可投放带 `outTrackId` 的互动卡片，接收签名回调并做受控确认。
 
@@ -40,12 +40,12 @@
 
 ## 3. 数据合同
 
-`0026` 只增加以下实体，不修改既有业务状态机：
+`0026` 只增加以下实体，不修改既有业务状态机；`0027` 追加 `agent_id` 纯十进制正整数约束，既有迁移不可变：
 
 ### `cehub_core.dingtalk_tenant_bindings`
 
 - `tenant_id` 主键；`corp_id` 全局唯一，避免同一企业落到多个租户；
-- 非秘密配置：`client_id`、`agent_id`、`robot_code`、`oauth_redirect_uri`、`callback_route_key`、`approval_process_code`、`card_template_id`、`card_callback_route_key`；
+- 非秘密配置：`client_id`、纯十进制正整数 `agent_id`、`robot_code`、`oauth_redirect_uri`、`callback_route_key`、`approval_process_code`、`card_template_id`、`card_callback_route_key`；
 - `status = disabled|active`；凭证、callback token/AES key/card secret 永不入库。
 
 ### `cehub_core.dingtalk_user_bindings`
@@ -94,7 +94,7 @@
 - `PDOS_PUBLIC_BASE_URL`
 - `PDOS_DINGTALK_DELIVERY_ENABLED=false`（默认关闭）
 
-非秘密 tenant/app 配置通过 Owner/Admin API 写数据库，env 凭证与该 binding 的 `client_id` 必须一致。应用只允许访问固定主机 `login.dingtalk.com`、`api.dingtalk.com`；不接受客户端 base URL，不跟随 redirect，不继承系统代理。真实 secret 不出现在响应、日志、Event/Audit、outbox 或测试 fixture。
+非秘密 tenant/app 配置通过 Owner/Admin API 写数据库，env 凭证与该 binding 的 `client_id` 必须一致，`oauth_redirect_uri` 必须精确等于 `${PDOS_PUBLIC_BASE_URL}/dingtalk/callback`。应用 token 在进程内复用并于到期前 5 分钟刷新。应用只允许访问固定主机 `login.dingtalk.com`、`api.dingtalk.com`；不接受客户端 base URL，不跟随 redirect，不继承系统代理。真实 secret 不出现在响应、日志、Event/Audit、outbox 或测试 fixture。
 
 ## 5. OAuth 与身份绑定
 
@@ -102,7 +102,7 @@
 
 - `POST /api/integrations/dingtalk/oauth/login/start`：公开、有登录限流；输入 tenant slug + 有界相对 return path，返回官方 authorization URL。
 - `POST /api/integrations/dingtalk/oauth/link/start`：需要当前内部用户会话；建立 `mode=link` state。
-- `POST /api/integrations/dingtalk/oauth/callback`：输入 `auth_code + state`；输出短期 PDOS access token 与 link/login 结果。
+- 公网 OAuth redirect 固定为 `/dingtalk/callback`；该页面把一次性 `authCode + state` 提交给同源 session BFF，后者再调用内部 `POST /api/integrations/dingtalk/oauth/callback`，输出短期 PDOS access token 与 link/login 结果。
 - `DELETE /api/integrations/dingtalk/me/binding`：当前用户解除自绑定；Owner/Admin 可通过管理 API解除本租户用户绑定。
 
 ### 强制规则
@@ -117,7 +117,7 @@
 
 ### 事件回调
 
-`POST /api/integrations/dingtalk/callback/{route_key}?signature=&timestamp=&nonce=` 只接受 `{encrypt}`：
+公网 `POST /api/integrations/dingtalk/callback/{route_key}?signature=&timestamp=&nonce=` 由无会话、严格 allowlist 的同源边缘路由转发到同路径 FastAPI，只接受 `{encrypt}`：
 
 1. route key 唯一解析 active tenant；timestamp 必须在服务器时间 ±5 分钟；nonce 1–128 字符；ciphertext 有界；
 2. 常量时间比较签名，AES key 必须解码为 32 bytes，严格验证 PKCS#7、4-byte 长度、JSON object 和解密尾部 CorpID；
@@ -126,7 +126,7 @@
 
 ### 卡片回调
 
-`POST /api/integrations/dingtalk/card-callback/{route_key}` 要求 `x-ddpaas-signature-timestamp` 与 HMAC-SHA256 签名，时间窗同样为 ±5 分钟；`corpId/openId/outTrackId/action` 必须与本地 binding/card 匹配。v1 action 只有 `acknowledge` 和 server-built `open`，均不能直接审批或 Apply 业务对象。
+公网 `POST /api/integrations/dingtalk/card-callback/{route_key}` 同样由无会话、仅转发两项签名 header 的边缘路由进入 FastAPI，要求 `x-ddpaas-signature-timestamp` 与 HMAC-SHA256 签名，时间窗同样为 ±5 分钟。创建卡片显式声明 `callbackType=HTTP`；回调仅从官方固定字段 `corpId/userId/outTrackId/content.cardPrivateData.params.action` 读取，`userId` 按创建时的 `userIdType=1` 与本地 `staff_id` 匹配，禁止递归扫描或猜成 openId。v1 action 只有 `acknowledge` 和 server-built `open`，均不能直接审批或 Apply 业务对象。
 
 两类回调均先认证、再幂等占位、再处理；重放返回成功但不重复写 Event/Audit。摘要冲突、签名错误、过期时间、错误 CorpID、未知 outTrackId/user/action 均 4xx fail-close。
 

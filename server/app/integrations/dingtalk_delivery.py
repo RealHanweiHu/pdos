@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from time import monotonic
 
 import httpx2
 
@@ -12,6 +13,7 @@ GROUP_MESSAGE_URL = "https://api.dingtalk.com/v1.0/robot/groupMessages/send"
 APPROVAL_URL = "https://api.dingtalk.com/v1.0/workflow/processInstances"
 CARD_CREATE_URL = "https://api.dingtalk.com/v1.0/card/instances/createAndDeliver"
 CARD_UPDATE_URL = "https://api.dingtalk.com/v1.0/card/instances"
+TOKEN_REFRESH_MARGIN_SECONDS = 300
 
 
 class DingTalkDeliveryError(RuntimeError):
@@ -63,8 +65,18 @@ def _api_error(body: Mapping[str, object]) -> bool:
 class DingTalkDeliveryClient:
     def __init__(self, client: httpx2.Client) -> None:
         self._client = client
+        self._app_token: str | None = None
+        self._app_token_client_id: str | None = None
+        self._app_token_refresh_at = 0.0
 
     def app_token(self, *, client_id: str, client_secret: str) -> str:
+        current = monotonic()
+        if (
+            self._app_token is not None
+            and self._app_token_client_id == client_id
+            and current < self._app_token_refresh_at
+        ):
+            return self._app_token
         try:
             response = self._client.post(
                 APP_TOKEN_URL,
@@ -82,8 +94,15 @@ class DingTalkDeliveryClient:
         if not response.is_success or _api_error(body):
             raise DingTalkDeliveryError("DINGTALK_TOKEN_REJECTED")
         token = _text(body.get("accessToken"))
-        if token is None:
+        expires_in = body.get("expireIn")
+        if token is None or type(expires_in) is not int or not 1 <= expires_in <= 86_400:
             raise DingTalkDeliveryError("DINGTALK_TOKEN_INVALID_RESPONSE", retryable=True)
+        self._app_token = token
+        self._app_token_client_id = client_id
+        self._app_token_refresh_at = current + max(
+            1,
+            expires_in - TOKEN_REFRESH_MARGIN_SECONDS,
+        )
         return token
 
     def send_group_markdown(
@@ -157,6 +176,7 @@ class DingTalkDeliveryClient:
                 "userIdType": 1,
                 "cardTemplateId": template_id,
                 "outTrackId": out_track_id,
+                "callbackType": "HTTP",
                 "callbackRouteKey": callback_route_key,
                 "openSpaceId": f"dtv1.card//IM_ROBOT.{staff_id}",
                 "cardData": {"cardParamMap": card_params},

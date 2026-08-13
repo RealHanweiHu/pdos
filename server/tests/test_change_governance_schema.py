@@ -74,5 +74,5 @@ def test_change_migration_matches_metadata_and_single_head(change_database_url: 
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0026_dingtalk_connector"
+        "0027_dingtalk_hardening"
     ]

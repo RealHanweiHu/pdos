@@ -31,6 +31,27 @@ def card_callback_signature(*, secret: str, timestamp: str) -> str:
     ).decode("ascii")
 
 
+def _action_from_content(value: object) -> str:
+    if not isinstance(value, str):
+        raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID")
+    try:
+        content = json.loads(value)
+    except (TypeError, ValueError) as error:
+        raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID") from error
+    if not isinstance(content, Mapping):
+        raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID")
+    private_data = content.get("cardPrivateData")
+    if not isinstance(private_data, Mapping):
+        raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID")
+    params = private_data.get("params")
+    if not isinstance(params, Mapping):
+        raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID")
+    action = params.get("action")
+    if not isinstance(action, str) or not action:
+        raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID")
+    return action
+
+
 class DingTalkCardCallbackService:
     def __init__(self, *, engine: Engine, settings: Settings) -> None:
         self._engine = engine
@@ -58,18 +79,18 @@ class DingTalkCardCallbackService:
         if not hmac.compare_digest(expected, signature):
             raise DingTalkCardCallbackError("DINGTALK_CARD_SIGNATURE_INVALID")
         corp_id = payload.get("corpId")
-        open_id = payload.get("openId")
+        staff_id = payload.get("userId")
         out_track_id = payload.get("outTrackId")
-        action = payload.get("action")
+        action = _action_from_content(payload.get("content"))
         if not all(
-            isinstance(value, str) and value for value in (corp_id, open_id, out_track_id, action)
+            isinstance(value, str) and value for value in (corp_id, staff_id, out_track_id, action)
         ):
             raise DingTalkCardCallbackError("DINGTALK_CARD_PAYLOAD_INVALID")
         if action not in {"acknowledge", "open"}:
             raise DingTalkCardCallbackError("DINGTALK_CARD_ACTION_INVALID")
         canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-        deduplication_key = f"{out_track_id}:{open_id}:{action}"
+        deduplication_key = f"{out_track_id}:{staff_id}:{action}"
         receipt_id = uuid4()
         with self._engine.begin() as connection:
             card = (
@@ -99,7 +120,7 @@ class DingTalkCardCallbackService:
                         tables.dingtalk_tenant_bindings.c.card_callback_route_key == route_key,
                         tables.dingtalk_tenant_bindings.c.status == "active",
                         tables.dingtalk_user_bindings.c.status == "active",
-                        tables.dingtalk_user_bindings.c.open_id == open_id,
+                        tables.dingtalk_user_bindings.c.staff_id == staff_id,
                         tables.dingtalk_interactive_cards.c.out_track_id == out_track_id,
                         tables.dingtalk_interactive_cards.c.action_key == action,
                     )

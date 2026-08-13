@@ -13,11 +13,11 @@
 ## 2. 人工创建应用检查表
 
 1. 新建企业内部应用，记录 `client_id`、`client_secret`、`corp_id`、`agent_id`。
-2. 配置浏览器 OAuth redirect：`https://pdos.beepump.net/api/integrations/dingtalk/oauth/callback`。
+2. 配置浏览器 OAuth redirect：`https://pdos.beepump.net/dingtalk/callback`。浏览器页面只把一次性 `authCode + state` 交给同源 session BFF；不得把内部 FastAPI callback 地址登记为 redirect。
 3. 配置事件回调：`https://pdos.beepump.net/api/integrations/dingtalk/callback/<独立 route key>`，生成独立 Token 和 EncodingAESKey。
 4. 配置机器人和测试群，记录 `robot_code` 与 `open_conversation_id`。
 5. 新建 Gate external approval 模板，记录 process code；模板字段固定为 `Project`、`Gate`、`PDOS status`。
-6. 新建 interactive card 模板，配置独立 callback route key 和 HMAC secret；只允许 `acknowledge` 与 server-built `open`。
+6. 新建 interactive card 模板，按钮“回传请求”的固定参数名为 `action`，值只允许 `acknowledge` 或 `open`；人工调用 `POST /v1.0/card/callbacks/register`，提交独立 `callbackRouteKey`、公网 `callbackUrl=https://pdos.beepump.net/api/integrations/dingtalk/card-callback/<route key>` 和与服务器一致的 `apiSecret`（不要把 secret 留在 shell history）。发送端固定 `callbackType=HTTP` 和 `userIdType=1`。
 7. 权限按最小集合逐项申请。OAuth 当前使用授权码换用户 token，再读取 `/v1.0/contact/users/me`；返回的 `openId` 与组织 `userId/staffId` 分开保存，不作相互猜测。
 
 ## 3. 服务器秘密与非秘密配置
@@ -45,6 +45,15 @@ PDOS_DINGTALK_POLL_SECONDS=2
 4. Owner/Admin 写 tenant binding，Project Manager 写 project channel；内部用户逐个显式 link，不允许手机号/姓名自动匹配。
 5. 用 fake/测试应用先完成 OAuth、AES challenge、群通知、审批、卡片 smoke。
 6. 人核对 pending/retry/failed/uncertain/manual 均为预期后，再单独授权将 delivery 改为 true 并滚动启动 API 与 dingtalk worker。
+
+在真实应用 smoke 前先运行只读检查（生产执行仍需单独授权）：
+
+```bash
+cd /app/server
+python -m scripts.check_dingtalk_readiness --tenant-slug <tenant-slug>
+```
+
+该命令不调用钉钉、不写数据库、不输出凭据；它检查 0026+0027、HTTPS public origin、env/binding 一致性、回调密码学结构、至少 2 个 active 用户绑定、至少 1 个项目群和零未处理 outbox。delivery 保持 false 时可通过 pre-smoke 检查；正式 outbound smoke 前再用 `--require-delivery-enabled` 复核。
 
 ## 5. 监控与对账
 
@@ -87,5 +96,5 @@ ORDER BY created_at;
 - 1 次已绑定用户 password-free login；未绑定、错 corp、state replay 均拒绝。
 - 1 次项目群通知可达，PDOS outbox succeeded 且 remote reference 可查。
 - 1 次 Gate external approval 回调后镜像更新，PDOS Gate 状态保持原值。
-- 1 次 card acknowledge，重复回调只处理一次；错签名、过期时间、错 corp/openId/outTrackId 均拒绝。
+- 1 次 card acknowledge，重复回调只处理一次；错签名、过期时间、错 corp/userId/outTrackId 均拒绝。
 - 浏览器 console 0 error/warning，390px 无横向溢出；Supplier/Customer 无 integration 入口且 API 返回 403。
