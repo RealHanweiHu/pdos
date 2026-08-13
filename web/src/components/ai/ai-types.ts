@@ -3,6 +3,10 @@ export const FINDING_TYPES = [
   "blocker_alert",
   "gate_readiness_anomaly",
   "knowledge_draft",
+  "bom_impact_suggestion",
+  "change_impact_suggestion",
+  "quality_cluster_alert",
+  "capa_suggestion",
 ] as const;
 
 export const FINDING_STATUSES = [

@@ -26,11 +26,17 @@ const typeLabels: Record<FindingType, string> = {
   blocker_alert: "阻塞预警",
   gate_readiness_anomaly: "Gate 异常",
   knowledge_draft: "知识草稿",
+  bom_impact_suggestion: "BOM 影响建议",
+  change_impact_suggestion: "变更影响建议",
+  quality_cluster_alert: "质量聚类预警",
+  capa_suggestion: "CAPA 建议",
 };
 
 const agentLabels: Record<string, string> = {
   project_intelligence: "Project Intelligence",
   knowledge_lite: "Knowledge Lite",
+  engineering_intelligence: "Engineering Intelligence",
+  quality_intelligence: "Quality Intelligence",
 };
 
 const statusLabels = {

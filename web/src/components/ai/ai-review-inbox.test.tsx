@@ -159,6 +159,42 @@ describe("AiReviewInbox", () => {
     ));
   });
 
+  it("surfaces Phase 2 Engineering and Quality findings through the same review contract", async () => {
+    const user = userEvent.setup();
+    const qualityFinding = {
+      ...finding,
+      id: "finding-quality-1",
+      agent_key: "quality_intelligence",
+      finding_type: "capa_suggestion",
+      title: "复核客诉 CAPA 响应",
+      summary: "项目内客诉证据支持质量团队复核纠正与预防建议。",
+      proposed_payload: {
+        title: "复核 CAPA 响应",
+        description: "相关性不是已批准根因。",
+        likelihood: 3,
+        impact: 5,
+        mitigation_plan: "确认围堵并完成根因分析",
+        contingency_plan: "根因批准后复核预防控制",
+      },
+    };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path === "/api/ai/findings" && !init?.method) {
+        return jsonResponse({ items: [finding, qualityFinding] });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<AiReviewInbox />);
+    await user.click(await screen.findByRole("button", { name: "CAPA 建议" }));
+
+    expect(screen.getByText("Quality Intelligence")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "复核客诉 CAPA 响应" })).toBeInTheDocument();
+    expect(screen.getByText("根因批准后复核预防控制")).toBeInTheDocument();
+  });
+
   it("applies an accepted knowledge Finding only as an unverified Memory draft", async () => {
     const user = userEvent.setup();
     const accepted = {
