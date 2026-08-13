@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S4-1 CAPA 正式链。** Sprint 3 Exit Gate 已于 2026-08-12 经人明确确认；CAPA 字段与状态契约须先经公司质量流程 Owner 确认。
+> 唯一当前指针：**S4-3 Phase 2 双 Agent。** S4-2 Memory + 向量检索已于 2026-08-12 完成全部验收；Sprint 4 继续按 canonical 顺序推进。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1089,7 +1089,7 @@
 | 完整门禁首次仍有 6 个旧 migration head 快照和 1 个 Engineer action 快照 | 1 | 将 append-only head 更新为 `0021_quality_capa`，补 `quality.view` / `complaint.create` / `capa.execute` 精确期望；14 项回归及完整门禁转绿 |
 | Next dev 首次把多余 `--` 解析为项目目录 | 1 | 按仓库 pnpm wrapper 的参数透传规则移除分隔符，临时 API/Web 真实进程随后正常启动 |
 
-## In Progress: S4-2 Memory + 向量检索
+## Completed: S4-2 Memory + 向量检索
 
 **Definition of Ready**
 
@@ -1100,15 +1100,31 @@
 
 **Implementation slices**
 
-- [ ] S4-2a：冻结数据/API/RBAC/embedding/search/引用契约与错误码
-- [ ] S4-2b：migration 0022 建立 Memory/Embedding、四眼状态机、来源/项目边界与 pgvector
-- [ ] S4-2c：实现人工 draft/edit/verify/archive/reembed 与 Finding/CAPA 来源闭环
-- [ ] S4-2d：实现可替换 embedding client、verified-only 语义检索与 Agent projection
-- [ ] S4-2e：接入 `/ai/chat` Memory citation、Knowledge Search API/BFF/独立入口
-- [ ] S4-2f：完成迁移/安全/完整门禁、真实 HTTP/浏览器与 Sprint 4 纵向证据
-- [ ] S4-2g：完成 DoD、更新 canonical checkbox 和当前指针到 S4-3
+- [x] S4-2a：冻结数据/API/RBAC/embedding/search/引用契约与错误码
+- [x] S4-2b：migration 0022/0023 建立 Memory/Embedding、Finding Apply、四眼状态机、来源/项目边界与 pgvector
+- [x] S4-2c：实现人工 draft/edit/verify/archive/reembed 与 Finding/CAPA 来源闭环
+- [x] S4-2d：实现可替换 embedding client、verified-only 语义检索与 Agent projection
+- [x] S4-2e：接入 `/ai/chat` Memory citation、Knowledge Search API/BFF/独立入口
+- [x] S4-2f：完成迁移/安全/完整门禁、真实 HTTP/浏览器与 Sprint 4 纵向证据
+- [x] S4-2g：完成 DoD、更新 canonical checkbox 和当前指针到 S4-3
 
-**Current evidence（2026-08-12）**
+**Completion evidence（2026-08-12）**
 
 - 规格与既有 S2 工具合同共同冻结“只有 verified 进入 Search/Agent/Chat”；Knowledge Lite 只产 `knowledge_draft` Finding，当前 Apply 明确 fail-close，正好作为 S4-2 的受控输入。
 - v1 技术合同见 `docs/design/2026-08-12-s4-2-memory-search-contract.md`：项目级、创建/验证四眼、OpenAI-compatible embedding、模型版本留痕与显式 re-embed、无配置不可伪装为空结果。
+- migration `0022_memory_search` 与 `0023_memory_finding_apply` 建立项目级 Memory/Embedding、向量索引与 Finding→Memory 受控落地；downgrade/upgrade、单一 head、metadata drift 和初始 schema 快照均通过。
+- Memory 完成 `draft→verified→archived` 单向状态机、创建/验证四眼、服务端 tenant/project/source 真值复核与显式 re-embed；只有当前内容哈希、当前 provider/model/dimension 且处于 verified 的记录可进入检索。
+- OpenAI-compatible embedding client 固化 provider/model/dimension/content hash，禁用环境代理继承并禁止重定向；缺配置或供应商故障返回明确 unavailable，绝不伪装成空结果，API 不暴露原始向量。
+- `cehub_ai.agent_memory_projection` 只投影 verified Memory；受限 `pdos_agent` 可读投影但对 Memory/Embedding 业务表零写。`search_memory` 工具与 `/ai/chat` 均复用服务端项目边界，Chat 命中返回可点击 `/knowledge` 引用。
+- Knowledge Search 独立入口、同源 BFF、状态注册表与 AI Review 二次 Apply 已完成；桌面与 390px 移动端无横向溢出，真实 Chromium console 0 error/0 warning。
+- 真实浏览器验收在隔离 `pdos_test` 完成：Engineer 创建 draft→检索 0 命中且无 Verify 权限→另一位 Quality 验证→检索 100% 命中并展示 provider/model→归档→再次检索 0 命中；创建/验证/检索/归档 BFF 分别返回 `201/200/200/200`。
+- 关闭 NCR 生成 `knowledge_draft` Finding，经人工 Accept 与第二次 Apply 创建 Memory draft，再由不同用户 Verify；`ChatEvidenceRepository` 确认 `/ai/chat` 返回该 verified Memory citation，覆盖 Sprint 4 纵向验收主链。
+- 完整门禁全绿：Web 32 files / 110 tests，Server 300 tests；ESLint、TypeScript、Ruff、format、mypy、Python compile 全部通过。Next.js production build 使用 webpack 成功；默认 Turbopack 在受限沙箱因内部进程绑定失败，不属于源码或生产构建错误。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 本机 `.env` 仍指向旧 PostgreSQL 端口 55432 | 1 | 验收显式绑定 Docker 当前映射 57432 的隔离 `pdos_test`，未修改用户环境文件、未触碰开发/生产库 |
+| 本地 embedding stub 被继承的系统代理截获并超时 | 1 | client 固定 `trust_env=False` 且禁用重定向；真实浏览器检索随后完整通过 |
+| 全量门禁首先发现初始 schema / Engineer action 快照未包含新增对象 | 1 | 仅追加 Memory 两表及 `memory.draft`/`memory.view` 精确期望，相关聚焦回归与完整门禁均转绿 |
