@@ -197,6 +197,7 @@ class AuthRepository:
         tenant_id: UUID,
         user_id: UUID,
         signed_in_at: datetime,
+        authentication_method: str = "local_password",
     ) -> None:
         with self._engine.begin() as connection:
             user_row = (
@@ -235,7 +236,7 @@ class AuthRepository:
                     event_type="USER_SIGNED_IN",
                     source="auth_service",
                     entity_id=user_id,
-                    payload={"authentication_method": "local_password"},
+                    payload={"authentication_method": authentication_method},
                     occurred_at=signed_in_at,
                 ),
                 AuditDraft(
@@ -248,7 +249,7 @@ class AuthRepository:
                         )
                     },
                     after_snapshot={"last_signed_in_at": signed_in_at.isoformat()},
-                    context={"authentication_method": "local_password"},
+                    context={"authentication_method": authentication_method},
                 ),
             )
 

@@ -5,6 +5,7 @@ from app.api.auth import router as auth_router
 from app.api.change_governance import router as change_governance_router
 from app.api.deliverable_checks import router as deliverable_checks_router
 from app.api.development_cases import router as development_cases_router
+from app.api.dingtalk import router as dingtalk_router
 from app.api.events import router as events_router
 from app.api.findings import router as findings_router
 from app.api.gates import router as gates_router
@@ -27,6 +28,7 @@ app = FastAPI(
 )
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(dingtalk_router)
 app.include_router(ai_router)
 app.include_router(projects_router)
 app.include_router(gates_router)

@@ -1221,7 +1221,7 @@
 **Implementation slices**
 
 - [x] S5-1a：审计规格与老 CEHub 协议实现，冻结 v1 数据/API/安全/可靠性契约
-- [ ] S5-1b：实现独立钉钉应用配置、免登 code exchange 与本地 session 建立
+- [x] S5-1b：实现独立钉钉应用配置、免登 code exchange 与本地 session 建立
 - [ ] S5-1c：实现签名/时间窗/nonce/AES 回调验证、幂等事件接收与 URL challenge
 - [ ] S5-1d：实现审批发起/结果回调、群通知与交互卡片模板机制
 - [ ] S5-1e：实现 outbox、退避重试、重放/对账、显式人工降级与运维可观测性
@@ -1233,6 +1233,8 @@
 - 契约见 `docs/design/2026-08-12-s5-1-dingtalk-connector-contract.md`。当前官方授权流与老 CEHub 静默免登存在版本差异：v1 使用 OAuth `authCode→userAccessToken→contact/users/me`，不沿用已不推荐的 `dd.getAuthCode`。
 - 老 CEHub 的 token 提前刷新、AES、outTrackId、create 结果不确定隔离经验可复用；审计同时识别并禁止手机号自动匹配、任意 payload 递归找 ID、缺时间窗/nonce/CorpID 尾校验、远端 approved 直接成为本地业务真值等做法。
 - v1 采用显式 link 后 password-free login；审批只镜像外部协作结果，不直接批准 Gate。所有 outbound 经 durable outbox；不确定 create 不盲重放，未配置时显式降级为 manual。
+- `0026_dingtalk_connector` 建立 8 个租户隔离实体并通过 `0026→0025→0026`、metadata 零漂移、单一 head 与有数据 downgrade fail-close 验收。
+- 免登只走固定官方主机；state 原文不落库且在远端交换前原子消费，corp 必须精确匹配，link 只绑定当前会话用户，login 只命中已有绑定。fake transport + 原认证/RBAC/Event 回归 26 项全绿，OAuth code/user token 未进入数据库、Event/Audit 或日志。
 
 **Error ledger**
 

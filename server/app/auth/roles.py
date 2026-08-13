@@ -62,6 +62,11 @@ class Action(StrEnum):
     CHANGE_APPROVE = "change.approve"
     HANDOFF_VIEW = "handoff.view"
     HANDOFF_PREPARE = "handoff.prepare"
+    INTEGRATION_VIEW = "integration.view"
+    INTEGRATION_BIND_SELF = "integration.bind_self"
+    INTEGRATION_MANAGE = "integration.manage"
+    INTEGRATION_PROJECT_MANAGE = "integration.project_manage"
+    INTEGRATION_PROJECT_SEND = "integration.project_send"
     EXTERNAL_RESPOND = "external.respond"
 
 
@@ -110,6 +115,10 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.CHANGE_APPROVE,
                 Action.HANDOFF_VIEW,
                 Action.HANDOFF_PREPARE,
+                Action.INTEGRATION_VIEW,
+                Action.INTEGRATION_BIND_SELF,
+                Action.INTEGRATION_PROJECT_MANAGE,
+                Action.INTEGRATION_PROJECT_SEND,
             }
         ),
         Role.ENGINEER: frozenset(
@@ -137,6 +146,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.CHANGE_VIEW,
                 Action.CHANGE_EDIT,
                 Action.HANDOFF_VIEW,
+                Action.INTEGRATION_VIEW,
+                Action.INTEGRATION_BIND_SELF,
             }
         ),
         Role.QUALITY: frozenset(
@@ -167,6 +178,8 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.GATE_SIGN,
                 Action.CHANGE_VIEW,
                 Action.HANDOFF_VIEW,
+                Action.INTEGRATION_VIEW,
+                Action.INTEGRATION_BIND_SELF,
             }
         ),
         Role.SUPPLIER: frozenset(

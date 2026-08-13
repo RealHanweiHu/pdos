@@ -95,3 +95,22 @@ class AuthService:
         if context.tenant.status != "active":
             raise TenantContextDeniedError
         return context
+
+    def issue_external_login(
+        self, context: AuthContext, *, authentication_method: str
+    ) -> TokenGrant:
+        if not context.user.is_active or context.tenant.status != "active":
+            raise InvalidCredentialsError
+        signed_in_at = datetime.now(UTC)
+        self._repository.record_successful_login(
+            tenant_id=context.tenant.id,
+            user_id=context.user.id,
+            signed_in_at=signed_in_at,
+            authentication_method=authentication_method,
+        )
+        encoded = self._tokens.issue(
+            user_id=context.user.id,
+            tenant_id=context.tenant.id,
+            issued_at=signed_in_at,
+        )
+        return TokenGrant(access_token=encoded.token, expires_in=self._token_ttl_seconds)

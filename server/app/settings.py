@@ -37,6 +37,34 @@ class Settings(BaseSettings):
         default=SecretStr("minioadmin"), validation_alias="S3_SECRET_ACCESS_KEY"
     )
     s3_force_path_style: bool = Field(default=True, validation_alias="S3_FORCE_PATH_STYLE")
+    dingtalk_client_id: str | None = Field(
+        default=None,
+        validation_alias="PDOS_DINGTALK_CLIENT_ID",
+    )
+    dingtalk_client_secret: SecretStr | None = Field(
+        default=None,
+        validation_alias="PDOS_DINGTALK_CLIENT_SECRET",
+    )
+    dingtalk_callback_token: SecretStr | None = Field(
+        default=None,
+        validation_alias="PDOS_DINGTALK_CALLBACK_TOKEN",
+    )
+    dingtalk_callback_aes_key: SecretStr | None = Field(
+        default=None,
+        validation_alias="PDOS_DINGTALK_CALLBACK_AES_KEY",
+    )
+    dingtalk_card_callback_secret: SecretStr | None = Field(
+        default=None,
+        validation_alias="PDOS_DINGTALK_CARD_CALLBACK_SECRET",
+    )
+    public_base_url: str = Field(
+        default="http://localhost:3000",
+        validation_alias="PDOS_PUBLIC_BASE_URL",
+    )
+    dingtalk_delivery_enabled: bool = Field(
+        default=False,
+        validation_alias="PDOS_DINGTALK_DELIVERY_ENABLED",
+    )
 
     @field_validator("jwt_secret")
     @classmethod
