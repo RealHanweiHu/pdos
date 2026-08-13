@@ -45,6 +45,18 @@ class NcrObservationPlanError(ValueError):
     """Raised when effectiveness criteria or observation timing is invalid."""
 
 
+class NcrRepeatActionGateError(ValueError):
+    """Raised when a failed review has no newly completed follow-up Action."""
+
+
+class NcrEffectivenessGateError(ValueError):
+    """Raised when NCR closure lacks a latest effective review."""
+
+
+class NcrPreventiveDispositionError(ValueError):
+    """Raised when preventive N/A approval is outside the Action stage."""
+
+
 @dataclass(frozen=True)
 class NcrRecord:
     id: UUID
@@ -388,6 +400,7 @@ class NonconformanceService:
                         tables.capa_actions.c.action_type,
                         tables.capa_actions.c.status,
                         tables.capa_actions.c.completed_at,
+                        tables.capa_actions.c.created_at,
                     ).where(
                         tables.capa_actions.c.tenant_id == tenant_id,
                         tables.capa_actions.c.project_id == project_id,
@@ -408,6 +421,17 @@ class NonconformanceService:
                     or not preventive_ready
                 ):
                     raise NcrActionGateError
+                last_ineffective_at = connection.execute(
+                    select(func.max(tables.effectiveness_reviews.c.reviewed_at)).where(
+                        tables.effectiveness_reviews.c.tenant_id == tenant_id,
+                        tables.effectiveness_reviews.c.ncr_id == ncr_id,
+                        tables.effectiveness_reviews.c.result == "ineffective",
+                    )
+                ).scalar_one_or_none()
+                if last_ineffective_at is not None and not any(
+                    row["created_at"] > last_ineffective_at for row in actions
+                ):
+                    raise NcrRepeatActionGateError
                 completed_at_values = [row["completed_at"] for row in actions]
                 if any(value is None for value in completed_at_values):
                     raise NcrActionGateError
@@ -424,7 +448,18 @@ class NonconformanceService:
                     observation_due_at=normalized_due,
                 )
             elif before.status == "verification":
-                raise NcrInvalidTransitionError
+                latest_result = connection.execute(
+                    select(tables.effectiveness_reviews.c.result)
+                    .where(
+                        tables.effectiveness_reviews.c.tenant_id == tenant_id,
+                        tables.effectiveness_reviews.c.ncr_id == ncr_id,
+                    )
+                    .order_by(tables.effectiveness_reviews.c.review_number.desc())
+                    .limit(1)
+                ).scalar_one_or_none()
+                if latest_result != "effective":
+                    raise NcrEffectivenessGateError
+                values.update(closed_by_user_id=actor_user_id, closed_at=occurred_at)
             connection.execute(
                 tables.nonconformance_reports.update()
                 .where(
@@ -455,6 +490,74 @@ class NonconformanceService:
                 ),
                 AuditDraft(
                     action="quality.ncr.transition",
+                    before_snapshot=_snapshot(before),
+                    after_snapshot=_snapshot(after),
+                ),
+            )
+            return after
+
+    def approve_preventive_not_applicable(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        project_id: UUID,
+        ncr_id: UUID,
+        reason: str,
+    ) -> NcrRecord:
+        occurred_at = datetime.now(UTC)
+        with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise NcrNotFoundError
+            before = self._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+            if before.status != "action" or before.preventive_not_applicable_reason is not None:
+                raise NcrPreventiveDispositionError
+            ComplaintService._validate_member(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                user_id=actor_user_id,
+            )
+            connection.execute(
+                tables.nonconformance_reports.update()
+                .where(
+                    tables.nonconformance_reports.c.tenant_id == tenant_id,
+                    tables.nonconformance_reports.c.id == ncr_id,
+                )
+                .values(
+                    preventive_not_applicable_reason=reason,
+                    preventive_disposition_approved_by_user_id=actor_user_id,
+                    preventive_disposition_approved_at=occurred_at,
+                    updated_at=occurred_at,
+                )
+            )
+            after = self._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=actor_user_id,
+                project_id=project_id,
+            ).record(
+                EventDraft(
+                    event_id=f"ncr:{ncr_id}:preventive-na-approved",
+                    event_type="NCR_PREVENTIVE_DISPOSITION_APPROVED",
+                    source="quality_service",
+                    entity_id=ncr_id,
+                    payload={"ncr_id": str(ncr_id)},
+                    occurred_at=occurred_at,
+                ),
+                AuditDraft(
+                    action="quality.ncr.preventive_not_applicable",
                     before_snapshot=_snapshot(before),
                     after_snapshot=_snapshot(after),
                 ),

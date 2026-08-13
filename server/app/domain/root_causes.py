@@ -334,3 +334,29 @@ class RootCauseService:
                 ),
             )
             return after
+
+    def list(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        ncr_id: UUID,
+    ) -> list[RootCauseRecord]:
+        with self._engine.connect() as connection:
+            NonconformanceService._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+            return [
+                _record(row)
+                for row in connection.execute(
+                    _statement()
+                    .where(
+                        tables.root_cause_analyses.c.tenant_id == tenant_id,
+                        tables.root_cause_analyses.c.ncr_id == ncr_id,
+                    )
+                    .order_by(tables.root_cause_analyses.c.version)
+                ).mappings()
+            ]

@@ -301,6 +301,22 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(from_status="string", to_status="string"),
     ),
     EventDefinition(
+        event_type="EFFECTIVENESS_REVIEWED",
+        version=1,
+        entity="effectiveness_review",
+        producer="quality_service",
+        consumers=("quality_projection", "agent_dispatcher"),
+        payload_schema=_payload_schema(ncr_id="string", result="string", review_number="integer"),
+    ),
+    EventDefinition(
+        event_type="NCR_PREVENTIVE_DISPOSITION_APPROVED",
+        version=1,
+        entity="nonconformance_report",
+        producer="quality_service",
+        consumers=("quality_projection",),
+        payload_schema=_payload_schema(ncr_id="string"),
+    ),
+    EventDefinition(
         event_type="AI_FINDING_CREATED",
         version=1,
         entity="ai_finding",

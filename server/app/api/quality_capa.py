@@ -24,11 +24,21 @@ from app.domain.capa_actions import (
     CapaActionService,
     CapaActionTransitionError,
 )
+from app.domain.effectiveness import (
+    EffectivenessFourEyesError,
+    EffectivenessObservationPendingError,
+    EffectivenessReviewDraft,
+    EffectivenessReviewRecord,
+    EffectivenessService,
+)
 from app.domain.nonconformance import (
     NcrActionGateError,
     NcrContainmentGateError,
+    NcrEffectivenessGateError,
     NcrInvalidTransitionError,
     NcrObservationPlanError,
+    NcrPreventiveDispositionError,
+    NcrRepeatActionGateError,
     NcrRootCauseGateError,
     NonconformanceService,
 )
@@ -171,12 +181,73 @@ class CapaActionTransitionRequest(BaseModel):
         return value
 
 
+class EffectivenessReviewResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    id: UUID
+    project_id: UUID
+    ncr_id: UUID
+    reviewer_user_id: UUID
+    review_number: int
+    criteria: str
+    observation_due_at: datetime
+    actual_result: str
+    result: str
+    evidence_refs: list[dict[str, object]]
+    reviewed_at: datetime
+    created_at: datetime
+
+
+class EffectivenessReviewCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    actual_result: str = Field(min_length=1, max_length=20_000)
+    result: str = Field(pattern=r"^(effective|ineffective)$")
+    evidence_refs: list[EvidenceReference] = Field(min_length=1, max_length=100)
+
+    @field_validator("actual_result", mode="before")
+    @classmethod
+    def normalize_actual_result(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+
+class EffectivenessReviewResultResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    review: EffectivenessReviewResponse
+    ncr: NcrResponse
+
+
+class PreventiveNotApplicableRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    reason: str = Field(min_length=1, max_length=20_000)
+
+    @field_validator("reason", mode="before")
+    @classmethod
+    def normalize_reason(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+
+class NcrDetailResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    ncr: NcrResponse
+    root_causes: list[RootCauseResponse]
+    actions: list[CapaActionResponse]
+    effectiveness_reviews: list[EffectivenessReviewResponse]
+
+
 def root_cause_response(record: RootCauseRecord) -> RootCauseResponse:
     return RootCauseResponse.model_validate(record, from_attributes=True)
 
 
 def capa_action_response(record: CapaActionRecord) -> CapaActionResponse:
     return CapaActionResponse.model_validate(record, from_attributes=True)
+
+
+def effectiveness_response(record: EffectivenessReviewRecord) -> EffectivenessReviewResponse:
+    return EffectivenessReviewResponse.model_validate(record, from_attributes=True)
 
 
 def evidence_payload(refs: list[EvidenceReference]) -> list[dict[str, object]]:
@@ -216,6 +287,30 @@ def capa_error(error: Exception) -> HTTPException:
             detail={
                 "code": "CAPA_OBSERVATION_PLAN_INVALID",
                 "message": "Effectiveness criteria or observation timing is invalid",
+            },
+        )
+    if isinstance(error, NcrRepeatActionGateError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CAPA_NEW_ACTION_REQUIRED",
+                "message": "A failed review requires a new follow-up action",
+            },
+        )
+    if isinstance(error, NcrEffectivenessGateError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CAPA_EFFECTIVENESS_NOT_PROVEN",
+                "message": "Latest effectiveness review is not effective",
+            },
+        )
+    if isinstance(error, NcrPreventiveDispositionError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CAPA_PREVENTIVE_DISPOSITION_INVALID",
+                "message": "Preventive disposition cannot be approved",
             },
         )
     if isinstance(error, NcrInvalidTransitionError):
@@ -261,7 +356,90 @@ def capa_error(error: Exception) -> HTTPException:
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "QUALITY_EVIDENCE_NOT_FOUND", "message": "Evidence was not found"},
         )
+    if isinstance(error, EffectivenessFourEyesError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "EFFECTIVENESS_FOUR_EYES_REQUIRED",
+                "message": "Reviewer cannot own an action under review",
+            },
+        )
+    if isinstance(error, EffectivenessObservationPendingError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "EFFECTIVENESS_OBSERVATION_PENDING",
+                "message": "Observation period has not completed",
+            },
+        )
     return complaint_error(error)
+
+
+@router.get("/ncrs/{ncr_id}", response_model=NcrResponse)
+def get_ncr(
+    project_id: UUID,
+    ncr_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> NcrResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine, context=context, project_id=project_id, action=Action.QUALITY_VIEW
+    )
+    try:
+        return ncr_response(
+            NonconformanceService(engine).get(
+                tenant_id=context.tenant.id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+        )
+    except Exception as error:
+        raise capa_error(error) from error
+
+
+@router.get("/ncrs/{ncr_id}/detail", response_model=NcrDetailResponse)
+def get_ncr_detail(
+    project_id: UUID,
+    ncr_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> NcrDetailResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine, context=context, project_id=project_id, action=Action.QUALITY_VIEW
+    )
+    try:
+        ncr = NonconformanceService(engine).get(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            ncr_id=ncr_id,
+        )
+        root_causes = RootCauseService(engine).list(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            ncr_id=ncr_id,
+        )
+        actions = CapaActionService(engine).list(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            ncr_id=ncr_id,
+        )
+        reviews = EffectivenessService(engine).list(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            ncr_id=ncr_id,
+        )
+    except Exception as error:
+        raise capa_error(error) from error
+    return NcrDetailResponse(
+        ncr=ncr_response(ncr),
+        root_causes=[root_cause_response(record) for record in root_causes],
+        actions=[capa_action_response(record) for record in actions],
+        effectiveness_reviews=[effectiveness_response(record) for record in reviews],
+    )
 
 
 @router.post("/ncrs/{ncr_id}/transitions", response_model=NcrResponse)
@@ -277,6 +455,8 @@ def transition_ncr(
     authorize_project(
         engine=engine, context=context, project_id=project_id, action=Action.CAPA_MANAGE
     )
+    if body.to_status == "closed":
+        require_quality_role(context)
     try:
         record = NonconformanceService(engine).transition(
             tenant_id=context.tenant.id,
@@ -433,3 +613,69 @@ def transition_capa_action(
     except Exception as error:
         raise capa_error(error) from error
     return capa_action_response(record)
+
+
+@router.post(
+    "/ncrs/{ncr_id}/effectiveness-reviews",
+    response_model=EffectivenessReviewResultResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def review_effectiveness(
+    project_id: UUID,
+    ncr_id: UUID,
+    body: EffectivenessReviewCreateRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> EffectivenessReviewResultResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine, context=context, project_id=project_id, action=Action.CAPA_VERIFY
+    )
+    require_quality_role(context)
+    try:
+        result = EffectivenessService(engine).review(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            project_id=project_id,
+            ncr_id=ncr_id,
+            draft=EffectivenessReviewDraft(
+                actual_result=body.actual_result,
+                result=body.result,
+                evidence_refs=evidence_payload(body.evidence_refs),
+            ),
+        )
+    except Exception as error:
+        raise capa_error(error) from error
+    return EffectivenessReviewResultResponse(
+        review=effectiveness_response(result.review),
+        ncr=ncr_response(result.ncr),
+    )
+
+
+@router.post("/ncrs/{ncr_id}/preventive-not-applicable", response_model=NcrResponse)
+def approve_preventive_not_applicable(
+    project_id: UUID,
+    ncr_id: UUID,
+    body: PreventiveNotApplicableRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> NcrResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine, context=context, project_id=project_id, action=Action.CAPA_VERIFY
+    )
+    require_quality_role(context)
+    try:
+        return ncr_response(
+            NonconformanceService(engine).approve_preventive_not_applicable(
+                tenant_id=context.tenant.id,
+                actor_user_id=context.user.id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+                reason=body.reason,
+            )
+        )
+    except Exception as error:
+        raise capa_error(error) from error

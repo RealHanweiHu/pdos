@@ -298,3 +298,29 @@ class CapaActionService:
                 ),
             )
             return after
+
+    def list(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        ncr_id: UUID,
+    ) -> list[CapaActionRecord]:
+        with self._engine.connect() as connection:
+            NonconformanceService._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                ncr_id=ncr_id,
+            )
+            return [
+                _record(row)
+                for row in connection.execute(
+                    _statement()
+                    .where(
+                        tables.capa_actions.c.tenant_id == tenant_id,
+                        tables.capa_actions.c.ncr_id == ncr_id,
+                    )
+                    .order_by(tables.capa_actions.c.created_at, tables.capa_actions.c.id)
+                ).mappings()
+            ]

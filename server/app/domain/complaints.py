@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import Connection, Engine, select
+from sqlalchemy import Connection, Engine, func, select
 from sqlalchemy.engine import RowMapping
 
 from app.db.schema import tables
@@ -25,6 +25,18 @@ class ComplaintScopeError(ValueError):
 
 class ComplaintTimeError(ValueError):
     """Raised when occurrence time is after the server report time."""
+
+
+class ComplaintInvalidTransitionError(ValueError):
+    """Raised when a Complaint transition is outside the frozen lifecycle."""
+
+
+class ComplaintNcrGateError(ValueError):
+    """Raised when Complaint resolution has no fully closed NCR set."""
+
+
+class ComplaintResolutionError(ValueError):
+    """Raised when Complaint resolution lacks the required conclusion."""
 
 
 @dataclass(frozen=True)
@@ -45,7 +57,7 @@ class ComplaintRecord:
     reported_at: datetime
     customer_reference: str | None
     affected_scope: str | None
-    document_refs: list[dict[str, object]]
+    document_refs: list[str]
     resolution_summary: str | None
     closed_at: datetime | None
     created_at: datetime
@@ -63,6 +75,7 @@ class ComplaintDraft:
     occurred_at: datetime
     customer_reference: str | None
     affected_scope: str | None
+    document_refs: list[UUID]
 
 
 def _complaint_statement() -> Any:
@@ -112,6 +125,11 @@ def _snapshot(record: ComplaintRecord) -> dict[str, object]:
         "customer_reference": record.customer_reference,
         "affected_scope": record.affected_scope,
         "document_refs": record.document_refs,
+        "resolution_summary": record.resolution_summary,
+        "closed_by_user_id": (
+            str(record.closed_by_user_id) if record.closed_by_user_id else None
+        ),
+        "closed_at": record.closed_at.isoformat() if record.closed_at else None,
     }
 
 
@@ -187,6 +205,30 @@ class ComplaintService:
         if found is None:
             raise ComplaintScopeError
 
+    @staticmethod
+    def _validate_documents(
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        document_ids: list[UUID],
+    ) -> None:
+        if len(set(document_ids)) != len(document_ids):
+            raise ComplaintScopeError
+        if not document_ids:
+            return
+        found = connection.execute(
+            select(func.count())
+            .select_from(tables.documents)
+            .where(
+                tables.documents.c.tenant_id == tenant_id,
+                tables.documents.c.project_id == project_id,
+                tables.documents.c.id.in_(document_ids),
+            )
+        ).scalar_one()
+        if found != len(document_ids):
+            raise ComplaintScopeError
+
     def create(
         self,
         *,
@@ -220,6 +262,12 @@ class ComplaintService:
                 tenant_id=tenant_id,
                 customer_id=draft.customer_id,
             )
+            self._validate_documents(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                document_ids=draft.document_refs,
+            )
             connection.execute(
                 tables.complaints.insert(),
                 {
@@ -239,6 +287,7 @@ class ComplaintService:
                     "reported_at": reported_at,
                     "customer_reference": draft.customer_reference,
                     "affected_scope": draft.affected_scope,
+                    "document_refs": [str(document_id) for document_id in draft.document_refs],
                     "created_at": reported_at,
                     "updated_at": reported_at,
                 },
@@ -295,3 +344,96 @@ class ComplaintService:
                     .order_by(tables.complaints.c.updated_at.desc(), tables.complaints.c.id.desc())
                 ).mappings()
             ]
+
+    def transition(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        project_id: UUID,
+        complaint_id: UUID,
+        to_status: str,
+        resolution_summary: str | None,
+    ) -> ComplaintRecord:
+        occurred_at = datetime.now(UTC)
+        transitions = {
+            "triaged": "investigating",
+            "investigating": "resolved",
+            "resolved": "closed",
+        }
+        with self._engine.begin() as connection:
+            if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
+                raise ComplaintNotFoundError
+            before = self._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                complaint_id=complaint_id,
+            )
+            if transitions.get(before.status) != to_status:
+                raise ComplaintInvalidTransitionError
+            self._validate_member(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                user_id=actor_user_id,
+            )
+            values: dict[str, object] = {"status": to_status, "updated_at": occurred_at}
+            if to_status == "resolved":
+                ncr_count, open_count = connection.execute(
+                    select(
+                        func.count(),
+                        func.count().filter(tables.nonconformance_reports.c.status != "closed"),
+                    ).where(
+                        tables.nonconformance_reports.c.tenant_id == tenant_id,
+                        tables.nonconformance_reports.c.project_id == project_id,
+                        tables.nonconformance_reports.c.complaint_id == complaint_id,
+                    )
+                ).one()
+                if ncr_count < 1 or open_count:
+                    raise ComplaintNcrGateError
+                if resolution_summary is None:
+                    raise ComplaintResolutionError
+                values["resolution_summary"] = resolution_summary
+            elif to_status == "closed":
+                if resolution_summary is not None:
+                    raise ComplaintResolutionError
+                values.update(closed_by_user_id=actor_user_id, closed_at=occurred_at)
+            elif resolution_summary is not None:
+                raise ComplaintResolutionError
+            connection.execute(
+                tables.complaints.update()
+                .where(
+                    tables.complaints.c.tenant_id == tenant_id,
+                    tables.complaints.c.project_id == project_id,
+                    tables.complaints.c.id == complaint_id,
+                )
+                .values(**values)
+            )
+            after = self._get(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                complaint_id=complaint_id,
+            )
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=actor_user_id,
+                project_id=project_id,
+            ).record(
+                EventDraft(
+                    event_id=f"complaint:{complaint_id}:status:{to_status}:{uuid4()}",
+                    event_type="COMPLAINT_STATUS_CHANGED",
+                    source="quality_service",
+                    entity_id=complaint_id,
+                    payload={"from_status": before.status, "to_status": after.status},
+                    occurred_at=occurred_at,
+                ),
+                AuditDraft(
+                    action="quality.complaint.transition",
+                    before_snapshot=_snapshot(before),
+                    after_snapshot=_snapshot(after),
+                ),
+            )
+            return after

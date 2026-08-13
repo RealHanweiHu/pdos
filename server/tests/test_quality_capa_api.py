@@ -508,3 +508,113 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     assert verification.status_code == 200
     assert verification.json()["status"] == "verification"
     assert verification.json()["effectiveness_criteria"].startswith("Zero opens")
+
+    ineffective = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/effectiveness-reviews",
+        headers=quality_headers,
+        json={
+            "actual_result": "One intermittent open remained after observation.",
+            "result": "ineffective",
+            "evidence_refs": evidence,
+        },
+    )
+    assert ineffective.status_code == 201
+    assert ineffective.json()["review"]["review_number"] == 1
+    assert ineffective.json()["ncr"]["status"] == "action"
+
+    repeat_without_new_action = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={
+            "to_status": "verification",
+            "effectiveness_criteria": "Zero opens across 48 thermal-cycle samples.",
+            "observation_due_at": (datetime.now(UTC) + timedelta(days=1)).isoformat(),
+        },
+    )
+    assert repeat_without_new_action.status_code == 409
+    assert repeat_without_new_action.json()["detail"]["code"] == "CAPA_NEW_ACTION_REQUIRED"
+
+    follow_up = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions",
+        headers=engineer_headers,
+        json={
+            "action_type": "corrective",
+            "description": "Tighten crimp tolerance and add force traceability.",
+            "owner_user_id": str(engineer_id),
+            "due_date": (date.today() + timedelta(days=7)).isoformat(),
+        },
+    )
+    assert follow_up.status_code == 201
+    follow_up_id = follow_up.json()["id"]
+    assert client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{follow_up_id}/transitions",
+        headers=engineer_headers,
+        json={"to_status": "in_progress"},
+    ).status_code == 200
+    follow_up_done = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{follow_up_id}/transitions",
+        headers=engineer_headers,
+        json={
+            "to_status": "completed",
+            "completion_summary": "Tolerance tightened and force traces retained.",
+            "evidence_refs": evidence,
+        },
+    )
+    assert follow_up_done.status_code == 200
+    second_due = datetime.fromisoformat(follow_up_done.json()["completed_at"]) + timedelta(
+        microseconds=1
+    )
+    assert client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={
+            "to_status": "verification",
+            "effectiveness_criteria": "Zero opens across 48 thermal-cycle samples.",
+            "observation_due_at": second_due.isoformat(),
+        },
+    ).status_code == 200
+    effective = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/effectiveness-reviews",
+        headers=quality_headers,
+        json={
+            "actual_result": "All 48 samples passed thermal cycling.",
+            "result": "effective",
+            "evidence_refs": evidence,
+        },
+    )
+    assert effective.status_code == 201
+    assert effective.json()["review"]["review_number"] == 2
+    assert effective.json()["ncr"]["status"] == "verification"
+
+    closed_ncr = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+        headers=quality_headers,
+        json={"to_status": "closed"},
+    )
+    assert closed_ncr.status_code == 200
+    assert closed_ncr.json()["closed_by_user_id"] is not None
+
+    for next_status, summary in (
+        ("investigating", None),
+        ("resolved", "CAPA verified; customer lot disposition completed."),
+    ):
+        response = client.post(
+            f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/transitions",
+            headers=quality_headers,
+            json={"to_status": next_status, "resolution_summary": summary},
+        )
+        assert response.status_code == 200
+    owner_cannot_close = client.post(
+        f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/transitions",
+        headers=login(client, "owner"),
+        json={"to_status": "closed"},
+    )
+    assert owner_cannot_close.status_code == 403
+    closed_complaint = client.post(
+        f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/transitions",
+        headers=quality_headers,
+        json={"to_status": "closed"},
+    )
+    assert closed_complaint.status_code == 200
+    assert closed_complaint.json()["status"] == "closed"
+    assert closed_complaint.json()["closed_by_user_id"] is not None

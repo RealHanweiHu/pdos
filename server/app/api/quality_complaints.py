@@ -13,12 +13,15 @@ from sqlalchemy import Engine
 from app.api.auth import current_context, no_store
 from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
-from app.auth.roles import Action
+from app.auth.roles import Action, Role
 from app.db.engine import get_engine
 from app.domain.complaints import (
     ComplaintDraft,
+    ComplaintInvalidTransitionError,
+    ComplaintNcrGateError,
     ComplaintNotFoundError,
     ComplaintRecord,
+    ComplaintResolutionError,
     ComplaintScopeError,
     ComplaintService,
     ComplaintTimeError,
@@ -53,7 +56,7 @@ class ComplaintResponse(BaseModel):
     reported_at: datetime
     customer_reference: str | None
     affected_scope: str | None
-    document_refs: list[dict[str, object]]
+    document_refs: list[UUID]
     resolution_summary: str | None
     closed_at: datetime | None
     created_at: datetime
@@ -78,6 +81,7 @@ class ComplaintCreateRequest(BaseModel):
     occurred_at: datetime
     customer_reference: str | None = Field(default=None, max_length=128)
     affected_scope: str | None = Field(default=None, max_length=20_000)
+    document_refs: list[UUID] = Field(default_factory=list, max_length=100)
 
     @field_validator("title", "description", mode="before")
     @classmethod
@@ -163,11 +167,32 @@ class NcrCreateRequest(BaseModel):
         return value
 
 
+class NcrListResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[NcrResponse]
+
+
 class ComplaintTriageResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     complaint: ComplaintResponse
     ncr: NcrResponse
+
+
+class ComplaintTransitionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    to_status: str = Field(pattern=r"^(investigating|resolved|closed)$")
+    resolution_summary: str | None = Field(default=None, max_length=20_000)
+
+    @field_validator("resolution_summary", mode="before")
+    @classmethod
+    def normalize_resolution(cls, value: object) -> object:
+        if isinstance(value, str):
+            normalized = value.strip()
+            return normalized or None
+        return value
 
 
 def complaint_response(record: ComplaintRecord) -> ComplaintResponse:
@@ -198,6 +223,30 @@ def complaint_error(error: Exception) -> HTTPException:
             detail={
                 "code": "COMPLAINT_TIME_INVALID",
                 "message": "Occurrence time cannot be after report time",
+            },
+        )
+    if isinstance(error, ComplaintInvalidTransitionError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "QUALITY_INVALID_TRANSITION",
+                "message": "Quality record transition is not allowed",
+            },
+        )
+    if isinstance(error, ComplaintNcrGateError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "COMPLAINT_NCR_GATE_NOT_READY",
+                "message": "All NCRs must be closed before resolution",
+            },
+        )
+    if isinstance(error, ComplaintResolutionError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "COMPLAINT_RESOLUTION_INVALID",
+                "message": "Complaint resolution is invalid",
             },
         )
     if isinstance(error, NcrNotFoundError):
@@ -275,6 +324,7 @@ def create_complaint(
                 occurred_at=body.occurred_at,
                 customer_reference=body.customer_reference,
                 affected_scope=body.affected_scope,
+                document_refs=body.document_refs,
             ),
         )
     except Exception as error:
@@ -351,3 +401,72 @@ def triage_complaint(
         complaint=complaint_response(result.complaint),
         ncr=ncr_response(result.ncr),
     )
+
+
+@router.post("/complaints/{complaint_id}/transitions", response_model=ComplaintResponse)
+def transition_complaint(
+    project_id: UUID,
+    complaint_id: UUID,
+    body: ComplaintTransitionRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ComplaintResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.CAPA_MANAGE,
+    )
+    if body.to_status == "closed" and context.user.role != Role.QUALITY:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "code": "CAPA_QUALITY_ROLE_REQUIRED",
+                "message": "This action requires the Quality role",
+            },
+        )
+    try:
+        return complaint_response(
+            ComplaintService(engine).transition(
+                tenant_id=context.tenant.id,
+                actor_user_id=context.user.id,
+                project_id=project_id,
+                complaint_id=complaint_id,
+                to_status=body.to_status,
+                resolution_summary=body.resolution_summary,
+            )
+        )
+    except Exception as error:
+        raise complaint_error(error) from error
+
+
+@router.get("/complaints/{complaint_id}/ncrs", response_model=NcrListResponse)
+def list_complaint_ncrs(
+    project_id: UUID,
+    complaint_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> NcrListResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.QUALITY_VIEW,
+    )
+    try:
+        return NcrListResponse(
+            items=[
+                ncr_response(record)
+                for record in NonconformanceService(engine).list_for_complaint(
+                    tenant_id=context.tenant.id,
+                    project_id=project_id,
+                    complaint_id=complaint_id,
+                )
+            ]
+        )
+    except Exception as error:
+        raise complaint_error(error) from error
