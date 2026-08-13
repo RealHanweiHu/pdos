@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Annotated
 from uuid import UUID
 
@@ -22,6 +22,13 @@ from app.domain.complaints import (
     ComplaintScopeError,
     ComplaintService,
     ComplaintTimeError,
+)
+from app.domain.nonconformance import (
+    NcrDraft,
+    NcrInvalidTransitionError,
+    NcrNotFoundError,
+    NcrRecord,
+    NonconformanceService,
 )
 
 router = APIRouter(prefix="/api/projects/{project_id}/quality", tags=["quality"])
@@ -94,8 +101,78 @@ class ComplaintCreateRequest(BaseModel):
         return value
 
 
+class NcrResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    id: UUID
+    project_id: UUID
+    complaint_id: UUID
+    owner_user_id: UUID
+    created_by_user_id: UUID
+    preventive_disposition_approved_by_user_id: UUID | None
+    closed_by_user_id: UUID | None
+    code: str
+    nonconformity: str
+    requirement_reference: str
+    severity: str
+    status: str
+    target_date: date
+    containment_action: str | None
+    containment_completed_at: datetime | None
+    affected_quantity: int | None
+    affected_scope: str | None
+    preventive_not_applicable_reason: str | None
+    preventive_disposition_approved_at: datetime | None
+    closed_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class NcrCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    owner_user_id: UUID
+    nonconformity: str = Field(min_length=1, max_length=20_000)
+    requirement_reference: str = Field(min_length=1, max_length=20_000)
+    severity: str = Field(pattern=r"^(critical|high|medium|low)$")
+    target_date: date
+    affected_quantity: int | None = Field(default=None, ge=0)
+    affected_scope: str | None = Field(default=None, max_length=20_000)
+
+    @field_validator("nonconformity", "requirement_reference", mode="before")
+    @classmethod
+    def normalize_ncr_required_text(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+    @field_validator("affected_scope", mode="before")
+    @classmethod
+    def normalize_ncr_optional_text(cls, value: object) -> object:
+        if isinstance(value, str):
+            normalized = value.strip()
+            return normalized or None
+        return value
+
+    @field_validator("target_date")
+    @classmethod
+    def target_date_not_past(cls, value: date) -> date:
+        if value < date.today():
+            raise ValueError("target_date cannot be in the past")
+        return value
+
+
+class ComplaintTriageResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    complaint: ComplaintResponse
+    ncr: NcrResponse
+
+
 def complaint_response(record: ComplaintRecord) -> ComplaintResponse:
     return ComplaintResponse.model_validate(record, from_attributes=True)
+
+
+def ncr_response(record: NcrRecord) -> NcrResponse:
+    return NcrResponse.model_validate(record, from_attributes=True)
 
 
 def complaint_error(error: Exception) -> HTTPException:
@@ -118,6 +195,19 @@ def complaint_error(error: Exception) -> HTTPException:
             detail={
                 "code": "COMPLAINT_TIME_INVALID",
                 "message": "Occurrence time cannot be after report time",
+            },
+        )
+    if isinstance(error, NcrNotFoundError):
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "NCR_NOT_FOUND", "message": "NCR was not found"},
+        )
+    if isinstance(error, NcrInvalidTransitionError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "QUALITY_INVALID_TRANSITION",
+                "message": "Quality record transition is not allowed",
             },
         )
     raise error
@@ -214,3 +304,47 @@ def get_complaint(
         )
     except Exception as error:
         raise complaint_error(error) from error
+
+
+@router.post(
+    "/complaints/{complaint_id}/triage",
+    response_model=ComplaintTriageResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def triage_complaint(
+    project_id: UUID,
+    complaint_id: UUID,
+    body: NcrCreateRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ComplaintTriageResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.CAPA_MANAGE,
+    )
+    try:
+        result = NonconformanceService(engine).triage(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            project_id=project_id,
+            complaint_id=complaint_id,
+            draft=NcrDraft(
+                owner_user_id=body.owner_user_id,
+                nonconformity=body.nonconformity,
+                requirement_reference=body.requirement_reference,
+                severity=body.severity,
+                target_date=body.target_date,
+                affected_quantity=body.affected_quantity,
+                affected_scope=body.affected_scope,
+            ),
+        )
+    except Exception as error:
+        raise complaint_error(error) from error
+    return ComplaintTriageResponse(
+        complaint=complaint_response(result.complaint),
+        ncr=ncr_response(result.ncr),
+    )

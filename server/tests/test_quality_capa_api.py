@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -168,6 +168,70 @@ def seed_project_and_engineer(
     return project_id, engineer_id
 
 
+def seed_project_user(
+    database_url: str,
+    tenant_id: UUID,
+    project_id: UUID,
+    added_by_user_id: UUID,
+    *,
+    username: str,
+    role: Role,
+) -> UUID:
+    user_id = uuid4()
+    engine = create_engine(psycopg_database_url(database_url))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.users.insert(),
+                {
+                    "id": user_id,
+                    "tenant_id": tenant_id,
+                    "username": username,
+                    "display_name": username.title(),
+                    "role": role.value,
+                    "password_hash": PasswordService().hash(PASSWORD),
+                },
+            )
+            connection.execute(
+                tables.project_members.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "user_id": user_id,
+                    "added_by_user_id": added_by_user_id,
+                },
+            )
+    finally:
+        engine.dispose()
+    return user_id
+
+
+def create_complaint(
+    client: TestClient,
+    project_id: UUID,
+    owner_user_id: UUID,
+    *,
+    username: str = "engineer",
+) -> dict[str, object]:
+    response = client.post(
+        f"/api/projects/{project_id}/quality/complaints",
+        headers=login(client, username),
+        json={
+            "title": "Field connector intermittent",
+            "description": "Connector opens after thermal cycling.",
+            "source": "field",
+            "severity": "high",
+            "occurred_at": (datetime.now(UTC) - timedelta(hours=2)).isoformat(),
+            "owner_user_id": str(owner_user_id),
+            "customer_reference": "FIELD-2026-08",
+            "affected_scope": "Lot C4s",
+        },
+    )
+    assert response.status_code == 201
+    return response.json()
+
+
 def test_engineer_creates_and_lists_complaint_with_same_transaction_event_audit(
     client: TestClient,
     isolated_quality_database: str,
@@ -180,23 +244,7 @@ def test_engineer_creates_and_lists_complaint_with_same_transaction_event_audit(
         owner_id,
     )
 
-    response = client.post(
-        f"/api/projects/{project_id}/quality/complaints",
-        headers=login(client, "engineer"),
-        json={
-            "title": "Field connector intermittent",
-            "description": "Connector opens after thermal cycling.",
-            "source": "field",
-            "severity": "high",
-            "occurred_at": (datetime.now(UTC) - timedelta(hours=2)).isoformat(),
-            "owner_user_id": str(engineer_id),
-            "customer_reference": "FIELD-2026-08",
-            "affected_scope": "Lot C4s",
-        },
-    )
-
-    assert response.status_code == 201
-    complaint = response.json()
+    complaint = create_complaint(client, project_id, engineer_id)
     assert complaint["code"].startswith("CMP-")
     assert complaint["status"] == "open"
     assert complaint["reported_by_user_id"] == str(engineer_id)
@@ -231,3 +279,66 @@ def test_engineer_creates_and_lists_complaint_with_same_transaction_event_audit(
     assert event["payload"] == {"complaint_id": complaint["id"], "severity": "high"}
     assert audit["event_id"] == event["event_id"]
     assert audit["action"] == "quality.complaint.create"
+
+
+def test_quality_triage_atomically_creates_ncr_and_advances_complaint(
+    client: TestClient,
+    isolated_quality_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id, owner_id = UUID(setup["tenant"]["id"]), UUID(setup["user"]["id"])
+    project_id, engineer_id = seed_project_and_engineer(
+        isolated_quality_database,
+        tenant_id,
+        owner_id,
+    )
+    quality_id = seed_project_user(
+        isolated_quality_database,
+        tenant_id,
+        project_id,
+        owner_id,
+        username="quality",
+        role=Role.QUALITY,
+    )
+    complaint = create_complaint(client, project_id, engineer_id)
+
+    triaged = client.post(
+        f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/triage",
+        headers=login(client, "quality"),
+        json={
+            "nonconformity": "Connector contact resistance exceeds limit.",
+            "requirement_reference": "SPEC-ELEC-04 section 8.2",
+            "severity": "high",
+            "owner_user_id": str(quality_id),
+            "target_date": (date.today() + timedelta(days=10)).isoformat(),
+            "affected_quantity": 24,
+            "affected_scope": "Lot C4s",
+        },
+    )
+
+    assert triaged.status_code == 201
+    payload = triaged.json()
+    assert payload["complaint"]["status"] == "triaged"
+    assert payload["ncr"]["complaint_id"] == complaint["id"]
+    assert payload["ncr"]["status"] == "open"
+    assert payload["ncr"]["code"].startswith("NCR-")
+
+    engine = create_engine(psycopg_database_url(isolated_quality_database))
+    try:
+        with engine.connect() as connection:
+            complaint_events = connection.execute(
+                select(tables.events.c.event_type).where(
+                    tables.events.c.tenant_id == tenant_id,
+                    tables.events.c.entity_id == UUID(str(complaint["id"])),
+                )
+            ).scalars().all()
+            ncr_events = connection.execute(
+                select(tables.events.c.event_type).where(
+                    tables.events.c.tenant_id == tenant_id,
+                    tables.events.c.entity_id == UUID(payload["ncr"]["id"]),
+                )
+            ).scalars().all()
+    finally:
+        engine.dispose()
+    assert complaint_events == ["COMPLAINT_CREATED", "COMPLAINT_STATUS_CHANGED"]
+    assert ncr_events == ["NCR_CREATED"]

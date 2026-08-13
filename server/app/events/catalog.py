@@ -253,6 +253,22 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(complaint_id="string", severity="string"),
     ),
     EventDefinition(
+        event_type="COMPLAINT_STATUS_CHANGED",
+        version=1,
+        entity="complaint",
+        producer="quality_service",
+        consumers=("quality_projection", "agent_dispatcher"),
+        payload_schema=_payload_schema(from_status="string", to_status="string"),
+    ),
+    EventDefinition(
+        event_type="NCR_CREATED",
+        version=1,
+        entity="nonconformance_report",
+        producer="quality_service",
+        consumers=("quality_projection", "agent_dispatcher"),
+        payload_schema=_payload_schema(complaint_id="string", severity="string"),
+    ),
+    EventDefinition(
         event_type="AI_FINDING_CREATED",
         version=1,
         entity="ai_finding",
