@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 4 Exit Gate（等待人工确认）。** S4-1～S4-4 已于 2026-08-12 完成全部本地验收；未获人工确认前不进入 Sprint 5。
+> 唯一当前指针：**S5-1 钉钉连接器。** Sprint 4 Exit Gate 已于 2026-08-12 经人明确确认通过；Sprint 5 按 canonical 顺序推进。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1204,7 +1204,29 @@
 - [x] Complaint→NCR→RCA→CAPA→Effectiveness→closed→Memory draft→verified→`/ai/chat` citation 的纵向验收已在 S4-2 闭环
 - [x] 迁移、受限数据库角色、租户/项目/状态过滤、Finding 双人工动作与完整质量门禁均通过
 - [x] Exit 报告已形成：`docs/reports/2026-08-12-sprint-4-exit-draft.md`
-- [ ] 人工确认 Sprint 4 Exit Gate；确认前不得进入 S5-1
+- [x] 人工确认 Sprint 4 Exit Gate；确认前不得进入 S5-1
+
+人工于 2026-08-12 明确回复“确认 Sprint 4 Exit Gate，进入 Sprint 5”。该确认只批准移动执行指针，不构成生产部署、创建/修改钉钉应用、回调地址、群机器人、审批模板或其他外部系统变更授权。
+
+## In Progress: S5-1 钉钉连接器
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S5-1、API Design / Development Roadmap、RBAC/租户边界及 Sprint 5 Exit 验收
+- [x] 依赖项：本地认证/JWT、Event/Audit、Project/Task/Finding/Gate/Decision 与部署边界均已就绪
+- [ ] 范围冻结：免登、回调 AES、审批、群通知、交互卡片；复用协议经验但使用独立应用标识与回调命名空间
+- [ ] 安全边界：外部 identity/corp/user/code/回调 payload 均不可信；租户与本地用户映射由服务端数据库真值绑定，重放/伪造/跨租户 fail-close
+- [ ] 迁移号、API、事件、outbox/重放、幂等、降级、配置与生产回滚合同冻结
+
+**Implementation slices**
+
+- [ ] S5-1a：审计规格与老 CEHub 协议实现，冻结 v1 数据/API/安全/可靠性契约
+- [ ] S5-1b：实现独立钉钉应用配置、免登 code exchange 与本地 session 建立
+- [ ] S5-1c：实现签名/时间窗/nonce/AES 回调验证、幂等事件接收与 URL challenge
+- [ ] S5-1d：实现审批发起/结果回调、群通知与交互卡片模板机制
+- [ ] S5-1e：实现 outbox、退避重试、重放/对账、显式人工降级与运维可观测性
+- [ ] S5-1f：完成迁移/安全/完整门禁、fake server + 真实浏览器/API 运行验收
+- [ ] S5-1g：更新 canonical checkbox 与当前指针到 S5-2
 
 **Error ledger**
 
