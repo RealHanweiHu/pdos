@@ -1240,8 +1240,9 @@
 - 生产 compose 增加独立 `dingtalk` worker，部署/回滚顺序与运行手册同步；生产安全重施脚本显式断言 `pdos_agent` 对 `integration_outbox` 无 INSERT、对钉钉身份表无 SELECT。数据库安全、迁移、部署合同和连接器聚焦验收 38 项全绿。
 - 真实 Chromium 仅连接 `pdos_test` 与 fake provider：Owner password-free login 成功；集成页显示应用/绑定/manual/outbox 状态；390×844 无横向溢出；Supplier 无导航、直接访问明确拒绝且网络只有 `/api/session/me`，零钉钉集成 API 请求；本地 PDOS 页面 console 0 warning/0 error。临时浏览器与 API/Web 进程已关闭。
 - 真实应用门禁前协议复核已补齐：生产 Web 新增无会话、严格 allowlist 的 AES/card 公网 BFF；OAuth redirect 固定 `/dingtalk/callback` 并与 `PDOS_PUBLIC_BASE_URL` fail-close；卡片按官方 `actionCallback + userId + content.cardPrivateData.params.action` 解析并显式 `callbackType=HTTP/userIdType=1`；应用 token 进程内缓存且提前 5 分钟刷新。
-- `0027_dingtalk_hardening` 以单调递增迁移追加 `agent_id` 约束，保持已提交的 0026 不可变；新增只读 `python -m scripts.check_dingtalk_readiness --tenant-slug <slug>`，不调用钉钉、不写数据库、不输出 secret，一次检查 0026+0027 schema 合同、HTTPS origin、env/binding、回调密码学、2 个用户绑定、项目群与 outbox 基线。扩展后端聚焦 52 项、完整后端 353 项、前端 121 项及 lint/type/webpack production build 全绿；公网构建产物包含 AES/card 两条 callback route。
-- 完整门禁全绿：Server 343 tests，Ruff/format/mypy 117 source files/Python compile；Web 34 files / 116 tests、ESLint/TypeScript 与 webpack production build。
+- `0027_dingtalk_hardening` 以单调递增迁移追加 `agent_id` 约束，保持已提交的 0026 不可变；新增只读 `python -m scripts.check_dingtalk_readiness --tenant-slug <slug>`，不调用钉钉、不写数据库、不输出 secret，一次检查 0026+0027 schema 合同、HTTPS origin、env/binding、回调密码学、2 个用户绑定、项目群与 outbox 基线。扩展后端聚焦 52 项、完整后端 354 项、前端 121 项及 lint/type/production build 全绿；mypy 200 source files 无错误，公网构建产物包含 AES/card 两条 callback route。
+- S5-1 发布级 compose smoke 已在隔离 `pdos_test` 实证：`0027`、Agent 权限重施、API/dispatcher/executor/DingTalk/Web health、非 root UID 和无会话 callback BFF→FastAPI fail-close 全绿；候选容器自动清理。ECS 部署后同一公网 callback edge 探针已成为硬门禁。发布就绪与回滚清单见 `docs/reports/2026-08-13-s5-1-release-readiness.md`；当前仍因真实应用和本次生产授权缺失保持 NO-GO。
+- 最新发布门禁全绿：Server 354 tests，Ruff/format/mypy 200 source files/Python compile；Web 35 files / 121 tests、ESLint/TypeScript 与 production build。
 
 **真实应用 Exit Gate（必须由人创建/配置并单独授权）**
 
@@ -1261,3 +1262,5 @@
 | 默认 Turbopack production build 在沙箱尝试绑定端口被拒 | 1 | 以仓库支持的 webpack production build 复验，全部路由成功生成；源码、部署配置与安全边界无需放宽 |
 | React Strict Mode 首次挂载清理中断唯一 OAuth callback fetch | 1 | 保留 `useRef` 一次提交保护并移除 effect cleanup abort；Strict Mode 单请求测试与真实 password-free login 均通过 |
 | 完整套件共享 `pdos_test` 遗留钉钉数据触发 0026 有损 downgrade guard | 1 | 旧迁移测试先升级到 head 并清空隔离租户后再降级；保留生产有数据 fail-close，完整 343 tests 全绿 |
+| Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
+| 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |

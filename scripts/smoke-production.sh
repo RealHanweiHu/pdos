@@ -93,6 +93,25 @@ if [[ "$session_status" != '{"needs_setup":true}' && "$session_status" != '{"nee
   exit 1
 fi
 
+callback_probe="$(
+  curl --silent --show-error \
+    --request POST \
+    --connect-timeout 2 \
+    --max-time 5 \
+    --header 'Content-Type: application/json' \
+    --data '{"encrypt":"AA=="}' \
+    --write-out $'\n%{http_code}' \
+    "http://127.0.0.1:${smoke_port}/api/integrations/dingtalk/callback/pdos-production-smoke-unknown-route?signature=0000000000000000000000000000000000000000&timestamp=$(date +%s)&nonce=production-smoke"
+)"
+callback_status="${callback_probe##*$'\n'}"
+callback_body="${callback_probe%$'\n'*}"
+if [[ "$callback_status" != "404" || \
+      "$callback_body" != *'DINGTALK_CALLBACK_ROUTE_UNKNOWN'* ]]; then
+  printf 'Unexpected public DingTalk callback probe response: status=%s body=%s\n' \
+    "$callback_status" "$callback_body" >&2
+  exit 1
+fi
+
 if [[ "$("${compose[@]}" exec -T api id -u)" != "10001" ]]; then
   printf '%s\n' 'Production API image is not running as the pdos user' >&2
   exit 1
@@ -108,9 +127,14 @@ if [[ "$("${compose[@]}" exec -T executor id -u)" != "10001" ]]; then
   exit 1
 fi
 
+if [[ "$("${compose[@]}" exec -T dingtalk id -u)" != "10001" ]]; then
+  printf '%s\n' 'Production DingTalk image is not running as the pdos user' >&2
+  exit 1
+fi
+
 if [[ "$("${compose[@]}" exec -T web id -u)" != "1001" ]]; then
   printf '%s\n' 'Production web image is not running as the nextjs user' >&2
   exit 1
 fi
 
-printf '%s\n' 'Production container smoke passed: migrate, API, dispatcher, executor, web, BFF, and non-root users verified'
+printf '%s\n' 'Production container smoke passed: migrate, API, dispatcher, executor, DingTalk, web, public callback BFF, and non-root users verified'

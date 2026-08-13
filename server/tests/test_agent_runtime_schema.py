@@ -20,7 +20,7 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.sql.schema import Constraint
+from sqlalchemy.sql.schema import Constraint, DefaultClause
 
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
@@ -129,7 +129,9 @@ def test_agent_runtime_metadata_freezes_control_and_execution_records() -> None:
     assert "fk_model_invocations_tenant_run" in constraint_names(
         tables.model_invocations, ForeignKeyConstraint
     )
-    assert str(tables.agent_runs.c.context_version.server_default.arg) == "'run-context-v2'"
+    context_version_default = tables.agent_runs.c.context_version.server_default
+    assert isinstance(context_version_default, DefaultClause)
+    assert str(context_version_default.arg) == "'run-context-v2'"
 
 
 @pytest.fixture

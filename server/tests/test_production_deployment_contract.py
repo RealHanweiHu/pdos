@@ -200,6 +200,9 @@ def test_production_smoke_is_isolated_and_available_from_the_root_makefile() -> 
     assert "pdos-s0-production-smoke" in smoke_script
     assert "configured_test_database_url" in smoke_script
     assert "/api/session/status" in smoke_script
+    assert "DINGTALK_CALLBACK_ROUTE_UNKNOWN" in smoke_script
+    assert "exec -T dingtalk id -u" in smoke_script
+    assert "--max-time 5" in smoke_script
     assert "compose.production.yaml" in smoke_script
     assert "compose.production-smoke.yaml" in smoke_script
     assert 'PDOS_AGENT_DATABASE_URL="$agent_database_url"' in smoke_script
@@ -211,6 +214,15 @@ def test_production_smoke_is_isolated_and_available_from_the_root_makefile() -> 
     assert "strict-transport-security" in smoke_script.lower()
     assert "x-content-type-options" in smoke_script.lower()
     assert "make smoke-production" in workflow
+
+
+def test_ecs_release_verification_probes_the_public_dingtalk_callback_edge() -> None:
+    source = (REPOSITORY_ROOT / "scripts" / "deploy-ecs.sh").read_text()
+
+    assert "verify_public_dingtalk_callback_edge" in source
+    assert "DINGTALK_CALLBACK_ROUTE_UNKNOWN" in source
+    assert "https://pdos.beepump.net/api/integrations/dingtalk/callback/" in source
+    assert "--max-time 15" in source
 
 
 def test_agent_database_security_runbook_keeps_production_actions_human_owned() -> None:

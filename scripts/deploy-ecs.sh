@@ -166,11 +166,36 @@ build_release() {
   echo "Release images built and validated for tag ${image_tag}"
 }
 
+verify_public_dingtalk_callback_edge() {
+  local callback_probe
+  local callback_status
+  local callback_body
+  local route_key="pdos-release-probe-${image_tag:0:24}"
+  callback_probe="$(
+    curl --silent --show-error \
+      --request POST \
+      --connect-timeout 5 \
+      --max-time 15 \
+      --header 'Content-Type: application/json' \
+      --data '{"encrypt":"AA=="}' \
+      --write-out $'\n%{http_code}' \
+      "https://pdos.beepump.net/api/integrations/dingtalk/callback/${route_key}?signature=0000000000000000000000000000000000000000&timestamp=$(date +%s)&nonce=release-probe"
+  )"
+  callback_status="${callback_probe##*$'\n'}"
+  callback_body="${callback_probe%$'\n'*}"
+  if [[ "$callback_status" != "404" || \
+        "$callback_body" != *'DINGTALK_CALLBACK_ROUTE_UNKNOWN'* ]]; then
+    echo "Release verification failed at the public DingTalk callback edge" >&2
+    return 1
+  fi
+}
+
 verify_release() {
   compose_config ps
   curl --fail --silent --show-error \
     "http://127.0.0.1:${app_port}/api/session/status" >/dev/null
   curl --fail --silent --show-error "https://pdos.beepump.net/login" >/dev/null
+  verify_public_dingtalk_callback_edge
 
   local log_file
   log_file="$(mktemp)"
@@ -187,7 +212,7 @@ verify_release() {
     return 1
   fi
   rm -f "$log_file"
-  echo "Release health and bounded-log verification passed"
+  echo "Release health, public callback edge, and bounded-log verification passed"
 }
 
 deploy_release() {

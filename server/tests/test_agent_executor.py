@@ -4,6 +4,7 @@ import os
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import cast
 from uuid import UUID, uuid4
 
 import pytest
@@ -282,16 +283,13 @@ def test_quality_executor_appends_only_allowlisted_project_evidence(
         assert result.run_id == sealed.queued_run_ids[0]
         invocation = invoker.invocations[0]
         assert invocation.agent_key == AgentKey.QUALITY_INTELLIGENCE
-        assert invocation.context["trigger"]["event_type"] == "COMPLAINT_CREATED"  # type: ignore[index]
-        references = invocation.context["references"]  # type: ignore[assignment]
+        trigger = cast(dict[str, object], invocation.context["trigger"])
+        references = cast(list[dict[str, object]], invocation.context["references"])
+        assert trigger["event_type"] == "COMPLAINT_CREATED"
         assert any(
-            reference["reference_id"] == f"complaint:{complaint_id}"
-            for reference in references  # type: ignore[union-attr]
+            reference["reference_id"] == f"complaint:{complaint_id}" for reference in references
         )
-        assert any(
-            reference["reference_id"] == f"event:{event_id}"
-            for reference in references  # type: ignore[union-attr]
-        )
+        assert any(reference["reference_id"] == f"event:{event_id}" for reference in references)
         assert "PRIVATE-CUSTOMER-REF" not in str(references)
         assert "private/quality/source.pdf" not in str(references)
         assert "get_quality_evidence" in invocation.system_prompt

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, cast
@@ -239,7 +239,7 @@ def seed_two_tenants(
     }
 
 
-def denied(connection: Connection, statement: str, parameters: dict[str, object]) -> None:
+def denied(connection: Connection, statement: str, parameters: Mapping[str, object]) -> None:
     with pytest.raises(DBAPIError), connection.begin_nested():
         connection.execute(text(statement), parameters)
 
