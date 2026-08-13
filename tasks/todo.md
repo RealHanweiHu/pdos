@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S4-3 Phase 2 双 Agent。** S4-2 Memory + 向量检索已于 2026-08-12 完成全部验收；Sprint 4 继续按 canonical 顺序推进。
+> 唯一当前指针：**S4-4 Context Builder 补层。** S4-3 Phase 2 双 Agent 已于 2026-08-12 完成全部验收；Sprint 4 继续按 canonical 顺序推进。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1129,7 +1129,7 @@
 | 本地 embedding stub 被继承的系统代理截获并超时 | 1 | client 固定 `trust_env=False` 且禁用重定向；真实浏览器检索随后完整通过 |
 | 全量门禁首先发现初始 schema / Engineer action 快照未包含新增对象 | 1 | 仅追加 Memory 两表及 `memory.draft`/`memory.view` 精确期望，相关聚焦回归与完整门禁均转绿 |
 
-## In Progress: S4-3 Phase 2 双 Agent
+## Completed: S4-3 Phase 2 双 Agent
 
 **Definition of Ready**
 
@@ -1142,13 +1142,26 @@
 **Implementation slices**
 
 - [x] S4-3a：冻结 Agent/event/Finding/payload/apply/projection/golden-case 契约
-- [ ] S4-3b：migration 0024 扩展 Agent/Finding 数据库合同及往返/漂移验收
-- [ ] S4-3c：增加 Engineering/Quality prompt、静态路由、确定性预检与 golden suite
-- [ ] S4-3d：增加 lease-bound 工程/质量只读投影、工具与模型 reference 白名单
-- [ ] S4-3e：接通 dispatcher→executor→Finding→Review→Risk Apply 全链路及受限账号测试
-- [ ] S4-3f：更新 AI Review 标签并完成真实 HTTP/worker/浏览器验收
-- [ ] S4-3g：完成全量 DoD、更新 canonical checkbox 和当前指针到 S4-4
+- [x] S4-3b：migration 0024 扩展 Agent/Finding 数据库合同及往返/漂移验收
+- [x] S4-3c：增加 Engineering/Quality prompt、静态路由、确定性预检与 golden suite
+- [x] S4-3d：增加 lease-bound 工程/质量只读投影、工具与模型 reference 白名单
+- [x] S4-3e：接通 dispatcher→executor→Finding→Review→Risk Apply 全链路及受限账号测试
+- [x] S4-3f：更新 AI Review 标签并完成真实 HTTP/worker/浏览器验收
+- [x] S4-3g：完成全量 DoD、更新 canonical checkbox 和当前指针到 S4-4
 
 **Current evidence（2026-08-12）**
 
 - 推荐 v1 采用四种 risk-shaped Finding；工程/质量事实不由 Agent 直接修改，Accept/Edit/Reject 与 Apply 继续复用已验证的双人工动作。
+- migration `0024_phase_two_agents` 扩展四个 Agent/Finding allowlist、受限创建函数及两张 `security_barrier` 证据投影视图；空 `pdos_test` 完成 `0024→0023→0024` 往返，最终唯一 head 为 `0024_phase_two_agents`，migration/schema 7 项全绿。
+- Engineering Intelligence 精确订阅 `DEVELOPMENT_BOM_CREATED`、`DEVELOPMENT_BOM_ITEM_ADDED`、`CHANGE_RECORD_CHANGED`；Quality Intelligence 精确订阅 `TEST_FAILED`、`COMPLAINT_CREATED`。两份版本化静态 prompt、五条 golden cases（含 `no_action`）与跨 Agent/跨 run evidence fail-close 均通过，路由/golden 组合 34 项全绿。
+- Phase 1 的冻结工具前缀保持不变；仅 Phase 2 分别追加 `get_engineering_evidence` / `get_quality_evidence`。模型只收到 `reference_id/entity/entity_id/label/excerpt`，Customer reference、document key 与 BOM attribute 不进入上下文；owner 工具 17 项、真实受限 `pdos_agent` 正反向 6 项全绿。
+- 四种新 Finding 均保持 `pending_review→accepted/rejected→applied`；Accept 后业务 Risk 数为 0，第二次独立 Apply 才创建 Risk，并写入 `RISK_CREATED`、`risk.create_from_finding` 与 Finding action。四类型 Apply/重放 9 项全绿，受限 Agent 对 BOM/ECR/Complaint/NCR/Root Cause/CAPA/Effectiveness Review 继续零写权限。
+- AI Review 增加 Engineering/Quality Agent 与 BOM/Change/Quality Cluster/CAPA 标签和筛选；web 聚焦 4 项、全量 111 项，ESLint/TypeScript/Next.js production build 全绿；server Ruff/format/mypy/compile 与全量 318 项全绿。
+- 真实本地 HTTP/浏览器仅连接 `pdos_test`：Owner 登录后看到 Engineering/Quality 各 1 条；CAPA/BOM 筛选精确隔离。CAPA Accept 后数据库为 `accepted + risk_count=0`；独立 Apply 后为 `applied + risk/event/audit=1/1/1`，深链可打开 Exposure 15 Risk。390px 暗色模式 `scrollWidth == clientWidth == 390`、全部可见按钮至少 44px，Chromium console 0 warning/0 error；临时服务、浏览器会话和验收数据均已清理。
+
+**Error ledger**
+
+| 现象 | 次数 | 处理 |
+|---|---:|---|
+| 全量 format gate 发现 Phase 1 golden 断言存在一处仅格式差异 | 1 | 运行项目 formatter，随后 207 个 Python 文件 format check 与 Ruff/mypy/compile 全绿 |
+| 初次以 `127.0.0.1` 打开 Next dev 被开发资源 origin 保护拦截 | 1 | 改用同一临时服务的 `localhost` 入口；真实交互链路与浏览器 console 随后全绿，未放宽生产或仓库安全配置 |

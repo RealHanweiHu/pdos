@@ -137,7 +137,7 @@ ai-native-R&D-platform/
 |---|---|---|
 | [x] S4-1 | CAPA 正式链 | Complaint→NCR→根因→纠正预防→有效性验证（cehub_quality；字段与公司质量流程 owner 共同定义，不闭门造）；COMPLAINT_CREATED 事件接通 |
 | [x] S4-2 | Memory + 向量检索 | draft→verified→archived 状态机（未验证不进检索与 AI 上下文——移植 cehub-v3-2 已验证语义）；pgvector embedding 管线上线（embedding 走 API，模型可换）；Knowledge Search 独立入口 |
-| [ ] S4-3 | Phase 2 双 Agent | Engineering Intelligence（BOM/变更影响分析建议）、Quality Intelligence（TEST_FAILED/COMPLAINT 聚类与 CAPA 建议） |
+| [x] S4-3 | Phase 2 双 Agent | Engineering Intelligence（BOM/变更影响分析建议）、Quality Intelligence（TEST_FAILED/COMPLAINT 聚类与 CAPA 建议） |
 | [ ] S4-4 | Context Builder 补层 | Multimodal Context（文档抽取产物）+ User Context（角色视角）接入 |
 
 **验收**：一条客诉走完 CAPA 闭环并沉淀 verified memory，被 /ai/chat 引用命中；向量检索与租户/项目/状态过滤叠加正确。
