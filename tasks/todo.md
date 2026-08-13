@@ -1242,7 +1242,8 @@
 - 真实应用门禁前协议复核已补齐：生产 Web 新增无会话、严格 allowlist 的 AES/card 公网 BFF；OAuth redirect 固定 `/dingtalk/callback` 并与 `PDOS_PUBLIC_BASE_URL` fail-close；卡片按官方 `actionCallback + userId + content.cardPrivateData.params.action` 解析并显式 `callbackType=HTTP/userIdType=1`；应用 token 进程内缓存且提前 5 分钟刷新。
 - `0027_dingtalk_hardening` 以单调递增迁移追加 `agent_id` 约束，保持已提交的 0026 不可变；新增只读 `python -m scripts.check_dingtalk_readiness --tenant-slug <slug>`，不调用钉钉、不写数据库、不输出 secret，一次检查 0026+0027 schema 合同、HTTPS origin、env/binding、回调密码学、2 个用户绑定、项目群与 outbox 基线。扩展后端聚焦 52 项、完整后端 354 项、前端 121 项及 lint/type/production build 全绿；mypy 200 source files 无错误，公网构建产物包含 AES/card 两条 callback route。
 - S5-1 发布级 compose smoke 已在隔离 `pdos_test` 实证：`0027`、Agent 权限重施、API/dispatcher/executor/DingTalk/Web health、非 root UID 和无会话 callback BFF→FastAPI fail-close 全绿；候选容器自动清理。ECS 部署后同一公网 callback edge 探针已成为硬门禁。发布就绪与回滚清单见 `docs/reports/2026-08-13-s5-1-release-readiness.md`；当前仍因真实应用和本次生产授权缺失保持 NO-GO。
-- 最新发布门禁全绿：Server 354 tests，Ruff/format/mypy 200 source files/Python compile；Web 35 files / 121 tests、ESLint/TypeScript 与 production build。
+- 新增两阶段只读 Exit Evidence：真实 smoke 前冻结完整 release SHA、tenant/project 与所有 Gate 真值哈希，之后在 PostgreSQL `READ ONLY` transaction 中验证免登、三类 delivery、审批 callback + mirror 且 Gate 不变、card 单次处理与 outbox 清零。baseline 自带摘要且不输出 secret/外部 identity/reference；负向 OAuth/回调、浏览器/RBAC 与 Data Owner 抽查继续保留人工门禁。聚焦正向完整链、读零写、SHA/Gate 漂移和基线篡改 2 项全绿。
+- 最新发布门禁全绿：Server 357 tests，Ruff/format/mypy 203 source files/Python compile；Web 35 files / 121 tests、ESLint/TypeScript 与 production build。
 
 **真实应用 Exit Gate（必须由人创建/配置并单独授权）**
 

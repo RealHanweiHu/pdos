@@ -8,7 +8,7 @@
 
 ## 1. 判定摘要
 
-S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium、生产镜像和公网回调边缘合同已完成。候选版本具备 fail-close 配置校验、`delivery=false` 默认开关、durable outbox、明确的不确定状态、只读 readiness 检查以及不降级数据库的回滚路径。
+S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium、生产镜像和公网回调边缘合同已完成。候选版本具备 fail-close 配置校验、`delivery=false` 默认开关、durable outbox、明确的不确定状态、只读 readiness/Exit Evidence 检查以及不降级数据库的回滚路径。
 
 当前不得勾选 canonical S5-1，也不得进入 S5-2。尚缺的都是必须由人持有的真实应用门禁：独立应用与最小权限、真实回调/模板/测试群、生产秘密、租户 binding、真实用户和外部可达性验证，以及本次生产操作的明确授权。
 
@@ -22,11 +22,12 @@ S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium�
 | 容器权限 | PASS | API/dispatcher/executor/DingTalk worker UID=`10001`，Web UID=`1001` |
 | 公网回调应用链 | PASS | 无会话 AES callback 经 Next BFF 到 FastAPI；不存在的 route 返回 `404 DINGTALK_CALLBACK_ROUTE_UNKNOWN`，零回执写入、零外部调用 |
 | Web tests | PASS | 35 files / 121 tests |
-| Server tests | PASS | 354 tests |
+| Server tests | PASS | 357 tests |
 | Lint / format | PASS | ESLint、Ruff、Ruff format |
-| Static types | PASS | TypeScript；mypy 200 source files |
+| Static types | PASS | TypeScript；mypy 203 source files |
 | Production build | PASS | Next.js production build 生成 OAuth、AES callback、card callback 与 integration routes；Python compileall 通过 |
-| 部署合同 | PASS | 14 tests；部署后公网 callback edge 探针成为硬门禁 |
+| 部署合同 | PASS | 15 tests；部署后公网 callback edge 探针成为硬门禁，Exit Evidence CLI 进入非 root API 镜像 |
+| Exit Evidence 合同 | PASS | PostgreSQL read-only transaction；完整 SHA + 防篡改 Gate 基线；登录、三类 delivery、审批镜像/Gate 不变、回调、卡片幂等与 outbox 对账 fail-close |
 
 以上执行只接触本机 `pdos_test`、本机候选容器和只读本地文件；未连接生产 RDS，未修改钉钉、Nginx、DNS 或生产服务。
 
@@ -58,14 +59,14 @@ S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium�
 
 出现 schema/env/binding/crypto/user/channel/outbox 任一 FAIL，立即停止；不得以临时跳过或直接打开 delivery 继续。
 
+5. 按运行手册 §4.1 捕获完整 release SHA + tenant/project + Gate 真值哈希基线。证据文件必须在 release worktree 外以 mode `0600` 保存；捕获后不得覆盖。
+
 ### Stage B — 真实 inbound / identity smoke
 
 1. 已绑定用户 password-free login 成功一次；未绑定用户、错 corp、state replay 分别拒绝。
 2. AES challenge/event 回调成功；错签名、过期时间、错 corp 和重放符合预期。
-3. Gate external approval 回调只更新外部镜像，查询确认 PDOS Gate 状态未改变。
-4. Card `acknowledge` 成功；重复、错签名、过期、错 corp/user/outTrackId 回调拒绝或幂等。
 
-任何外部身份自动匹配、回调二次处理、Gate 被外部审批直接改变、secret/用户 token 出现在响应或日志，均为立即回滚条件。
+任何外部身份自动匹配、回调二次处理、secret/用户 token 出现在响应或日志，均为立即回滚条件。
 
 ### Stage C — outbound canary
 
@@ -73,8 +74,12 @@ Stage B 通过后仍需单独批准 `delivery=true`。批准后：
 
 1. 先运行 `check_dingtalk_readiness --require-delivery-enabled`。
 2. 只对一个测试项目群发送一条通知，确认 outbox=`succeeded` 且 remote reference 可查。
-3. 发起一条测试 external approval 和一张测试 card；核对本地/远端 reference、receipt 和 audit。
-4. 观察 bounded logs 与 outbox；`failed/uncertain/manual` 任一非预期增长即关闭 delivery，不盲重放。
+3. 发起一条测试 external approval 并完成回调；确认只更新外部镜像，PDOS Gate 真值不变。
+4. 发送一张测试 card 并 `acknowledge`，重放相同回调；核对本地/远端 reference、唯一 receipt/Event/Audit footprint。
+5. 按运行手册 §4.1 对不可覆盖的基线运行 Exit Evidence verify，保存 PASS/FAIL 与 `HUMAN_REQUIRED` 输出。
+6. 观察 bounded logs 与 outbox；`failed/uncertain/manual` 任一非预期增长即关闭 delivery，不盲重放。
+
+Gate 被外部审批直接改变、证据基线摘要/SHA/scope 不匹配、delivery/Event/Audit/receipt 缺失或重复，均为立即回滚条件。
 
 ## 5. 回滚与恢复
 
@@ -91,6 +96,7 @@ Stage B 通过后仍需单独批准 `delivery=true`。批准后：
 - [ ] 项目群通知与 remote reference 对账通过
 - [ ] external approval 仅镜像、Gate 真值不变
 - [ ] card acknowledge 与 replay/伪造正反向 smoke 通过
+- [ ] Exit Evidence 自动项全 PASS，baseline/verify 原件由操作者和 Data Owner 留存
 - [ ] 浏览器 console 0 warning/error、390px 无横向溢出、Supplier/Customer 无入口且 API=403
 - [ ] 人工确认 S5-1 Exit Gate
 

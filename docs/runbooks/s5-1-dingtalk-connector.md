@@ -43,7 +43,7 @@ PDOS_DINGTALK_POLL_SECONDS=2
 2. 重施加 `python -m scripts.apply_agent_runtime_security`，确认 `pdos_agent` 对业务及新 integration 表零写。
 3. 启动 `api/web/dispatcher/executor/dingtalk`；检查 `/healthz`、登录和 integration status。
 4. Owner/Admin 写 tenant binding，Project Manager 写 project channel；内部用户逐个显式 link，不允许手机号/姓名自动匹配。
-5. 用 fake/测试应用先完成 OAuth、AES challenge、群通知、审批、卡片 smoke。
+5. 用 fake/测试应用先完成 OAuth、AES challenge、群通知、审批、卡片 smoke；在任何真实应用 smoke 前冻结只读证据基线。
 6. 人核对 pending/retry/failed/uncertain/manual 均为预期后，再单独授权将 delivery 改为 true 并滚动启动 API 与 dingtalk worker。
 
 在真实应用 smoke 前先运行只读检查（生产执行仍需单独授权）：
@@ -54,6 +54,48 @@ python -m scripts.check_dingtalk_readiness --tenant-slug <tenant-slug>
 ```
 
 该命令不调用钉钉、不写数据库、不输出凭据；它检查 0026+0027、HTTPS public origin、env/binding 一致性、回调密码学结构、至少 2 个 active 用户绑定、至少 1 个项目群和零未处理 outbox。delivery 保持 false 时可通过 pre-smoke 检查；正式 outbound smoke 前再用 `--require-delivery-enabled` 复核。
+
+### 4.1 真实 smoke 的两阶段证据
+
+生产执行仍需对完整 release SHA、tenant slug 和 project code 单独授权。先在宿主机创建 mode `0700` 的证据目录；目录不得放进 release worktree。Stage A readiness 通过、Stage B/C 尚未开始时，捕获基线：
+
+```bash
+cd <release-dir>
+PDOS_EVIDENCE_RELEASE_SHA="$(git rev-parse HEAD)"
+PDOS_EVIDENCE_DIR="/opt/pdos-migration-reports/s5-1"
+install -d -m 0700 "$PDOS_EVIDENCE_DIR"
+umask 077
+docker compose --env-file .env.production -f compose.production.yaml exec -T api \
+  python -m scripts.check_dingtalk_exit_evidence capture \
+  --tenant-slug <tenant-slug> \
+  --project-code <project-code> \
+  --release-sha "$PDOS_EVIDENCE_RELEASE_SHA" \
+  > "$PDOS_EVIDENCE_DIR/$PDOS_EVIDENCE_RELEASE_SHA.baseline.json"
+```
+
+基线包含租户/项目/Gate 的本地 UUID、完整 release SHA、采集时间以及所有 Gate 真值哈希，并用 `baseline_sha256` 防篡改。它不包含 secret、token、外部用户标识、远端 reference 或回调 payload，但仍按 mode `0600` 运维证据保管。
+
+完成 Stage B/C 正反向 smoke 和一次回调重放后，运行验证并保存输出：
+
+```bash
+PDOS_EVIDENCE_BASELINE="$PDOS_EVIDENCE_DIR/$PDOS_EVIDENCE_RELEASE_SHA.baseline.json"
+docker compose --env-file .env.production -f compose.production.yaml exec -T api \
+  python -m scripts.check_dingtalk_exit_evidence verify \
+  --baseline - \
+  --release-sha "$PDOS_EVIDENCE_RELEASE_SHA" \
+  < "$PDOS_EVIDENCE_BASELINE" \
+  > "$PDOS_EVIDENCE_DIR/$PDOS_EVIDENCE_RELEASE_SHA.verify.txt"
+```
+
+该工具在 PostgreSQL `READ ONLY` transaction 中运行，不调用钉钉、不写数据库、不输出真实外部 identity/reference。它自动核对：
+
+- 完整 SHA、tenant/project scope 与基线摘要一致；
+- 已绑定用户的钉钉免登同时存在 Event + Audit；
+- 群通知、审批创建和卡片发送均有 succeeded outbox、remote reference 以及唯一 delivery Event + Audit；
+- 外部审批已到终态并有 AES callback receipt + mirror Event/Audit，同时对应 PDOS Gate 真值哈希完全不变；
+- card acknowledge 恰好只有一份 receipt + Event/Audit footprint；tenant 内无未对账的钉钉 outbox。
+
+`PASS` 只代表自动证据齐备。未绑定/错 corp/state replay、伪造/过期回调、浏览器/390px/RBAC 和 Data Owner 远端抽查仍会以 `HUMAN_REQUIRED` 输出，必须逐项人工签字；任一 `FAIL` 都保持 NO-GO，禁止覆盖基线后重试来掩盖漂移。
 
 ## 5. 监控与对账
 
@@ -93,6 +135,7 @@ ORDER BY created_at;
 
 ## 7. 真实应用 Exit Gate（人工）
 
+- 两阶段证据验证所有自动项为 PASS，且 baseline/verify 文件由操作者与 Data Owner 共同留存。
 - 1 次已绑定用户 password-free login；未绑定、错 corp、state replay 均拒绝。
 - 1 次项目群通知可达，PDOS outbox succeeded 且 remote reference 可查。
 - 1 次 Gate external approval 回调后镜像更新，PDOS Gate 状态保持原值。

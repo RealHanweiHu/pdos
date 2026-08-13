@@ -225,6 +225,22 @@ def test_ecs_release_verification_probes_the_public_dingtalk_callback_edge() -> 
     assert "--max-time 15" in source
 
 
+def test_dingtalk_exit_evidence_is_packaged_read_only_and_human_gated() -> None:
+    dockerfile = (REPOSITORY_ROOT / "server" / "Dockerfile").read_text()
+    runbook = (REPOSITORY_ROOT / "docs" / "runbooks" / "s5-1-dingtalk-connector.md").read_text()
+    collector = (
+        REPOSITORY_ROOT / "server" / "app" / "integrations" / "dingtalk_exit_evidence.py"
+    ).read_text()
+
+    assert "COPY server/scripts ./scripts" in dockerfile
+    assert "check_dingtalk_exit_evidence capture" in runbook
+    assert "check_dingtalk_exit_evidence verify" in runbook
+    assert "READ ONLY" in runbook
+    assert "HUMAN_REQUIRED" in runbook
+    assert 'text("SET TRANSACTION READ ONLY")' in collector
+    assert "PDOS Gate 真值哈希完全不变" in runbook
+
+
 def test_agent_database_security_runbook_keeps_production_actions_human_owned() -> None:
     runbook = (
         REPOSITORY_ROOT / "docs" / "runbooks" / "agent-runtime-database-security.md"
