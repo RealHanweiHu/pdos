@@ -1058,11 +1058,11 @@
 - [x] 依赖项：Project/Customer/User/Document、Event/Audit、Quality 角色与 `COMPLAINT_CREATED` 注册定义均已就绪
 - [x] 预计触达：migration `0021_quality_capa`、schema/domain/API/event tests、Quality 前端与 BFF、运行时验收和文档
 - [x] 安全边界：AI 只创建 Finding；质量业务写仅由人工 FastAPI 动作完成，tenant/project/角色/四眼全部服务端绑定并 fail-close
-- [ ] 质量 Owner 确认字段、状态机、严重度/来源枚举、四眼规则与有效性关闭门禁；确认稿见 `docs/design/2026-08-12-s4-1-quality-owner-contract-draft.md`
+- [x] 质量 Owner 已确认字段、状态机、严重度/来源枚举、四眼规则与有效性关闭门禁；合同见 `docs/design/2026-08-12-s4-1-quality-owner-contract-draft.md`
 
 **Implementation slices**
 
-- [ ] S4-1a：质量 Owner 拍板契约，冻结 API/错误码/RBAC 与 migration 0021 验收合同
+- [x] S4-1a：质量 Owner 拍板契约，冻结 API/错误码/RBAC 与 migration 0021 验收合同
 - [ ] S4-1b：Complaint 创建/查询/triage 纵向切片，同事务接通 `COMPLAINT_CREATED` + Audit
 - [ ] S4-1c：NCR→根因→纠正/预防措施状态机、不可变版本与硬闸
 - [ ] S4-1d：有效性复核、ineffective 回流、关闭与四眼/治理 override
@@ -1075,3 +1075,4 @@
 - Sprint 3 Exit Gate 已经人工确认；`codex/sprint-4` 从确认后的 Sprint 3 终点建立。
 - preview 规格只冻结 CAPA 链路与 Owner 共同定义纪律；仓库及老 CEHub 均没有可直接视为公司正式流程的字段合同。老 CEHub 仅有 Issue 根因、解决方案与 QA verification，可作语义参考但不能代替 Owner 拍板。
 - 已形成最小推荐确认稿，明确五项必须由质量 Owner 决定；确认前不创建 migration 0021，不把建议枚举/状态写成政策事实。
+- 质量 Owner 已明确回复“确认采用推荐 CAPA 契约”；五项推荐配置升级为 v1 实施合同，后续变更须版本化，不得原地放宽。

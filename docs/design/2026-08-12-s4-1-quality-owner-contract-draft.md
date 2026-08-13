@@ -1,6 +1,6 @@
-# S4-1 CAPA 质量流程 Owner 确认稿
+# S4-1 CAPA 质量流程合同 v1
 
-> 状态：**待公司质量流程 Owner 确认，不是实施规格**
+> 状态：**已于 2026-08-12 经公司质量流程 Owner 确认，作为 S4-1 实施规格**
 > 日期：2026-08-12
 > canonical：`docs/design/2026-08-09-preview-execution-plan.md` S4-1
 
@@ -14,7 +14,7 @@
 
 ## 2. 推荐 v1 实体与字段
 
-以下是待确认的最小合同；未列字段不在 v1 实现。
+以下是确认后的最小合同；未列字段不在 v1 实现。
 
 | 实体 | 必填字段 | 可选字段/引用 |
 |---|---|---|
@@ -65,13 +65,15 @@
 
 Supplier / Customer 默认无 CAPA 内部记录读取或写入权限；后续若需要外部协作，另定义脱敏投影，不开放内部根因、成本、证据对象键。
 
-## 5. 需要质量流程 Owner 拍板的五项
+## 5. 质量流程 Owner 决议
 
-1. 是否接受 v1 必须绑定 Project；若量产后投诉允许无 Project，需要指定替代的产品/批次事实源。
-2. 来源枚举是否采用 `customer / field / rma / internal`，严重度是否采用 `critical / high / medium / low`。
-3. 是否接受“至少一条 corrective；preventive 必须存在或由 Quality 批准不适用原因”。
-4. 是否接受“根因批准人 ≠ 分析人、有效性 Reviewer ≠ 任一措施 Owner”，且 v1 不提供 Owner/Admin override。
-5. 是否接受不设全局固定天数，但要求观察截止日晚于最后措施完成时间、判定标准在进入 verification 前冻结、至少一条 Document/系统事实证据，并仅由 Quality 作最终关闭。
+以下五项全部采用推荐配置：
+
+1. v1 Complaint 必须绑定 Project；量产后无 Project 投诉的替代产品事实源留到产品实体收尾后另行版本化，不在 v1 静默放宽。
+2. 来源采用 `customer / field / rma / internal`；严重度采用 `critical / high / medium / low`。
+3. NCR 至少一条 corrective；preventive 必须存在或由 Quality 批准“不适用”原因。
+4. 根因批准人不得是分析人，有效性 Reviewer 不得是任一措施 Owner；v1 不提供 Owner/Admin override。
+5. 不设全局固定天数，但观察截止日晚于最后措施完成时间；判定标准在进入 verification 前冻结；至少一条同项目 Document 或不可变系统事实证据；仅 Quality 作最终关闭。
 
 ## 6. 确认后的实施切片
 
@@ -81,4 +83,4 @@ Supplier / Customer 默认无 CAPA 内部记录读取或写入权限；后续若
 4. Effectiveness Review、失败回流、不可变历史与关闭动作。
 5. Quality 的 Complaint/CAPA 页面、真实 HTTP/浏览器闭环、跨租户/外部角色/四眼负例及完整门禁。
 
-确认方式：回复“确认采用推荐 CAPA 契约”，或逐条指出上述五项需要修改的值。
+后续变更必须新增合同版本与迁移，不得原地放宽四眼、证据或租户/项目边界。
