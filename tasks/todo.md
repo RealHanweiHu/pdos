@@ -1214,19 +1214,25 @@
 
 - [x] 规格出处：canonical S5-1、API Design / Development Roadmap、RBAC/租户边界及 Sprint 5 Exit 验收
 - [x] 依赖项：本地认证/JWT、Event/Audit、Project/Task/Finding/Gate/Decision 与部署边界均已就绪
-- [ ] 范围冻结：免登、回调 AES、审批、群通知、交互卡片；复用协议经验但使用独立应用标识与回调命名空间
-- [ ] 安全边界：外部 identity/corp/user/code/回调 payload 均不可信；租户与本地用户映射由服务端数据库真值绑定，重放/伪造/跨租户 fail-close
-- [ ] 迁移号、API、事件、outbox/重放、幂等、降级、配置与生产回滚合同冻结
+- [x] 范围冻结：免登、回调 AES、审批、群通知、交互卡片；复用协议经验但使用独立应用标识与回调命名空间
+- [x] 安全边界：外部 identity/corp/user/code/回调 payload 均不可信；租户与本地用户映射由服务端数据库真值绑定，重放/伪造/跨租户 fail-close
+- [x] 迁移号、API、事件、outbox/重放、幂等、降级、配置与生产回滚合同冻结
 
 **Implementation slices**
 
-- [ ] S5-1a：审计规格与老 CEHub 协议实现，冻结 v1 数据/API/安全/可靠性契约
+- [x] S5-1a：审计规格与老 CEHub 协议实现，冻结 v1 数据/API/安全/可靠性契约
 - [ ] S5-1b：实现独立钉钉应用配置、免登 code exchange 与本地 session 建立
 - [ ] S5-1c：实现签名/时间窗/nonce/AES 回调验证、幂等事件接收与 URL challenge
 - [ ] S5-1d：实现审批发起/结果回调、群通知与交互卡片模板机制
 - [ ] S5-1e：实现 outbox、退避重试、重放/对账、显式人工降级与运维可观测性
 - [ ] S5-1f：完成迁移/安全/完整门禁、fake server + 真实浏览器/API 运行验收
 - [ ] S5-1g：更新 canonical checkbox 与当前指针到 S5-2
+
+**Current evidence（2026-08-12）**
+
+- 契约见 `docs/design/2026-08-12-s5-1-dingtalk-connector-contract.md`。当前官方授权流与老 CEHub 静默免登存在版本差异：v1 使用 OAuth `authCode→userAccessToken→contact/users/me`，不沿用已不推荐的 `dd.getAuthCode`。
+- 老 CEHub 的 token 提前刷新、AES、outTrackId、create 结果不确定隔离经验可复用；审计同时识别并禁止手机号自动匹配、任意 payload 递归找 ID、缺时间窗/nonce/CorpID 尾校验、远端 approved 直接成为本地业务真值等做法。
+- v1 采用显式 link 后 password-free login；审批只镜像外部协作结果，不直接批准 Gate。所有 outbound 经 durable outbox；不确定 create 不盲重放，未配置时显式降级为 manual。
 
 **Error ledger**
 
