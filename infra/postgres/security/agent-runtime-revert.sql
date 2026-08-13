@@ -13,6 +13,8 @@ DROP VIEW IF EXISTS
     cehub_ai.agent_model_usage_projection,
     cehub_ai.agent_model_settings_projection,
     cehub_ai.agent_document_fragment_projection,
+    cehub_ai.agent_quality_evidence_projection,
+    cehub_ai.agent_engineering_evidence_projection,
     cehub_ai.agent_memory_projection,
     cehub_ai.agent_event_projection,
     cehub_ai.agent_gate_projection,

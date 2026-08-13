@@ -311,6 +311,85 @@ def seed_verified_memory(
     return memory_id
 
 
+def seed_phase_two_evidence(
+    connection: Connection,
+    *,
+    ids: dict[str, UUID | int],
+    agent_key: str,
+) -> tuple[str, str] | None:
+    if agent_key not in {"engineering_intelligence", "quality_intelligence"}:
+        return None
+    actor_a = uuid4()
+    actor_b = uuid4()
+    connection.execute(
+        tables.users.insert(),
+        [
+            {
+                "id": actor_a,
+                "tenant_id": ids["tenant_a"],
+                "username": f"phase-two-a-{actor_a}",
+                "display_name": "Phase Two A",
+                "role": "quality" if agent_key == "quality_intelligence" else "engineer",
+            },
+            {
+                "id": actor_b,
+                "tenant_id": ids["tenant_b"],
+                "username": f"phase-two-b-{actor_b}",
+                "display_name": "Phase Two B",
+                "role": "quality" if agent_key == "quality_intelligence" else "engineer",
+            },
+        ],
+    )
+    if agent_key == "engineering_intelligence":
+        scoped = "Scoped Engineering A"
+        excluded = "Other Engineering B"
+        for suffix, actor_id, tenant_key, project_key, name in (
+            ("A", actor_a, "tenant_a", "project_a", scoped),
+            ("B", actor_b, "tenant_b", "project_b", excluded),
+        ):
+            connection.execute(
+                tables.development_boms.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids[tenant_key],
+                    "project_id": ids[project_key],
+                    "created_by_user_id": actor_id,
+                    "bom_type": "ebom",
+                    "code": f"EBOM-{suffix}",
+                    "name": name,
+                },
+            )
+        return scoped, excluded
+
+    scoped = "Scoped Complaint A"
+    excluded = "Other Complaint B"
+    now = datetime.now(UTC)
+    for suffix, actor_id, tenant_key, project_key, title in (
+        ("A", actor_a, "tenant_a", "project_a", scoped),
+        ("B", actor_b, "tenant_b", "project_b", excluded),
+    ):
+        connection.execute(
+            tables.complaints.insert(),
+            {
+                "id": uuid4(),
+                "tenant_id": ids[tenant_key],
+                "project_id": ids[project_key],
+                "reported_by_user_id": actor_id,
+                "owner_user_id": actor_id,
+                "code": f"CMP-{suffix}",
+                "title": title,
+                "description": "Allowlisted quality summary",
+                "source": "internal",
+                "severity": "high",
+                "occurred_at": now - timedelta(days=1),
+                "reported_at": now,
+                "customer_reference": f"PRIVATE-{suffix}",
+                "document_refs": [f"private/{suffix}/quality.pdf"],
+            },
+        )
+    return scoped, excluded
+
+
 def test_worker_permissions_allow_control_plane_and_deny_business_mutation(
     secured_agent_database_url: str,
 ) -> None:
@@ -800,6 +879,32 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             },
             "knowledge-lite-v1",
         ),
+        (
+            "engineering_intelligence",
+            "DEVELOPMENT_BOM_CREATED",
+            "bom_impact_suggestion",
+            {
+                "title": "Review BOM impact",
+                "description": "The scoped BOM may affect validation.",
+                "likelihood": 3,
+                "impact": 4,
+            },
+            "engineering-intelligence-v1",
+        ),
+        (
+            "quality_intelligence",
+            "COMPLAINT_CREATED",
+            "capa_suggestion",
+            {
+                "title": "Review CAPA response",
+                "description": "The scoped complaint warrants Quality review.",
+                "likelihood": 3,
+                "impact": 5,
+                "mitigation_plan": "Confirm containment and root cause.",
+                "contingency_plan": "Review preventive controls.",
+            },
+            "quality-intelligence-v1",
+        ),
     ],
 )
 def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
@@ -831,6 +936,11 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 tenant_id=UUID(str(ids["tenant_b"])),
                 project_id=UUID(str(ids["project_b"])),
                 suffix="b",
+            )
+            phase_two_evidence = seed_phase_two_evidence(
+                connection,
+                ids=ids,
+                agent_key=agent_key,
             )
         run_store = RestrictedAgentRunStore(agent_engine)
         catalog = ModelCatalog.from_environment(
@@ -894,6 +1004,12 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
         assert "Verified memory a" in serialized_messages
         assert "Verified memory b" not in serialized_messages
         assert str(ids["tenant_b"]) not in serialized_messages
+        if phase_two_evidence is not None:
+            scoped_evidence, excluded_evidence = phase_two_evidence
+            assert scoped_evidence in serialized_messages
+            assert excluded_evidence not in serialized_messages
+        assert "PRIVATE-A" not in serialized_messages
+        assert "private/A/quality.pdf" not in serialized_messages
         with owner_engine.connect() as connection:
             run = (
                 connection.execute(

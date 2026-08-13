@@ -356,6 +356,121 @@ JOIN cehub_memory.memory_embeddings AS embedding
 WHERE cehub_ai.agent_scope_allows(memory.tenant_id, memory.project_id)
   AND memory.status = 'verified';
 
+CREATE OR REPLACE VIEW cehub_ai.agent_engineering_evidence_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    bom.tenant_id,
+    bom.project_id,
+    'development_bom'::text AS entity,
+    bom.id AS entity_id,
+    bom.code || ' · ' || bom.name || ' · v' || bom.version::text AS label,
+    concat(
+        'type=', bom.bom_type,
+        '; item_count=', count(item.id)::text,
+        CASE
+            WHEN nullif(btrim(coalesce(bom.notes, '')), '') IS NULL THEN ''
+            ELSE '; notes=' || left(bom.notes, 2000)
+        END
+    ) AS excerpt,
+    bom.updated_at AS observed_at
+FROM cehub_product.development_boms AS bom
+LEFT JOIN cehub_product.development_bom_items AS item
+  ON item.tenant_id = bom.tenant_id
+ AND item.project_id = bom.project_id
+ AND item.bom_id = bom.id
+WHERE cehub_ai.agent_scope_allows(bom.tenant_id, bom.project_id)
+GROUP BY bom.id
+UNION ALL
+SELECT
+    ecr.tenant_id,
+    ecr.project_id,
+    'engineering_change_request'::text AS entity,
+    ecr.id AS entity_id,
+    ecr.code || ' · ' || ecr.title AS label,
+    concat(
+        'status=', ecr.status,
+        '; affected_bom_count=', count(affected.bom_id)::text,
+        '; reason=', left(ecr.reason, 2000)
+    ) AS excerpt,
+    ecr.updated_at AS observed_at
+FROM cehub_product.engineering_change_requests AS ecr
+LEFT JOIN cehub_product.ecr_affected_boms AS affected
+  ON affected.tenant_id = ecr.tenant_id
+ AND affected.project_id = ecr.project_id
+ AND affected.ecr_id = ecr.id
+WHERE cehub_ai.agent_scope_allows(ecr.tenant_id, ecr.project_id)
+GROUP BY ecr.id;
+
+CREATE OR REPLACE VIEW cehub_ai.agent_quality_evidence_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    test_case.tenant_id,
+    test_case.project_id,
+    'test_case'::text AS entity,
+    test_case.id AS entity_id,
+    test_case.title AS label,
+    concat(
+        'category=', test_case.category,
+        '; severity=', test_case.severity,
+        '; status=', test_case.status,
+        CASE
+            WHEN nullif(btrim(coalesce(test_case.result_notes, '')), '') IS NULL THEN ''
+            ELSE '; result=' || left(test_case.result_notes, 2000)
+        END
+    ) AS excerpt,
+    test_case.updated_at AS observed_at
+FROM cehub_quality.test_cases AS test_case
+WHERE cehub_ai.agent_scope_allows(test_case.tenant_id, test_case.project_id)
+  AND test_case.status IN ('failed', 'blocked')
+UNION ALL
+SELECT
+    complaint.tenant_id,
+    complaint.project_id,
+    'complaint'::text AS entity,
+    complaint.id AS entity_id,
+    complaint.code || ' · ' || complaint.title AS label,
+    concat(
+        'severity=', complaint.severity,
+        '; status=', complaint.status,
+        '; description=', left(complaint.description, 2000),
+        CASE
+            WHEN nullif(btrim(coalesce(complaint.affected_scope, '')), '') IS NULL THEN ''
+            ELSE '; affected_scope=' || left(complaint.affected_scope, 1000)
+        END
+    ) AS excerpt,
+    complaint.updated_at AS observed_at
+FROM cehub_quality.complaints AS complaint
+WHERE cehub_ai.agent_scope_allows(complaint.tenant_id, complaint.project_id)
+UNION ALL
+SELECT
+    ncr.tenant_id,
+    ncr.project_id,
+    'nonconformance_report'::text AS entity,
+    ncr.id AS entity_id,
+    ncr.code AS label,
+    concat(
+        'severity=', ncr.severity,
+        '; status=', ncr.status,
+        '; nonconformity=', left(ncr.nonconformity, 2000),
+        '; approved_root_cause=', coalesce(left(root_cause.root_cause, 1500), 'none'),
+        '; capa_action_count=', count(action.id)::text
+    ) AS excerpt,
+    ncr.updated_at AS observed_at
+FROM cehub_quality.nonconformance_reports AS ncr
+LEFT JOIN cehub_quality.root_cause_analyses AS root_cause
+  ON root_cause.tenant_id = ncr.tenant_id
+ AND root_cause.project_id = ncr.project_id
+ AND root_cause.ncr_id = ncr.id
+ AND root_cause.status = 'approved'
+LEFT JOIN cehub_quality.capa_actions AS action
+  ON action.tenant_id = ncr.tenant_id
+ AND action.project_id = ncr.project_id
+ AND action.ncr_id = ncr.id
+WHERE cehub_ai.agent_scope_allows(ncr.tenant_id, ncr.project_id)
+GROUP BY ncr.id, root_cause.root_cause;
+
 CREATE OR REPLACE VIEW cehub_ai.agent_model_settings_projection
 WITH (security_barrier = true)
 AS
@@ -599,6 +714,14 @@ BEGIN
            ))
            OR (scoped_run.agent_key = 'knowledge_lite'
                AND new_finding_type = 'knowledge_draft')
+           OR (scoped_run.agent_key = 'engineering_intelligence'
+               AND new_finding_type IN (
+                   'bom_impact_suggestion', 'change_impact_suggestion'
+               ))
+           OR (scoped_run.agent_key = 'quality_intelligence'
+               AND new_finding_type IN (
+                   'quality_cluster_alert', 'capa_suggestion'
+               ))
        )
        OR nullif(btrim(new_origin_key), '') IS NULL
        OR nullif(btrim(new_title), '') IS NULL
@@ -780,6 +903,8 @@ GRANT SELECT ON
     cehub_ai.agent_event_projection,
     cehub_ai.agent_document_fragment_projection,
     cehub_ai.agent_memory_projection,
+    cehub_ai.agent_engineering_evidence_projection,
+    cehub_ai.agent_quality_evidence_projection,
     cehub_ai.agent_model_settings_projection,
     cehub_ai.agent_model_usage_projection,
     cehub_ai.agent_run_usage_projection,

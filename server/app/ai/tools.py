@@ -1,4 +1,4 @@
-"""Frozen, run-scoped read-only tools available to the Phase 1 Agents."""
+"""Frozen, run-scoped read-only tools available to PDOS Agents."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from sqlalchemy import Engine, func, select, text
 
 from app.ai.embeddings import EmbeddingGateway
 from app.ai.run_store import AgentRunStore
-from app.ai.runtime_contract import FrozenRunContext
+from app.ai.runtime_contract import AgentKey, FrozenRunContext
 from app.db.schema import tables
 
 
@@ -67,6 +67,151 @@ TOOL_DEFINITIONS: tuple[ToolDefinition, ...] = (
         },
     ),
 )
+
+ENGINEERING_EVIDENCE_TOOL = ToolDefinition(
+    name="get_engineering_evidence",
+    description=(
+        "Use when Engineering Intelligence needs allowlisted Development BOM and engineering "
+        "change summaries for the current Project. Do not use for ERP execution facts or raw "
+        "BOM attributes. Negative example: never infer another Project's affected parts. "
+        "Boundary: the server-bound tenant and Project are immutable; results are explicitly "
+        "paginated and contain summaries, not business-write authority."
+    ),
+    input_example={
+        "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+        "offset": 0,
+        "limit": 20,
+    },
+)
+
+QUALITY_EVIDENCE_TOOL = ToolDefinition(
+    name="get_quality_evidence",
+    description=(
+        "Use when Quality Intelligence needs allowlisted failed-test, Complaint, and NCR "
+        "summaries for the current Project. Do not use for Customer identity, attachments, or "
+        "unapproved root-cause claims. Negative example: never call correlation a proven root "
+        "cause. Boundary: the server-bound tenant and Project are immutable; results are "
+        "explicitly paginated and cannot update quality records."
+    ),
+    input_example={
+        "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+        "offset": 0,
+        "limit": 20,
+    },
+)
+
+
+def tool_definitions_for_agent(agent_key: AgentKey) -> tuple[ToolDefinition, ...]:
+    if agent_key is AgentKey.ENGINEERING_INTELLIGENCE:
+        return (*TOOL_DEFINITIONS, ENGINEERING_EVIDENCE_TOOL)
+    if agent_key is AgentKey.QUALITY_INTELLIGENCE:
+        return (*TOOL_DEFINITIONS, QUALITY_EVIDENCE_TOOL)
+    return TOOL_DEFINITIONS
+
+
+_ENGINEERING_EVIDENCE_SQL = """
+SELECT
+    'development_bom'::text AS entity,
+    bom.id AS entity_id,
+    bom.code || ' · ' || bom.name || ' · v' || bom.version::text AS label,
+    concat(
+        'type=', bom.bom_type,
+        '; item_count=', count(item.id)::text,
+        CASE
+            WHEN nullif(btrim(coalesce(bom.notes, '')), '') IS NULL THEN ''
+            ELSE '; notes=' || left(bom.notes, 2000)
+        END
+    ) AS excerpt,
+    bom.updated_at AS observed_at
+FROM cehub_product.development_boms AS bom
+LEFT JOIN cehub_product.development_bom_items AS item
+  ON item.tenant_id = bom.tenant_id
+ AND item.project_id = bom.project_id
+ AND item.bom_id = bom.id
+WHERE bom.tenant_id = :tenant_id AND bom.project_id = :project_id
+GROUP BY bom.id
+UNION ALL
+SELECT
+    'engineering_change_request'::text AS entity,
+    ecr.id AS entity_id,
+    ecr.code || ' · ' || ecr.title AS label,
+    concat(
+        'status=', ecr.status,
+        '; affected_bom_count=', count(affected.bom_id)::text,
+        '; reason=', left(ecr.reason, 2000)
+    ) AS excerpt,
+    ecr.updated_at AS observed_at
+FROM cehub_product.engineering_change_requests AS ecr
+LEFT JOIN cehub_product.ecr_affected_boms AS affected
+  ON affected.tenant_id = ecr.tenant_id
+ AND affected.project_id = ecr.project_id
+ AND affected.ecr_id = ecr.id
+WHERE ecr.tenant_id = :tenant_id AND ecr.project_id = :project_id
+GROUP BY ecr.id
+"""
+
+_QUALITY_EVIDENCE_SQL = """
+SELECT
+    'test_case'::text AS entity,
+    test_case.id AS entity_id,
+    test_case.title AS label,
+    concat(
+        'category=', test_case.category,
+        '; severity=', test_case.severity,
+        '; status=', test_case.status,
+        CASE
+            WHEN nullif(btrim(coalesce(test_case.result_notes, '')), '') IS NULL THEN ''
+            ELSE '; result=' || left(test_case.result_notes, 2000)
+        END
+    ) AS excerpt,
+    test_case.updated_at AS observed_at
+FROM cehub_quality.test_cases AS test_case
+WHERE test_case.tenant_id = :tenant_id
+  AND test_case.project_id = :project_id
+  AND test_case.status IN ('failed', 'blocked')
+UNION ALL
+SELECT
+    'complaint'::text AS entity,
+    complaint.id AS entity_id,
+    complaint.code || ' · ' || complaint.title AS label,
+    concat(
+        'severity=', complaint.severity,
+        '; status=', complaint.status,
+        '; description=', left(complaint.description, 2000),
+        CASE
+            WHEN nullif(btrim(coalesce(complaint.affected_scope, '')), '') IS NULL THEN ''
+            ELSE '; affected_scope=' || left(complaint.affected_scope, 1000)
+        END
+    ) AS excerpt,
+    complaint.updated_at AS observed_at
+FROM cehub_quality.complaints AS complaint
+WHERE complaint.tenant_id = :tenant_id AND complaint.project_id = :project_id
+UNION ALL
+SELECT
+    'nonconformance_report'::text AS entity,
+    ncr.id AS entity_id,
+    ncr.code AS label,
+    concat(
+        'severity=', ncr.severity,
+        '; status=', ncr.status,
+        '; nonconformity=', left(ncr.nonconformity, 2000),
+        '; approved_root_cause=', coalesce(left(root_cause.root_cause, 1500), 'none'),
+        '; capa_action_count=', count(action.id)::text
+    ) AS excerpt,
+    ncr.updated_at AS observed_at
+FROM cehub_quality.nonconformance_reports AS ncr
+LEFT JOIN cehub_quality.root_cause_analyses AS root_cause
+  ON root_cause.tenant_id = ncr.tenant_id
+ AND root_cause.project_id = ncr.project_id
+ AND root_cause.ncr_id = ncr.id
+ AND root_cause.status = 'approved'
+LEFT JOIN cehub_quality.capa_actions AS action
+  ON action.tenant_id = ncr.tenant_id
+ AND action.project_id = ncr.project_id
+ AND action.ncr_id = ncr.id
+WHERE ncr.tenant_id = :tenant_id AND ncr.project_id = :project_id
+GROUP BY ncr.id, root_cause.root_cause
+"""
 
 
 class ToolPage(BaseModel):
@@ -224,7 +369,7 @@ class AgentReadTools:
         ):
             raise ValueError("memory embedding route changed during search")
         vector = "[" + ",".join(format(value, ".17g") for value in embedding.values) + "]"
-        parameters = {
+        parameters: dict[str, object] = {
             "embedding": vector,
             "provider": embedding.provider,
             "model": embedding.model,
@@ -407,6 +552,101 @@ class AgentReadTools:
             next_after_id=next_after_id,
             continuation=self._continuation(
                 shown=len(items), total=total, next_after_id=next_after_id
+            ),
+        )
+
+    def get_engineering_evidence(
+        self,
+        *,
+        project_id: UUID,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> ToolPage:
+        return self._domain_evidence(
+            project_id=project_id,
+            offset=offset,
+            limit=limit,
+            projection="cehub_ai.agent_engineering_evidence_projection",
+            owner_sql=_ENGINEERING_EVIDENCE_SQL,
+        )
+
+    def get_quality_evidence(
+        self,
+        *,
+        project_id: UUID,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> ToolPage:
+        return self._domain_evidence(
+            project_id=project_id,
+            offset=offset,
+            limit=limit,
+            projection="cehub_ai.agent_quality_evidence_projection",
+            owner_sql=_QUALITY_EVIDENCE_SQL,
+        )
+
+    def _domain_evidence(
+        self,
+        *,
+        project_id: UUID,
+        offset: int,
+        limit: int,
+        projection: str,
+        owner_sql: str,
+    ) -> ToolPage:
+        self._assert_scope(project_id)
+        self._validate_page(after_id=offset, limit=limit)
+        parameters = {
+            "tenant_id": self._context.tenant_id,
+            "project_id": self._context.project_id,
+            "offset": offset,
+            "limit": limit,
+        }
+        with self._engine.connect() as connection:
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                source = projection
+                source_parameters: dict[str, object] = {"offset": offset, "limit": limit}
+            else:
+                source = f"({owner_sql}) AS evidence"
+                source_parameters = parameters
+            total = int(
+                connection.execute(
+                    text(f"SELECT count(*) FROM {source}"),
+                    source_parameters,
+                ).scalar_one()
+            )
+            rows = list(
+                connection.execute(
+                    text(
+                        "SELECT entity, entity_id, label, excerpt, observed_at "
+                        f"FROM {source} ORDER BY observed_at DESC, entity, entity_id "
+                        "OFFSET :offset LIMIT :limit"
+                    ),
+                    source_parameters,
+                ).mappings()
+            )
+        items = tuple(
+            {
+                "reference_id": f"{row['entity']}:{row['entity_id']}",
+                "entity": str(row["entity"]),
+                "entity_id": str(row["entity_id"]),
+                "label": str(row["label"]),
+                "excerpt": str(row["excerpt"])[:1_000],
+            }
+            for row in rows
+        )
+        next_offset = offset + len(items) if offset + len(items) < total else None
+        return ToolPage(
+            items=items,
+            shown_count=len(items),
+            total_count=total,
+            truncated=next_offset is not None,
+            next_after_id=next_offset,
+            continuation=(
+                f"已显示 {offset + len(items)} 之 {total} 条；使用 offset={next_offset} 续读。"
+                if next_offset is not None
+                else f"已显示 {offset + len(items)} 之 {total} 条；无需续读。"
             ),
         )
 

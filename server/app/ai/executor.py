@@ -24,16 +24,10 @@ from app.ai.finding_writer import (
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
 from app.ai.run_store import AgentRunStore, ClaimedAgentRun, OwnerAgentRunStore
 from app.ai.runtime_contract import AgentKey, FrozenRunContext
-from app.ai.tools import TOOL_DEFINITIONS, AgentReadTools, ProjectContextResult, ToolPage
+from app.ai.tools import AgentReadTools, ProjectContextResult, ToolPage, tool_definitions_for_agent
 from app.domain.findings import KnowledgeDraftPayload, RiskSuggestionPayload
 
 PROMPT_DIRECTORY = Path(__file__).with_name("prompts")
-_TOOL_PREFIX = json.dumps(
-    [definition.model_dump(mode="json") for definition in TOOL_DEFINITIONS],
-    ensure_ascii=False,
-    separators=(",", ":"),
-    sort_keys=True,
-)
 
 
 class PromptFile(BaseModel):
@@ -73,7 +67,18 @@ _PROMPTS = {
 PROMPT_VERSIONS = MappingProxyType({key: prompt.version for key, prompt in _PROMPTS.items()})
 SYSTEM_PROMPTS = MappingProxyType(
     {
-        key: f"{prompt.system_prompt}\nFROZEN_READ_ONLY_TOOLS\n{_TOOL_PREFIX}"
+        key: (
+            f"{prompt.system_prompt}\nFROZEN_READ_ONLY_TOOLS\n"
+            + json.dumps(
+                [
+                    definition.model_dump(mode="json")
+                    for definition in tool_definitions_for_agent(key)
+                ],
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            )
+        )
         for key, prompt in _PROMPTS.items()
     }
 )
@@ -140,6 +145,7 @@ class ExecutorState(TypedDict, total=False):
     project_context: ProjectContextResult
     recent_events: ToolPage
     memory: ToolPage
+    domain_evidence: ToolPage
     gateway_result: GatewayResult[AgentAssessment]
 
 
@@ -248,11 +254,13 @@ class AgentExecutor:
         graph.add_node("get_project_context", self._get_project_context)
         graph.add_node("get_recent_events", self._get_recent_events)
         graph.add_node("search_memory", self._search_memory)
+        graph.add_node("get_domain_evidence", self._get_domain_evidence)
         graph.add_node("invoke_model", self._invoke_model)
         graph.add_edge(START, "get_project_context")
         graph.add_edge("get_project_context", "get_recent_events")
         graph.add_edge("get_recent_events", "search_memory")
-        graph.add_edge("search_memory", "invoke_model")
+        graph.add_edge("search_memory", "get_domain_evidence")
+        graph.add_edge("get_domain_evidence", "invoke_model")
         graph.add_edge("invoke_model", END)
         return cast(CompiledExecutorGraph, graph.compile())
 
@@ -299,6 +307,29 @@ class AgentExecutor:
             )
         }
 
+    def _get_domain_evidence(self, state: ExecutorState) -> dict[str, ToolPage]:
+        context = state["run_context"]
+        tools = AgentReadTools(
+            self._engine,
+            run_context=context,
+            run_store=self._run_store,
+            embedding_gateway=self._embedding_gateway,
+        )
+        if context.agent_key is AgentKey.ENGINEERING_INTELLIGENCE:
+            page = tools.get_engineering_evidence(project_id=context.project_id, limit=20)
+        elif context.agent_key is AgentKey.QUALITY_INTELLIGENCE:
+            page = tools.get_quality_evidence(project_id=context.project_id, limit=20)
+        else:
+            page = ToolPage(
+                items=(),
+                shown_count=0,
+                total_count=0,
+                truncated=False,
+                next_after_id=None,
+                continuation="已显示 0 之 0 条；当前 Agent 无附加域证据，无需续读。",
+            )
+        return {"domain_evidence": page}
+
     def _invoke_model(
         self,
         state: ExecutorState,
@@ -325,6 +356,7 @@ class AgentExecutor:
             }
             for item in state["memory"].items
         )
+        references.extend(state["domain_evidence"].items)
         document_event = next(
             (
                 event

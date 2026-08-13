@@ -197,6 +197,107 @@ def test_langgraph_executes_frozen_prefix_then_appends_project_context(
         engine.dispose()
 
 
+def test_quality_executor_appends_only_allowlisted_project_evidence(
+    executor_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(executor_database_url))
+    now = datetime.now(UTC)
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection)
+            quality_user_id = uuid4()
+            complaint_id = uuid4()
+            connection.execute(
+                tables.users.insert(),
+                {
+                    "id": quality_user_id,
+                    "tenant_id": tenant_id,
+                    "username": "executor-quality",
+                    "display_name": "Executor Quality",
+                    "role": "quality",
+                },
+            )
+            connection.execute(
+                tables.complaints.insert(),
+                {
+                    "id": complaint_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "reported_by_user_id": quality_user_id,
+                    "owner_user_id": quality_user_id,
+                    "code": "CMP-EXEC",
+                    "title": "Connector field release",
+                    "description": "Connector released during field use",
+                    "source": "customer",
+                    "severity": "high",
+                    "occurred_at": now - timedelta(days=1),
+                    "reported_at": now - timedelta(minutes=20),
+                    "customer_reference": "PRIVATE-CUSTOMER-REF",
+                    "document_refs": ["private/quality/source.pdf"],
+                },
+            )
+            event_id = int(
+                connection.execute(
+                    tables.events.insert()
+                    .values(
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        event_id=f"complaint:{complaint_id}:created",
+                        event_type="COMPLAINT_CREATED",
+                        schema_version=1,
+                        source="executor_test",
+                        entity="complaint",
+                        entity_id=complaint_id,
+                        payload={"complaint_id": str(complaint_id), "severity": "high"},
+                        timestamp=now - timedelta(minutes=16),
+                    )
+                    .returning(tables.events.c.id)
+                ).scalar_one()
+            )
+        dispatcher = AgentDispatcher(engine)
+        dispatcher.dispatch_tenant(tenant_id=tenant_id)
+        sealed = dispatcher.seal_due_runs(now=now)
+        assert len(sealed.queued_run_ids) == 1
+        invoker = FakeModelInvoker(
+            GatewayResult(
+                status="succeeded",
+                output=AgentAssessment(
+                    disposition="no_action",
+                    candidate_type=None,
+                    summary="No evidence-backed action is warranted.",
+                    proposed_payload=None,
+                    evidence_event_ids=(),
+                    confidence=0.9,
+                ),
+                error_code=None,
+                structured_attempts=1,
+                removed_context_paths=(),
+            )
+        )
+
+        result = AgentExecutor(engine, model_invoker=invoker).execute_next(now=now)
+
+        assert result.run_id == sealed.queued_run_ids[0]
+        invocation = invoker.invocations[0]
+        assert invocation.agent_key == AgentKey.QUALITY_INTELLIGENCE
+        assert invocation.context["trigger"]["event_type"] == "COMPLAINT_CREATED"  # type: ignore[index]
+        references = invocation.context["references"]  # type: ignore[assignment]
+        assert any(
+            reference["reference_id"] == f"complaint:{complaint_id}"
+            for reference in references  # type: ignore[union-attr]
+        )
+        assert any(
+            reference["reference_id"] == f"event:{event_id}"
+            for reference in references  # type: ignore[union-attr]
+        )
+        assert "PRIVATE-CUSTOMER-REF" not in str(references)
+        assert "private/quality/source.pdf" not in str(references)
+        assert "get_quality_evidence" in invocation.system_prompt
+        assert "get_quality_evidence" not in SYSTEM_PROMPTS[AgentKey.PROJECT_INTELLIGENCE]
+    finally:
+        engine.dispose()
+
+
 def test_executor_persists_gateway_degradation_and_idle_is_model_free(
     executor_database_url: str,
 ) -> None:

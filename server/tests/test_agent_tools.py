@@ -13,7 +13,12 @@ from sqlalchemy import Connection, create_engine, text
 
 from app.ai.embeddings import EmbeddingResult
 from app.ai.runtime_contract import AgentKey, EventReference, FrozenRunContext
-from app.ai.tools import TOOL_DEFINITIONS, AgentReadTools, ToolScopeViolationError
+from app.ai.tools import (
+    TOOL_DEFINITIONS,
+    AgentReadTools,
+    ToolScopeViolationError,
+    tool_definitions_for_agent,
+)
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
@@ -77,20 +82,26 @@ def seed_project(connection: Connection, *, slug: str) -> tuple[UUID, UUID]:
     return tenant_id, project_id
 
 
-def frozen_context(*, tenant_id: UUID, project_id: UUID) -> FrozenRunContext:
+def frozen_context(
+    *,
+    tenant_id: UUID,
+    project_id: UUID,
+    agent_key: AgentKey = AgentKey.PROJECT_INTELLIGENCE,
+    event_type: str = "ISSUE_CREATED",
+) -> FrozenRunContext:
     occurred_at = datetime(2026, 8, 11, 20, 1, tzinfo=UTC)
     return FrozenRunContext(
         tenant_id=tenant_id,
         project_id=project_id,
         run_id=uuid4(),
-        agent_key=AgentKey.PROJECT_INTELLIGENCE,
+        agent_key=agent_key,
         built_at=occurred_at + timedelta(minutes=15),
         window_started_at=occurred_at - timedelta(minutes=1),
         window_ended_at=occurred_at + timedelta(minutes=14),
         trigger_events=(
             EventReference(
                 id=1,
-                event_type="ISSUE_CREATED",
+                event_type=event_type,
                 entity="issue",
                 entity_id=uuid4(),
                 timestamp=occurred_at,
@@ -140,6 +151,15 @@ def test_tool_definitions_freeze_use_do_not_use_negative_example_and_boundary() 
         assert "Negative example" in definition.description
         assert "Boundary" in definition.description
         assert definition.input_example
+
+    assert [
+        definition.name
+        for definition in tool_definitions_for_agent(AgentKey.ENGINEERING_INTELLIGENCE)
+    ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_engineering_evidence"]
+    assert [
+        definition.name for definition in tool_definitions_for_agent(AgentKey.QUALITY_INTELLIGENCE)
+    ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_quality_evidence"]
+    assert tool_definitions_for_agent(AgentKey.PROJECT_INTELLIGENCE) is TOOL_DEFINITIONS
 
 
 def test_tools_fail_close_on_claimed_scope_and_memory_is_explicitly_not_enabled(
@@ -398,5 +418,274 @@ def test_document_fragments_are_tenant_bound_and_never_expose_object_keys(
             ).shown_count
             == 0
         )
+    finally:
+        engine.dispose()
+
+
+def test_engineering_evidence_is_project_bound_allowlisted_and_paginated(
+    agent_tools_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(agent_tools_database_url))
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection, slug="engineering")
+            other_tenant_id, other_project_id = seed_project(connection, slug="engineering-other")
+            actor_id = uuid4()
+            other_actor_id = uuid4()
+            connection.execute(
+                tables.users.insert(),
+                [
+                    {
+                        "id": actor_id,
+                        "tenant_id": tenant_id,
+                        "username": "engineering-actor",
+                        "display_name": "Engineering Actor",
+                        "role": "engineer",
+                    },
+                    {
+                        "id": other_actor_id,
+                        "tenant_id": other_tenant_id,
+                        "username": "other-engineering-actor",
+                        "display_name": "Other Engineering Actor",
+                        "role": "engineer",
+                    },
+                ],
+            )
+            bom_id = uuid4()
+            connection.execute(
+                tables.development_boms.insert(),
+                {
+                    "id": bom_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "created_by_user_id": actor_id,
+                    "bom_type": "ebom",
+                    "code": "EBOM-1",
+                    "name": "Drive EBOM",
+                    "notes": "Internal connector review",
+                },
+            )
+            connection.execute(
+                tables.development_bom_items.insert(),
+                [
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": project_id,
+                        "bom_id": bom_id,
+                        "line_number": line_number,
+                        "part_number": f"PART-{line_number}",
+                        "description": "Connector",
+                        "quantity": 1,
+                        "unit": "ea",
+                        "attributes": {"supplier_secret": "must-not-leave"},
+                    }
+                    for line_number in (10, 20)
+                ],
+            )
+            ecr_id = uuid4()
+            connection.execute(
+                tables.engineering_change_requests.insert(),
+                {
+                    "id": ecr_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "requested_by_user_id": actor_id,
+                    "code": "ECR-1",
+                    "title": "Connector change",
+                    "reason": "Improve retention",
+                },
+            )
+            connection.execute(
+                tables.ecr_affected_boms.insert(),
+                {
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "ecr_id": ecr_id,
+                    "bom_id": bom_id,
+                },
+            )
+            connection.execute(
+                tables.development_boms.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": other_tenant_id,
+                    "project_id": other_project_id,
+                    "created_by_user_id": other_actor_id,
+                    "bom_type": "ebom",
+                    "code": "OTHER-EBOM",
+                    "name": "Other tenant BOM",
+                },
+            )
+        tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                agent_key=AgentKey.ENGINEERING_INTELLIGENCE,
+                event_type="DEVELOPMENT_BOM_ITEM_ADDED",
+            ),
+        )
+
+        first = tools.get_engineering_evidence(project_id=project_id, limit=1)
+        second = tools.get_engineering_evidence(
+            project_id=project_id,
+            offset=first.next_after_id or 0,
+            limit=1,
+        )
+
+        assert first.shown_count == 1 and first.total_count == 2 and first.truncated
+        assert second.shown_count == 1 and second.total_count == 2 and not second.truncated
+        evidence = (*first.items, *second.items)
+        assert {item["entity"] for item in evidence} == {
+            "development_bom",
+            "engineering_change_request",
+        }
+        assert "item_count=2" in str(evidence)
+        assert "OTHER-EBOM" not in str(evidence)
+        assert "supplier_secret" not in str(evidence)
+        assert set(evidence[0]) == {
+            "reference_id",
+            "entity",
+            "entity_id",
+            "label",
+            "excerpt",
+        }
+        with pytest.raises(ToolScopeViolationError):
+            tools.get_engineering_evidence(project_id=uuid4())
+    finally:
+        engine.dispose()
+
+
+def test_quality_evidence_excludes_customer_and_document_identifiers(
+    agent_tools_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(agent_tools_database_url))
+    now = datetime.now(UTC)
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection, slug="quality-evidence")
+            workflow_id = connection.execute(
+                tables.projects.select()
+                .with_only_columns(tables.projects.c.workflow_id)
+                .where(tables.projects.c.id == project_id)
+            ).scalar_one()
+            actor_id = uuid4()
+            connection.execute(
+                tables.users.insert(),
+                {
+                    "id": actor_id,
+                    "tenant_id": tenant_id,
+                    "username": "quality-evidence-actor",
+                    "display_name": "Quality Evidence Actor",
+                    "role": "quality",
+                },
+            )
+            stage_id = uuid4()
+            connection.execute(
+                tables.stages.insert(),
+                {
+                    "id": stage_id,
+                    "tenant_id": tenant_id,
+                    "workflow_id": workflow_id,
+                    "code": "dvt",
+                    "name": "DVT",
+                    "sequence": 1,
+                },
+            )
+            plan_id = uuid4()
+            connection.execute(
+                tables.test_plans.insert(),
+                {
+                    "id": plan_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "workflow_id": workflow_id,
+                    "stage_id": stage_id,
+                    "created_by_user_id": actor_id,
+                    "phase": "dvt",
+                    "title": "DVT Validation",
+                    "sample_size": 1,
+                    "status": "active",
+                },
+            )
+            connection.execute(
+                tables.test_cases.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "plan_id": plan_id,
+                    "created_by_user_id": actor_id,
+                    "title": "Connector retention",
+                    "category": "mechanical",
+                    "acceptance_criteria": "Retains load",
+                    "severity": "critical",
+                    "status": "failed",
+                    "result_notes": "Latch released early",
+                    "executed_by_user_id": actor_id,
+                    "executed_at": now,
+                },
+            )
+            complaint_id = uuid4()
+            connection.execute(
+                tables.complaints.insert(),
+                {
+                    "id": complaint_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "reported_by_user_id": actor_id,
+                    "owner_user_id": actor_id,
+                    "code": "CMP-1",
+                    "title": "Connector release",
+                    "description": "Connector released in field use",
+                    "source": "customer",
+                    "severity": "high",
+                    "occurred_at": now - timedelta(days=1),
+                    "reported_at": now,
+                    "customer_reference": "CUSTOMER-SECRET-REF",
+                    "affected_scope": "DVT connector family",
+                    "document_refs": ["private/quality/object-key.pdf"],
+                },
+            )
+            connection.execute(
+                tables.nonconformance_reports.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "complaint_id": complaint_id,
+                    "owner_user_id": actor_id,
+                    "created_by_user_id": actor_id,
+                    "code": "NCR-1",
+                    "nonconformity": "Retention below requirement",
+                    "requirement_reference": "SPEC-CONN-1",
+                    "severity": "high",
+                    "target_date": now.date() + timedelta(days=14),
+                },
+            )
+        tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                agent_key=AgentKey.QUALITY_INTELLIGENCE,
+                event_type="COMPLAINT_CREATED",
+            ),
+        )
+
+        page = tools.get_quality_evidence(project_id=project_id, limit=10)
+
+        assert page.shown_count == page.total_count == 3
+        assert {item["entity"] for item in page.items} == {
+            "test_case",
+            "complaint",
+            "nonconformance_report",
+        }
+        assert "CUSTOMER-SECRET-REF" not in str(page.items)
+        assert "private/quality/object-key.pdf" not in str(page.items)
+        assert "customer_id" not in str(page.items)
+        with pytest.raises(ToolScopeViolationError):
+            tools.get_quality_evidence(project_id=uuid4())
     finally:
         engine.dispose()
