@@ -48,6 +48,11 @@ class Action(StrEnum):
     GATE_MANAGE = "gate.manage"
     GATE_SIGN = "gate.sign"
     QUALITY_MANAGE = "quality.manage"
+    QUALITY_VIEW = "quality.view"
+    COMPLAINT_CREATE = "complaint.create"
+    CAPA_MANAGE = "capa.manage"
+    CAPA_EXECUTE = "capa.execute"
+    CAPA_VERIFY = "capa.verify"
     CHANGE_VIEW = "change.view"
     CHANGE_EDIT = "change.edit"
     CHANGE_APPROVE = "change.approve"
@@ -77,6 +82,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,
+                Action.QUALITY_VIEW,
+                Action.COMPLAINT_CREATE,
+                Action.CAPA_EXECUTE,
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
@@ -103,6 +111,9 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.DEVELOPMENT_CASE_VIEW,
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
+                Action.QUALITY_VIEW,
+                Action.COMPLAINT_CREATE,
+                Action.CAPA_EXECUTE,
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
@@ -126,6 +137,11 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.WORK_ITEM_VIEW,
                 Action.WORK_ITEM_EDIT,
                 Action.QUALITY_MANAGE,
+                Action.QUALITY_VIEW,
+                Action.COMPLAINT_CREATE,
+                Action.CAPA_MANAGE,
+                Action.CAPA_EXECUTE,
+                Action.CAPA_VERIFY,
                 Action.FINDING_VIEW,
                 Action.FINDING_REVIEW,
                 Action.FINDING_APPLY,
