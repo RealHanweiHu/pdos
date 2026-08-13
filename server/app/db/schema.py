@@ -3962,7 +3962,8 @@ agent_subscriptions = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "agent_key IN ('project_intelligence', 'knowledge_lite')",
+        "agent_key IN ('project_intelligence', 'knowledge_lite', "
+        "'engineering_intelligence', 'quality_intelligence')",
         name="agent_key_allowed",
     ),
     CheckConstraint("status IN ('active', 'paused')", name="status_allowed"),
@@ -4032,7 +4033,8 @@ agent_runs = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "agent_key IN ('project_intelligence', 'knowledge_lite')",
+        "agent_key IN ('project_intelligence', 'knowledge_lite', "
+        "'engineering_intelligence', 'quality_intelligence')",
         name="agent_key_allowed",
     ),
     CheckConstraint(
@@ -4259,7 +4261,11 @@ finding_quality_controls = Table(
     CheckConstraint(
         "(agent_key = 'project_intelligence' AND finding_type IN "
         "('risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly')) OR "
-        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft')",
+        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft') OR "
+        "(agent_key = 'engineering_intelligence' AND finding_type IN "
+        "('bom_impact_suggestion', 'change_impact_suggestion')) OR "
+        "(agent_key = 'quality_intelligence' AND finding_type IN "
+        "('quality_cluster_alert', 'capa_suggestion'))",
         name="type_allowed",
     ),
     CheckConstraint("status IN ('active', 'narrowed')", name="status_allowed"),
@@ -4344,7 +4350,11 @@ findings = Table(
     CheckConstraint(
         "(agent_key = 'project_intelligence' AND finding_type IN "
         "('risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly')) OR "
-        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft')",
+        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft') OR "
+        "(agent_key = 'engineering_intelligence' AND finding_type IN "
+        "('bom_impact_suggestion', 'change_impact_suggestion')) OR "
+        "(agent_key = 'quality_intelligence' AND finding_type IN "
+        "('quality_cluster_alert', 'capa_suggestion'))",
         name="type_allowed",
     ),
     CheckConstraint(
