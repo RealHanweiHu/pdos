@@ -5,7 +5,7 @@ PYTHON := uv run --python 3.12
 
 .DEFAULT_GOAL := help
 
-.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev production-preflight smoke-app smoke-production test lint type typecheck build check sprint2-removal-drill sprint2-redteam verify-s0-1 verify-sprint-0
+.PHONY: help check-env check-test-db setup infra-up infra-down infra-status db-migrate-test dev production-preflight smoke-app smoke-production audit-dependencies test lint type typecheck build check sprint2-removal-drill sprint2-redteam verify-s0-1 verify-sprint-0
 
 help:
 	@printf '%s\n' \
@@ -17,6 +17,7 @@ help:
 		'  make production-preflight  Validate .env.production before migration/deploy' \
 		'  make smoke-app  Run isolated web and API runtime smoke checks' \
 		'  make smoke-production  Build and smoke the production containers against pdos_test' \
+		'  make audit-dependencies  Fail closed on known npm/PyPI lockfile vulnerabilities' \
 		'  make test       Run all unit tests' \
 		'  make lint       Run all lint and formatting checks' \
 		'  make type       Run all static type checks' \
@@ -67,6 +68,9 @@ smoke-production: check-env
 	@$(MAKE) db-migrate-test
 	@./scripts/smoke-production.sh
 
+audit-dependencies:
+	cd server && $(PYTHON) python -m scripts.audit_dependencies
+
 test: check-test-db
 	cd web && $(PNPM) test
 	cd server && $(PYTHON) pytest
@@ -86,7 +90,7 @@ build:
 	cd web && $(PNPM) build
 	cd server && $(PYTHON) python -m compileall -q app migrations
 
-check: lint typecheck test build
+check: audit-dependencies lint typecheck test build
 
 sprint2-removal-drill: check-test-db
 	cd server && $(PYTHON) python -m scripts.sprint2_removal_drill

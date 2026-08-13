@@ -22,13 +22,13 @@ S5-1 本地实现、迁移、数据库权限、fake provider、真实 Chromium�
 | 容器权限 | PASS | API/dispatcher/executor/DingTalk worker UID=`10001`，Web UID=`1001` |
 | 公网回调应用链 | PASS | 无会话 AES callback 经 Next BFF 到 FastAPI；不存在的 route 返回 `404 DINGTALK_CALLBACK_ROUTE_UNKNOWN`，零回执写入、零外部调用 |
 | Web tests | PASS | 35 files / 121 tests |
-| Server tests | PASS | 357 tests |
+| Server tests | PASS | 362 tests |
 | Lint / format | PASS | ESLint、Ruff、Ruff format |
-| Static types | PASS | TypeScript；mypy 203 source files |
+| Static types | PASS | TypeScript；mypy 205 source files |
 | Production build | PASS | Next.js production build 生成 OAuth、AES callback、card callback 与 integration routes；Python compileall 通过 |
 | 部署合同 | PASS | 15 tests；部署后公网 callback edge 探针成为硬门禁，Exit Evidence CLI 进入非 root API 镜像 |
 | Exit Evidence 合同 | PASS | PostgreSQL read-only transaction；完整 SHA + 防篡改 Gate 基线；登录、三类 delivery、审批镜像/Gate 不变、回调、卡片幂等与 outbox 对账 fail-close |
-| 锁文件依赖漏洞 | PASS | OSV.dev 批量核查 917 个 npm/PyPI 锁定版本，结果 0；`cryptography` 已由 46.0.7 升至统一修复版本 50.0.0，production smoke 强制断言 50.x |
+| 锁文件依赖漏洞 | PASS | 固化 `make audit-dependencies` 与 CI fail-close 门禁；OSV.dev 分两批核查 916 个 npm/PyPI registry 锁定版本，结果 0；`cryptography` 已由 46.0.7 升至统一修复版本 50.0.0，production smoke 强制断言 50.x |
 
 以上执行只接触本机 `pdos_test`、本机候选容器和只读本地文件；未连接生产 RDS，未修改钉钉、Nginx、DNS 或生产服务。
 

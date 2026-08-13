@@ -64,6 +64,9 @@ jobs:
       - name: Install locked dependencies
         run: make setup
 
+      - name: Audit locked dependencies with OSV
+        run: make audit-dependencies
+
       - name: Verify pgvector service
         run: >-
           docker exec "${{ job.services.postgres.id }}"

@@ -1243,8 +1243,8 @@
 - `0027_dingtalk_hardening` 以单调递增迁移追加 `agent_id` 约束，保持已提交的 0026 不可变；新增只读 `python -m scripts.check_dingtalk_readiness --tenant-slug <slug>`，不调用钉钉、不写数据库、不输出 secret，一次检查 0026+0027 schema 合同、HTTPS origin、env/binding、回调密码学、2 个用户绑定、项目群与 outbox 基线。扩展后端聚焦 52 项、完整后端 354 项、前端 121 项及 lint/type/production build 全绿；mypy 200 source files 无错误，公网构建产物包含 AES/card 两条 callback route。
 - S5-1 发布级 compose smoke 已在隔离 `pdos_test` 实证：`0027`、Agent 权限重施、API/dispatcher/executor/DingTalk/Web health、非 root UID 和无会话 callback BFF→FastAPI fail-close 全绿；候选容器自动清理。ECS 部署后同一公网 callback edge 探针已成为硬门禁。发布就绪与回滚清单见 `docs/reports/2026-08-13-s5-1-release-readiness.md`；当前仍因真实应用和本次生产授权缺失保持 NO-GO。
 - 新增两阶段只读 Exit Evidence：真实 smoke 前冻结完整 release SHA、tenant/project 与所有 Gate 真值哈希，之后在 PostgreSQL `READ ONLY` transaction 中验证免登、三类 delivery、审批 callback + mirror 且 Gate 不变、card 单次处理与 outbox 清零。baseline 自带摘要且不输出 secret/外部 identity/reference；负向 OAuth/回调、浏览器/RBAC 与 Data Owner 抽查继续保留人工门禁。聚焦正向完整链、读零写、SHA/Gate 漂移和基线篡改 2 项全绿。
-- shipping security checklist 的 OSV 批量审计首次在 917 个锁定依赖中发现 `cryptography 46.0.7` 的 4 个去重公告（7 条含 GHSA/PYSEC 别名），旧候选 `4180cfaaa975f1135e7386ca6c35094d08e3b272` 立即失效；升级到统一修复版本 `50.0.0` 后复查 917 项为 0 finding，production smoke 新增运行时 50.x 硬断言。
-- 最新发布门禁全绿：Server 357 tests，Ruff/format/mypy 203 source files/Python compile；Web 35 files / 121 tests、ESLint/TypeScript 与 production build。
+- shipping security checklist 的 OSV 批量审计首次在锁定依赖中发现 `cryptography 46.0.7` 的 4 个去重公告（7 条含 GHSA/PYSEC 别名），旧候选 `4180cfaaa975f1135e7386ca6c35094d08e3b272` 立即失效；升级到统一修复版本 `50.0.0` 后复查 916 个 npm/PyPI registry 版本为 0 finding，production smoke 新增运行时 50.x 硬断言。该检查已固化为只发送 ecosystem/name/version、固定 OSV 官方 HTTPS 端点、分批有界响应且任何网络/协议/漏洞异常均 fail-close 的 `make audit-dependencies`，并进入 `make check` 与 CI。
+- 最新发布门禁全绿：Server 362 tests，Ruff/format/mypy 205 source files/Python compile；Web 35 files / 121 tests、ESLint/TypeScript 与 production build；锁文件 OSV 审计进入默认 `make check` 与 CI。
 
 **真实应用 Exit Gate（必须由人创建/配置并单独授权）**
 

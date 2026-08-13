@@ -16,6 +16,7 @@ def test_ci_enforces_quality_and_isolated_migration_gates() -> None:
     assert quality["services"]["postgres"]["image"] == ("pgvector/pgvector:0.8.6-pg16-bookworm")
     assert quality["env"]["TEST_DATABASE_URL"].endswith("/pdos_test")
     assert "make lint" in commands
+    assert "make audit-dependencies" in commands
     assert "make type" in commands
     assert "make test" in commands
     assert "make sprint2-removal-drill" in commands
@@ -25,6 +26,18 @@ def test_ci_enforces_quality_and_isolated_migration_gates() -> None:
     assert "scripts.migrate_test" in commands
     assert "CREATE EXTENSION IF NOT EXISTS vector" in commands
     assert "PDOS_LLM_API_KEY" not in workflow_path.read_text()
+
+
+def test_dependency_audit_is_a_fail_closed_make_gate() -> None:
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text()
+    audit = (REPOSITORY_ROOT / "server" / "scripts" / "audit_dependencies.py").read_text()
+
+    assert "audit-dependencies:" in makefile
+    assert "check: audit-dependencies" in makefile
+    assert "https://api.osv.dev/v1/querybatch" in audit
+    assert "MAX_RESPONSE_BYTES" in audit
+    assert "DEPENDENCY_AUDIT_NETWORK_ERROR" in audit
+    assert "DEPENDENCY_AUDIT_RESPONSE_INVALID" in audit
 
 
 def test_web_typecheck_generates_route_types_in_a_clean_checkout() -> None:
