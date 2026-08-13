@@ -91,5 +91,5 @@ def test_deliverable_migration_matches_metadata_and_single_head(
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0020_cehub_migration_v1"
+        "0021_quality_capa"
     ]
