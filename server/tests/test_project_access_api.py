@@ -223,6 +223,8 @@ def test_project_access_http_path_is_tenant_bound_and_membership_gated(
         "gate.sign",
         "gate.view",
         "handoff.view",
+        "memory.draft",
+        "memory.view",
         "product_engineering.edit",
         "product_engineering.view",
         "project.view",

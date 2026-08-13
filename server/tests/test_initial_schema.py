@@ -80,6 +80,8 @@ EXPECTED_TABLES = {
     ("cehub_quality", "capa_actions"),
     ("cehub_quality", "effectiveness_reviews"),
     ("cehub_cost", "cost_bom_items"),
+    ("cehub_memory", "memories"),
+    ("cehub_memory", "memory_embeddings"),
     ("cehub_event", "events"),
     ("cehub_audit", "audit_log"),
     ("cehub_audit", "migration_runs"),

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BookOpenTextIcon,
   ClipboardTextIcon,
   FolderOpenIcon,
   GaugeIcon,
@@ -23,6 +24,13 @@ const navigation = [
   { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
   { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
   { href: "/projects", label: "项目", icon: KanbanIcon, key: "projects" },
+  {
+    href: "/knowledge",
+    label: "知识库",
+    icon: BookOpenTextIcon,
+    key: "knowledge",
+    internalOnly: true,
+  },
   {
     href: "/ai-review",
     label: "AI Review",
@@ -47,7 +55,15 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active: "dashboard" | "requirements" | "cases" | "projects" | "ai-review" | "events" | "model-governance";
+  active:
+    | "dashboard"
+    | "requirements"
+    | "cases"
+    | "projects"
+    | "knowledge"
+    | "ai-review"
+    | "events"
+    | "model-governance";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;

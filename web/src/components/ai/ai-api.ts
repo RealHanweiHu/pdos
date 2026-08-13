@@ -32,7 +32,10 @@ export function isSafePdosHref(value: unknown): value is string {
   }
   try {
     const parsed = new URL(value, "https://pdos.invalid");
-    return parsed.origin === "https://pdos.invalid" && ["/projects", "/ai-review"].includes(parsed.pathname);
+    return (
+      parsed.origin === "https://pdos.invalid" &&
+      ["/projects", "/ai-review", "/knowledge"].includes(parsed.pathname)
+    );
   } catch {
     return false;
   }

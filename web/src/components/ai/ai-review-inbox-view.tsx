@@ -375,7 +375,11 @@ export function AiReviewInboxView({
               {confirmingApply ? (
                 <section className="border-t border-applied/30 bg-applied/5 p-4 sm:p-5" aria-label="最终写入预览">
                   <h3 className="font-semibold text-applied">最终写入预览</h3>
-                  <p className="mt-1 text-xs leading-5 text-muted-foreground">将按下方已接受载荷创建项目 Risk。提交时服务端会重新检查身份、项目状态、run、invocation 与证据真值。</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                    {selected.finding_type === "knowledge_draft"
+                      ? "将按下方已接受载荷创建未验证 Memory 草稿；它不会进入检索，仍须由另一位成员验证。"
+                      : "将按下方已接受载荷创建项目 Risk。提交时服务端会重新检查身份、项目状态、run、invocation 与证据真值。"}
+                  </p>
                   <pre className="mt-3 max-h-52 overflow-auto rounded-lg border bg-background p-3 text-xs leading-5">{JSON.stringify(selected.accepted_payload, null, 2)}</pre>
                 </section>
               ) : null}
@@ -400,15 +404,15 @@ export function AiReviewInboxView({
                     <Button className="h-11" disabled={busy} onClick={() => setRejecting(false)} variant="outline">取消</Button>
                   </>
                 ) : null}
-                {selected.status === "accepted" && selected.finding_type !== "knowledge_draft" && !confirmingApply ? <Button className="h-11" disabled={busy} onClick={() => setConfirmingApply(true)}>应用到业务对象</Button> : null}
-                {selected.status === "accepted" && selected.finding_type !== "knowledge_draft" && confirmingApply ? (
+                {selected.status === "accepted" && !confirmingApply ? <Button className="h-11" disabled={busy} onClick={() => setConfirmingApply(true)}>{selected.finding_type === "knowledge_draft" ? "创建 Memory 草稿" : "应用到业务对象"}</Button> : null}
+                {selected.status === "accepted" && confirmingApply ? (
                   <>
                     <Button className="h-11" disabled={busy} onClick={() => { setConfirmingApply(false); onApply(selected); }}>确认应用</Button>
                     <Button className="h-11" disabled={busy} onClick={() => setConfirmingApply(false)} variant="outline">取消</Button>
                   </>
                 ) : null}
-                {selected.status === "accepted" && selected.finding_type === "knowledge_draft" ? <p className="text-xs text-muted-foreground">知识草稿已接受；verified memory 流程将在 Sprint 4 开放，当前不写业务对象。</p> : null}
-                {selected.status === "applied" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=risks`}>查看已应用 Risk <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type === "memory" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/knowledge?project=${selected.project_id}&memory=${selected.applied_entity_id}`}>查看 Memory 草稿 <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type !== "memory" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=risks`}>查看已应用 Risk <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
                 <span className="ml-auto hidden items-center gap-1 text-[10px] text-muted-foreground xl:inline-flex"><SparkleIcon aria-hidden="true" />j/k 切换条目</span>
               </footer>
             </article>

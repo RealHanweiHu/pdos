@@ -166,7 +166,7 @@ def configured_embedding_gateway(
             "EMBEDDING_DIMENSIONS_INVALID",
             "embedding dimensions invalid",
         ) from error
-    client = httpx2.Client()
+    client = httpx2.Client(follow_redirects=False, trust_env=False)
     try:
         yield OpenAICompatibleEmbeddingGateway(
             client,

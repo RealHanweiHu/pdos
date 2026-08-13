@@ -12,6 +12,7 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import Connection, create_engine, select, text
 
+from app.ai.chat import ChatEvidenceRepository
 from app.ai.embeddings import EmbeddingError, EmbeddingResult
 from app.api.memories import get_embedding_gateway
 from app.auth.passwords import PasswordService
@@ -454,3 +455,25 @@ def test_closed_ncr_can_seed_one_project_bound_memory_draft(
     )
     assert duplicate.status_code == 409
     assert duplicate.json()["detail"]["code"] == "MEMORY_SOURCE_INVALID"
+
+    gateway = FakeEmbeddingGateway()
+    app.dependency_overrides[get_embedding_gateway] = lambda: gateway
+    verified = client.post(
+        f"/api/projects/{project_id}/memories/{created.json()['id']}/verify",
+        headers=login(client, "quality"),
+    )
+    assert verified.status_code == 200
+    engine = create_engine(psycopg_database_url(isolated_memory_database))
+    try:
+        evidence = ChatEvidenceRepository(engine, embedding_gateway=gateway).collect(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            question="What connector CAPA lesson was verified?",
+        )
+    finally:
+        engine.dispose()
+    memory_evidence = [item for item in evidence if item.entity == "memory"]
+    assert [item.reference_id for item in memory_evidence] == [f"memory:{created.json()['id']}"]
+    assert memory_evidence[0].href == (
+        f"/knowledge?project={project_id}&memory={created.json()['id']}"
+    )

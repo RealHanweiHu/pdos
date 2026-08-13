@@ -158,4 +158,64 @@ describe("AiReviewInbox", () => {
       expect.objectContaining({ body: JSON.stringify({ decision: "rejected", comment: "证据不足" }) }),
     ));
   });
+
+  it("applies an accepted knowledge Finding only as an unverified Memory draft", async () => {
+    const user = userEvent.setup();
+    const accepted = {
+      ...finding,
+      agent_key: "knowledge_lite",
+      finding_type: "knowledge_draft",
+      status: "accepted",
+      proposed_payload: {
+        title: "Connector lesson",
+        draft_text: "Validate connector mapping before DVT.",
+        applicability: "Connector projects",
+      },
+      accepted_payload: {
+        title: "Connector lesson",
+        draft_text: "Validate connector mapping before DVT.",
+        applicability: "Connector projects",
+      },
+      reviewed_by_user_id: "user-1",
+      reviewed_at: "2026-08-11T16:05:00Z",
+    };
+    const applied = {
+      ...accepted,
+      status: "applied",
+      applied_by_user_id: "user-1",
+      applied_at: "2026-08-11T16:06:00Z",
+      applied_entity_type: "memory",
+      applied_entity_id: "memory-1",
+    };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path === "/api/ai/findings" && !init?.method) return jsonResponse({ items: [accepted] });
+      if (path.endsWith("/apply")) {
+        return jsonResponse({
+          finding: applied,
+          applied_entity_type: "memory",
+          applied_entity_id: "memory-1",
+          risk_id: null,
+          memory_id: "memory-1",
+          idempotent_replay: false,
+        });
+      }
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<AiReviewInbox />);
+    await user.click(await screen.findByRole("button", { name: "创建 Memory 草稿" }));
+    expect(screen.getByRole("region", { name: "最终写入预览" })).toHaveTextContent(
+      "不会进入检索",
+    );
+    await user.click(screen.getByRole("button", { name: "确认应用" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("未验证 Memory 草稿");
+    expect(screen.getByRole("link", { name: "查看 Memory 草稿" })).toHaveAttribute(
+      "href",
+      "/knowledge?project=project-1&memory=memory-1",
+    );
+  });
 });

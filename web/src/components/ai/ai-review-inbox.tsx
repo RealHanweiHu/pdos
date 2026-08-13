@@ -135,7 +135,12 @@ export function AiReviewInbox() {
     setError(null);
     setStatus(null);
     try {
-      replaceFinding(await applyFinding(finding.id), "Finding 已应用到业务对象，并完成二次鉴权与真值复核");
+      replaceFinding(
+        await applyFinding(finding.id),
+        finding.finding_type === "knowledge_draft"
+          ? "Finding 已应用为未验证 Memory 草稿；仍需另一位成员验证"
+          : "Finding 已应用到业务对象，并完成二次鉴权与真值复核",
+      );
     } catch (applyError) {
       setError(messageFrom(applyError));
     } finally {
