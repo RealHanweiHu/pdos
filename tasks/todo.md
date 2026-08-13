@@ -1128,3 +1128,27 @@
 | 本机 `.env` 仍指向旧 PostgreSQL 端口 55432 | 1 | 验收显式绑定 Docker 当前映射 57432 的隔离 `pdos_test`，未修改用户环境文件、未触碰开发/生产库 |
 | 本地 embedding stub 被继承的系统代理截获并超时 | 1 | client 固定 `trust_env=False` 且禁用重定向；真实浏览器检索随后完整通过 |
 | 全量门禁首先发现初始 schema / Engineer action 快照未包含新增对象 | 1 | 仅追加 Memory 两表及 `memory.draft`/`memory.view` 精确期望，相关聚焦回归与完整门禁均转绿 |
+
+## In Progress: S4-3 Phase 2 双 Agent
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S4-3、AI Runtime Architecture、Event Catalog 与永久 Agent/Finding 安全红线
+- [x] 依赖项：Phase 1 runtime、Finding 人审/Apply、BOM/Change、Test/Complaint/CAPA 与 verified Memory 均已就绪
+- [x] 范围冻结：Engineering Intelligence 只做 BOM/Change 影响建议；Quality Intelligence 只做 Test/Complaint 聚类与 CAPA 风险建议
+- [x] 安全边界：Agent 只写 Finding；二次 Apply 只创建 Risk，不直接改工程或质量 SoR；新增证据只经 lease-bound 投影
+- [x] migration：`0024_phase_two_agents`；合同见 `docs/design/2026-08-12-s4-3-phase-two-agents-contract.md`
+
+**Implementation slices**
+
+- [x] S4-3a：冻结 Agent/event/Finding/payload/apply/projection/golden-case 契约
+- [ ] S4-3b：migration 0024 扩展 Agent/Finding 数据库合同及往返/漂移验收
+- [ ] S4-3c：增加 Engineering/Quality prompt、静态路由、确定性预检与 golden suite
+- [ ] S4-3d：增加 lease-bound 工程/质量只读投影、工具与模型 reference 白名单
+- [ ] S4-3e：接通 dispatcher→executor→Finding→Review→Risk Apply 全链路及受限账号测试
+- [ ] S4-3f：更新 AI Review 标签并完成真实 HTTP/worker/浏览器验收
+- [ ] S4-3g：完成全量 DoD、更新 canonical checkbox 和当前指针到 S4-4
+
+**Current evidence（2026-08-12）**
+
+- 推荐 v1 采用四种 risk-shaped Finding；工程/质量事实不由 Agent 直接修改，Accept/Edit/Reject 与 Apply 继续复用已验证的双人工动作。
