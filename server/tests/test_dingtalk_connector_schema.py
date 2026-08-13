@@ -10,7 +10,7 @@ from alembic.autogenerate import compare_metadata
 from alembic.config import Config
 from alembic.migration import MigrationContext
 from alembic.script import ScriptDirectory
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import DBAPIError
 
 from app.db.namespaces import SCHEMAS
@@ -52,6 +52,7 @@ def test_metadata_freezes_dingtalk_identity_delivery_and_receipt_boundaries() ->
     assert actual >= DINGTALK_TABLES
     assert not tables.dingtalk_tenant_bindings.c.tenant_id.nullable
     assert not tables.dingtalk_user_bindings.c.open_id.nullable
+    assert not tables.dingtalk_user_bindings.c.staff_id.nullable
     assert not tables.dingtalk_oauth_states.c.state_digest.nullable
     assert not tables.integration_outbox.c.payload.nullable
     assert not tables.integration_receipts.c.payload_digest.nullable
@@ -100,6 +101,12 @@ def test_dingtalk_migration_round_trip_and_lossy_downgrade_guard(
     connector_database_url: str,
 ) -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
+    cleanup_engine = create_engine(psycopg_database_url(connector_database_url))
+    try:
+        with cleanup_engine.begin() as connection:
+            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+    finally:
+        cleanup_engine.dispose()
     command.downgrade(config, "0025_context_builder_v2")
     command.upgrade(config, "head")
 

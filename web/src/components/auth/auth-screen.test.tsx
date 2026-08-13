@@ -182,4 +182,41 @@ describe("AuthScreen", () => {
     expect(screen.getByLabelText("密码")).toHaveValue("");
     await waitFor(() => expect(screen.getByLabelText("密码")).toHaveFocus());
   });
+
+  it("starts DingTalk OAuth only after a tenant is supplied", async () => {
+    const user = userEvent.setup();
+    const assign = vi.fn();
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ needs_setup: false }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          authorization_url:
+            "https://login.dingtalk.com/oauth2/auth?client_id=client&state=opaque",
+          expires_in: 300,
+        }),
+      );
+    vi.stubGlobal("location", { assign });
+
+    render(<AuthScreen />);
+
+    await screen.findByRole("heading", { name: "登录 PDOS" });
+    const dingTalk = screen.getByRole("button", { name: "使用钉钉登录" });
+    expect(dingTalk).toBeDisabled();
+    await user.type(screen.getByLabelText("租户标识"), "beepump");
+    expect(dingTalk).toBeEnabled();
+    await user.click(dingTalk);
+
+    await waitFor(() => expect(assign).toHaveBeenCalledOnce());
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "/api/session/dingtalk/start",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ tenant_slug: "beepump", return_path: "/" }),
+      }),
+    );
+    expect(assign).toHaveBeenCalledWith(
+      "https://login.dingtalk.com/oauth2/auth?client_id=client&state=opaque",
+    );
+  });
 });

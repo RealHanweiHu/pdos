@@ -5,7 +5,7 @@ export const SESSION_COOKIE_NAME = "pdos_access_token";
 const MAX_REQUEST_BYTES = 16_384;
 const MAX_TOKEN_LENGTH = 4_096;
 
-type TokenResponse = {
+export type TokenResponse = {
   access_token: string;
   token_type: "bearer";
   expires_in: number;
@@ -56,8 +56,7 @@ export async function readBoundedJson(request: Request): Promise<Record<string, 
   return body as Record<string, unknown>;
 }
 
-export async function readTokenResponse(response: Response): Promise<TokenResponse> {
-  const body: unknown = await response.json();
+export function parseTokenResponse(body: unknown): TokenResponse {
   if (
     body === null ||
     typeof body !== "object" ||
@@ -81,6 +80,10 @@ export async function readTokenResponse(response: Response): Promise<TokenRespon
     throw new InvalidUpstreamResponseError("Malformed authentication response");
   }
   return token as TokenResponse;
+}
+
+export async function readTokenResponse(response: Response): Promise<TokenResponse> {
+  return parseTokenResponse(await response.json());
 }
 
 export async function persistSession(token: TokenResponse) {

@@ -87,11 +87,17 @@ def apply_agent_runtime_security() -> None:
                 ),
                 has_table_privilege(
                     'pdos_agent', 'cehub_ai.findings', 'INSERT'
+                ),
+                has_table_privilege(
+                    'pdos_agent', 'cehub_event.integration_outbox', 'INSERT'
+                ),
+                has_table_privilege(
+                    'pdos_agent', 'cehub_core.dingtalk_user_bindings', 'SELECT'
                 )
             """
         )
         privileges = cursor.fetchone()
-    expected = (True, True, False, False, True, False)
+    expected = (True, True, False, False, True, False, False, False)
     if privileges != expected:
         raise UnsafeSecurityApplyError(
             "Agent runtime privilege verification failed after security application"

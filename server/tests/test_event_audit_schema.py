@@ -8,7 +8,7 @@ from uuid import uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import create_engine, inspect, select, update
+from sqlalchemy import create_engine, inspect, select, text, update
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from app.auth.roles import Role
@@ -27,6 +27,13 @@ def event_audit_database_url() -> Iterator[str]:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
 
     try:
+        command.upgrade(config, "head")
+        cleanup_engine = create_engine(psycopg_database_url(test_url))
+        try:
+            with cleanup_engine.begin() as connection:
+                connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+        finally:
+            cleanup_engine.dispose()
         command.downgrade(config, "0002_rbac")
         engine = create_engine(psycopg_database_url(test_url))
         try:

@@ -130,6 +130,35 @@ export function AuthScreen({
     }
   }
 
+  async function startDingTalk(tenantSlug: string): Promise<SubmissionResult> {
+    try {
+      const response = await fetch("/api/session/dingtalk/start", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tenant_slug: tenantSlug, return_path: "/" }),
+      });
+      if (!response.ok) return { ok: false, message: await responseError(response) };
+      const body: unknown = await response.json();
+      if (
+        !body ||
+        typeof body !== "object" ||
+        !("authorization_url" in body) ||
+        typeof body.authorization_url !== "string"
+      ) {
+        return { ok: false, message: "钉钉登录暂不可用。" };
+      }
+      const authorizationUrl = new URL(body.authorization_url);
+      if (authorizationUrl.protocol !== "https:" || authorizationUrl.hostname !== "login.dingtalk.com") {
+        return { ok: false, message: "钉钉登录地址验证失败。" };
+      }
+      window.location.assign(authorizationUrl.toString());
+      return { ok: true };
+    } catch {
+      return { ok: false, message: "钉钉登录暂不可用。" };
+    }
+  }
+
   if (screen === "loading") {
     return (
       <AuthFrame>
@@ -188,7 +217,11 @@ export function AuthScreen({
       {setup ? (
         <SetupForm busy={busy} onSubmit={(payload) => submit("/api/session/setup", payload)} />
       ) : (
-        <LoginForm busy={busy} onSubmit={(payload) => submit("/api/session/login", payload)} />
+        <LoginForm
+          busy={busy}
+          onDingTalk={startDingTalk}
+          onSubmit={(payload) => submit("/api/session/login", payload)}
+        />
       )}
       <p className="mt-6 border-t pt-4 text-xs leading-5 text-muted-foreground">
         会话令牌仅保存在 HttpOnly cookie 中，不写入浏览器存储，也不会显示在页面上。

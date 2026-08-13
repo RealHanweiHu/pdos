@@ -1,7 +1,7 @@
 # S5-1 钉钉连接器 v1 契约
 
 日期：2026-08-12  
-状态：Frozen for implementation  
+状态：Local implementation complete; real application gate pending
 迁移：`0026_dingtalk_connector`
 
 ## 1. 范围与非范围
@@ -51,7 +51,7 @@
 ### `cehub_core.dingtalk_user_bindings`
 
 - `tenant_id + user_id` 唯一；`tenant_id + corp_id + open_id` 唯一；
-- 保存由钉钉签发并经 OAuth 验证的 `open_id`，可选 `union_id`；不保存用户 access token、refresh token、手机号、昵称或头像；
+- 保存由钉钉签发并经 OAuth 验证的 `open_id`、组织成员 `staff_id`，可选 `union_id`；`staff_id` 仅用于需要 userid 的审批/卡片接口，禁止把 openId 猜作 userid；不保存用户 access token、refresh token、手机号、昵称或头像；
 - 只允许用户通过已登录会话显式自绑定，或 Owner/Admin 解除绑定；禁止客户端直接提交外部 ID 绑定另一个用户。
 
 ### `cehub_core.dingtalk_oauth_states`
@@ -109,7 +109,7 @@
 
 1. state 必须未过期、未消费、摘要匹配；开始远端交换前原子消费，失败后重新开始流程，不复用 state。
 2. 用户 token 响应的 `corpId` 必须与 state tenant 的 active binding 相同。
-3. `/contact/users/me` 必须返回非空 `openId`；link 模式只能绑定 state 中的本地 user；login 模式只能命中已有 active binding。
+3. `/contact/users/me` 必须返回非空 `openId` 与成员 `userId/staffId`；link 模式只能绑定 state 中的本地 user；login 模式只能命中已有 active binding。
 4. unionId/mobile/nick/email 不能作为自动匹配依据；未绑定返回 `DINGTALK_IDENTITY_NOT_LINKED`，不自动创建用户。
 5. 本地 user/tenant 必须仍 active；成功登录复用现有 TokenCodec，并落 `USER_SIGNED_IN` + Audit，`authentication_method=dingtalk_oauth`。
 

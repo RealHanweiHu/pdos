@@ -19,6 +19,7 @@ class DingTalkClientError(RuntimeError):
 class DingTalkIdentity:
     corp_id: str
     open_id: str
+    staff_id: str
     union_id: str | None
 
 
@@ -75,6 +76,7 @@ class DingTalkOAuthClient:
             return DingTalkIdentity(
                 corp_id=corp_id,
                 open_id=_required_text(me_body.get("openId")),
+                staff_id=_required_text(me_body.get("userId") or me_body.get("staffId")),
                 union_id=_optional_text(me_body.get("unionId")),
             )
         except DingTalkClientError:

@@ -208,6 +208,7 @@ def upgrade() -> None:
         sa.Column("user_id", sa.Uuid(), nullable=False),
         sa.Column("corp_id", sa.String(length=128), nullable=False),
         sa.Column("open_id", sa.String(length=256), nullable=False),
+        sa.Column("staff_id", sa.String(length=256), nullable=False),
         sa.Column("union_id", sa.String(length=256), nullable=True),
         sa.Column(
             "status", sa.String(length=16), server_default=sa.text("'active'"), nullable=False
@@ -225,7 +226,7 @@ def upgrade() -> None:
             name=op.f("ck_dingtalk_user_bindings_lifecycle_consistent"),
         ),
         sa.CheckConstraint(
-            "btrim(corp_id) <> '' AND btrim(open_id) <> ''",
+            "btrim(corp_id) <> '' AND btrim(open_id) <> '' AND btrim(staff_id) <> ''",
             name=op.f("ck_dingtalk_user_bindings_identity_nonblank"),
         ),
         sa.CheckConstraint(
@@ -258,6 +259,12 @@ def upgrade() -> None:
             "corp_id",
             "open_id",
             name="uq_dingtalk_user_bindings_tenant_external_identity",
+        ),
+        sa.UniqueConstraint(
+            "tenant_id",
+            "corp_id",
+            "staff_id",
+            name="uq_dingtalk_user_bindings_tenant_staff_identity",
         ),
         sa.UniqueConstraint("tenant_id", "id", name="uq_dingtalk_user_bindings_tenant_id_id"),
         sa.UniqueConstraint("tenant_id", "user_id", name="uq_dingtalk_user_bindings_tenant_user"),
@@ -453,6 +460,7 @@ def upgrade() -> None:
             "status", sa.String(length=16), server_default=sa.text("'queued'"), nullable=False
         ),
         sa.Column("remote_result", sa.String(length=32), nullable=True),
+        sa.Column("sync_requested_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),

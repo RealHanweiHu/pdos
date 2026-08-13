@@ -9,13 +9,17 @@ import { FormField } from "./form-field";
 
 export function LoginForm({
   busy,
+  onDingTalk,
   onSubmit,
 }: {
   busy: boolean;
+  onDingTalk: (tenantSlug: string) => Promise<SubmissionResult>;
   onSubmit: (payload: LoginPayload) => Promise<SubmissionResult>;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
+  const [tenantSlug, setTenantSlug] = useState("");
+  const [dingTalkBusy, setDingTalkBusy] = useState(false);
   const passwordRef = useRef<HTMLInputElement>(null);
 
   async function submit(formData: FormData) {
@@ -55,6 +59,7 @@ export function LoginForm({
         id="tenant-slug"
         label="租户标识"
         name="tenant_slug"
+        onChange={(event) => setTenantSlug(event.target.value)}
         placeholder="例如 beepump"
         required
       />
@@ -83,6 +88,27 @@ export function LoginForm({
       />
       <Button className="h-11 w-full" disabled={busy} type="submit">
         {busy ? "正在验证…" : "登录"}
+      </Button>
+      <div className="flex items-center gap-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">或</span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <Button
+        className="h-11 w-full"
+        disabled={busy || dingTalkBusy || tenantSlug.trim().length < 2}
+        onClick={() => {
+          setError(null);
+          setDingTalkBusy(true);
+          void onDingTalk(tenantSlug.trim()).then((result) => {
+            if (!result.ok) setError(result.message);
+            setDingTalkBusy(false);
+          });
+        }}
+        type="button"
+        variant="outline"
+      >
+        {dingTalkBusy ? "正在前往钉钉…" : "使用钉钉登录"}
       </Button>
     </form>
   );

@@ -64,6 +64,13 @@ services:
       PDOS_LLM_ANTHROPIC_MODEL: "${PDOS_LLM_ANTHROPIC_MODEL:-claude-sonnet-5}"
       PDOS_LLM_ANTHROPIC_API_KEY: "${PDOS_LLM_ANTHROPIC_API_KEY:-}"
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      PDOS_DINGTALK_CLIENT_ID: "${PDOS_DINGTALK_CLIENT_ID:-}"
+      PDOS_DINGTALK_CLIENT_SECRET: "${PDOS_DINGTALK_CLIENT_SECRET:-}"
+      PDOS_DINGTALK_CALLBACK_TOKEN: "${PDOS_DINGTALK_CALLBACK_TOKEN:-}"
+      PDOS_DINGTALK_CALLBACK_AES_KEY: "${PDOS_DINGTALK_CALLBACK_AES_KEY:-}"
+      PDOS_DINGTALK_CARD_CALLBACK_SECRET: "${PDOS_DINGTALK_CARD_CALLBACK_SECRET:-}"
+      PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+      PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
       S3_ENDPOINT: "${S3_ENDPOINT:?S3_ENDPOINT must be set}"
       S3_REGION: "${S3_REGION:?S3_REGION must be set}"
       S3_BUCKET: "${S3_BUCKET:?S3_BUCKET must be set}"
@@ -136,6 +143,34 @@ services:
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
     healthcheck:
       test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_executor' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  dingtalk:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_dingtalk_connector"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_DINGTALK_CLIENT_ID: "${PDOS_DINGTALK_CLIENT_ID:-}"
+      PDOS_DINGTALK_CLIENT_SECRET: "${PDOS_DINGTALK_CLIENT_SECRET:-}"
+      PDOS_DINGTALK_CALLBACK_TOKEN: "${PDOS_DINGTALK_CALLBACK_TOKEN:-}"
+      PDOS_DINGTALK_CALLBACK_AES_KEY: "${PDOS_DINGTALK_CALLBACK_AES_KEY:-}"
+      PDOS_DINGTALK_CARD_CALLBACK_SECRET: "${PDOS_DINGTALK_CARD_CALLBACK_SECRET:-}"
+      PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+      PDOS_DINGTALK_POLL_SECONDS: "${PDOS_DINGTALK_POLL_SECONDS:-2}"
+      PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_dingtalk_connector' in Path('/proc/1/cmdline').read_bytes() else 1)"]
       interval: 10s
       timeout: 3s
       retries: 3

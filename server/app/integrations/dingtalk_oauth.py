@@ -221,6 +221,7 @@ class DingTalkOAuthRepository:
                             user_id=state.link_user_id,
                             corp_id=identity.corp_id,
                             open_id=identity.open_id,
+                            staff_id=identity.staff_id,
                             union_id=identity.union_id,
                             status="active",
                             bound_at=now,
@@ -236,6 +237,7 @@ class DingTalkOAuthRepository:
                         .values(
                             corp_id=identity.corp_id,
                             open_id=identity.open_id,
+                            staff_id=identity.staff_id,
                             union_id=identity.union_id,
                             status="active",
                             bound_at=now,

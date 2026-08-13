@@ -8,6 +8,7 @@ import {
   GearSixIcon,
   KanbanIcon,
   PulseIcon,
+  PlugsConnectedIcon,
   SignOutIcon,
   TrayIcon,
 } from "@phosphor-icons/react";
@@ -46,6 +47,13 @@ const navigation = [
     key: "model-governance",
     adminOnly: true,
   },
+  {
+    href: "/settings/integrations/dingtalk",
+    label: "钉钉集成",
+    icon: PlugsConnectedIcon,
+    key: "dingtalk-integration",
+    internalOnly: true,
+  },
 ] as const;
 
 export function WorkspaceShell({
@@ -63,7 +71,8 @@ export function WorkspaceShell({
     | "knowledge"
     | "ai-review"
     | "events"
-    | "model-governance";
+    | "model-governance"
+    | "dingtalk-integration";
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;

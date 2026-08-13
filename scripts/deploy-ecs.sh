@@ -175,7 +175,7 @@ verify_release() {
   local log_file
   log_file="$(mktemp)"
   chmod 600 "$log_file"
-  if ! compose_config logs --since 10m --no-color api dispatcher executor web \
+  if ! compose_config logs --since 10m --no-color api dispatcher executor dingtalk web \
       >"$log_file" 2>&1; then
     rm -f "$log_file"
     echo "Release verification failed while reading bounded service logs" >&2
@@ -196,7 +196,7 @@ deploy_release() {
   compose_config run --rm --no-deps migrate
   compose_config run --rm --no-deps api \
     python -m scripts.apply_agent_runtime_security
-  compose_config up -d --no-build --wait --no-deps api dispatcher executor
+  compose_config up -d --no-build --wait --no-deps api dispatcher executor dingtalk
   compose_config up -d --no-build --wait --no-deps web
   verify_release
 }
@@ -219,7 +219,7 @@ rollback_release() {
   require_confirmation PDOS_ROLLBACK_CONFIRM "rollback:${rollback_tag}"
   verify_image_revisions "$rollback_tag" true
   PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
-    up -d --no-deps --no-build --wait api dispatcher executor
+    up -d --no-deps --no-build --wait api dispatcher executor dingtalk
   PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
     up -d --no-deps --no-build --wait web
   verify_release

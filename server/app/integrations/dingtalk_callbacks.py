@@ -37,6 +37,12 @@ class ReceiptClaim:
     replay: bool
 
 
+@dataclass(frozen=True)
+class CallbackClassification:
+    result_code: str
+    process_instance_id: str | None = None
+
+
 class DingTalkCallbackRepository:
     def __init__(self, engine: Engine) -> None:
         self._engine = engine
@@ -90,6 +96,7 @@ class DingTalkCallbackRepository:
                         select(
                             tables.integration_receipts.c.id,
                             tables.integration_receipts.c.payload_digest,
+                            tables.integration_receipts.c.status,
                         ).where(
                             tables.integration_receipts.c.tenant_id == tenant_id,
                             tables.integration_receipts.c.channel == "event_aes",
@@ -101,7 +108,10 @@ class DingTalkCallbackRepository:
                 )
             if existing is None or existing["payload_digest"] != payload_digest:
                 raise DingTalkCallbackError("DINGTALK_CALLBACK_REPLAY_CONFLICT") from None
-            return ReceiptClaim(receipt_id=existing["id"], replay=True)
+            return ReceiptClaim(
+                receipt_id=existing["id"],
+                replay=existing["status"] in {"processed", "ignored"},
+            )
 
     def complete_receipt(self, *, receipt_id: UUID, result_code: str, now: datetime) -> None:
         with self._engine.begin() as connection:
@@ -113,6 +123,25 @@ class DingTalkCallbackRepository:
                 )
                 .values(status="processed", result_code=result_code, processed_at=now)
             )
+
+    def request_approval_sync(
+        self,
+        *,
+        tenant_id: UUID,
+        process_instance_id: str,
+        now: datetime,
+    ) -> None:
+        with self._engine.begin() as connection:
+            result = connection.execute(
+                update(tables.dingtalk_approval_instances)
+                .where(
+                    tables.dingtalk_approval_instances.c.tenant_id == tenant_id,
+                    tables.dingtalk_approval_instances.c.remote_instance_id == process_instance_id,
+                )
+                .values(sync_requested_at=now, updated_at=now)
+            )
+            if result.rowcount != 1:
+                raise DingTalkCallbackError("DINGTALK_APPROVAL_UNKNOWN")
 
 
 class DingTalkCallbackService:
@@ -168,26 +197,32 @@ class DingTalkCallbackService:
             received_at=current,
         )
         if not claim.replay:
-            result_code = self._classify(payload)
+            classification = self._classify(payload)
+            if classification.process_instance_id is not None:
+                self._repository.request_approval_sync(
+                    tenant_id=binding.tenant_id,
+                    process_instance_id=classification.process_instance_id,
+                    now=current,
+                )
             self._repository.complete_receipt(
                 receipt_id=claim.receipt_id,
-                result_code=result_code,
+                result_code=classification.result_code,
                 now=current,
             )
         return cipher.encrypt_response(nonce=nonce, now=current)
 
     @staticmethod
-    def _classify(payload: object) -> str:
+    def _classify(payload: object) -> CallbackClassification:
         if not isinstance(payload, dict):
             raise DingTalkCallbackError("DINGTALK_CALLBACK_JSON_INVALID")
         event_type = payload.get("EventType") or payload.get("eventType")
         if not isinstance(event_type, str) or not 1 <= len(event_type) <= 128:
-            return "ignored_unknown"
+            return CallbackClassification("ignored_unknown")
         if event_type == "check_url":
-            return "challenge_verified"
+            return CallbackClassification("challenge_verified")
         if event_type in {"bpms_instance_change", "bpms_task_change"}:
             process_instance_id = payload.get("processInstanceId")
             if not isinstance(process_instance_id, str) or not 1 <= len(process_instance_id) <= 256:
-                return "ignored_missing_process_instance_id"
-            return "approval_sync_requested"
-        return "ignored_unknown"
+                return CallbackClassification("ignored_missing_process_instance_id")
+            return CallbackClassification("approval_sync_requested", process_instance_id)
+        return CallbackClassification("ignored_unknown")

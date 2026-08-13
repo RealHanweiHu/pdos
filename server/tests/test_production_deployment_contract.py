@@ -18,15 +18,17 @@ def production_services() -> dict[str, dict[str, object]]:
 def test_production_compose_exposes_only_the_web_service() -> None:
     services = production_services()
 
-    assert set(services) == {"migrate", "api", "dispatcher", "executor", "web"}
+    assert set(services) == {"migrate", "api", "dispatcher", "executor", "dingtalk", "web"}
     assert "ports" not in services["api"]
     assert "ports" not in services["migrate"]
     assert "ports" not in services["dispatcher"]
     assert "ports" not in services["executor"]
+    assert "ports" not in services["dingtalk"]
     assert "extra_hosts" not in services["api"]
     assert "extra_hosts" not in services["migrate"]
     assert "extra_hosts" not in services["dispatcher"]
     assert "extra_hosts" not in services["executor"]
+    assert "extra_hosts" not in services["dingtalk"]
     assert services["web"]["ports"] == ["127.0.0.1:${APP_PORT:-3002}:3000"]
     assert services["web"]["networks"] == {
         "default": {"aliases": ["pdos-web"]},
@@ -40,6 +42,7 @@ def test_production_startup_orders_migration_api_and_web() -> None:
     api_dependencies = cast(dict[str, dict[str, str]], services["api"]["depends_on"])
     dispatcher_dependencies = cast(dict[str, dict[str, str]], services["dispatcher"]["depends_on"])
     executor_dependencies = cast(dict[str, dict[str, str]], services["executor"]["depends_on"])
+    dingtalk_dependencies = cast(dict[str, dict[str, str]], services["dingtalk"]["depends_on"])
     web_dependencies = cast(dict[str, dict[str, str]], services["web"]["depends_on"])
     api_healthcheck = cast(dict[str, object], services["api"]["healthcheck"])
     web_healthcheck = cast(dict[str, object], services["web"]["healthcheck"])
@@ -48,6 +51,7 @@ def test_production_startup_orders_migration_api_and_web() -> None:
     assert api_dependencies["migrate"]["condition"] == "service_completed_successfully"
     assert dispatcher_dependencies["migrate"]["condition"] == "service_completed_successfully"
     assert executor_dependencies["migrate"]["condition"] == "service_completed_successfully"
+    assert dingtalk_dependencies["migrate"]["condition"] == "service_completed_successfully"
     assert web_dependencies["api"]["condition"] == "service_healthy"
     assert api_healthcheck["test"]
     assert web_healthcheck["test"]
@@ -93,6 +97,27 @@ def test_production_dispatcher_and_executor_have_disjoint_runtime_credentials() 
     assert executor_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
     assert "scripts.run_dispatcher" in str(dispatcher_healthcheck["test"])
     assert "scripts.run_executor" in str(executor_healthcheck["test"])
+
+
+def test_production_dingtalk_worker_is_app_role_fail_closed_and_fixed_egress() -> None:
+    service = production_services()["dingtalk"]
+    environment = cast(dict[str, str], service["environment"])
+    healthcheck = cast(dict[str, object], service["healthcheck"])
+    source = (REPOSITORY_ROOT / "server" / "scripts" / "run_dingtalk_connector.py").read_text()
+
+    assert service["command"] == ["python", "-m", "scripts.run_dingtalk_connector"]
+    assert environment["DATABASE_URL"] == "${DATABASE_URL:?DATABASE_URL must be set}"
+    assert environment["PDOS_DINGTALK_DELIVERY_ENABLED"] == (
+        "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+    )
+    assert environment["PDOS_PUBLIC_BASE_URL"] == (
+        "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+    )
+    assert "PDOS_AGENT_DATABASE_URL" not in environment
+    assert "PDOS_WORKER_DATABASE_URL" not in environment
+    assert "follow_redirects=False" in source
+    assert "trust_env=False" in source
+    assert "scripts.run_dingtalk_connector" in str(healthcheck["test"])
 
 
 def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> None:
@@ -241,7 +266,7 @@ def test_ecs_rollback_never_runs_an_old_migrator_or_downgrades_the_database() ->
     assert "PDOS_ROLLBACK_IMAGE_TAG" in rollback
     assert "PDOS_LEGACY_ROLLBACK_CONFIRM" in source
     assert 'verify_image_revisions "$rollback_tag" true' in rollback
-    assert "--no-deps --no-build --wait api dispatcher executor" in rollback
+    assert "--no-deps --no-build --wait api dispatcher executor dingtalk" in rollback
     assert "--no-deps --no-build --wait web" in rollback
     assert "migrate" not in rollback
     assert "downgrade" not in rollback
@@ -338,5 +363,7 @@ def test_runtime_security_apply_helper_is_fail_closed_and_does_not_log_database_
     assert 'database != "pdos"' in source
     assert "prepare=False" in source
     assert "has_table_privilege" in source
+    assert "cehub_event.integration_outbox" in source
+    assert "cehub_core.dingtalk_user_bindings" in source
     assert "Production Agent runtime security boundary applied" in source
     assert "print(database_url)" not in source

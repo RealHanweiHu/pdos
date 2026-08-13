@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S5-1 钉钉连接器。** Sprint 4 Exit Gate 已于 2026-08-12 经人明确确认通过；Sprint 5 按 canonical 顺序推进。
+> 唯一当前指针：**S5-1 真实钉钉应用 Exit Gate。** 本地实现、隔离测试与真实浏览器验收已完成；等待人创建/配置独立应用并单独授权真实应用 smoke，未获确认前不进入 S5-2。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1208,7 +1208,7 @@
 
 人工于 2026-08-12 明确回复“确认 Sprint 4 Exit Gate，进入 Sprint 5”。该确认只批准移动执行指针，不构成生产部署、创建/修改钉钉应用、回调地址、群机器人、审批模板或其他外部系统变更授权。
 
-## In Progress: S5-1 钉钉连接器
+## In Progress: S5-1 钉钉连接器（本地完成，真实应用 Gate 待人）
 
 **Definition of Ready**
 
@@ -1223,9 +1223,9 @@
 - [x] S5-1a：审计规格与老 CEHub 协议实现，冻结 v1 数据/API/安全/可靠性契约
 - [x] S5-1b：实现独立钉钉应用配置、免登 code exchange 与本地 session 建立
 - [x] S5-1c：实现签名/时间窗/nonce/AES 回调验证、幂等事件接收与 URL challenge
-- [ ] S5-1d：实现审批发起/结果回调、群通知与交互卡片模板机制
-- [ ] S5-1e：实现 outbox、退避重试、重放/对账、显式人工降级与运维可观测性
-- [ ] S5-1f：完成迁移/安全/完整门禁、fake server + 真实浏览器/API 运行验收
+- [x] S5-1d：实现审批发起/结果回调、群通知与交互卡片模板机制
+- [x] S5-1e：实现 outbox、退避重试、重放/对账、显式人工降级与运维可观测性
+- [x] S5-1f：完成迁移/安全/完整门禁、fake server + 真实浏览器/API 运行验收
 - [ ] S5-1g：更新 canonical checkbox 与当前指针到 S5-2
 
 **Current evidence（2026-08-12）**
@@ -1236,6 +1236,19 @@
 - `0026_dingtalk_connector` 建立 8 个租户隔离实体并通过 `0026→0025→0026`、metadata 零漂移、单一 head 与有数据 downgrade fail-close 验收。
 - 免登只走固定官方主机；state 原文不落库且在远端交换前原子消费，corp 必须精确匹配，link 只绑定当前会话用户，login 只命中已有绑定。fake transport + 原认证/RBAC/Event 回归 26 项全绿，OAuth code/user token 未进入数据库、Event/Audit 或日志。
 - AES 回调采用 32-byte key、AES-256-CBC、严格 PKCS#7/4-byte 长度/JSON object/尾部 CorpID 校验；签名常量时间比较，timestamp 仅容忍 ±5 分钟，nonce/ciphertext 有界。固定向量、challenge 加密 ACK、同摘要重放零二次处理与异摘要冲突等 7 项验收全绿；未知事件只 ACK，审批固定字段仅形成待同步标记，零 Gate 写入。
+- 审批、群通知与互动卡片统一进入 durable outbox；稳定 idempotency/request/outTrack ID、skip-locked lease、退避重试、确定失败、create 结果 uncertain 隔离、人工对账后重放、lease 过期 quarantine 与 delivery disabled→manual 均有正反例。远端审批只更新镜像，PDOS Gate 状态保持不变。
+- 生产 compose 增加独立 `dingtalk` worker，部署/回滚顺序与运行手册同步；生产安全重施脚本显式断言 `pdos_agent` 对 `integration_outbox` 无 INSERT、对钉钉身份表无 SELECT。数据库安全、迁移、部署合同和连接器聚焦验收 38 项全绿。
+- 真实 Chromium 仅连接 `pdos_test` 与 fake provider：Owner password-free login 成功；集成页显示应用/绑定/manual/outbox 状态；390×844 无横向溢出；Supplier 无导航、直接访问明确拒绝且网络只有 `/api/session/me`，零钉钉集成 API 请求；本地 PDOS 页面 console 0 warning/0 error。临时浏览器与 API/Web 进程已关闭。
+- 完整门禁全绿：Server 343 tests，Ruff/format/mypy 117 source files/Python compile；Web 34 files / 116 tests、ESLint/TypeScript 与 webpack production build。
+
+**真实应用 Exit Gate（必须由人创建/配置并单独授权）**
+
+- [ ] 独立企业内部应用、最小权限、OAuth redirect、AES callback、机器人/测试群、审批模板与 card template 已由人配置
+- [ ] 真实已绑定用户完成 1 次 password-free login；未绑定、错 corp、state replay 均拒绝
+- [ ] 真实项目群通知可达，outbox `succeeded` 且 remote reference 可对账
+- [ ] 真实 Gate 外部审批回调后仅镜像更新，PDOS Gate 状态不变
+- [ ] 真实 card acknowledge 成功且重复回调只处理一次
+- [ ] 人工确认 S5-1 Exit Gate；随后才勾选 canonical S5-1 并移动指针到 S5-2
 
 **Error ledger**
 
@@ -1244,3 +1257,5 @@
 | 本机 `.env` 的测试 URL 指向被 CEHub 占用的旧 `55432`，凭据校验失败 | 1 | 只读定位当前 PDOS compose 为 `57432`，所有验收显式绑定 `pdos_test`；未修改用户环境文件、未连接开发/生产库 |
 | 本地 HTTP 验收脚本继承系统代理导致 loopback 首次超时 | 1 | 临时 client 设置 `trust_env=False` 后，仅访问 `127.0.0.1:8314` 的链路成功；未修改应用出口政策 |
 | 默认 Turbopack production build 在沙箱尝试绑定端口被拒 | 1 | 以仓库支持的 webpack production build 复验，全部路由成功生成；源码、部署配置与安全边界无需放宽 |
+| React Strict Mode 首次挂载清理中断唯一 OAuth callback fetch | 1 | 保留 `useRef` 一次提交保护并移除 effect cleanup abort；Strict Mode 单请求测试与真实 password-free login 均通过 |
+| 完整套件共享 `pdos_test` 遗留钉钉数据触发 0026 有损 downgrade guard | 1 | 旧迁移测试先升级到 head 并清空隔离租户后再降级；保留生产有数据 fail-close，完整 343 tests 全绿 |

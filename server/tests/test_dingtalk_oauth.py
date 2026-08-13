@@ -142,7 +142,12 @@ def _fake_http_client(*, corp_id: str = CORP_ID, open_id: str = OPEN_ID) -> http
             assert request.headers["x-acs-dingtalk-access-token"] == "ephemeral-user-token"
             return httpx2.Response(
                 200,
-                json={"openId": open_id, "unionId": "optional-union-id", "nick": "ignored"},
+                json={
+                    "openId": open_id,
+                    "userId": "staff-user-id",
+                    "unionId": "optional-union-id",
+                    "nick": "ignored",
+                },
             )
         raise AssertionError(f"unexpected DingTalk request: {request.method} {request.url}")
 
@@ -230,6 +235,7 @@ def test_explicit_link_then_password_free_login_uses_one_time_state_and_no_token
 
     assert binding["user_id"] == user_id
     assert binding["open_id"] == OPEN_ID
+    assert binding["staff_id"] == "staff-user-id"
     assert "ephemeral-user-token" not in stored
     assert "valid-code" not in stored
     methods = [

@@ -4590,6 +4590,7 @@ dingtalk_user_bindings = Table(
     Column("user_id", Uuid, nullable=False),
     Column("corp_id", String(128), nullable=False),
     Column("open_id", String(256), nullable=False),
+    Column("staff_id", String(256), nullable=False),
     Column("union_id", String(256)),
     Column("status", String(16), nullable=False, server_default=text("'active'")),
     Column(
@@ -4605,7 +4606,10 @@ dingtalk_user_bindings = Table(
         "(status = 'revoked' AND revoked_at IS NOT NULL)",
         name="lifecycle_consistent",
     ),
-    CheckConstraint("btrim(corp_id) <> '' AND btrim(open_id) <> ''", name="identity_nonblank"),
+    CheckConstraint(
+        "btrim(corp_id) <> '' AND btrim(open_id) <> '' AND btrim(staff_id) <> ''",
+        name="identity_nonblank",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "user_id"],
         [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
@@ -4628,6 +4632,12 @@ dingtalk_user_bindings = Table(
         "corp_id",
         "open_id",
         name="uq_dingtalk_user_bindings_tenant_external_identity",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "corp_id",
+        "staff_id",
+        name="uq_dingtalk_user_bindings_tenant_staff_identity",
     ),
     Index("ix_dingtalk_user_bindings_tenant_status", "tenant_id", "status"),
     schema=CORE_SCHEMA,
@@ -4879,6 +4889,7 @@ dingtalk_approval_instances = Table(
     Column("remote_instance_id", String(256)),
     Column("status", String(16), nullable=False, server_default=text("'queued'")),
     Column("remote_result", String(32)),
+    Column("sync_requested_at", DateTime(timezone=True)),
     Column(
         "created_at",
         DateTime(timezone=True),
