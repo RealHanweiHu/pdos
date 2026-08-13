@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S4-4 Context Builder 补层。** S4-3 Phase 2 双 Agent 已于 2026-08-12 完成全部验收；Sprint 4 继续按 canonical 顺序推进。
+> 唯一当前指针：**Sprint 4 Exit Gate（等待人工确认）。** S4-1～S4-4 已于 2026-08-12 完成全部本地验收；未获人工确认前不进入 Sprint 5。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1166,7 +1166,7 @@
 | 全量 format gate 发现 Phase 1 golden 断言存在一处仅格式差异 | 1 | 运行项目 formatter，随后 207 个 Python 文件 format check 与 Ruff/mypy/compile 全绿 |
 | 初次以 `127.0.0.1` 打开 Next dev 被开发资源 origin 保护拦截 | 1 | 改用同一临时服务的 `localhost` 入口；真实交互链路与浏览器 console 随后全绿，未放宽生产或仓库安全配置 |
 
-## In Progress: S4-4 Context Builder 补层
+## Completed: S4-4 Context Builder 补层
 
 **Definition of Ready**
 
@@ -1180,13 +1180,36 @@
 **Implementation slices**
 
 - [x] S4-4a：冻结 v2 schema、Multimodal/User 字段、限额、状态、角色映射与兼容合同
-- [ ] S4-4b：migration 0025 与 run context/version 原子持久化
-- [ ] S4-4c：实现 owner/restricted Multimodal Context 与 trigger/classification/OCR/cap 边界
-- [ ] S4-4d：实现 owner/restricted User Context、role lens 与无 PII 项目角色聚合
-- [ ] S4-4e：把两层接入模型动态 context 尾部并证明 prompt/tool 前缀未变
-- [ ] S4-4f：完成受限账号、no-leak、迁移、完整门禁与真实 worker/API/浏览器验收
-- [ ] S4-4g：更新 canonical checkbox、形成 Sprint 4 Exit Gate 报告并停下等人确认
+- [x] S4-4b：migration 0025 与 run context/version 原子持久化
+- [x] S4-4c：实现 owner/restricted Multimodal Context 与 trigger/classification/OCR/cap 边界
+- [x] S4-4d：实现 owner/restricted User Context、role lens 与无 PII 项目角色聚合
+- [x] S4-4e：把两层接入模型动态 context 尾部并证明 prompt/tool 前缀未变
+- [x] S4-4f：完成受限账号、no-leak、迁移、完整门禁与真实 worker/API/浏览器验收
+- [x] S4-4g：更新 canonical checkbox、形成 Sprint 4 Exit Gate 报告并停下等人确认
 
 **Current evidence（2026-08-12）**
 
 - 推荐 v2 不把 event-driven Agent 冒充成登录用户；User Context 是静态 Agent role lens + 当前项目 active role 聚合，权限真值仍在 RBAC/数据库。
+- `run-context-v2` 固化 `multimodal` 与 `user` 两层；owner/restricted builder、模型白名单投影与持久化共用同一严格 schema。动态层继续追加在版本化 system prompt/tool 前缀之后，Phase 1/2 冻结前缀未改变。
+- Multimodal 只消费当前 run 触发的 `DOCUMENT_UPLOADED`，仅 internal + extracted 进入模型；最多 5 份文档、20 个片段、单片段 1,000 字、总计 12,000 字。restricted/confidential、OCR required、object key、SHA、上传人、原始 payload 与跨项目引用均 fail-close。
+- User Context 仅包含 Agent 静态视角、`advisory_only` 决策模式、人工 Review/Apply 约束与当前项目 active 成员角色计数；username、display name、email、user id 等 PII 不进入模型。
+- migration `0025_context_builder_v2` 往返与有损 downgrade guard 全绿；本地 `pdos_test` 最终唯一版本为 `0025_context_builder_v2`。新增 `security_barrier` 角色投影，真实 `pdos_agent` 仍不可直接读取 User/Project Member 业务表或写业务表。
+- 受限运行时四参数视角（project_manager/engineer/engineer/quality）全部通过真实 `pdos_agent` lease→projection→gateway→Finding 链；internal 抽取文本进入模型，restricted 文本、跨租户 Memory、object key 与 PII 均 0 穿透。
+- 全量质量门禁全绿：Server 324 tests，Ruff/format/mypy 97 source files/Python compile；Web 32 files / 111 tests，ESLint/TypeScript 与 webpack production build。默认 Turbopack 在沙箱因端口绑定权限失败，webpack 生产构建随后成功。
+- 真实 HTTP/浏览器仅连接 `pdos_test`：Owner 创建项目并上传 internal/restricted 两份 XLSX，均返回 201/extracted；文档页只显示 filename/classification/size/status，不显示对象键，事件页按 project + `DOCUMENT_UPLOADED` 精确得到 2 条。Chromium console 0 warning/0 error；临时租户、服务、浏览器与脚本已全部清理。
+
+## Next: Sprint 4 Exit Gate
+
+- [x] S4-1～S4-4 canonical 工作项全部完成
+- [x] Complaint→NCR→RCA→CAPA→Effectiveness→closed→Memory draft→verified→`/ai/chat` citation 的纵向验收已在 S4-2 闭环
+- [x] 迁移、受限数据库角色、租户/项目/状态过滤、Finding 双人工动作与完整质量门禁均通过
+- [x] Exit 报告已形成：`docs/reports/2026-08-12-sprint-4-exit-draft.md`
+- [ ] 人工确认 Sprint 4 Exit Gate；确认前不得进入 S5-1
+
+**Error ledger**
+
+| 现象 | 次数 | 处理 |
+|---|---:|---|
+| 本机 `.env` 的测试 URL 指向被 CEHub 占用的旧 `55432`，凭据校验失败 | 1 | 只读定位当前 PDOS compose 为 `57432`，所有验收显式绑定 `pdos_test`；未修改用户环境文件、未连接开发/生产库 |
+| 本地 HTTP 验收脚本继承系统代理导致 loopback 首次超时 | 1 | 临时 client 设置 `trust_env=False` 后，仅访问 `127.0.0.1:8314` 的链路成功；未修改应用出口政策 |
+| 默认 Turbopack production build 在沙箱尝试绑定端口被拒 | 1 | 以仓库支持的 webpack production build 复验，全部路由成功生成；源码、部署配置与安全边界无需放宽 |
