@@ -1050,7 +1050,7 @@
 | 正式生产 dry-run 读取真实 `project_tasks` 时命中不存在的 `blocked_reason`，并发现 `project_files.securityClassification` 同样不在真实 schema | 1 | 只读固化五表列契约；缺失任务原因固定投影为 NULL，文件密级改由真实 `visibility` 同名白名单映射且未知值 fail-close；合成源 fixture 改为真实列形态后迁移/重放/漂移回归转绿 |
 | 首次生产重放二次确认串漏填 fingerprint | 1 | 安全闸在数据库连接/写入前拒绝；未创建报告、未产生目标写入。改用人工批准绑定的完整租户+fingerprint+有序选择器确认串后重放通过 |
 
-## In Progress: S4-1 CAPA 正式链
+## Completed: S4-1 CAPA 正式链
 
 **Definition of Ready**
 
@@ -1063,16 +1063,37 @@
 **Implementation slices**
 
 - [x] S4-1a：质量 Owner 拍板契约，冻结 API/错误码/RBAC 与 migration 0021 验收合同
-- [ ] S4-1b：Complaint 创建/查询/triage 纵向切片，同事务接通 `COMPLAINT_CREATED` + Audit
-- [ ] S4-1c：NCR→根因→纠正/预防措施状态机、不可变版本与硬闸
-- [ ] S4-1d：有效性复核、ineffective 回流、关闭与四眼/治理 override
-- [ ] S4-1e：Quality Complaint/CAPA 前端与同源 BFF，外部角色零内部数据
-- [ ] S4-1f：迁移往返/metadata drift、聚焦/完整门禁、真实 HTTP/浏览器链路及错误/越权证据
-- [ ] S4-1g：完成 DoD、更新 canonical checkbox 和当前指针到 S4-2
+- [x] S4-1b：Complaint 创建/查询/triage 纵向切片，同事务接通 `COMPLAINT_CREATED` + Audit
+- [x] S4-1c：NCR→根因→纠正/预防措施状态机、不可变版本与硬闸
+- [x] S4-1d：有效性复核、ineffective 回流、关闭与四眼/治理 override
+- [x] S4-1e：Quality Complaint/CAPA 前端与同源 BFF，外部角色零内部数据
+- [x] S4-1f：迁移往返/metadata drift、聚焦/完整门禁、真实 HTTP/浏览器链路及错误/越权证据
+- [x] S4-1g：完成 DoD、更新 canonical checkbox 和当前指针到 S4-2
 
-**Current evidence（2026-08-12）**
+**Completion evidence（2026-08-12）**
 
 - Sprint 3 Exit Gate 已经人工确认；`codex/sprint-4` 从确认后的 Sprint 3 终点建立。
-- preview 规格只冻结 CAPA 链路与 Owner 共同定义纪律；仓库及老 CEHub 均没有可直接视为公司正式流程的字段合同。老 CEHub 仅有 Issue 根因、解决方案与 QA verification，可作语义参考但不能代替 Owner 拍板。
-- 已形成最小推荐确认稿，明确五项必须由质量 Owner 决定；确认前不创建 migration 0021，不把建议枚举/状态写成政策事实。
-- 质量 Owner 已明确回复“确认采用推荐 CAPA 契约”；五项推荐配置升级为 v1 实施合同，后续变更须版本化，不得原地放宽。
+- 质量 Owner 已明确回复“确认采用推荐 CAPA 契约”；字段、状态机、枚举、四眼与有效性关闭门禁成为 v1 实施合同。API/RBAC/错误码冻结见 `docs/design/2026-08-12-s4-1-quality-api-contract.md`，后续政策变更必须版本化。
+- migration `0021_quality_capa` 在 `cehub_quality` 建立 Complaint、NCR、Root Cause Analysis、CAPA Action、Effectiveness Review 五表；downgrade→upgrade、单一 head 与 metadata drift 全绿。Complaint 的 Document 引用及所有父子关系均由 tenant+project 复合外键和服务端真值复核约束。
+- Complaint→Triage/NCR→Containment→不可变根因版本/Quality 四眼批准→Corrective+Preventive（或 Quality N/A）→Action evidence→冻结有效性计划→独立 Quality reviewer→effective close 已闭环；ineffective 会回流 Action，且无新增 follow-up Action 时禁止重复验证。最终 NCR/Complaint 关闭只允许 Quality，Owner/Admin 不可治理越权。
+- 所有质量写路径在同一事务写版本化 Event 与不可变 Audit；`COMPLAINT_CREATED` 已接通，状态、根因、措施、有效性与关闭事件均进入目录。真实受限账号验证 `pdos_agent` 对五张新增业务表的 `INSERT` 全部被数据库拒绝。
+- Project Workspace 增加内部成员可见的“质量 / CAPA”标签、Complaint 创建/Triage、六步 CAPA 时间线及根因/措施/有效性只读历史；Supplier/Customer 零标签、零请求。同源 BFF 只转发 HttpOnly session bearer，并以精确 allowlist、UUID 与有界 JSON fail-close。
+- 完整 `make check` 全绿：Web 104 tests、Server 283 tests，ESLint/Ruff/format、TypeScript/mypy 170 source files、Next.js production build 与 Python compile 全部通过。
+- Playwright 真实 Chromium 完成登录→Project Workspace→质量/CAPA→Complaint→Triage/NCR；Web BFF 返回 `201/201/200`，console 0 error/0 warning。数据库复核 1 Complaint、1 NCR，`COMPLAINT_CREATED`、`COMPLAINT_STATUS_CHANGED`、`NCR_CREATED` 三组 Event/Audit 全部同 ID 配对；截图位于 `output/playwright/s4-1-capa-browser.png`（忽略不入库）。
+
+**Errors encountered**
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 全仓首次 mypy 发现测试 JSON helper 返回类型过窄 | 1 | 将测试 helper 明确为有界 JSON 对象类型并 `cast`，聚焦 mypy 与 Ruff 转绿 |
+| 完整门禁首次仍有 6 个旧 migration head 快照和 1 个 Engineer action 快照 | 1 | 将 append-only head 更新为 `0021_quality_capa`，补 `quality.view` / `complaint.create` / `capa.execute` 精确期望；14 项回归及完整门禁转绿 |
+| Next dev 首次把多余 `--` 解析为项目目录 | 1 | 按仓库 pnpm wrapper 的参数透传规则移除分隔符，临时 API/Web 真实进程随后正常启动 |
+
+## In Progress: S4-2 Memory + 向量检索
+
+**Definition of Ready**
+
+- [ ] 规格出处：canonical S4-2、Knowledge/Memory 状态机、Context Builder 与租户/项目/状态过滤语义
+- [ ] 依赖项：S4-1 CAPA 链、Document 抽取、Knowledge Lite draft Finding、pgvector 基础设施与模型治理均已就绪
+- [ ] 范围冻结：draft→verified→archived；仅 verified 可检索/进入 AI context；embedding provider 可替换，Knowledge Search 独立入口
+- [ ] 安全边界：tenant/project 范围服务端绑定；未验证 Memory、原文与对象存储键不得进入检索/模型上下文
