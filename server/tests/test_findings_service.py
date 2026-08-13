@@ -321,6 +321,108 @@ def test_accept_and_apply_are_two_audited_human_actions(
         engine.dispose()
 
 
+@pytest.mark.parametrize(
+    ("agent_key", "event_type", "finding_type"),
+    [
+        (
+            "engineering_intelligence",
+            "DEVELOPMENT_BOM_ITEM_ADDED",
+            "bom_impact_suggestion",
+        ),
+        (
+            "engineering_intelligence",
+            "CHANGE_RECORD_CHANGED",
+            "change_impact_suggestion",
+        ),
+        ("quality_intelligence", "TEST_FAILED", "quality_cluster_alert"),
+        ("quality_intelligence", "COMPLAINT_CREATED", "capa_suggestion"),
+    ],
+)
+def test_phase_two_findings_require_review_then_apply_to_audited_project_risk(
+    findings_database_url: str,
+    agent_key: str,
+    event_type: str,
+    finding_type: str,
+) -> None:
+    ids = seed_reviewable_finding(
+        findings_database_url,
+        agent_key=agent_key,
+        event_type=event_type,
+        finding_type=finding_type,
+        proposed_payload={
+            "title": f"Review {finding_type}",
+            "description": "The scoped evidence warrants human review.",
+            "likelihood": 3,
+            "impact": 5,
+            "mitigation_plan": "Confirm the evidence-backed mitigation.",
+            "contingency_plan": "Retain a controlled fallback.",
+        },
+    )
+    engine = create_engine(psycopg_database_url(findings_database_url))
+    service = FindingService(engine)
+    try:
+        accepted = service.review(
+            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
+            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
+            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            review=FindingReview(decision="accepted", comment="Evidence confirmed."),
+            now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+        )
+        assert accepted.status == "accepted"
+        assert accepted.applied_entity_id is None
+
+        applied = service.apply(
+            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
+            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
+            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+        )
+        replay = service.apply(
+            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
+            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
+            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            now=cast(datetime, ids["now"]) + timedelta(minutes=3),
+        )
+
+        assert applied.applied_entity_type == "risk"
+        assert applied.risk_id is not None
+        assert replay.idempotent_replay and replay.risk_id == applied.risk_id
+        with engine.connect() as connection:
+            risk = (
+                connection.execute(select(tables.risks).where(tables.risks.c.id == applied.risk_id))
+                .mappings()
+                .one()
+            )
+            actions = list(
+                connection.execute(
+                    select(tables.finding_actions.c.action)
+                    .where(tables.finding_actions.c.finding_id == ids["finding_id"])
+                    .order_by(tables.finding_actions.c.created_at)
+                ).scalars()
+            )
+            risk_events = list(
+                connection.execute(
+                    select(tables.events.c.event_type).where(
+                        tables.events.c.entity_id == applied.risk_id
+                    )
+                ).scalars()
+            )
+            risk_audits = list(
+                connection.execute(
+                    select(tables.audit_log.c.action).where(
+                        tables.audit_log.c.entity_id == applied.risk_id
+                    )
+                ).scalars()
+            )
+        assert risk["title"] == f"Review {finding_type}"
+        assert risk["likelihood"] * risk["impact"] == 15
+        assert actions == ["created", "accepted", "applied"]
+        assert risk_events == ["RISK_CREATED"]
+        assert risk_audits == ["risk.create_from_finding"]
+    finally:
+        engine.dispose()
+
+
 def test_knowledge_draft_apply_creates_unverified_memory_not_business_truth(
     findings_database_url: str,
 ) -> None:
