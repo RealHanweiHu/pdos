@@ -35,10 +35,12 @@ from app.db.namespaces import (
     CORE_SCHEMA,
     COST_SCHEMA,
     EVENT_SCHEMA,
+    MEMORY_SCHEMA,
     PRODUCT_SCHEMA,
     PROJECT_SCHEMA,
     QUALITY_SCHEMA,
 )
+from app.db.vector import Vector
 
 NAMING_CONVENTION = {
     "ix": "ix_%(table_name)s_%(column_0_name)s",
@@ -3668,6 +3670,181 @@ decisions = Table(
     schema=PROJECT_SCHEMA,
 )
 
+memories = Table(
+    "memories",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_ncr_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("verified_by_user_id", Uuid),
+    Column("archived_by_user_id", Uuid),
+    Column("title", String(512), nullable=False),
+    Column("content", Text, nullable=False),
+    Column("applicability", Text),
+    Column("tags", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("source_refs", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("content_sha256", String(64), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'draft'")),
+    Column("verified_at", DateTime(timezone=True)),
+    Column("archived_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("status IN ('draft', 'verified', 'archived')", name="status_allowed"),
+    CheckConstraint("btrim(title) <> '' AND btrim(content) <> ''", name="required_text_nonblank"),
+    CheckConstraint("content_sha256 ~ '^[0-9a-f]{64}$'", name="content_sha256_hex"),
+    CheckConstraint("jsonb_typeof(tags) = 'array'", name="tags_array"),
+    CheckConstraint("jsonb_typeof(source_refs) = 'array'", name="source_refs_array"),
+    CheckConstraint(
+        "source_finding_id IS NULL OR source_ncr_id IS NULL",
+        name="source_mutually_exclusive",
+    ),
+    CheckConstraint(
+        "verified_by_user_id IS NULL OR verified_by_user_id <> created_by_user_id",
+        name="verification_four_eyes",
+    ),
+    CheckConstraint(
+        "(status = 'draft' AND verified_by_user_id IS NULL AND verified_at IS NULL "
+        "AND archived_by_user_id IS NULL AND archived_at IS NULL) OR "
+        "(status = 'verified' AND verified_by_user_id IS NOT NULL AND verified_at IS NOT NULL "
+        "AND archived_by_user_id IS NULL AND archived_at IS NULL) OR "
+        "(status = 'archived' AND verified_by_user_id IS NOT NULL AND verified_at IS NOT NULL "
+        "AND archived_by_user_id IS NOT NULL AND archived_at IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_memories_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [
+            f"{AI_SCHEMA}.findings.tenant_id",
+            f"{AI_SCHEMA}.findings.project_id",
+            f"{AI_SCHEMA}.findings.id",
+        ],
+        name="fk_memories_tenant_project_finding",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_ncr_id"],
+        [
+            f"{QUALITY_SCHEMA}.nonconformance_reports.tenant_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.project_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.id",
+        ],
+        name="fk_memories_tenant_project_ncr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_memories_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "verified_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_memories_tenant_verifier",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "archived_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_memories_tenant_archiver",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_memories_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_memories_tenant_project_id"),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_memories_tenant_finding"),
+    UniqueConstraint("tenant_id", "source_ncr_id", name="uq_memories_tenant_ncr"),
+    Index("ix_memories_tenant_project_status", "tenant_id", "project_id", "status", "updated_at"),
+    schema=MEMORY_SCHEMA,
+)
+
+memory_embeddings = Table(
+    "memory_embeddings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("memory_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("provider", String(64), nullable=False),
+    Column("model", String(256), nullable=False),
+    Column("dimensions", Integer, nullable=False),
+    Column("content_sha256", String(64), nullable=False),
+    Column("embedding", Vector(), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(provider) <> '' AND btrim(model) <> ''", name="route_nonblank"),
+    CheckConstraint("dimensions BETWEEN 1 AND 4096", name="dimensions_range"),
+    CheckConstraint("content_sha256 ~ '^[0-9a-f]{64}$'", name="content_sha256_hex"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "memory_id"],
+        [
+            f"{MEMORY_SCHEMA}.memories.tenant_id",
+            f"{MEMORY_SCHEMA}.memories.project_id",
+            f"{MEMORY_SCHEMA}.memories.id",
+        ],
+        name="fk_memory_embeddings_tenant_project_memory",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_memory_embeddings_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_memory_embeddings_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "memory_id",
+        "provider",
+        "model",
+        "dimensions",
+        "content_sha256",
+        name="uq_memory_embeddings_route_content",
+    ),
+    Index(
+        "ix_memory_embeddings_tenant_project_route",
+        "tenant_id",
+        "project_id",
+        "provider",
+        "model",
+        "dimensions",
+    ),
+    schema=MEMORY_SCHEMA,
+)
+
 tenant_model_settings = Table(
     "tenant_model_settings",
     metadata,
@@ -4550,6 +4727,8 @@ class Tables:
     root_cause_analyses: Table
     capa_actions: Table
     effectiveness_reviews: Table
+    memories: Table
+    memory_embeddings: Table
     engineering_change_requests: Table
     ecr_affected_boms: Table
     engineering_change_notices: Table
@@ -4614,6 +4793,8 @@ tables = Tables(
     root_cause_analyses=root_cause_analyses,
     capa_actions=capa_actions,
     effectiveness_reviews=effectiveness_reviews,
+    memories=memories,
+    memory_embeddings=memory_embeddings,
     engineering_change_requests=engineering_change_requests,
     ecr_affected_boms=ecr_affected_boms,
     engineering_change_notices=engineering_change_notices,
