@@ -2,9 +2,9 @@
 
 日期：2026-08-12
 
-状态：**技术与数据验收已达到 Sprint 3 Exit 条件，等待人工 Exit Gate 确认。** S3-1～S3-7 canonical 工作项全部完成；同一项目的跨模块 NPI/ECN 连续验收与真实 CEHub 双项目试点均已闭环。
+状态：**Sprint 3 Exit Gate 已于 2026-08-12 经人明确确认通过。** S3-1～S3-7 canonical 工作项全部完成；同一项目的跨模块 NPI/ECN 连续验收与真实 CEHub 双项目试点均已闭环。
 
-本文件不代表人工 Exit Gate 已确认，也不授权自行进入 Sprint 4。
+本次确认授权将当前指针移动到 Sprint 4；不构成任何生产部署或其他外部变更授权。
 
 ## 审计依据与方法
 
@@ -64,6 +64,6 @@
 - `docs/reports/2026-08-12-s3-7-production-dry-run.md`；
 - `docs/reports/2026-08-12-s3-7-production-apply.md`。
 
-## 当前开放门禁
+## Exit 决议
 
-仅剩人工确认 Sprint 3 Exit Gate。确认前不得进入 Sprint 4；确认后当前指针才移动到 S4-1。
+人工确认已完成，Sprint 3 正式关闭；当前指针移动到 S4-1。S4-1 的 CAPA 字段与状态仍须按 canonical 要求由公司质量流程 Owner 共同确认，不从本次 Sprint Exit 决议推导。

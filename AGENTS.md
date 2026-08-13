@@ -34,7 +34,8 @@
 - [x] S3-3 Build / Sample / Test / Certification 已完成：EVT/DVT/PVT 批次与样机谱系、audience 签核、Test/Certification、`TEST_FAILED` 与 Gate readiness 均验收通过
 - [x] S3-4 变更链后段、S3-5 687 检查项资产库、S3-6 Gate/Document 前端均已完成并通过完整门禁
 - [x] S3-7 真实试点环境门禁已完成：固定 release/fingerprint 的 C4s / S18-01 生产 dry-run、数据 Owner 抽查、apply、独立目标抽查与幂等重放全部通过
-- [ ] **当前：Sprint 3 Exit Gate 等待人工确认**；确认前不得进入 Sprint 4
+- [x] Sprint 3 Exit Gate 已于 2026-08-12 经人确认通过
+- [ ] **当前：S4-1 CAPA 正式链**；字段与状态契约必须先经公司质量流程 Owner 确认，不闭门造
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

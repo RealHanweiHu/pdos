@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 3 Exit Gate 等待人工确认。** S3-1～S3-7 已完成；确认前不得进入 Sprint 4。
+> 唯一当前指针：**S4-1 CAPA 正式链。** Sprint 3 Exit Gate 已于 2026-08-12 经人明确确认；CAPA 字段与状态契约须先经公司质量流程 Owner 确认。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
