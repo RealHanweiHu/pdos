@@ -325,18 +325,26 @@ def test_engineer_creates_and_lists_complaint_with_same_transaction_event_audit(
     engine = create_engine(psycopg_database_url(isolated_quality_database))
     try:
         with engine.connect() as connection:
-            event = connection.execute(
-                select(tables.events).where(
-                    tables.events.c.tenant_id == tenant_id,
-                    tables.events.c.entity_id == UUID(complaint["id"]),
+            event = (
+                connection.execute(
+                    select(tables.events).where(
+                        tables.events.c.tenant_id == tenant_id,
+                        tables.events.c.entity_id == UUID(complaint["id"]),
+                    )
                 )
-            ).mappings().one()
-            audit = connection.execute(
-                select(tables.audit_log).where(
-                    tables.audit_log.c.tenant_id == tenant_id,
-                    tables.audit_log.c.entity_id == UUID(complaint["id"]),
+                .mappings()
+                .one()
+            )
+            audit = (
+                connection.execute(
+                    select(tables.audit_log).where(
+                        tables.audit_log.c.tenant_id == tenant_id,
+                        tables.audit_log.c.entity_id == UUID(complaint["id"]),
+                    )
                 )
-            ).mappings().one()
+                .mappings()
+                .one()
+            )
     finally:
         engine.dispose()
     assert event["event_type"] == "COMPLAINT_CREATED"
@@ -391,18 +399,26 @@ def test_quality_triage_atomically_creates_ncr_and_advances_complaint(
     engine = create_engine(psycopg_database_url(isolated_quality_database))
     try:
         with engine.connect() as connection:
-            complaint_events = connection.execute(
-                select(tables.events.c.event_type).where(
-                    tables.events.c.tenant_id == tenant_id,
-                    tables.events.c.entity_id == UUID(str(complaint["id"])),
+            complaint_events = (
+                connection.execute(
+                    select(tables.events.c.event_type).where(
+                        tables.events.c.tenant_id == tenant_id,
+                        tables.events.c.entity_id == UUID(str(complaint["id"])),
+                    )
                 )
-            ).scalars().all()
-            ncr_events = connection.execute(
-                select(tables.events.c.event_type).where(
-                    tables.events.c.tenant_id == tenant_id,
-                    tables.events.c.entity_id == UUID(payload["ncr"]["id"]),
+                .scalars()
+                .all()
+            )
+            ncr_events = (
+                connection.execute(
+                    select(tables.events.c.event_type).where(
+                        tables.events.c.tenant_id == tenant_id,
+                        tables.events.c.entity_id == UUID(payload["ncr"]["id"]),
+                    )
                 )
-            ).scalars().all()
+                .scalars()
+                .all()
+            )
     finally:
         engine.dispose()
     assert complaint_events == ["COMPLAINT_CREATED", "COMPLAINT_STATUS_CHANGED"]
@@ -631,11 +647,14 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     )
     assert follow_up.status_code == 201
     follow_up_id = follow_up.json()["id"]
-    assert client.post(
-        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{follow_up_id}/transitions",
-        headers=engineer_headers,
-        json={"to_status": "in_progress"},
-    ).status_code == 200
+    assert (
+        client.post(
+            f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{follow_up_id}/transitions",
+            headers=engineer_headers,
+            json={"to_status": "in_progress"},
+        ).status_code
+        == 200
+    )
     follow_up_done = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{follow_up_id}/transitions",
         headers=engineer_headers,
@@ -649,15 +668,18 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     second_due = datetime.fromisoformat(follow_up_done.json()["completed_at"]) + timedelta(
         microseconds=1
     )
-    assert client.post(
-        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
-        headers=reviewer_headers,
-        json={
-            "to_status": "verification",
-            "effectiveness_criteria": "Zero opens across 48 thermal-cycle samples.",
-            "observation_due_at": second_due.isoformat(),
-        },
-    ).status_code == 200
+    assert (
+        client.post(
+            f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
+            headers=reviewer_headers,
+            json={
+                "to_status": "verification",
+                "effectiveness_criteria": "Zero opens across 48 thermal-cycle samples.",
+                "observation_due_at": second_due.isoformat(),
+            },
+        ).status_code
+        == 200
+    )
     effective = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/effectiveness-reviews",
         headers=reviewer_headers,
@@ -761,10 +783,13 @@ def test_quality_surface_denies_external_roles_and_pm_cannot_triage(
         )
 
     complaint = create_complaint(client, project_id, engineer_id, username="project-manager")
-    assert client.get(
-        f"/api/projects/{project_id}/quality/complaints",
-        headers=login(client, "project-manager"),
-    ).status_code == 200
+    assert (
+        client.get(
+            f"/api/projects/{project_id}/quality/complaints",
+            headers=login(client, "project-manager"),
+        ).status_code
+        == 200
+    )
     triage_payload = {
         "nonconformity": "Out of specification",
         "requirement_reference": "SPEC-01",
@@ -772,28 +797,37 @@ def test_quality_surface_denies_external_roles_and_pm_cannot_triage(
         "owner_user_id": str(engineer_id),
         "target_date": (date.today() + timedelta(days=5)).isoformat(),
     }
-    assert client.post(
-        f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/triage",
-        headers=login(client, "project-manager"),
-        json=triage_payload,
-    ).status_code == 403
+    assert (
+        client.post(
+            f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/triage",
+            headers=login(client, "project-manager"),
+            json=triage_payload,
+        ).status_code
+        == 403
+    )
     for username in ("supplier", "customer"):
         headers = login(client, username)
-        assert client.get(
-            f"/api/projects/{project_id}/quality/complaints", headers=headers
-        ).status_code == 403
-        assert client.post(
-            f"/api/projects/{project_id}/quality/complaints",
-            headers=headers,
-            json={
-                "title": "External injection",
-                "description": "Must be denied",
-                "source": "customer",
-                "severity": "low",
-                "occurred_at": datetime.now(UTC).isoformat(),
-                "owner_user_id": str(engineer_id),
-            },
-        ).status_code == 403
+        assert (
+            client.get(
+                f"/api/projects/{project_id}/quality/complaints", headers=headers
+            ).status_code
+            == 403
+        )
+        assert (
+            client.post(
+                f"/api/projects/{project_id}/quality/complaints",
+                headers=headers,
+                json={
+                    "title": "External injection",
+                    "description": "Must be denied",
+                    "source": "customer",
+                    "severity": "low",
+                    "occurred_at": datetime.now(UTC).isoformat(),
+                    "owner_user_id": str(engineer_id),
+                },
+            ).status_code
+            == 403
+        )
 
 
 def test_complaint_document_references_are_project_bound(

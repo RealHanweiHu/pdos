@@ -126,9 +126,7 @@ def _snapshot(record: ComplaintRecord) -> dict[str, object]:
         "affected_scope": record.affected_scope,
         "document_refs": record.document_refs,
         "resolution_summary": record.resolution_summary,
-        "closed_by_user_id": (
-            str(record.closed_by_user_id) if record.closed_by_user_id else None
-        ),
+        "closed_by_user_id": (str(record.closed_by_user_id) if record.closed_by_user_id else None),
         "closed_at": record.closed_at.isoformat() if record.closed_at else None,
     }
 

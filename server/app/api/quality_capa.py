@@ -556,10 +556,11 @@ def create_capa_action(
     authorize_project(
         engine=engine, context=context, project_id=project_id, action=Action.CAPA_EXECUTE
     )
-    if (
-        body.owner_user_id != context.user.id
-        and context.user.role not in {Role.OWNER, Role.ADMIN, Role.QUALITY}
-    ):
+    if body.owner_user_id != context.user.id and context.user.role not in {
+        Role.OWNER,
+        Role.ADMIN,
+        Role.QUALITY,
+    }:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={"code": "CAPA_ASSIGNMENT_DENIED", "message": "Cannot assign another owner"},

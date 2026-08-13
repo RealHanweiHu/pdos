@@ -395,18 +395,22 @@ class NonconformanceService:
                 if approved < 1:
                     raise NcrRootCauseGateError
             elif before.status == "action":
-                actions = connection.execute(
-                    select(
-                        tables.capa_actions.c.action_type,
-                        tables.capa_actions.c.status,
-                        tables.capa_actions.c.completed_at,
-                        tables.capa_actions.c.created_at,
-                    ).where(
-                        tables.capa_actions.c.tenant_id == tenant_id,
-                        tables.capa_actions.c.project_id == project_id,
-                        tables.capa_actions.c.ncr_id == ncr_id,
+                actions = (
+                    connection.execute(
+                        select(
+                            tables.capa_actions.c.action_type,
+                            tables.capa_actions.c.status,
+                            tables.capa_actions.c.completed_at,
+                            tables.capa_actions.c.created_at,
+                        ).where(
+                            tables.capa_actions.c.tenant_id == tenant_id,
+                            tables.capa_actions.c.project_id == project_id,
+                            tables.capa_actions.c.ncr_id == ncr_id,
+                        )
                     )
-                ).mappings().all()
+                    .mappings()
+                    .all()
+                )
                 completed_types = {
                     row["action_type"] for row in actions if row["status"] == "completed"
                 }

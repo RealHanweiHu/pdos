@@ -179,8 +179,9 @@ class EffectivenessService:
                 required=True,
             )
             review_number = connection.execute(
-                select(func.coalesce(func.max(tables.effectiveness_reviews.c.review_number), 0) + 1)
-                .where(
+                select(
+                    func.coalesce(func.max(tables.effectiveness_reviews.c.review_number), 0) + 1
+                ).where(
                     tables.effectiveness_reviews.c.tenant_id == tenant_id,
                     tables.effectiveness_reviews.c.ncr_id == ncr_id,
                 )
