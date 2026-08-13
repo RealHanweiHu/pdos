@@ -21,6 +21,19 @@ import {
   uploadProjectDocument,
 } from "./project-gate-document-api";
 import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
+import {
+  createComplaint,
+  requestComplaints,
+  requestNcrDetail,
+  requestNcrs,
+  triageComplaint,
+} from "@/components/quality/quality-api";
+import type {
+  Complaint,
+  ComplaintCreateInput,
+  NcrCreateInput,
+  NcrDetail,
+} from "@/components/quality/quality-types";
 
 import { requestProjects } from "./project-api";
 import {
@@ -65,6 +78,7 @@ const deepLinkTabs = new Set<ProjectWorkspaceTab>([
   "product-engineering",
   "gates",
   "documents",
+  "quality",
   "ai-chat",
 ]);
 
@@ -98,12 +112,19 @@ export function ProjectWorkspace() {
   const [documents, setDocuments] = useState<ProjectDocument[] | null>(null);
   const [documentBusy, setDocumentBusy] = useState(false);
   const [documentError, setDocumentError] = useState<string | null>(null);
+  const [qualityState, setQualityState] = useState<WorkItemLoadState>("idle");
+  const [complaints, setComplaints] = useState<Complaint[] | null>(null);
+  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
+  const [qualityDetail, setQualityDetail] = useState<NcrDetail | null>(null);
+  const [qualityBusy, setQualityBusy] = useState(false);
+  const [qualityError, setQualityError] = useState<string | null>(null);
   const [highlightedEntityId, setHighlightedEntityId] = useState<string | null>(null);
   const [highlightedEventId, setHighlightedEventId] = useState<number | null>(null);
   const requestSequence = useRef(0);
   const productRequestSequence = useRef(0);
   const gateRequestSequence = useRef(0);
   const documentRequestSequence = useRef(0);
+  const qualityRequestSequence = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -185,6 +206,24 @@ export function ProjectWorkspace() {
               () => { if (active && documentRequestSequence.current === sequence) setDocumentState("error"); },
             );
           }
+          if (deepLinkedTab === "quality" && workItemRoles.includes(loaded.identity.user.role)) {
+            const sequence = qualityRequestSequence.current + 1;
+            qualityRequestSequence.current = sequence;
+            setQualityState("loading");
+            requestComplaints(deepLinkedProject.id).then(
+              (items) => {
+                if (active && qualityRequestSequence.current === sequence) {
+                  setComplaints(items);
+                  setQualityState("ready");
+                }
+              },
+              () => {
+                if (active && qualityRequestSequence.current === sequence) {
+                  setQualityState("error");
+                }
+              },
+            );
+          }
         }
       },
       () => {
@@ -260,6 +299,24 @@ export function ProjectWorkspace() {
     }
   }
 
+  async function loadQuality(projectId: string) {
+    const sequence = qualityRequestSequence.current + 1;
+    qualityRequestSequence.current = sequence;
+    setQualityState("loading");
+    setComplaints(null);
+    setSelectedComplaint(null);
+    setQualityDetail(null);
+    setQualityError(null);
+    try {
+      const items = await requestComplaints(projectId);
+      if (qualityRequestSequence.current !== sequence) return;
+      setComplaints(items);
+      setQualityState("ready");
+    } catch {
+      if (qualityRequestSequence.current === sequence) setQualityState("error");
+    }
+  }
+
   function selectProject(project: Project) {
     actions.selectProject(project);
     setActiveTab("overview");
@@ -277,6 +334,12 @@ export function ProjectWorkspace() {
     setDocuments(null);
     setDocumentState("idle");
     setDocumentError(null);
+    qualityRequestSequence.current += 1;
+    setQualityState("idle");
+    setComplaints(null);
+    setSelectedComplaint(null);
+    setQualityDetail(null);
+    setQualityError(null);
     setHighlightedEventId(null);
     setHighlightedEntityId(null);
     requestProjectActivity(project.id).then(
@@ -414,6 +477,62 @@ export function ProjectWorkspace() {
     if (tab === "documents" && canViewWorkItems && actions.selectedProject && documentState === "idle") {
       void loadDocuments(actions.selectedProject.id);
     }
+    if (tab === "quality" && canViewWorkItems && actions.selectedProject && qualityState === "idle") {
+      void loadQuality(actions.selectedProject.id);
+    }
+  }
+
+  async function addComplaint(input: ComplaintCreateInput) {
+    if (!actions.selectedProject) return false;
+    setQualityBusy(true);
+    setQualityError(null);
+    try {
+      const created = await createComplaint(actions.selectedProject.id, input);
+      setComplaints((current) => [created, ...(current ?? [])]);
+      setSelectedComplaint(created);
+      setQualityDetail(null);
+      return true;
+    } catch (error) {
+      setQualityError(messageFrom(error));
+      return false;
+    } finally {
+      setQualityBusy(false);
+    }
+  }
+
+  async function selectComplaint(complaint: Complaint) {
+    if (!actions.selectedProject) return;
+    setSelectedComplaint(complaint);
+    setQualityDetail(null);
+    setQualityError(null);
+    try {
+      const ncrs = await requestNcrs(actions.selectedProject.id, complaint.id);
+      if (ncrs.length) {
+        setQualityDetail(await requestNcrDetail(actions.selectedProject.id, ncrs[0]!.id));
+      }
+    } catch (error) {
+      setQualityError(messageFrom(error));
+    }
+  }
+
+  async function triageSelected(complaint: Complaint, input: NcrCreateInput) {
+    if (!actions.selectedProject) return false;
+    setQualityBusy(true);
+    setQualityError(null);
+    try {
+      const result = await triageComplaint(actions.selectedProject.id, complaint.id, input);
+      setComplaints((current) =>
+        current?.map((item) => (item.id === complaint.id ? result.complaint : item)) ?? null,
+      );
+      setSelectedComplaint(result.complaint);
+      setQualityDetail(await requestNcrDetail(actions.selectedProject.id, result.ncr.id));
+      return true;
+    } catch (error) {
+      setQualityError(messageFrom(error));
+      return false;
+    } finally {
+      setQualityBusy(false);
+    }
   }
 
   async function uploadDocument(file: File, classification: string) {
@@ -532,6 +651,22 @@ export function ProjectWorkspace() {
         loadState: documentState,
         onRetry: () => { if (actions.selectedProject) void loadDocuments(actions.selectedProject.id); },
         onUpload: uploadDocument,
+      }}
+      qualitySurface={{
+        busy: qualityBusy,
+        canCreate: workItemRoles.includes(identity.user.role),
+        canManage: ["owner", "admin", "quality"].includes(identity.user.role),
+        complaints,
+        detail: qualityDetail,
+        error: qualityError,
+        loadState: qualityState,
+        onCreate: addComplaint,
+        onRetry: () => {
+          if (actions.selectedProject) void loadQuality(actions.selectedProject.id);
+        },
+        onSelect: (complaint) => void selectComplaint(complaint),
+        onTriage: triageSelected,
+        selectedComplaint,
       }}
       saving={actions.saving}
       selectedProject={actions.selectedProject}

@@ -214,6 +214,55 @@ const projectDocument = {
   created_at: "2026-08-12T16:00:00Z",
 };
 
+const complaint = {
+  id: "complaint-1",
+  project_id: "project-1",
+  customer_id: null,
+  reported_by_user_id: "user-1",
+  owner_user_id: "user-1",
+  closed_by_user_id: null,
+  code: "CMP-C4S",
+  title: "现场连接器间歇开路",
+  description: "热循环后接触电阻超限。",
+  source: "field",
+  severity: "high",
+  status: "triaged",
+  occurred_at: "2026-08-12T08:00:00Z",
+  reported_at: "2026-08-12T10:00:00Z",
+  customer_reference: null,
+  affected_scope: "Lot C4s",
+  document_refs: [],
+  resolution_summary: null,
+  closed_at: null,
+  ...workItemTimestamps,
+};
+
+const ncr = {
+  id: "ncr-1",
+  project_id: "project-1",
+  complaint_id: "complaint-1",
+  owner_user_id: "user-1",
+  created_by_user_id: "user-1",
+  preventive_disposition_approved_by_user_id: null,
+  closed_by_user_id: null,
+  code: "NCR-C4S",
+  nonconformity: "接触电阻超限",
+  requirement_reference: "SPEC-ELEC-04",
+  severity: "high",
+  status: "root_cause",
+  target_date: "2026-08-22",
+  containment_action: "隔离批次",
+  containment_completed_at: "2026-08-12T11:00:00Z",
+  affected_quantity: 24,
+  affected_scope: "Lot C4s",
+  preventive_not_applicable_reason: null,
+  preventive_disposition_approved_at: null,
+  effectiveness_criteria: null,
+  observation_due_at: null,
+  closed_at: null,
+  ...workItemTimestamps,
+};
+
 function workItemResponse(path: string) {
   if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask] });
   if (path.endsWith("/issues")) return jsonResponse({ items: [openIssue] });
@@ -350,9 +399,10 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
-    expect(await screen.findAllByRole("tab")).toHaveLength(9);
+    expect(await screen.findAllByRole("tab")).toHaveLength(10);
     expect(screen.getByRole("tab", { name: "AI 对话" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "产品工程" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "质量 / CAPA" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "概览" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByText("1", { selector: "[data-metric='task']" })).toBeInTheDocument();
 
@@ -414,6 +464,41 @@ describe("ProjectWorkspace", () => {
     unavailable = false;
     await user.click(screen.getByRole("button", { name: "重新加载 Gate" }));
     expect(await screen.findByRole("heading", { name: "尚未实例化 Gate" })).toBeInTheDocument();
+  });
+
+  it("loads Complaint and CAPA history lazily inside the project workspace", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/quality/complaints")) return jsonResponse({ items: [complaint] });
+      if (path.endsWith("/quality/complaints/complaint-1/ncrs")) {
+        return jsonResponse({ items: [ncr] });
+      }
+      if (path.endsWith("/quality/ncrs/ncr-1/detail")) {
+        return jsonResponse({
+          ncr,
+          root_causes: [],
+          actions: [],
+          effectiveness_reviews: [],
+        });
+      }
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(fetchMock.mock.calls.some(([input]) => String(input).includes("/quality/"))).toBe(false);
+
+    await user.click(screen.getByRole("tab", { name: "质量 / CAPA" }));
+    await user.click(await screen.findByRole("button", { name: /CMP-C4S/ }));
+
+    expect(await screen.findByRole("heading", { name: "CAPA 执行链" })).toBeInTheDocument();
+    expect(screen.getByText("NCR-C4S")).toBeInTheDocument();
+    expect(screen.getAllByText("根因分析")).toHaveLength(2);
   });
 
   it("loads the product register lazily and creates a specification and typed BOM", async () => {

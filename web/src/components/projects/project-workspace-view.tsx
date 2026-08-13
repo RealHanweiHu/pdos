@@ -12,6 +12,13 @@ import type {
   ProductEngineeringRegister,
   SpecificationCreateInput,
 } from "@/components/product-engineering/product-engineering-types";
+import { QualityPanel } from "@/components/quality/quality-panel";
+import type {
+  Complaint,
+  ComplaintCreateInput,
+  NcrCreateInput,
+  NcrDetail,
+} from "@/components/quality/quality-types";
 
 import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form";
 import { ProjectList, projectStatusLabels } from "./project-list";
@@ -45,6 +52,7 @@ export type ProjectWorkspaceTab =
   | "product-engineering"
   | "gates"
   | "documents"
+  | "quality"
   | "ai-chat";
 export type WorkItemLoadState = "idle" | "loading" | "ready" | "error";
 
@@ -69,6 +77,7 @@ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[
   { key: "product-engineering", label: "产品工程", internalOnly: true },
   { key: "gates", label: "Gate", internalOnly: true },
   { key: "documents", label: "文档", internalOnly: true },
+  { key: "quality", label: "质量 / CAPA", internalOnly: true },
   { key: "ai-chat", label: "AI 对话", internalOnly: true },
 ];
 
@@ -117,6 +126,7 @@ export function ProjectWorkspaceView({
   productEngineering,
   gateSurface,
   documentSurface,
+  qualitySurface,
   saving,
   selectedProject,
   statusMessage,
@@ -164,6 +174,20 @@ export function ProjectWorkspaceView({
     loadState: WorkItemLoadState;
     onRetry: () => void;
     onUpload: (file: File, classification: string) => Promise<boolean>;
+  };
+  qualitySurface: {
+    busy: boolean;
+    canCreate: boolean;
+    canManage: boolean;
+    complaints: Complaint[] | null;
+    detail: NcrDetail | null;
+    error: string | null;
+    loadState: WorkItemLoadState;
+    onCreate: (input: ComplaintCreateInput) => Promise<boolean>;
+    onRetry: () => void;
+    onSelect: (complaint: Complaint) => void;
+    onTriage: (complaint: Complaint, input: NcrCreateInput) => Promise<boolean>;
+    selectedComplaint: Complaint | null;
   };
   saving: boolean;
   selectedProject: Project | null;
@@ -276,6 +300,12 @@ export function ProjectWorkspaceView({
                 onRetry={documentSurface.onRetry}
                 onUpload={documentSurface.onUpload}
                 state={documentSurface.loadState}
+              />
+            ) : null}
+            {activeTab === "quality" ? (
+              <QualityPanel
+                {...qualitySurface}
+                identityUserId={identity.user.id}
               />
             ) : null}
             {activeTab === "ai-chat" ? <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id} /> : null}
