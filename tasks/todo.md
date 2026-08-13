@@ -1222,7 +1222,7 @@
 
 - [x] S5-1a：审计规格与老 CEHub 协议实现，冻结 v1 数据/API/安全/可靠性契约
 - [x] S5-1b：实现独立钉钉应用配置、免登 code exchange 与本地 session 建立
-- [ ] S5-1c：实现签名/时间窗/nonce/AES 回调验证、幂等事件接收与 URL challenge
+- [x] S5-1c：实现签名/时间窗/nonce/AES 回调验证、幂等事件接收与 URL challenge
 - [ ] S5-1d：实现审批发起/结果回调、群通知与交互卡片模板机制
 - [ ] S5-1e：实现 outbox、退避重试、重放/对账、显式人工降级与运维可观测性
 - [ ] S5-1f：完成迁移/安全/完整门禁、fake server + 真实浏览器/API 运行验收
@@ -1235,6 +1235,7 @@
 - v1 采用显式 link 后 password-free login；审批只镜像外部协作结果，不直接批准 Gate。所有 outbound 经 durable outbox；不确定 create 不盲重放，未配置时显式降级为 manual。
 - `0026_dingtalk_connector` 建立 8 个租户隔离实体并通过 `0026→0025→0026`、metadata 零漂移、单一 head 与有数据 downgrade fail-close 验收。
 - 免登只走固定官方主机；state 原文不落库且在远端交换前原子消费，corp 必须精确匹配，link 只绑定当前会话用户，login 只命中已有绑定。fake transport + 原认证/RBAC/Event 回归 26 项全绿，OAuth code/user token 未进入数据库、Event/Audit 或日志。
+- AES 回调采用 32-byte key、AES-256-CBC、严格 PKCS#7/4-byte 长度/JSON object/尾部 CorpID 校验；签名常量时间比较，timestamp 仅容忍 ±5 分钟，nonce/ciphertext 有界。固定向量、challenge 加密 ACK、同摘要重放零二次处理与异摘要冲突等 7 项验收全绿；未知事件只 ACK，审批固定字段仅形成待同步标记，零 Gate 写入。
 
 **Error ledger**
 

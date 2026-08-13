@@ -14,7 +14,13 @@ from app.api.auth import TokenResponse, current_context, get_auth_service, no_st
 from app.auth.repository import AuthContext
 from app.auth.service import AuthService
 from app.db.engine import get_engine
+from app.integrations.dingtalk_callbacks import (
+    DingTalkCallbackError,
+    DingTalkCallbackRepository,
+    DingTalkCallbackService,
+)
 from app.integrations.dingtalk_client import DingTalkClientError, DingTalkOAuthClient
+from app.integrations.dingtalk_crypto import DingTalkCallbackVerificationError
 from app.integrations.dingtalk_oauth import (
     DingTalkOAuthError,
     DingTalkOAuthRepository,
@@ -81,6 +87,21 @@ class OAuthCallbackResponse(TokenResponse):
     return_path: str
 
 
+class EncryptedCallbackRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    encrypt: str = Field(min_length=1, max_length=1_400_000)
+
+
+class EncryptedCallbackResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    msg_signature: str
+    timeStamp: str
+    nonce: str
+    encrypt: str
+
+
 def get_dingtalk_http_client() -> Iterator[httpx2.Client]:
     with httpx2.Client(follow_redirects=False, trust_env=False) as client:
         yield client
@@ -96,6 +117,16 @@ def get_dingtalk_oauth_service(
         repository=DingTalkOAuthRepository(engine),
         client=DingTalkOAuthClient(http_client),
         auth_service=auth_service,
+        settings=settings,
+    )
+
+
+def get_dingtalk_callback_service(
+    engine: Annotated[Engine, Depends(get_engine)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> DingTalkCallbackService:
+    return DingTalkCallbackService(
+        repository=DingTalkCallbackRepository(engine),
         settings=settings,
     )
 
@@ -184,4 +215,50 @@ def oauth_callback(
         mode=result.mode,  # type: ignore[arg-type]
         linked=result.linked,
         return_path=result.return_path,
+    )
+
+
+@router.post("/callback/{route_key}", response_model=EncryptedCallbackResponse)
+def encrypted_callback(
+    route_key: str,
+    payload: EncryptedCallbackRequest,
+    signature: str,
+    timestamp: str,
+    nonce: str,
+    response: Response,
+    service: Annotated[DingTalkCallbackService, Depends(get_dingtalk_callback_service)],
+) -> EncryptedCallbackResponse:
+    no_store(response)
+    try:
+        acknowledged = service.handle_encrypted_event(
+            route_key=route_key,
+            encrypt=payload.encrypt,
+            signature=signature,
+            timestamp=timestamp,
+            nonce=nonce,
+        )
+    except DingTalkCallbackVerificationError as error:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"code": error.code, "message": "DingTalk callback was rejected"},
+        ) from error
+    except DingTalkCallbackError as error:
+        status_code = (
+            status.HTTP_503_SERVICE_UNAVAILABLE
+            if error.code == "DINGTALK_CALLBACK_NOT_CONFIGURED"
+            else status.HTTP_404_NOT_FOUND
+            if error.code == "DINGTALK_CALLBACK_ROUTE_UNKNOWN"
+            else status.HTTP_409_CONFLICT
+            if error.code == "DINGTALK_CALLBACK_REPLAY_CONFLICT"
+            else status.HTTP_400_BAD_REQUEST
+        )
+        raise HTTPException(
+            status_code=status_code,
+            detail={"code": error.code, "message": "DingTalk callback was rejected"},
+        ) from error
+    return EncryptedCallbackResponse(
+        msg_signature=acknowledged.msg_signature,
+        timeStamp=acknowledged.time_stamp,
+        nonce=acknowledged.nonce,
+        encrypt=acknowledged.encrypt,
     )
