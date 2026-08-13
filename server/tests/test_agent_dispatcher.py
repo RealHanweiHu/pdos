@@ -142,8 +142,8 @@ def test_dispatcher_atomically_debounces_by_tenant_project_and_agent(
         result_b = dispatcher.dispatch_tenant(tenant_id=tenant_b)
 
         assert result_a.scanned_event_count == 3
-        assert result_a.routed_event_count == 2
-        assert result_a.created_run_count == 1
+        assert result_a.routed_event_count == 3
+        assert result_a.created_run_count == 2
         assert result_a.merged_event_count == 1
         assert result_a.last_event_row_id == ignored_id
         assert result_b.last_event_row_id == other_id
@@ -156,14 +156,25 @@ def test_dispatcher_atomically_debounces_by_tenant_project_and_agent(
             )
             cursors = list(connection.execute(select(tables.agent_dispatcher_cursors)).mappings())
 
-        alpha_run = next(row for row in runs if row["tenant_id"] == tenant_a)
+        alpha_project_run = next(
+            row
+            for row in runs
+            if row["tenant_id"] == tenant_a and row["agent_key"] == AgentKey.PROJECT_INTELLIGENCE
+        )
+        alpha_quality_run = next(
+            row
+            for row in runs
+            if row["tenant_id"] == tenant_a and row["agent_key"] == AgentKey.QUALITY_INTELLIGENCE
+        )
         beta_run = next(row for row in runs if row["tenant_id"] == tenant_b)
-        assert alpha_run["project_id"] == project_a
-        assert alpha_run["agent_key"] == AgentKey.PROJECT_INTELLIGENCE
-        assert alpha_run["event_row_ids"] == [first_id, second_id]
-        assert alpha_run["event_count"] == 2
-        assert alpha_run["window_started_at"] == started_at
-        assert alpha_run["window_ended_at"] == started_at + timedelta(minutes=15)
+        assert alpha_project_run["project_id"] == project_a
+        assert alpha_project_run["event_row_ids"] == [first_id, second_id]
+        assert alpha_project_run["event_count"] == 2
+        assert alpha_project_run["window_started_at"] == started_at
+        assert alpha_project_run["window_ended_at"] == started_at + timedelta(minutes=15)
+        assert alpha_quality_run["project_id"] == project_a
+        assert alpha_quality_run["event_row_ids"] == [second_id]
+        assert alpha_quality_run["event_count"] == 1
         assert beta_run["project_id"] == project_b
         assert beta_run["event_row_ids"] == [other_id]
         assert {row["tenant_id"]: row["last_event_row_id"] for row in cursors} == {
@@ -175,7 +186,7 @@ def test_dispatcher_atomically_debounces_by_tenant_project_and_agent(
         assert repeated.scanned_event_count == 0
         assert repeated.created_run_count == 0
         with engine.connect() as connection:
-            assert len(list(connection.execute(select(tables.agent_runs)))) == 2
+            assert len(list(connection.execute(select(tables.agent_runs)))) == 3
     finally:
         engine.dispose()
 

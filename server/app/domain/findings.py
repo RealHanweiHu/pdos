@@ -705,6 +705,10 @@ class FindingService:
             "risk_suggestion",
             "blocker_alert",
             "gate_readiness_anomaly",
+            "bom_impact_suggestion",
+            "change_impact_suggestion",
+            "quality_cluster_alert",
+            "capa_suggestion",
         }:
             return RiskSuggestionPayload.model_validate(payload)
         if finding_type == "knowledge_draft":

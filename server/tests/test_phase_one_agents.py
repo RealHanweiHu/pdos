@@ -15,7 +15,7 @@ from app.ai.executor import (
 )
 from app.ai.finding_writer import FindingPreflightError, preflight_assessment
 from app.ai.phase_one_suite import load_phase_one_golden_suite
-from app.ai.runtime_contract import AgentKey, EventReference, FrozenRunContext
+from app.ai.runtime_contract import PHASE_ONE_AGENT_KEYS, AgentKey, EventReference, FrozenRunContext
 from app.domain.findings import KnowledgeDraftPayload, RiskSuggestionPayload
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
@@ -64,14 +64,14 @@ def risk_assessment(
 
 
 def test_phase_one_prompts_are_separately_versioned_and_keep_dynamic_scope_out() -> None:
-    assert PROMPT_VERSIONS == {
+    assert {key: PROMPT_VERSIONS[key] for key in PHASE_ONE_AGENT_KEYS} == {
         AgentKey.PROJECT_INTELLIGENCE: "project-intelligence-v1",
         AgentKey.KNOWLEDGE_LITE: "knowledge-lite-v1",
     }
     assert SYSTEM_PROMPTS[AgentKey.PROJECT_INTELLIGENCE] != SYSTEM_PROMPTS[AgentKey.KNOWLEDGE_LITE]
     assert INSTRUCTIONS[AgentKey.PROJECT_INTELLIGENCE] != INSTRUCTIONS[AgentKey.KNOWLEDGE_LITE]
     dynamic_scope_marker = str(uuid4())
-    for agent_key in AgentKey:
+    for agent_key in PHASE_ONE_AGENT_KEYS:
         assert "FROZEN_READ_ONLY_TOOLS" in SYSTEM_PROMPTS[agent_key]
         assert dynamic_scope_marker not in SYSTEM_PROMPTS[agent_key]
 
@@ -195,7 +195,9 @@ def test_no_action_has_no_candidate_payload() -> None:
 def test_checked_in_phase_one_golden_cases_match_frozen_prompts_and_preflight() -> None:
     suite = load_phase_one_golden_suite(SERVER_ROOT / "golden" / "phase-one-agents-v1.json")
 
-    assert suite.prompt_versions == PROMPT_VERSIONS
+    assert suite.prompt_versions == {
+        key: PROMPT_VERSIONS[key] for key in PHASE_ONE_AGENT_KEYS
+    }
     assert {case.event_type for case in suite.cases} == {
         "PROJECT_STAGE_CHANGED",
         "ISSUE_CREATED",

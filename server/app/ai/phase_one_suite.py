@@ -8,7 +8,7 @@ from typing import Self
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from app.ai.executor import AgentAssessment, FindingCandidateType
-from app.ai.runtime_contract import AgentKey
+from app.ai.runtime_contract import PHASE_ONE_AGENT_KEYS, AgentKey
 
 
 class PhaseOneSuiteFileError(ValueError):
@@ -35,7 +35,7 @@ class PhaseOneGoldenSuite(BaseModel):
 
     @model_validator(mode="after")
     def validate_suite(self) -> Self:
-        if set(self.prompt_versions) != set(AgentKey):
+        if set(self.prompt_versions) != PHASE_ONE_AGENT_KEYS:
             raise ValueError("Phase 1 suite must bind every Agent prompt version")
         case_ids = [case.id for case in self.cases]
         if len(case_ids) != len(set(case_ids)):

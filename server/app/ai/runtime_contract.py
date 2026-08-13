@@ -13,6 +13,12 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 class AgentKey(StrEnum):
     PROJECT_INTELLIGENCE = "project_intelligence"
     KNOWLEDGE_LITE = "knowledge_lite"
+    ENGINEERING_INTELLIGENCE = "engineering_intelligence"
+    QUALITY_INTELLIGENCE = "quality_intelligence"
+
+
+PHASE_ONE_AGENT_KEYS = frozenset({AgentKey.PROJECT_INTELLIGENCE, AgentKey.KNOWLEDGE_LITE})
+PHASE_TWO_AGENT_KEYS = frozenset({AgentKey.ENGINEERING_INTELLIGENCE, AgentKey.QUALITY_INTELLIGENCE})
 
 
 class AgentRunStatus(StrEnum):
@@ -31,9 +37,16 @@ class InvalidRunTransitionError(ValueError):
 _EVENT_AGENT_ROUTES: dict[str, tuple[AgentKey, ...]] = {
     "PROJECT_STAGE_CHANGED": (AgentKey.PROJECT_INTELLIGENCE,),
     "ISSUE_CREATED": (AgentKey.PROJECT_INTELLIGENCE,),
-    "TEST_FAILED": (AgentKey.PROJECT_INTELLIGENCE,),
+    "TEST_FAILED": (
+        AgentKey.PROJECT_INTELLIGENCE,
+        AgentKey.QUALITY_INTELLIGENCE,
+    ),
     "GATE_APPROVED": (AgentKey.KNOWLEDGE_LITE,),
     "DOCUMENT_UPLOADED": (AgentKey.KNOWLEDGE_LITE,),
+    "DEVELOPMENT_BOM_CREATED": (AgentKey.ENGINEERING_INTELLIGENCE,),
+    "DEVELOPMENT_BOM_ITEM_ADDED": (AgentKey.ENGINEERING_INTELLIGENCE,),
+    "CHANGE_RECORD_CHANGED": (AgentKey.ENGINEERING_INTELLIGENCE,),
+    "COMPLAINT_CREATED": (AgentKey.QUALITY_INTELLIGENCE,),
 }
 
 _RUN_EDGES: dict[AgentRunStatus, frozenset[AgentRunStatus]] = {

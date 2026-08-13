@@ -56,9 +56,16 @@ def context() -> FrozenRunContext:
 def test_static_phase_one_event_routes_are_exact_and_unknown_events_are_ignored() -> None:
     assert agents_for_event("PROJECT_STAGE_CHANGED") == (AgentKey.PROJECT_INTELLIGENCE,)
     assert agents_for_event("ISSUE_CREATED") == (AgentKey.PROJECT_INTELLIGENCE,)
-    assert agents_for_event("TEST_FAILED") == (AgentKey.PROJECT_INTELLIGENCE,)
+    assert agents_for_event("TEST_FAILED") == (
+        AgentKey.PROJECT_INTELLIGENCE,
+        AgentKey.QUALITY_INTELLIGENCE,
+    )
     assert agents_for_event("GATE_APPROVED") == (AgentKey.KNOWLEDGE_LITE,)
     assert agents_for_event("DOCUMENT_UPLOADED") == (AgentKey.KNOWLEDGE_LITE,)
+    assert agents_for_event("DEVELOPMENT_BOM_CREATED") == (AgentKey.ENGINEERING_INTELLIGENCE,)
+    assert agents_for_event("DEVELOPMENT_BOM_ITEM_ADDED") == (AgentKey.ENGINEERING_INTELLIGENCE,)
+    assert agents_for_event("CHANGE_RECORD_CHANGED") == (AgentKey.ENGINEERING_INTELLIGENCE,)
+    assert agents_for_event("COMPLAINT_CREATED") == (AgentKey.QUALITY_INTELLIGENCE,)
     assert agents_for_event("PROJECT_CREATED") == ()
     assert agents_for_event("UNREGISTERED_INJECTION") == ()
 

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "suite_version": "s4-phase-two-agents-v1",
+  "prompt_versions": {
+    "engineering_intelligence": "engineering-intelligence-v1",
+    "quality_intelligence": "quality-intelligence-v1"
+  },
+  "cases": [
+    {
+      "id": "engineering-bom-impact",
+      "agent_key": "engineering_intelligence",
+      "event_type": "DEVELOPMENT_BOM_ITEM_ADDED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "bom_impact_suggestion",
+        "summary": "The new BOM line may affect connector validation and sourcing.",
+        "proposed_payload": {
+          "title": "Review connector BOM impact",
+          "description": "The scoped BOM evidence may affect validation and sourcing.",
+          "likelihood": 3,
+          "impact": 4,
+          "mitigation_plan": "Confirm fit and alternate-source validation before the next build."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.82
+      },
+      "expected_finding_type": "bom_impact_suggestion"
+    },
+    {
+      "id": "engineering-change-impact",
+      "agent_key": "engineering_intelligence",
+      "event_type": "CHANGE_RECORD_CHANGED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "change_impact_suggestion",
+        "summary": "The change may require retest and BOM effectivity review.",
+        "proposed_payload": {
+          "title": "Review change impact",
+          "description": "The scoped change evidence may affect released engineering evidence.",
+          "likelihood": 3,
+          "impact": 5,
+          "mitigation_plan": "Confirm affected BOMs and required regression tests.",
+          "contingency_plan": "Hold effectivity until the evidence package is approved."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.85
+      },
+      "expected_finding_type": "change_impact_suggestion"
+    },
+    {
+      "id": "quality-failure-cluster",
+      "agent_key": "quality_intelligence",
+      "event_type": "TEST_FAILED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "quality_cluster_alert",
+        "summary": "Recent scoped failures show a pattern that warrants human investigation.",
+        "proposed_payload": {
+          "title": "Review repeated validation failure pattern",
+          "description": "The available project evidence suggests a repeated failure category; correlation is not a proven root cause.",
+          "likelihood": 4,
+          "impact": 4,
+          "mitigation_plan": "Group the failed cases and confirm the common failure mode."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.79
+      },
+      "expected_finding_type": "quality_cluster_alert"
+    },
+    {
+      "id": "quality-complaint-capa",
+      "agent_key": "quality_intelligence",
+      "event_type": "COMPLAINT_CREATED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "capa_suggestion",
+        "summary": "The complaint pattern may warrant corrective and preventive actions after root-cause review.",
+        "proposed_payload": {
+          "title": "Review CAPA response options",
+          "description": "The scoped complaint evidence warrants a Quality-owned investigation before any CAPA fact is created.",
+          "likelihood": 3,
+          "impact": 5,
+          "mitigation_plan": "Confirm containment and investigate the suspected failure mode.",
+          "contingency_plan": "Review preventive controls after root cause approval."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.77
+      },
+      "expected_finding_type": "capa_suggestion"
+    },
+    {
+      "id": "quality-insufficient-evidence",
+      "agent_key": "quality_intelligence",
+      "event_type": "TEST_FAILED",
+      "output": {
+        "disposition": "no_action",
+        "candidate_type": null,
+        "summary": "No evidence-backed cluster or CAPA recommendation is warranted.",
+        "proposed_payload": null,
+        "evidence_event_ids": [],
+        "confidence": 0.91
+      },
+      "expected_finding_type": null
+    }
+  ]
+}

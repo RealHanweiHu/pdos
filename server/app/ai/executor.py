@@ -61,6 +61,14 @@ _PROMPTS = {
         "knowledge_lite_v1.json",
         expected_agent=AgentKey.KNOWLEDGE_LITE,
     ),
+    AgentKey.ENGINEERING_INTELLIGENCE: _load_prompt(
+        "engineering_intelligence_v1.json",
+        expected_agent=AgentKey.ENGINEERING_INTELLIGENCE,
+    ),
+    AgentKey.QUALITY_INTELLIGENCE: _load_prompt(
+        "quality_intelligence_v1.json",
+        expected_agent=AgentKey.QUALITY_INTELLIGENCE,
+    ),
 }
 PROMPT_VERSIONS = MappingProxyType({key: prompt.version for key, prompt in _PROMPTS.items()})
 SYSTEM_PROMPTS = MappingProxyType(
@@ -76,6 +84,10 @@ FindingCandidateType = Literal[
     "blocker_alert",
     "gate_readiness_anomaly",
     "knowledge_draft",
+    "bom_impact_suggestion",
+    "change_impact_suggestion",
+    "quality_cluster_alert",
+    "capa_suggestion",
 ]
 
 
@@ -105,7 +117,7 @@ class AgentAssessment(BaseModel):
             if not isinstance(self.proposed_payload, KnowledgeDraftPayload):
                 raise ValueError("knowledge_draft requires a knowledge draft payload")
         elif not isinstance(self.proposed_payload, RiskSuggestionPayload):
-            raise ValueError("Project Intelligence candidates require a risk payload")
+            raise ValueError("risk-shaped Agent candidates require a risk payload")
         if not self.evidence_event_ids:
             raise ValueError("human_review_candidate requires evidence")
         return self

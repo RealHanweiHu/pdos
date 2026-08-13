@@ -52,6 +52,11 @@ def preflight_assessment(
             "gate_readiness_anomaly",
         },
         "knowledge_lite": {"knowledge_draft"},
+        "engineering_intelligence": {
+            "bom_impact_suggestion",
+            "change_impact_suggestion",
+        },
+        "quality_intelligence": {"quality_cluster_alert", "capa_suggestion"},
     }
     if assessment.candidate_type not in allowed_types[context.agent_key.value]:
         raise FindingPreflightError("Finding type is outside the Agent contract")

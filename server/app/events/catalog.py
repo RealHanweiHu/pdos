@@ -93,7 +93,7 @@ _DEFINITIONS = (
         version=1,
         entity="development_bom_item",
         producer="product_engineering_service",
-        consumers=("product_projection", "cost_projection"),
+        consumers=("product_projection", "cost_projection", "agent_dispatcher"),
         payload_schema=_payload_schema(
             bom_id="string",
             part_number="string",
@@ -149,7 +149,7 @@ _DEFINITIONS = (
         version=1,
         entity="change_record",
         producer="change_service",
-        consumers=("timeline_projection", "product_projection"),
+        consumers=("timeline_projection", "product_projection", "agent_dispatcher"),
         payload_schema=_payload_schema(record_type="string", action="string"),
     ),
     EventDefinition(
