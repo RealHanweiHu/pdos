@@ -75,6 +75,9 @@ def seed_project_and_engineer(
     database_url: str,
     tenant_id: UUID,
     owner_id: UUID,
+    *,
+    suffix: str = "QA",
+    engineer_username: str = "engineer",
 ) -> tuple[UUID, UUID]:
     workflow_id, stage_id, project_id, engineer_id = uuid4(), uuid4(), uuid4(), uuid4()
     requirement_id, case_id = uuid4(), uuid4()
@@ -87,7 +90,7 @@ def seed_project_and_engineer(
                     "id": requirement_id,
                     "tenant_id": tenant_id,
                     "created_by_user_id": owner_id,
-                    "code": "REQ-QA",
+                    "code": f"REQ-{suffix}",
                     "title": "Quality",
                     "status": "converted",
                 },
@@ -99,14 +102,19 @@ def seed_project_and_engineer(
                     "tenant_id": tenant_id,
                     "requirement_id": requirement_id,
                     "created_by_user_id": owner_id,
-                    "code": "CASE-QA",
+                    "code": f"CASE-{suffix}",
                     "title": "Quality",
                     "status": "converted",
                 },
             )
             connection.execute(
                 tables.workflows.insert(),
-                {"id": workflow_id, "tenant_id": tenant_id, "code": "qa", "name": "QA"},
+                {
+                    "id": workflow_id,
+                    "tenant_id": tenant_id,
+                    "code": f"qa-{suffix.lower()}",
+                    "name": f"QA {suffix}",
+                },
             )
             connection.execute(
                 tables.stages.insert(),
@@ -124,7 +132,7 @@ def seed_project_and_engineer(
                 {
                     "id": engineer_id,
                     "tenant_id": tenant_id,
-                    "username": "engineer",
+                    "username": engineer_username,
                     "display_name": "Quality Engineer",
                     "role": Role.ENGINEER.value,
                     "password_hash": PasswordService().hash(PASSWORD),
@@ -139,7 +147,7 @@ def seed_project_and_engineer(
                     "workflow_id": workflow_id,
                     "current_stage_id": stage_id,
                     "owner_user_id": owner_id,
-                    "code": "PRJ-QA",
+                    "code": f"PRJ-{suffix}",
                     "name": "Quality project",
                     "status": "active",
                 },
@@ -166,6 +174,40 @@ def seed_project_and_engineer(
     finally:
         engine.dispose()
     return project_id, engineer_id
+
+
+def seed_document(
+    database_url: str,
+    tenant_id: UUID,
+    project_id: UUID,
+    uploaded_by_user_id: UUID,
+    *,
+    filename: str,
+) -> UUID:
+    document_id = uuid4()
+    engine = create_engine(psycopg_database_url(database_url))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.documents.insert(),
+                {
+                    "id": document_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "uploaded_by_user_id": uploaded_by_user_id,
+                    "object_key": f"quality/{document_id}/{filename}",
+                    "filename": filename,
+                    "media_type": "application/pdf",
+                    "classification": "internal",
+                    "size_bytes": 128,
+                    "sha256": "a" * 64,
+                    "extraction_status": "extracted",
+                    "fragment_count": 1,
+                },
+            )
+    finally:
+        engine.dispose()
+    return document_id
 
 
 def seed_project_user(
@@ -378,7 +420,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
         tenant_id,
         owner_id,
     )
-    seed_project_user(
+    quality_id = seed_project_user(
         isolated_quality_database,
         tenant_id,
         project_id,
@@ -386,10 +428,19 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
         username="quality",
         role=Role.QUALITY,
     )
+    seed_project_user(
+        isolated_quality_database,
+        tenant_id,
+        project_id,
+        owner_id,
+        username="reviewer",
+        role=Role.QUALITY,
+    )
     complaint = create_complaint(client, project_id, engineer_id)
     triaged = triage_complaint(client, project_id, complaint["id"], engineer_id)
     ncr_id = triaged["ncr"]["id"]
     quality_headers, engineer_headers = login(client, "quality"), login(client, "engineer")
+    reviewer_headers = login(client, "reviewer")
 
     containment = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
@@ -407,6 +458,25 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     )
     assert root_cause_stage.status_code == 200
     assert root_cause_stage.json()["containment_completed_at"] is not None
+
+    quality_analysis = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/root-causes",
+        headers=quality_headers,
+        json={
+            "method": "fishbone",
+            "analysis": "Quality-owned exploratory analysis.",
+            "root_cause": "Pending independent confirmation.",
+            "evidence_refs": [],
+        },
+    )
+    assert quality_analysis.status_code == 201
+    quality_self_approval = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/root-causes/"
+        f"{quality_analysis.json()['id']}/approve",
+        headers=quality_headers,
+    )
+    assert quality_self_approval.status_code == 409
+    assert quality_self_approval.json()["detail"]["code"] == "ROOT_CAUSE_FOUR_EYES_REQUIRED"
 
     analysis = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/root-causes",
@@ -442,22 +512,26 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     assert action_stage.status_code == 200
 
     action_ids: dict[str, str] = {}
+    action_headers: dict[str, dict[str, str]] = {}
     for action_type in ("corrective", "preventive"):
+        assigned_user_id = quality_id if action_type == "preventive" else engineer_id
+        assigned_headers = quality_headers if action_type == "preventive" else engineer_headers
         action = client.post(
             f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions",
-            headers=engineer_headers,
+            headers=assigned_headers,
             json={
                 "action_type": action_type,
                 "description": f"{action_type.title()} crimp control action",
-                "owner_user_id": str(engineer_id),
+                "owner_user_id": str(assigned_user_id),
                 "due_date": (date.today() + timedelta(days=7)).isoformat(),
             },
         )
         assert action.status_code == 201
         action_ids[action_type] = action.json()["id"]
+        action_headers[action_type] = assigned_headers
         started = client.post(
             f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{action.json()['id']}/transitions",
-            headers=engineer_headers,
+            headers=assigned_headers,
             json={"to_status": "in_progress"},
         )
         assert started.status_code == 200
@@ -487,7 +561,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
 
     preventive = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/actions/{action_ids['preventive']}/transitions",
-        headers=engineer_headers,
+        headers=action_headers["preventive"],
         json={
             "to_status": "completed",
             "completion_summary": "Supplier control plan now monitors crimp capability.",
@@ -509,9 +583,20 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     assert verification.json()["status"] == "verification"
     assert verification.json()["effectiveness_criteria"].startswith("Zero opens")
 
-    ineffective = client.post(
+    reviewer_conflict = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/effectiveness-reviews",
         headers=quality_headers,
+        json={
+            "actual_result": "One intermittent open remained after observation.",
+            "result": "ineffective",
+            "evidence_refs": evidence,
+        },
+    )
+    assert reviewer_conflict.status_code == 409
+    assert reviewer_conflict.json()["detail"]["code"] == "EFFECTIVENESS_FOUR_EYES_REQUIRED"
+    ineffective = client.post(
+        f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/effectiveness-reviews",
+        headers=reviewer_headers,
         json={
             "actual_result": "One intermittent open remained after observation.",
             "result": "ineffective",
@@ -524,7 +609,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
 
     repeat_without_new_action = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
-        headers=quality_headers,
+        headers=reviewer_headers,
         json={
             "to_status": "verification",
             "effectiveness_criteria": "Zero opens across 48 thermal-cycle samples.",
@@ -566,7 +651,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     )
     assert client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
-        headers=quality_headers,
+        headers=reviewer_headers,
         json={
             "to_status": "verification",
             "effectiveness_criteria": "Zero opens across 48 thermal-cycle samples.",
@@ -575,7 +660,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     ).status_code == 200
     effective = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/effectiveness-reviews",
-        headers=quality_headers,
+        headers=reviewer_headers,
         json={
             "actual_result": "All 48 samples passed thermal cycling.",
             "result": "effective",
@@ -588,7 +673,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
 
     closed_ncr = client.post(
         f"/api/projects/{project_id}/quality/ncrs/{ncr_id}/transitions",
-        headers=quality_headers,
+        headers=reviewer_headers,
         json={"to_status": "closed"},
     )
     assert closed_ncr.status_code == 200
@@ -600,7 +685,7 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     ):
         response = client.post(
             f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/transitions",
-            headers=quality_headers,
+            headers=reviewer_headers,
             json={"to_status": next_status, "resolution_summary": summary},
         )
         assert response.status_code == 200
@@ -612,9 +697,156 @@ def test_ncr_root_cause_four_eyes_actions_and_verification_hard_gates(
     assert owner_cannot_close.status_code == 403
     closed_complaint = client.post(
         f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/transitions",
-        headers=quality_headers,
+        headers=reviewer_headers,
         json={"to_status": "closed"},
     )
     assert closed_complaint.status_code == 200
     assert closed_complaint.json()["status"] == "closed"
     assert closed_complaint.json()["closed_by_user_id"] is not None
+
+    engine = create_engine(psycopg_database_url(isolated_quality_database))
+    try:
+        with engine.connect() as connection:
+            event_ids = set(
+                connection.execute(
+                    select(tables.events.c.event_id).where(
+                        tables.events.c.tenant_id == tenant_id,
+                        tables.events.c.project_id == project_id,
+                        tables.events.c.source == "quality_service",
+                    )
+                ).scalars()
+            )
+            audit_ids = set(
+                connection.execute(
+                    select(tables.audit_log.c.event_id).where(
+                        tables.audit_log.c.tenant_id == tenant_id,
+                        tables.audit_log.c.project_id == project_id,
+                        tables.audit_log.c.action.startswith("quality."),
+                    )
+                ).scalars()
+            )
+    finally:
+        engine.dispose()
+    assert len(event_ids) >= 20
+    assert audit_ids == event_ids
+
+
+def test_quality_surface_denies_external_roles_and_pm_cannot_triage(
+    client: TestClient,
+    isolated_quality_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id, owner_id = UUID(setup["tenant"]["id"]), UUID(setup["user"]["id"])
+    project_id, engineer_id = seed_project_and_engineer(
+        isolated_quality_database,
+        tenant_id,
+        owner_id,
+    )
+    seed_project_user(
+        isolated_quality_database,
+        tenant_id,
+        project_id,
+        owner_id,
+        username="project-manager",
+        role=Role.PROJECT_MANAGER,
+    )
+    for username, role in (("supplier", Role.SUPPLIER), ("customer", Role.CUSTOMER)):
+        seed_project_user(
+            isolated_quality_database,
+            tenant_id,
+            project_id,
+            owner_id,
+            username=username,
+            role=role,
+        )
+
+    complaint = create_complaint(client, project_id, engineer_id, username="project-manager")
+    assert client.get(
+        f"/api/projects/{project_id}/quality/complaints",
+        headers=login(client, "project-manager"),
+    ).status_code == 200
+    triage_payload = {
+        "nonconformity": "Out of specification",
+        "requirement_reference": "SPEC-01",
+        "severity": "medium",
+        "owner_user_id": str(engineer_id),
+        "target_date": (date.today() + timedelta(days=5)).isoformat(),
+    }
+    assert client.post(
+        f"/api/projects/{project_id}/quality/complaints/{complaint['id']}/triage",
+        headers=login(client, "project-manager"),
+        json=triage_payload,
+    ).status_code == 403
+    for username in ("supplier", "customer"):
+        headers = login(client, username)
+        assert client.get(
+            f"/api/projects/{project_id}/quality/complaints", headers=headers
+        ).status_code == 403
+        assert client.post(
+            f"/api/projects/{project_id}/quality/complaints",
+            headers=headers,
+            json={
+                "title": "External injection",
+                "description": "Must be denied",
+                "source": "customer",
+                "severity": "low",
+                "occurred_at": datetime.now(UTC).isoformat(),
+                "owner_user_id": str(engineer_id),
+            },
+        ).status_code == 403
+
+
+def test_complaint_document_references_are_project_bound(
+    client: TestClient,
+    isolated_quality_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id, owner_id = UUID(setup["tenant"]["id"]), UUID(setup["user"]["id"])
+    project_id, engineer_id = seed_project_and_engineer(
+        isolated_quality_database,
+        tenant_id,
+        owner_id,
+    )
+    other_project_id, _ = seed_project_and_engineer(
+        isolated_quality_database,
+        tenant_id,
+        owner_id,
+        suffix="OTHER",
+        engineer_username="engineer-other",
+    )
+    local_document_id = seed_document(
+        isolated_quality_database,
+        tenant_id,
+        project_id,
+        owner_id,
+        filename="local.pdf",
+    )
+    foreign_document_id = seed_document(
+        isolated_quality_database,
+        tenant_id,
+        other_project_id,
+        owner_id,
+        filename="foreign.pdf",
+    )
+    body = {
+        "title": "Document scoped complaint",
+        "description": "Evidence scope must fail closed.",
+        "source": "internal",
+        "severity": "medium",
+        "occurred_at": (datetime.now(UTC) - timedelta(minutes=1)).isoformat(),
+        "owner_user_id": str(engineer_id),
+    }
+    rejected = client.post(
+        f"/api/projects/{project_id}/quality/complaints",
+        headers=login(client, "engineer"),
+        json={**body, "document_refs": [str(foreign_document_id)]},
+    )
+    assert rejected.status_code == 404
+    assert rejected.json()["detail"]["code"] == "QUALITY_RELATED_OBJECT_NOT_FOUND"
+    accepted = client.post(
+        f"/api/projects/{project_id}/quality/complaints",
+        headers=login(client, "engineer"),
+        json={**body, "document_refs": [str(local_document_id)]},
+    )
+    assert accepted.status_code == 201
+    assert accepted.json()["document_refs"] == [str(local_document_id)]
