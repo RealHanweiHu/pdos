@@ -1049,3 +1049,29 @@
 | 全仓门禁首次 TypeScript 检查在旧 `.next` 缓存上静默且 CPU 为 0 | 1 | 中止停滞进程，把生成缓存移动到 `/tmp` 可恢复目录后单独 typecheck 通过；再从头执行完整 `make check`，276/99 tests 与 build 全绿 |
 | 正式生产 dry-run 读取真实 `project_tasks` 时命中不存在的 `blocked_reason`，并发现 `project_files.securityClassification` 同样不在真实 schema | 1 | 只读固化五表列契约；缺失任务原因固定投影为 NULL，文件密级改由真实 `visibility` 同名白名单映射且未知值 fail-close；合成源 fixture 改为真实列形态后迁移/重放/漂移回归转绿 |
 | 首次生产重放二次确认串漏填 fingerprint | 1 | 安全闸在数据库连接/写入前拒绝；未创建报告、未产生目标写入。改用人工批准绑定的完整租户+fingerprint+有序选择器确认串后重放通过 |
+
+## In Progress: S4-1 CAPA 正式链
+
+**Definition of Ready**
+
+- [x] 规格出处：canonical S4-1、质量 schema/SoR、RBAC/Event Catalog 与 Sprint 4 Exit 验收
+- [x] 依赖项：Project/Customer/User/Document、Event/Audit、Quality 角色与 `COMPLAINT_CREATED` 注册定义均已就绪
+- [x] 预计触达：migration `0021_quality_capa`、schema/domain/API/event tests、Quality 前端与 BFF、运行时验收和文档
+- [x] 安全边界：AI 只创建 Finding；质量业务写仅由人工 FastAPI 动作完成，tenant/project/角色/四眼全部服务端绑定并 fail-close
+- [ ] 质量 Owner 确认字段、状态机、严重度/来源枚举、四眼规则与有效性关闭门禁；确认稿见 `docs/design/2026-08-12-s4-1-quality-owner-contract-draft.md`
+
+**Implementation slices**
+
+- [ ] S4-1a：质量 Owner 拍板契约，冻结 API/错误码/RBAC 与 migration 0021 验收合同
+- [ ] S4-1b：Complaint 创建/查询/triage 纵向切片，同事务接通 `COMPLAINT_CREATED` + Audit
+- [ ] S4-1c：NCR→根因→纠正/预防措施状态机、不可变版本与硬闸
+- [ ] S4-1d：有效性复核、ineffective 回流、关闭与四眼/治理 override
+- [ ] S4-1e：Quality Complaint/CAPA 前端与同源 BFF，外部角色零内部数据
+- [ ] S4-1f：迁移往返/metadata drift、聚焦/完整门禁、真实 HTTP/浏览器链路及错误/越权证据
+- [ ] S4-1g：完成 DoD、更新 canonical checkbox 和当前指针到 S4-2
+
+**Current evidence（2026-08-12）**
+
+- Sprint 3 Exit Gate 已经人工确认；`codex/sprint-4` 从确认后的 Sprint 3 终点建立。
+- preview 规格只冻结 CAPA 链路与 Owner 共同定义纪律；仓库及老 CEHub 均没有可直接视为公司正式流程的字段合同。老 CEHub 仅有 Issue 根因、解决方案与 QA verification，可作语义参考但不能代替 Owner 拍板。
+- 已形成最小推荐确认稿，明确五项必须由质量 Owner 决定；确认前不创建 migration 0021，不把建议枚举/状态写成政策事实。
