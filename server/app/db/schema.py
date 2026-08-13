@@ -1791,6 +1791,504 @@ certification_expiry_alerts = Table(
     schema=QUALITY_SCHEMA,
 )
 
+complaints = Table(
+    "complaints",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("customer_id", Uuid),
+    Column("reported_by_user_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("closed_by_user_id", Uuid),
+    Column("code", String(64), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("description", Text, nullable=False),
+    Column("source", String(32), nullable=False),
+    Column("severity", String(16), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'open'")),
+    Column("occurred_at", DateTime(timezone=True), nullable=False),
+    Column("reported_at", DateTime(timezone=True), nullable=False),
+    Column("customer_reference", String(128)),
+    Column("affected_scope", Text),
+    Column("resolution_summary", Text),
+    Column("closed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "source IN ('customer', 'field', 'rma', 'internal')",
+        name="source_allowed",
+    ),
+    CheckConstraint(
+        "severity IN ('critical', 'high', 'medium', 'low')",
+        name="severity_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('open', 'triaged', 'investigating', 'resolved', 'closed')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "btrim(code) <> '' AND btrim(title) <> '' AND btrim(description) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint("reported_at >= occurred_at", name="reported_after_occurrence"),
+    CheckConstraint(
+        "(status IN ('open', 'triaged', 'investigating') AND resolution_summary IS NULL) OR "
+        "(status IN ('resolved', 'closed') AND resolution_summary IS NOT NULL "
+        "AND btrim(resolution_summary) <> '')",
+        name="resolution_consistent",
+    ),
+    CheckConstraint(
+        "(status = 'closed' AND closed_by_user_id IS NOT NULL AND closed_at IS NOT NULL) OR "
+        "(status <> 'closed' AND closed_by_user_id IS NULL AND closed_at IS NULL)",
+        name="closure_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_complaints_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "customer_id"],
+        [f"{CORE_SCHEMA}.customers.tenant_id", f"{CORE_SCHEMA}.customers.id"],
+        name="fk_complaints_tenant_customer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reported_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_complaints_tenant_reporter",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_complaints_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "closed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_complaints_tenant_closer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_complaints_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_complaints_tenant_project_id"),
+    UniqueConstraint("tenant_id", "code", name="uq_complaints_tenant_code"),
+    Index(
+        "ix_complaints_tenant_project_status",
+        "tenant_id",
+        "project_id",
+        "status",
+        "severity",
+        "updated_at",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+nonconformance_reports = Table(
+    "nonconformance_reports",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("complaint_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("preventive_disposition_approved_by_user_id", Uuid),
+    Column("closed_by_user_id", Uuid),
+    Column("code", String(64), nullable=False),
+    Column("nonconformity", Text, nullable=False),
+    Column("requirement_reference", Text, nullable=False),
+    Column("severity", String(16), nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'open'")),
+    Column("target_date", Date, nullable=False),
+    Column("containment_action", Text),
+    Column("containment_completed_at", DateTime(timezone=True)),
+    Column("affected_quantity", Integer),
+    Column("affected_scope", Text),
+    Column("preventive_not_applicable_reason", Text),
+    Column("preventive_disposition_approved_at", DateTime(timezone=True)),
+    Column("closed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "severity IN ('critical', 'high', 'medium', 'low')",
+        name="severity_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('open', 'containment', 'root_cause', 'action', 'verification', 'closed')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "btrim(code) <> '' AND btrim(nonconformity) <> '' AND btrim(requirement_reference) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint(
+        "affected_quantity IS NULL OR affected_quantity >= 0",
+        name="affected_quantity_nonnegative",
+    ),
+    CheckConstraint(
+        "(containment_action IS NULL AND containment_completed_at IS NULL) OR "
+        "(containment_action IS NOT NULL AND btrim(containment_action) <> '' "
+        "AND containment_completed_at IS NOT NULL)",
+        name="containment_consistent",
+    ),
+    CheckConstraint(
+        "(preventive_not_applicable_reason IS NULL "
+        "AND preventive_disposition_approved_by_user_id IS NULL "
+        "AND preventive_disposition_approved_at IS NULL) OR "
+        "(preventive_not_applicable_reason IS NOT NULL "
+        "AND btrim(preventive_not_applicable_reason) <> '' "
+        "AND preventive_disposition_approved_by_user_id IS NOT NULL "
+        "AND preventive_disposition_approved_at IS NOT NULL)",
+        name="preventive_disposition_consistent",
+    ),
+    CheckConstraint(
+        "(status = 'closed' AND closed_by_user_id IS NOT NULL AND closed_at IS NOT NULL) OR "
+        "(status <> 'closed' AND closed_by_user_id IS NULL AND closed_at IS NULL)",
+        name="closure_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "complaint_id"],
+        [
+            f"{QUALITY_SCHEMA}.complaints.tenant_id",
+            f"{QUALITY_SCHEMA}.complaints.project_id",
+            f"{QUALITY_SCHEMA}.complaints.id",
+        ],
+        name="fk_ncrs_tenant_project_complaint",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ncrs_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ncrs_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "preventive_disposition_approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ncrs_tenant_preventive_approver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "closed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_ncrs_tenant_closer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ncrs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ncrs_tenant_project_id"),
+    UniqueConstraint("tenant_id", "code", name="uq_ncrs_tenant_code"),
+    Index(
+        "ix_ncrs_tenant_project_status",
+        "tenant_id",
+        "project_id",
+        "status",
+        "severity",
+        "target_date",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+root_cause_analyses = Table(
+    "root_cause_analyses",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("ncr_id", Uuid, nullable=False),
+    Column("analyst_user_id", Uuid, nullable=False),
+    Column("approved_by_user_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("method", String(32), nullable=False),
+    Column("analysis", Text, nullable=False),
+    Column("root_cause", Text, nullable=False),
+    Column("evidence_refs", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("status", String(32), nullable=False, server_default=text("'draft'")),
+    Column("approved_at", DateTime(timezone=True)),
+    Column("superseded_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("version > 0", name="version_positive"),
+    CheckConstraint(
+        "method IN ('5why', 'fishbone', '8d', 'other')",
+        name="method_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('draft', 'approved', 'superseded')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "btrim(analysis) <> '' AND btrim(root_cause) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint("jsonb_typeof(evidence_refs) = 'array'", name="evidence_refs_array"),
+    CheckConstraint(
+        "approved_by_user_id IS NULL OR approved_by_user_id <> analyst_user_id",
+        name="four_eyes",
+    ),
+    CheckConstraint(
+        "(status = 'draft' AND approved_by_user_id IS NULL AND approved_at IS NULL "
+        "AND superseded_at IS NULL) OR "
+        "(status = 'approved' AND approved_by_user_id IS NOT NULL "
+        "AND approved_at IS NOT NULL AND superseded_at IS NULL) OR "
+        "(status = 'superseded' AND approved_by_user_id IS NOT NULL "
+        "AND approved_at IS NOT NULL AND superseded_at IS NOT NULL)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [
+            f"{QUALITY_SCHEMA}.nonconformance_reports.tenant_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.project_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.id",
+        ],
+        name="fk_root_causes_tenant_project_ncr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "analyst_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_root_causes_tenant_analyst",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_root_causes_tenant_approver",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_root_causes_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_root_causes_tenant_project_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "ncr_id",
+        "version",
+        name="uq_root_causes_tenant_ncr_version",
+    ),
+    Index(
+        "ix_root_causes_tenant_ncr_status",
+        "tenant_id",
+        "ncr_id",
+        "status",
+        "version",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+capa_actions = Table(
+    "capa_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("ncr_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("action_type", String(32), nullable=False),
+    Column("description", Text, nullable=False),
+    Column("due_date", Date, nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'planned'")),
+    Column("completion_summary", Text),
+    Column("evidence_refs", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("started_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "action_type IN ('corrective', 'preventive')",
+        name="type_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('planned', 'in_progress', 'completed')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(description) <> ''", name="description_nonblank"),
+    CheckConstraint("jsonb_typeof(evidence_refs) = 'array'", name="evidence_refs_array"),
+    CheckConstraint(
+        "(status = 'planned' AND started_at IS NULL AND completed_at IS NULL "
+        "AND completion_summary IS NULL) OR "
+        "(status = 'in_progress' AND started_at IS NOT NULL AND completed_at IS NULL "
+        "AND completion_summary IS NULL) OR "
+        "(status = 'completed' AND started_at IS NOT NULL AND completed_at IS NOT NULL "
+        "AND completion_summary IS NOT NULL AND btrim(completion_summary) <> '' "
+        "AND jsonb_array_length(evidence_refs) > 0)",
+        name="lifecycle_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [
+            f"{QUALITY_SCHEMA}.nonconformance_reports.tenant_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.project_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.id",
+        ],
+        name="fk_capa_actions_tenant_project_ncr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_capa_actions_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_capa_actions_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_capa_actions_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_capa_actions_tenant_project_id"),
+    Index(
+        "ix_capa_actions_tenant_ncr_status",
+        "tenant_id",
+        "ncr_id",
+        "status",
+        "due_date",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+effectiveness_reviews = Table(
+    "effectiveness_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("ncr_id", Uuid, nullable=False),
+    Column("reviewer_user_id", Uuid, nullable=False),
+    Column("review_number", Integer, nullable=False),
+    Column("criteria", Text, nullable=False),
+    Column("observation_due_at", DateTime(timezone=True), nullable=False),
+    Column("actual_result", Text, nullable=False),
+    Column("result", String(32), nullable=False),
+    Column("evidence_refs", json_type, nullable=False),
+    Column("reviewed_at", DateTime(timezone=True), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("review_number > 0", name="review_number_positive"),
+    CheckConstraint(
+        "result IN ('effective', 'ineffective')",
+        name="result_allowed",
+    ),
+    CheckConstraint(
+        "btrim(criteria) <> '' AND btrim(actual_result) <> ''",
+        name="required_text_nonblank",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(evidence_refs) = 'array' AND jsonb_array_length(evidence_refs) > 0",
+        name="evidence_refs_nonempty_array",
+    ),
+    CheckConstraint("reviewed_at >= observation_due_at", name="observation_completed"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [
+            f"{QUALITY_SCHEMA}.nonconformance_reports.tenant_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.project_id",
+            f"{QUALITY_SCHEMA}.nonconformance_reports.id",
+        ],
+        name="fk_effectiveness_reviews_tenant_project_ncr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_effectiveness_reviews_tenant_reviewer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_effectiveness_reviews_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "id",
+        name="uq_effectiveness_reviews_tenant_project_id",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "ncr_id",
+        "review_number",
+        name="uq_effectiveness_reviews_tenant_ncr_number",
+    ),
+    Index(
+        "ix_effectiveness_reviews_tenant_ncr_created",
+        "tenant_id",
+        "ncr_id",
+        "review_number",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
 engineering_change_requests = Table(
     "engineering_change_requests",
     metadata,
@@ -4037,6 +4535,11 @@ class Tables:
     test_reports: Table
     certifications: Table
     certification_expiry_alerts: Table
+    complaints: Table
+    nonconformance_reports: Table
+    root_cause_analyses: Table
+    capa_actions: Table
+    effectiveness_reviews: Table
     engineering_change_requests: Table
     ecr_affected_boms: Table
     engineering_change_notices: Table
@@ -4096,6 +4599,11 @@ tables = Tables(
     test_reports=test_reports,
     certifications=certifications,
     certification_expiry_alerts=certification_expiry_alerts,
+    complaints=complaints,
+    nonconformance_reports=nonconformance_reports,
+    root_cause_analyses=root_cause_analyses,
+    capa_actions=capa_actions,
+    effectiveness_reviews=effectiveness_reviews,
     engineering_change_requests=engineering_change_requests,
     ecr_affected_boms=ecr_affected_boms,
     engineering_change_notices=engineering_change_notices,
