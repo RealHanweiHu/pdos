@@ -4,6 +4,7 @@ import os
 from collections.abc import Iterator
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
+from typing import Any, cast
 from uuid import UUID, uuid4
 
 import pytest
@@ -255,7 +256,7 @@ def create_complaint(
     owner_user_id: UUID,
     *,
     username: str = "engineer",
-) -> dict[str, object]:
+) -> dict[str, Any]:
     response = client.post(
         f"/api/projects/{project_id}/quality/complaints",
         headers=login(client, username),
@@ -271,15 +272,15 @@ def create_complaint(
         },
     )
     assert response.status_code == 201
-    return response.json()
+    return cast(dict[str, Any], response.json())
 
 
 def triage_complaint(
     client: TestClient,
     project_id: UUID,
-    complaint_id: object,
+    complaint_id: Any,
     owner_user_id: UUID,
-) -> dict[str, object]:
+) -> dict[str, Any]:
     response = client.post(
         f"/api/projects/{project_id}/quality/complaints/{complaint_id}/triage",
         headers=login(client, "quality"),
@@ -294,7 +295,7 @@ def triage_complaint(
         },
     )
     assert response.status_code == 201
-    return response.json()
+    return cast(dict[str, Any], response.json())
 
 
 def test_engineer_creates_and_lists_complaint_with_same_transaction_event_audit(
