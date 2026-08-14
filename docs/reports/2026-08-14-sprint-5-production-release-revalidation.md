@@ -124,8 +124,10 @@
 
 1. 已完成：Owner/Admin 登录后的 Dashboard 与 C4s / S18-01 Project Workspace
    真实浏览器验收。
-2. 待单独授权：CEHub apply；apply 与 replay 不得预授权。
-3. 授权并完成 apply 后，再进行数据抽查、幂等重放、主入口声明、CEHub 只读归档与
+2. 待单独授权：CEHub 生产 apply；按 canonical 运行手册，该授权应明确包含成功 apply
+   后使用同一 fingerprint、同一 tenant 与同一有序项目清单立即执行的幂等重放，但不包含
+   主入口声明或钉钉外发。
+3. 授权并完成 apply、目标抽查与幂等重放后，再进行主入口声明、CEHub 只读归档与
    至少 30 分钟观察。
 4. 最后由 Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 Exit；S5-1
    真实钉钉 smoke 延期风险继续独立保留。
