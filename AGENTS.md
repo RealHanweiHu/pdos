@@ -38,10 +38,10 @@
 - [x] S4-1～S4-4 已完成；Sprint 4 Exit Gate 已于 2026-08-12 经人确认通过
 - [ ] S5-1 本地连接器、隔离测试与真实浏览器验收已完成；真实钉钉应用 Exit Gate 经人明确接受延期风险，规范状态保持未勾选，生产继续强制 `delivery=false`
 - [x] S5-2 CEHub 全量迁移工具、S5-3 租户备份/导出、S5-4 退役与切换资产均已完成并通过本地完整门禁
-- [x] Sprint 5 Project API 发布阻断已修复并合并；最终 release `82de9d215c5b0101aaba8cbff2d1adf6d751ceef` 已在 ECS 仅构建候选，并以强制只读生产连接验证 2 个导入 Project 可完整通过 list/API response
+- [x] Sprint 5 Project API 发布阻断已修复并合并；最终 release `82de9d215c5b0101aaba8cbff2d1adf6d751ceef` 已部署到生产 migration 0030，2 个导入 Project readiness、公共入口与 10 分钟有界日志验证通过
 - [x] CEHub 保持数据库级只读；activity-log tailer 与 scheduled scanner 已按固定 `35790` 分钟静默，以同一旧镜像重建后观察至少 35 分钟，restart=0、读取 200、相关错误日志为 0
 - [x] 最终 release 的 inventory verify、全量 dry-run 与目标前后只读快照已通过；`target_writes=0` 且目标快照逐字节一致
-- [ ] **当前：等待 Data Owner 绑定最终 release 与 source fingerprint，再分别获得生产 deploy 与 apply 授权**；PDOS 仍运行旧 release，Alembic 仍为 0027，未部署、未迁移、未 apply
+- [ ] **当前：等待 Owner/Admin 登录后确认 Dashboard，并单独取得 CEHub apply 授权**；PDOS 已运行最终 release、Alembic 为 0030，CEHub 未 apply，钉钉外发仍为 `delivery=false`
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
