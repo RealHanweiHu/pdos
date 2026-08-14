@@ -209,6 +209,13 @@ def test_sprint_five_cutover_requires_complete_history_and_two_approved_snapshot
     assert "PDOS_DINGTALK_DELIVERY_ENABLED=false" in runbook
     assert "不得从本地脏工作树" in runbook
     assert "明确授权" in runbook
+    assert "/opt/ce-project-hub" in runbook
+    assert "docker compose -f docker-compose.prod.yml stop app" in runbook
+    assert "ALTER ROLE" in runbook
+    assert "default_transaction_read_only" in runbook
+    assert "UPDATE public.projects SET id = id WHERE false" in runbook
+    assert 'error.code !== "25006"' in runbook
+    assert "RESET default_transaction_read_only" in runbook
     assert "不执行 Alembic downgrade" in runbook
     assert "30 分钟" in runbook
     assert "inventory_fingerprint" in contract
