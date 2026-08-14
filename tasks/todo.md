@@ -1296,19 +1296,28 @@
 - [x] 补齐 migration 0029 有数据时有损 downgrade guard；成功迁移不提供自动删除或 schema downgrade
 - [x] 明确 S5-1 延期例外在切换期间保持 `delivery=false`，不隐式放开外发或伪记 PASS
 - [x] 获得生产只读盘点授权并在 ECS 用最终 release 捕获完整 CEHub inventory
-- [ ] Data Owner 批准 inventory fingerprint、全部项目 ID、release/tenant/actor/低峰窗口
-- [ ] 获得部署与生产 apply 的逐次授权，完成全量 dry-run、0028～0030 部署、apply、幂等重放与抽查
+- [x] Data Owner 批准 inventory fingerprint、全部项目 ID、release/tenant/actor，并授权立即执行 CEHub 写冻结、verify 与全量 dry-run
+- [x] CEHub 写冻结稳定生效，inventory verify 与全量 dry-run 通过；`target_writes=0`，目标 11 表 count/内容 SHA-256 前后完全相同
+- [ ] Data Owner 批准 dry-run source fingerprint 与五类 count/预测 created/skipped
+- [ ] 获得部署与生产 apply 的逐次授权，完成 0028～0030 部署、apply、幂等重放与抽查
 - [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前只完成本地代码/文档准备，不构成任何生产授权或完成声明。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前生产已完成到全量 dry-run；未完成项仍不构成部署、apply、转正或 Sprint 5 Exit 授权。
 
 **生产 inventory capture（2026-08-13）**
 
 - PR #4 已合并，最终 release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 的 bundle、远端 clone、OCI revision 与非 root image 均完成一致性校验。
 - ECS 全量只读 capture 成功：4 Project / 4 active / 0 archived，类型为 3 NPD + 1 OBT，`errors=[]`；inventory fingerprint 为 `a450122f0f3bac6a7eceec600463e641f3d33b6768bf1400c81c805b878f484d`。
 - 线上 5 个容器保持 release `a34c7eb06aaba036bef8c257c30a841c1ec6be0d`、container ID 不变且 healthy；Alembic 仍为 `0027_dingtalk_hardening`，未部署、未迁移、未写目标库。
-- 脱敏证据：`docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`。当前等待 Data Owner 批准 fingerprint 与有序四项目清单，随后才可申请 CEHub 写冻结、verify 和最终全量 dry-run。
+- 脱敏证据：`docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`。Data Owner 后续已批准 fingerprint 与有序四项目清单，并授权完成写冻结、verify 和最终全量 dry-run；当前等待批准新的 `source_fingerprint`。
+
+**生产全量写冻结与 dry-run（2026-08-13）**
+
+- Data Owner 已绑定 release、inventory fingerprint、有序四项目、tenant 与 actor，并明确授权写冻结、verify、dry-run；禁止部署和 apply。
+- 旧 CEHub `ce_hub@cehub` 已设置 `default_transaction_read_only=on`；读取 4 Project 正常，永久表零行写探针返回 `25006`。只读模式下禁用每 5 秒写 heartbeat 的 activity-log tailer 后，同一旧 image 稳定运行且错误风暴清零，原环境有 `0600` 备份。
+- Inventory verify 为 `ready`；全量 dry-run fingerprint 为 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，6 User / 4 Project / 117 Task / 0 Gate Review / 14 File Reference，`target_writes=0`。
+- 目标 tenant 11 表前后 count 与完整内容 SHA-256 全部相同；PDOS 仍运行旧 release，Alembic 仍为 0027，候选容器数 0。证据见 `docs/reports/2026-08-13-sprint-5-production-full-dry-run.md`。
 
 **发布候选复验（2026-08-13）**
 

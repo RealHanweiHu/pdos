@@ -215,6 +215,8 @@ def test_sprint_five_cutover_requires_complete_history_and_two_approved_snapshot
     assert "default_transaction_read_only" in runbook
     assert "UPDATE public.projects SET id = id WHERE false" in runbook
     assert 'error.code !== "25006"' in runbook
+    assert "ACTIVITY_LOG_TAILER_ENABLED" in runbook
+    assert "AUTOMATION_EVENT_MODE=inline" in runbook
     assert "RESET default_transaction_read_only" in runbook
     assert "不执行 Alembic downgrade" in runbook
     assert "30 分钟" in runbook

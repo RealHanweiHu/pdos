@@ -160,7 +160,7 @@ ai-native-R&D-platform/
 3. Sprint 5 末：选低峰全量迁移 → `pdos.beepump.net` 转正（或接管主域）→ 老 CEHub 转只读归档（保留审计查询期，Manus 切换时同样手法）；
 4. CEHub 仓库侧独立事项：`codex/cehub-v3-2` M0 止血落库照做（现役系统健康问题）；grandfather 幂等失败需查证是否影响现役 main。
 
-切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定，必须包含 archived 历史项目。release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已完成生产全库只读 capture（4 active / 0 archived、零部署/零迁移），证据见 `docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`；未经 Data Owner 批准、后续生产授权与 Sprint 5 Exit 人工确认不得标记完成。
+切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定，必须包含 archived 历史项目。release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已完成生产全库只读 capture、Data Owner inventory 批准、CEHub 写冻结、inventory verify 与全量 dry-run；source fingerprint 为 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，`target_writes=0` 且目标 11 表前后不变，证据见 `docs/reports/2026-08-13-sprint-5-production-full-dry-run.md`。未经该 source fingerprint 的 Data Owner 批准、部署/apply 逐次授权与 Sprint 5 Exit 人工确认不得标记完成。
 
 ## 10. 排期总览与风险
 

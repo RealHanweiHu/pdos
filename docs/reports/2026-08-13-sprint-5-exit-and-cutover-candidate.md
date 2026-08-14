@@ -1,7 +1,7 @@
 # Sprint 5 Exit 与全量切换发布候选报告
 
 日期：2026-08-13
-结论：**本地实现与发布资产通过；生产切换仍为 NO-GO，等待逐次授权与人工 Gate。**
+结论：**本地实现、生产写冻结、inventory verify 与全量 dry-run 已通过；生产切换仍为 NO-GO，等待 `source_fingerprint` 批准、部署/apply 逐次授权与人工 Gate。**
 
 ## 1. 已完成范围
 
@@ -32,12 +32,13 @@ S5-1 真实 DingTalk password-free login、群通知、审批和 card smoke 按�
 ## 4. 生产 Gate 状态
 
 1. [x] PR #4 合并后的最终 release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已在 ECS 构建候选镜像并完成 CEHub 全量只读 inventory capture；未部署、未迁移、未写目标库。完整证据见 `docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`。
-2. [ ] Data Owner 批准 inventory fingerprint `a450122f0f3bac6a7eceec600463e641f3d33b6768bf1400c81c805b878f484d` 与有序全量项目 `WqWcl0wK,aBnbEdQG,xY8-PGbc,zGpNH0Xq`，并绑定目标 tenant `e340c240-d8f0-429c-aac5-69ab9b42fac5`、actor `4bdba865-c5b1-4ca1-aa85-be467e1fad42` 和低峰窗口。
-3. [ ] 另行获得 CEHub 写冻结、inventory verify 与完整 dry-run 授权；冻结后从旧应用真实新连接验证读取可用、永久表零行写探针被 PostgreSQL `25006` 拒绝，dry-run 必须 `target_writes=0`。Data Owner 再批准 `source_fingerprint`。
-4. [ ] 分别获得 release 部署与生产 apply 授权，升级 0028～0030、apply、幂等重放并抽查五类数据。
-5. [ ] 业务 Owner 宣布 `pdos.beepump.net` 为主入口，验证 CEHub 只读审计归档并观察至少 30 分钟。
-6. [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期风险继续独立跟踪。
+2. [x] Data Owner 已批准 inventory fingerprint `a450122f0f3bac6a7eceec600463e641f3d33b6768bf1400c81c805b878f484d` 与有序全量项目 `WqWcl0wK,aBnbEdQG,xY8-PGbc,zGpNH0Xq`，并绑定目标 tenant `e340c240-d8f0-429c-aac5-69ab9b42fac5`、actor `4bdba865-c5b1-4ca1-aa85-be467e1fad42`。
+3. [x] CEHub 写冻结、inventory verify 与完整 dry-run 已获批并完成；旧应用真实新连接读取可用、永久表零行写探针被 PostgreSQL `25006` 拒绝，dry-run `target_writes=0`，目标 11 表前后 count/内容 SHA-256 完全相同。证据见 `docs/reports/2026-08-13-sprint-5-production-full-dry-run.md`。
+4. [ ] Data Owner 批准 dry-run source fingerprint `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54` 与五类 count/预测 created/skipped。
+5. [ ] 分别获得 release 部署与生产 apply 授权，升级 0028～0030、apply、幂等重放并抽查五类数据。
+6. [ ] 业务 Owner 宣布 `pdos.beepump.net` 为主入口，验证 CEHub 只读审计归档并观察至少 30 分钟。
+7. [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期风险继续独立跟踪。
 
-证据分支 `codex/sprint-5-cutover-evidence` 的提交 `2ee155d` 已通过 GitHub 完整 Quality/migration 门禁（7m57s），PR #5 保持未合并；这项代码库状态不替代以上任何生产或人工 Gate。
+证据分支 `codex/sprint-5-cutover-evidence` 最终 head `7fe20cb` 已通过 GitHub 完整 Quality/migration 门禁（7m22s），PR #5 以 merge commit `499db37f8d696edbf19c00111b29803912194dda` 合并；这项代码库状态不替代以上任何生产或人工 Gate。
 
 运行时严格使用 `docs/runbooks/sprint-5-cutover-and-retirement.md`。以上任何生产项未完成前，不得把全项目目标、Sprint 5 Exit 或退役标记为完成。

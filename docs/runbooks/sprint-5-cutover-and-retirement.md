@@ -106,6 +106,8 @@ ALTER ROLE "<actual-cehub-app-role>" IN DATABASE "<actual-cehub-database>"
   SET default_transaction_read_only = on;
 ```
 
+旧 CEHub 的 activity-log tailer 每 5 秒写一次 heartbeat；数据库只读后若仍启用会形成持续 `25006` 日志。连接池换代前必须把旧私有环境中的 `ACTIVITY_LOG_TAILER_ENABLED` 原值保存到 `0600` 备份，并设置为 `false`。这只暂停旧系统的写型自动化，不改变读取 API；恢复写权限时也必须按原值恢复该设置。不得用 `AUTOMATION_EVENT_MODE=inline` 代替，否则用户请求会重新触发内联写尝试。
+
 设置成功后启动原应用，不构建或部署任何镜像：
 
 ```bash
