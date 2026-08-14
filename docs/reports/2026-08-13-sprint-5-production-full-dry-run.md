@@ -41,7 +41,7 @@ UTC `2026-08-14T03:01:00Z` 停止旧 `app`，清理旧连接后执行数据库�
 - 容器 running、restart count 0；
 - 该 15 秒有界观察报告 SHA-256：`e771a545227ee63f72f35cdbb974e2d129236d5f5d01f686f32f9e3050c2c94a`。
 
-后续更长日志观察在 UTC `05:20:47Z` 与 `05:50:47Z` 发现 scheduled scanner 每 30 分钟尝试向 `automation_heartbeats` 写心跳，并被数据库只读边界以 `25006` 拒绝，应用记录 `scheduled scan failed (non-fatal)`。因此数据安全结论不变，tailer 错误风暴也已清零，但“稳定只读归档日志全净”尚未完成。旧镜像没有 scheduler disable flag；须另获生产授权后备份原值、设置运行手册固定的 `AUTOMATION_SCAN_INTERVAL_MIN=35790`、以同一旧镜像重建，并观察至少 35 分钟确认扫描器/read-only/`25006` 计数为 0。
+后续更长日志观察在 UTC `05:20:47Z`、`05:50:47Z` 与 `06:20:47Z` 已发现至少 3 次 scheduled scanner 周期事件：它每 30 分钟尝试向 `automation_heartbeats` 写心跳，并被数据库只读边界以 `25006` 拒绝，应用记录 `scheduled scan failed (non-fatal)`；在环境静默前预计会继续按同一周期出现。因此数据安全结论不变，tailer 错误风暴也已清零，但“稳定只读归档日志全净”尚未完成。旧镜像没有 scheduler disable flag；须另获生产授权后备份原值、设置运行手册固定的 `AUTOMATION_SCAN_INTERVAL_MIN=35790`、以同一旧镜像重建，并观察至少 35 分钟确认扫描器/read-only/`25006` 计数为 0。
 
 恢复 CEHub 写权限与 tailer 不属于自动回退；必须另获 Data Owner 授权，并按备份原值恢复、换代连接池和复验。
 
