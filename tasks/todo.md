@@ -1298,12 +1298,15 @@
 - [x] 获得生产只读盘点授权并在 ECS 用最终 release 捕获完整 CEHub inventory
 - [x] Data Owner 批准 inventory fingerprint、全部项目 ID、release/tenant/actor，并授权立即执行 CEHub 写冻结、verify 与全量 dry-run
 - [x] CEHub 写冻结稳定生效，inventory verify 与全量 dry-run 通过；`target_writes=0`，目标 11 表 count/内容 SHA-256 前后完全相同
-- [ ] Data Owner 批准 dry-run source fingerprint 与五类 count/预测 created/skipped
-- [ ] 获得部署与生产 apply 的逐次授权，完成 0028～0030 部署、apply、幂等重放与抽查
+- [x] 只读发布 `status` 发现导入 Project 列表 500 并精确复现；旧 release `2cce...` 失效且未部署/apply
+- [x] 修复后端/Web 可空 Development Case 读合同并增加真实迁移回归
+- [ ] 合并修复形成新 release，在 ECS 重建并重新执行 inventory verify、全量 dry-run 与目标零变化快照
+- [ ] Data Owner 绑定新 release，批准重跑 source fingerprint 与五类 count/预测 created/skipped
+- [ ] 获得新 release 部署与生产 apply 的逐次授权，完成 0028～0030 部署、apply、幂等重放与抽查
 - [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前生产已完成到全量 dry-run；未完成项仍不构成部署、apply、转正或 Sprint 5 Exit 授权。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前旧 release 的全量 dry-run 仅作为历史证据；修复形成新 release 并重跑前，不构成部署、apply、转正或 Sprint 5 Exit 授权。
 
 **生产 inventory capture（2026-08-13）**
 
@@ -1319,10 +1322,16 @@
 - Inventory verify 为 `ready`；全量 dry-run fingerprint 为 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，6 User / 4 Project / 117 Task / 0 Gate Review / 14 File Reference，`target_writes=0`。
 - 目标 tenant 11 表前后 count 与完整内容 SHA-256 全部相同；PDOS 仍运行旧 release，Alembic 仍为 0027，候选容器数 0。证据见 `docs/reports/2026-08-13-sprint-5-production-full-dry-run.md`。
 
+**生产发布阻断（2026-08-13）**
+
+- 候选 release 的只读 `status` 在 10 分钟有界日志中捕获线上真实 `/api/projects` 500；堆栈稳定落在 `ProjectService.list()` → `_record_from_row()` → `ProjectNotFoundError`。
+- 根因是 CEHub 迁移项目按 schema 合法缺少原生 Development Case，而后端读模型和 Web 解码器错误地要求 `development_case_id` 必须存在。修复只放宽导入项目读取；原生 Project 创建仍强制 Case。
+- `2cce...` 含相同缺陷，故已失效且不得部署/apply。CEHub 继续只读、PDOS 保持旧 release；报告见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。
+
 **发布候选复验（2026-08-13）**
 
-- Server 388 tests；Ruff / 245 files format / mypy 212 source files / compileall 全绿。
-- Web 36 files / 125 tests；ESLint / Next typegen / TypeScript / webpack production build（33 pages）全绿。
+- Server 388 tests；Ruff / 246 files format / mypy 213 source files / compileall 全绿。
+- Web 37 files / 126 tests；ESLint / Next typegen / TypeScript / webpack production build（33 pages）全绿。
 - 锁定依赖 916 个版本经 OSV 两批审计为 0 known vulnerabilities；`git diff --check` 通过。
 - 最终审查修复了 Portfolio 聚合笛卡尔计数、Supplier delay 外部事件确定性校验、0029 有数据 downgrade guard 与全历史项目盘点缺口。
 - Exit 候选报告：`docs/reports/2026-08-13-sprint-5-exit-and-cutover-candidate.md`。
@@ -1331,9 +1340,10 @@
 
 | 现象 | 次数 | 处理 |
 |---|---:|---|
-| 本机 `.env` 的测试 URL 指向被 CEHub 占用的旧 `55432`，凭据校验失败 | 1 | 只读定位当前 PDOS compose 为 `57432`，所有验收显式绑定 `pdos_test`；未修改用户环境文件、未连接开发/生产库 |
+| 候选只读 `status` 命中线上 `/api/projects` Traceback | 1 | 停止发布；定位为迁移 Project 合法无 Case 与读模型冲突，先写真实迁移 RED，再同步修复后端 API/Web 解码并把 `2cce...` 标记失效 |
+| 本机 `.env` 的测试 URL 指向被 CEHub 占用的旧 `55432`，凭据校验失败 | 2 | 只读定位当前 PDOS compose 为 `57432`，所有验收显式绑定 `pdos_test`；未修改用户环境文件、未连接开发/生产库 |
 | 本地 HTTP 验收脚本继承系统代理导致 loopback 首次超时 | 1 | 临时 client 设置 `trust_env=False` 后，仅访问 `127.0.0.1:8314` 的链路成功；未修改应用出口政策 |
-| 默认 Turbopack production build 在沙箱尝试绑定端口被拒 | 1 | 以仓库支持的 webpack production build 复验，全部路由成功生成；源码、部署配置与安全边界无需放宽 |
+| 默认 Turbopack production build 在沙箱尝试绑定端口被拒 | 2 | 以仓库支持的 webpack production build 复验，全部路由成功生成；源码、部署配置与安全边界无需放宽 |
 | React Strict Mode 首次挂载清理中断唯一 OAuth callback fetch | 1 | 保留 `useRef` 一次提交保护并移除 effect cleanup abort；Strict Mode 单请求测试与真实 password-free login 均通过 |
 | 完整套件共享 `pdos_test` 遗留钉钉数据触发 0026 有损 downgrade guard | 1 | 旧迁移测试先升级到 head 并清空隔离租户后再降级；保留生产有数据 fail-close，完整 343 tests 全绿 |
 | S5-4 首次全量回归发现 S5-3 新增四张表未进入旧的 exact-table 集合 | 1 | 更新 canonical schema 集合后重跑，381 tests 全绿；不是 migration 或 Phase 3 运行时缺陷 |

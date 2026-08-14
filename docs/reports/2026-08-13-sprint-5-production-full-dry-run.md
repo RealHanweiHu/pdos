@@ -2,7 +2,7 @@
 
 日期：2026-08-13（America/Los_Angeles；生产执行时间为 UTC 2026-08-14）
 
-结论：**CEHub 写冻结、全量 inventory verify 与全量 dry-run 通过；目标库零变化。当前仍为 NO-GO：未部署、未 apply，等待 Data Owner 批准 `source_fingerprint` 后再分别申请部署与 apply 授权。**
+结论：**本次 CEHub 写冻结、全量 inventory verify 与全量 dry-run 通过，目标库零变化；但后续只读 `status` 发现 release `2cce...` 的 CEHub 导入 Project API 阻断，该 release 已失效且不得部署/apply。必须以修复后的新 release 重跑本门禁，详见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。**
 
 ## 1. 人工授权与固定输入
 
@@ -86,8 +86,8 @@ ECS 原始报告均为 UID/GID 10001、mode `0600`，位于 `/opt/pdos-migration
 
 ## 6. 下一人工 Gate
 
-Data Owner 必须抽查本报告的五类 count、两个新增项目样本和 `source_fingerprint`，明确批准：
+本次 source fingerprint 仍作为不可变历史证据：
 
 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`
 
-批准后仍分两次操作：先单独授权部署 release `2cce...` 并升级 0028～0030；部署验收通过后，再单独授权使用同一 fingerprint / tenant / actor / 有序四项目执行 apply 与幂等重放。CEHub 在此期间保持稳定只读。
+不得再批准或部署 release `2cce...`。修复合并形成新 release 后，必须在 CEHub 继续只读的条件下重新执行 inventory verify、全量 dry-run 和目标前后快照；Data Owner 绑定新 release 与新报告后，才可分别授权部署和 apply。CEHub 在此期间保持稳定只读。

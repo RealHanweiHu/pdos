@@ -18,7 +18,7 @@ export type ProjectWorkflow = {
 
 export type Project = {
   id: string;
-  development_case_id: string;
+  development_case_id: string | null;
   customer_id: string | null;
   workflow: ProjectWorkflow;
   current_stage: ProjectStage;

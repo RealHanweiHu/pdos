@@ -3,6 +3,8 @@
 日期：2026-08-13
 结论：**只读 capture 通过；状态为 `review_required`，等待 Data Owner 批准。未部署、未迁移、未写目标库。**
 
+后续状态：Data Owner 已批准本报告的 inventory fingerprint 与有序四项目，但 release `2cce...` 随后因 CEHub 导入 Project API 阻断失效；本报告保留为历史清单证据，不授权部署/apply。见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。
+
 ## 授权与 release 身份
 
 - 人工授权：合并 PR #4，并使用最终 release SHA 在 ECS `8.140.197.68` 仅执行 CEHub 全量只读 inventory capture；不部署、不写目标库。

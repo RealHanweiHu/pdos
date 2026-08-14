@@ -38,8 +38,8 @@
 - [x] S4-1～S4-4 已完成；Sprint 4 Exit Gate 已于 2026-08-12 经人确认通过
 - [ ] S5-1 本地连接器、隔离测试与真实浏览器验收已完成；真实钉钉应用 Exit Gate 经人明确接受延期风险，规范状态保持未勾选，生产继续强制 `delivery=false`
 - [x] S5-2 CEHub 全量迁移工具、S5-3 租户备份/导出、S5-4 退役与切换资产均已完成并通过本地完整门禁
-- [ ] **当前：Sprint 5 生产全量切换**；release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已完成 CEHub 写冻结、inventory verify 与全量 dry-run，source fingerprint `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，`target_writes=0` 且目标 11 表前后完全相同；未部署、未迁移、未 apply
-- [ ] 下一 Gate：Data Owner 批准上述 source fingerprint 与五类 count/预测 created/skipped；其后仍须分别获得 release 部署和生产 apply 授权
+- [ ] **当前：Sprint 5 生产全量切换发布阻断修复**；只读 `status` 发现 CEHub 导入 Project 的 `/api/projects` 500，release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已失效；修复必须先合并形成新 release，再重新 verify/dry-run
+- [ ] CEHub 保持只读，未部署、未迁移、未 apply；新 release 重新产生 source fingerprint 后，仍须 Data Owner 批准并分别获得部署与生产 apply 授权
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 

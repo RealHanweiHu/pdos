@@ -27,6 +27,7 @@ from app.migrations.cehub_v1 import (
     normalize_project_code,
     source_project_inventory_fingerprint,
 )
+from scripts.check_project_readiness import read_only_database_url, validate_project_readiness
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SCHEMA = "legacy_cehub_s37"
@@ -551,6 +552,55 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
                 dry_run=False,
                 expected_source_fingerprint=dry_run.source_fingerprint,
             )
+    finally:
+        source_engine.dispose()
+        target_engine.dispose()
+
+
+def test_migrated_project_without_development_case_is_api_readable(
+    migration_database_url: str,
+) -> None:
+    _create_source_fixture(migration_database_url)
+    tenant_id, actor_id = _create_target_context(migration_database_url)
+    source_engine = _source_engine(migration_database_url)
+    target_engine = create_engine(psycopg_database_url(migration_database_url))
+    try:
+        dry_run = migrate_cehub_v1(
+            source_engine=source_engine,
+            target_engine=target_engine,
+            tenant_id=tenant_id,
+            actor_user_id=actor_id,
+            project_ids=("S18-01",),
+            source_schema=SOURCE_SCHEMA,
+            dry_run=True,
+        )
+        migrate_cehub_v1(
+            source_engine=source_engine,
+            target_engine=target_engine,
+            tenant_id=tenant_id,
+            actor_user_id=actor_id,
+            project_ids=("S18-01",),
+            source_schema=SOURCE_SCHEMA,
+            dry_run=False,
+            expected_source_fingerprint=dry_run.source_fingerprint,
+        )
+
+        with target_engine.connect() as connection:
+            assert (
+                connection.execute(
+                    select(tables.projects.c.development_case_id).where(
+                        tables.projects.c.tenant_id == tenant_id
+                    )
+                ).scalar_one()
+                is None
+            )
+        with pytest.raises(RuntimeError, match="connection is not read-only"):
+            validate_project_readiness(engine=target_engine, tenant_id=tenant_id)
+        read_only_engine = create_engine(read_only_database_url(migration_database_url))
+        try:
+            assert validate_project_readiness(engine=read_only_engine, tenant_id=tenant_id) == 1
+        finally:
+            read_only_engine.dispose()
     finally:
         source_engine.dispose()
         target_engine.dispose()

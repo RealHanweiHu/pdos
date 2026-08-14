@@ -1,7 +1,7 @@
 # Sprint 5 Exit 与全量切换发布候选报告
 
 日期：2026-08-13
-结论：**本地实现、生产写冻结、inventory verify 与全量 dry-run 已通过；生产切换仍为 NO-GO，等待 `source_fingerprint` 批准、部署/apply 逐次授权与人工 Gate。**
+结论：**生产写冻结与 dry-run 证据有效，但 release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 因 CEHub 导入 Project API 500 已失效；生产切换为 NO-GO，必须先合并修复并用新 release 重跑 verify/dry-run。**
 
 ## 1. 已完成范围
 
@@ -23,8 +23,8 @@ S5-1 真实 DingTalk password-free login、群通知、审批和 card smoke 按�
 ## 3. 质量门禁
 
 - Server：388 tests passed，全部数据库测试显式连接本机隔离 `pdos_test`（57432）。
-- Python：Ruff check、245 files format check、严格 mypy 212 source files、compileall 全绿。
-- Web：36 files / 125 tests，ESLint、Next typegen、TypeScript 全绿。
+- Python：Ruff check、246 files format check、严格 mypy 213 source files、compileall 全绿。
+- Web：37 files / 126 tests，ESLint、Next typegen、TypeScript 全绿。
 - Next.js webpack production build：33 个页面生成成功。默认 Turbopack 在当前受限运行环境因内部构建进程尝试绑定端口失败；webpack 复验没有源码或类型错误。
 - 依赖：916 个锁定 registry 版本通过官方 OSV 两批审计，0 known vulnerabilities。
 - Git：`git diff --check` 通过；用户原有 `.env.example`、`.env.production.example` 与 `server/tests/test_root_contract.py` 模型目录改动不属于本候选，不应混入 Sprint 5 提交。
@@ -34,10 +34,12 @@ S5-1 真实 DingTalk password-free login、群通知、审批和 card smoke 按�
 1. [x] PR #4 合并后的最终 release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已在 ECS 构建候选镜像并完成 CEHub 全量只读 inventory capture；未部署、未迁移、未写目标库。完整证据见 `docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`。
 2. [x] Data Owner 已批准 inventory fingerprint `a450122f0f3bac6a7eceec600463e641f3d33b6768bf1400c81c805b878f484d` 与有序全量项目 `WqWcl0wK,aBnbEdQG,xY8-PGbc,zGpNH0Xq`，并绑定目标 tenant `e340c240-d8f0-429c-aac5-69ab9b42fac5`、actor `4bdba865-c5b1-4ca1-aa85-be467e1fad42`。
 3. [x] CEHub 写冻结、inventory verify 与完整 dry-run 已获批并完成；旧应用真实新连接读取可用、永久表零行写探针被 PostgreSQL `25006` 拒绝，dry-run `target_writes=0`，目标 11 表前后 count/内容 SHA-256 完全相同。证据见 `docs/reports/2026-08-13-sprint-5-production-full-dry-run.md`。
-4. [ ] Data Owner 批准 dry-run source fingerprint `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54` 与五类 count/预测 created/skipped。
-5. [ ] 分别获得 release 部署与生产 apply 授权，升级 0028～0030、apply、幂等重放并抽查五类数据。
-6. [ ] 业务 Owner 宣布 `pdos.beepump.net` 为主入口，验证 CEHub 只读审计归档并观察至少 30 分钟。
-7. [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期风险继续独立跟踪。
+4. [x] 候选 `status` 的有界日志门禁发现真实 `/api/projects` 500；根因为迁移项目合法 `development_case_id=NULL` 与读模型冲突。`2cce...` 已失效且从未部署，证据见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。
+5. [ ] 合并修复形成新 release，在 ECS 重建并重新执行 inventory verify、完整 dry-run 与目标零变化快照。
+6. [ ] Data Owner 绑定新 release，批准重跑后的 source fingerprint 与五类 count/预测 created/skipped。
+7. [ ] 分别获得新 release 部署与生产 apply 授权，升级 0028～0030、apply、幂等重放并抽查五类数据。
+8. [ ] 业务 Owner 宣布 `pdos.beepump.net` 为主入口，验证 CEHub 只读审计归档并观察至少 30 分钟。
+9. [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期风险继续独立跟踪。
 
 证据分支 `codex/sprint-5-cutover-evidence` 最终 head `7fe20cb` 已通过 GitHub 完整 Quality/migration 门禁（7m22s），PR #5 以 merge commit `499db37f8d696edbf19c00111b29803912194dda` 合并；这项代码库状态不替代以上任何生产或人工 Gate。
 
