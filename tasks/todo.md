@@ -1300,6 +1300,7 @@
 - [x] CEHub 写冻结稳定生效，inventory verify 与全量 dry-run 通过；`target_writes=0`，目标 11 表 count/内容 SHA-256 前后完全相同
 - [x] 只读发布 `status` 发现导入 Project 列表 500 并精确复现；旧 release `2cce...` 失效且未部署/apply
 - [x] 修复后端/Web 可空 Development Case 读合同并增加真实迁移回归
+- [ ] 获得独立生产授权，在旧 CEHub 私有环境备份原值后设置 `AUTOMATION_SCAN_INTERVAL_MIN=35790`，以同一旧 image 重建并观察至少 35 分钟，确认 scheduled scanner/read-only/`25006` 日志为 0
 - [ ] 合并修复形成新 release，在 ECS 重建并重新执行 inventory verify、全量 dry-run 与目标零变化快照
 - [ ] Data Owner 绑定新 release，批准重跑 source fingerprint 与五类 count/预测 created/skipped
 - [ ] 获得新 release 部署与生产 apply 的逐次授权，完成 0028～0030 部署、apply、幂等重放与抽查
@@ -1318,7 +1319,7 @@
 **生产全量写冻结与 dry-run（2026-08-13）**
 
 - Data Owner 已绑定 release、inventory fingerprint、有序四项目、tenant 与 actor，并明确授权写冻结、verify、dry-run；禁止部署和 apply。
-- 旧 CEHub `ce_hub@cehub` 已设置 `default_transaction_read_only=on`；读取 4 Project 正常，永久表零行写探针返回 `25006`。只读模式下禁用每 5 秒写 heartbeat 的 activity-log tailer 后，同一旧 image 稳定运行且错误风暴清零，原环境有 `0600` 备份。
+- 旧 CEHub `ce_hub@cehub` 已设置 `default_transaction_read_only=on`；读取 4 Project 正常，永久表零行写探针返回 `25006`。只读模式下禁用每 5 秒写 heartbeat 的 activity-log tailer 后错误风暴清零，原环境有 `0600` 备份；后续发现无禁用开关的 scheduled scanner 仍每 30 分钟尝试写心跳并被 `25006` 安全拒绝，数据边界有效但稳定归档日志门禁待独立授权完成。
 - Inventory verify 为 `ready`；全量 dry-run fingerprint 为 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，6 User / 4 Project / 117 Task / 0 Gate Review / 14 File Reference，`target_writes=0`。
 - 目标 tenant 11 表前后 count 与完整内容 SHA-256 全部相同；PDOS 仍运行旧 release，Alembic 仍为 0027，候选容器数 0。证据见 `docs/reports/2026-08-13-sprint-5-production-full-dry-run.md`。
 
@@ -1340,6 +1341,7 @@
 
 | 现象 | 次数 | 处理 |
 |---|---:|---|
+| CEHub 只读后 scheduled scanner 每 30 分钟写心跳并产生 `25006` | 2 | 数据库只读边界安全拒绝且数据零变化；旧镜像无 disable flag，运行手册固定临时使用 `35790` 分钟（低于 Node timer 上限），待独立生产授权后重建并观察至少 35 分钟 |
 | 候选只读 `status` 命中线上 `/api/projects` Traceback | 1 | 停止发布；定位为迁移 Project 合法无 Case 与读模型冲突，先写真实迁移 RED，再同步修复后端 API/Web 解码并把 `2cce...` 标记失效 |
 | 本机 `.env` 的测试 URL 指向被 CEHub 占用的旧 `55432`，凭据校验失败 | 2 | 只读定位当前 PDOS compose 为 `57432`，所有验收显式绑定 `pdos_test`；未修改用户环境文件、未连接开发/生产库 |
 | 本地 HTTP 验收脚本继承系统代理导致 loopback 首次超时 | 1 | 临时 client 设置 `trust_env=False` 后，仅访问 `127.0.0.1:8314` 的链路成功；未修改应用出口政策 |

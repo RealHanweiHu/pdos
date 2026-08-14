@@ -106,7 +106,9 @@ ALTER ROLE "<actual-cehub-app-role>" IN DATABASE "<actual-cehub-database>"
   SET default_transaction_read_only = on;
 ```
 
-旧 CEHub 的 activity-log tailer 每 5 秒写一次 heartbeat；数据库只读后若仍启用会形成持续 `25006` 日志。连接池换代前必须把旧私有环境中的 `ACTIVITY_LOG_TAILER_ENABLED` 原值保存到 `0600` 备份，并设置为 `false`。这只暂停旧系统的写型自动化，不改变读取 API；恢复写权限时也必须按原值恢复该设置。不得用 `AUTOMATION_EVENT_MODE=inline` 代替，否则用户请求会重新触发内联写尝试。
+旧 CEHub 的 activity-log tailer 每 5 秒写一次 heartbeat；数据库只读后若仍启用会形成持续 `25006` 日志。连接池换代前必须把旧私有环境中的 `ACTIVITY_LOG_TAILER_ENABLED` 原值保存到 `root:root 0600` 备份，并设置为 `false`。这只暂停旧系统的写型自动化，不改变读取 API；恢复写权限时也必须按原值恢复该设置。不得用 `AUTOMATION_EVENT_MODE=inline` 代替，否则用户请求会重新触发内联写尝试。
+
+同一旧镜像还会无条件启动 scheduled scanner，默认每 30 分钟向 `automation_heartbeats` 写入一次心跳；当前版本没有独立的 scheduler disable flag。只读窗口开始前必须把 `AUTOMATION_SCAN_INTERVAL_MIN` 的原值或“未设置”状态保存到同一份 `root:root 0600` 备份，并精确设置 `AUTOMATION_SCAN_INTERVAL_MIN=35790`。该值对应 `2,147,400,000` 毫秒，低于 Node 定时器最大值 `2,147,483,647`；不得改成任意更大值，否则溢出可能把间隔缩短到毫秒级。`0` 也不可用，因为旧代码会回退到默认 30 分钟。此值只适用于不超过约 24.85 天的切换和观察窗口；更长归档必须另行发布代码级停用能力，或在新的明确授权下刷新该临时设置并重启。恢复 CEHub 写权限时必须同时按备份恢复原值或删除这个临时变量。
 
 设置成功后启动原应用，不构建或部署任何镜像：
 
@@ -153,6 +155,8 @@ NODE
 curl --fail --silent --show-error --max-time 5 \
   http://127.0.0.1:3001/api/setup/status >/dev/null
 ```
+
+重建后观察至少 35 分钟，确认 `scheduled scan failed`、`activity log tailer failed`、`read-only transaction` 和 `25006` 均为 0；同时复核容器 restart count 为 0、读取 API 为 200、上述只读设置和零行写探针仍成立。任何扫描器写尝试都不影响数据库只读安全边界，但会使“稳定只读归档”门禁失败，必须停止后续切换并调查。
 
 DBA 同时确认该角色没有遗留的已分配写事务；任何返回行都必须先调查并清零：
 

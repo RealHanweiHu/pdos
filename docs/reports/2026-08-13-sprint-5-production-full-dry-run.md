@@ -33,13 +33,15 @@ UTC `2026-08-14T03:01:00Z` 停止旧 `app`，清理旧连接后执行数据库�
 - assigned-XID 会话为 0；
 - 首份冻结报告 SHA-256：`38eac2b06e937cb6038d7bc7bc0ba93b6ad9720eaaba0e91911a01d94404fb8a`。
 
-旧应用的 activity-log tailer 每 5 秒写 heartbeat。冻结后 15 分钟安全分类统计发现 180 次 `activity log tailer failed`，均同时为 `read-only transaction` / `25006`，没有 scheduled scan 失败。为保持只读审计入口稳定，在旧私有 `.env` 仅增加 `ACTIVITY_LOG_TAILER_ENABLED=false`，原文件备份为 `/opt/ce-project-hub/.env.backup-before-readonly-freeze-20260814T030100Z`；两者均为 `root:root 0600`。随后以同一旧 image 强制重建 `app`：
+旧应用的 activity-log tailer 每 5 秒写 heartbeat。冻结后 15 分钟安全分类统计发现 180 次 `activity log tailer failed`，均同时为 `read-only transaction` / `25006`，当时的短观察窗内没有 scheduled scan 失败。为消除 tailer 错误风暴，在旧私有 `.env` 仅增加 `ACTIVITY_LOG_TAILER_ENABLED=false`，原文件备份为 `/opt/ce-project-hub/.env.backup-before-readonly-freeze-20260814T030100Z`；两者均为 `root:root 0600`。随后以同一旧 image 强制重建 `app`：
 
 - 页面与 `/api/setup/status` 读取为 HTTP 200；
 - 新连接仍为默认/当前事务只读，零行写探针仍为 `25006`；
 - 连续 15 秒日志中 tailer / read-only / `25006` 计数均为 0；
 - 容器 running、restart count 0；
-- 稳定运行报告 SHA-256：`e771a545227ee63f72f35cdbb974e2d129236d5f5d01f686f32f9e3050c2c94a`。
+- 该 15 秒有界观察报告 SHA-256：`e771a545227ee63f72f35cdbb974e2d129236d5f5d01f686f32f9e3050c2c94a`。
+
+后续更长日志观察在 UTC `05:20:47Z` 与 `05:50:47Z` 发现 scheduled scanner 每 30 分钟尝试向 `automation_heartbeats` 写心跳，并被数据库只读边界以 `25006` 拒绝，应用记录 `scheduled scan failed (non-fatal)`。因此数据安全结论不变，tailer 错误风暴也已清零，但“稳定只读归档日志全净”尚未完成。旧镜像没有 scheduler disable flag；须另获生产授权后备份原值、设置运行手册固定的 `AUTOMATION_SCAN_INTERVAL_MIN=35790`、以同一旧镜像重建，并观察至少 35 分钟确认扫描器/read-only/`25006` 计数为 0。
 
 恢复 CEHub 写权限与 tailer 不属于自动回退；必须另获 Data Owner 授权，并按备份原值恢复、换代连接池和复验。
 
@@ -90,4 +92,4 @@ ECS 原始报告均为 UID/GID 10001、mode `0600`，位于 `/opt/pdos-migration
 
 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`
 
-不得再批准或部署 release `2cce...`。修复合并形成新 release 后，必须在 CEHub 继续只读的条件下重新执行 inventory verify、全量 dry-run 和目标前后快照；Data Owner 绑定新 release 与新报告后，才可分别授权部署和 apply。CEHub 在此期间保持稳定只读。
+不得再批准或部署 release `2cce...`。修复合并形成新 release 后，必须在 CEHub 继续只读的条件下重新执行 inventory verify、全量 dry-run 和目标前后快照；Data Owner 绑定新 release 与新报告后，才可分别授权部署和 apply。CEHub 在此期间保持数据安全的数据库只读状态；scheduled scanner 的周期性拒写日志仍须按上述独立授权完成静默门禁。

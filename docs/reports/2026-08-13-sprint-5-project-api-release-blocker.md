@@ -43,4 +43,4 @@ CEHub v1 迁移项目没有原生 PDOS Requirement / Development Case，数据�
 - 在 CEHub 继续只读的前提下，用新 release 重新执行 inventory verify、全量 dry-run 与目标前后快照；source fingerprint 即使保持不变，也要与新 release 一起由 Data Owner 重新批准；
 - 新 release 的部署、migration 0028～0030 和生产 apply 仍是两次独立授权；不得因本次修复自动执行。
 
-CEHub 当前仍为 `default_transaction_read_only=on`，真实新连接可读 4 Project、零行写探针返回 `25006`、assigned-XID 会话为 0，activity-log tailer 保持关闭。
+CEHub 当前仍为 `default_transaction_read_only=on`，真实新连接可读 4 Project、零行写探针返回 `25006`、assigned-XID 会话为 0，activity-log tailer 保持关闭。后续有界日志复核发现旧镜像的 scheduled scanner 仍每 30 分钟尝试写 `automation_heartbeats`，并被同一只读边界以 `25006` 安全拒绝；数据未改变，但稳定只读归档日志门禁尚未通过。须另获生产授权后按运行手册设置固定临时间隔、以同一旧镜像重建并完成至少 35 分钟零错误观察。
