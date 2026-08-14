@@ -1295,13 +1295,20 @@
 - [x] 冻结全量 dry-run→apply→幂等重放、主入口声明、CEHub 写冻结/只读归档、30 分钟观察与前向回滚契约
 - [x] 补齐 migration 0029 有数据时有损 downgrade guard；成功迁移不提供自动删除或 schema downgrade
 - [x] 明确 S5-1 延期例外在切换期间保持 `delivery=false`，不隐式放开外发或伪记 PASS
-- [ ] 获得生产只读盘点授权并在 ECS 用待审 release 捕获完整 CEHub inventory
+- [x] 获得生产只读盘点授权并在 ECS 用最终 release 捕获完整 CEHub inventory
 - [ ] Data Owner 批准 inventory fingerprint、全部项目 ID、release/tenant/actor/低峰窗口
 - [ ] 获得部署与生产 apply 的逐次授权，完成全量 dry-run、0028～0030 部署、apply、幂等重放与抽查
 - [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
 契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前只完成本地代码/文档准备，不构成任何生产授权或完成声明。
+
+**生产 inventory capture（2026-08-13）**
+
+- PR #4 已合并，最终 release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 的 bundle、远端 clone、OCI revision 与非 root image 均完成一致性校验。
+- ECS 全量只读 capture 成功：4 Project / 4 active / 0 archived，类型为 3 NPD + 1 OBT，`errors=[]`；inventory fingerprint 为 `a450122f0f3bac6a7eceec600463e641f3d33b6768bf1400c81c805b878f484d`。
+- 线上 5 个容器保持 release `a34c7eb06aaba036bef8c257c30a841c1ec6be0d`、container ID 不变且 healthy；Alembic 仍为 `0027_dingtalk_hardening`，未部署、未迁移、未写目标库。
+- 脱敏证据：`docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`。当前等待 Data Owner 批准 fingerprint 与有序四项目清单，随后才可申请 CEHub 写冻结、verify 和最终全量 dry-run。
 
 **发布候选复验（2026-08-13）**
 
