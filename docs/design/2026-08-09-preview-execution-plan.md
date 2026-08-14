@@ -160,7 +160,7 @@ ai-native-R&D-platform/
 3. Sprint 5 末：选低峰全量迁移 → `pdos.beepump.net` 转正（或接管主域）→ 老 CEHub 转只读归档（保留审计查询期，Manus 切换时同样手法）；
 4. CEHub 仓库侧独立事项：`codex/cehub-v3-2` M0 止血落库照做（现役系统健康问题）；grandfather 幂等失败需查证是否影响现役 main。
 
-切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定，必须包含 archived 历史项目。release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已完成生产全库只读 capture（4 active / 0 archived、零部署/零迁移），证据见 `docs/reports/2026-08-13-sprint-5-production-inventory-capture.md`；未经 Data Owner 批准、后续生产授权与 Sprint 5 Exit 人工确认不得标记完成。
+切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定，必须包含 archived 历史项目。release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已完成生产只读 capture、写冻结、inventory verify 与全量 dry-run，但后续只读 `status` 发现 CEHub 导入 Project 的 `/api/projects` 500，故该 release 已失效且未部署/apply；阻断与修复证据见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。必须以修复合并后的新 release 重新 verify/dry-run 并取得 Data Owner、部署/apply 与 Sprint 5 Exit 的逐次批准。
 
 ## 10. 排期总览与风险
 

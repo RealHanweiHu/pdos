@@ -155,11 +155,23 @@ container_preflight() {
     python -m scripts.check_production_env --from-environment
 }
 
+verify_project_reads() {
+  local tenant_id
+  tenant_id="$(env_value PDOS_TENANT_ID)"
+  if [[ ! "$tenant_id" =~ ^[0-9a-fA-F-]{36}$ ]]; then
+    echo "Release verification refused: PDOS_TENANT_ID must be a UUID" >&2
+    return 1
+  fi
+  compose_config run --rm --no-deps --env "PDOS_TENANT_ID=$tenant_id" api \
+    python -m scripts.check_project_readiness
+}
+
 preflight_release() {
   require_release_files
   release_identity
   compose_config config --quiet
   container_preflight
+  verify_project_reads
   echo "Release preflight passed for image tag ${image_tag}"
 }
 
@@ -198,6 +210,7 @@ verify_public_dingtalk_callback_edge() {
 
 verify_release() {
   compose_config ps
+  verify_project_reads
   curl --fail --silent --show-error \
     "http://127.0.0.1:${app_port}/api/session/status" >/dev/null
   curl --fail --silent --show-error "https://pdos.beepump.net/login" >/dev/null

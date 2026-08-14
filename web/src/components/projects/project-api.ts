@@ -34,7 +34,7 @@ export function isProject(value: unknown): value is Project {
   return (
     isRecord(value) &&
     typeof value.id === "string" &&
-    typeof value.development_case_id === "string" &&
+    (typeof value.development_case_id === "string" || value.development_case_id === null) &&
     (typeof value.customer_id === "string" || value.customer_id === null) &&
     isProjectWorkflow(value.workflow) &&
     isProjectStage(value.current_stage) &&
