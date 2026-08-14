@@ -40,7 +40,136 @@ docker run --rm --read-only --security-opt no-new-privileges \
 
 ## 3. 写冻结后复核清单
 
-在低峰窗口由 CEHub Owner 执行获批的写冻结机制，使现有读取保持可用、业务写入被明确拒绝；停止或重启旧应用连接池以确保没有遗留可写会话。记录实际应用角色与变更前设置，不在仓库保存凭据。DBA 必须从旧应用使用的连接确认 `default_transaction_read_only=on`，并确认没有活动写事务。
+旧 CEHub 的移动端 `availability.mode=read_only` 只是客户端能力声明，桌面端和服务端没有全局维护模式，不能用作生产写冻结。获批后必须在低峰窗口由 CEHub Owner 与 DBA 共同执行数据库会话级冻结：停止旧应用、清理旧连接、为真实应用角色设置数据库范围的 `default_transaction_read_only=on`，再启动同一旧镜像。短暂停机只用于连接池换代；启动后读取继续可用，业务写入必须返回 PostgreSQL `25006`。
+
+### 3.1 冻结前身份与原值证据
+
+旧 CEHub 的生产编排目录是 `/opt/ce-project-hub`，服务名是 `app`。先从**旧应用实际连接**读取数据库和角色身份；脚本只输出角色、数据库与只读设置，不输出 `DATABASE_URL`：
+
+```bash
+CEHUB_CUTOVER_DIR=/opt/ce-project-hub
+cd "$CEHUB_CUTOVER_DIR"
+docker compose -f docker-compose.prod.yml ps app
+docker compose -f docker-compose.prod.yml exec -T app node <<'NODE'
+const { Client } = require("pg");
+const client = new Client({ connectionString: process.env.DATABASE_URL });
+(async () => {
+  await client.connect();
+  const result = await client.query(`
+    SELECT current_user AS role_name,
+           current_database() AS database_name,
+           current_setting('default_transaction_read_only') AS default_read_only,
+           current_setting('transaction_read_only') AS transaction_read_only
+  `);
+  console.log(JSON.stringify(result.rows[0]));
+  await client.end();
+})().catch(async (error) => {
+  console.error("CEHUB_IDENTITY_FAILED", error.code || "", error.message);
+  await client.end().catch(() => {});
+  process.exit(1);
+});
+NODE
+```
+
+DBA 把输出的实际角色/数据库代入下面的只读查询，保存数据库范围与角色范围的原始设置；不得猜测角色名，也不得把连接串或密码写进报告：
+
+```sql
+SELECT r.rolname, d.datname, s.setconfig
+FROM pg_db_role_setting AS s
+JOIN pg_roles AS r ON r.oid = s.setrole
+JOIN pg_database AS d ON d.oid = s.setdatabase
+WHERE r.rolname = '<actual-cehub-app-role>'
+  AND d.datname = '<actual-cehub-database>';
+
+SELECT rolname, rolconfig
+FROM pg_roles
+WHERE rolname = '<actual-cehub-app-role>';
+```
+
+### 3.2 冻结、连接池换代与正反向验证
+
+以下动作必须包含在新的明确生产授权中。先停应用，DBA 再清理该角色在该数据库中的旧连接并设置数据库范围默认只读；不要修改独立的 `pdos_cehub_readonly` 迁移账号：
+
+```bash
+cd "$CEHUB_CUTOVER_DIR"
+docker compose -f docker-compose.prod.yml stop app
+```
+
+```sql
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE usename = '<actual-cehub-app-role>'
+  AND datname = '<actual-cehub-database>'
+  AND pid <> pg_backend_pid();
+
+ALTER ROLE "<actual-cehub-app-role>" IN DATABASE "<actual-cehub-database>"
+  SET default_transaction_read_only = on;
+```
+
+设置成功后启动原应用，不构建或部署任何镜像：
+
+```bash
+cd "$CEHUB_CUTOVER_DIR"
+docker compose -f docker-compose.prod.yml up -d --no-deps app
+```
+
+必须从旧应用的新连接完成三项验证：默认事务和当前事务均为只读；项目计数可读；对永久表的零行 `UPDATE` 被 SQLSTATE `25006` 拒绝。探针即使冻结失效也因 `WHERE false` 不会改变任何行，但“命令成功”仍视为冻结失败并立即停止切换：
+
+```bash
+docker compose -f docker-compose.prod.yml exec -T app node <<'NODE'
+const { Client } = require("pg");
+const client = new Client({ connectionString: process.env.DATABASE_URL });
+(async () => {
+  await client.connect();
+  const settings = await client.query(`
+    SELECT current_user AS role_name,
+           current_database() AS database_name,
+           current_setting('default_transaction_read_only') AS default_read_only,
+           current_setting('transaction_read_only') AS transaction_read_only
+  `);
+  if (settings.rows[0].default_read_only !== "on" ||
+      settings.rows[0].transaction_read_only !== "on") {
+    throw new Error("CEHub application connection is not read-only");
+  }
+  const readable = await client.query("SELECT count(*)::int AS project_count FROM public.projects");
+  console.log("CEHUB_READ_OK", readable.rows[0].project_count);
+  try {
+    await client.query("UPDATE public.projects SET id = id WHERE false");
+    throw new Error("CEHub write probe unexpectedly succeeded");
+  } catch (error) {
+    if (error.code !== "25006") throw error;
+    console.log("CEHUB_WRITE_REJECTED", error.code);
+  }
+  await client.end();
+})().catch(async (error) => {
+  console.error("CEHUB_FREEZE_VERIFY_FAILED", error.code || "", error.message);
+  await client.end().catch(() => {});
+  process.exit(1);
+});
+NODE
+
+curl --fail --silent --show-error --max-time 5 \
+  http://127.0.0.1:3001/api/setup/status >/dev/null
+```
+
+DBA 同时确认该角色没有遗留的已分配写事务；任何返回行都必须先调查并清零：
+
+```sql
+SELECT pid, state, xact_start, backend_xid
+FROM pg_stat_activity
+WHERE usename = '<actual-cehub-app-role>'
+  AND datname = '<actual-cehub-database>'
+  AND backend_xid IS NOT NULL;
+```
+
+冻结失败时保持旧应用停止，不得执行 inventory verify 或 dry-run。恢复写权限不是自动回退动作；只有 Data Owner 单独批准恢复后，才停止 `app`，按 3.1 保存的原值执行对应的 `ALTER ROLE ... IN DATABASE ... SET ...`，或仅在原来不存在该设置时执行：
+
+```sql
+ALTER ROLE "<actual-cehub-app-role>" IN DATABASE "<actual-cehub-database>"
+  RESET default_transaction_read_only;
+```
+
+随后再次清理旧连接、启动 `app`，并从应用连接核对设置与 3.1 原值完全一致。不得用无条件 `RESET` 覆盖原本已有的组织级只读政策。
 
 把 Data Owner 批准的所有源 ID 按批准顺序放进 shell 数组；不要从 JSON 用不受控的 `eval` 生成命令：
 
