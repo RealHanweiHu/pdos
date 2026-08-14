@@ -1300,14 +1300,14 @@
 - [x] CEHub 写冻结稳定生效，inventory verify 与全量 dry-run 通过；`target_writes=0`，目标 11 表 count/内容 SHA-256 前后完全相同
 - [x] 只读发布 `status` 发现导入 Project 列表 500 并精确复现；旧 release `2cce...` 失效且未部署/apply
 - [x] 修复后端/Web 可空 Development Case 读合同并增加真实迁移回归
-- [ ] 获得独立生产授权，在旧 CEHub 私有环境备份原值后设置 `AUTOMATION_SCAN_INTERVAL_MIN=35790`，以同一旧 image 重建并观察至少 35 分钟，确认 scheduled scanner/read-only/`25006` 日志为 0
-- [ ] 合并修复形成新 release，在 ECS 重建并重新执行 inventory verify、全量 dry-run 与目标零变化快照
+- [x] 获得独立生产授权，在旧 CEHub 私有环境备份原值后设置 `AUTOMATION_SCAN_INTERVAL_MIN=35790`，以同一旧 image 重建并观察至少 35 分钟，确认 scheduled scanner/read-only/`25006` 日志为 0
+- [x] 合并修复形成新 release，在 ECS 仅构建候选并重新执行 inventory verify、全量 dry-run 与目标零变化快照
 - [ ] Data Owner 绑定新 release，批准重跑 source fingerprint 与五类 count/预测 created/skipped
 - [ ] 获得新 release 部署与生产 apply 的逐次授权，完成 0028～0030 部署、apply、幂等重放与抽查
 - [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前旧 release 的全量 dry-run 仅作为历史证据；修复形成新 release 并重跑前，不构成部署、apply、转正或 Sprint 5 Exit 授权。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run 已通过，但在 Data Owner 批准新 release/source fingerprint 且发布、apply 分别授权前，不构成部署、apply、转正或 Sprint 5 Exit 授权。
 
 **生产 inventory capture（2026-08-13）**
 
@@ -1336,6 +1336,14 @@
 - 锁定依赖 916 个版本经 OSV 两批审计为 0 known vulnerabilities；`git diff --check` 通过。
 - 最终审查修复了 Portfolio 聚合笛卡尔计数、Supplier delay 外部事件确定性校验、0029 有数据 downgrade guard 与全历史项目盘点缺口。
 - Exit 候选报告：`docs/reports/2026-08-13-sprint-5-exit-and-cutover-candidate.md`。
+
+**生产最终 release 复验（2026-08-14）**
+
+- PR #6 已合并，最终 release 为 `82de9d215c5b0101aaba8cbff2d1adf6d751ceef`；ECS 仅构建 API/Web 候选，OCI revision 精确一致，候选运行容器数为 0。
+- CEHub 原私有环境已做 `root:root 0600` 备份；tailer=false、scan interval=35790，以同一旧镜像重建并从安全探针后观察至少 35 分钟，restart=0、读取 200、相关错误日志为 0。
+- Inventory verify 为 `ready`；全量 dry-run source fingerprint 仍为 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，五类 source/created/skipped 守恒，`target_writes=0`。
+- 目标 tenant 11 表前后快照逐字节一致，SHA-256 均为 `d02fd41fe4a70c4ac2c4bc9a3715543f63a50a25a30431cfceed7bafb3317a4e`；生产仍运行 `a34c7eb...`，Alembic 仍为 0027。
+- 最终候选以强制只读连接通过 2 个导入 Project 的 list/API response readiness，证明驾驶舱阻断修复有效；详细脱敏证据见 `docs/reports/2026-08-14-sprint-5-production-release-revalidation.md`。
 
 **Error ledger**
 
