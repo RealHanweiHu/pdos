@@ -28,6 +28,18 @@ class RequirementNotFoundError(LookupError):
     """Raised when a Requirement is absent from the active tenant scope."""
 
 
+class CrmRequirementReviewRequiredError(ValueError):
+    """Raised when a CRM draft tries to bypass the explicit review action."""
+
+
+class CrmRequirementIntakeNotFoundError(LookupError):
+    """Raised when a Requirement has no tenant-bound CRM intake."""
+
+
+class CrmRequirementAlreadyReviewedError(ValueError):
+    """Raised when a CRM intake review is repeated or its draft already moved."""
+
+
 @dataclass(frozen=True)
 class CustomerRecord:
     id: UUID
@@ -284,6 +296,16 @@ class RequirementService:
                     tenant_id=tenant_id,
                     requirement_id=requirement_id,
                 )
+                if "status" in patch.changes and before.source == "crm":
+                    pending_intake = connection.execute(
+                        select(tables.crm_requirement_intakes.c.id).where(
+                            tables.crm_requirement_intakes.c.tenant_id == tenant_id,
+                            tables.crm_requirement_intakes.c.requirement_id == requirement_id,
+                            tables.crm_requirement_intakes.c.status == "pending_review",
+                        )
+                    ).scalar_one_or_none()
+                    if pending_intake is not None and patch.changes["status"] != "draft":
+                        raise CrmRequirementReviewRequiredError
                 if "customer_id" in patch.changes:
                     customer_id = patch.changes["customer_id"]
                     if customer_id is not None and (
@@ -336,3 +358,91 @@ class RequirementService:
             if "uq_requirements_tenant_code" in str(error.orig):
                 raise RequirementCodeConflictError from error
             raise
+
+    def review_crm_intake(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        requirement_id: UUID,
+        decision: str,
+        rationale: str,
+    ) -> RequirementRecord:
+        occurred_at = datetime.now(UTC)
+        with self._engine.begin() as connection:
+            intake = (
+                connection.execute(
+                    select(tables.crm_requirement_intakes)
+                    .where(
+                        tables.crm_requirement_intakes.c.tenant_id == tenant_id,
+                        tables.crm_requirement_intakes.c.requirement_id == requirement_id,
+                    )
+                    .with_for_update()
+                )
+                .mappings()
+                .one_or_none()
+            )
+            if intake is None:
+                raise CrmRequirementIntakeNotFoundError
+            before = self._get_record(
+                connection,
+                tenant_id=tenant_id,
+                requirement_id=requirement_id,
+            )
+            if intake["status"] != "pending_review" or before.status != "draft":
+                raise CrmRequirementAlreadyReviewedError
+            intake_status = "established" if decision == "establish" else "rejected"
+            requirement_status = "proposed" if decision == "establish" else "rejected"
+            connection.execute(
+                tables.crm_requirement_intakes.update()
+                .where(
+                    tables.crm_requirement_intakes.c.tenant_id == tenant_id,
+                    tables.crm_requirement_intakes.c.id == intake["id"],
+                )
+                .values(
+                    status=intake_status,
+                    reviewed_by_user_id=actor_user_id,
+                    reviewed_at=occurred_at,
+                    review_rationale=rationale,
+                    updated_at=occurred_at,
+                )
+            )
+            connection.execute(
+                tables.requirements.update()
+                .where(
+                    tables.requirements.c.tenant_id == tenant_id,
+                    tables.requirements.c.id == requirement_id,
+                )
+                .values(status=requirement_status, updated_at=occurred_at)
+            )
+            after = self._get_record(
+                connection,
+                tenant_id=tenant_id,
+                requirement_id=requirement_id,
+            )
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=actor_user_id,
+                project_id=intake["project_id"],
+            ).record(
+                EventDraft(
+                    event_id=f"requirement:{requirement_id}:crm-review:{intake['id']}",
+                    event_type="REQUIREMENT_UPDATED",
+                    source="requirement_service",
+                    entity_id=requirement_id,
+                    payload={
+                        "changed_fields": ["status"],
+                        "status": requirement_status,
+                        "priority": after.priority,
+                    },
+                    occurred_at=occurred_at,
+                ),
+                AuditDraft(
+                    action="requirement.crm_intake_review",
+                    before_snapshot=_snapshot(before),
+                    after_snapshot=_snapshot(after),
+                    context={"decision": decision, "rationale": rationale},
+                ),
+            )
+            return after

@@ -62,6 +62,8 @@ class Action(StrEnum):
     CHANGE_APPROVE = "change.approve"
     HANDOFF_VIEW = "handoff.view"
     HANDOFF_PREPARE = "handoff.prepare"
+    HANDOFF_EXECUTE = "handoff.execute"
+    HANDOFF_RECONCILE = "handoff.reconcile"
     INTEGRATION_VIEW = "integration.view"
     INTEGRATION_BIND_SELF = "integration.bind_self"
     INTEGRATION_MANAGE = "integration.manage"
@@ -115,6 +117,7 @@ _ROLE_ACTIONS = MappingProxyType(
                 Action.CHANGE_APPROVE,
                 Action.HANDOFF_VIEW,
                 Action.HANDOFF_PREPARE,
+                Action.HANDOFF_EXECUTE,
                 Action.INTEGRATION_VIEW,
                 Action.INTEGRATION_BIND_SELF,
                 Action.INTEGRATION_PROJECT_MANAGE,

@@ -63,6 +63,14 @@ _PROMPTS = {
         "quality_intelligence_v1.json",
         expected_agent=AgentKey.QUALITY_INTELLIGENCE,
     ),
+    AgentKey.SUPPLIER_INTELLIGENCE: _load_prompt(
+        "supplier_intelligence_v1.json",
+        expected_agent=AgentKey.SUPPLIER_INTELLIGENCE,
+    ),
+    AgentKey.EXECUTIVE_INTELLIGENCE: _load_prompt(
+        "executive_intelligence_v1.json",
+        expected_agent=AgentKey.EXECUTIVE_INTELLIGENCE,
+    ),
 }
 PROMPT_VERSIONS = MappingProxyType({key: prompt.version for key, prompt in _PROMPTS.items()})
 SYSTEM_PROMPTS = MappingProxyType(
@@ -93,6 +101,8 @@ FindingCandidateType = Literal[
     "change_impact_suggestion",
     "quality_cluster_alert",
     "capa_suggestion",
+    "supplier_delay_risk",
+    "executive_portfolio_brief",
 ]
 
 
@@ -319,6 +329,10 @@ class AgentExecutor:
             page = tools.get_engineering_evidence(project_id=context.project_id, limit=20)
         elif context.agent_key is AgentKey.QUALITY_INTELLIGENCE:
             page = tools.get_quality_evidence(project_id=context.project_id, limit=20)
+        elif context.agent_key is AgentKey.SUPPLIER_INTELLIGENCE:
+            page = tools.get_supplier_delay_evidence(project_id=context.project_id, limit=20)
+        elif context.agent_key is AgentKey.EXECUTIVE_INTELLIGENCE:
+            page = tools.get_portfolio_brief(project_id=context.project_id, limit=20)
         else:
             page = ToolPage(
                 items=(),

@@ -16,6 +16,8 @@ DROP VIEW IF EXISTS
     cehub_ai.agent_user_role_projection,
     cehub_ai.agent_quality_evidence_projection,
     cehub_ai.agent_engineering_evidence_projection,
+    cehub_ai.agent_supplier_delay_projection,
+    cehub_ai.agent_portfolio_projection,
     cehub_ai.agent_memory_projection,
     cehub_ai.agent_event_projection,
     cehub_ai.agent_gate_projection,
@@ -42,6 +44,7 @@ DROP FUNCTION IF EXISTS cehub_ai.agent_invocation_scope_allows(
     uuid, uuid, uuid, varchar
 );
 DROP FUNCTION IF EXISTS cehub_ai.agent_tenant_scope_allows(uuid);
+DROP FUNCTION IF EXISTS cehub_ai.agent_tenant_agent_scope_allows(uuid, varchar);
 DROP FUNCTION IF EXISTS cehub_ai.agent_scope_allows(uuid, uuid);
 
 -- A fresh cluster has neither runtime role yet. Keep this rollback safe before

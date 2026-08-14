@@ -100,12 +100,48 @@ QUALITY_EVIDENCE_TOOL = ToolDefinition(
     },
 )
 
+SUPPLIER_DELAY_EVIDENCE_TOOL = ToolDefinition(
+    name="get_supplier_delay_evidence",
+    description=(
+        "Use when Supplier Intelligence needs bounded supplier-delay summaries across the run "
+        "tenant. Do not use for supplier contacts, commercial terms, raw Event payloads, or "
+        "another tenant. Negative example: never infer a supplier commitment from a report. "
+        "Boundary: tenant comes only from the run; project_id must match the trigger Project "
+        "and results are explicitly paginated read-only summaries."
+    ),
+    input_example={
+        "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+        "offset": 0,
+        "limit": 20,
+    },
+)
+
+PORTFOLIO_BRIEF_TOOL = ToolDefinition(
+    name="get_portfolio_brief",
+    description=(
+        "Use when Executive Intelligence needs a bounded cross-Project summary for the run "
+        "tenant. Do not use for user identity, Customer details, raw descriptions, or project "
+        "facts outside the tenant. Negative example: never rank people from Project counts. "
+        "Boundary: tenant comes only from the run; project_id must match the trigger Project "
+        "and at most 20 non-identity summaries are returned per page."
+    ),
+    input_example={
+        "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+        "offset": 0,
+        "limit": 20,
+    },
+)
+
 
 def tool_definitions_for_agent(agent_key: AgentKey) -> tuple[ToolDefinition, ...]:
     if agent_key is AgentKey.ENGINEERING_INTELLIGENCE:
         return (*TOOL_DEFINITIONS, ENGINEERING_EVIDENCE_TOOL)
     if agent_key is AgentKey.QUALITY_INTELLIGENCE:
         return (*TOOL_DEFINITIONS, QUALITY_EVIDENCE_TOOL)
+    if agent_key is AgentKey.SUPPLIER_INTELLIGENCE:
+        return (*TOOL_DEFINITIONS, SUPPLIER_DELAY_EVIDENCE_TOOL)
+    if agent_key is AgentKey.EXECUTIVE_INTELLIGENCE:
+        return (*TOOL_DEFINITIONS, PORTFOLIO_BRIEF_TOOL)
     return TOOL_DEFINITIONS
 
 
@@ -211,6 +247,69 @@ LEFT JOIN cehub_quality.capa_actions AS action
  AND action.ncr_id = ncr.id
 WHERE ncr.tenant_id = :tenant_id AND ncr.project_id = :project_id
 GROUP BY ncr.id, root_cause.root_cause
+"""
+
+_SUPPLIER_DELAY_EVIDENCE_SQL = """
+SELECT
+    event.id AS event_row_id,
+    event.project_id,
+    project.code AS project_code,
+    supplier.code AS supplier_code,
+    supplier.name AS supplier_name,
+    event.payload->>'expected_date' AS expected_date,
+    event.payload->>'reported_date' AS reported_date,
+    event.timestamp AS observed_at
+FROM cehub_event.events AS event
+JOIN cehub_project.projects AS project
+  ON project.tenant_id = event.tenant_id
+ AND project.id = event.project_id
+JOIN cehub_supplier.suppliers AS supplier
+  ON supplier.tenant_id = event.tenant_id
+ AND supplier.id::text = event.payload->>'supplier_id'
+WHERE event.tenant_id = :tenant_id
+  AND event.event_type = 'SUPPLIER_DELAY_REPORTED'
+"""
+
+_PORTFOLIO_BRIEF_SQL = """
+SELECT
+    project.id AS project_id,
+    project.code,
+    project.name,
+    project.status,
+    coalesce(stage.code, 'unassigned') AS stage_code,
+    (
+        SELECT count(*) FROM cehub_project.issues AS issue
+        WHERE issue.tenant_id = project.tenant_id
+          AND issue.project_id = project.id
+          AND issue.status <> 'closed'
+    ) AS open_issue_count,
+    (
+        SELECT count(*) FROM cehub_project.risks AS risk
+        WHERE risk.tenant_id = project.tenant_id
+          AND risk.project_id = project.id
+          AND risk.status <> 'closed'
+    ) AS open_risk_count,
+    (
+        SELECT count(*) FROM cehub_project.tasks AS task
+        WHERE task.tenant_id = project.tenant_id
+          AND task.project_id = project.id
+          AND task.due_date < CURRENT_DATE
+          AND task.status NOT IN ('done', 'skipped')
+    ) AS overdue_task_count,
+    (
+        SELECT count(*) FROM cehub_project.gates AS gate
+        WHERE gate.tenant_id = project.tenant_id
+          AND gate.project_id = project.id
+          AND gate.status IN ('preparing', 'reviewing')
+    ) AS pending_gate_count,
+    project.updated_at AS observed_at
+FROM cehub_project.projects AS project
+LEFT JOIN cehub_project.stages AS stage
+  ON stage.tenant_id = project.tenant_id
+ AND stage.workflow_id = project.workflow_id
+ AND stage.id = project.current_stage_id
+WHERE project.tenant_id = :tenant_id
+  AND project.status IN ('approved', 'active', 'on_hold')
 """
 
 
@@ -583,6 +682,142 @@ class AgentReadTools:
             limit=limit,
             projection="cehub_ai.agent_quality_evidence_projection",
             owner_sql=_QUALITY_EVIDENCE_SQL,
+        )
+
+    def get_supplier_delay_evidence(
+        self,
+        *,
+        project_id: UUID,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> ToolPage:
+        return self._portfolio_evidence(
+            project_id=project_id,
+            offset=offset,
+            limit=limit,
+            projection="cehub_ai.agent_supplier_delay_projection",
+            owner_sql=_SUPPLIER_DELAY_EVIDENCE_SQL,
+            columns=(
+                "event_row_id",
+                "project_id",
+                "project_code",
+                "supplier_code",
+                "supplier_name",
+                "expected_date",
+                "reported_date",
+            ),
+        )
+
+    def get_portfolio_brief(
+        self,
+        *,
+        project_id: UUID,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> ToolPage:
+        return self._portfolio_evidence(
+            project_id=project_id,
+            offset=offset,
+            limit=limit,
+            projection="cehub_ai.agent_portfolio_projection",
+            owner_sql=_PORTFOLIO_BRIEF_SQL,
+            columns=(
+                "project_id",
+                "code",
+                "name",
+                "status",
+                "stage_code",
+                "open_issue_count",
+                "open_risk_count",
+                "overdue_task_count",
+                "pending_gate_count",
+            ),
+        )
+
+    def _portfolio_evidence(
+        self,
+        *,
+        project_id: UUID,
+        offset: int,
+        limit: int,
+        projection: str,
+        owner_sql: str,
+        columns: tuple[str, ...],
+    ) -> ToolPage:
+        self._assert_scope(project_id)
+        self._validate_page(after_id=offset, limit=limit)
+        parameters: dict[str, object] = {
+            "tenant_id": self._context.tenant_id,
+            "offset": offset,
+            "limit": limit,
+        }
+        with self._engine.connect() as connection:
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                source = projection
+                source_parameters: dict[str, object] = {"offset": offset, "limit": limit}
+            else:
+                source = f"({owner_sql}) AS evidence"
+                source_parameters = parameters
+            total = int(
+                connection.execute(
+                    text(f"SELECT count(*) FROM {source}"), source_parameters
+                ).scalar_one()
+            )
+            rows = list(
+                connection.execute(
+                    text(
+                        f"SELECT {', '.join(columns)} FROM {source} "
+                        "ORDER BY observed_at DESC, 1 OFFSET :offset LIMIT :limit"
+                    ),
+                    source_parameters,
+                ).mappings()
+            )
+        if "event_row_id" in columns:
+            items = tuple(
+                {
+                    "reference_id": f"supplier-delay:{row['event_row_id']}",
+                    "entity": "supplier_delay",
+                    "entity_id": str(row["project_id"]),
+                    "label": (
+                        f"{row['project_code']} · {row['supplier_code']} · {row['supplier_name']}"
+                    ),
+                    "excerpt": (
+                        f"expected_date={row['expected_date']}; "
+                        f"reported_date={row['reported_date']}"
+                    ),
+                }
+                for row in rows
+            )
+        else:
+            items = tuple(
+                {
+                    "reference_id": f"portfolio-project:{row['project_id']}",
+                    "entity": "project",
+                    "entity_id": str(row["project_id"]),
+                    "label": f"{row['code']} · {row['name']}",
+                    "excerpt": (
+                        f"status={row['status']}; stage={row['stage_code']}; "
+                        f"open_issues={row['open_issue_count']}; "
+                        f"open_risks={row['open_risk_count']}; "
+                        f"overdue_tasks={row['overdue_task_count']}; "
+                        f"pending_gates={row['pending_gate_count']}"
+                    ),
+                }
+                for row in rows
+            )
+        next_offset = offset + len(items) if offset + len(items) < total else None
+        return ToolPage(
+            items=items,
+            shown_count=len(items),
+            total_count=total,
+            truncated=next_offset is not None,
+            next_after_id=next_offset,
+            continuation=(
+                f"已显示 {offset + len(items)} 之 {total} 条；使用 offset={next_offset} 续读。"
+                if next_offset is not None
+                else f"已显示 {offset + len(items)} 之 {total} 条；无需续读。"
+            ),
         )
 
     def _domain_evidence(

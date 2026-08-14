@@ -48,6 +48,9 @@ def test_metadata_freezes_ecr_ecn_and_handoff_boundaries() -> None:
     } >= CHANGE_TABLES
     assert tables.engineering_change_requests.c.impact_analysis.nullable
     assert not tables.erp_handoffs.c.source_bom_snapshot.nullable
+    assert not tables.integration_outbox.c.payload.nullable
+    assert tables.integration_outbox.c.erp_handoff_id.nullable
+    assert tables.integration_outbox.c.payload_digest.nullable
 
 
 def test_change_migration_matches_metadata_and_single_head(change_database_url: str) -> None:
@@ -74,5 +77,5 @@ def test_change_migration_matches_metadata_and_single_head(change_database_url: 
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0027_dingtalk_hardening"
+        "0030_phase_three_agents"
     ]

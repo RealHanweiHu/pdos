@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import json
 import os
 from collections.abc import Iterator
 from datetime import UTC, datetime
+from hashlib import sha256
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -314,6 +316,13 @@ def test_change_chain_freezes_handoff_and_requires_pvt_gate(
         blocked.status_code == 409
         and blocked.json()["detail"]["code"] == "HANDOFF_PVT_GATE_REQUIRED"
     )
+    premature_queue = client.post(
+        f"{base}/handoffs/{handoff['id']}/queue",
+        headers=manager_headers,
+        json={"idempotency_key": "erp-handoff-premature-0001", "mode": "manual"},
+    )
+    assert premature_queue.status_code == 409
+    assert premature_queue.json()["detail"]["code"] == "ERP_HANDOFF_NOT_READY"
 
     engine = create_engine(psycopg_database_url(isolated_change_database))
     try:
@@ -331,15 +340,113 @@ def test_change_chain_freezes_handoff_and_requires_pvt_gate(
         engine.dispose()
     ready = client.post(f"{base}/handoffs/{handoff['id']}/ready", headers=manager_headers)
     assert ready.status_code == 200 and ready.json()["status"] == "ready"
-    assert (
-        client.post(f"{base}/handoffs/{handoff['id']}/queue", headers=manager_headers).status_code
-        == 404
+    unavailable_api = client.post(
+        f"{base}/handoffs/{handoff['id']}/queue",
+        headers=manager_headers,
+        json={"idempotency_key": "erp-handoff-api-0001", "mode": "api"},
     )
+    assert unavailable_api.status_code == 503
+    assert unavailable_api.json()["detail"]["code"] == "ERP_API_NOT_CONFIGURED"
+    queued = client.post(
+        f"{base}/handoffs/{handoff['id']}/queue",
+        headers=manager_headers,
+        json={"idempotency_key": "erp-handoff-manual-0001", "mode": "manual"},
+    )
+    assert queued.status_code == 200, queued.text
+    queued_body = queued.json()
+    assert queued_body["handoff"]["status"] == "queued"
+    assert queued_body["outbox"]["status"] == "manual"
+    assert queued_body["outbox"]["attempt_count"] == 0
+    assert len(queued_body["outbox"]["payload_digest"]) == 64
+    repeated = client.post(
+        f"{base}/handoffs/{handoff['id']}/queue",
+        headers=manager_headers,
+        json={"idempotency_key": "erp-handoff-manual-0001", "mode": "manual"},
+    )
+    assert repeated.status_code == 200
+    assert repeated.json()["outbox"]["id"] == queued_body["outbox"]["id"]
+
+    conflict = client.post(
+        f"{base}/handoffs/{handoff['id']}/queue",
+        headers=manager_headers,
+        json={"idempotency_key": "erp-handoff-manual-0002", "mode": "manual"},
+    )
+    assert conflict.status_code == 409
+    assert conflict.json()["detail"]["code"] == "ERP_HANDOFF_ALREADY_QUEUED"
+
+    delivery = client.get(f"{base}/handoffs/{handoff['id']}/delivery", headers=manager_headers)
+    assert delivery.status_code == 200
+    package = delivery.json()["delivery_package"]
+    canonical = json.dumps(package, sort_keys=True, separators=(",", ":")).encode()
+    assert sha256(canonical).hexdigest() == queued_body["outbox"]["payload_digest"]
+
+    exported = client.post(
+        f"{base}/handoffs/{handoff['id']}/export",
+        headers=manager_headers,
+        json={"confirmation": "EXPORT_CONFIRMED"},
+    )
+    assert exported.status_code == 200
+    assert exported.json()["handoff"]["status"] == "sent"
+    assert exported.json()["outbox"]["status"] == "succeeded"
+    assert exported.json()["delivery_package"] == package
+
+    manager_reconcile = client.post(
+        f"{base}/handoffs/{handoff['id']}/reconcile",
+        headers=manager_headers,
+        json={
+            "confirmation": "RECONCILE_CONFIRMED",
+            "outcome": "confirmed_not_delivered",
+        },
+    )
+    assert manager_reconcile.status_code == 403
+    not_delivered = client.post(
+        f"{base}/handoffs/{handoff['id']}/reconcile",
+        headers=owner_headers,
+        json={
+            "confirmation": "RECONCILE_CONFIRMED",
+            "outcome": "confirmed_not_delivered",
+        },
+    )
+    assert not_delivered.status_code == 200
+    assert not_delivered.json()["handoff"]["status"] == "failed"
+    assert not_delivered.json()["outbox"]["status"] == "failed"
+
+    replayed = client.post(
+        f"{base}/handoffs/{handoff['id']}/replay",
+        headers=manager_headers,
+        json={"confirmation": "REPLAY_CONFIRMED"},
+    )
+    assert replayed.status_code == 200
+    assert replayed.json()["handoff"]["status"] == "queued"
+    assert replayed.json()["outbox"]["status"] == "manual"
+    assert replayed.json()["outbox"]["payload_digest"] == queued_body["outbox"]["payload_digest"]
+    assert replayed.json()["delivery_package"] == package
+
+    assert (
+        client.post(
+            f"{base}/handoffs/{handoff['id']}/export",
+            headers=manager_headers,
+            json={"confirmation": "EXPORT_CONFIRMED"},
+        ).status_code
+        == 200
+    )
+    confirmed = client.post(
+        f"{base}/handoffs/{handoff['id']}/reconcile",
+        headers=owner_headers,
+        json={
+            "confirmation": "RECONCILE_CONFIRMED",
+            "outcome": "confirmed_delivered",
+            "external_reference": "SAP-EBOM-1001",
+        },
+    )
+    assert confirmed.status_code == 200
+    assert confirmed.json()["handoff"]["status"] == "confirmed"
+    assert confirmed.json()["handoff"]["external_reference"] == "SAP-EBOM-1001"
 
     snapshot = client.get(base, headers=owner_headers).json()
     assert snapshot["ecrs"][0]["affected_bom_ids"] == [str(ids["ebom"])]
     assert snapshot["ecns"][0]["status"] == "erp_handoff"
-    assert snapshot["handoffs"][0]["status"] == "ready"
+    assert snapshot["handoffs"][0]["status"] == "confirmed"
     engine = create_engine(psycopg_database_url(isolated_change_database))
     try:
         with engine.connect() as connection:
@@ -363,6 +470,6 @@ def test_change_chain_freezes_handoff_and_requires_pvt_gate(
                 .select_from(tables.audit_log)
                 .where(tables.audit_log.c.action.like("change.%"))
             ).scalar_one()
-            assert event_count == audit_count == 9
+            assert event_count == audit_count == 15
     finally:
         engine.dispose()

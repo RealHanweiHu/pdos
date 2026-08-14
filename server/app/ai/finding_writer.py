@@ -57,6 +57,8 @@ def preflight_assessment(
             "change_impact_suggestion",
         },
         "quality_intelligence": {"quality_cluster_alert", "capa_suggestion"},
+        "supplier_intelligence": {"supplier_delay_risk"},
+        "executive_intelligence": {"executive_portfolio_brief"},
     }
     if assessment.candidate_type not in allowed_types[context.agent_key.value]:
         raise FindingPreflightError("Finding type is outside the Agent contract")

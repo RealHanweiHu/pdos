@@ -39,6 +39,7 @@ export function RequirementForm({
 }) {
   const codeRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const pendingCrmReview = requirement?.source === "crm" && requirement.status === "draft";
 
   useEffect(() => {
     codeRef.current?.focus();
@@ -64,7 +65,7 @@ export function RequirementForm({
       description: description || null,
       acceptance_criteria: criteria,
     };
-    if (requirement && requirement.status !== "converted") {
+    if (requirement && requirement.status !== "converted" && !pendingCrmReview) {
       values.status = String(data.get("status") ?? "draft") as NonNullable<
         RequirementFormValues["status"]
       >;
@@ -190,7 +191,7 @@ export function RequirementForm({
           defaultValue={requirement?.acceptance_criteria.join("\n")}
         />
       </label>
-      {requirement && requirement.status !== "converted" ? (
+      {requirement && requirement.status !== "converted" && !pendingCrmReview ? (
         <label className="block text-xs font-medium" htmlFor="requirement-status">
           状态
           <select
@@ -210,7 +211,9 @@ export function RequirementForm({
         <div className="text-xs font-medium">
           状态
           <p className="mt-1 rounded-lg border bg-muted px-3 py-2 text-sm font-normal text-muted-foreground">
-            已转开发案（状态由转 Case 流程维护）
+            {pendingCrmReview
+              ? "CRM 草稿（状态仅可通过下方独立人审动作更新）"
+              : "已转开发案（状态由转 Case 流程维护）"}
           </p>
         </div>
       ) : null}

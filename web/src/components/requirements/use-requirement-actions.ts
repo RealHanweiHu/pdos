@@ -157,6 +157,48 @@ export function useRequirementActions({
     }
   }
 
+  async function reviewCrmRequirement(
+    requirement: Requirement,
+    decision: "establish" | "reject",
+    rationale: string,
+  ) {
+    setSaving(true);
+    setStatusMessage(null);
+    try {
+      const response = await fetch(
+        `/api/requirements/${requirement.id}/review-crm-intake`,
+        {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            confirmation: "REVIEW_CONFIRMED",
+            decision,
+            rationale,
+          }),
+        },
+      );
+      if (response.status === 401) {
+        replace("/login");
+        return { ok: false as const, message: "登录已失效，正在返回登录页。" };
+      }
+      if (!response.ok) {
+        return { ok: false as const, message: "CRM 草稿人审未完成，请刷新后重试。" };
+      }
+      const updated = await readRequirement(response);
+      setRequirements((current) =>
+        current.map((item) => (item.id === updated.id ? updated : item)),
+      );
+      setEditingId(null);
+      setStatusMessage(decision === "establish" ? "CRM 需求已成立" : "CRM 草稿已拒绝");
+      return { ok: true as const };
+    } catch {
+      return { ok: false as const, message: "网络连接失败，请稍后重试。" };
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return {
     beginConversion(requirement: Requirement) {
       setCreating(false);
@@ -172,6 +214,7 @@ export function useRequirementActions({
     editingRequirement,
     convertRequirement,
     requirements,
+    reviewCrmRequirement,
     saving,
     selectRequirement(requirement: Requirement) {
       setCreating(false);

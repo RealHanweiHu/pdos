@@ -15,10 +15,15 @@ class AgentKey(StrEnum):
     KNOWLEDGE_LITE = "knowledge_lite"
     ENGINEERING_INTELLIGENCE = "engineering_intelligence"
     QUALITY_INTELLIGENCE = "quality_intelligence"
+    SUPPLIER_INTELLIGENCE = "supplier_intelligence"
+    EXECUTIVE_INTELLIGENCE = "executive_intelligence"
 
 
 PHASE_ONE_AGENT_KEYS = frozenset({AgentKey.PROJECT_INTELLIGENCE, AgentKey.KNOWLEDGE_LITE})
 PHASE_TWO_AGENT_KEYS = frozenset({AgentKey.ENGINEERING_INTELLIGENCE, AgentKey.QUALITY_INTELLIGENCE})
+PHASE_THREE_AGENT_KEYS = frozenset(
+    {AgentKey.SUPPLIER_INTELLIGENCE, AgentKey.EXECUTIVE_INTELLIGENCE}
+)
 
 
 class AgentRunStatus(StrEnum):
@@ -35,18 +40,25 @@ class InvalidRunTransitionError(ValueError):
 
 
 _EVENT_AGENT_ROUTES: dict[str, tuple[AgentKey, ...]] = {
-    "PROJECT_STAGE_CHANGED": (AgentKey.PROJECT_INTELLIGENCE,),
+    "PROJECT_STAGE_CHANGED": (
+        AgentKey.PROJECT_INTELLIGENCE,
+        AgentKey.EXECUTIVE_INTELLIGENCE,
+    ),
     "ISSUE_CREATED": (AgentKey.PROJECT_INTELLIGENCE,),
     "TEST_FAILED": (
         AgentKey.PROJECT_INTELLIGENCE,
         AgentKey.QUALITY_INTELLIGENCE,
     ),
-    "GATE_APPROVED": (AgentKey.KNOWLEDGE_LITE,),
+    "GATE_APPROVED": (
+        AgentKey.KNOWLEDGE_LITE,
+        AgentKey.EXECUTIVE_INTELLIGENCE,
+    ),
     "DOCUMENT_UPLOADED": (AgentKey.KNOWLEDGE_LITE,),
     "DEVELOPMENT_BOM_CREATED": (AgentKey.ENGINEERING_INTELLIGENCE,),
     "DEVELOPMENT_BOM_ITEM_ADDED": (AgentKey.ENGINEERING_INTELLIGENCE,),
     "CHANGE_RECORD_CHANGED": (AgentKey.ENGINEERING_INTELLIGENCE,),
     "COMPLAINT_CREATED": (AgentKey.QUALITY_INTELLIGENCE,),
+    "SUPPLIER_DELAY_REPORTED": (AgentKey.SUPPLIER_INTELLIGENCE,),
 }
 
 _RUN_EDGES: dict[AgentRunStatus, frozenset[AgentRunStatus]] = {
@@ -177,7 +189,7 @@ class ProjectRoleSummary(BaseModel):
 class UserContext(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    perspective_role: Literal["project_manager", "engineer", "quality"]
+    perspective_role: Literal["project_manager", "engineer", "quality", "supplier", "executive"]
     role_lens: str = Field(min_length=1, max_length=512)
     project_roles: tuple[ProjectRoleSummary, ...]
     decision_mode: Literal["advisory_only"] = "advisory_only"
@@ -190,6 +202,8 @@ _PERSPECTIVE_ROLES = {
     AgentKey.KNOWLEDGE_LITE: "engineer",
     AgentKey.ENGINEERING_INTELLIGENCE: "engineer",
     AgentKey.QUALITY_INTELLIGENCE: "quality",
+    AgentKey.SUPPLIER_INTELLIGENCE: "supplier",
+    AgentKey.EXECUTIVE_INTELLIGENCE: "executive",
 }
 _ROLE_LENSES = {
     AgentKey.PROJECT_INTELLIGENCE: (
@@ -207,6 +221,14 @@ _ROLE_LENSES = {
     AgentKey.QUALITY_INTELLIGENCE: (
         "Prioritize containment, evidence clusters, and CAPA hypotheses for a quality "
         "audience without asserting root cause or modifying quality records."
+    ),
+    AgentKey.SUPPLIER_INTELLIGENCE: (
+        "Prioritize recurring supplier-delay exposure and Project impact without changing "
+        "supplier, schedule, sourcing, or delivery facts."
+    ),
+    AgentKey.EXECUTIVE_INTELLIGENCE: (
+        "Prioritize bounded cross-Project portfolio exceptions for an executive audience "
+        "without ranking people or changing Project truth."
     ),
 }
 

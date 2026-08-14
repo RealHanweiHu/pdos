@@ -200,6 +200,35 @@ class CeHubSourceAdapter:
             fingerprint=_content_hash(snapshot_payload),
         )
 
+    def read_project_inventory(self) -> tuple[dict[str, Any], ...]:
+        """Read every CEHub project so a cutover cannot silently omit history."""
+        connection = self._engine.connect().execution_options(isolation_level="REPEATABLE READ")
+        try:
+            with connection.begin():
+                connection.execute(text("SET TRANSACTION READ ONLY"))
+                self._assert_readonly_role(connection)
+                rows = tuple(
+                    connection.execute(
+                        text(
+                            f'''
+                            SELECT id AS source_id, name,
+                                   "projectNumber" AS project_number,
+                                   category, "currentPhase" AS current_phase,
+                                   archived, lifecycle,
+                                   "createdAt" AS created_at,
+                                   "updatedAt" AS updated_at
+                              FROM "{self._schema}"."projects"
+                             ORDER BY id
+                            '''
+                        )
+                    ).mappings()
+                )
+        finally:
+            connection.close()
+        return tuple(
+            {key: _json_safe(value) for key, value in row.items()} for row in _hash_rows(rows)
+        )
+
     def _assert_readonly_role(self, connection: Connection) -> None:
         default_read_only = connection.execute(
             text("SELECT current_setting('default_transaction_read_only') = 'on'")
@@ -398,6 +427,13 @@ def _content_hash(value: object) -> str:
         separators=(",", ":"),
     ).encode()
     return hashlib.sha256(payload).hexdigest()
+
+
+def source_project_inventory_fingerprint(
+    projects: tuple[dict[str, Any], ...],
+) -> str:
+    """Bind a reviewed cutover inventory to its complete, ordered source metadata."""
+    return _content_hash({"source_system": SOURCE_SYSTEM, "projects": projects})
 
 
 def _hash_rows(rows: tuple[RowMapping, ...]) -> tuple[dict[str, Any], ...]:

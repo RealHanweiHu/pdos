@@ -39,6 +39,7 @@ from app.db.namespaces import (
     PRODUCT_SCHEMA,
     PROJECT_SCHEMA,
     QUALITY_SCHEMA,
+    SUPPLIER_SCHEMA,
 )
 from app.db.vector import Vector
 
@@ -155,6 +156,41 @@ customers = Table(
     schema=CORE_SCHEMA,
 )
 
+suppliers = Table(
+    "suppliers",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("code", String(64), nullable=False),
+    Column("name", String(256), nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'active'")),
+    Column("external_reference", String(256)),
+    Column("description", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(code) <> '' AND btrim(name) <> ''", name="required_text_nonblank"),
+    CheckConstraint("status IN ('active', 'inactive')", name="status_allowed"),
+    UniqueConstraint("tenant_id", "id", name="uq_suppliers_tenant_id_id"),
+    UniqueConstraint("tenant_id", "code", name="uq_suppliers_tenant_code"),
+    Index("ix_suppliers_tenant_status", "tenant_id", "status", "code"),
+    schema=SUPPLIER_SCHEMA,
+)
+
 requirements = Table(
     "requirements",
     metadata,
@@ -213,6 +249,98 @@ requirements = Table(
     UniqueConstraint("tenant_id", "code", name="uq_requirements_tenant_code"),
     Index("ix_requirements_tenant_status", "tenant_id", "status"),
     Index("ix_requirements_tenant_updated", "tenant_id", "updated_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+crm_requirement_intakes = Table(
+    "crm_requirement_intakes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("requirement_id", Uuid, nullable=False),
+    Column("source_event_row_id", BigInteger, nullable=False),
+    Column("external_requirement_id", String(128), nullable=False),
+    Column("status", String(24), nullable=False, server_default=text("'pending_review'")),
+    Column("reviewed_by_user_id", Uuid),
+    Column("reviewed_at", DateTime(timezone=True)),
+    Column("review_rationale", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "status IN ('pending_review', 'established', 'rejected')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(external_requirement_id) <> ''", name="external_id_nonblank"),
+    CheckConstraint(
+        "(status = 'pending_review' AND reviewed_by_user_id IS NULL "
+        "AND reviewed_at IS NULL AND review_rationale IS NULL) OR "
+        "(status IN ('established', 'rejected') AND reviewed_by_user_id IS NOT NULL "
+        "AND reviewed_at IS NOT NULL AND review_rationale IS NOT NULL "
+        "AND btrim(review_rationale) <> '')",
+        name="review_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_crm_intakes_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        name="fk_crm_intakes_tenant_requirement",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        name="fk_crm_intakes_tenant_source_event",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_crm_intakes_tenant_reviewer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_crm_intakes_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "requirement_id",
+        name="uq_crm_intakes_tenant_requirement",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_event_row_id",
+        name="uq_crm_intakes_tenant_source_event",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "external_requirement_id",
+        name="uq_crm_intakes_tenant_external_requirement",
+    ),
+    Index(
+        "ix_crm_intakes_tenant_status",
+        "tenant_id",
+        "status",
+        "created_at",
+    ),
     schema=PROJECT_SCHEMA,
 )
 
@@ -500,6 +628,133 @@ project_members = Table(
     ),
     Index("ix_project_members_tenant_project", "tenant_id", "project_id"),
     Index("ix_project_members_tenant_user", "tenant_id", "user_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+costs = Table(
+    "costs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("supplier_id", Uuid),
+    Column("code", String(64), nullable=False),
+    Column("cost_type", String(24), nullable=False),
+    Column("amount", Numeric(18, 6), nullable=False),
+    Column("currency", String(3), nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'estimate'")),
+    Column("incurred_on", Date),
+    Column("details", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
+    CheckConstraint(
+        "cost_type IN ('material', 'labor', 'tooling', 'logistics', 'other')",
+        name="type_allowed",
+    ),
+    CheckConstraint("amount >= 0", name="amount_nonnegative"),
+    CheckConstraint("currency ~ '^[A-Z]{3}$'", name="currency_iso_like"),
+    CheckConstraint("status IN ('estimate', 'approved', 'actual')", name="status_allowed"),
+    CheckConstraint("jsonb_typeof(details) = 'object'", name="details_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_costs_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "supplier_id"],
+        [f"{SUPPLIER_SCHEMA}.suppliers.tenant_id", f"{SUPPLIER_SCHEMA}.suppliers.id"],
+        name="fk_costs_tenant_supplier",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_costs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "code", name="uq_costs_tenant_project_code"),
+    Index("ix_costs_tenant_project_status", "tenant_id", "project_id", "status"),
+    schema=COST_SCHEMA,
+)
+
+resources = Table(
+    "resources",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("assigned_user_id", Uuid),
+    Column("code", String(64), nullable=False),
+    Column("name", String(256), nullable=False),
+    Column("resource_type", String(24), nullable=False),
+    Column("allocation_percent", Numeric(5, 2), nullable=False, server_default=text("100")),
+    Column("start_date", Date),
+    Column("end_date", Date),
+    Column("status", String(16), nullable=False, server_default=text("'planned'")),
+    Column("details", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(code) <> '' AND btrim(name) <> ''", name="required_text_nonblank"),
+    CheckConstraint(
+        "resource_type IN ('person', 'equipment', 'facility', 'capability')",
+        name="type_allowed",
+    ),
+    CheckConstraint(
+        "allocation_percent > 0 AND allocation_percent <= 100",
+        name="allocation_range",
+    ),
+    CheckConstraint(
+        "end_date IS NULL OR start_date IS NULL OR end_date >= start_date", name="date_order"
+    ),
+    CheckConstraint("status IN ('planned', 'active', 'released')", name="status_allowed"),
+    CheckConstraint("jsonb_typeof(details) = 'object'", name="details_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_resources_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "assigned_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_resources_tenant_user",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_resources_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "code",
+        name="uq_resources_tenant_project_code",
+    ),
+    Index("ix_resources_tenant_project_status", "tenant_id", "project_id", "status"),
     schema=PROJECT_SCHEMA,
 )
 
@@ -3963,7 +4218,8 @@ agent_subscriptions = Table(
     ),
     CheckConstraint(
         "agent_key IN ('project_intelligence', 'knowledge_lite', "
-        "'engineering_intelligence', 'quality_intelligence')",
+        "'engineering_intelligence', 'quality_intelligence', "
+        "'supplier_intelligence', 'executive_intelligence')",
         name="agent_key_allowed",
     ),
     CheckConstraint("status IN ('active', 'paused')", name="status_allowed"),
@@ -4034,7 +4290,8 @@ agent_runs = Table(
     ),
     CheckConstraint(
         "agent_key IN ('project_intelligence', 'knowledge_lite', "
-        "'engineering_intelligence', 'quality_intelligence')",
+        "'engineering_intelligence', 'quality_intelligence', "
+        "'supplier_intelligence', 'executive_intelligence')",
         name="agent_key_allowed",
     ),
     CheckConstraint(
@@ -4265,7 +4522,10 @@ finding_quality_controls = Table(
         "(agent_key = 'engineering_intelligence' AND finding_type IN "
         "('bom_impact_suggestion', 'change_impact_suggestion')) OR "
         "(agent_key = 'quality_intelligence' AND finding_type IN "
-        "('quality_cluster_alert', 'capa_suggestion'))",
+        "('quality_cluster_alert', 'capa_suggestion')) OR "
+        "(agent_key = 'supplier_intelligence' AND finding_type = 'supplier_delay_risk') OR "
+        "(agent_key = 'executive_intelligence' AND finding_type = "
+        "'executive_portfolio_brief')",
         name="type_allowed",
     ),
     CheckConstraint("status IN ('active', 'narrowed')", name="status_allowed"),
@@ -4354,7 +4614,10 @@ findings = Table(
         "(agent_key = 'engineering_intelligence' AND finding_type IN "
         "('bom_impact_suggestion', 'change_impact_suggestion')) OR "
         "(agent_key = 'quality_intelligence' AND finding_type IN "
-        "('quality_cluster_alert', 'capa_suggestion'))",
+        "('quality_cluster_alert', 'capa_suggestion')) OR "
+        "(agent_key = 'supplier_intelligence' AND finding_type = 'supplier_delay_risk') OR "
+        "(agent_key = 'executive_intelligence' AND finding_type = "
+        "'executive_portfolio_brief')",
         name="type_allowed",
     ),
     CheckConstraint(
@@ -4759,10 +5022,13 @@ integration_outbox = Table(
         nullable=False,
     ),
     Column("project_id", Uuid),
+    Column("erp_handoff_id", Uuid),
     Column("provider", String(32), nullable=False, server_default=text("'dingtalk'")),
     Column("operation", String(64), nullable=False),
+    Column("delivery_mode", String(16)),
     Column("idempotency_key", String(128), nullable=False),
     Column("payload", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("payload_digest", String(64)),
     Column("status", String(16), nullable=False, server_default=text("'pending'")),
     Column("attempt_count", Integer, nullable=False, server_default=text("0")),
     Column("max_attempts", Integer, nullable=False, server_default=text("5")),
@@ -4785,10 +5051,11 @@ integration_outbox = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     Column("completed_at", DateTime(timezone=True)),
-    CheckConstraint("provider = 'dingtalk'", name="provider_allowed"),
+    CheckConstraint("provider IN ('dingtalk', 'erp')", name="provider_allowed"),
     CheckConstraint(
-        "operation IN ('group_markdown', 'gate_approval_create', "
-        "'interactive_card_create', 'interactive_card_update')",
+        "(provider = 'dingtalk' AND operation IN ('group_markdown', "
+        "'gate_approval_create', 'interactive_card_create', 'interactive_card_update')) OR "
+        "(provider = 'erp' AND operation = 'ebom_handoff')",
         name="operation_allowed",
     ),
     CheckConstraint(
@@ -4797,6 +5064,17 @@ integration_outbox = Table(
         name="status_allowed",
     ),
     CheckConstraint("jsonb_typeof(payload) = 'object'", name="payload_object"),
+    CheckConstraint(
+        "payload_digest IS NULL OR payload_digest ~ '^[0-9a-f]{64}$'",
+        name="payload_digest_hex",
+    ),
+    CheckConstraint(
+        "(provider = 'dingtalk' AND erp_handoff_id IS NULL "
+        "AND delivery_mode IS NULL AND payload_digest IS NULL) OR "
+        "(provider = 'erp' AND project_id IS NOT NULL AND erp_handoff_id IS NOT NULL "
+        "AND delivery_mode IN ('manual', 'api') AND payload_digest IS NOT NULL)",
+        name="provider_payload_consistent",
+    ),
     CheckConstraint(
         "attempt_count >= 0 AND max_attempts > 0 AND attempt_count <= max_attempts",
         name="attempts_valid",
@@ -4812,6 +5090,16 @@ integration_outbox = Table(
         name="fk_integration_outbox_tenant_project",
         ondelete="RESTRICT",
     ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "erp_handoff_id"],
+        [
+            f"{PRODUCT_SCHEMA}.erp_handoffs.tenant_id",
+            f"{PRODUCT_SCHEMA}.erp_handoffs.project_id",
+            f"{PRODUCT_SCHEMA}.erp_handoffs.id",
+        ],
+        name="fk_integration_outbox_tenant_project_erp_handoff",
+        ondelete="RESTRICT",
+    ),
     UniqueConstraint("tenant_id", "id", name="uq_integration_outbox_tenant_id_id"),
     UniqueConstraint(
         "tenant_id",
@@ -4819,6 +5107,11 @@ integration_outbox = Table(
         "operation",
         "idempotency_key",
         name="uq_integration_outbox_tenant_operation_idempotency",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "erp_handoff_id",
+        name="uq_integration_outbox_tenant_erp_handoff",
     ),
     Index(
         "ix_integration_outbox_claim",
@@ -5097,6 +5390,7 @@ events = Table(
         ondelete="RESTRICT",
     ),
     UniqueConstraint("source", "event_id", name="uq_events_source_event_id"),
+    UniqueConstraint("tenant_id", "id", name="uq_events_tenant_id_id"),
     Index("ix_events_tenant_id", "tenant_id", "id"),
     Index("ix_events_tenant_project_id", "tenant_id", "project_id", "id"),
     Index("ix_events_event_type_id", "event_type", "id"),
@@ -5258,10 +5552,14 @@ class Tables:
     tenants: Table
     users: Table
     customers: Table
+    suppliers: Table
     requirements: Table
+    crm_requirement_intakes: Table
     development_cases: Table
     projects: Table
     project_members: Table
+    costs: Table
+    resources: Table
     documents: Table
     external_file_references: Table
     document_fragments: Table
@@ -5332,10 +5630,14 @@ tables = Tables(
     tenants=tenants,
     users=users,
     customers=customers,
+    suppliers=suppliers,
     requirements=requirements,
+    crm_requirement_intakes=crm_requirement_intakes,
     development_cases=development_cases,
     projects=projects,
     project_members=project_members,
+    costs=costs,
+    resources=resources,
     documents=documents,
     external_file_references=external_file_references,
     document_fragments=document_fragments,

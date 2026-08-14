@@ -108,6 +108,7 @@ export function RequirementPool() {
       onBeginConversion={actions.beginConversion}
       onLogout={() => void logout()}
       onNew={actions.startCreate}
+      onReviewCrm={actions.reviewCrmRequirement}
       onSelect={actions.selectRequirement}
       onUpdate={actions.updateRequirement}
       requirements={actions.requirements}

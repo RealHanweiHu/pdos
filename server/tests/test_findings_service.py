@@ -336,6 +336,16 @@ def test_accept_and_apply_are_two_audited_human_actions(
         ),
         ("quality_intelligence", "TEST_FAILED", "quality_cluster_alert"),
         ("quality_intelligence", "COMPLAINT_CREATED", "capa_suggestion"),
+        (
+            "supplier_intelligence",
+            "SUPPLIER_DELAY_REPORTED",
+            "supplier_delay_risk",
+        ),
+        (
+            "executive_intelligence",
+            "PROJECT_STAGE_CHANGED",
+            "executive_portfolio_brief",
+        ),
     ],
 )
 def test_phase_two_findings_require_review_then_apply_to_audited_project_risk(

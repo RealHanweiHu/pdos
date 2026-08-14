@@ -318,7 +318,12 @@ def seed_phase_two_evidence(
     ids: dict[str, UUID | int],
     agent_key: str,
 ) -> tuple[str, str] | None:
-    if agent_key not in {"engineering_intelligence", "quality_intelligence"}:
+    if agent_key not in {
+        "engineering_intelligence",
+        "quality_intelligence",
+        "supplier_intelligence",
+        "executive_intelligence",
+    }:
         return None
     actor_a = uuid4()
     actor_b = uuid4()
@@ -330,14 +335,30 @@ def seed_phase_two_evidence(
                 "tenant_id": ids["tenant_a"],
                 "username": f"phase-two-a-{actor_a}",
                 "display_name": "Phase Two A",
-                "role": "quality" if agent_key == "quality_intelligence" else "engineer",
+                "role": (
+                    "quality"
+                    if agent_key == "quality_intelligence"
+                    else "supplier"
+                    if agent_key == "supplier_intelligence"
+                    else "owner"
+                    if agent_key == "executive_intelligence"
+                    else "engineer"
+                ),
             },
             {
                 "id": actor_b,
                 "tenant_id": ids["tenant_b"],
                 "username": f"phase-two-b-{actor_b}",
                 "display_name": "Phase Two B",
-                "role": "quality" if agent_key == "quality_intelligence" else "engineer",
+                "role": (
+                    "quality"
+                    if agent_key == "quality_intelligence"
+                    else "supplier"
+                    if agent_key == "supplier_intelligence"
+                    else "owner"
+                    if agent_key == "executive_intelligence"
+                    else "engineer"
+                ),
             },
         ],
     )
@@ -360,6 +381,80 @@ def seed_phase_two_evidence(
                     "name": name,
                 },
             )
+        return scoped, excluded
+
+    if agent_key == "supplier_intelligence":
+        scoped = "Scoped Supplier A"
+        excluded = "Other Supplier B"
+        supplier_a = uuid4()
+        supplier_b = uuid4()
+        connection.execute(
+            tables.suppliers.insert(),
+            [
+                {
+                    "id": supplier_a,
+                    "tenant_id": ids["tenant_a"],
+                    "code": "SUP-A",
+                    "name": scoped,
+                },
+                {
+                    "id": supplier_b,
+                    "tenant_id": ids["tenant_b"],
+                    "code": "SUP-B",
+                    "name": excluded,
+                },
+            ],
+        )
+        connection.execute(
+            tables.events.update()
+            .where(tables.events.c.id == ids["event_a"])
+            .values(
+                entity="supplier_delay",
+                payload={
+                    "supplier_id": str(supplier_a),
+                    "expected_date": "2026-08-10",
+                    "reported_date": "2026-08-15",
+                },
+            )
+        )
+        connection.execute(
+            tables.events.update()
+            .where(tables.events.c.id == ids["event_b"])
+            .values(
+                entity="supplier_delay",
+                payload={
+                    "supplier_id": str(supplier_b),
+                    "expected_date": "2026-08-10",
+                    "reported_date": "2026-08-20",
+                },
+            )
+        )
+        return scoped, excluded
+
+    if agent_key == "executive_intelligence":
+        scoped = "Scoped Portfolio A2"
+        excluded = "Project B"
+        workflow_id = uuid4()
+        connection.execute(
+            tables.workflows.insert(),
+            {
+                "id": workflow_id,
+                "tenant_id": ids["tenant_a"],
+                "code": "npd-a2",
+                "name": "NPD A2",
+            },
+        )
+        connection.execute(
+            tables.projects.insert(),
+            {
+                "id": uuid4(),
+                "tenant_id": ids["tenant_a"],
+                "workflow_id": workflow_id,
+                "code": "PRJ-A2",
+                "name": scoped,
+                "status": "on_hold",
+            },
+        )
         return scoped, excluded
 
     scoped = "Scoped Complaint A"
@@ -402,6 +497,8 @@ def seed_context_layers(
         "knowledge_lite": "engineer",
         "engineering_intelligence": "engineer",
         "quality_intelligence": "quality",
+        "supplier_intelligence": "supplier",
+        "executive_intelligence": "owner",
     }[agent_key]
     member_a = uuid4()
     member_b = uuid4()
@@ -644,6 +741,18 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             assert (
                 connection.execute(
                     text("SELECT count(*) FROM cehub_ai.agent_user_role_projection")
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.execute(
+                    text("SELECT count(*) FROM cehub_ai.agent_supplier_delay_projection")
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.execute(
+                    text("SELECT count(*) FROM cehub_ai.agent_portfolio_projection")
                 ).scalar_one()
                 == 0
             )
@@ -1049,6 +1158,34 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             },
             "quality-intelligence-v1",
             "quality",
+        ),
+        (
+            "supplier_intelligence",
+            "SUPPLIER_DELAY_REPORTED",
+            "supplier_delay_risk",
+            {
+                "title": "Review supplier delay exposure",
+                "description": "The scoped supplier delay warrants review.",
+                "likelihood": 4,
+                "impact": 4,
+                "mitigation_plan": "Confirm recovery with accountable owners.",
+            },
+            "supplier-intelligence-v1",
+            "supplier",
+        ),
+        (
+            "executive_intelligence",
+            "PROJECT_STAGE_CHANGED",
+            "executive_portfolio_brief",
+            {
+                "title": "Review portfolio concentration",
+                "description": "The bounded portfolio summary warrants review.",
+                "likelihood": 3,
+                "impact": 5,
+                "mitigation_plan": "Confirm recovery priorities with Project owners.",
+            },
+            "executive-intelligence-v1",
+            "executive",
         ),
     ],
 )

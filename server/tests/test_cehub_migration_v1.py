@@ -16,6 +16,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.gates import GateService
 from app.migrations.cehub_v1 import (
+    CeHubSourceAdapter,
     MigrationValidationError,
     cehub_psycopg_database_url,
     map_file_classification,
@@ -24,6 +25,7 @@ from app.migrations.cehub_v1 import (
     map_user_role,
     migrate_cehub_v1,
     normalize_project_code,
+    source_project_inventory_fingerprint,
 )
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
@@ -313,6 +315,25 @@ def test_cehub_source_url_drops_only_prisma_libpq_compatibility_parameter() -> N
 
     assert normalized.drivername == "postgresql+psycopg"
     assert normalized.query == {"sslmode": "require"}
+
+
+def test_source_inventory_reads_every_project_in_one_read_only_snapshot(
+    migration_database_url: str,
+) -> None:
+    _create_source_fixture(migration_database_url)
+    source_engine = _source_engine(migration_database_url)
+    try:
+        inventory = CeHubSourceAdapter(
+            source_engine,
+            source_schema=SOURCE_SCHEMA,
+        ).read_project_inventory()
+    finally:
+        source_engine.dispose()
+
+    assert [project["source_id"] for project in inventory] == ["aBnbEdQG", "zGpNH0Xq"]
+    assert [project["project_number"] for project in inventory] == ["S18-01", "C4s"]
+    assert all(isinstance(project["updated_at"], str) for project in inventory)
+    assert len(source_project_inventory_fingerprint(inventory)) == 64
 
 
 def test_write_capable_source_role_is_rejected_before_snapshot(

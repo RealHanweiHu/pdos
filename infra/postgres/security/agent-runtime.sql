@@ -97,6 +97,29 @@ AS $function$
     )
 $function$;
 
+CREATE OR REPLACE FUNCTION cehub_ai.agent_tenant_agent_scope_allows(
+    row_tenant_id uuid,
+    required_agent_key varchar
+) RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog
+AS $function$
+    SELECT EXISTS (
+        SELECT 1
+        FROM cehub_ai.agent_runs AS run
+        WHERE run.id = nullif(current_setting('pdos.agent_run_id', true), '')::uuid
+          AND run.tenant_id = nullif(current_setting('pdos.tenant_id', true), '')::uuid
+          AND run.project_id = nullif(current_setting('pdos.project_id', true), '')::uuid
+          AND run.run_context->>'_lease_token' =
+              nullif(current_setting('pdos.agent_lease_token', true), '')
+          AND run.status = 'running'
+          AND run.tenant_id = row_tenant_id
+          AND run.agent_key = required_agent_key
+    )
+$function$;
+
 CREATE OR REPLACE FUNCTION cehub_ai.agent_invocation_scope_allows(
     row_tenant_id uuid,
     row_project_id uuid,
@@ -489,6 +512,79 @@ LEFT JOIN cehub_quality.capa_actions AS action
 WHERE cehub_ai.agent_scope_allows(ncr.tenant_id, ncr.project_id)
 GROUP BY ncr.id, root_cause.root_cause;
 
+CREATE OR REPLACE VIEW cehub_ai.agent_supplier_delay_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    event.id AS event_row_id,
+    event.tenant_id,
+    event.project_id,
+    project.code AS project_code,
+    supplier.code AS supplier_code,
+    supplier.name AS supplier_name,
+    event.payload->>'expected_date' AS expected_date,
+    event.payload->>'reported_date' AS reported_date,
+    event.timestamp AS observed_at
+FROM cehub_event.events AS event
+JOIN cehub_project.projects AS project
+  ON project.tenant_id = event.tenant_id
+ AND project.id = event.project_id
+JOIN cehub_supplier.suppliers AS supplier
+  ON supplier.tenant_id = event.tenant_id
+ AND supplier.id::text = event.payload->>'supplier_id'
+WHERE cehub_ai.agent_tenant_agent_scope_allows(
+        event.tenant_id,
+        'supplier_intelligence'
+    )
+  AND event.event_type = 'SUPPLIER_DELAY_REPORTED';
+
+CREATE OR REPLACE VIEW cehub_ai.agent_portfolio_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    project.tenant_id,
+    project.id AS project_id,
+    project.code,
+    project.name,
+    project.status,
+    coalesce(stage.code, 'unassigned') AS stage_code,
+    (
+        SELECT count(*) FROM cehub_project.issues AS issue
+        WHERE issue.tenant_id = project.tenant_id
+          AND issue.project_id = project.id
+          AND issue.status <> 'closed'
+    ) AS open_issue_count,
+    (
+        SELECT count(*) FROM cehub_project.risks AS risk
+        WHERE risk.tenant_id = project.tenant_id
+          AND risk.project_id = project.id
+          AND risk.status <> 'closed'
+    ) AS open_risk_count,
+    (
+        SELECT count(*) FROM cehub_project.tasks AS task
+        WHERE task.tenant_id = project.tenant_id
+          AND task.project_id = project.id
+          AND task.due_date < CURRENT_DATE
+          AND task.status NOT IN ('done', 'skipped')
+    ) AS overdue_task_count,
+    (
+        SELECT count(*) FROM cehub_project.gates AS gate
+        WHERE gate.tenant_id = project.tenant_id
+          AND gate.project_id = project.id
+          AND gate.status IN ('preparing', 'reviewing')
+    ) AS pending_gate_count,
+    project.updated_at AS observed_at
+FROM cehub_project.projects AS project
+LEFT JOIN cehub_project.stages AS stage
+  ON stage.tenant_id = project.tenant_id
+ AND stage.workflow_id = project.workflow_id
+ AND stage.id = project.current_stage_id
+WHERE cehub_ai.agent_tenant_agent_scope_allows(
+        project.tenant_id,
+        'executive_intelligence'
+    )
+  AND project.status IN ('approved', 'active', 'on_hold');
+
 CREATE OR REPLACE VIEW cehub_ai.agent_model_settings_projection
 WITH (security_barrier = true)
 AS
@@ -742,6 +838,10 @@ BEGIN
                AND new_finding_type IN (
                    'quality_cluster_alert', 'capa_suggestion'
                ))
+           OR (scoped_run.agent_key = 'supplier_intelligence'
+               AND new_finding_type = 'supplier_delay_risk')
+           OR (scoped_run.agent_key = 'executive_intelligence'
+               AND new_finding_type = 'executive_portfolio_brief')
        )
        OR nullif(btrim(new_origin_key), '') IS NULL
        OR nullif(btrim(new_title), '') IS NULL
@@ -926,6 +1026,8 @@ GRANT SELECT ON
     cehub_ai.agent_memory_projection,
     cehub_ai.agent_engineering_evidence_projection,
     cehub_ai.agent_quality_evidence_projection,
+    cehub_ai.agent_supplier_delay_projection,
+    cehub_ai.agent_portfolio_projection,
     cehub_ai.agent_model_settings_projection,
     cehub_ai.agent_model_usage_projection,
     cehub_ai.agent_run_usage_projection,
@@ -934,6 +1036,9 @@ GRANT SELECT ON
 GRANT INSERT ON cehub_ai.model_invocations TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.agent_scope_allows(uuid, uuid) TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.agent_tenant_scope_allows(uuid) TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_tenant_agent_scope_allows(
+    uuid, varchar
+) TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.agent_invocation_scope_allows(
     uuid, uuid, uuid, varchar
 ) TO pdos_agent;
@@ -955,6 +1060,9 @@ GRANT EXECUTE ON FUNCTION cehub_ai.create_agent_finding(
 
 REVOKE ALL ON FUNCTION cehub_ai.agent_scope_allows(uuid, uuid) FROM PUBLIC;
 REVOKE ALL ON FUNCTION cehub_ai.agent_tenant_scope_allows(uuid) FROM PUBLIC;
+REVOKE ALL ON FUNCTION cehub_ai.agent_tenant_agent_scope_allows(
+    uuid, varchar
+) FROM PUBLIC;
 REVOKE ALL ON FUNCTION cehub_ai.agent_invocation_scope_allows(
     uuid, uuid, uuid, varchar
 ) FROM PUBLIC;

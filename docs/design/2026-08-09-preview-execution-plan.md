@@ -147,9 +147,9 @@ ai-native-R&D-platform/
 | # | 工作项 | 说明 |
 |---|---|---|
 | [ ] S5-1 | 钉钉连接器 | 免登/审批/群通知/交互卡片——复用同企业凭据模式与 CEHub 协议实现经验；新建应用独立回调 |
-| [ ] S5-2 | ERP Handoff | PVT 冻结 EBOM→ERP 交接执行体 + outbox/重放/对账；ERP 侧接口不就绪则保持人工流程降级（不阻塞切换） |
-| [ ] S5-3 | CRM 需求入口 | POST /events 外部通道 + Requirement 自动建草稿（人审后成立）；Supplier/Cost/Resource 实体收尾（26 个业务/AI 实体齐；Event 基础设施实体已在 Sprint 0） |
-| [ ] S5-4 | Phase 3 双 Agent | Supplier Intelligence（SUPPLIER_DELAY_REPORTED 聚合）、Executive Intelligence（跨项目 Brief） |
+| [x] S5-2 | ERP Handoff | PVT 冻结 EBOM→ERP 交接执行体 + outbox/重放/对账；ERP 侧接口不就绪则保持人工流程降级（不阻塞切换） |
+| [x] S5-3 | CRM 需求入口 | POST /events 外部通道 + Requirement 自动建草稿（人审后成立）；Supplier/Cost/Resource 实体收尾（26 个业务/AI 实体齐；Event 基础设施实体已在 Sprint 0） |
+| [x] S5-4 | Phase 3 双 Agent | Supplier Intelligence（SUPPLIER_DELAY_REPORTED 聚合）、Executive Intelligence（跨项目 Brief） |
 
 **验收**：钉钉免登可用、通知可达；一次 EBOM 交接走完 outbox+对账（或人工降级路径演练）；26 个业务/AI 实体全部落库，Event 基础设施实体持续可用。
 
@@ -159,6 +159,8 @@ ai-native-R&D-platform/
 2. Sprint 3 末迁移工具就绪，试点项目全量迁移演练；
 3. Sprint 5 末：选低峰全量迁移 → `pdos.beepump.net` 转正（或接管主域）→ 老 CEHub 转只读归档（保留审计查询期，Manus 切换时同样手法）；
 4. CEHub 仓库侧独立事项：`codex/cehub-v3-2` M0 止血落库照做（现役系统健康问题）；grandfather 幂等失败需查证是否影响现役 main。
+
+切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定，必须包含 archived 历史项目；当前仍是本地发布候选，未经生产授权、Data Owner 抽查与 Sprint 5 Exit 人工确认不得标记完成。
 
 ## 10. 排期总览与风险
 

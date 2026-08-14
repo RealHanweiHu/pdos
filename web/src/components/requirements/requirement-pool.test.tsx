@@ -192,6 +192,53 @@ describe("RequirementPool", () => {
     );
   });
 
+  it("requires a separate human action to establish a CRM draft", async () => {
+    const user = userEvent.setup();
+    const crmDraft = {
+      ...createdRequirement,
+      code: "CRM-REQ-1001",
+      source: "crm",
+    };
+    const established = { ...crmDraft, status: "proposed" as const };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/customers") return jsonResponse({ items: [customer] });
+      if (
+        path === "/api/requirements/requirement-1/review-crm-intake" &&
+        init?.method === "POST"
+      ) {
+        return jsonResponse(established);
+      }
+      if (path === "/api/requirements") return jsonResponse({ items: [crmDraft] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<RequirementPool />);
+
+    await screen.findByText("CRM-REQ-1001");
+    await user.click(screen.getByRole("button", { name: "打开需求 CRM-REQ-1001" }));
+    expect(
+      screen.getByText("CRM 草稿（状态仅可通过下方独立人审动作更新）"),
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText("状态")).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText("人审理由"), "产品团队确认范围可进入评估。 ");
+    await user.click(screen.getByRole("button", { name: "成立需求" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("CRM 需求已成立");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/requirements/requirement-1/review-crm-intake",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          confirmation: "REVIEW_CONFIRMED",
+          decision: "establish",
+          rationale: "产品团队确认范围可进入评估。",
+        }),
+      }),
+    );
+  });
+
   it("preserves an inactive Customer and converted status during a title edit", async () => {
     const user = userEvent.setup();
     const inactiveCustomer = { ...customer, status: "inactive" as const };

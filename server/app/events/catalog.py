@@ -245,6 +245,22 @@ _DEFINITIONS = (
         ),
     ),
     EventDefinition(
+        event_type="CRM_REQUIREMENT_RECEIVED",
+        version=1,
+        entity="requirement_intake",
+        producer="crm_connector",
+        consumers=("intake_projection",),
+        payload_schema=_payload_schema(
+            external_requirement_id="string",
+            code="string",
+            title="string",
+            description="string",
+            priority="string",
+            acceptance_criteria="array",
+            customer_code="string",
+        ),
+    ),
+    EventDefinition(
         event_type="COMPLAINT_CREATED",
         version=1,
         entity="complaint",

@@ -6,7 +6,7 @@ vi.mock("next/headers", () => ({
   cookies: async () => ({ get: getCookie }),
 }));
 
-import { GET } from "./route";
+import { GET, POST } from "./route";
 import { GET as GET_CATALOG } from "./catalog/route";
 
 describe("Event debug BFF", () => {
@@ -48,5 +48,63 @@ describe("Event debug BFF", () => {
     getCookie.mockReturnValue(undefined);
     expect((await GET(new Request("http://localhost/api/events"))).status).toBe(401);
     expect((await GET_CATALOG()).status).toBe(401);
+  });
+
+  it("forwards authenticated CRM event ingress without exposing the internal API", async () => {
+    getCookie.mockReturnValue(undefined);
+    fetchMock.mockResolvedValueOnce(
+      Response.json({ created: true, requirement_id: "requirement-1" }, { status: 201 }),
+    );
+    const payload = {
+      project_id: "project-1",
+      event_id: "crm-event-1",
+      event_type: "CRM_REQUIREMENT_RECEIVED",
+      entity_id: "entity-1",
+      payload: { code: "CRM-1" },
+      occurred_at: "2026-08-13T08:00:00Z",
+    };
+    const response = await POST(
+      new Request("https://pdos.example/api/events", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer signed.crm.jwt",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }),
+    );
+    expect(response.status).toBe(201);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe("http://127.0.0.1:8000/api/events");
+    expect(fetchMock.mock.calls[0]?.[1]).toEqual(
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: expect.objectContaining({ Authorization: "Bearer signed.crm.jwt" }),
+      }),
+    );
+  });
+
+  it("rejects malformed CRM ingress auth and bodies before upstream IO", async () => {
+    getCookie.mockReturnValue(undefined);
+    const noAuth = await POST(
+      new Request("https://pdos.example/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      }),
+    );
+    expect(noAuth.status).toBe(401);
+    const badBody = await POST(
+      new Request("https://pdos.example/api/events", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer signed.crm.jwt",
+          "Content-Type": "text/plain",
+        },
+        body: "{}",
+      }),
+    );
+    expect(badBody.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

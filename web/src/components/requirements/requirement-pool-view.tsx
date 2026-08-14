@@ -14,6 +14,7 @@ import {
   type RequirementFormValues,
   type RequirementSubmissionResult,
 } from "./requirement-form";
+import { CrmIntakeReview, type CrmReviewResult } from "./crm-intake-review";
 import { RequirementList } from "./requirement-list";
 import type { CustomerSummary, Requirement } from "./requirement-types";
 
@@ -33,6 +34,7 @@ export function RequirementPoolView({
   onBeginConversion,
   onLogout,
   onNew,
+  onReviewCrm,
   onSelect,
   onUpdate,
   requirements,
@@ -57,6 +59,11 @@ export function RequirementPoolView({
   onBeginConversion: (requirement: Requirement) => void;
   onLogout: () => void;
   onNew: () => void;
+  onReviewCrm: (
+    requirement: Requirement,
+    decision: "establish" | "reject",
+    rationale: string,
+  ) => Promise<CrmReviewResult>;
   onSelect: (requirement: Requirement) => void;
   onUpdate: (
     requirement: Requirement,
@@ -134,6 +141,14 @@ export function RequirementPoolView({
               onSubmit={(values) => onUpdate(editingRequirement, values)}
               requirement={editingRequirement}
             />
+            {editingRequirement.source === "crm" && editingRequirement.status === "draft" ? (
+              <CrmIntakeReview
+                busy={saving}
+                onReview={(decision, rationale) =>
+                  onReviewCrm(editingRequirement, decision, rationale)
+                }
+              />
+            ) : null}
             {editingRequirement.status === "approved" ? (
               <div className="mt-4 border-t pt-4">
                 <p className="text-xs text-muted-foreground">批准后的需求可执行一次正式转化。</p>

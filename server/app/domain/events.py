@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4, uuid5
 
 from sqlalchemy import Engine, select
 from sqlalchemy.engine import RowMapping
@@ -60,6 +60,15 @@ class EventPage:
 class EventIngestResult:
     record: EventRecord
     created: bool
+    requirement_id: UUID | None = None
+
+
+class CrmCustomerNotFoundError(LookupError):
+    """Raised when a CRM customer code is not an active tenant customer."""
+
+
+class CrmRequirementConflictError(ValueError):
+    """Raised when a CRM external identity or Requirement code is already bound."""
 
 
 EXTERNAL_EVENT_TYPES = frozenset(
@@ -67,6 +76,7 @@ EXTERNAL_EVENT_TYPES = frozenset(
         "TEST_FAILED",
         "SUPPLIER_DELAY_REPORTED",
         "COMPLAINT_CREATED",
+        "CRM_REQUIREMENT_RECEIVED",
     }
 )
 
@@ -165,6 +175,9 @@ class ExternalEventService:
             "payload": payload,
             "timestamp": occurred_at,
         }
+        crm_payload = (
+            self._crm_payload(payload) if event_type == "CRM_REQUIREMENT_RECEIVED" else None
+        )
         try:
             with self._engine.begin() as connection:
                 existing = (
@@ -178,8 +191,14 @@ class ExternalEventService:
                     .one_or_none()
                 )
                 if existing is not None:
-                    return self._replay(existing, expected=expected)
-                EventAuditWriter(
+                    return self._replay(connection, existing, expected=expected)
+                if event_type == "SUPPLIER_DELAY_REPORTED":
+                    self._validate_supplier_delay(
+                        connection,
+                        tenant_id=tenant_id,
+                        payload=payload,
+                    )
+                written = EventAuditWriter(
                     connection,
                     tenant_id=tenant_id,
                     actor_user_id=actor_user_id,
@@ -205,6 +224,18 @@ class ExternalEventService:
                         context={"ingress": "authenticated_api"},
                     ),
                 )
+                requirement_id = None
+                if crm_payload is not None:
+                    requirement_id = self._create_crm_requirement(
+                        connection,
+                        tenant_id=tenant_id,
+                        actor_user_id=actor_user_id,
+                        project_id=project_id,
+                        source_event_row_id=written.event_row_id,
+                        event_id=event_id,
+                        payload=crm_payload,
+                        occurred_at=occurred_at,
+                    )
                 created_row = (
                     connection.execute(
                         select(tables.events).where(
@@ -215,8 +246,12 @@ class ExternalEventService:
                     .mappings()
                     .one()
                 )
-                return EventIngestResult(record=_record(created_row), created=True)
-        except IntegrityError:
+                return EventIngestResult(
+                    record=_record(created_row),
+                    created=True,
+                    requirement_id=requirement_id,
+                )
+        except IntegrityError as error:
             with self._engine.connect() as connection:
                 concurrent_row = (
                     connection.execute(
@@ -229,16 +264,182 @@ class ExternalEventService:
                     .one_or_none()
                 )
             if concurrent_row is None:
+                if event_type == "CRM_REQUIREMENT_RECEIVED":
+                    raise CrmRequirementConflictError from error
                 raise
-            return self._replay(concurrent_row, expected=expected)
+            with self._engine.connect() as connection:
+                return self._replay(connection, concurrent_row, expected=expected)
 
     @staticmethod
-    def _replay(row: RowMapping, *, expected: dict[str, Any]) -> EventIngestResult:
+    def _replay(connection: Any, row: RowMapping, *, expected: dict[str, Any]) -> EventIngestResult:
         comparable = {key: row[key] for key in expected}
         comparable["payload"] = dict(comparable["payload"])
         if comparable != expected:
             raise EventIdempotencyConflictError(str(expected["event_id"]))
-        return EventIngestResult(record=_record(row), created=False)
+        requirement_id = connection.execute(
+            select(tables.crm_requirement_intakes.c.requirement_id).where(
+                tables.crm_requirement_intakes.c.tenant_id == row["tenant_id"],
+                tables.crm_requirement_intakes.c.source_event_row_id == row["id"],
+            )
+        ).scalar_one_or_none()
+        return EventIngestResult(record=_record(row), created=False, requirement_id=requirement_id)
+
+    @staticmethod
+    def _crm_payload(payload: dict[str, Any]) -> dict[str, Any]:
+        criteria = payload.get("acceptance_criteria")
+        required_text = {
+            "external_requirement_id": 128,
+            "code": 64,
+            "title": 512,
+        }
+        for key, limit in required_text.items():
+            value = payload.get(key)
+            if not isinstance(value, str) or not value.strip() or len(value.strip()) > limit:
+                raise InvalidEventPayloadError("CRM_REQUIREMENT_RECEIVED")
+        description = payload.get("description")
+        customer_code = payload.get("customer_code")
+        priority = payload.get("priority")
+        if (
+            not isinstance(description, str)
+            or len(description) > 20_000
+            or not isinstance(customer_code, str)
+            or len(customer_code.strip()) > 64
+            or priority not in {"low", "medium", "high", "critical"}
+            or not isinstance(criteria, list)
+            or len(criteria) > 100
+            or any(
+                not isinstance(value, str) or not value.strip() or len(value.strip()) > 512
+                for value in criteria
+            )
+        ):
+            raise InvalidEventPayloadError("CRM_REQUIREMENT_RECEIVED")
+        return {
+            "external_requirement_id": payload["external_requirement_id"].strip(),
+            "code": payload["code"].strip(),
+            "title": payload["title"].strip(),
+            "description": description.strip() or None,
+            "priority": priority,
+            "acceptance_criteria": [value.strip() for value in criteria],
+            "customer_code": customer_code.strip(),
+        }
+
+    @staticmethod
+    def _validate_supplier_delay(
+        connection: Any,
+        *,
+        tenant_id: UUID,
+        payload: dict[str, Any],
+    ) -> None:
+        try:
+            supplier_id = UUID(str(payload["supplier_id"]))
+            expected_date = date.fromisoformat(str(payload["expected_date"]))
+            reported_date = date.fromisoformat(str(payload["reported_date"]))
+        except (KeyError, TypeError, ValueError) as error:
+            raise InvalidEventPayloadError("SUPPLIER_DELAY_REPORTED") from error
+        if (
+            str(payload["supplier_id"]) != str(supplier_id)
+            or str(payload["expected_date"]) != expected_date.isoformat()
+            or str(payload["reported_date"]) != reported_date.isoformat()
+            or reported_date <= expected_date
+        ):
+            raise InvalidEventPayloadError("SUPPLIER_DELAY_REPORTED")
+        supplier_exists = connection.execute(
+            select(tables.suppliers.c.id).where(
+                tables.suppliers.c.tenant_id == tenant_id,
+                tables.suppliers.c.id == supplier_id,
+                tables.suppliers.c.status == "active",
+            )
+        ).scalar_one_or_none()
+        if supplier_exists is None:
+            raise InvalidEventPayloadError("SUPPLIER_DELAY_REPORTED")
+
+    @staticmethod
+    def _create_crm_requirement(
+        connection: Any,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        project_id: UUID,
+        source_event_row_id: int,
+        event_id: str,
+        payload: dict[str, Any],
+        occurred_at: datetime,
+    ) -> UUID:
+        customer_id = None
+        if payload["customer_code"]:
+            customer_id = connection.execute(
+                select(tables.customers.c.id).where(
+                    tables.customers.c.tenant_id == tenant_id,
+                    tables.customers.c.code == payload["customer_code"],
+                    tables.customers.c.status == "active",
+                )
+            ).scalar_one_or_none()
+            if customer_id is None:
+                raise CrmCustomerNotFoundError
+        requirement_id = uuid5(tenant_id, f"crm-requirement:{event_id}")
+        connection.execute(
+            tables.requirements.insert(),
+            {
+                "id": requirement_id,
+                "tenant_id": tenant_id,
+                "customer_id": customer_id,
+                "created_by_user_id": actor_user_id,
+                "code": payload["code"],
+                "title": payload["title"],
+                "description": payload["description"],
+                "source": "crm",
+                "status": "draft",
+                "priority": payload["priority"],
+                "acceptance_criteria": payload["acceptance_criteria"],
+                "created_at": occurred_at,
+                "updated_at": occurred_at,
+            },
+        )
+        connection.execute(
+            tables.crm_requirement_intakes.insert(),
+            {
+                "id": uuid4(),
+                "tenant_id": tenant_id,
+                "project_id": project_id,
+                "requirement_id": requirement_id,
+                "source_event_row_id": source_event_row_id,
+                "external_requirement_id": payload["external_requirement_id"],
+                "created_at": occurred_at,
+                "updated_at": occurred_at,
+            },
+        )
+        EventAuditWriter(
+            connection,
+            tenant_id=tenant_id,
+            actor_user_id=actor_user_id,
+            project_id=project_id,
+        ).record(
+            EventDraft(
+                event_id=f"requirement:{requirement_id}:created",
+                event_type="REQUIREMENT_CREATED",
+                source="requirement_service",
+                entity_id=requirement_id,
+                payload={
+                    "requirement_code": payload["code"],
+                    "status": "draft",
+                    "priority": payload["priority"],
+                },
+                occurred_at=occurred_at,
+            ),
+            AuditDraft(
+                action="requirement.create_from_crm",
+                after_snapshot={
+                    "code": payload["code"],
+                    "title": payload["title"],
+                    "source": "crm",
+                    "status": "draft",
+                    "priority": payload["priority"],
+                    "customer_id": str(customer_id) if customer_id else None,
+                },
+                context={"source_event_row_id": source_event_row_id},
+            ),
+        )
+        return requirement_id
 
 
 __all__ = [
@@ -247,6 +448,8 @@ __all__ = [
     "EventProjectNotFoundError",
     "EventQueryService",
     "EventRecord",
+    "CrmCustomerNotFoundError",
+    "CrmRequirementConflictError",
     "ExternalEventService",
     "ExternalEventTypeDeniedError",
     "InvalidEventPayloadError",

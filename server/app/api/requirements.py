@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Self
+from typing import Annotated, Literal, Self
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -16,6 +16,9 @@ from app.auth.roles import Action, is_allowed
 from app.db.engine import get_engine
 from app.db.schema import tables
 from app.domain.requirements import (
+    CrmRequirementAlreadyReviewedError,
+    CrmRequirementIntakeNotFoundError,
+    CrmRequirementReviewRequiredError,
     CustomerNotFoundError,
     CustomerRecord,
     RequirementCodeConflictError,
@@ -151,6 +154,18 @@ class RequirementListResponse(BaseModel):
     items: list[RequirementResponse]
 
 
+class CrmIntakeReviewRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    confirmation: Literal["REVIEW_CONFIRMED"]
+    decision: Literal["establish", "reject"]
+    rationale: str = Field(min_length=1, max_length=20_000)
+
+    @field_validator("rationale", mode="before")
+    @classmethod
+    def normalize_rationale(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+
 def customer_response(customer: CustomerRecord | None) -> CustomerSummaryResponse | None:
     if customer is None:
         return None
@@ -251,6 +266,43 @@ def create_requirement(
     return requirement_response(record)
 
 
+@router.post(
+    "/api/requirements/{requirement_id}/review-crm-intake",
+    response_model=RequirementResponse,
+)
+def review_crm_intake(
+    requirement_id: UUID,
+    payload: CrmIntakeReviewRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> RequirementResponse:
+    require_requirement_action(context, Action.REQUIREMENT_EDIT)
+    try:
+        record = RequirementService(engine).review_crm_intake(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            requirement_id=requirement_id,
+            decision=payload.decision,
+            rationale=payload.rationale,
+        )
+    except CrmRequirementIntakeNotFoundError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "CRM_INTAKE_NOT_FOUND", "message": "CRM intake was not found"},
+        ) from error
+    except CrmRequirementAlreadyReviewedError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CRM_REQUIREMENT_ALREADY_REVIEWED",
+                "message": "CRM intake was already reviewed",
+            },
+        ) from error
+    no_store(response)
+    return requirement_response(record)
+
+
 @router.get("/api/requirements", response_model=RequirementListResponse)
 def list_requirements(
     response: Response,
@@ -317,6 +369,14 @@ def update_requirement(
             detail={
                 "code": "REQUIREMENT_CODE_CONFLICT",
                 "message": "Requirement code already exists",
+            },
+        ) from error
+    except CrmRequirementReviewRequiredError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CRM_REQUIREMENT_REVIEW_REQUIRED",
+                "message": "CRM drafts require the explicit review action",
             },
         ) from error
     no_store(response)

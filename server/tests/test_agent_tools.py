@@ -167,6 +167,13 @@ def test_tool_definitions_freeze_use_do_not_use_negative_example_and_boundary() 
     assert [
         definition.name for definition in tool_definitions_for_agent(AgentKey.QUALITY_INTELLIGENCE)
     ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_quality_evidence"]
+    assert [
+        definition.name for definition in tool_definitions_for_agent(AgentKey.SUPPLIER_INTELLIGENCE)
+    ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_supplier_delay_evidence"]
+    assert [
+        definition.name
+        for definition in tool_definitions_for_agent(AgentKey.EXECUTIVE_INTELLIGENCE)
+    ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_portfolio_brief"]
     assert tool_definitions_for_agent(AgentKey.PROJECT_INTELLIGENCE) is TOOL_DEFINITIONS
 
 
@@ -695,5 +702,187 @@ def test_quality_evidence_excludes_customer_and_document_identifiers(
         assert "customer_id" not in str(page.items)
         with pytest.raises(ToolScopeViolationError):
             tools.get_quality_evidence(project_id=uuid4())
+    finally:
+        engine.dispose()
+
+
+def test_phase_three_tools_are_tenant_aggregated_bounded_and_identity_free(
+    agent_tools_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(agent_tools_database_url))
+    now = datetime.now(UTC)
+    try:
+        with engine.begin() as connection:
+            tenant_id, trigger_project_id = seed_project(connection, slug="phase-three")
+            workflow_id = uuid4()
+            portfolio_project_id = uuid4()
+            connection.execute(
+                tables.workflows.insert(),
+                {
+                    "id": workflow_id,
+                    "tenant_id": tenant_id,
+                    "code": "phase-three-portfolio",
+                    "name": "Portfolio",
+                },
+            )
+            connection.execute(
+                tables.projects.insert(),
+                {
+                    "id": portfolio_project_id,
+                    "tenant_id": tenant_id,
+                    "workflow_id": workflow_id,
+                    "code": "PRJ-PORTFOLIO",
+                    "name": "Same Tenant Portfolio Project",
+                    "status": "on_hold",
+                },
+            )
+            connection.execute(
+                tables.issues.insert(),
+                [
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": portfolio_project_id,
+                        "title": f"Open issue {index}",
+                    }
+                    for index in range(2)
+                ],
+            )
+            connection.execute(
+                tables.risks.insert(),
+                [
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": portfolio_project_id,
+                        "title": f"Open risk {index}",
+                    }
+                    for index in range(3)
+                ],
+            )
+            connection.execute(
+                tables.tasks.insert(),
+                [
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": portfolio_project_id,
+                        "title": f"Overdue task {index}",
+                        "due_date": (now - timedelta(days=1)).date(),
+                    }
+                    for index in range(4)
+                ],
+            )
+            supplier_id = uuid4()
+            connection.execute(
+                tables.suppliers.insert(),
+                {
+                    "id": supplier_id,
+                    "tenant_id": tenant_id,
+                    "code": "SUP-1",
+                    "name": "Approved Supplier Name",
+                    "description": "PRIVATE SUPPLIER CONTACT",
+                },
+            )
+            connection.execute(
+                tables.events.insert(),
+                {
+                    "tenant_id": tenant_id,
+                    "project_id": portfolio_project_id,
+                    "event_id": f"supplier-delay:{uuid4()}",
+                    "event_type": "SUPPLIER_DELAY_REPORTED",
+                    "schema_version": 1,
+                    "source": "supplier_service",
+                    "entity": "supplier_delay",
+                    "entity_id": uuid4(),
+                    "payload": {
+                        "supplier_id": str(supplier_id),
+                        "expected_date": "2026-08-10",
+                        "reported_date": "2026-08-16",
+                        "private_contact": "must not cross",
+                    },
+                    "timestamp": now,
+                },
+            )
+            other_tenant_id, other_project_id = seed_project(connection, slug="phase-three-other")
+            other_supplier_id = uuid4()
+            connection.execute(
+                tables.suppliers.insert(),
+                {
+                    "id": other_supplier_id,
+                    "tenant_id": other_tenant_id,
+                    "code": "OTHER-SUP",
+                    "name": "Other Tenant Supplier",
+                },
+            )
+            connection.execute(
+                tables.events.insert(),
+                {
+                    "tenant_id": other_tenant_id,
+                    "project_id": other_project_id,
+                    "event_id": f"supplier-delay:{uuid4()}",
+                    "event_type": "SUPPLIER_DELAY_REPORTED",
+                    "schema_version": 1,
+                    "source": "supplier_service",
+                    "entity": "supplier_delay",
+                    "entity_id": uuid4(),
+                    "payload": {
+                        "supplier_id": str(other_supplier_id),
+                        "expected_date": "2026-08-10",
+                        "reported_date": "2026-09-01",
+                    },
+                    "timestamp": now,
+                },
+            )
+
+        supplier_tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(
+                tenant_id=tenant_id,
+                project_id=trigger_project_id,
+                agent_key=AgentKey.SUPPLIER_INTELLIGENCE,
+                event_type="SUPPLIER_DELAY_REPORTED",
+            ),
+        )
+        executive_tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(
+                tenant_id=tenant_id,
+                project_id=trigger_project_id,
+                agent_key=AgentKey.EXECUTIVE_INTELLIGENCE,
+                event_type="PROJECT_STAGE_CHANGED",
+            ),
+        )
+
+        delays = supplier_tools.get_supplier_delay_evidence(
+            project_id=trigger_project_id,
+            limit=20,
+        )
+        portfolio = executive_tools.get_portfolio_brief(
+            project_id=trigger_project_id,
+            limit=20,
+        )
+
+        assert delays.shown_count == delays.total_count == 1
+        assert "PRJ-PORTFOLIO" in str(delays.items)
+        assert "Approved Supplier Name" in str(delays.items)
+        assert "private_contact" not in str(delays.items)
+        assert "PRIVATE SUPPLIER CONTACT" not in str(delays.items)
+        assert "Other Tenant Supplier" not in str(delays.items)
+        assert {item["label"] for item in portfolio.items} >= {
+            "PRJ-PHASE-THREE · Phase-Three",
+            "PRJ-PORTFOLIO · Same Tenant Portfolio Project",
+        }
+        portfolio_item = next(
+            item for item in portfolio.items if item["label"].startswith("PRJ-PORTFOLIO ·")
+        )
+        assert "open_issues=2" in portfolio_item["excerpt"]
+        assert "open_risks=3" in portfolio_item["excerpt"]
+        assert "overdue_tasks=4" in portfolio_item["excerpt"]
+        assert "Other Tenant" not in str(portfolio.items)
+        with pytest.raises(ToolScopeViolationError):
+            supplier_tools.get_supplier_delay_evidence(project_id=portfolio_project_id)
+        with pytest.raises(ToolScopeViolationError):
+            executive_tools.get_portfolio_brief(project_id=portfolio_project_id)
     finally:
         engine.dispose()

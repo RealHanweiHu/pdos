@@ -16,6 +16,8 @@ from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
 from app.db.engine import get_engine
 from app.domain.events import (
+    CrmCustomerNotFoundError,
+    CrmRequirementConflictError,
     EventIdempotencyConflictError,
     EventProjectNotFoundError,
     EventQueryService,
@@ -105,6 +107,7 @@ class EventIngestResponse(BaseModel):
 
     created: bool
     event: EventResponse
+    requirement_id: UUID | None = None
 
 
 def require_event_debug(context: AuthContext) -> None:
@@ -197,9 +200,29 @@ def ingest_event(
                 "message": "event_id was already used with a different request",
             },
         ) from error
+    except CrmCustomerNotFoundError as error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail={
+                "code": "CRM_CUSTOMER_NOT_FOUND",
+                "message": "CRM customer code does not identify an active tenant customer",
+            },
+        ) from error
+    except CrmRequirementConflictError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CRM_REQUIREMENT_CONFLICT",
+                "message": "CRM requirement identity conflicts with an existing record",
+            },
+        ) from error
     response.status_code = status.HTTP_201_CREATED if result.created else status.HTTP_200_OK
     no_store(response)
-    return EventIngestResponse(created=result.created, event=event_response(result.record))
+    return EventIngestResponse(
+        created=result.created,
+        event=event_response(result.record),
+        requirement_id=result.requirement_id,
+    )
 
 
 @router.get("/catalog", response_model=EventCatalogResponse)

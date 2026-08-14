@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**S5-1 真实钉钉应用 Exit Gate。** 本地实现、隔离测试与真实浏览器验收已完成；等待人创建/配置独立应用并单独授权真实应用 smoke，未获确认前不进入 S5-2。
+> 唯一当前指针：**Sprint 5 Exit 候选，等待人确认延期例外或补验 S5-1。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1256,6 +1256,61 @@
 - [ ] 真实 card acknowledge 成功且重复回调只处理一次
 - [ ] 人工确认 S5-1 Exit Gate；随后才勾选 canonical S5-1 并移动指针到 S5-2
 
+**生产试点例外（2026-08-13）**
+
+- release `a34c7eb06aaba036bef8c257c30a841c1ec6be0d` 已在 ECS 完成 migration `0027`、Agent 零写边界重施与五服务健康验证；实际 `PDOS_DINGTALK_DELIVERY_ENABLED=false`，容器重启计数为 0。
+- 租户 `beepump` 的 active binding 与项目 `S18-01` 群已通过 Owner/Admin 受审计 API 配置；readiness 已验证 HTTPS、服务器凭据、schema、binding scope、回调密码学、项目群和零 unresolved outbox。
+- 人明确要求“如果必要性不大，先跳过这个，默认已经完成，先完成其他的”。按执行纪律记录为延期/风险接受，不把 0/2 linked users、真实 password-free login、群通知、审批与 card smoke 伪记为 PASS；S5-1 canonical/Exit Gate 保持未通过，Stage C/外发仍需单独授权。
+- 为避免该延期阻塞独立工作，人批准继续 S5-2；不得据此推断生产 ERP/CRM/DingTalk 外发、Stage C 或 Sprint 5 Exit Gate 授权。
+
+## 当前工作项：S5-2 ERP Handoff（2026-08-13 启动）
+
+- [x] 契约冻结：`docs/design/2026-08-13-s5-2-erp-handoff-contract.md`
+- [x] SoR 边界冻结：PDOS 只交付冻结 EBOM/effectivity；Material Master、MBOM、Routing、Inventory、Production Version 仍由 ERP 持有
+- [x] 外部前提冻结：ERP API 未确认可用，默认采用人工交付降级；不得自行向生产 ERP 发请求
+- [x] RED：outbox 幂等、人工导出、对账、失败重放、权限与租户隔离合同测试
+- [x] GREEN：migration 0028、交付服务/API；API 模式未配置时 fail closed，默认 manual 零外部调用
+- [x] VERIFY：manual 全链路、metadata drift、迁移单 head、项目级门禁；362 项服务端全量测试通过
+- [x] REPORT：`docs/reports/2026-08-13-s5-2-erp-handoff-acceptance.md`
+
+## 当前工作项：S5-3 CRM 需求入口 + 26 实体收尾（2026-08-13 启动）
+
+- [x] 冻结 CRM 外部事件→Requirement 草稿→人工成立合同
+- [x] 对照规格实体目录与当前 schema，补齐 Supplier / Cost / Resource 缺口
+- [x] RED：幂等、来源追踪、人审硬闸、tenant/project 边界与 26 实体合同
+- [x] GREEN：migration 0029、domain/API/event/audit、公网 POST BFF 与需求池独立人审入口
+- [x] VERIFY：服务端 368 tests、Web 125 tests、ruff/format/mypy/typecheck/lint 全绿；报告见 `docs/reports/2026-08-13-s5-3-crm-entities-acceptance.md`
+
+## 当前工作项：S5-4 Phase 3 双 Agent（2026-08-13 启动）
+
+- [x] 冻结 Supplier Intelligence 与 Executive Intelligence 的事件路由、Finding 类型、证据和权限合同
+- [x] RED：prompt 前缀、静态路由、确定性 preflight、跨租户/跨项目与 golden-case
+- [x] GREEN：两份版本化 prompt、runtime route/preflight、投影工具与 migration 0030
+- [x] VERIFY：受限 `pdos_agent` 端到端、全量门禁与 Sprint 5 Exit 候选报告；见 `docs/reports/2026-08-13-s5-4-phase-three-agents-acceptance.md`
+
+## 当前工作项：Sprint 5 全量切换候选（2026-08-13，本地资产完成，生产未执行）
+
+- [x] 冻结全量定义：CEHub 全部 Project（含 archived 历史项目），不以当前 4 个未归档项目代替全库盘点
+- [x] 新增 SELECT-only `capture→Data Owner→verify` 两阶段清单指纹门禁，源/目标端点与只读角色继续 fail-close
+- [x] 冻结全量 dry-run→apply→幂等重放、主入口声明、CEHub 写冻结/只读归档、30 分钟观察与前向回滚契约
+- [x] 补齐 migration 0029 有数据时有损 downgrade guard；成功迁移不提供自动删除或 schema downgrade
+- [x] 明确 S5-1 延期例外在切换期间保持 `delivery=false`，不隐式放开外发或伪记 PASS
+- [ ] 获得生产只读盘点授权并在 ECS 用待审 release 捕获完整 CEHub inventory
+- [ ] Data Owner 批准 inventory fingerprint、全部项目 ID、release/tenant/actor/低峰窗口
+- [ ] 获得部署与生产 apply 的逐次授权，完成全量 dry-run、0028～0030 部署、apply、幂等重放与抽查
+- [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
+- [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
+
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前只完成本地代码/文档准备，不构成任何生产授权或完成声明。
+
+**发布候选复验（2026-08-13）**
+
+- Server 388 tests；Ruff / 245 files format / mypy 212 source files / compileall 全绿。
+- Web 36 files / 125 tests；ESLint / Next typegen / TypeScript / webpack production build（33 pages）全绿。
+- 锁定依赖 916 个版本经 OSV 两批审计为 0 known vulnerabilities；`git diff --check` 通过。
+- 最终审查修复了 Portfolio 聚合笛卡尔计数、Supplier delay 外部事件确定性校验、0029 有数据 downgrade guard 与全历史项目盘点缺口。
+- Exit 候选报告：`docs/reports/2026-08-13-sprint-5-exit-and-cutover-candidate.md`。
+
 **Error ledger**
 
 | 现象 | 次数 | 处理 |
@@ -1265,6 +1320,7 @@
 | 默认 Turbopack production build 在沙箱尝试绑定端口被拒 | 1 | 以仓库支持的 webpack production build 复验，全部路由成功生成；源码、部署配置与安全边界无需放宽 |
 | React Strict Mode 首次挂载清理中断唯一 OAuth callback fetch | 1 | 保留 `useRef` 一次提交保护并移除 effect cleanup abort；Strict Mode 单请求测试与真实 password-free login 均通过 |
 | 完整套件共享 `pdos_test` 遗留钉钉数据触发 0026 有损 downgrade guard | 1 | 旧迁移测试先升级到 head 并清空隔离租户后再降级；保留生产有数据 fail-close，完整 343 tests 全绿 |
+| S5-4 首次全量回归发现 S5-3 新增四张表未进入旧的 exact-table 集合 | 1 | 更新 canonical schema 集合后重跑，381 tests 全绿；不是 migration 或 Phase 3 运行时缺陷 |
 | Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
 | 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |
 | 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 与 ECS build 入口均固化为只构建唯一 `api web`，再按原顺序启动服务，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |

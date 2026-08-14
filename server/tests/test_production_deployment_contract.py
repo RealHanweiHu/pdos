@@ -190,6 +190,39 @@ def test_sprint_zero_runbook_has_preflight_smoke_and_rollback_gates() -> None:
     assert "重施加并验证 Agent 最小权限" in runbook
 
 
+def test_sprint_five_cutover_requires_complete_history_and_two_approved_snapshots() -> None:
+    runbook = (
+        REPOSITORY_ROOT / "docs" / "runbooks" / "sprint-5-cutover-and-retirement.md"
+    ).read_text()
+    contract = (
+        REPOSITORY_ROOT / "docs" / "design" / "2026-08-13-sprint-5-cutover-contract.md"
+    ).read_text()
+    inventory_cli = (
+        REPOSITORY_ROOT / "server" / "scripts" / "check_cehub_cutover_inventory.py"
+    ).read_text()
+
+    assert "archived 历史项目" in runbook
+    assert "check_cehub_cutover_inventory" in runbook
+    assert "PDOS_CUTOVER_APPROVED_INVENTORY_FINGERPRINT" in runbook
+    assert "PDOS_MIGRATION_APPROVED_SOURCE_FINGERPRINT" in runbook
+    assert "created_counts" in runbook and "skipped_counts" in runbook
+    assert "PDOS_DINGTALK_DELIVERY_ENABLED=false" in runbook
+    assert "不得从本地脏工作树" in runbook
+    assert "明确授权" in runbook
+    assert "不执行 Alembic downgrade" in runbook
+    assert "30 分钟" in runbook
+    assert "inventory_fingerprint" in contract
+    assert "source_fingerprint" in contract
+    assert "Data Owner" in contract
+    assert "S5-1" in contract and "delivery=false" in contract
+    assert (
+        'text("SET TRANSACTION READ ONLY")'
+        in (REPOSITORY_ROOT / "server" / "app" / "migrations" / "cehub_v1.py").read_text()
+    )
+    assert "validate_migration_endpoints" in inventory_cli
+    assert "SUPPORTED_PROJECT_CATEGORIES" in inventory_cli
+
+
 def test_production_smoke_is_isolated_and_available_from_the_root_makefile() -> None:
     makefile = (REPOSITORY_ROOT / "Makefile").read_text()
     smoke_script = (REPOSITORY_ROOT / "scripts" / "smoke-production.sh").read_text()

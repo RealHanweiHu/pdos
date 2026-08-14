@@ -709,6 +709,8 @@ class FindingService:
             "change_impact_suggestion",
             "quality_cluster_alert",
             "capa_suggestion",
+            "supplier_delay_risk",
+            "executive_portfolio_brief",
         }:
             return RiskSuggestionPayload.model_validate(payload)
         if finding_type == "knowledge_draft":

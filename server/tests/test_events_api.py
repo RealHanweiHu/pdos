@@ -10,7 +10,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, func, select, text
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -285,6 +285,271 @@ def test_external_event_ingress_is_idempotent_rejects_conflicts_and_internal_typ
                     )
                 ).scalar_one()
                 == 1
+            )
+    finally:
+        engine.dispose()
+
+
+def test_supplier_delay_ingress_requires_active_tenant_supplier_and_canonical_dates(
+    client: TestClient,
+    isolated_event_api_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _ = seed_roles_projects_and_events(
+        isolated_event_api_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+    )
+    supplier_id = uuid4()
+    engine = create_engine(psycopg_database_url(isolated_event_api_database))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.suppliers.insert(),
+                {
+                    "id": supplier_id,
+                    "tenant_id": tenant_id,
+                    "code": "SUP-EVENT-1",
+                    "name": "Event Supplier",
+                },
+            )
+    finally:
+        engine.dispose()
+
+    headers = bearer_headers(client, username="manager")
+    base = {
+        "project_id": str(project_id),
+        "event_type": "SUPPLIER_DELAY_REPORTED",
+        "entity_id": str(uuid4()),
+        "occurred_at": datetime(2026, 8, 13, 9, 0, tzinfo=UTC).isoformat(),
+    }
+    invalid_payloads = (
+        {
+            "supplier_id": str(uuid4()),
+            "expected_date": "2026-08-10",
+            "reported_date": "2026-08-16",
+        },
+        {
+            "supplier_id": str(supplier_id),
+            "expected_date": "2026-8-10",
+            "reported_date": "2026-08-16",
+        },
+        {
+            "supplier_id": str(supplier_id),
+            "expected_date": "2026-08-16",
+            "reported_date": "2026-08-16",
+        },
+    )
+    for index, payload in enumerate(invalid_payloads):
+        response = client.post(
+            "/api/events",
+            headers=headers,
+            json={**base, "event_id": f"supplier-delay-invalid-{index}", "payload": payload},
+        )
+        assert response.status_code == 422
+        assert response.json()["detail"]["code"] == "INVALID_EVENT_PAYLOAD"
+
+    valid = client.post(
+        "/api/events",
+        headers=headers,
+        json={
+            **base,
+            "event_id": "supplier-delay-valid-1",
+            "payload": {
+                "supplier_id": str(supplier_id),
+                "expected_date": "2026-08-10",
+                "reported_date": "2026-08-16",
+            },
+        },
+    )
+    assert valid.status_code == 201
+
+    engine = create_engine(psycopg_database_url(isolated_event_api_database))
+    try:
+        with engine.connect() as connection:
+            supplier_events = connection.execute(
+                select(func.count())
+                .select_from(tables.events)
+                .where(tables.events.c.event_type == "SUPPLIER_DELAY_REPORTED")
+            ).scalar_one()
+            assert supplier_events == 1
+    finally:
+        engine.dispose()
+
+
+def test_crm_event_atomically_creates_one_review_gated_requirement_draft(
+    client: TestClient,
+    isolated_event_api_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _ = seed_roles_projects_and_events(
+        isolated_event_api_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+    )
+    engine = create_engine(psycopg_database_url(isolated_event_api_database))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.customers.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "code": "CRM-ACME",
+                    "name": "CRM Acme",
+                },
+            )
+    finally:
+        engine.dispose()
+
+    manager_headers = bearer_headers(client, username="manager")
+    request = {
+        "project_id": str(project_id),
+        "event_id": "crm-requirement-evt-0001",
+        "event_type": "CRM_REQUIREMENT_RECEIVED",
+        "entity_id": str(uuid4()),
+        "payload": {
+            "external_requirement_id": "CRM-DEAL-1001",
+            "code": "CRM-REQ-1001",
+            "title": "Quieter portable inflator",
+            "description": "Customer requests lower operating noise.",
+            "priority": "high",
+            "acceptance_criteria": ["Noise below 72 dBA at 1 m"],
+            "customer_code": "CRM-ACME",
+        },
+        "occurred_at": datetime(2026, 8, 13, 7, 0, tzinfo=UTC).isoformat(),
+    }
+    created = client.post("/api/events", headers=manager_headers, json=request)
+    replay = client.post("/api/events", headers=manager_headers, json=request)
+    assert created.status_code == 201, created.text
+    assert replay.status_code == 200
+    requirement_id = created.json()["requirement_id"]
+    assert replay.json()["requirement_id"] == requirement_id
+
+    draft = client.get(f"/api/requirements/{requirement_id}", headers=manager_headers)
+    assert draft.status_code == 200
+    assert (
+        draft.json()
+        | {
+            "id": requirement_id,
+            "code": "CRM-REQ-1001",
+            "title": "Quieter portable inflator",
+            "description": "Customer requests lower operating noise.",
+            "source": "crm",
+            "status": "draft",
+            "priority": "high",
+            "acceptance_criteria": ["Noise below 72 dBA at 1 m"],
+        }
+        == draft.json()
+    )
+    bypass = client.patch(
+        f"/api/requirements/{requirement_id}",
+        headers=manager_headers,
+        json={"status": "proposed"},
+    )
+    assert bypass.status_code == 409
+    assert bypass.json()["detail"]["code"] == "CRM_REQUIREMENT_REVIEW_REQUIRED"
+
+    reviewed = client.post(
+        f"/api/requirements/{requirement_id}/review-crm-intake",
+        headers=manager_headers,
+        json={
+            "confirmation": "REVIEW_CONFIRMED",
+            "decision": "establish",
+            "rationale": "Scope is sufficiently clear for product evaluation.",
+        },
+    )
+    assert reviewed.status_code == 200
+    assert reviewed.json()["status"] == "proposed"
+    repeated_review = client.post(
+        f"/api/requirements/{requirement_id}/review-crm-intake",
+        headers=manager_headers,
+        json={
+            "confirmation": "REVIEW_CONFIRMED",
+            "decision": "establish",
+            "rationale": "Duplicate review must fail.",
+        },
+    )
+    assert repeated_review.status_code == 409
+    assert repeated_review.json()["detail"]["code"] == "CRM_REQUIREMENT_ALREADY_REVIEWED"
+
+    engine = create_engine(psycopg_database_url(isolated_event_api_database))
+    try:
+        with engine.connect() as connection:
+            assert (
+                connection.execute(
+                    select(func.count()).select_from(tables.crm_requirement_intakes)
+                ).scalar_one()
+                == 1
+            )
+            assert (
+                connection.execute(
+                    select(func.count())
+                    .select_from(tables.requirements)
+                    .where(tables.requirements.c.code == "CRM-REQ-1001")
+                ).scalar_one()
+                == 1
+            )
+    finally:
+        engine.dispose()
+
+
+def test_crm_event_unknown_customer_rolls_back_event_and_requirement(
+    client: TestClient,
+    isolated_event_api_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _ = seed_roles_projects_and_events(
+        isolated_event_api_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+    )
+    response = client.post(
+        "/api/events",
+        headers=bearer_headers(client, username="manager"),
+        json={
+            "project_id": str(project_id),
+            "event_id": "crm-requirement-unknown-customer",
+            "event_type": "CRM_REQUIREMENT_RECEIVED",
+            "entity_id": str(uuid4()),
+            "payload": {
+                "external_requirement_id": "CRM-UNKNOWN-1",
+                "code": "CRM-REQ-UNKNOWN",
+                "title": "Unknown customer",
+                "description": "",
+                "priority": "medium",
+                "acceptance_criteria": [],
+                "customer_code": "MISSING",
+            },
+            "occurred_at": datetime(2026, 8, 13, 8, 0, tzinfo=UTC).isoformat(),
+        },
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"]["code"] == "CRM_CUSTOMER_NOT_FOUND"
+    engine = create_engine(psycopg_database_url(isolated_event_api_database))
+    try:
+        with engine.connect() as connection:
+            assert (
+                connection.execute(
+                    select(func.count())
+                    .select_from(tables.events)
+                    .where(tables.events.c.event_id == "crm-requirement-unknown-customer")
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.execute(
+                    select(func.count())
+                    .select_from(tables.requirements)
+                    .where(tables.requirements.c.code == "CRM-REQ-UNKNOWN")
+                ).scalar_one()
+                == 0
             )
     finally:
         engine.dispose()
