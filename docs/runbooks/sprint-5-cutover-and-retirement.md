@@ -156,7 +156,7 @@ curl --fail --silent --show-error --max-time 5 \
   http://127.0.0.1:3001/api/setup/status >/dev/null
 ```
 
-重建后观察至少 35 分钟，确认 `scheduled scan failed`、`activity log tailer failed`、`read-only transaction` 和 `25006` 均为 0；同时复核容器 restart count 为 0、读取 API 为 200、上述只读设置和零行写探针仍成立。任何扫描器写尝试都不影响数据库只读安全边界，但会使“稳定只读归档”门禁失败，必须停止后续切换并调查。
+重建后先完成上述只读设置与零行写探针，把**探针完成后的时间**记录为观察窗口起点；探针产生的预期 `25006` 不得计入后续日志窗口。自该起点观察至少 35 分钟，确认 `scheduled scan failed`、`activity log tailer failed`、`read-only transaction` 和 `25006` 均为 0；同时复核容器 restart count 为 0、读取 API 为 200、上述只读设置仍成立。任何扫描器写尝试都不影响数据库只读安全边界，但会使“稳定只读归档”门禁失败，必须停止后续切换并调查。
 
 DBA 同时确认该角色没有遗留的已分配写事务；任何返回行都必须先调查并清零：
 
