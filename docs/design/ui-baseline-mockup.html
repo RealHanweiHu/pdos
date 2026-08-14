@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDOS UI 基线 v0.2</title>
+<style>
+  :root[data-theme="light"]{
+    --bg:#fafafa; --surface:#ffffff; --surface-2:#f4f4f5; --border:#e4e4e7; --border-soft:#f0f0f1;
+    --text:#18181b; --text-2:#52525b; --text-3:#a1a1aa;
+    --accent:#c2410c; --accent-soft:#fff7ed; --accent-border:#fed7aa;
+    --pending:#a16207; --pending-bg:#fefce8;
+    --ok:#047857; --ok-bg:#ecfdf5;
+    --bad:#be123c; --bad-bg:#fff1f2;
+    --applied:#1d4ed8; --applied-bg:#eff6ff;
+    --shadow:0 8px 24px rgba(24,24,27,.08);
+  }
+  :root[data-theme="dark"]{
+    --bg:#101214; --surface:#17191c; --surface-2:#1d2024; --border:#26282c; --border-soft:#202327;
+    --text:#e4e4e7; --text-2:#a1a1aa; --text-3:#5f6368;
+    --accent:#fb923c; --accent-soft:#2b1708; --accent-border:#7c2d12;
+    --pending:#facc15; --pending-bg:#2a2508;
+    --ok:#34d399; --ok-bg:#0c2a1e;
+    --bad:#fb7185; --bad-bg:#2c1218;
+    --applied:#60a5fa; --applied-bg:#101c33;
+    --shadow:0 8px 24px rgba(0,0,0,.4);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Geist','Helvetica Neue',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--text); font-size:13px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;}
+
+  /* ===== 顶部规格条 ===== */
+  .spec-bar{
+    position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:16px;
+    padding:10px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+  }
+  .spec-bar h1{font-size:13px; font-weight:600;}
+  .spec-bar .ver{color:var(--text-3); font-size:11px;}
+  .tabs{display:flex; gap:2px; margin-left:16px;}
+  .tab{
+    padding:5px 12px; border-radius:8px; border:none; background:transparent; cursor:pointer;
+    font:inherit; font-size:12.5px; color:var(--text-2);
+  }
+  .tab:hover{background:var(--surface-2);}
+  .tab.active{background:var(--accent-soft); color:var(--accent); font-weight:600;}
+  .theme-btn{
+    margin-left:auto; padding:5px 12px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-2); cursor:pointer; font:inherit; font-size:12px;
+  }
+  .theme-btn:active{transform:scale(.98);}
+  .screen{display:none; max-width:1400px; margin:0 auto; padding:24px 20px 64px;}
+  .screen.active{display:block;}
+
+  /* ===== 通用应用壳 ===== */
+  .shell{
+    display:grid; grid-template-columns:224px 1fr; border:1px solid var(--border);
+    border-radius:8px; overflow:hidden; background:var(--surface); min-height:720px;
+  }
+  .sidebar{background:var(--surface-2); border-right:1px solid var(--border); padding:14px 10px; display:flex; flex-direction:column;}
+  .logo{display:flex; align-items:center; gap:8px; padding:4px 8px 14px; font-weight:700; font-size:13.5px;}
+  .logo-mark{width:22px;height:22px;border-radius:6px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;}
+  :root[data-theme="dark"] .logo-mark{color:#431407;}
+  .nav-group{margin-bottom:14px;}
+  .nav-label{font-size:10.5px; color:var(--text-3); padding:0 8px 4px; font-weight:600;}
+  .nav-item{
+    display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:8px;
+    color:var(--text-2); font-size:12.5px; cursor:pointer;
+  }
+  .nav-item:hover{background:var(--surface);}
+  .nav-item.on{background:var(--surface); color:var(--text); font-weight:600; box-shadow:inset 2px 0 0 var(--accent);}
+  .nav-item .cnt{margin-left:auto; font-size:11px; color:var(--text-3);}
+  .nav-item .cnt.hot{color:var(--accent); font-weight:700;}
+  .main{display:flex; flex-direction:column; min-width:0;}
+  .main-head{display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--border);}
+  .main-head h2{font-size:16px; font-weight:650;}
+  .main-body{flex:1; min-height:0;}
+
+  /* ===== chips 与徽标 ===== */
+  .chip{display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px; font-size:11.5px; border:1px solid var(--border); background:var(--surface); color:var(--text-2); cursor:pointer;}
+  .chip.on{background:var(--accent-soft); border-color:var(--accent-border); color:var(--accent); font-weight:600;}
+  .badge{display:inline-flex; align-items:center; padding:1.5px 8px; border-radius:999px; font-size:10.5px; font-weight:600;}
+  .b-pending{background:var(--pending-bg); color:var(--pending);}
+  .b-ok{background:var(--ok-bg); color:var(--ok);}
+  .b-bad{background:var(--bad-bg); color:var(--bad);}
+  .b-applied{background:var(--applied-bg); color:var(--applied);}
+  .b-stage{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
+  .agent-tag{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; color:var(--accent); background:var(--accent-soft); border-radius:6px; padding:1px 6px; font-weight:600;}
+
+  /* ===== 收件箱 ===== */
+  .inbox{display:grid; grid-template-columns:300px 1fr; height:660px;}
+  .queue{border-right:1px solid var(--border); display:flex; flex-direction:column; min-height:0;}
+  .queue-filters{display:flex; gap:6px; padding:12px; flex-wrap:wrap; border-bottom:1px solid var(--border-soft);}
+  .queue-list{overflow-y:auto; flex:1;}
+  .q-item{padding:11px 14px; border-bottom:1px solid var(--border-soft); cursor:pointer; position:relative;}
+  .q-item:hover{background:var(--surface-2);}
+  .q-item.sel{background:var(--accent-soft); box-shadow:inset 2px 0 0 var(--accent);}
+  .q-title{font-size:12.5px; font-weight:600; margin:3px 0 2px; line-height:1.4;}
+  .q-meta{font-size:11px; color:var(--text-3);}
+  .q-unread::before{content:""; position:absolute; left:5px; top:16px; width:5px; height:5px; border-radius:99px; background:var(--accent);}
+  .detail{padding:20px 24px; overflow-y:auto;}
+  .d-head h3{font-size:15.5px; font-weight:650; margin:6px 0 4px;}
+  .d-chain{font-size:11.5px; color:var(--text-3);}
+  .d-chain b{color:var(--text-2); font-weight:600;}
+  .panel{border:1px solid var(--border); border-radius:8px; margin-top:16px; overflow:hidden;}
+  .panel-h{padding:8px 14px; font-size:11.5px; font-weight:650; color:var(--text-2); background:var(--surface-2); border-bottom:1px solid var(--border);}
+  .diff-row{display:grid; grid-template-columns:96px 1fr 1fr; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+  .diff-row:last-child{border-bottom:none;}
+  .diff-row>div{padding:8px 14px;}
+  .diff-key{color:var(--text-3); font-size:11.5px;}
+  .diff-old{color:var(--text-3); background:var(--surface-2);}
+  .diff-new{font-weight:550;}
+  .diff-new .add{background:var(--ok-bg); color:var(--ok); border-radius:4px; padding:0 4px;}
+  .cite{display:flex; gap:10px; padding:9px 14px; border-bottom:1px solid var(--border-soft); font-size:12px; align-items:baseline;}
+  .cite:last-child{border-bottom:none;}
+  .cite-n{color:var(--accent); font-weight:700; font-size:11px;}
+  .cite a{color:var(--accent); text-decoration:none; font-size:11px; margin-left:auto; white-space:nowrap;}
+  .actions{display:flex; gap:10px; margin-top:20px; align-items:center;}
+  .btn{padding:7px 16px; border-radius:8px; font:inherit; font-size:12.5px; font-weight:600; cursor:pointer; border:1px solid transparent;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  :root[data-theme="dark"] .btn-primary{color:#431407;}
+  .btn-ghost{background:var(--surface); border-color:var(--border); color:var(--text);}
+  .btn-danger{background:var(--surface); border-color:var(--border); color:var(--bad);}
+  .kbd{font-size:10px; border:1px solid var(--border); border-bottom-width:2px; border-radius:4px; padding:0 4px; color:var(--text-3); margin-left:5px;}
+  .rate-strip{display:flex; gap:20px; margin-left:auto; align-items:center; font-size:11.5px; color:var(--text-2);}
+  .rate-strip b{font-size:15px; font-weight:700; color:var(--text);}
+
+  /* ===== 驾驶舱 ===== */
+  .dash{display:grid; grid-template-columns:2fr 1fr; gap:16px; padding:20px;}
+  .card{border:1px solid var(--border); border-radius:8px; background:var(--surface);}
+  .card-h{display:flex; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border-soft); font-weight:650; font-size:13px;}
+  .card-h .more{margin-left:auto; font-size:11.5px; color:var(--text-3); font-weight:400;}
+  .proj-grid{display:grid; grid-template-columns:1fr 1fr; gap:0;}
+  .proj{padding:14px 16px; border-bottom:1px solid var(--border-soft); border-right:1px solid var(--border-soft);}
+  .proj:nth-child(2n){border-right:none;}
+  .proj-top{display:flex; align-items:center; gap:8px;}
+  .health{width:7px; height:7px; border-radius:99px;}
+  .h-ok{background:var(--ok);} .h-warn{background:var(--pending);} .h-bad{background:var(--bad);}
+  .proj-name{font-weight:650; font-size:13px;}
+  .ready{margin-top:10px;}
+  .ready-bar{height:4px; border-radius:99px; background:var(--surface-2); overflow:hidden;}
+  .ready-bar i{display:block; height:100%; background:var(--accent); border-radius:99px;}
+  .ready-meta{display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:5px;}
+  .risk-row{display:flex; gap:10px; padding:10px 16px; border-bottom:1px solid var(--border-soft); font-size:12.5px; align-items:baseline;}
+  .risk-row:last-child{border-bottom:none;}
+  .risk-rank{color:var(--text-3); font-size:11px; width:14px;}
+  .risk-proj{margin-left:auto; color:var(--text-3); font-size:11px; white-space:nowrap;}
+  .brief-item{padding:11px 16px; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+  .brief-item:last-child{border-bottom:none;}
+  .brief-cite{color:var(--accent); font-size:10.5px; font-weight:700; cursor:pointer;}
+  .brief-cta{display:block; margin:12px 16px 14px; text-align:center; padding:8px; border-radius:8px; background:var(--accent-soft); color:var(--accent); font-weight:650; font-size:12.5px; text-decoration:none; border:1px solid var(--accent-border);}
+
+  /* ===== 项目工作区 ===== */
+  .pj-head{padding:16px 20px 0; border-bottom:1px solid var(--border);}
+  .pj-title-row{display:flex; align-items:center; gap:10px;}
+  .pj-title-row h2{font-size:17px; font-weight:700;}
+  .stage-track{display:flex; align-items:center; gap:0; margin:14px 0 4px; max-width:560px;}
+  .stage{flex:1; text-align:center; font-size:11px; color:var(--text-3); position:relative; padding-top:14px;}
+  .stage::before{content:""; position:absolute; top:4px; left:0; right:0; height:3px; background:var(--surface-2);}
+  .stage.done::before{background:var(--accent);}
+  .stage.now::before{background:linear-gradient(90deg,var(--accent) 55%,var(--surface-2) 55%);}
+  .stage.done, .stage.now{color:var(--text); font-weight:600;}
+  .pj-tabs{display:flex; gap:2px; margin-top:10px;}
+  .pj-tab{padding:8px 13px; font-size:12.5px; color:var(--text-2); cursor:pointer; border-bottom:2px solid transparent;}
+  .pj-tab.on{color:var(--accent); border-bottom-color:var(--accent); font-weight:650;}
+  .pj-body{display:grid; grid-template-columns:1fr 300px; gap:16px; padding:20px;}
+  .feed-item{display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+  .feed-item:last-child{border-bottom:none;}
+  .feed-time{color:var(--text-3); font-size:11px; white-space:nowrap; width:44px;}
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr 1fr; text-align:center; padding:14px 0;}
+  .stat-n{font-size:24px; font-weight:700;}
+  .stat-l{font-size:11px; color:var(--text-3); margin-top:2px;}
+  .due-row{display:flex; padding:9px 16px; border-bottom:1px solid var(--border-soft); font-size:12px; gap:8px; align-items:baseline;}
+  .due-row:last-child{border-bottom:none;}
+  .due-d{margin-left:auto; font-size:11px; color:var(--pending); white-space:nowrap;}
+  .insight{padding:11px 16px; border-bottom:1px solid var(--border-soft); font-size:12px;}
+  .insight:last-child{border-bottom:none;}
+
+  /* ===== token 表 ===== */
+  .tok-section{margin-bottom:28px;}
+  .tok-section h3{font-size:14px; font-weight:650; margin-bottom:12px;}
+  .swatches{display:flex; gap:10px; flex-wrap:wrap;}
+  .swatch{width:132px; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--surface);}
+  .swatch .c{height:52px;}
+  .swatch .l{padding:7px 10px; font-size:10.5px; color:var(--text-2);}
+  .type-row{display:flex; gap:24px; align-items:baseline; padding:9px 0; border-bottom:1px solid var(--border-soft);}
+  .type-label{width:180px; font-size:11px; color:var(--text-3);}
+  .note{color:var(--text-2); font-size:12.5px; max-width:65ch; margin-top:6px;}
+</style>
+</head>
+<body>
+
+<div class="spec-bar">
+  <h1>PDOS UI 基线</h1><span class="ver mono">v0.2</span>
+  <div class="tabs">
+    <button class="tab active" data-s="s-tokens">设计系统</button>
+    <button class="tab" data-s="s-inbox">AI Review 收件箱</button>
+    <button class="tab" data-s="s-dash">驾驶舱</button>
+    <button class="tab" data-s="s-project">项目工作区</button>
+  </div>
+  <button class="theme-btn" id="themeBtn">切换暗色</button>
+</div>
+
+<!-- ============ 设计系统 ============ -->
+<section class="screen active" id="s-tokens">
+  <div class="tok-section">
+    <h3>色彩：中性 zinc + 唯一强调色公司橙 + 独立状态语义</h3>
+    <div class="swatches">
+      <div class="swatch"><div class="c" style="background:var(--bg)"></div><div class="l">bg 页面底</div></div>
+      <div class="swatch"><div class="c" style="background:var(--surface);border-bottom:1px solid var(--border)"></div><div class="l">surface 面板</div></div>
+      <div class="swatch"><div class="c" style="background:var(--surface-2)"></div><div class="l">surface-2 分组</div></div>
+      <div class="swatch"><div class="c" style="background:var(--accent)"></div><div class="l">accent 交互主色</div></div>
+      <div class="swatch"><div class="c" style="background:var(--accent-soft)"></div><div class="l">accent-soft 选中底</div></div>
+    </div>
+    <div class="swatches" style="margin-top:10px">
+      <div class="swatch"><div class="c" style="background:var(--pending-bg)"><span class="badge b-pending" style="margin:16px">待人审</span></div><div class="l">pending</div></div>
+      <div class="swatch"><div class="c" style="background:var(--ok-bg)"><span class="badge b-ok" style="margin:16px">已接受</span></div><div class="l">accepted</div></div>
+      <div class="swatch"><div class="c" style="background:var(--bad-bg)"><span class="badge b-bad" style="margin:16px">已拒绝</span></div><div class="l">rejected</div></div>
+      <div class="swatch"><div class="c" style="background:var(--applied-bg)"><span class="badge b-applied" style="margin:16px">已应用</span></div><div class="l">applied</div></div>
+    </div>
+    <p class="note">状态色只表达状态机语义，不作装饰。整站唯一强调色为公司橙，选中态/主按钮/链接/焦点环共用。</p>
+  </div>
+  <div class="tok-section">
+    <h3>字体与层级：Geist + Geist Mono</h3>
+    <div class="type-row"><span class="type-label">页标题 18/650</span><span style="font-size:18px;font-weight:650">DG-01 桌面气泵</span></div>
+    <div class="type-row"><span class="type-label">面板标题 13/650</span><span style="font-weight:650">Gate 就绪度</span></div>
+    <div class="type-row"><span class="type-label">正文 13/400</span><span>转写稿显示噪音测试在 42dB 工况下超标，建议登记为风险。</span></div>
+    <div class="type-row"><span class="type-label">辅助 11/400 text-3</span><span style="font-size:11px;color:var(--text-3)">Project Intelligence · 12 分钟前</span></div>
+    <div class="type-row"><span class="type-label">数值 24/700 mono</span><span class="mono" style="font-size:24px;font-weight:700">78%</span></div>
+    <div class="type-row"><span class="type-label">编号/指针 mono</span><span class="mono" style="font-size:12px">EVT-B2 · run_0184 · events#2941</span></div>
+    <p class="note">所有数字、编号、证据指针一律 Geist Mono；表格数值右对齐。圆角全站 8px，chip 用 full-pill，此外无第三种。</p>
+  </div>
+  <div class="tok-section">
+    <h3>控件状态</h3>
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+      <button class="btn btn-primary">接受建议</button>
+      <button class="btn btn-ghost">修改后接受</button>
+      <button class="btn btn-danger">拒绝</button>
+      <span class="chip on">风险建议</span><span class="chip">知识草稿</span>
+      <span class="agent-tag">Project Intelligence</span>
+    </div>
+    <p class="note">按压反馈 active:scale-0.98；动效仅限反馈与面板切换（150-200ms），无循环动画、无滚动劫持。每个界面必须定义空态/加载骨架/错误行内重试。</p>
+  </div>
+</section>
+
+<!-- ============ AI Review 收件箱 ============ -->
+<section class="screen" id="s-inbox">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-mark">P</span>PDOS</div>
+      <div class="nav-group">
+        <div class="nav-item">驾驶舱</div>
+        <div class="nav-item">项目 <span class="cnt">6</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">工程师工作区</div>
+        <div class="nav-item on">AI Review 收件箱 <span class="cnt hot">7</span></div>
+        <div class="nav-item">知识检索</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">业务</div>
+        <div class="nav-item">需求与立项</div>
+        <div class="nav-item">产品与工程</div>
+        <div class="nav-item">质量</div>
+      </div>
+      <div class="nav-group" style="margin-top:auto">
+        <div class="nav-item">治理</div>
+      </div>
+    </aside>
+    <div class="main">
+      <div class="main-head">
+        <h2>AI Review 收件箱</h2>
+        <div class="rate-strip">
+          <span>本周接受率 <b>82%</b></span>
+          <span>待处理 <b>7</b></span>
+          <span>中位处理 <b class="mono">19s</b></span>
+        </div>
+      </div>
+      <div class="main-body inbox">
+        <div class="queue">
+          <div class="queue-filters">
+            <span class="chip on">全部 7</span><span class="chip">风险建议 3</span><span class="chip">阻塞预警 2</span><span class="chip">知识草稿 2</span>
+          </div>
+          <div class="queue-list">
+            <div class="q-item sel q-unread">
+              <span class="agent-tag">Project Intelligence</span>
+              <div class="q-title">DVT 噪音测试连续两轮超标，建议登记风险</div>
+              <div class="q-meta">DG-01 桌面气泵 · 置信 0.86 · 12 分钟前</div>
+            </div>
+            <div class="q-item q-unread">
+              <span class="agent-tag">Project Intelligence</span>
+              <div class="q-title">模具 T1 交期滞后使 DVT Gate 存在阻塞可能</div>
+              <div class="q-meta">HP-30 高压泵 · 置信 0.74 · 1 小时前</div>
+            </div>
+            <div class="q-item">
+              <span class="agent-tag">Knowledge Lite</span>
+              <div class="q-title">知识草稿：电池仓散热的三条评审结论</div>
+              <div class="q-meta">DG-01 桌面气泵 · 来自 Gate 评审 · 3 小时前</div>
+            </div>
+            <div class="q-item">
+              <span class="agent-tag">Project Intelligence</span>
+              <div class="q-title">同一供应商物料在两个项目同时延期</div>
+              <div class="q-meta">跨项目 · 置信 0.68 · 昨天</div>
+            </div>
+            <div class="q-item">
+              <span class="agent-tag">Knowledge Lite</span>
+              <div class="q-title">知识草稿：车载泵认证测试的返工原因归纳</div>
+              <div class="q-meta">VP-12 车载泵 · 来自复盘文档 · 昨天</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail">
+          <div class="d-head">
+            <span class="badge b-pending">待人审</span>
+            <h3>DVT 噪音测试连续两轮超标，建议登记为项目风险</h3>
+            <div class="d-chain">触发链：<b>TEST_FAILED</b> 事件 → Project Intelligence · <span class="mono">run_0184</span> 可展开 · 置信 <span class="mono">0.86</span></div>
+          </div>
+          <div class="panel">
+            <div class="panel-h">建议写入 · 项目风险（与现状逐字段对比）</div>
+            <div class="diff-row"><div class="diff-key">风险标题</div><div class="diff-old">（无此风险）</div><div class="diff-new"><span class="add">整机噪音超出 45dB 规格上限</span></div></div>
+            <div class="diff-row"><div class="diff-key">等级</div><div class="diff-old">-</div><div class="diff-new"><span class="add">高</span>（连续两轮，距 Gate 评审 9 天）</div></div>
+            <div class="diff-row"><div class="diff-key">建议负责人</div><div class="diff-old">-</div><div class="diff-new">结构组 当前测试负责人</div></div>
+            <div class="diff-row"><div class="diff-key">缓解建议</div><div class="diff-old">-</div><div class="diff-new">排查电机悬置与风道共振，DVT-R2 前复测</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-h">证据引用（3）</div>
+            <div class="cite"><span class="cite-n mono">[1]</span><span>测试报告 DVT-N-02：实测 47.2dB，规格上限 45dB</span><a href="#">跳转报告 ›</a></div>
+            <div class="cite"><span class="cite-n mono">[2]</span><span>测试报告 DVT-N-01：实测 46.8dB，同工况</span><a href="#">跳转报告 ›</a></div>
+            <div class="cite"><span class="cite-n mono">[3]</span><span>事件 <span class="mono">#2941</span> TEST_FAILED，2026-08-09 09:14</span><a href="#">查看事件 ›</a></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary">接受建议<span class="kbd">A</span></button>
+            <button class="btn btn-ghost">修改后接受<span class="kbd">E</span></button>
+            <button class="btn btn-danger">拒绝<span class="kbd">R</span></button>
+            <span style="margin-left:auto;font-size:11px;color:var(--text-3)">接受后进入待应用，应用前二次鉴权 · 拒绝需选原因</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 驾驶舱 ============ -->
+<section class="screen" id="s-dash">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-mark">P</span>PDOS</div>
+      <div class="nav-group">
+        <div class="nav-item on">驾驶舱</div>
+        <div class="nav-item">项目 <span class="cnt">6</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">工程师工作区</div>
+        <div class="nav-item">AI Review 收件箱 <span class="cnt hot">7</span></div>
+        <div class="nav-item">知识检索</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">业务</div>
+        <div class="nav-item">需求与立项</div>
+        <div class="nav-item">产品与工程</div>
+        <div class="nav-item">质量</div>
+      </div>
+      <div class="nav-group" style="margin-top:auto"><div class="nav-item">治理</div></div>
+    </aside>
+    <div class="main">
+      <div class="main-head"><h2>驾驶舱</h2><span style="margin-left:auto;font-size:11.5px;color:var(--text-3)">6 个进行中项目 · 数据截至刚刚</span></div>
+      <div class="main-body dash">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-h">项目组合<span class="more">全部项目 ›</span></div>
+            <div class="proj-grid">
+              <div class="proj">
+                <div class="proj-top"><span class="health h-warn"></span><span class="proj-name">DG-01 桌面气泵</span><span class="badge b-stage">NPD · DVT</span></div>
+                <div class="ready"><div class="ready-bar"><i style="width:78%"></i></div>
+                <div class="ready-meta"><span>Gate 就绪 78%</span><span>缺项 3 · 风险 2</span></div></div>
+              </div>
+              <div class="proj">
+                <div class="proj-top"><span class="health h-ok"></span><span class="proj-name">HP-30 高压泵</span><span class="badge b-stage">NPD · EVT</span></div>
+                <div class="ready"><div class="ready-bar"><i style="width:64%"></i></div>
+                <div class="ready-meta"><span>Gate 就绪 64%</span><span>缺项 5 · 风险 1</span></div></div>
+              </div>
+              <div class="proj">
+                <div class="proj-top"><span class="health h-ok"></span><span class="proj-name">VP-12 车载泵</span><span class="badge b-stage">NPD · PVT</span></div>
+                <div class="ready"><div class="ready-bar"><i style="width:91%"></i></div>
+                <div class="ready-meta"><span>Gate 就绪 91%</span><span>缺项 1 · 风险 0</span></div></div>
+              </div>
+              <div class="proj">
+                <div class="proj-top"><span class="health h-bad"></span><span class="proj-name">BP-07 电池泵改款</span><span class="badge b-stage">ECO</span></div>
+                <div class="ready"><div class="ready-bar"><i style="width:42%"></i></div>
+                <div class="ready-meta"><span>变更评审 42%</span><span>阻塞 1 · 风险 3</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h">跨项目风险榜<span class="more">风险汇总 ›</span></div>
+            <div class="risk-row"><span class="risk-rank mono">1</span><span class="badge b-bad">高</span><span>整机噪音超出规格上限，距 Gate 9 天</span><span class="risk-proj">DG-01</span></div>
+            <div class="risk-row"><span class="risk-rank mono">2</span><span class="badge b-bad">高</span><span>共用供应商物料双项目延期</span><span class="risk-proj">HP-30 / BP-07</span></div>
+            <div class="risk-row"><span class="risk-rank mono">3</span><span class="badge b-pending">中</span><span>模具 T1 交期滞后 6 天</span><span class="risk-proj">HP-30</span></div>
+            <div class="risk-row"><span class="risk-rank mono">4</span><span class="badge b-pending">中</span><span>认证测试排期与春节假期冲突</span><span class="risk-proj">VP-12</span></div>
+          </div>
+        </div>
+        <div class="card" style="height:fit-content">
+          <div class="card-h">AI 简报<span class="more mono">今晨 07:30</span></div>
+          <div class="brief-item">DG-01 噪音风险为本周最高优先级，已生成风险建议待人审。<span class="brief-cite">[1]</span></div>
+          <div class="brief-item">VP-12 距 PVT Gate 就绪仅差认证报告归档一项。<span class="brief-cite">[2]</span></div>
+          <div class="brief-item">HP-30 与 BP-07 的延期指向同一供应商，建议合并处理。<span class="brief-cite">[3]</span></div>
+          <div class="brief-item">上周沉淀知识 4 条已验证入库，检索命中 11 次。<span class="brief-cite">[4]</span></div>
+          <a class="brief-cta" href="#">去收件箱处理 7 条待审 ›</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 项目工作区 ============ -->
+<section class="screen" id="s-project">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-mark">P</span>PDOS</div>
+      <div class="nav-group">
+        <div class="nav-item">驾驶舱</div>
+        <div class="nav-item on">项目 <span class="cnt">6</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">工程师工作区</div>
+        <div class="nav-item">AI Review 收件箱 <span class="cnt hot">7</span></div>
+        <div class="nav-item">知识检索</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">业务</div>
+        <div class="nav-item">需求与立项</div>
+        <div class="nav-item">产品与工程</div>
+        <div class="nav-item">质量</div>
+      </div>
+      <div class="nav-group" style="margin-top:auto"><div class="nav-item">治理</div></div>
+    </aside>
+    <div class="main">
+      <div class="pj-head">
+        <div class="pj-title-row">
+          <h2>DG-01 桌面气泵</h2>
+          <span class="badge b-stage">NPD</span>
+          <span class="badge b-pending">Gate 缺项 3</span>
+          <span style="margin-left:auto;font-size:12px;color:var(--text-2)">Gate 就绪 <b class="mono" style="font-size:15px">78%</b></span>
+        </div>
+        <div class="stage-track">
+          <div class="stage done">概念</div>
+          <div class="stage done">计划</div>
+          <div class="stage done">EVT</div>
+          <div class="stage now">DVT</div>
+          <div class="stage">PVT</div>
+          <div class="stage">MP</div>
+        </div>
+        <div class="pj-tabs">
+          <span class="pj-tab on">概览</span><span class="pj-tab">时间线</span><span class="pj-tab">任务</span><span class="pj-tab">问题</span><span class="pj-tab">风险</span><span class="pj-tab">Gate</span><span class="pj-tab">文档</span><span class="pj-tab">会议</span><span class="pj-tab">AI 对话</span>
+        </div>
+      </div>
+      <div class="pj-body">
+        <div class="card">
+          <div class="card-h">近期动态<span class="more">全部事件 ›</span></div>
+          <div style="padding:4px 16px">
+            <div class="feed-item"><span class="feed-time mono">09:14</span><span><b>TEST_FAILED</b> 噪音测试 DVT-N-02 未通过（47.2dB）→ 已触发 AI 风险建议</span></div>
+            <div class="feed-item"><span class="feed-time mono">08:52</span><span>李工 上传文档「DVT 噪音测试报告 R2」→ 知识抽取排队中</span></div>
+            <div class="feed-item"><span class="feed-time mono">昨天</span><span><b>GATE_APPROVED</b> EVT 出口评审通过（有条件，遗留 2 项已闭环 1 项）</span></div>
+            <div class="feed-item"><span class="feed-time mono">昨天</span><span>结构组 完成任务「电机悬置减振方案 B 样装配」</span></div>
+            <div class="feed-item"><span class="feed-time mono">周四</span><span>新问题 <span class="mono">#118</span>「充气嘴密封圈批次尺寸漂移」P1 已指派</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="stat-grid">
+              <div><div class="stat-n mono">24</div><div class="stat-l">进行中任务</div></div>
+              <div><div class="stat-n mono">5</div><div class="stat-l">开放问题</div></div>
+              <div><div class="stat-n mono">2</div><div class="stat-l">高风险</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h">即将到期</div>
+            <div class="due-row"><span>DVT-R2 噪音复测</span><span class="due-d">3 天</span></div>
+            <div class="due-row"><span>包装跌落测试报告</span><span class="due-d">5 天</span></div>
+            <div class="due-row"><span>DVT Gate 评审会</span><span class="due-d">9 天</span></div>
+          </div>
+          <div class="card">
+            <div class="card-h">本项目 AI 洞见<span class="more">收件箱 ›</span></div>
+            <div class="insight"><span class="badge b-pending">待人审</span> 噪音超标风险建议 · 12 分钟前</div>
+            <div class="insight"><span class="badge b-applied">已应用</span> 密封圈问题关联历史批次记录 · 昨天</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById(t.dataset.s).classList.add('active');
+    });
+  });
+  const btn=document.getElementById('themeBtn');
+  btn.addEventListener('click',()=>{
+    const r=document.documentElement;
+    const dark=r.getAttribute('data-theme')==='dark';
+    r.setAttribute('data-theme',dark?'light':'dark');
+    btn.textContent=dark?'切换暗色':'切换亮色';
+  });
+  if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+    document.documentElement.setAttribute('data-theme','dark');
+    btn.textContent='切换亮色';
+  }
+</script>
+</body>
+</html>

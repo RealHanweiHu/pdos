@@ -1,0 +1,54 @@
+[project]
+name = "pdos-server"
+version = "0.1.0"
+description = "PDOS API and agent runtime"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "alembic>=1.18,<2",
+  "boto3>=1.42,<2",
+  "cryptography>=50,<51",
+  "fastapi>=0.135,<1",
+  "httpx2>=2.10,<3",
+  "langgraph>=1.1,<2",
+  "openpyxl>=3.1,<4",
+  "psycopg[binary]>=3.3,<4",
+  "pwdlib[argon2]>=0.3,<1",
+  "pydantic-settings>=2.13,<3",
+  "pyjwt>=2.10,<3",
+  "pypdf>=6.6,<7",
+  "python-dotenv>=1.2,<2",
+  "python-multipart>=0.0.22,<1",
+  "sqlalchemy>=2.0,<3",
+  "uvicorn[standard]>=0.42,<1",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.19,<2",
+  "pytest>=9.0,<10",
+  "pytest-cov>=7.0,<8",
+  "pyyaml>=6.0,<7",
+  "ruff>=0.15,<1",
+  "types-openpyxl>=3.1,<4",
+  "types-pyyaml>=6.0,<7",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "SIM", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["app", "scripts", "tests"]

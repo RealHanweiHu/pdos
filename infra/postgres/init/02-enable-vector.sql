@@ -1,0 +1,3 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+\connect pdos_test
+CREATE EXTENSION IF NOT EXISTS vector;

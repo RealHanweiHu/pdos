@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "suite_version": "s5-phase-three-agents-v1",
+  "prompt_versions": {
+    "supplier_intelligence": "supplier-intelligence-v1",
+    "executive_intelligence": "executive-intelligence-v1"
+  },
+  "cases": [
+    {
+      "id": "supplier-repeated-delay-risk",
+      "agent_key": "supplier_intelligence",
+      "event_type": "SUPPLIER_DELAY_REPORTED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "supplier_delay_risk",
+        "summary": "The bounded delay history warrants a human review of the trigger Project exposure.",
+        "proposed_payload": {
+          "title": "Review supplier delay exposure",
+          "description": "Recent server-scoped delay reports may affect the next build milestone.",
+          "likelihood": 4,
+          "impact": 4,
+          "mitigation_plan": "Confirm supply recovery and alternate-source readiness with the accountable owners.",
+          "contingency_plan": "Prepare a human-approved build sequence fallback."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.82
+      },
+      "expected_finding_type": "supplier_delay_risk"
+    },
+    {
+      "id": "executive-stage-portfolio-brief",
+      "agent_key": "executive_intelligence",
+      "event_type": "PROJECT_STAGE_CHANGED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "executive_portfolio_brief",
+        "summary": "The milestone change and bounded portfolio counts warrant executive attention.",
+        "proposed_payload": {
+          "title": "Review portfolio delivery concentration",
+          "description": "Several active projects show simultaneous open-risk and overdue-task exposure.",
+          "likelihood": 3,
+          "impact": 5,
+          "mitigation_plan": "Ask Project owners to confirm recovery priorities at the next portfolio review."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.78
+      },
+      "expected_finding_type": "executive_portfolio_brief"
+    },
+    {
+      "id": "executive-gate-no-action",
+      "agent_key": "executive_intelligence",
+      "event_type": "GATE_APPROVED",
+      "output": {
+        "disposition": "no_action",
+        "candidate_type": null,
+        "summary": "The milestone is consistent with the bounded portfolio state.",
+        "proposed_payload": null,
+        "evidence_event_ids": [],
+        "confidence": 0.92
+      },
+      "expected_finding_type": null
+    }
+  ]
+}

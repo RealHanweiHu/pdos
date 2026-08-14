@@ -1,0 +1,31 @@
+# 环境变量（模板 .env.example / .env.production.example 入库, 实值永不入库）
+.env
+.env.local
+.env.production
+
+# Node
+node_modules/
+.next/
+dist/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# 系统与编辑器
+.DS_Store
+*.log
+
+# 本地数据卷
+.docker-data/
+
+# 本地验证产物
+output/
+.playwright-cli/
