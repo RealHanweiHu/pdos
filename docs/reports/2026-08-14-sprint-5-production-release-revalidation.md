@@ -1,7 +1,7 @@
 # Sprint 5 生产 release 复验与全量 dry-run 证据
 
 日期：2026-08-14
-结论：Data Owner 已绑定最终 release 与全部只读证据；生产已部署到 migration 0030 并通过服务器端驾驶舱读路径和 10 分钟观察。CEHub apply 未执行，S5-1 真实钉钉外发继续保持延期且 `delivery=false`。
+结论：Data Owner 已绑定最终 release 与全部只读证据；生产已部署到 migration 0030，并通过服务器端读路径、10 分钟观察和 Owner/Admin 登录后的真实浏览器驾驶舱验收。CEHub apply 未执行，S5-1 真实钉钉外发继续保持延期且 `delivery=false`。
 
 ## 1. 固定身份
 
@@ -94,8 +94,16 @@
 - 从 `2026-08-14T18:58:40Z` 起连续 12 次、每 30 秒采样；最终
   `2026-08-14T19:09:20Z` 复核不健康容器 0、fatal pattern 0、
   `/api/projects` 500 为 0，Alembic 仍为 0030。
-- 应用内浏览器已打开生产登录页；没有复用登录会话，因此 Owner/Admin 登录后的可视化
-  Dashboard 最终人工确认仍单独保留，不以服务端检查冒充已登录 UI 证据。
+- Owner/Admin 在保留的生产浏览器会话完成登录；页面存在“退出登录”以及事件流、模型治理、
+  钉钉集成等管理员导航，登录态与管理权限面均可见。
+- 真实 Dashboard 成功显示 `2 个可见项目`，不再出现“驾驶舱暂不可用”：
+  C4s 为 `INTAKE` / 进行中 / 阶段进度 25% / 开放风险 0；S18-01 为
+  `CONCEPT` / 进行中 / 阶段进度 14% / 开放风险 0。
+- 从 Dashboard 依次进入两个真实 Project Workspace：C4s 显示
+  “设计接收与可制造性评审”、P1/4、15 个进行中任务；S18-01 显示“概念阶段”、
+  P1/7、32 个进行中任务。两者问题与风险均为 0，返回 Dashboard 后组合仍正常可读。
+- Dashboard 与两个 Project Workspace 全程浏览器 console warning/error 均为 0。
+  AI 简报如实呈现“AI 已暂停”，没有把失能伪装为成功。
 
 ## 7. S5-1 延期风险只读复核
 
@@ -112,12 +120,13 @@
 因此 S5-1 仍为明确延期风险，不影响 `delivery=false` 下的核心系统部署，但不能把
 真实 password-free login、群通知、审批和 card smoke 记为通过。
 
-## 8. 下一人工 Gate
+## 8. 人工 Gate 状态
 
-1. Owner/Admin 在生产登录页建立会话，确认 Dashboard 可读取现有项目组合且不再显示
-   “驾驶舱暂不可用”。
-2. 另行取得 CEHub apply 授权；apply 与 replay 不得预授权。
-3. 完成 apply 后的数据抽查、幂等重放、主入口声明、CEHub 只读归档与至少 30 分钟观察。
+1. 已完成：Owner/Admin 登录后的 Dashboard 与 C4s / S18-01 Project Workspace
+   真实浏览器验收。
+2. 待单独授权：CEHub apply；apply 与 replay 不得预授权。
+3. 授权并完成 apply 后，再进行数据抽查、幂等重放、主入口声明、CEHub 只读归档与
+   至少 30 分钟观察。
 4. 最后由 Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 Exit；S5-1
    真实钉钉 smoke 延期风险继续独立保留。
 

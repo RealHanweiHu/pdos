@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 5 生产部署已到 migration 0030，等待 Dashboard 登录验收与独立 CEHub apply 授权。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
+> 唯一当前指针：**Sprint 5 生产部署与 Dashboard 登录验收已通过，等待独立 CEHub apply 授权。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1304,7 +1304,7 @@
 - [x] 合并修复形成新 release，在 ECS 仅构建候选并重新执行 inventory verify、全量 dry-run 与目标零变化快照
 - [x] Data Owner 绑定新 release，批准 source fingerprint 与五类 count/预测 created/skipped
 - [x] 获得新 release 部署授权，完成 0028～0030 生产部署、Agent 安全边界重施、项目 readiness 与 10 分钟有界观察
-- [ ] Owner/Admin 登录后确认 Dashboard 项目组合可读且不再显示“驾驶舱暂不可用”
+- [x] Owner/Admin 登录后确认 Dashboard 项目组合可读且不再显示“驾驶舱暂不可用”；C4s / S18-01 Project Workspace 均可进入，浏览器 console warning/error 为 0
 - [ ] 获得独立生产 apply 授权，完成 apply、幂等重放与 Data Owner 抽查
 - [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
