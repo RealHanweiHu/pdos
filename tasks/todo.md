@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 5 Exit 候选，等待人确认延期例外或补验 S5-1。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
+> 唯一当前指针：**六 Sprint 建设与 Sprint 5 / Cutover Exit 已于 2026-08-14 经 Data Owner、发布 Owner、业务 Owner 共同确认完成。** S5-1 真实身份/外发 smoke 作为已接受延期残余风险继续单独跟踪，canonical checkbox 保持未勾选，生产 `delivery=false`；当前没有待执行的主计划工作项。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1209,7 +1209,7 @@
 
 人工于 2026-08-12 明确回复“确认 Sprint 4 Exit Gate，进入 Sprint 5”。该确认只批准移动执行指针，不构成生产部署、创建/修改钉钉应用、回调地址、群机器人、审批模板或其他外部系统变更授权。
 
-## In Progress: S5-1 钉钉连接器（本地完成，真实应用 Gate 待人）
+## Residual Risk: S5-1 钉钉连接器（本地完成，真实应用 Gate 延期）
 
 **Definition of Ready**
 
@@ -1261,7 +1261,7 @@
 - release `a34c7eb06aaba036bef8c257c30a841c1ec6be0d` 已在 ECS 完成 migration `0027`、Agent 零写边界重施与五服务健康验证；实际 `PDOS_DINGTALK_DELIVERY_ENABLED=false`，容器重启计数为 0。
 - 租户 `beepump` 的 active binding 与项目 `S18-01` 群已通过 Owner/Admin 受审计 API 配置；readiness 已验证 HTTPS、服务器凭据、schema、binding scope、回调密码学、项目群和零 unresolved outbox。
 - 人明确要求“如果必要性不大，先跳过这个，默认已经完成，先完成其他的”。按执行纪律记录为延期/风险接受，不把 0/2 linked users、真实 password-free login、群通知、审批与 card smoke 伪记为 PASS；S5-1 canonical/Exit Gate 保持未通过，Stage C/外发仍需单独授权。
-- 为避免该延期阻塞独立工作，人批准继续 S5-2；不得据此推断生产 ERP/CRM/DingTalk 外发、Stage C 或 Sprint 5 Exit Gate 授权。
+- 为避免该延期阻塞独立工作，人批准继续 S5-2；该批准本身不构成生产 ERP/CRM/DingTalk 外发、Stage C 或 Sprint 5 Exit Gate 授权。Sprint 5 / Cutover Exit 后续已于 2026-08-14 独立明确确认，外发与 Stage C 仍未获授权。
 
 ## 当前工作项：S5-2 ERP Handoff（2026-08-13 启动）
 
@@ -1288,7 +1288,7 @@
 - [x] GREEN：两份版本化 prompt、runtime route/preflight、投影工具与 migration 0030
 - [x] VERIFY：受限 `pdos_agent` 端到端、全量门禁与 Sprint 5 Exit 候选报告；见 `docs/reports/2026-08-13-s5-4-phase-three-agents-acceptance.md`
 
-## 当前工作项：Sprint 5 全量切换候选（2026-08-13，本地资产完成，生产未执行）
+## Completed: Sprint 5 全量切换与只读退役（2026-08-14）
 
 - [x] 冻结全量定义：CEHub 全部 Project（含 archived 历史项目），不以当前 4 个未归档项目代替全库盘点
 - [x] 新增 SELECT-only `capture→Data Owner→verify` 两阶段清单指纹门禁，源/目标端点与只读角色继续 fail-close
@@ -1300,14 +1300,22 @@
 - [x] CEHub 写冻结稳定生效，inventory verify 与全量 dry-run 通过；`target_writes=0`，目标 11 表 count/内容 SHA-256 前后完全相同
 - [x] 只读发布 `status` 发现导入 Project 列表 500 并精确复现；旧 release `2cce...` 失效且未部署/apply
 - [x] 修复后端/Web 可空 Development Case 读合同并增加真实迁移回归
-- [ ] 获得独立生产授权，在旧 CEHub 私有环境备份原值后设置 `AUTOMATION_SCAN_INTERVAL_MIN=35790`，以同一旧 image 重建并观察至少 35 分钟，确认 scheduled scanner/read-only/`25006` 日志为 0
-- [ ] 合并修复形成新 release，在 ECS 重建并重新执行 inventory verify、全量 dry-run 与目标零变化快照
-- [ ] Data Owner 绑定新 release，批准重跑 source fingerprint 与五类 count/预测 created/skipped
-- [ ] 获得新 release 部署与生产 apply 的逐次授权，完成 0028～0030 部署、apply、幂等重放与抽查
-- [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
-- [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
+- [x] 获得独立生产授权，在旧 CEHub 私有环境备份原值后设置 `AUTOMATION_SCAN_INTERVAL_MIN=35790`，以同一旧 image 重建并观察至少 35 分钟，确认 scheduled scanner/read-only/`25006` 日志为 0
+- [x] 合并修复形成新 release，在 ECS 仅构建候选并重新执行 inventory verify、全量 dry-run 与目标零变化快照
+- [x] Data Owner 绑定新 release，批准 source fingerprint 与五类 count/预测 created/skipped
+- [x] 获得新 release 部署授权，完成 0028～0030 生产部署、Agent 安全边界重施、项目 readiness 与 10 分钟有界观察
+- [x] Owner/Admin 登录后确认 Dashboard 项目组合可读且不再显示“驾驶舱暂不可用”；C4s / S18-01 Project Workspace 均可进入，浏览器 console warning/error 为 0
+- [x] 获得独立生产 apply 授权（明确包含成功后的同参数幂等重放），完成 apply、目标前后快照、独立 Data Owner 口径抽查与幂等验证
+- [x] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
+- [x] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。当前旧 release 的全量 dry-run 仅作为历史证据；修复形成新 release 并重跑前，不构成部署、apply、转正或 Sprint 5 Exit 授权。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run、生产部署、apply、独立抽查、幂等重放、业务 Owner 主入口声明及声明后 1844 秒只读观察均已通过；Data Owner、发布 Owner、业务 Owner 已共同确认 Sprint 5 / Cutover Exit。
+
+**Sprint 5 / Cutover Exit 人工确认（2026-08-14）**
+
+- 人工明确确认 Sprint 5 / Cutover Exit，并接受 S5-1 真实钉钉 smoke 作为延期残余风险，生产保持 `delivery=false`。
+- 该确认完成六 Sprint 建设与本次切换出口；不把 S5-1 canonical/真实应用 Gate 改写为 PASS，不授权恢复 CEHub 写入、开启钉钉外发、修改 DNS/Nginx 或执行 CEHub 最终停机。
+- 最终候选状态见 `docs/reports/2026-08-13-sprint-5-exit-and-cutover-candidate.md`；主入口与只读归档证据见 `docs/reports/2026-08-14-sprint-5-main-entry-observation.md`。
 
 **生产 inventory capture（2026-08-13）**
 
@@ -1336,6 +1344,23 @@
 - 锁定依赖 916 个版本经 OSV 两批审计为 0 known vulnerabilities；`git diff --check` 通过。
 - 最终审查修复了 Portfolio 聚合笛卡尔计数、Supplier delay 外部事件确定性校验、0029 有数据 downgrade guard 与全历史项目盘点缺口。
 - Exit 候选报告：`docs/reports/2026-08-13-sprint-5-exit-and-cutover-candidate.md`。
+
+**生产最终 release 复验（2026-08-14）**
+
+- PR #6 已合并，最终 release 为 `82de9d215c5b0101aaba8cbff2d1adf6d751ceef`；ECS API/Web OCI revision 精确一致，并已在明确发布授权下切换五个生产容器。
+- CEHub 原私有环境已做 `root:root 0600` 备份；tailer=false、scan interval=35790，以同一旧镜像重建并从安全探针后观察至少 35 分钟，restart=0、读取 200、相关错误日志为 0。
+- Inventory verify 为 `ready`；全量 dry-run source fingerprint 仍为 `d3d903b6bfa05958678b00502e565f0629d34d634242c8adb49c5a6f06d56b54`，五类 source/created/skipped 守恒，`target_writes=0`。
+- 目标 tenant 11 表前后快照逐字节一致，SHA-256 均为 `d02fd41fe4a70c4ac2c4bc9a3715543f63a50a25a30431cfceed7bafb3317a4e`；本次部署未执行 CEHub apply。
+- canonical deploy 完成 0028～0030 与 Agent 安全边界重施；五容器全部健康，生产保持 `delivery=false`，CEHub 容器与静默参数未变化。
+- 最终 release 以强制只读连接通过 2 个导入 Project readiness；公共入口全 200，部署后 10 分钟不健康容器、fatal pattern 与 `/api/projects` 500 均为 0。详细脱敏证据见 `docs/reports/2026-08-14-sprint-5-production-release-revalidation.md`。
+
+**生产正式主入口与只读归档复核（2026-08-14）**
+
+- 业务 Owner 明确宣布 `pdos.beepump.net` 为 PDOS 正式主入口，并授权 30 分钟只读观察、四项目真实登录/查询及 CEHub 只读归档复核；明确禁止 DNS/Nginx、CEHub 写恢复与钉钉外发。
+- 正式窗口 UTC `02:43:51`～`03:14:35`，61 样本、1844 秒；五容器/固定 image、HTTP/TLS、重启、fatal、Project 500、CEHub 归档错误和 `delivery=false` 全部 0 失败。
+- 生产 admin 会话显示 4 个可见项目；C4s、S18-01、D14-04、D15-05 工作区与 OBT/NPD Gate 查询通过，console warning/error 为 0。
+- 独立目标只读事务确认 4 Project / 117 Task / 25 Gate / 14 File Reference / 141 Mapping / 4 Migration Run；窗口内登录 Event/Audit 各 1 且时间一致。
+- CEHub `ce_hub@cehub` 默认/当前事务均只读，4 Project 可读，零行写探针返回 `25006`；原 container ID、restart=0、tailer=false、scanner=35790、读取 200 与窗口归档错误 0 均保持。详细证据见 `docs/reports/2026-08-14-sprint-5-main-entry-observation.md`。
 
 **Error ledger**
 

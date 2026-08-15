@@ -38,9 +38,14 @@
 - [x] S4-1～S4-4 已完成；Sprint 4 Exit Gate 已于 2026-08-12 经人确认通过
 - [ ] S5-1 本地连接器、隔离测试与真实浏览器验收已完成；真实钉钉应用 Exit Gate 经人明确接受延期风险，规范状态保持未勾选，生产继续强制 `delivery=false`
 - [x] S5-2 CEHub 全量迁移工具、S5-3 租户备份/导出、S5-4 退役与切换资产均已完成并通过本地完整门禁
-- [ ] **当前：Sprint 5 生产全量切换发布阻断修复**；只读 `status` 发现 CEHub 导入 Project 的 `/api/projects` 500，release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已失效；修复必须先合并形成新 release，再重新 verify/dry-run
-- [ ] CEHub 保持数据库级只读，未部署、未迁移、未 apply；activity-log tailer 已关闭，但旧 scheduled scanner 仍每 30 分钟产生一次被 `25006` 安全拒绝的心跳写，须另获授权完成临时静默与 35 分钟观察
-- [ ] 新 release 重新产生 source fingerprint 后，仍须 Data Owner 批准并分别获得部署与生产 apply 授权
+- [x] Sprint 5 Project API 发布阻断已修复并合并；最终 release `82de9d215c5b0101aaba8cbff2d1adf6d751ceef` 已部署到生产 migration 0030，2 个导入 Project readiness、公共入口与 10 分钟有界日志验证通过
+- [x] CEHub 保持数据库级只读；activity-log tailer 与 scheduled scanner 已按固定 `35790` 分钟静默，以同一旧镜像重建后观察至少 35 分钟，restart=0、读取 200、相关错误日志为 0
+- [x] 最终 release 的 inventory verify、全量 dry-run 与目标前后只读快照已通过；`target_writes=0` 且目标快照逐字节一致
+- [x] Owner/Admin 登录后的生产 Dashboard 已通过真实浏览器验收；C4s / S18-01 项目组合与 Project Workspace 可读，不再出现“驾驶舱暂不可用”，console warning/error 为 0
+- [x] CEHub 全量生产 apply、独立目标抽查与同参数幂等重放已通过；四项目、117 Task、14 File Reference、141 Mapping 对账一致，重放仅新增成功运行审计
+- [x] 业务 Owner 已宣布 `pdos.beepump.net` 为正式主入口；声明后的 61 样本/1844 秒只读观察、四项目真实查询、目标对账与 CEHub 只读归档复核全部通过
+- [x] Sprint 5 / Cutover Exit 已于 2026-08-14 经 Data Owner、发布 Owner、业务 Owner 共同确认；六 Sprint 建设与本次切换出口完成
+- [ ] **当前：没有待执行的主计划工作项；仅跟踪 S5-1 真实钉钉 smoke 延期残余风险**。canonical checkbox 保持未勾选，CEHub 保持只读归档，钉钉外发保持 `delivery=false`；任何外发、CEHub 写恢复、DNS/Nginx 或最终停机动作仍需新的明确授权
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
