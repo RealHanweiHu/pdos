@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 5 全量 apply、独立抽查与幂等重放已通过，等待业务 Owner 宣布主入口并完成至少 30 分钟观察。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
+> 唯一当前指针：**Sprint 5 主入口声明、1844 秒观察、四项目真实查询与 CEHub 只读归档复核已通过，等待 Data Owner、发布 Owner、业务 Owner 确认 Sprint 5 / Cutover Exit。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1306,10 +1306,10 @@
 - [x] 获得新 release 部署授权，完成 0028～0030 生产部署、Agent 安全边界重施、项目 readiness 与 10 分钟有界观察
 - [x] Owner/Admin 登录后确认 Dashboard 项目组合可读且不再显示“驾驶舱暂不可用”；C4s / S18-01 Project Workspace 均可进入，浏览器 console warning/error 为 0
 - [x] 获得独立生产 apply 授权（明确包含成功后的同参数幂等重放），完成 apply、目标前后快照、独立 Data Owner 口径抽查与幂等验证
-- [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
+- [x] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run、生产部署、apply、独立抽查与幂等重放已通过；尚未获得业务 Owner 主入口声明，也未完成声明后的 30 分钟观察或 Sprint 5 Exit 授权。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run、生产部署、apply、独立抽查、幂等重放、业务 Owner 主入口声明及声明后 1844 秒只读观察均已通过；当前只等待 Sprint 5 / Cutover Exit 的三方人工确认。
 
 **生产 inventory capture（2026-08-13）**
 
@@ -1347,6 +1347,14 @@
 - 目标 tenant 11 表前后快照逐字节一致，SHA-256 均为 `d02fd41fe4a70c4ac2c4bc9a3715543f63a50a25a30431cfceed7bafb3317a4e`；本次部署未执行 CEHub apply。
 - canonical deploy 完成 0028～0030 与 Agent 安全边界重施；五容器全部健康，生产保持 `delivery=false`，CEHub 容器与静默参数未变化。
 - 最终 release 以强制只读连接通过 2 个导入 Project readiness；公共入口全 200，部署后 10 分钟不健康容器、fatal pattern 与 `/api/projects` 500 均为 0。详细脱敏证据见 `docs/reports/2026-08-14-sprint-5-production-release-revalidation.md`。
+
+**生产正式主入口与只读归档复核（2026-08-14）**
+
+- 业务 Owner 明确宣布 `pdos.beepump.net` 为 PDOS 正式主入口，并授权 30 分钟只读观察、四项目真实登录/查询及 CEHub 只读归档复核；明确禁止 DNS/Nginx、CEHub 写恢复与钉钉外发。
+- 正式窗口 UTC `02:43:51`～`03:14:35`，61 样本、1844 秒；五容器/固定 image、HTTP/TLS、重启、fatal、Project 500、CEHub 归档错误和 `delivery=false` 全部 0 失败。
+- 生产 admin 会话显示 4 个可见项目；C4s、S18-01、D14-04、D15-05 工作区与 OBT/NPD Gate 查询通过，console warning/error 为 0。
+- 独立目标只读事务确认 4 Project / 117 Task / 25 Gate / 14 File Reference / 141 Mapping / 4 Migration Run；窗口内登录 Event/Audit 各 1 且时间一致。
+- CEHub `ce_hub@cehub` 默认/当前事务均只读，4 Project 可读，零行写探针返回 `25006`；原 container ID、restart=0、tailer=false、scanner=35790、读取 200 与窗口归档错误 0 均保持。详细证据见 `docs/reports/2026-08-14-sprint-5-main-entry-observation.md`。
 
 **Error ledger**
 

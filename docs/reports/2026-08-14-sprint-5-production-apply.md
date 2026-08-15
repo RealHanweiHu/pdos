@@ -88,7 +88,7 @@ apply 后目标快照 SHA-256 为 `b29695657f642c09598cfcce6a4bb0aec67161c554121
 
 ## 9. 下一人工 Gate
 
-1. 业务 Owner 明确宣布 `pdos.beepump.net` 为 PDOS 主入口；现有域名/TLS 已正确，无需制造 DNS/Nginx 变更。
-2. 从主入口声明时刻起观察至少 30 分钟，复核四项目登录/查询、PDOS 健康日志与 CEHub 只读审计归档。
+1. [x] 业务 Owner 已明确宣布 `pdos.beepump.net` 为 PDOS 主入口；现有域名/TLS 正确，未制造 DNS/Nginx 变更。
+2. [x] 声明后的正式只读窗口持续 1844 秒，四项目登录/查询、PDOS 健康日志与 CEHub 只读审计归档均通过；证据见 `docs/reports/2026-08-14-sprint-5-main-entry-observation.md`。
 3. Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 / Cutover Exit。
 4. S5-1 真实钉钉 password-free login / notification / approval / card smoke 继续作为已接受延期风险，生产保持 `delivery=false`。
