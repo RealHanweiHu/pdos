@@ -1,7 +1,7 @@
 # Sprint 5 生产 release 复验与全量 dry-run 证据
 
 日期：2026-08-14
-结论：Data Owner 已绑定最终 release 与全部只读证据；生产已部署到 migration 0030，并通过服务器端读路径、10 分钟观察和 Owner/Admin 登录后的真实浏览器驾驶舱验收。CEHub apply 未执行，S5-1 真实钉钉外发继续保持延期且 `delivery=false`。
+结论：Data Owner 已绑定最终 release 与全部只读证据；生产已部署到 migration 0030，并通过服务器端读路径、10 分钟观察和 Owner/Admin 登录后的真实浏览器驾驶舱验收。本报告之后的 CEHub 全量 apply、独立抽查与幂等重放亦已通过，见 `docs/reports/2026-08-14-sprint-5-production-apply.md`；S5-1 真实钉钉外发继续保持延期且 `delivery=false`。
 
 ## 1. 固定身份
 
@@ -83,7 +83,7 @@
 - CEHub app 仍为原 image
   `sha256:266a6c8cfc4ee8e695b57b31e640ecd52f5a19c55120132d972ffc187bb4c1bc`，
   原 container ID、启动时间与 restart=0 均未变化，tailer=false、scan interval=35790；
-  未执行 CEHub apply 或幂等重放。
+  本部署阶段未执行 CEHub apply 或幂等重放；后续获独立授权执行的结果见上述生产 apply 报告。
 
 ## 6. 部署后验证
 
@@ -124,11 +124,8 @@
 
 1. 已完成：Owner/Admin 登录后的 Dashboard 与 C4s / S18-01 Project Workspace
    真实浏览器验收。
-2. 待单独授权：CEHub 生产 apply；按 canonical 运行手册，该授权应明确包含成功 apply
-   后使用同一 fingerprint、同一 tenant 与同一有序项目清单立即执行的幂等重放，但不包含
-   主入口声明或钉钉外发。
-3. 授权并完成 apply、目标抽查与幂等重放后，再进行主入口声明、CEHub 只读归档与
-   至少 30 分钟观察。
+2. 已完成：独立授权下的 CEHub 生产 apply、目标只读抽查与同参数幂等重放。
+3. 待业务 Owner：宣布主入口，随后完成 CEHub 只读归档与至少 30 分钟观察。
 4. 最后由 Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 Exit；S5-1
    真实钉钉 smoke 延期风险继续独立保留。
 

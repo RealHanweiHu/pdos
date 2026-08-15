@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 5 生产部署与 Dashboard 登录验收已通过，等待独立 CEHub apply 授权（含成功后同参数幂等重放）。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
+> 唯一当前指针：**Sprint 5 全量 apply、独立抽查与幂等重放已通过，等待业务 Owner 宣布主入口并完成至少 30 分钟观察。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1288,7 +1288,7 @@
 - [x] GREEN：两份版本化 prompt、runtime route/preflight、投影工具与 migration 0030
 - [x] VERIFY：受限 `pdos_agent` 端到端、全量门禁与 Sprint 5 Exit 候选报告；见 `docs/reports/2026-08-13-s5-4-phase-three-agents-acceptance.md`
 
-## 当前工作项：Sprint 5 全量切换候选（2026-08-13，生产部署完成，apply 未执行）
+## 当前工作项：Sprint 5 全量切换候选（2026-08-13，生产 apply/replay 完成，主入口待声明）
 
 - [x] 冻结全量定义：CEHub 全部 Project（含 archived 历史项目），不以当前 4 个未归档项目代替全库盘点
 - [x] 新增 SELECT-only `capture→Data Owner→verify` 两阶段清单指纹门禁，源/目标端点与只读角色继续 fail-close
@@ -1305,11 +1305,11 @@
 - [x] Data Owner 绑定新 release，批准 source fingerprint 与五类 count/预测 created/skipped
 - [x] 获得新 release 部署授权，完成 0028～0030 生产部署、Agent 安全边界重施、项目 readiness 与 10 分钟有界观察
 - [x] Owner/Admin 登录后确认 Dashboard 项目组合可读且不再显示“驾驶舱暂不可用”；C4s / S18-01 Project Workspace 均可进入，浏览器 console warning/error 为 0
-- [ ] 获得独立生产 apply 授权（明确包含成功后的同参数幂等重放），完成 apply、目标前后快照、Data Owner 抽查与幂等验证
+- [x] 获得独立生产 apply 授权（明确包含成功后的同参数幂等重放），完成 apply、目标前后快照、独立 Data Owner 口径抽查与幂等验证
 - [ ] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
 - [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run 与生产部署已通过；本次明确未授权 CEHub apply，因此尚不构成数据转正、主入口声明或 Sprint 5 Exit 授权。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run、生产部署、apply、独立抽查与幂等重放已通过；尚未获得业务 Owner 主入口声明，也未完成声明后的 30 分钟观察或 Sprint 5 Exit 授权。
 
 **生产 inventory capture（2026-08-13）**
 

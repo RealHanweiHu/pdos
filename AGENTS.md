@@ -42,7 +42,8 @@
 - [x] CEHub 保持数据库级只读；activity-log tailer 与 scheduled scanner 已按固定 `35790` 分钟静默，以同一旧镜像重建后观察至少 35 分钟，restart=0、读取 200、相关错误日志为 0
 - [x] 最终 release 的 inventory verify、全量 dry-run 与目标前后只读快照已通过；`target_writes=0` 且目标快照逐字节一致
 - [x] Owner/Admin 登录后的生产 Dashboard 已通过真实浏览器验收；C4s / S18-01 项目组合与 Project Workspace 可读，不再出现“驾驶舱暂不可用”，console warning/error 为 0
-- [ ] **当前：等待单独取得 CEHub apply 授权（含成功后同参数幂等重放）**；PDOS 已运行最终 release、Alembic 为 0030，CEHub 未 apply，钉钉外发仍为 `delivery=false`
+- [x] CEHub 全量生产 apply、独立目标抽查与同参数幂等重放已通过；四项目、117 Task、14 File Reference、141 Mapping 对账一致，重放仅新增成功运行审计
+- [ ] **当前：等待业务 Owner 宣布 `pdos.beepump.net` 主入口，并从声明时刻完成至少 30 分钟观察**；CEHub 继续只读归档，钉钉外发仍为 `delivery=false`
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
