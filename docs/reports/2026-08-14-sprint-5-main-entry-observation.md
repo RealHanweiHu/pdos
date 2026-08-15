@@ -2,7 +2,7 @@
 
 日期：2026-08-14（America/Los_Angeles；生产观察为 UTC 2026-08-15）
 
-结论：**正式主入口声明后的 30 分钟只读观察、四项目真实登录/查询、PDOS 目标只读对账与 CEHub 只读归档复核全部通过。** 当前已具备 Sprint 5 / Cutover Exit 的技术证据，仍等待 Data Owner、发布 Owner、业务 Owner 共同确认；S5-1 真实钉钉 smoke 继续作为已接受延期残余风险。
+结论：**正式主入口声明后的 30 分钟只读观察、四项目真实登录/查询、PDOS 目标只读对账与 CEHub 只读归档复核全部通过；Data Owner、发布 Owner、业务 Owner 已共同确认 Sprint 5 / Cutover Exit。** S5-1 真实钉钉 smoke 作为已接受延期残余风险，canonical checkbox 保持未勾选，生产保持 `delivery=false`。
 
 ## 1. 人工声明与边界
 
@@ -85,6 +85,6 @@ CEHub 仍运行原 `ce-project-hub-app:current` image；没有重建、恢复原
 - 目标复核脚本前两次从 `/reports` 绝对路径启动时，Python 在 import 阶段找不到镜像内 `app` 模块；两次均在创建数据库 engine 和报告前退出。第三次显式设置镜像真实 `PYTHONPATH=/app/server` 后以同一脚本哈希通过；没有覆盖报告或产生数据库写。
 - 本地证据下载分批完成；最终 10 个文件均以 ECS 哈希逐项复核，不影响远端原始证据。
 
-## 9. 下一人工 Gate
+## 9. Sprint 5 / Cutover Exit 人工确认
 
-主入口声明、30 分钟观察、四项目真实查询与 CEHub 当前只读归档技术门禁通过后，仍需 Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 / Cutover Exit。S5-1 真实钉钉 password-free login / notification / approval / card smoke 继续作为已接受延期残余风险，规范 checkbox 保持未勾选，生产保持 `delivery=false`。
+人工于 2026-08-14 明确确认 Sprint 5 / Cutover Exit，并接受 S5-1 真实钉钉 password-free login / notification / approval / card smoke 作为延期残余风险，生产保持 `delivery=false`。该确认完成六 Sprint 建设与本次切换出口，不授权恢复 CEHub 写入、开启钉钉外发、修改 DNS/Nginx 或执行 CEHub 最终停机；这些动作仍需各自新的明确授权。

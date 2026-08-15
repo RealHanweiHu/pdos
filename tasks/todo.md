@@ -1,6 +1,6 @@
 # Current Work Queue
 
-> 唯一当前指针：**Sprint 5 主入口声明、1844 秒观察、四项目真实查询与 CEHub 只读归档复核已通过，等待 Data Owner、发布 Owner、业务 Owner 确认 Sprint 5 / Cutover Exit。** S5-2～S5-4 已完成；S5-1 真实身份/外发 smoke 按人指令延期，canonical checkbox 保持未勾选，生产 `delivery=false`。
+> 唯一当前指针：**六 Sprint 建设与 Sprint 5 / Cutover Exit 已于 2026-08-14 经 Data Owner、发布 Owner、业务 Owner 共同确认完成。** S5-1 真实身份/外发 smoke 作为已接受延期残余风险继续单独跟踪，canonical checkbox 保持未勾选，生产 `delivery=false`；当前没有待执行的主计划工作项。
 > 产品范围与完成状态以 `docs/design/2026-08-09-preview-execution-plan.md` 为准。
 
 ## Gate B0: Baseline Freeze
@@ -1209,7 +1209,7 @@
 
 人工于 2026-08-12 明确回复“确认 Sprint 4 Exit Gate，进入 Sprint 5”。该确认只批准移动执行指针，不构成生产部署、创建/修改钉钉应用、回调地址、群机器人、审批模板或其他外部系统变更授权。
 
-## In Progress: S5-1 钉钉连接器（本地完成，真实应用 Gate 待人）
+## Residual Risk: S5-1 钉钉连接器（本地完成，真实应用 Gate 延期）
 
 **Definition of Ready**
 
@@ -1261,7 +1261,7 @@
 - release `a34c7eb06aaba036bef8c257c30a841c1ec6be0d` 已在 ECS 完成 migration `0027`、Agent 零写边界重施与五服务健康验证；实际 `PDOS_DINGTALK_DELIVERY_ENABLED=false`，容器重启计数为 0。
 - 租户 `beepump` 的 active binding 与项目 `S18-01` 群已通过 Owner/Admin 受审计 API 配置；readiness 已验证 HTTPS、服务器凭据、schema、binding scope、回调密码学、项目群和零 unresolved outbox。
 - 人明确要求“如果必要性不大，先跳过这个，默认已经完成，先完成其他的”。按执行纪律记录为延期/风险接受，不把 0/2 linked users、真实 password-free login、群通知、审批与 card smoke 伪记为 PASS；S5-1 canonical/Exit Gate 保持未通过，Stage C/外发仍需单独授权。
-- 为避免该延期阻塞独立工作，人批准继续 S5-2；不得据此推断生产 ERP/CRM/DingTalk 外发、Stage C 或 Sprint 5 Exit Gate 授权。
+- 为避免该延期阻塞独立工作，人批准继续 S5-2；该批准本身不构成生产 ERP/CRM/DingTalk 外发、Stage C 或 Sprint 5 Exit Gate 授权。Sprint 5 / Cutover Exit 后续已于 2026-08-14 独立明确确认，外发与 Stage C 仍未获授权。
 
 ## 当前工作项：S5-2 ERP Handoff（2026-08-13 启动）
 
@@ -1288,7 +1288,7 @@
 - [x] GREEN：两份版本化 prompt、runtime route/preflight、投影工具与 migration 0030
 - [x] VERIFY：受限 `pdos_agent` 端到端、全量门禁与 Sprint 5 Exit 候选报告；见 `docs/reports/2026-08-13-s5-4-phase-three-agents-acceptance.md`
 
-## 当前工作项：Sprint 5 全量切换候选（2026-08-13，生产 apply/replay 完成，主入口待声明）
+## Completed: Sprint 5 全量切换与只读退役（2026-08-14）
 
 - [x] 冻结全量定义：CEHub 全部 Project（含 archived 历史项目），不以当前 4 个未归档项目代替全库盘点
 - [x] 新增 SELECT-only `capture→Data Owner→verify` 两阶段清单指纹门禁，源/目标端点与只读角色继续 fail-close
@@ -1307,9 +1307,15 @@
 - [x] Owner/Admin 登录后确认 Dashboard 项目组合可读且不再显示“驾驶舱暂不可用”；C4s / S18-01 Project Workspace 均可进入，浏览器 console warning/error 为 0
 - [x] 获得独立生产 apply 授权（明确包含成功后的同参数幂等重放），完成 apply、目标前后快照、独立 Data Owner 口径抽查与幂等验证
 - [x] 业务 Owner 宣布 `pdos.beepump.net` 主入口、验证 CEHub 只读归档并完成观察窗
-- [ ] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
+- [x] 人工确认 Sprint 5 Exit Gate 与切换退役；S5-1 延期残余风险另行跟踪
 
-契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run、生产部署、apply、独立抽查、幂等重放、业务 Owner 主入口声明及声明后 1844 秒只读观察均已通过；当前只等待 Sprint 5 / Cutover Exit 的三方人工确认。
+契约：`docs/design/2026-08-13-sprint-5-cutover-contract.md`；运行手册：`docs/runbooks/sprint-5-cutover-and-retirement.md`。最终 release 的全量 dry-run、生产部署、apply、独立抽查、幂等重放、业务 Owner 主入口声明及声明后 1844 秒只读观察均已通过；Data Owner、发布 Owner、业务 Owner 已共同确认 Sprint 5 / Cutover Exit。
+
+**Sprint 5 / Cutover Exit 人工确认（2026-08-14）**
+
+- 人工明确确认 Sprint 5 / Cutover Exit，并接受 S5-1 真实钉钉 smoke 作为延期残余风险，生产保持 `delivery=false`。
+- 该确认完成六 Sprint 建设与本次切换出口；不把 S5-1 canonical/真实应用 Gate 改写为 PASS，不授权恢复 CEHub 写入、开启钉钉外发、修改 DNS/Nginx 或执行 CEHub 最终停机。
+- 最终候选状态见 `docs/reports/2026-08-13-sprint-5-exit-and-cutover-candidate.md`；主入口与只读归档证据见 `docs/reports/2026-08-14-sprint-5-main-entry-observation.md`。
 
 **生产 inventory capture（2026-08-13）**
 

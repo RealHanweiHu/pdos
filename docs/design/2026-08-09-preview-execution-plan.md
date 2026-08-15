@@ -153,6 +153,8 @@ ai-native-R&D-platform/
 
 **验收**：钉钉免登可用、通知可达；一次 EBOM 交接走完 outbox+对账（或人工降级路径演练）；26 个业务/AI 实体全部落库，Event 基础设施实体持续可用。
 
+**Exit 例外（2026-08-14）**：Data Owner、发布 Owner、业务 Owner 已共同确认 Sprint 5 / Cutover Exit，并明确接受 S5-1 真实钉钉 password-free login / notification / approval / card smoke 为延期残余风险。该例外不把 S5-1 验收或 canonical checkbox 改写为通过，生产继续保持 `PDOS_DINGTALK_DELIVERY_ENABLED=false`；未来真实 smoke 或开启外发仍需新的明确授权。
+
 ## 9. 切换与退役
 
 1. Sprint 2 末起双跑试点（新系统体验 AI 面，老 CEHub 仍是事实源）；
@@ -160,7 +162,7 @@ ai-native-R&D-platform/
 3. Sprint 5 末：选低峰全量迁移 → `pdos.beepump.net` 转正（或接管主域）→ 老 CEHub 转只读归档（保留审计查询期，Manus 切换时同样手法）；
 4. CEHub 仓库侧独立事项：`codex/cehub-v3-2` M0 止血落库照做（现役系统健康问题）；grandfather 幂等失败需查证是否影响现役 main。
 
-切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定，必须包含 archived 历史项目。release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 已完成生产只读 capture、写冻结、inventory verify 与全量 dry-run，但后续只读 `status` 发现 CEHub 导入 Project 的 `/api/projects` 500，故该 release 已失效且未部署/apply；阻断与修复证据见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。必须以修复合并后的新 release 重新 verify/dry-run 并取得 Data Owner、部署/apply 与 Sprint 5 Exit 的逐次批准。
+切换执行契约见 `docs/design/2026-08-13-sprint-5-cutover-contract.md`，操作与回滚见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。全量范围由生产只读盘点绑定并包含全部历史项目。原 release `2ccefa1d2fe6567be4af8370b67aed9164aadd1d` 因 CEHub 导入 Project 的 `/api/projects` 500 保持失效且从未部署/apply；阻断证据见 `docs/reports/2026-08-13-sprint-5-project-api-release-blocker.md`。修复后的最终 release `82de9d215c5b0101aaba8cbff2d1adf6d751ceef` 已完成重新 verify/dry-run、生产部署、全量 apply、独立抽查、幂等重放、主入口声明、1844 秒观察与 CEHub 只读归档复核，并于 2026-08-14 获得 Sprint 5 / Cutover Exit 三方人工确认。
 
 ## 10. 排期总览与风险
 

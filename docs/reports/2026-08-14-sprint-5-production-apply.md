@@ -86,9 +86,9 @@ apply 后目标快照 SHA-256 为 `b29695657f642c09598cfcce6a4bb0aec67161c554121
 - 独立抽查脚本首版在执行前发现缺少 JSON 非原生类型序列化；保留未执行首版，上传新文件名的 v2 并核对哈希后才运行。报告路径从未被覆盖。
 - 首批本地 `scp` 仅完成前四份文件；其余文件分批只读下载，最终逐项哈希与权限复核通过，不影响 ECS 原始证据。
 
-## 9. 下一人工 Gate
+## 9. 后续 Gate 状态
 
 1. [x] 业务 Owner 已明确宣布 `pdos.beepump.net` 为 PDOS 主入口；现有域名/TLS 正确，未制造 DNS/Nginx 变更。
 2. [x] 声明后的正式只读窗口持续 1844 秒，四项目登录/查询、PDOS 健康日志与 CEHub 只读审计归档均通过；证据见 `docs/reports/2026-08-14-sprint-5-main-entry-observation.md`。
-3. Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 / Cutover Exit。
-4. S5-1 真实钉钉 password-free login / notification / approval / card smoke 继续作为已接受延期风险，生产保持 `delivery=false`。
+3. [x] Data Owner、发布 Owner、业务 Owner 已共同确认 Sprint 5 / Cutover Exit。
+4. [x] S5-1 真实钉钉 password-free login / notification / approval / card smoke 作为已接受延期残余风险单独跟踪，canonical checkbox 保持未勾选，生产保持 `delivery=false`。

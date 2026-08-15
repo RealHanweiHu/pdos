@@ -44,7 +44,8 @@
 - [x] Owner/Admin 登录后的生产 Dashboard 已通过真实浏览器验收；C4s / S18-01 项目组合与 Project Workspace 可读，不再出现“驾驶舱暂不可用”，console warning/error 为 0
 - [x] CEHub 全量生产 apply、独立目标抽查与同参数幂等重放已通过；四项目、117 Task、14 File Reference、141 Mapping 对账一致，重放仅新增成功运行审计
 - [x] 业务 Owner 已宣布 `pdos.beepump.net` 为正式主入口；声明后的 61 样本/1844 秒只读观察、四项目真实查询、目标对账与 CEHub 只读归档复核全部通过
-- [ ] **当前：等待 Data Owner、发布 Owner、业务 Owner 共同确认 Sprint 5 / Cutover Exit**；S5-1 真实钉钉 smoke 继续作为已接受延期残余风险，CEHub 保持只读归档，钉钉外发仍为 `delivery=false`
+- [x] Sprint 5 / Cutover Exit 已于 2026-08-14 经 Data Owner、发布 Owner、业务 Owner 共同确认；六 Sprint 建设与本次切换出口完成
+- [ ] **当前：没有待执行的主计划工作项；仅跟踪 S5-1 真实钉钉 smoke 延期残余风险**。canonical checkbox 保持未勾选，CEHub 保持只读归档，钉钉外发保持 `delivery=false`；任何外发、CEHub 写恢复、DNS/Nginx 或最终停机动作仍需新的明确授权
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
