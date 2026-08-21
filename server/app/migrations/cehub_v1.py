@@ -8,6 +8,7 @@ import json
 import re
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime, time
+from functools import lru_cache
 from typing import Any
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
@@ -16,6 +17,7 @@ from sqlalchemy.engine import RowMapping, make_url
 
 from app.db.schema import tables
 from app.db.url import psycopg_database_url
+from app.domain.deliverable_checks import load_manifest
 from app.domain.workflow_templates import (
     NPD_WORKFLOW_TEMPLATE,
     OBT_WORKFLOW_TEMPLATE,
@@ -1242,6 +1244,31 @@ def _task_description(row: dict[str, Any]) -> str | None:
     return "\n\n".join(values) or None
 
 
+@lru_cache(maxsize=1)
+def _task_title_index() -> dict[tuple[str, str, str], str]:
+    index: dict[tuple[str, str, str], str] = {}
+    for item in load_manifest()["items"]:
+        for binding in item["bindings"]:
+            key = (
+                str(binding["projectType"]).lower(),
+                str(binding["phaseId"]),
+                str(binding["taskId"]),
+            )
+            title = str(binding["taskName"]).strip()
+            existing = index.setdefault(key, title)
+            if existing != title:
+                raise ValueError(f"ambiguous CEHub task title binding: {':'.join(key)}")
+    return index
+
+
+def task_title_for(*, project_type: str, phase_id: str, task_id: str) -> str:
+    """Resolve a source task id to the checked-in human-readable task name."""
+    return _task_title_index().get(
+        (project_type.lower(), phase_id, task_id),
+        task_id,
+    )
+
+
 def _task_status(row: dict[str, Any]) -> str:
     return "done" if bool(row["completed"]) else str(row["status"])
 
@@ -1255,6 +1282,9 @@ def _insert_tasks(
     mappings: dict[tuple[str, str], tuple[UUID, str]],
 ) -> int:
     writes = 0
+    project_types = {
+        str(project["source_id"]): str(project["category"]) for project in snapshot.projects
+    }
     for row in snapshot.tasks:
         source_id = str(row["source_id"])
         if ("task", source_id) in mappings:
@@ -1301,7 +1331,11 @@ def _insert_tasks(
                 "workflow_id": _workflow_id(tenant_id, source_project_id),
                 "stage_id": _stage_id(tenant_id, source_project_id, str(row["phase_id"])),
                 "assignee_user_id": assignee_id,
-                "title": str(row["task_id"]),
+                "title": task_title_for(
+                    project_type=project_types[source_project_id],
+                    phase_id=str(row["phase_id"]),
+                    task_id=str(row["task_id"]),
+                ),
                 "description": _task_description(row),
                 "status": status,
                 "blocked_reason": blocked_reason,

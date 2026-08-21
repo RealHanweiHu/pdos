@@ -65,6 +65,42 @@ describe("RequirementPool", () => {
     vi.stubGlobal("fetch", fetchMock);
   });
 
+  it("creates the first customer before creating a linked requirement", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/customers" && init?.method === "POST") {
+        return jsonResponse(customer, 201);
+      }
+      if (path === "/api/customers") return jsonResponse({ items: [] });
+      if (path === "/api/requirements") return jsonResponse({ items: [] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<RequirementPool />);
+
+    await screen.findByRole("heading", { name: "需求池" });
+    await user.click(screen.getByRole("button", { name: "新建客户" }));
+    await user.type(screen.getByLabelText("客户编号"), "ACME");
+    await user.type(screen.getByLabelText("客户名称"), "Acme Pumps");
+    await user.click(screen.getByRole("button", { name: "保存客户" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("客户已创建");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/customers",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ code: "ACME", name: "Acme Pumps" }),
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "新建需求" }));
+    expect(screen.getByRole("option", { name: "ACME · Acme Pumps" })).toHaveValue(
+      "customer-1",
+    );
+  });
+
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();

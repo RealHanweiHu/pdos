@@ -79,16 +79,16 @@ const workItemTimestamps = {
 const waitingTask = {
   id: "task-2",
   project_id: "project-1",
-  stage_id: null,
+  stage_id: "stage-2",
   parent_task_id: null,
   assignee_user_id: null,
   title: "Integrate validation fixture",
-  description: null,
+  description: "完成验证治具集成，并记录接口与验收结果。",
   status: "todo",
   blocked_reason: null,
   priority: "high",
-  start_date: null,
-  due_date: null,
+  start_date: "2026-08-18",
+  due_date: "2026-08-22",
   completed_at: null,
   dependency_task_ids: ["task-1"],
   unresolved_dependency_ids: ["task-1"],
@@ -264,7 +264,9 @@ const ncr = {
 };
 
 function workItemResponse(path: string) {
-  if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask] });
+  if (path.endsWith("/tasks")) return jsonResponse({
+    items: [waitingTask, { ...foundationTask, status: "done", readiness: "complete", completed_at: "2026-08-17T16:00:00Z" }],
+  });
   if (path.endsWith("/issues")) return jsonResponse({ items: [openIssue] });
   if (path.endsWith("/risks")) return jsonResponse({ items: [openRisk] });
   return null;
@@ -317,16 +319,21 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
+    expect(window.location.search).toBe("?project=project-1&tab=overview");
+    expect(screen.queryByLabelText("项目名称")).not.toBeInTheDocument();
     await user.click(screen.getByRole("tab", { name: "时间线" }));
+    expect(window.location.search).toBe("?project=project-1&tab=timeline");
     expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
     for (const stage of stages) expect(screen.getAllByText(stage.name).length).toBeGreaterThan(0);
     await user.click(screen.getByRole("tab", { name: "概览" }));
+    await user.click(screen.getByRole("button", { name: "编辑项目" }));
     const name = screen.getByLabelText("项目名称");
     await user.clear(name);
     await user.type(name, "Updated pump platform");
     await user.click(screen.getByRole("button", { name: "保存更改" }));
 
     expect(await screen.findByRole("status")).toHaveTextContent("项目已更新");
+    expect(screen.queryByLabelText("项目名称")).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/projects/project-1",
       expect.objectContaining({
@@ -411,6 +418,13 @@ describe("ProjectWorkspace", () => {
     expect(screen.getByText("等待前置")).toBeInTheDocument();
     expect(screen.queryByText("已阻塞", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "开始任务" })).not.toBeInTheDocument();
+
+    expect(screen.queryByText("完成验证治具集成，并记录接口与验收结果。")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "查看任务详情 Integrate validation fixture" }));
+    expect(screen.getByText("完成验证治具集成，并记录接口与验收结果。")).toBeInTheDocument();
+    expect(screen.getAllByText("规划阶段").length).toBeGreaterThan(0);
+    expect(screen.getByText("2026-08-18 → 2026-08-22")).toBeInTheDocument();
+    expect(screen.getAllByText("Prepare motor validation fixture").length).toBeGreaterThan(0);
   });
 
   it("loads exception-first Gate readiness and private document metadata lazily", async () => {
@@ -433,15 +447,73 @@ describe("ProjectWorkspace", () => {
     await user.click(screen.getByRole("tab", { name: "Gate" }));
     expect(await screen.findByRole("heading", { name: "2 个例外需要处理" })).toBeInTheDocument();
     expect(screen.getByText("确认概念评审材料")).toBeInTheDocument();
+    expect(screen.getByText("交付检查项")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "查看文档" })).toBeInTheDocument();
     expect(screen.queryByText("供应商交期风险")).not.toBeVisible();
     await user.click(screen.getByRole("button", { name: "展开其余 1 项" }));
     expect(screen.getByText("供应商交期风险")).toBeVisible();
+    expect(screen.getByText("高风险")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "查看风险" }));
+    expect(screen.getByRole("tab", { name: "风险" })).toHaveAttribute("aria-selected", "true");
+
+    await user.click(screen.getByRole("tab", { name: "Gate" }));
 
     await user.click(screen.getByRole("tab", { name: "文档" }));
     expect(await screen.findByText("concept-review.pdf")).toBeInTheDocument();
     expect(screen.getByText(/已抽取/)).toBeInTheDocument();
     expect(screen.queryByText(/object_key/)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "上传并抽取" })).toBeDisabled();
+  });
+
+  it("lets an authorized project owner open the missing Gate signoff round", async () => {
+    const user = userEvent.setup();
+    const roundMissingGate = {
+      ...projectGate,
+      readiness: {
+        ...projectGate.readiness,
+        blocker_keys: ["round:not_open"],
+        blockers: [{ key: "round:not_open", kind: "round", label: "Gate signoff round is not open" }],
+      },
+    };
+    const openedGate = {
+      ...roundMissingGate,
+      status: "reviewing",
+      round: {
+        id: "round-1",
+        round_number: 1,
+        status: "open",
+        signoffs: [{ slot: "product", requirement: "required", status: "pending" }],
+      },
+      readiness: {
+        ...roundMissingGate.readiness,
+        blocker_keys: ["signoff:product"],
+        blockers: [{ key: "signoff:product", kind: "signoff", label: "product signoff is incomplete" }],
+      },
+    };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/gates") && !init?.method) return jsonResponse({ items: [roundMissingGate] });
+      if (path.endsWith("/gates/gate-1/rounds") && init?.method === "POST") {
+        return jsonResponse(openedGate, 201);
+      }
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    await user.click(screen.getByRole("tab", { name: "Gate" }));
+    await user.click(await screen.findByRole("button", { name: "开启签核轮次" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/gates/gate-1/rounds",
+      expect.objectContaining({ method: "POST" }),
+    );
+    expect(await screen.findByText("专业签核")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "批准产品签核" })).toBeInTheDocument();
   });
 
   it("keeps Gate load failures explicit and retryable", async () => {
@@ -648,12 +720,25 @@ describe("ProjectWorkspace", () => {
     await screen.findByRole("tab", { name: "任务" });
     await user.click(screen.getByRole("tab", { name: "任务" }));
     await user.type(screen.getByLabelText("任务标题"), "Review DVT report");
+    await user.click(screen.getByText("补充任务详情（说明、阶段、日期与前置任务）"));
+    await user.type(screen.getByLabelText("任务说明"), "核对 DVT 报告结论与遗留项。");
+    await user.selectOptions(screen.getByLabelText("所属阶段"), "stage-2");
+    await user.type(screen.getByLabelText("开始日期"), "2026-08-20");
+    await user.type(screen.getByLabelText("截止日期"), "2026-08-25");
     await user.click(screen.getByRole("button", { name: "创建任务" }));
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/projects/project-1/tasks",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ title: "Review DVT report", priority: "medium", dependency_task_ids: [] }),
+        body: JSON.stringify({
+          title: "Review DVT report",
+          description: "核对 DVT 报告结论与遗留项。",
+          stage_id: "stage-2",
+          start_date: "2026-08-20",
+          due_date: "2026-08-25",
+          priority: "medium",
+          dependency_task_ids: [],
+        }),
       }),
     );
 
@@ -697,10 +782,12 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
     await user.click(await screen.findByRole("tab", { name: "任务" }));
+    await user.click(screen.getByRole("button", { name: "查看任务详情 Prepare motor validation fixture" }));
     await user.click(screen.getByRole("button", { name: "开始任务" }));
     await user.click(await screen.findByRole("button", { name: "完成任务" }));
 
     await waitFor(() => expect(screen.queryByText("等待前置")).not.toBeInTheDocument());
+    await user.click(screen.getByRole("button", { name: "查看任务详情 Integrate validation fixture" }));
     expect(screen.getByRole("button", { name: "开始任务" })).toBeInTheDocument();
   });
 

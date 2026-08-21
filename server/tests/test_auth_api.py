@@ -174,6 +174,100 @@ def test_unknown_user_and_wrong_password_are_indistinguishable(client: TestClien
     assert wrong_password.json()["detail"]["code"] == "INVALID_CREDENTIALS"
 
 
+def test_user_can_change_own_password_and_revoke_the_current_session(
+    client: TestClient,
+    isolated_auth_database: str,
+) -> None:
+    assert client.post("/api/setup", json=SETUP_PAYLOAD).status_code == 201
+    login = client.post(
+        "/api/auth/login",
+        json={
+            "tenant_slug": "beepump",
+            "username": "owner",
+            "password": SETUP_PAYLOAD["password"],
+        },
+    )
+    token = login.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    rejected = client.post(
+        "/api/auth/change-password",
+        headers=headers,
+        json={
+            "current_password": "wrong current password",
+            "new_password": "rotated production passphrase",
+        },
+    )
+    assert rejected.status_code == 400
+    assert rejected.json()["detail"]["code"] == "INVALID_CURRENT_PASSWORD"
+
+    changed = client.post(
+        "/api/auth/change-password",
+        headers=headers,
+        json={
+            "current_password": SETUP_PAYLOAD["password"],
+            "new_password": "rotated production passphrase",
+        },
+    )
+    assert changed.status_code == 200
+    assert changed.json() == {"changed": True}
+    assert "password" not in changed.text.lower()
+
+    revoked = client.get("/api/auth/me", headers=headers)
+    assert revoked.status_code == 401
+    assert revoked.json()["detail"]["code"] == "INVALID_ACCESS_TOKEN"
+    assert (
+        client.post(
+            "/api/auth/login",
+            json={
+                "tenant_slug": "beepump",
+                "username": "owner",
+                "password": SETUP_PAYLOAD["password"],
+            },
+        ).status_code
+        == 401
+    )
+    assert (
+        client.post(
+            "/api/auth/login",
+            json={
+                "tenant_slug": "beepump",
+                "username": "owner",
+                "password": "rotated production passphrase",
+            },
+        ).status_code
+        == 200
+    )
+
+    engine = create_engine(psycopg_database_url(isolated_auth_database))
+    try:
+        with engine.connect() as connection:
+            event = connection.execute(
+                select(tables.events.c.payload).where(
+                    tables.events.c.event_type == "USER_PASSWORD_CHANGED"
+                )
+            ).scalar_one()
+            audit = (
+                connection.execute(
+                    select(
+                        tables.audit_log.c.before_snapshot,
+                        tables.audit_log.c.after_snapshot,
+                        tables.audit_log.c.context,
+                    ).where(tables.audit_log.c.action == "user.password_change")
+                )
+                .mappings()
+                .one()
+            )
+    finally:
+        engine.dispose()
+    assert event == {"credential_version": 2}
+    serialized = str({"event": event, "audit": audit}).lower()
+    assert SETUP_PAYLOAD["password"] not in serialized
+    assert "rotated production passphrase" not in serialized
+    assert "password_hash" not in serialized
+    assert "argon2" not in serialized
+
+
 def test_concurrent_setup_requests_have_exactly_one_winner() -> None:
     def run_setup() -> int:
         with TestClient(app) as thread_client:

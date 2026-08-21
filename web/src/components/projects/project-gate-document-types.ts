@@ -15,6 +15,7 @@ export type ProjectGate = {
     evaluated_at: string;
   };
   round: {
+    id: string;
     round_number: number;
     status: string;
     signoffs: { slot: string; requirement: string; status: string }[];

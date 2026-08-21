@@ -158,6 +158,82 @@ def seed_other_tenant_requirement(database_url: str) -> tuple[UUID, UUID]:
     return customer_id, requirement_id
 
 
+def test_customer_create_is_tenant_bound_audited_and_conflict_safe(
+    client: TestClient,
+    isolated_requirement_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    headers = bearer_headers(client)
+
+    created = client.post(
+        "/api/customers",
+        headers=headers,
+        json={"code": "ACME", "name": "Acme Pumps"},
+    )
+    assert created.status_code == 201
+    assert created.headers["cache-control"] == "no-store"
+    customer = created.json()
+    assert customer == {
+        "id": customer["id"],
+        "code": "ACME",
+        "name": "Acme Pumps",
+        "status": "active",
+    }
+
+    duplicate = client.post(
+        "/api/customers",
+        headers=headers,
+        json={"code": "ACME", "name": "Duplicate"},
+    )
+    assert duplicate.status_code == 409
+    assert duplicate.json()["detail"]["code"] == "CUSTOMER_CODE_CONFLICT"
+
+    engine = create_engine(psycopg_database_url(isolated_requirement_database))
+    try:
+        with engine.connect() as connection:
+            assert (
+                connection.scalar(
+                    select(tables.customers.c.name).where(
+                        tables.customers.c.tenant_id == tenant_id,
+                        tables.customers.c.id == UUID(customer["id"]),
+                    )
+                )
+                == "Acme Pumps"
+            )
+            event = (
+                connection.execute(
+                    select(tables.events).where(
+                        tables.events.c.tenant_id == tenant_id,
+                        tables.events.c.entity == "customer",
+                    )
+                )
+                .mappings()
+                .one()
+            )
+            audit = (
+                connection.execute(
+                    select(tables.audit_log).where(
+                        tables.audit_log.c.tenant_id == tenant_id,
+                        tables.audit_log.c.entity == "customer",
+                    )
+                )
+                .mappings()
+                .one()
+            )
+    finally:
+        engine.dispose()
+
+    assert event["event_type"] == "CUSTOMER_CREATED"
+    assert event["payload"] == {"customer_code": "ACME", "status": "active"}
+    assert audit["action"] == "customer.create"
+    assert audit["after_snapshot"] == {
+        "code": "ACME",
+        "name": "Acme Pumps",
+        "status": "active",
+    }
+
+
 def test_requirement_http_flow_records_customer_events_and_audit(
     client: TestClient,
     isolated_requirement_database: str,
@@ -465,6 +541,14 @@ def test_requirement_permissions_and_latest_updated_order(
             "/api/requirements",
             headers=engineer_headers,
             json={"code": "DENIED", "title": "Denied"},
+        ).status_code
+        == 403
+    )
+    assert (
+        client.post(
+            "/api/customers",
+            headers=engineer_headers,
+            json={"code": "DENIED", "name": "Denied"},
         ).status_code
         == 403
     )

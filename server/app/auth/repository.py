@@ -257,6 +257,55 @@ class AuthRepository:
                 ),
             )
 
+    def change_password(
+        self,
+        *,
+        tenant_id: UUID,
+        user_id: UUID,
+        expected_auth_version: int,
+        password_hash: str,
+        changed_at: datetime,
+    ) -> int:
+        next_auth_version = expected_auth_version + 1
+        with self._engine.begin() as connection:
+            result = connection.execute(
+                update(tables.users)
+                .where(
+                    tables.users.c.tenant_id == tenant_id,
+                    tables.users.c.id == user_id,
+                    tables.users.c.is_active.is_(True),
+                    tables.users.c.auth_version == expected_auth_version,
+                )
+                .values(
+                    password_hash=password_hash,
+                    auth_version=next_auth_version,
+                    updated_at=changed_at,
+                )
+            )
+            if result.rowcount != 1:
+                raise InvalidCredentialsError
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=user_id,
+            ).record(
+                EventDraft(
+                    event_id=f"user:{user_id}:password-changed:{next_auth_version}",
+                    event_type="USER_PASSWORD_CHANGED",
+                    source="auth_service",
+                    entity_id=user_id,
+                    payload={"credential_version": next_auth_version},
+                    occurred_at=changed_at,
+                ),
+                AuditDraft(
+                    action="user.password_change",
+                    before_snapshot={"credential_version": expected_auth_version},
+                    after_snapshot={"credential_version": next_auth_version},
+                    context={"authentication_method": "local_password"},
+                ),
+            )
+        return next_auth_version
+
     @staticmethod
     def _context_from_mapping(row: RowMapping) -> AuthContext:
         return AuthContext(

@@ -9,6 +9,8 @@ export type LoadedPool = {
   customers: CustomerSummary[];
 };
 
+export type CustomerCreateInput = { code: string; name: string };
+
 function isCustomer(value: unknown): value is CustomerSummary {
   return (
     isRecord(value) &&
@@ -74,4 +76,17 @@ export async function requestPool(): Promise<LoadedPool | null> {
     itemList(customersResponse, isCustomer),
   ]);
   return { identity, requirements, customers };
+}
+
+export async function createCustomer(input: CustomerCreateInput): Promise<CustomerSummary> {
+  const response = await fetch("/api/customers", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) throw new Error("客户创建失败，请检查编号是否重复。");
+  const body = await responseBody(response);
+  if (!isCustomer(body)) throw new Error("invalid customer response");
+  return body;
 }

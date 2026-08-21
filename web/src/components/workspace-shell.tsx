@@ -7,6 +7,7 @@ import {
   GaugeIcon,
   GearSixIcon,
   KanbanIcon,
+  LockKeyIcon,
   PulseIcon,
   PlugsConnectedIcon,
   SignOutIcon,
@@ -56,6 +57,12 @@ const navigation = [
     adminOnly: true,
   },
   {
+    href: "/settings/security",
+    label: "账户安全",
+    icon: LockKeyIcon,
+    key: "account-security",
+  },
+  {
     href: "/settings/integrations/dingtalk",
     label: "钉钉集成",
     icon: PlugsConnectedIcon,
@@ -81,6 +88,7 @@ export function WorkspaceShell({
     | "events"
     | "model-governance"
     | "user-management"
+    | "account-security"
     | "dingtalk-integration";
   children: ReactNode;
   identity: WorkspaceIdentity;

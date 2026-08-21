@@ -110,6 +110,8 @@ describe("Dashboard", () => {
     expect(await screen.findByRole("heading", { name: "驾驶舱" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "项目组合" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "跨项目风险" })).toBeInTheDocument();
+    expect(screen.getByText(/尚无 Finding，不能据此判断 Agent 是否可用/)).toBeInTheDocument();
+    expect(screen.queryByText("Agent 正在值守")).not.toBeInTheDocument();
     const rankedRisks = screen.getAllByTestId("dashboard-risk");
     expect(rankedRisks[0]).toHaveTextContent("Motor validation");
     expect(rankedRisks[1]).toHaveTextContent("Supplier slip");

@@ -8,6 +8,9 @@ from datetime import UTC, datetime
 from app.auth.errors import (
     InvalidAccessTokenError,
     InvalidCredentialsError,
+    InvalidCurrentPasswordError,
+    LocalPasswordUnavailableError,
+    PasswordReuseError,
     TenantContextDeniedError,
 )
 from app.auth.passwords import PasswordService
@@ -98,6 +101,30 @@ class AuthService:
         if context.tenant.status != "active":
             raise TenantContextDeniedError
         return context
+
+    def change_password(
+        self,
+        *,
+        context: AuthContext,
+        current_password: str,
+        new_password: str,
+    ) -> None:
+        if context.user.password_hash is None:
+            raise LocalPasswordUnavailableError
+        if not self._passwords.verify(current_password, context.user.password_hash):
+            raise InvalidCurrentPasswordError
+        if self._passwords.verify(new_password, context.user.password_hash):
+            raise PasswordReuseError
+        try:
+            self._repository.change_password(
+                tenant_id=context.tenant.id,
+                user_id=context.user.id,
+                expected_auth_version=context.user.auth_version,
+                password_hash=self._passwords.hash(new_password),
+                changed_at=datetime.now(UTC),
+            )
+        except InvalidCredentialsError as error:
+            raise InvalidAccessTokenError from error
 
     def issue_external_login(
         self, context: AuthContext, *, authentication_method: str

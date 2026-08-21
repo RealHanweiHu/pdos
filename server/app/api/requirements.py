@@ -19,8 +19,11 @@ from app.domain.requirements import (
     CrmRequirementAlreadyReviewedError,
     CrmRequirementIntakeNotFoundError,
     CrmRequirementReviewRequiredError,
+    CustomerCodeConflictError,
+    CustomerCreate,
     CustomerNotFoundError,
     CustomerRecord,
+    CustomerService,
     RequirementCodeConflictError,
     RequirementCreate,
     RequirementNotFoundError,
@@ -45,6 +48,18 @@ class CustomerListResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     items: list[CustomerSummaryResponse]
+
+
+class CustomerCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    code: str = Field(min_length=1, max_length=64)
+    name: str = Field(min_length=1, max_length=256)
+
+    @field_validator("code", "name", mode="before")
+    @classmethod
+    def normalize_required_text(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
 
 
 class RequirementCreateRequest(BaseModel):
@@ -230,6 +245,38 @@ def list_customers(
         ]
     no_store(response)
     return CustomerListResponse(items=customers)
+
+
+@router.post(
+    "/api/customers",
+    response_model=CustomerSummaryResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_customer(
+    payload: CustomerCreateRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> CustomerSummaryResponse:
+    require_requirement_action(context, Action.REQUIREMENT_CREATE)
+    try:
+        record = CustomerService(engine).create(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            draft=CustomerCreate(code=payload.code, name=payload.name),
+        )
+    except CustomerCodeConflictError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CUSTOMER_CODE_CONFLICT",
+                "message": "Customer code already exists",
+            },
+        ) from error
+    no_store(response)
+    customer = customer_response(record)
+    assert customer is not None
+    return customer
 
 
 @router.post(

@@ -23,6 +23,7 @@ COPY server/app ./app
 COPY server/golden ./golden
 COPY server/migrations ./migrations
 COPY server/scripts ./scripts
+COPY assets/cehub/deliverable-guide-manifest.json /app/assets/cehub/deliverable-guide-manifest.json
 COPY infra/postgres/security/agent-runtime.sql ./infra/postgres/security/agent-runtime.sql
 COPY certs/ApsaraDB-CA-Chain.pem /app/certs/ApsaraDB-CA-Chain.pem
 

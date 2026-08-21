@@ -133,6 +133,7 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     assert "USER pdos" in server_dockerfile
     assert "COPY server/golden ./golden" in server_dockerfile
     assert "COPY server/scripts ./scripts" in server_dockerfile
+    assert "COPY assets/cehub/deliverable-guide-manifest.json" in server_dockerfile
     assert "USER nextjs" in web_dockerfile
     assert "ARG PYTHON_BASE_IMAGE=" in server_dockerfile
     assert "ARG UV_BASE_IMAGE=" in server_dockerfile

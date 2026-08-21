@@ -16,8 +16,10 @@ import type {
 } from "@/components/product-engineering/product-engineering-types";
 import { requestProjectActivity, type ProjectActivity } from "./project-activity";
 import {
+  openProjectGateRound,
   requestProjectDocuments,
   requestProjectGates,
+  signProjectGateRound,
   uploadProjectDocument,
 } from "./project-gate-document-api";
 import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
@@ -86,6 +88,13 @@ function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
 }
 
+function replaceProjectLocation(projectId: string, tab: ProjectWorkspaceTab) {
+  const params = new URLSearchParams();
+  params.set("project", projectId);
+  params.set("tab", tab);
+  window.history.replaceState({}, "", `/projects?${params.toString()}`);
+}
+
 export function ProjectWorkspace() {
   const { replace } = useRouter();
   const actions = useProjectActions({ replace });
@@ -108,6 +117,8 @@ export function ProjectWorkspace() {
   const [productEngineeringStatus, setProductEngineeringStatus] = useState<string | null>(null);
   const [gateState, setGateState] = useState<WorkItemLoadState>("idle");
   const [gates, setGates] = useState<ProjectGate[] | null>(null);
+  const [gateBusy, setGateBusy] = useState(false);
+  const [gateError, setGateError] = useState<string | null>(null);
   const [documentState, setDocumentState] = useState<WorkItemLoadState>("idle");
   const [documents, setDocuments] = useState<ProjectDocument[] | null>(null);
   const [documentBusy, setDocumentBusy] = useState(false);
@@ -273,6 +284,7 @@ export function ProjectWorkspace() {
     gateRequestSequence.current = sequence;
     setGateState("loading");
     setGates(null);
+    setGateError(null);
     try {
       const items = await requestProjectGates(projectId);
       if (gateRequestSequence.current !== sequence) return;
@@ -280,6 +292,40 @@ export function ProjectWorkspace() {
       setGateState("ready");
     } catch {
       if (gateRequestSequence.current === sequence) setGateState("error");
+    }
+  }
+
+  function replaceGate(updated: ProjectGate) {
+    setGates((current) => current?.map((gate) => gate.id === updated.id ? updated : gate) ?? current);
+  }
+
+  async function openGateRound(gate: ProjectGate) {
+    setGateBusy(true);
+    setGateError(null);
+    try {
+      replaceGate(await openProjectGateRound(gate.project_id, gate.id));
+    } catch (error) {
+      setGateError(messageFrom(error));
+    } finally {
+      setGateBusy(false);
+    }
+  }
+
+  async function signGateRound(
+    gate: ProjectGate,
+    slot: "product" | "engineering" | "quality",
+  ) {
+    if (!gate.round) return;
+    setGateBusy(true);
+    setGateError(null);
+    try {
+      replaceGate(
+        await signProjectGateRound(gate.project_id, gate.id, gate.round.id, slot),
+      );
+    } catch (error) {
+      setGateError(messageFrom(error));
+    } finally {
+      setGateBusy(false);
     }
   }
 
@@ -320,6 +366,7 @@ export function ProjectWorkspace() {
   function selectProject(project: Project) {
     actions.selectProject(project);
     setActiveTab("overview");
+    replaceProjectLocation(project.id, "overview");
     setWorkItemError(null);
     setWorkItemStatus(null);
     productRequestSequence.current += 1;
@@ -330,6 +377,7 @@ export function ProjectWorkspace() {
     gateRequestSequence.current += 1;
     setGates(null);
     setGateState("idle");
+    setGateError(null);
     documentRequestSequence.current += 1;
     setDocuments(null);
     setDocumentState("idle");
@@ -463,6 +511,7 @@ export function ProjectWorkspace() {
 
   function changeTab(tab: ProjectWorkspaceTab) {
     setActiveTab(tab);
+    if (actions.selectedProject) replaceProjectLocation(actions.selectedProject.id, tab);
     if (
       tab === "product-engineering" &&
       canViewProductEngineering &&
@@ -610,7 +659,6 @@ export function ProjectWorkspace() {
       errorMessage={actions.errorMessage}
       identity={identity}
       loggingOut={loggingOut}
-      onCancelEdit={actions.clearSelection}
       onCreateIssue={addIssue}
       onCreateRisk={addRisk}
       onCreateTask={addTask}
@@ -639,9 +687,16 @@ export function ProjectWorkspace() {
         status: productEngineeringStatus,
       }}
       gateSurface={{
+        actorRole: identity.user.role,
+        busy: gateBusy,
+        canManage: ["owner", "admin", "project_manager"].includes(identity.user.role),
+        error: gateError,
         gates,
         loadState: gateState,
+        onNavigate: changeTab,
+        onOpenRound: (gate) => void openGateRound(gate),
         onRetry: () => { if (actions.selectedProject) void loadGates(actions.selectedProject.id); },
+        onSignoff: (gate, slot) => void signGateRound(gate, slot),
       }}
       documentSurface={{
         busy: documentBusy,

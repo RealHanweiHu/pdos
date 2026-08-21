@@ -1,3 +1,9 @@
+"use client";
+
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+
 import { ProjectForm, type ProjectFormValues, type ProjectSubmissionResult } from "./project-form";
 import { ProjectStatusActions } from "./project-status-actions";
 import { projectStatusLabels } from "./project-list";
@@ -7,7 +13,6 @@ import type { ProjectWorkItems } from "./project-work-item-types";
 export function ProjectOverview({
   canEdit,
   canViewWorkItems,
-  onCancelEdit,
   onStageTransition,
   onStatusTransition,
   onUpdate,
@@ -17,7 +22,6 @@ export function ProjectOverview({
 }: {
   canEdit: boolean;
   canViewWorkItems: boolean;
-  onCancelEdit: () => void;
   onStageTransition: (stageId: string) => void;
   onStatusTransition: (status: Project["status"]) => void;
   onUpdate: (values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
@@ -25,6 +29,7 @@ export function ProjectOverview({
   saving: boolean;
   workItems: ProjectWorkItems | null;
 }) {
+  const [editing, setEditing] = useState(false);
   const activeTasks = workItems?.tasks.filter((task) => !["done", "skipped"].includes(task.status)).length;
   const openIssues = workItems?.issues.filter((issue) => issue.status !== "closed").length;
   const openRisks = workItems?.risks.filter((risk) => risk.status !== "closed").length;
@@ -43,12 +48,26 @@ export function ProjectOverview({
           <div><dt className="text-muted-foreground">开始日期</dt><dd className="mt-1 font-mono">{project.start_date ?? "未设置"}</dd></div>
           <div><dt className="text-muted-foreground">目标日期</dt><dd className="mt-1 font-mono">{project.target_date ?? "未设置"}</dd></div>
         </dl>
-        {canEdit ? (
-          <div className="border-t pt-4">
-            <ProjectForm busy={saving} key={project.id} onCancel={onCancelEdit} onSubmit={onUpdate} project={project} />
+        {canEdit ? <div className="border-t pt-4">
+          {editing ? (
+            <ProjectForm
+              busy={saving}
+              key={project.id}
+              onCancel={() => setEditing(false)}
+              onSubmit={async (values) => {
+                const result = await onUpdate(values);
+                if (result.ok) setEditing(false);
+                return result;
+              }}
+              project={project}
+            />
+          ) : (
+            <Button onClick={() => setEditing(true)} variant="outline">编辑项目</Button>
+          )}
+          <div className={editing ? "mt-5 border-t pt-4" : "mt-4"}>
             <ProjectStatusActions busy={saving} onStageTransition={onStageTransition} onStatusTransition={onStatusTransition} project={project} />
           </div>
-        ) : null}
+        </div> : null}
       </section>
       <aside className="space-y-4">
         {canViewWorkItems ? (

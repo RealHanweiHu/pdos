@@ -1346,3 +1346,13 @@
 - [x] REPORT：`docs/reports/2026-08-20-dashboard-historical-project-hotfix.md`
 
 当前 canonical 指针仍不变：该 hotfix 只恢复已迁移历史项目读取，不完成 S5-1 真实钉钉应用 Exit Gate 或 Sprint 5 全量切换。
+
+## Ready for Production: 首用入口与项目任务体验修复（2026-08-21，本地候选）
+
+- [x] REPRO：确认历史任务标题为源 ID、任务详情不可见、项目/标签位置不持久化、Gate 无恢复动作
+- [x] RED/GREEN：补齐任务详情/导入标题修复、客户创建、本人改密、AI 状态一致性、Gate 恢复入口与项目工作区交互
+- [x] VERIFY：Server 400、Web 144、lint/type/build、migration 单 head 与真实浏览器桌面/320px 闭环全绿
+- [x] REPORT：`docs/reports/2026-08-21-production-first-use-remediation.md`
+- [ ] PRODUCTION：待人单独授权 migration `0032`、ECS 发布和公网管理员 smoke；本轮未执行生产操作或 Git push
+
+当前 canonical 指针不变：该候选不完成 S5-1 真实钉钉应用 Exit Gate 或 Sprint 5 全量切换。

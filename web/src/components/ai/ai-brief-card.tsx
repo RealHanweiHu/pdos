@@ -69,8 +69,8 @@ export function AiBriefCard({
       ) : null}
       {state === "ready" && brief && brief.items.length === 0 ? (
         <div className="px-4 py-10 text-center">
-          <p className="font-medium">Agent 正在值守</p>
-          <p className="mt-1 text-sm text-muted-foreground">还没有可用于简报的 Finding。</p>
+          <p className="font-medium">还没有可用于简报的 Finding</p>
+          <p className="mt-1 text-sm text-muted-foreground">尚无 Finding，不能据此判断 Agent 是否可用。</p>
         </div>
       ) : null}
       {state === "ready" && brief && brief.items.length > 0 ? (
