@@ -1335,3 +1335,14 @@
 - [x] 生产 migration/deploy/Admin smoke：release `64e2fd74c4035cc05e4e8ec74f5564c7fc89176d`、migration `0031`、五容器 healthy/0 restart；`pdos-admin` 公网登录/权限/审计通过
 
 当前 canonical 指针不变：S5-1 真实钉钉应用 Exit Gate 与 Sprint 5 生产切换仍待人，不因账户管理缺口收口而自动通过。
+
+## Completed: 生产驾驶舱历史项目读取 Hotfix（2026-08-20）
+
+- [x] REPRO：`pdos-admin` 登录/me 为 200，项目列表稳定 500；生产 traceback 定位到 `ProjectService._record_from_row`
+- [x] ROOT CAUSE：4 个 CEHub 历史项目合法无 Development Case，读取模型与前端 validator 错误要求非空
+- [x] RED/GREEN：新增后端生产形态与前端驾驶舱回归；保留新项目 Development Case 硬闸
+- [x] VERIFY：Server 396、Web 134、项目 API、lint/type/build 全绿
+- [x] PRODUCTION：release `1f73cce8f5377398e82c35491d4d2ce1b0cfddc2`；项目列表/4 风险集合/AI brief/驾驶舱全部 200，五容器 healthy/0 restart
+- [x] REPORT：`docs/reports/2026-08-20-dashboard-historical-project-hotfix.md`
+
+当前 canonical 指针仍不变：该 hotfix 只恢复已迁移历史项目读取，不完成 S5-1 真实钉钉应用 Exit Gate 或 Sprint 5 全量切换。
