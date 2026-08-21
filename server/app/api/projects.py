@@ -70,7 +70,7 @@ class ProjectResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     id: UUID
-    development_case_id: UUID
+    development_case_id: UUID | None
     customer_id: UUID | None
     workflow: WorkflowResponse
     current_stage: StageResponse

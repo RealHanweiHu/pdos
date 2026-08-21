@@ -84,7 +84,7 @@ class WorkflowRecord:
 @dataclass(frozen=True)
 class ProjectRecord:
     id: UUID
-    development_case_id: UUID
+    development_case_id: UUID | None
     customer_id: UUID | None
     workflow: WorkflowRecord
     current_stage: StageRecord
@@ -201,7 +201,7 @@ def _record_from_row(
         (stage for stage in stages if stage.id == row["current_stage_id"]),
         None,
     )
-    if current_stage is None or row["development_case_id"] is None or row["owner_user_id"] is None:
+    if current_stage is None or row["owner_user_id"] is None:
         raise ProjectNotFoundError
     return ProjectRecord(
         id=row["id"],
@@ -231,7 +231,9 @@ def _record_from_row(
 
 def _project_snapshot(record: ProjectRecord) -> dict[str, object]:
     return {
-        "development_case_id": str(record.development_case_id),
+        "development_case_id": (
+            str(record.development_case_id) if record.development_case_id is not None else None
+        ),
         "customer_id": str(record.customer_id) if record.customer_id is not None else None,
         "workflow_id": str(record.workflow.id),
         "workflow_code": record.workflow.code,

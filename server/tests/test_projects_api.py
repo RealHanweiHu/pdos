@@ -250,6 +250,66 @@ def test_project_creation_atomically_instantiates_workflow_stages_and_case_trans
     assert project_audits == {"project.create", "development_case.transition"}
 
 
+def test_project_list_keeps_imported_history_without_a_development_case_visible(
+    client: TestClient,
+    isolated_project_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    workflow_id = uuid4()
+    stage_id = uuid4()
+    project_id = uuid4()
+    with create_engine(psycopg_database_url(isolated_project_database)).begin() as connection:
+        connection.execute(
+            tables.workflows.insert(),
+            {
+                "id": workflow_id,
+                "tenant_id": tenant_id,
+                "code": "npd-imported-history",
+                "name": "Imported NPD workflow",
+                "version": 1,
+                "is_active": True,
+            },
+        )
+        connection.execute(
+            tables.stages.insert(),
+            {
+                "id": stage_id,
+                "tenant_id": tenant_id,
+                "workflow_id": workflow_id,
+                "code": "concept",
+                "name": "概念阶段",
+                "sequence": 1,
+            },
+        )
+        connection.execute(
+            tables.projects.insert(),
+            {
+                "id": project_id,
+                "tenant_id": tenant_id,
+                "development_case_id": None,
+                "workflow_id": workflow_id,
+                "current_stage_id": stage_id,
+                "owner_user_id": owner_id,
+                "code": "HIST-001",
+                "name": "Imported historical project",
+                "status": "archived",
+            },
+        )
+
+    response = client.get("/api/projects", headers=bearer_headers(client))
+
+    assert response.status_code == 200
+    assert len(response.json()["items"]) == 1
+    imported = response.json()["items"][0]
+    assert imported["id"] == str(project_id)
+    assert imported["development_case_id"] is None
+    assert imported["code"] == "HIST-001"
+    assert imported["name"] == "Imported historical project"
+    assert imported["status"] == "archived"
+
+
 def test_project_state_stage_and_member_permissions(
     client: TestClient,
     isolated_project_database: str,

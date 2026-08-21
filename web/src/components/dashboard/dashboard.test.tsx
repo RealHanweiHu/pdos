@@ -131,6 +131,23 @@ describe("Dashboard", () => {
     expect(screen.queryByText("当前没有开放风险")).not.toBeInTheDocument();
   });
 
+  it("renders an imported historical project without a Development Case", async () => {
+    const importedProject = { ...project("project-history", "HIST-001"), development_case_id: null };
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [importedProject] });
+      if (path === "/api/ai/brief") return jsonResponse(emptyBrief);
+      if (path.endsWith("/risks")) return jsonResponse({ items: [] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<Dashboard />);
+
+    expect(await screen.findByRole("link", { name: "打开项目 HIST-001" })).toBeInTheDocument();
+    expect(screen.queryByText("驾驶舱暂不可用")).not.toBeInTheDocument();
+  });
+
   it("does not request engineering risks for external roles", async () => {
     fetchMock.mockImplementation(async (input) => {
       const path = String(input);
