@@ -73,6 +73,12 @@ def test_domain_write_events_are_registered_without_changing_the_spec_catalog() 
     assert "REQUIREMENT_CREATED" not in SPEC_EVENT_TYPES
     assert "REQUIREMENT_UPDATED" not in SPEC_EVENT_TYPES
 
+    for event_type in ("USER_CREATED", "USER_UPDATED", "USER_PASSWORD_RESET"):
+        user_event = definition_for(event_type)
+        assert user_event.entity == "user"
+        assert user_event.producer == "user_administration_service"
+        assert user_event.consumers == ("security_audit",)
+
     created = definition_for("REQUIREMENT_CREATED")
     assert created.entity == "requirement"
     assert created.producer == "requirement_service"

@@ -278,6 +278,8 @@ class RequirementService:
         requirement_id: UUID,
         patch: RequirementUpdate,
     ) -> RequirementRecord:
+        if "source" in patch.changes:
+            raise ValueError("requirement source is immutable")
         occurred_at = datetime.now(UTC)
         try:
             with self._engine.begin() as connection:

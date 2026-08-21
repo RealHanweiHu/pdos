@@ -78,6 +78,7 @@ class AuthService:
         encoded = self._tokens.issue(
             user_id=context.user.id,
             tenant_id=context.tenant.id,
+            auth_version=context.user.auth_version,
             issued_at=signed_in_at,
         )
         return TokenGrant(
@@ -92,6 +93,8 @@ class AuthService:
             raise InvalidAccessTokenError
         if context.user.tenant_id != claims.tenant_id or context.tenant.id != claims.tenant_id:
             raise TenantContextDeniedError
+        if context.user.auth_version != claims.auth_version:
+            raise InvalidAccessTokenError
         if context.tenant.status != "active":
             raise TenantContextDeniedError
         return context
@@ -111,6 +114,7 @@ class AuthService:
         encoded = self._tokens.issue(
             user_id=context.user.id,
             tenant_id=context.tenant.id,
+            auth_version=context.user.auth_version,
             issued_at=signed_in_at,
         )
         return TokenGrant(access_token=encoded.token, expires_in=self._token_ttl_seconds)

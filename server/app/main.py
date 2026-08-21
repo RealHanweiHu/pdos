@@ -19,6 +19,7 @@ from app.api.projects import router as projects_router
 from app.api.quality_capa import router as quality_capa_router
 from app.api.quality_complaints import router as quality_complaints_router
 from app.api.requirements import router as requirements_router
+from app.api.users import router as users_router
 from app.api.work_items import router as work_items_router
 
 app = FastAPI(
@@ -28,6 +29,7 @@ app = FastAPI(
 )
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(users_router)
 app.include_router(dingtalk_router)
 app.include_router(ai_router)
 app.include_router(projects_router)

@@ -11,6 +11,7 @@ import {
   PlugsConnectedIcon,
   SignOutIcon,
   TrayIcon,
+  UsersThreeIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -48,6 +49,13 @@ const navigation = [
     adminOnly: true,
   },
   {
+    href: "/governance/users",
+    label: "成员与角色",
+    icon: UsersThreeIcon,
+    key: "user-management",
+    adminOnly: true,
+  },
+  {
     href: "/settings/integrations/dingtalk",
     label: "钉钉集成",
     icon: PlugsConnectedIcon,
@@ -72,6 +80,7 @@ export function WorkspaceShell({
     | "ai-review"
     | "events"
     | "model-governance"
+    | "user-management"
     | "dingtalk-integration";
   children: ReactNode;
   identity: WorkspaceIdentity;

@@ -103,7 +103,8 @@ class RequirementUpdateRequest(BaseModel):
     code: str | None = Field(default=None, min_length=1, max_length=64)
     title: str | None = Field(default=None, min_length=1, max_length=512)
     description: str | None = Field(default=None, max_length=20_000)
-    source: str | None = Field(default=None, max_length=64)
+    # source is intake provenance and immutable after creation: rewriting it would
+    # let a PATCH strip the "crm" marker that gates the mandatory human review.
     status: str | None = Field(
         default=None,
         pattern=r"^(draft|proposed|approved|rejected)$",
@@ -120,7 +121,7 @@ class RequirementUpdateRequest(BaseModel):
     def normalize_required_text(cls, value: object) -> object:
         return value.strip() if isinstance(value, str) else value
 
-    @field_validator("description", "source", mode="before")
+    @field_validator("description", mode="before")
     @classmethod
     def normalize_optional_text(cls, value: object) -> object:
         if isinstance(value, str):

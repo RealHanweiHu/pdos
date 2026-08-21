@@ -93,7 +93,7 @@ def test_dingtalk_migration_matches_metadata_and_keeps_one_head(
         engine.dispose()
 
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0030_phase_three_agents"
+        "0031_user_account_management"
     ]
 
 

@@ -1324,3 +1324,14 @@
 | Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
 | 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |
 | 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 与 ECS build 入口均固化为只构建唯一 `api web`，再按原顺序启动服务，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |
+
+## Completed: 生产端账户管理缺口收口（2026-08-20，本地完成）
+
+- [x] 冻结一次性 setup、Owner/Admin 权限、租户唯一性、本人保护与生产授权边界
+- [x] RED：账户 API、迁移/auth version、BFF 与 UI 权限/交互测试
+- [x] GREEN：migration `0031`、JWT 凭据版本、领域服务、Event/Audit、FastAPI、同源 BFF 与“成员与角色”页面
+- [x] VERIFY：Server 395、Web 133、lint/type/build、迁移回环与真实 Chromium Owner/Admin/非管理员闭环全绿
+- [x] REPORT：`docs/reports/2026-08-20-user-account-management-acceptance.md`
+- [ ] 生产 migration/deploy/Owner smoke：需人单独授权；本次未执行
+
+当前 canonical 指针不变：S5-1 真实钉钉应用 Exit Gate 与 Sprint 5 生产切换仍待人，不因账户管理缺口收口而自动通过。
