@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 from pydantic import SecretStr
 
+from app.ai.gateway import json_document
 from app.ai.golden_runner import evaluate_candidate
 from app.ai.golden_suite import load_golden_suite
 from app.ai.model_catalog import AgentTier, ProtocolKind, ProviderName, ResolvedModelRoute
@@ -36,6 +37,23 @@ def response(content: str) -> ProviderResponse:
         request_id="fake-request",
         model_version="MiniMax-M2.7-test",
     )
+
+
+def test_json_document_accepts_a_single_leading_closed_think_block() -> None:
+    content = (
+        "<think>Internal reasoning that is not part of the output contract.</think>\n\n"
+        '{"label":"high","evidence_codes":["OPEN_ISSUES"]}'
+    )
+
+    assert json_document(content) == ('{"label":"high","evidence_codes":["OPEN_ISSUES"]}')
+
+
+def test_json_document_does_not_strip_unclosed_or_embedded_think_markup() -> None:
+    unclosed = '<think>unfinished\n{"label":"high"}'
+    embedded = 'commentary <think>reasoning</think> {"label":"high"}'
+
+    assert json_document(unclosed) == unclosed
+    assert json_document(embedded) == embedded
 
 
 def write_suite(path: Path) -> None:
@@ -135,14 +153,15 @@ def test_runtime_rejects_a_published_qualification_for_another_suite(tmp_path: P
         load_golden_qualifications(qualification_path, trusted_suite=loaded)
 
 
-def test_checked_in_trusted_suite_and_empty_publication_match() -> None:
+def test_checked_in_trusted_suite_and_published_m3_qualification_match() -> None:
     server_root = Path(__file__).resolve().parents[1]
     loaded = load_golden_suite(server_root / "golden" / "model-gateway-v1.json")
 
-    assert (
-        load_golden_qualifications(
-            server_root / "golden" / "model-qualifications.json",
-            trusted_suite=loaded,
-        )
-        == []
+    qualifications = load_golden_qualifications(
+        server_root / "golden" / "model-qualifications.json",
+        trusted_suite=loaded,
     )
+
+    assert [(item.provider, item.model, item.status) for item in qualifications] == [
+        (ProviderName.MINIMAX, "MiniMax-M3", "passed")
+    ]

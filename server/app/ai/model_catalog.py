@@ -46,7 +46,7 @@ PROVIDER_SPECS = (
         name=ProviderName.MINIMAX,
         protocol=ProtocolKind.OPENAI_COMPATIBLE,
         default_base_url="https://api.minimaxi.com/v1",
-        default_model="MiniMax-M2.7",
+        default_model="MiniMax-M3",
         api_key_environment="PDOS_LLM_MINIMAX_API_KEY",
     ),
     ProviderSpec(

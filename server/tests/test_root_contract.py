@@ -33,7 +33,7 @@ def test_llm_key_is_optional_in_the_development_template() -> None:
 
 def test_llm_templates_preconfigure_the_supported_provider_catalog() -> None:
     expected_presets = {
-        "minimax | openai-compatible | https://api.minimaxi.com/v1 | MiniMax-M2.7",
+        "minimax | openai-compatible | https://api.minimaxi.com/v1 | MiniMax-M3",
         "deepseek | openai-compatible | https://api.deepseek.com | deepseek-v4-flash",
         "glm | openai-compatible | https://open.bigmodel.cn/api/paas/v4 | glm-5.2",
         "openai | openai-compatible | https://api.openai.com/v1 | gpt-5.1",
@@ -48,7 +48,7 @@ def test_llm_templates_preconfigure_the_supported_provider_catalog() -> None:
     }
     expected_provider_settings = {
         "PDOS_LLM_MINIMAX_BASE_URL=https://api.minimaxi.com/v1",
-        "PDOS_LLM_MINIMAX_MODEL=MiniMax-M2.7",
+        "PDOS_LLM_MINIMAX_MODEL=MiniMax-M3",
         "PDOS_LLM_DEEPSEEK_BASE_URL=https://api.deepseek.com",
         "PDOS_LLM_DEEPSEEK_MODEL=deepseek-v4-flash",
         "PDOS_LLM_GLM_BASE_URL=https://open.bigmodel.cn/api/paas/v4",
@@ -65,7 +65,7 @@ def test_llm_templates_preconfigure_the_supported_provider_catalog() -> None:
         assert "PDOS_LLM_PROVIDER=minimax\n" in template
         assert "PDOS_LLM_BASE_URL=https://api.minimaxi.com/v1\n" in template
         assert "PDOS_LLM_API_KEY=\n" in template
-        assert "PDOS_LLM_MODEL=MiniMax-M2.7\n" in template
+        assert "PDOS_LLM_MODEL=MiniMax-M3\n" in template
         assert all(preset in template for preset in expected_presets)
         assert all(f"{key}\n" in template for key in expected_optional_keys)
         assert all(f"{setting}\n" in template for setting in expected_provider_settings)
