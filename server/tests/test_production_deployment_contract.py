@@ -166,6 +166,16 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     assert "/app/certs/ApsaraDB-CA-Chain.pem" in server_dockerfile
 
 
+def test_production_api_build_context_includes_the_frozen_task_manifest() -> None:
+    dockerignore = (REPOSITORY_ROOT / ".dockerignore").read_text().splitlines()
+
+    assert "assets/*" in dockerignore
+    assert "!assets/cehub/" in dockerignore
+    assert "assets/cehub/*" in dockerignore
+    assert "!assets/cehub/deliverable-guide-manifest.json" in dockerignore
+    assert (REPOSITORY_ROOT / "assets/cehub/deliverable-guide-manifest.json").is_file()
+
+
 def test_sprint_zero_runbook_has_preflight_smoke_and_rollback_gates() -> None:
     runbook = (REPOSITORY_ROOT / "docs" / "runbooks" / "sprint-0-ecs-smoke.md").read_text()
 

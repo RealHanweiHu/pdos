@@ -13,6 +13,9 @@ output
 **/*.pyc
 **/*.log
 web
-assets
+assets/*
+!assets/cehub/
+assets/cehub/*
+!assets/cehub/deliverable-guide-manifest.json
 docs
 tasks
