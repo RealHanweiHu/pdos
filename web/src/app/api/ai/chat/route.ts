@@ -7,20 +7,26 @@ import {
   sessionError,
 } from "@/lib/pdos-api";
 
+const AI_CHAT_UPSTREAM_TIMEOUT_MS = 35_000;
+
 export async function POST(request: Request) {
   const token = await currentSessionToken();
   if (!token) return sessionError(401, "INVALID_ACCESS_TOKEN", "Authentication required");
   try {
     const payload = await readBoundedJson(request);
     return forwardJson(
-      await pdosApiFetch("/api/ai/chat", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      await pdosApiFetch(
+        "/api/ai/chat",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      }),
+        AI_CHAT_UPSTREAM_TIMEOUT_MS,
+      ),
     );
   } catch (error) {
     if (error instanceof InvalidRequestBodyError) {

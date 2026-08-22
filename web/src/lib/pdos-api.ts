@@ -23,11 +23,11 @@ function apiBaseUrl() {
   return url;
 }
 
-export async function pdosApiFetch(path: string, init?: RequestInit) {
+export async function pdosApiFetch(path: string, init?: RequestInit, timeoutMs = 5_000) {
   return fetch(new URL(path, apiBaseUrl()), {
     ...init,
     cache: "no-store",
-    signal: AbortSignal.timeout(5_000),
+    signal: AbortSignal.timeout(timeoutMs),
     headers: {
       Accept: "application/json",
       ...init?.headers,

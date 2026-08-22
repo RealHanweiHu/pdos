@@ -94,6 +94,25 @@ describe("AI workspace BFF", () => {
     );
   });
 
+  it("allows AI chat to finish within the model gateway timeout", async () => {
+    const timeoutSpy = vi.spyOn(AbortSignal, "timeout");
+    fetchMock.mockResolvedValueOnce(
+      Response.json({ status: "answered", answer: "Done", citations: [] }),
+    );
+
+    const response = await POST_CHAT(
+      new Request("http://localhost/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_id: "project-1", question: "What changed?" }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(timeoutSpy).toHaveBeenLastCalledWith(35_000);
+    timeoutSpy.mockRestore();
+  });
+
   it("fails closed without a session", async () => {
     getCookie.mockReturnValue(undefined);
     expect((await GET(new Request("http://localhost/api/ai/findings"))).status).toBe(401);
