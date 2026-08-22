@@ -4134,7 +4134,8 @@ tenant_model_settings = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic')",
+        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic', "
+        "'openrouter', 'opencode_go')",
         name="provider_allowed",
     ),
     CheckConstraint("btrim(model) <> ''", name="model_nonblank"),
@@ -4406,7 +4407,8 @@ model_invocations = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic')",
+        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic', "
+        "'openrouter', 'opencode_go')",
         name="provider_allowed",
     ),
     CheckConstraint(

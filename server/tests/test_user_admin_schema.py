@@ -77,7 +77,7 @@ def test_user_account_migration_matches_metadata_and_is_the_single_head(
         engine.dispose()
 
     config = Config(str(SERVER_ROOT / "alembic.ini"))
-    assert ScriptDirectory.from_config(config).get_heads() == ["0032_repair_task_titles"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["0033_expand_model_providers"]
 
 
 def test_user_account_migration_round_trip_and_revocation_downgrade_guard(

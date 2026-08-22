@@ -16,6 +16,8 @@ class ProviderName(StrEnum):
     GLM = "glm"
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
+    OPENROUTER = "openrouter"
+    OPENCODE_GO = "opencode_go"
 
 
 class ProtocolKind(StrEnum):
@@ -76,6 +78,20 @@ PROVIDER_SPECS = (
         default_base_url="https://api.anthropic.com",
         default_model="claude-sonnet-5",
         api_key_environment="ANTHROPIC_API_KEY",
+    ),
+    ProviderSpec(
+        name=ProviderName.OPENROUTER,
+        protocol=ProtocolKind.OPENAI_COMPATIBLE,
+        default_base_url="https://openrouter.ai/api/v1",
+        default_model="openai/gpt-5.2",
+        api_key_environment="PDOS_LLM_OPENROUTER_API_KEY",
+    ),
+    ProviderSpec(
+        name=ProviderName.OPENCODE_GO,
+        protocol=ProtocolKind.OPENAI_COMPATIBLE,
+        default_base_url="https://opencode.ai/zen/go/v1",
+        default_model="deepseek-v4-flash",
+        api_key_environment="PDOS_LLM_OPENCODE_GO_API_KEY",
     ),
 )
 

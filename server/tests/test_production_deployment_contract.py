@@ -63,6 +63,8 @@ def test_production_api_receives_only_server_side_model_configuration() -> None:
     assert api_environment["PDOS_LLM_PROVIDER"] == "${PDOS_LLM_PROVIDER:-minimax}"
     assert api_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
     assert api_environment["PDOS_LLM_ANTHROPIC_API_KEY"] == ("${PDOS_LLM_ANTHROPIC_API_KEY:-}")
+    assert api_environment["PDOS_LLM_OPENROUTER_API_KEY"] == ("${PDOS_LLM_OPENROUTER_API_KEY:-}")
+    assert api_environment["PDOS_LLM_OPENCODE_GO_API_KEY"] == ("${PDOS_LLM_OPENCODE_GO_API_KEY:-}")
     assert api_environment["PDOS_AI_DAILY_TOKEN_BUDGET"] == (
         "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
     )
@@ -95,6 +97,12 @@ def test_production_dispatcher_and_executor_have_disjoint_runtime_credentials() 
     assert "PDOS_ALLOW_SHARED_RUNTIME_DATABASE_URL" not in executor_environment
     assert not any(name.startswith("PDOS_LLM_") for name in dispatcher_environment)
     assert executor_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
+    assert executor_environment["PDOS_LLM_OPENROUTER_API_KEY"] == (
+        "${PDOS_LLM_OPENROUTER_API_KEY:-}"
+    )
+    assert executor_environment["PDOS_LLM_OPENCODE_GO_API_KEY"] == (
+        "${PDOS_LLM_OPENCODE_GO_API_KEY:-}"
+    )
     assert "scripts.run_dispatcher" in str(dispatcher_healthcheck["test"])
     assert "scripts.run_executor" in str(executor_healthcheck["test"])
 

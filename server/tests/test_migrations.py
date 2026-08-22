@@ -10,4 +10,4 @@ def test_migration_history_has_one_append_only_head() -> None:
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0032_repair_task_titles"]
+    assert scripts.get_heads() == ["0033_expand_model_providers"]

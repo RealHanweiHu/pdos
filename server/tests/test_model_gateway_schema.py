@@ -39,6 +39,14 @@ def constraint_names(table: Table, constraint_type: type[Constraint]) -> set[str
     }
 
 
+def check_constraint_sql(table: Table, name: str) -> str:
+    return next(
+        str(constraint.sqltext)
+        for constraint in table.constraints
+        if isinstance(constraint, CheckConstraint) and constraint.name == name
+    )
+
+
 def index_names(table: Table) -> set[str]:
     return {
         index.name
@@ -69,6 +77,12 @@ def test_model_gateway_metadata_freezes_settings_and_invocation_contracts() -> N
     assert "fk_tenant_model_settings_tenant_updater" in constraint_names(
         tables.tenant_model_settings, ForeignKeyConstraint
     )
+    settings_provider_sql = check_constraint_sql(
+        tables.tenant_model_settings,
+        "ck_tenant_model_settings_provider_allowed",
+    )
+    assert "'openrouter'" in settings_provider_sql
+    assert "'opencode_go'" in settings_provider_sql
 
     assert set(tables.model_invocations.c.keys()) == {
         "id",
@@ -107,6 +121,12 @@ def test_model_gateway_metadata_freezes_settings_and_invocation_contracts() -> N
     assert "fk_model_invocations_tenant_project" in constraint_names(
         tables.model_invocations, ForeignKeyConstraint
     )
+    invocation_provider_sql = check_constraint_sql(
+        tables.model_invocations,
+        "ck_model_invocations_provider_allowed",
+    )
+    assert "'openrouter'" in invocation_provider_sql
+    assert "'opencode_go'" in invocation_provider_sql
     assert {
         "ix_model_invocations_tenant_created",
         "ix_model_invocations_tenant_agent_created",
@@ -178,6 +198,57 @@ def valid_invocation(tenant_id: UUID, *, project_id: UUID | None = None) -> dict
         "normalized_cost_microusd": 15,
         "structured_attempts": 1,
     }
+
+
+def test_database_persists_openrouter_and_opencode_go_audit_identities(
+    model_gateway_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(model_gateway_database_url))
+    tenant_id = uuid4()
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.tenants.insert(),
+                {"id": tenant_id, "slug": "aggregators", "name": "Aggregators"},
+            )
+            connection.execute(
+                tables.tenant_model_settings.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": tenant_id,
+                    "provider": "openrouter",
+                    "model": "openai/gpt-5.2",
+                    "daily_token_budget": 2_000_000,
+                },
+            )
+            invocation = valid_invocation(tenant_id)
+            invocation.update(
+                {
+                    "provider": "opencode_go",
+                    "model": "deepseek-v4-flash",
+                }
+            )
+            connection.execute(tables.model_invocations.insert(), invocation)
+
+        with engine.connect() as connection:
+            assert (
+                connection.execute(
+                    select(tables.tenant_model_settings.c.provider).where(
+                        tables.tenant_model_settings.c.tenant_id == tenant_id
+                    )
+                ).scalar_one()
+                == "openrouter"
+            )
+            assert (
+                connection.execute(
+                    select(tables.model_invocations.c.provider).where(
+                        tables.model_invocations.c.tenant_id == tenant_id
+                    )
+                ).scalar_one()
+                == "opencode_go"
+            )
+    finally:
+        engine.dispose()
 
 
 def test_database_enforces_model_gateway_scope_usage_and_immutability(

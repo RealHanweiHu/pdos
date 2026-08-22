@@ -38,6 +38,8 @@ def test_llm_templates_preconfigure_the_supported_provider_catalog() -> None:
         "glm | openai-compatible | https://open.bigmodel.cn/api/paas/v4 | glm-5.2",
         "openai | openai-compatible | https://api.openai.com/v1 | gpt-5.1",
         "anthropic | native | SDK default | claude-sonnet-5",
+        "openrouter | openai-compatible | https://openrouter.ai/api/v1 | openai/gpt-5.2",
+        "opencode_go | openai-compatible | https://opencode.ai/zen/go/v1 | deepseek-v4-flash",
     }
     expected_optional_keys = {
         "PDOS_LLM_MINIMAX_API_KEY=",
@@ -45,6 +47,8 @@ def test_llm_templates_preconfigure_the_supported_provider_catalog() -> None:
         "PDOS_LLM_GLM_API_KEY=",
         "PDOS_LLM_OPENAI_API_KEY=",
         "ANTHROPIC_API_KEY=",
+        "PDOS_LLM_OPENROUTER_API_KEY=",
+        "PDOS_LLM_OPENCODE_GO_API_KEY=",
     }
     expected_provider_settings = {
         "PDOS_LLM_MINIMAX_BASE_URL=https://api.minimaxi.com/v1",
@@ -57,6 +61,10 @@ def test_llm_templates_preconfigure_the_supported_provider_catalog() -> None:
         "PDOS_LLM_OPENAI_MODEL=gpt-5.1",
         "PDOS_LLM_ANTHROPIC_BASE_URL=https://api.anthropic.com",
         "PDOS_LLM_ANTHROPIC_MODEL=claude-sonnet-5",
+        "PDOS_LLM_OPENROUTER_BASE_URL=https://openrouter.ai/api/v1",
+        "PDOS_LLM_OPENROUTER_MODEL=openai/gpt-5.2",
+        "PDOS_LLM_OPENCODE_GO_BASE_URL=https://opencode.ai/zen/go/v1",
+        "PDOS_LLM_OPENCODE_GO_MODEL=deepseek-v4-flash",
     }
 
     for template_name in (".env.example", ".env.production.example"):
