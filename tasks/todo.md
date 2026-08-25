@@ -1383,9 +1383,9 @@
 - [x] RED：证明原 production preflight 会放过错 provider、错模型、篡改主/专用 base URL、无凭据与无资格等 6 类 AI 未激活状态
 - [x] GREEN：production preflight 固定本次 release 的 MiniMax M3、官方 endpoint、至少一个服务端 key 与 checked-in golden qualification；37 项聚焦测试全绿
 - [x] 本地生产文件的 M3 激活子集通过新门禁；Ruff/format/mypy 聚焦门禁全绿
-- [x] 完整 `make check` 全绿：916 个锁定依赖/0 已知漏洞、Server 413、Web 145、Ruff/253 format、mypy 217、ESLint/typegen/TypeScript、Next 37 页生产构建与 compileall 全部通过
-- [ ] 经人明确授权，将 3 条合成、白名单投影后的 golden-case 发送给 MiniMax M3 完成真实复验；安全审查未接受“启用生产”的概括授权作为评测数据出站授权
-- [ ] 人工复核 secret-free 报告：3/3、pass rate 100%、suite version/digest 与可信根精确匹配
-- [ ] 补齐本地 `.env.production` 的 `PDOS_WORKER_DATABASE_URL` 等受限生产账号配置后，完整 `make production-preflight` 全绿；账号值只由人提供
+- [x] 完整 `make check` 全绿：916 个锁定依赖/0 已知漏洞、Server 414、Web 145、Ruff/253 format、mypy 217、ESLint/typegen/TypeScript、Next 37 页生产构建与 compileall 全部通过
+- [x] 经人于 2026-08-24 明确授权，将 3 条合成、白名单投影后的 golden-case 发送给 MiniMax M3 完成真实复验；3/3 均一次通过、0 重试/0 错误，见 `docs/reports/2026-08-24-minimax-m3-production-qualification.md`
+- [x] 人于 2026-08-24 复核 secret-free 报告：3/3、pass rate 100%、suite version/digest 与可信根精确匹配
+- [x] 人补齐本地 `.env.production` 的两个受限数据库账号 DSN；完整 `make production-preflight` 全绿且未输出配置值，生产模板与合同测试同步补齐
 - [ ] 创建并验收新的 release SHA；push、ECS build/deploy、migration、安全权限重施与容器重启均在各自人工授权后执行
 - [ ] 部署后 Owner/Admin governance ≥1 eligible model、MiniMax M3 被选中、合成 Chat 成功、invocation 留痕与移除模型降级演练全绿

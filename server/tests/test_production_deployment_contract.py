@@ -107,6 +107,14 @@ def test_production_dispatcher_and_executor_have_disjoint_runtime_credentials() 
     assert "scripts.run_executor" in str(executor_healthcheck["test"])
 
 
+def test_production_environment_template_declares_isolated_runtime_database_urls() -> None:
+    environment_template = (REPOSITORY_ROOT / ".env.production.example").read_text()
+
+    assert "DATABASE_URL=postgresql://pdos_app:<密码>@" in environment_template
+    assert "PDOS_WORKER_DATABASE_URL=postgresql://pdos_worker:<独立密码>@" in environment_template
+    assert "PDOS_AGENT_DATABASE_URL=postgresql://pdos_agent:<另一独立密码>@" in environment_template
+
+
 def test_production_dingtalk_worker_is_app_role_fail_closed_and_fixed_egress() -> None:
     service = production_services()["dingtalk"]
     environment = cast(dict[str, str], service["environment"])
