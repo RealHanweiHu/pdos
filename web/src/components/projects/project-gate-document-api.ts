@@ -6,7 +6,7 @@ async function json(response: Response) {
   return response.json() as Promise<unknown>;
 }
 
-function isGate(value: unknown): value is ProjectGate {
+export function isGate(value: unknown): value is ProjectGate {
   return isRecord(value) && typeof value.id === "string" && typeof value.status === "string" &&
     typeof value.is_current === "boolean" && isRecord(value.stage) &&
     typeof value.stage.id === "string" && typeof value.stage.code === "string" &&
@@ -39,6 +39,41 @@ export async function requestProjectGates(projectId: string): Promise<ProjectGat
     throw new Error("Gate 响应无效");
   }
   return body.items;
+}
+
+export async function openProjectGateRound(
+  projectId: string,
+  gateId: string,
+): Promise<ProjectGate> {
+  const body = await json(
+    await fetch(
+      `/api/projects/${encodeURIComponent(projectId)}/gates/${encodeURIComponent(gateId)}/rounds`,
+      { method: "POST", credentials: "same-origin" },
+    ),
+  );
+  if (!isGate(body)) throw new Error("Gate 响应无效");
+  return body;
+}
+
+export async function signProjectGateRound(
+  projectId: string,
+  gateId: string,
+  roundId: string,
+  slot: "product" | "engineering" | "quality",
+): Promise<ProjectGate> {
+  const body = await json(
+    await fetch(
+      `/api/projects/${encodeURIComponent(projectId)}/gates/${encodeURIComponent(gateId)}/rounds/${encodeURIComponent(roundId)}/signoffs/${slot}`,
+      {
+        method: "PUT",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "approved", note: null }),
+      },
+    ),
+  );
+  if (!isGate(body)) throw new Error("Gate 响应无效");
+  return body;
 }
 
 export async function requestProjectDocuments(projectId: string): Promise<ProjectDocument[]> {

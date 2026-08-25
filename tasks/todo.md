@@ -1331,3 +1331,47 @@
 | Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
 | 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |
 | 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 与 ECS build 入口均固化为只构建唯一 `api web`，再按原顺序启动服务，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |
+
+## Completed: 生产端账户管理缺口收口（2026-08-20，生产已发布）
+
+- [x] 冻结一次性 setup、Owner/Admin 权限、租户唯一性、本人保护与生产授权边界
+- [x] RED：账户 API、迁移/auth version、BFF 与 UI 权限/交互测试
+- [x] GREEN：migration `0031`、JWT 凭据版本、领域服务、Event/Audit、FastAPI、同源 BFF 与“成员与角色”页面
+- [x] VERIFY：Server 395、Web 133、lint/type/build、迁移回环与真实 Chromium Owner/Admin/非管理员闭环全绿
+- [x] REPORT：`docs/reports/2026-08-20-user-account-management-acceptance.md`
+- [x] 生产 migration/deploy/Admin smoke：release `64e2fd74c4035cc05e4e8ec74f5564c7fc89176d`、migration `0031`、五容器 healthy/0 restart；`pdos-admin` 公网登录/权限/审计通过
+
+当前 canonical 指针不变：S5-1 真实钉钉应用 Exit Gate 与 Sprint 5 生产切换仍待人，不因账户管理缺口收口而自动通过。
+
+## Completed: 生产驾驶舱历史项目读取 Hotfix（2026-08-20）
+
+- [x] REPRO：`pdos-admin` 登录/me 为 200，项目列表稳定 500；生产 traceback 定位到 `ProjectService._record_from_row`
+- [x] ROOT CAUSE：4 个 CEHub 历史项目合法无 Development Case，读取模型与前端 validator 错误要求非空
+- [x] RED/GREEN：新增后端生产形态与前端驾驶舱回归；保留新项目 Development Case 硬闸
+- [x] VERIFY：Server 396、Web 134、项目 API、lint/type/build 全绿
+- [x] PRODUCTION：release `1f73cce8f5377398e82c35491d4d2ce1b0cfddc2`；项目列表/4 风险集合/AI brief/驾驶舱全部 200，五容器 healthy/0 restart
+- [x] REPORT：`docs/reports/2026-08-20-dashboard-historical-project-hotfix.md`
+
+当前 canonical 指针仍不变：该 hotfix 只恢复已迁移历史项目读取，不完成 S5-1 真实钉钉应用 Exit Gate 或 Sprint 5 全量切换。
+
+## Completed: 首用入口与项目任务体验修复（2026-08-21，生产已发布）
+
+- [x] REPRO：确认历史任务标题为源 ID、任务详情不可见、项目/标签位置不持久化、Gate 无恢复动作
+- [x] RED/GREEN：补齐任务详情/导入标题修复、客户创建、本人改密、AI 状态一致性、Gate 恢复入口与项目工作区交互
+- [x] VERIFY：Server 401、Web 144、lint/type/build、migration 单 head 与真实浏览器桌面/320px 闭环全绿
+- [x] REPORT：`docs/reports/2026-08-21-production-first-use-remediation.md`
+- [x] PRODUCTION：release `905e888fb3b183be8f14d9fad13b20535569c1d7`、migration `0032`、117 条任务标题修复、管理员公网 smoke 与 43 分钟 healthy/0 restart 观察全绿；未执行 Git push
+
+当前 canonical 指针不变：本次发布不完成 S5-1 真实钉钉应用 Exit Gate 或 Sprint 5 全量切换；截至该次生产发布，MiniMax 尚未完成单独的数据出站授权、golden-case 人工复核和资格发布，后续本地候选记录不反向改写这项部署事实。
+
+## Completed: 代码基线统一（2026-08-24，仅本地）
+
+- [x] 以 `origin/main@499db37` 为第一父提交，保留生产全库只读 capture、切换契约/运行手册加固与同步门禁证据
+- [x] 以真实 merge 合入 `codex/sprint-5@89fc234` 的 10 个本地提交；不 rebase、不 squash，原始提交 SHA 与祖先关系保持不变
+- [x] 保留生产已验证 release `905e888fb3b183be8f14d9fad13b20535569c1d7`（migration `0032`）；账户管理 `64e2fd7`、历史项目 hotfix `1f73cce` 及其验收报告同样保留
+- [x] 区分部署事实与本地候选：`2d53622` MiniMax M3 资格记录、`492668f` Chat BFF 延时和 `89fc234` provider/migration `0033` 尚未据此部署或通过 Sprint 5 Exit
+- [x] 保持 canonical S5-1 checkbox、`delivery=false` 与全量切换待人工确认状态不变
+- [x] 合并态完整 `make check` 全绿：916 个锁定依赖/0 已知漏洞、Server 404、Web 145、Ruff/format、mypy 217、ESLint/typegen/TypeScript、Next 37 页生产构建与 compileall 全部通过
+- [x] 创建本地 merge commit；任何 remote push 仅在用户明确授权后执行
+
+未纳入本次基线：未跟踪的 `docs/design/2026-08-21-product-usability-optimization-plan.md`（仍待 PO 拍板）。

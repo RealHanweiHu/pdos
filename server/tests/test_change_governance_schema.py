@@ -77,5 +77,5 @@ def test_change_migration_matches_metadata_and_single_head(change_database_url: 
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0030_phase_three_agents"
+        "0033_expand_model_providers"
     ]

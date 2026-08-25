@@ -108,7 +108,6 @@ export function ProjectWorkspaceView({
   errorMessage,
   identity,
   loggingOut,
-  onCancelEdit,
   onCreateIssue,
   onCreateRisk,
   onCreateTask,
@@ -145,7 +144,6 @@ export function ProjectWorkspaceView({
   errorMessage: string | null;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
-  onCancelEdit: () => void;
   onCreateIssue: (input: IssueCreateInput) => Promise<boolean>;
   onCreateRisk: (input: RiskCreateInput) => Promise<boolean>;
   onCreateTask: (input: TaskCreateInput) => Promise<boolean>;
@@ -162,9 +160,16 @@ export function ProjectWorkspaceView({
   projects: Project[];
   productEngineering: ProductEngineeringWorkspaceProps;
   gateSurface: {
+    actorRole: string;
+    busy: boolean;
+    canManage: boolean;
+    error: string | null;
     gates: ProjectGate[] | null;
     loadState: WorkItemLoadState;
+    onNavigate: (tab: ProjectWorkspaceTab) => void;
+    onOpenRound: (gate: ProjectGate) => void;
     onRetry: () => void;
+    onSignoff: (gate: ProjectGate, slot: "product" | "engineering" | "quality") => void;
   };
   documentSurface: {
     busy: boolean;
@@ -265,7 +270,7 @@ export function ProjectWorkspaceView({
               <ProjectOverview
                 canEdit={canEdit}
                 canViewWorkItems={canViewWorkItems}
-                onCancelEdit={onCancelEdit}
+                key={selectedProject.id}
                 onStageTransition={(stageId) => onStageTransition(selectedProject, stageId)}
                 onStatusTransition={(status) => onStatusTransition(selectedProject, status)}
                 onUpdate={(values) => onUpdate(selectedProject, values)}
@@ -276,7 +281,7 @@ export function ProjectWorkspaceView({
             ) : null}
             {activeTab === "timeline" ? <ProjectTimeline activities={activities} activityError={activityError} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject} /> : null}
             {activeTab === "tasks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
-            {activeTab === "tasks" && workItems ? <TaskPanel busy={workItemBusy} onCreate={onCreateTask} onTransition={onTransitionTask} tasks={workItems.tasks} /> : null}
+            {activeTab === "tasks" && workItems ? <TaskPanel busy={workItemBusy} onCreate={onCreateTask} onTransition={onTransitionTask} stages={selectedProject.workflow.stages} tasks={workItems.tasks} /> : null}
             {activeTab === "issues" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "issues" && workItems ? <IssuePanel busy={workItemBusy} issues={workItems.issues} onCreate={onCreateIssue} onTransition={onTransitionIssue} /> : null}
             {activeTab === "risks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
@@ -286,8 +291,7 @@ export function ProjectWorkspaceView({
             ) : null}
             {activeTab === "gates" ? (
               <ProjectGatePanel
-                gates={gateSurface.gates}
-                onRetry={gateSurface.onRetry}
+                {...gateSurface}
                 state={gateSurface.loadState}
               />
             ) : null}

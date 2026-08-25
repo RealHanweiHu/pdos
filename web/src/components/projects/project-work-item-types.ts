@@ -72,6 +72,10 @@ export type ProjectWorkItems = {
 
 export type TaskCreateInput = {
   title: string;
+  description?: string | null;
+  stage_id?: string | null;
+  start_date?: string | null;
+  due_date?: string | null;
   priority: WorkItemPriority;
   dependency_task_ids: string[];
 };

@@ -18,6 +18,7 @@ import type {
   TaskTransitionInput,
   WorkItemPriority,
 } from "./project-work-item-types";
+import type { ProjectStage } from "./project-types";
 
 const controlClass =
   "min-h-11 w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/20 disabled:opacity-60";
@@ -102,21 +103,32 @@ export function TaskPanel({
   busy,
   onCreate,
   onTransition,
+  stages,
   tasks,
 }: {
   busy: boolean;
   onCreate: (input: TaskCreateInput) => Promise<boolean>;
   onTransition: (task: ProjectTask, input: TaskTransitionInput) => Promise<boolean>;
+  stages: ProjectStage[];
   tasks: ProjectTask[];
 }) {
   const [blockedReason, setBlockedReason] = useState<Record<string, string>>({});
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    const optional = (name: string) => {
+      const value = String(data.get(name) ?? "").trim();
+      return value || null;
+    };
     const created = await onCreate({
       title: String(data.get("title") ?? "").trim(),
+      description: optional("description"),
+      stage_id: optional("stage_id"),
+      start_date: optional("start_date"),
+      due_date: optional("due_date"),
       priority: String(data.get("priority") ?? "medium") as WorkItemPriority,
       dependency_task_ids: data.getAll("dependency_task_ids").map(String),
     });
@@ -136,29 +148,62 @@ export function TaskPanel({
           <select className={`${controlClass} mt-1`} defaultValue="medium" disabled={busy} id="task-priority" name="priority"><PriorityOptions /></select>
         </label>
         <Button className="h-11" disabled={busy} type="submit">创建任务</Button>
-        {tasks.length > 0 ? (
-          <details className="lg:col-span-3">
-            <summary className="min-h-11 py-3 text-xs font-medium text-muted-foreground">选择前置任务（可选）</summary>
-            <fieldset className="grid gap-2 rounded-lg border bg-background p-3 sm:grid-cols-2">
-              <legend className="sr-only">前置任务</legend>
-              {tasks.map((task) => (
-                <label className="flex min-h-11 items-center gap-2 text-xs" key={task.id}>
-                  <input className="size-4 accent-primary" disabled={busy} name="dependency_task_ids" type="checkbox" value={task.id} />
-                  <span className="truncate">{task.title}</span>
-                </label>
-              ))}
-            </fieldset>
-          </details>
-        ) : null}
+        <details className="lg:col-span-3">
+          <summary className="min-h-11 py-3 text-xs font-medium text-muted-foreground">补充任务详情（说明、阶段、日期与前置任务）</summary>
+          <div className="grid gap-3 rounded-lg border bg-background p-3 sm:grid-cols-2 lg:grid-cols-4">
+            <label className="text-xs font-medium sm:col-span-2 lg:col-span-4" htmlFor="task-description">
+              任务说明
+              <textarea className={`${controlClass} mt-1 min-h-24 resize-y`} disabled={busy} id="task-description" maxLength={20_000} name="description" />
+            </label>
+            <label className="text-xs font-medium sm:col-span-2" htmlFor="task-stage">
+              所属阶段
+              <select className={`${controlClass} mt-1`} disabled={busy} id="task-stage" name="stage_id">
+                <option value="">未指定</option>
+                {stages.map((stage) => <option key={stage.id} value={stage.id}>{stage.name}</option>)}
+              </select>
+            </label>
+            <label className="text-xs font-medium" htmlFor="task-start-date">
+              开始日期
+              <input className={`${controlClass} mt-1`} disabled={busy} id="task-start-date" name="start_date" type="date" />
+            </label>
+            <label className="text-xs font-medium" htmlFor="task-due-date">
+              截止日期
+              <input className={`${controlClass} mt-1`} disabled={busy} id="task-due-date" name="due_date" type="date" />
+            </label>
+            {tasks.length > 0 ? (
+              <fieldset className="grid gap-2 border-t pt-3 sm:col-span-2 sm:grid-cols-2 lg:col-span-4">
+                <legend className="text-xs font-medium">前置任务（可选）</legend>
+                {tasks.map((task) => (
+                  <label className="flex min-h-11 items-center gap-2 text-xs" key={task.id}>
+                    <input className="size-4 accent-primary" disabled={busy} name="dependency_task_ids" type="checkbox" value={task.id} />
+                    <span className="truncate">{task.title}</span>
+                  </label>
+                ))}
+              </fieldset>
+            ) : null}
+          </div>
+        </details>
       </form>
       {tasks.length === 0 ? <EmptyRow>还没有任务。创建第一条可执行工作。</EmptyRow> : (
         <ul className="divide-y" role="list">
           {tasks.map((task) => {
             const canStart = task.status === "todo" && task.readiness === "ready";
             const canBlock = task.status === "todo" || task.status === "in_progress";
+            const expanded = expandedTaskId === task.id;
+            const stageName = stages.find((stage) => stage.id === task.stage_id)?.name ?? "未指定";
+            const dependencies = task.dependency_task_ids.map(
+              (dependencyId) => tasks.find((item) => item.id === dependencyId)?.title ?? dependencyId,
+            );
             return (
-              <li className="p-4" key={task.id}>
-                <div className="flex flex-wrap items-start gap-2">
+              <li key={task.id}>
+                <button
+                  aria-controls={`task-detail-${task.id}`}
+                  aria-expanded={expanded}
+                  aria-label={`${expanded ? "收起" : "查看"}任务详情 ${task.title}`}
+                  className="flex min-h-16 w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/20"
+                  onClick={() => setExpandedTaskId(expanded ? null : task.id)}
+                  type="button"
+                >
                   <div className="min-w-0 flex-1">
                     <p className="font-medium">{task.title}</p>
                     <div className="mt-2 flex flex-wrap gap-1.5">
@@ -169,42 +214,57 @@ export function TaskPanel({
                     </div>
                     {task.blocked_reason ? <p className="mt-2 text-xs text-destructive">阻塞原因：{task.blocked_reason}</p> : null}
                   </div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {canStart ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "in_progress" })}>开始任务</Button> : null}
-                  {task.status === "in_progress" ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "done" })}>完成任务</Button> : null}
-                  {task.status === "blocked" ? (
-                    <>
-                      <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "todo" })} variant="outline">解除阻塞</Button>
-                      {task.unresolved_dependency_ids.length === 0 ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "in_progress" })}>解除并开始</Button> : null}
-                    </>
-                  ) : null}
-                  {(task.status === "todo" || task.status === "blocked") ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "skipped" })} variant="outline">跳过任务</Button> : null}
-                </div>
-                {canBlock ? (
-                  <form
-                    className="mt-3 flex min-w-0 flex-col gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-2 sm:flex-row"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      const reason = (blockedReason[task.id] ?? "").trim();
-                      if (reason) void onTransition(task, { to_status: "blocked", blocked_reason: reason });
-                    }}
-                  >
-                    <label className="min-w-0 flex-1 text-xs font-medium">
-                      <span className="sr-only">阻塞原因 {task.title}</span>
-                      <input
-                        aria-label={`阻塞原因 ${task.title}`}
-                        className={controlClass}
-                        disabled={busy}
-                        maxLength={20_000}
-                        onChange={(event) => setBlockedReason((current) => ({ ...current, [task.id]: event.target.value }))}
-                        placeholder="填写真实阻塞原因"
-                        required
-                        value={blockedReason[task.id] ?? ""}
-                      />
-                    </label>
-                    <Button className="h-11" disabled={busy} type="submit" variant="destructive">标记阻塞</Button>
-                  </form>
+                  <span className="shrink-0 pt-0.5 text-xs font-medium text-primary">{expanded ? "收起" : "详情"}</span>
+                </button>
+                {expanded ? (
+                  <div className="border-t bg-muted/15 p-4" id={`task-detail-${task.id}`}>
+                    <div className="grid gap-4 text-xs sm:grid-cols-2 lg:grid-cols-4">
+                      <div className="sm:col-span-2 lg:col-span-4">
+                        <p className="font-medium text-muted-foreground">任务说明</p>
+                        <p className="mt-1 whitespace-pre-wrap text-sm leading-6">{task.description ?? "暂无任务说明"}</p>
+                      </div>
+                      <div><p className="text-muted-foreground">所属阶段</p><p className="mt-1 font-medium">{stageName}</p></div>
+                      <div><p className="text-muted-foreground">计划日期</p><p className="mt-1 font-mono">{task.start_date ?? "未设置"} → {task.due_date ?? "未设置"}</p></div>
+                      <div><p className="text-muted-foreground">负责人</p><p className="mt-1 font-medium">{task.assignee_user_id ? "已分配" : "未分配"}</p></div>
+                      <div><p className="text-muted-foreground">前置任务</p><p className="mt-1 font-medium">{dependencies.length ? dependencies.join("、") : "无"}</p></div>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2 border-t pt-4">
+                      {canStart ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "in_progress" })}>开始任务</Button> : null}
+                      {task.status === "in_progress" ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "done" })}>完成任务</Button> : null}
+                      {task.status === "blocked" ? (
+                        <>
+                          <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "todo" })} variant="outline">解除阻塞</Button>
+                          {task.unresolved_dependency_ids.length === 0 ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "in_progress" })}>解除并开始</Button> : null}
+                        </>
+                      ) : null}
+                      {(task.status === "todo" || task.status === "blocked") ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "skipped" })} variant="outline">跳过任务</Button> : null}
+                    </div>
+                    {canBlock ? (
+                      <form
+                        className="mt-3 flex min-w-0 flex-col gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-2 sm:flex-row"
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          const reason = (blockedReason[task.id] ?? "").trim();
+                          if (reason) void onTransition(task, { to_status: "blocked", blocked_reason: reason });
+                        }}
+                      >
+                        <label className="min-w-0 flex-1 text-xs font-medium">
+                          <span className="sr-only">阻塞原因 {task.title}</span>
+                          <input
+                            aria-label={`阻塞原因 ${task.title}`}
+                            className={controlClass}
+                            disabled={busy}
+                            maxLength={20_000}
+                            onChange={(event) => setBlockedReason((current) => ({ ...current, [task.id]: event.target.value }))}
+                            placeholder="填写真实阻塞原因"
+                            required
+                            value={blockedReason[task.id] ?? ""}
+                          />
+                        </label>
+                        <Button className="h-11" disabled={busy} type="submit" variant="destructive">标记阻塞</Button>
+                      </form>
+                    ) : null}
+                  </div>
                 ) : null}
               </li>
             );

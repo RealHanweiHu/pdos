@@ -20,6 +20,10 @@ class CustomerNotFoundError(LookupError):
     """Raised when a Customer is absent from the active tenant scope."""
 
 
+class CustomerCodeConflictError(ValueError):
+    """Raised when a Customer code already exists in the tenant."""
+
+
 class RequirementCodeConflictError(ValueError):
     """Raised when a Requirement code already exists in the tenant."""
 
@@ -46,6 +50,12 @@ class CustomerRecord:
     code: str
     name: str
     status: str
+
+
+@dataclass(frozen=True)
+class CustomerCreate:
+    code: str
+    name: str
 
 
 @dataclass(frozen=True)
@@ -145,6 +155,65 @@ def _snapshot(record: RequirementRecord) -> dict[str, object]:
             str(record.created_by_user_id) if record.created_by_user_id is not None else None
         ),
     }
+
+
+class CustomerService:
+    def __init__(self, engine: Engine) -> None:
+        self._engine = engine
+
+    def create(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        draft: CustomerCreate,
+    ) -> CustomerRecord:
+        customer_id = uuid4()
+        occurred_at = datetime.now(UTC)
+        try:
+            with self._engine.begin() as connection:
+                connection.execute(
+                    tables.customers.insert(),
+                    {
+                        "id": customer_id,
+                        "tenant_id": tenant_id,
+                        "code": draft.code,
+                        "name": draft.name,
+                        "created_at": occurred_at,
+                        "updated_at": occurred_at,
+                    },
+                )
+                record = CustomerRecord(
+                    id=customer_id,
+                    code=draft.code,
+                    name=draft.name,
+                    status="active",
+                )
+                snapshot = {
+                    "code": record.code,
+                    "name": record.name,
+                    "status": record.status,
+                }
+                EventAuditWriter(
+                    connection,
+                    tenant_id=tenant_id,
+                    actor_user_id=actor_user_id,
+                ).record(
+                    EventDraft(
+                        event_id=f"customer:{customer_id}:created",
+                        event_type="CUSTOMER_CREATED",
+                        source="customer_service",
+                        entity_id=customer_id,
+                        payload={"customer_code": record.code, "status": record.status},
+                        occurred_at=occurred_at,
+                    ),
+                    AuditDraft(action="customer.create", after_snapshot=snapshot),
+                )
+                return record
+        except IntegrityError as error:
+            if "uq_customers_tenant_code" in str(error.orig):
+                raise CustomerCodeConflictError from error
+            raise
 
 
 class RequirementService:
@@ -278,6 +347,8 @@ class RequirementService:
         requirement_id: UUID,
         patch: RequirementUpdate,
     ) -> RequirementRecord:
+        if "source" in patch.changes:
+            raise ValueError("requirement source is immutable")
         occurred_at = datetime.now(UTC)
         try:
             with self._engine.begin() as connection:

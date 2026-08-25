@@ -42,6 +42,7 @@ class AccessTokenClaims:
     user_id: UUID
     tenant_id: UUID
     token_id: UUID
+    auth_version: int
     expires_at: datetime
 
 
@@ -65,8 +66,11 @@ class TokenCodec:
         *,
         user_id: UUID,
         tenant_id: UUID,
+        auth_version: int = 1,
         issued_at: datetime | None = None,
     ) -> EncodedAccessToken:
+        if auth_version < 1:
+            raise ValueError("auth version must be positive")
         now = (issued_at or datetime.now(UTC)).astimezone(UTC).replace(microsecond=0)
         expires_at = now + self._ttl
         payload = {
@@ -76,6 +80,7 @@ class TokenCodec:
             "tid": f"tenant:{tenant_id}",
             "typ": "access",
             "jti": str(uuid4()),
+            "ver": auth_version,
             "iat": now,
             "nbf": now,
             "exp": expires_at,
@@ -95,7 +100,18 @@ class TokenCodec:
                 issuer=self._issuer,
                 leeway=5,
                 options={
-                    "require": ["iss", "aud", "sub", "tid", "typ", "jti", "iat", "nbf", "exp"]
+                    "require": [
+                        "iss",
+                        "aud",
+                        "sub",
+                        "tid",
+                        "typ",
+                        "jti",
+                        "ver",
+                        "iat",
+                        "nbf",
+                        "exp",
+                    ]
                 },
             )
             if payload["typ"] != "access":
@@ -104,10 +120,18 @@ class TokenCodec:
             tenant = str(payload["tid"])
             if not subject.startswith("user:") or not tenant.startswith("tenant:"):
                 raise InvalidAccessTokenError
+            auth_version = payload["ver"]
+            if (
+                not isinstance(auth_version, int)
+                or isinstance(auth_version, bool)
+                or auth_version < 1
+            ):
+                raise InvalidAccessTokenError
             return AccessTokenClaims(
                 user_id=UUID(subject.removeprefix("user:")),
                 tenant_id=UUID(tenant.removeprefix("tenant:")),
                 token_id=UUID(str(payload["jti"])),
+                auth_version=auth_version,
                 expires_at=datetime.fromtimestamp(float(payload["exp"]), UTC),
             )
         except (InvalidTokenError, KeyError, TypeError, ValueError) as error:

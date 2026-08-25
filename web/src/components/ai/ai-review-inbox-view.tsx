@@ -4,8 +4,8 @@ import {
   ArrowSquareOutIcon,
   CheckCircleIcon,
   PencilSimpleIcon,
-  ShieldCheckIcon,
   SparkleIcon,
+  TrayIcon,
   XCircleIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -293,9 +293,16 @@ export function AiReviewInboxView({
 
       {findings.length === 0 ? (
         <section className="mt-5 flex min-h-96 flex-col items-center justify-center rounded-lg border border-dashed bg-card px-6 text-center" role="status">
-          <ShieldCheckIcon aria-hidden="true" className="size-9 text-success" />
-          <h2 className="mt-3 font-semibold">Agent 正在值守</h2>
-          <p className="mt-1 text-sm text-muted-foreground">当前筛选没有待处理或历史 Finding。</p>
+          <TrayIcon aria-hidden="true" className="size-9 text-muted-foreground" />
+          <h2 className="mt-3 font-semibold">当前没有 Finding</h2>
+          <p className="mt-1 max-w-lg text-sm leading-6 text-muted-foreground">
+            当前筛选没有待处理或历史 Finding；队列为空不代表模型或 Agent 可用。
+          </p>
+          {["owner", "admin"].includes(identity.user.role) ? (
+            <Link className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary" href="/governance/models">
+              检查模型治理状态
+            </Link>
+          ) : null}
         </section>
       ) : (
         <div className="mt-5 min-h-[620px] overflow-hidden rounded-lg border bg-card lg:grid lg:grid-cols-[288px_minmax(0,1fr)]">

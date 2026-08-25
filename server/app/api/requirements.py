@@ -19,8 +19,11 @@ from app.domain.requirements import (
     CrmRequirementAlreadyReviewedError,
     CrmRequirementIntakeNotFoundError,
     CrmRequirementReviewRequiredError,
+    CustomerCodeConflictError,
+    CustomerCreate,
     CustomerNotFoundError,
     CustomerRecord,
+    CustomerService,
     RequirementCodeConflictError,
     RequirementCreate,
     RequirementNotFoundError,
@@ -45,6 +48,18 @@ class CustomerListResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     items: list[CustomerSummaryResponse]
+
+
+class CustomerCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    code: str = Field(min_length=1, max_length=64)
+    name: str = Field(min_length=1, max_length=256)
+
+    @field_validator("code", "name", mode="before")
+    @classmethod
+    def normalize_required_text(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
 
 
 class RequirementCreateRequest(BaseModel):
@@ -103,7 +118,8 @@ class RequirementUpdateRequest(BaseModel):
     code: str | None = Field(default=None, min_length=1, max_length=64)
     title: str | None = Field(default=None, min_length=1, max_length=512)
     description: str | None = Field(default=None, max_length=20_000)
-    source: str | None = Field(default=None, max_length=64)
+    # source is intake provenance and immutable after creation: rewriting it would
+    # let a PATCH strip the "crm" marker that gates the mandatory human review.
     status: str | None = Field(
         default=None,
         pattern=r"^(draft|proposed|approved|rejected)$",
@@ -120,7 +136,7 @@ class RequirementUpdateRequest(BaseModel):
     def normalize_required_text(cls, value: object) -> object:
         return value.strip() if isinstance(value, str) else value
 
-    @field_validator("description", "source", mode="before")
+    @field_validator("description", mode="before")
     @classmethod
     def normalize_optional_text(cls, value: object) -> object:
         if isinstance(value, str):
@@ -229,6 +245,38 @@ def list_customers(
         ]
     no_store(response)
     return CustomerListResponse(items=customers)
+
+
+@router.post(
+    "/api/customers",
+    response_model=CustomerSummaryResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_customer(
+    payload: CustomerCreateRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> CustomerSummaryResponse:
+    require_requirement_action(context, Action.REQUIREMENT_CREATE)
+    try:
+        record = CustomerService(engine).create(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            draft=CustomerCreate(code=payload.code, name=payload.name),
+        )
+    except CustomerCodeConflictError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "CUSTOMER_CODE_CONFLICT",
+                "message": "Customer code already exists",
+            },
+        ) from error
+    no_store(response)
+    customer = customer_response(record)
+    assert customer is not None
+    return customer
 
 
 @router.post(

@@ -6,7 +6,7 @@ vi.mock("next/headers", () => ({
   cookies: async () => ({ get: getCookie }),
 }));
 
-import { GET } from "./route";
+import { GET, POST } from "./route";
 
 describe("GET /api/customers", () => {
   const fetchMock = vi.fn<typeof fetch>();
@@ -39,5 +39,32 @@ describe("GET /api/customers", () => {
     const missing = await GET();
     expect(missing.status).toBe(401);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwards a bounded authenticated customer create request", async () => {
+    getCookie.mockReturnValue({ value: "signed.jwt.value" });
+    fetchMock.mockResolvedValueOnce(
+      Response.json(
+        { id: "customer-1", code: "ACME", name: "Acme Pumps", status: "active" },
+        { status: 201 },
+      ),
+    );
+
+    const response = await POST(
+      new Request("http://localhost/api/customers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: "ACME", name: "Acme Pumps" }),
+      }),
+    );
+
+    expect(response.status).toBe(201);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe(
+      "http://127.0.0.1:8000/api/customers",
+    );
+    expect(fetchMock.mock.calls[0]?.[1]?.method).toBe("POST");
+    expect(fetchMock.mock.calls[0]?.[1]?.body).toBe(
+      JSON.stringify({ code: "ACME", name: "Acme Pumps" }),
+    );
   });
 });

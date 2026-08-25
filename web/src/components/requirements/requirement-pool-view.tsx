@@ -14,26 +14,34 @@ import {
   type RequirementFormValues,
   type RequirementSubmissionResult,
 } from "./requirement-form";
+import { CustomerForm } from "./customer-form";
+import type { CustomerCreateInput } from "./requirement-api";
 import { CrmIntakeReview, type CrmReviewResult } from "./crm-intake-review";
 import { RequirementList } from "./requirement-list";
 import type { CustomerSummary, Requirement } from "./requirement-types";
 
 export function RequirementPoolView({
   canEdit,
+  creatingCustomer,
   creating,
+  customerBusy,
+  customerError,
   customers,
   convertingRequirement,
   editingRequirement,
   identity,
   loggingOut,
   onCancelCreate,
+  onCancelCustomer,
   onCancelConversion,
   onCancelEdit,
   onCreate,
+  onCreateCustomer,
   onConvert,
   onBeginConversion,
   onLogout,
   onNew,
+  onNewCustomer,
   onReviewCrm,
   onSelect,
   onUpdate,
@@ -42,16 +50,21 @@ export function RequirementPoolView({
   statusMessage,
 }: {
   canEdit: boolean;
+  creatingCustomer: boolean;
   creating: boolean;
+  customerBusy: boolean;
+  customerError: string | null;
   customers: CustomerSummary[];
   convertingRequirement: Requirement | null;
   editingRequirement: Requirement | null;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
   onCancelCreate: () => void;
+  onCancelCustomer: () => void;
   onCancelConversion: () => void;
   onCancelEdit: () => void;
   onCreate: (values: RequirementFormValues) => Promise<RequirementSubmissionResult>;
+  onCreateCustomer: (input: CustomerCreateInput) => Promise<boolean>;
   onConvert: (
     requirement: Requirement,
     values: RequirementConversionValues,
@@ -59,6 +72,7 @@ export function RequirementPoolView({
   onBeginConversion: (requirement: Requirement) => void;
   onLogout: () => void;
   onNew: () => void;
+  onNewCustomer: () => void;
   onReviewCrm: (
     requirement: Requirement,
     decision: "establish" | "reject",
@@ -99,10 +113,13 @@ export function RequirementPoolView({
           </p>
         </div>
         {canEdit ? (
-          <Button className="h-11 sm:h-8" onClick={onNew}>
-            <PlusIcon aria-hidden="true" />
-            新建需求
-          </Button>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button className="h-11 sm:h-8" onClick={onNewCustomer} variant="outline">新建客户</Button>
+            <Button className="h-11 sm:h-8" onClick={onNew}>
+              <PlusIcon aria-hidden="true" />
+              新建需求
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -113,7 +130,11 @@ export function RequirementPoolView({
           requirements={requirements}
           selectedId={editingRequirement?.id ?? null}
         />
-        {creating ? (
+        {creatingCustomer ? (
+          <section aria-label="新建客户" className="rounded-lg border bg-card p-4">
+            <CustomerForm busy={customerBusy} error={customerError} onCancel={onCancelCustomer} onSubmit={onCreateCustomer} />
+          </section>
+        ) : creating ? (
           <section aria-label="新建需求" className="rounded-lg border bg-card p-4">
             <RequirementForm
               busy={saving}

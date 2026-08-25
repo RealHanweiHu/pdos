@@ -50,6 +50,7 @@ def auth_context(role: Role) -> AuthContext:
             role=role,
             email=None,
             password_hash=None,
+            auth_version=1,
             is_active=True,
         ),
     )

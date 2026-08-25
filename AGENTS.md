@@ -36,7 +36,9 @@
 - [x] S3-7 真实试点环境门禁已完成：固定 release/fingerprint 的 C4s / S18-01 生产 dry-run、数据 Owner 抽查、apply、独立目标抽查与幂等重放全部通过
 - [x] Sprint 3 Exit Gate 已于 2026-08-12 经人确认通过
 - [x] S4-1～S4-4 已完成；Sprint 4 Exit Gate 已于 2026-08-12 经人确认通过
-- [ ] **当前：S5-1 真实钉钉应用 Exit Gate**；本地连接器、隔离测试与真实浏览器验收已完成，等待人创建/配置独立应用并单独授权真实应用 smoke，确认前不进入 S5-2
+- [x] S5-2～S5-4 已按人批准的延期例外完成；该例外不等于 S5-1 或生产切换通过
+- [ ] **当前：Sprint 5 Exit / 全量切换候选**；S5-1 真实钉钉身份与外发 smoke 仍待人，canonical checkbox 保持未勾选，生产 `delivery=false`
+- [x] 生产最后已验证 release 为 `905e888fb3b183be8f14d9fad13b20535569c1d7`（migration `0032`）；其后的 MiniMax M3 资格、Chat BFF 延时与 provider/migration `0033` 仅为本地候选，未据此声明已部署或通过 Sprint 5 Exit
 - 生产入口经人于 2026-08-11 确认采用现有 Nginx + `pdos.beepump.net`，见 `docs/decisions/ADR-001-production-edge-nginx.md`
 - 每完成一个工作项：验收条款 + 项目级 DoD 全部满足，更新执行计划 checkbox 与 `tasks/todo.md` 当前指针，再进下一项
 
@@ -52,7 +54,7 @@
 
 ## 环境与资产
 
-- `.env`（本地）由用户从 `.env.example` 复制填写；**模型选择是租户级产品功能**（治理页设置，默认 MiniMax 国内版；下拉=env 配了凭据且 golden-case 评测通过的白名单，key 不暴露给用户）；协议层只有两种形态：OpenAI 兼容（GLM/MiniMax/OpenAI/DeepSeek）+ Anthropic 原生，见 `.env.example` 与计划 S2-1。缺 `PDOS_LLM_API_KEY` 时 Sprint 0/1 照常推进，Sprint 2 需要。新模型入白名单必须先过 golden-case
+- `.env`（本地）由用户从 `.env.example` 复制填写；**模型选择是租户级产品功能**（治理页设置，默认 MiniMax 国内版；下拉=env 配了凭据且 golden-case 评测通过的白名单，key 不暴露给用户）；协议层只有两种形态：OpenAI 兼容（GLM/MiniMax/OpenAI/DeepSeek/OpenRouter/OpenCode Go）+ Anthropic 原生，见 `.env.example` 与计划 S2-1。缺 `PDOS_LLM_API_KEY` 时 Sprint 0/1 照常推进，Sprint 2 需要。新模型入白名单必须先过 golden-case
 - 本地库：`docker compose up -d`（PG=pgvector/pg16 端口 55432 + MinIO 9000）——compose 文件在 S0-1 创建
 - `certs/ApsaraDB-CA-Chain.pem`（RDS CA）与 `assets/cehub/deliverable-guide-manifest.json`（Sprint 3 检查项资产库，687 条 checkItems，**直接消费勿解析 xlsx 反推**）已随仓库携带
 - 参考代码（可选复用）：老 CEHub 仓库在本机 `~/Desktop/ce-project-hub`（gate 签核轮次/租户 fail-close/activityLogTailer 语义值得参考重实现；若无法访问该路径，按规格与计划独立实现即可，复用非必需）

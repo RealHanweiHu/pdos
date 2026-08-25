@@ -30,6 +30,16 @@ const governance = {
       model: "MiniMax-M2.7",
       protocol: "openai-compatible",
     },
+    {
+      provider: "openrouter",
+      model: "openai/gpt-5.2",
+      protocol: "openai-compatible",
+    },
+    {
+      provider: "opencode_go",
+      model: "deepseek-v4-flash",
+      protocol: "openai-compatible",
+    },
   ],
   selection: {
     provider: "minimax",
@@ -78,6 +88,10 @@ describe("ModelGovernance", () => {
 
     expect(await screen.findByRole("heading", { name: "模型与预算" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "MiniMax · MiniMax-M2.7" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "OpenRouter · openai/gpt-5.2" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: "OpenCode Go · deepseek-v4-flash" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("1,750,000")).toBeInTheDocument();
     expect(screen.queryByText(/api[_ -]?key/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/base[_ -]?url/i)).not.toBeInTheDocument();

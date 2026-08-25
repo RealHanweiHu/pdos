@@ -7,6 +7,8 @@ vi.mock("next/headers", () => ({
 }));
 
 import { GET as GET_DOCUMENTS, POST as POST_DOCUMENT } from "./documents/route";
+import { POST as OPEN_GATE_ROUND } from "./gates/[gateId]/rounds/route";
+import { PUT as SIGN_GATE_ROUND } from "./gates/[gateId]/rounds/[roundId]/signoffs/[slot]/route";
 import { GET as GET_GATES } from "./gates/route";
 
 const context = { params: Promise.resolve({ projectId: "project/id with spaces" }) };
@@ -41,5 +43,39 @@ describe("Gate and document BFF routes", () => {
     const invalid = new Request("http://localhost", { method: "POST", body: "plain" });
     expect((await POST_DOCUMENT(invalid)).status).toBe(400);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("forwards bounded Gate recovery actions with fully encoded scope", async () => {
+    fetchMock.mockImplementation(async () => Response.json({ id: "gate-1" }));
+    const gateContext = {
+      params: Promise.resolve({ projectId: "project/id", gateId: "gate id" }),
+    };
+    const signoffContext = {
+      params: Promise.resolve({
+        projectId: "project/id",
+        gateId: "gate id",
+        roundId: "round/id",
+        slot: "quality",
+      }),
+    };
+
+    await OPEN_GATE_ROUND(new Request("http://localhost", { method: "POST" }), gateContext);
+    await SIGN_GATE_ROUND(
+      new Request("http://localhost", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "approved", note: null }),
+      }),
+      signoffContext,
+    );
+
+    expect(fetchMock.mock.calls.map(([input]) => String(input))).toEqual([
+      "http://127.0.0.1:8000/api/projects/project%2Fid/gates/gate%20id/rounds",
+      "http://127.0.0.1:8000/api/projects/project%2Fid/gates/gate%20id/rounds/round%2Fid/signoffs/quality",
+    ]);
+    expect(fetchMock.mock.calls[1]?.[1]).toEqual(expect.objectContaining({
+      method: "PUT",
+      body: JSON.stringify({ status: "approved", note: null }),
+    }));
   });
 });

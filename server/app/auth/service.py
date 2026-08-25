@@ -8,6 +8,9 @@ from datetime import UTC, datetime
 from app.auth.errors import (
     InvalidAccessTokenError,
     InvalidCredentialsError,
+    InvalidCurrentPasswordError,
+    LocalPasswordUnavailableError,
+    PasswordReuseError,
     TenantContextDeniedError,
 )
 from app.auth.passwords import PasswordService
@@ -78,6 +81,7 @@ class AuthService:
         encoded = self._tokens.issue(
             user_id=context.user.id,
             tenant_id=context.tenant.id,
+            auth_version=context.user.auth_version,
             issued_at=signed_in_at,
         )
         return TokenGrant(
@@ -92,9 +96,35 @@ class AuthService:
             raise InvalidAccessTokenError
         if context.user.tenant_id != claims.tenant_id or context.tenant.id != claims.tenant_id:
             raise TenantContextDeniedError
+        if context.user.auth_version != claims.auth_version:
+            raise InvalidAccessTokenError
         if context.tenant.status != "active":
             raise TenantContextDeniedError
         return context
+
+    def change_password(
+        self,
+        *,
+        context: AuthContext,
+        current_password: str,
+        new_password: str,
+    ) -> None:
+        if context.user.password_hash is None:
+            raise LocalPasswordUnavailableError
+        if not self._passwords.verify(current_password, context.user.password_hash):
+            raise InvalidCurrentPasswordError
+        if self._passwords.verify(new_password, context.user.password_hash):
+            raise PasswordReuseError
+        try:
+            self._repository.change_password(
+                tenant_id=context.tenant.id,
+                user_id=context.user.id,
+                expected_auth_version=context.user.auth_version,
+                password_hash=self._passwords.hash(new_password),
+                changed_at=datetime.now(UTC),
+            )
+        except InvalidCredentialsError as error:
+            raise InvalidAccessTokenError from error
 
     def issue_external_login(
         self, context: AuthContext, *, authentication_method: str
@@ -111,6 +141,7 @@ class AuthService:
         encoded = self._tokens.issue(
             user_id=context.user.id,
             tenant_id=context.tenant.id,
+            auth_version=context.user.auth_version,
             issued_at=signed_in_at,
         )
         return TokenGrant(access_token=encoded.token, expires_in=self._token_ttl_seconds)

@@ -454,6 +454,15 @@ def test_crm_event_atomically_creates_one_review_gated_requirement_draft(
     assert bypass.status_code == 409
     assert bypass.json()["detail"]["code"] == "CRM_REQUIREMENT_REVIEW_REQUIRED"
 
+    source_rewrite = client.patch(
+        f"/api/requirements/{requirement_id}",
+        headers=manager_headers,
+        json={"source": "manual"},
+    )
+    assert source_rewrite.status_code == 422
+    after_rewrite = client.get(f"/api/requirements/{requirement_id}", headers=manager_headers)
+    assert after_rewrite.json()["source"] == "crm"
+
     reviewed = client.post(
         f"/api/requirements/{requirement_id}/review-crm-intake",
         headers=manager_headers,

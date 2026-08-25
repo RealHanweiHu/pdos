@@ -1,4 +1,12 @@
-export const MODEL_PROVIDERS = ["minimax", "deepseek", "glm", "openai", "anthropic"] as const;
+export const MODEL_PROVIDERS = [
+  "minimax",
+  "deepseek",
+  "glm",
+  "openai",
+  "anthropic",
+  "openrouter",
+  "opencode_go",
+] as const;
 
 export type ModelProvider = (typeof MODEL_PROVIDERS)[number];
 export type ModelProtocol = "openai-compatible" | "anthropic-native";

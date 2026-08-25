@@ -13,6 +13,9 @@ from sqlalchemy import Engine
 from app.auth.errors import (
     InvalidAccessTokenError,
     InvalidCredentialsError,
+    InvalidCurrentPasswordError,
+    LocalPasswordUnavailableError,
+    PasswordReuseError,
     SetupAlreadyCompletedError,
     TenantContextDeniedError,
 )
@@ -104,6 +107,19 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: Literal["bearer"] = "bearer"
     expires_in: int
+
+
+class ChangePasswordRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    current_password: SecretStr = Field(min_length=1, max_length=128)
+    new_password: SecretStr = Field(min_length=12, max_length=128)
+
+
+class ChangePasswordResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    changed: bool = True
 
 
 def get_auth_service(
@@ -232,3 +248,46 @@ def me(
 ) -> IdentityResponse:
     no_store(response)
     return public_identity(context)
+
+
+@router.post("/auth/change-password", response_model=ChangePasswordResponse)
+def change_password(
+    payload: ChangePasswordRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    service: Annotated[AuthService, Depends(get_auth_service)],
+) -> ChangePasswordResponse:
+    no_store(response)
+    try:
+        service.change_password(
+            context=context,
+            current_password=payload.current_password.get_secret_value(),
+            new_password=payload.new_password.get_secret_value(),
+        )
+    except InvalidCurrentPasswordError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "INVALID_CURRENT_PASSWORD",
+                "message": "Current password is incorrect",
+            },
+        ) from error
+    except PasswordReuseError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "PASSWORD_REUSE_NOT_ALLOWED",
+                "message": "New password must differ from the current password",
+            },
+        ) from error
+    except LocalPasswordUnavailableError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "LOCAL_PASSWORD_UNAVAILABLE",
+                "message": "This account does not have a local password",
+            },
+        ) from error
+    except InvalidAccessTokenError as error:
+        raise unauthorized("INVALID_ACCESS_TOKEN", "A valid access token is required") from error
+    return ChangePasswordResponse()

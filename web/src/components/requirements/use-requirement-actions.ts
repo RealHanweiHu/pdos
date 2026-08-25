@@ -110,12 +110,13 @@ export function useRequirementActions({
       title: requirement.title,
       customer_id: requirement.customer?.id ?? null,
       priority: requirement.priority,
-      source: requirement.source,
       description: requirement.description,
       acceptance_criteria: requirement.acceptance_criteria,
       status: requirement.status,
     };
     for (const [key, value] of Object.entries(values)) {
+      // source is immutable after creation; the API rejects it in a PATCH.
+      if (key === "source") continue;
       if (JSON.stringify(value) !== JSON.stringify(currentValues[key as keyof typeof currentValues])) {
         patch[key] = value;
       }

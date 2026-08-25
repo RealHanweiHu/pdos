@@ -341,6 +341,11 @@ def structured_messages(
 
 def json_document(content: str) -> str:
     document = content.strip()
+    if document.startswith("<think>"):
+        closing_tag = "</think>"
+        closing_index = document.find(closing_tag, len("<think>"))
+        if closing_index != -1:
+            document = document[closing_index + len(closing_tag) :].strip()
     if not document.startswith("```"):
         return document
     lines = document.splitlines()

@@ -17,6 +17,8 @@ const PROVIDER_LABELS: Record<EligibleModel["provider"], string> = {
   glm: "GLM",
   openai: "OpenAI",
   anthropic: "Anthropic",
+  openrouter: "OpenRouter",
+  opencode_go: "OpenCode Go",
 };
 
 const MODEL_KEY_SEPARATOR = "::";

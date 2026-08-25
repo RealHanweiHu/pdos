@@ -94,6 +94,7 @@ users = Table(
     Column("display_name", String(256), nullable=False),
     Column("role", String(32), nullable=False),
     Column("password_hash", String(256)),
+    Column("auth_version", Integer, nullable=False, server_default=text("1")),
     Column("is_active", Boolean, nullable=False, server_default=text("true")),
     Column("last_signed_in_at", DateTime(timezone=True)),
     Column(
@@ -113,6 +114,7 @@ users = Table(
         "'supplier', 'customer')",
         name="role_allowed",
     ),
+    CheckConstraint("auth_version >= 1", name="auth_version_positive"),
     UniqueConstraint("tenant_id", "id", name="uq_users_tenant_id_id"),
     UniqueConstraint("tenant_id", "username", name="uq_users_tenant_username"),
     UniqueConstraint("tenant_id", "email", name="uq_users_tenant_email"),
@@ -4132,7 +4134,8 @@ tenant_model_settings = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic')",
+        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic', "
+        "'openrouter', 'opencode_go')",
         name="provider_allowed",
     ),
     CheckConstraint("btrim(model) <> ''", name="model_nonblank"),
@@ -4404,7 +4407,8 @@ model_invocations = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic')",
+        "provider IN ('minimax', 'deepseek', 'glm', 'openai', 'anthropic', "
+        "'openrouter', 'opencode_go')",
         name="provider_allowed",
     ),
     CheckConstraint(

@@ -63,6 +63,8 @@ def test_production_api_receives_only_server_side_model_configuration() -> None:
     assert api_environment["PDOS_LLM_PROVIDER"] == "${PDOS_LLM_PROVIDER:-minimax}"
     assert api_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
     assert api_environment["PDOS_LLM_ANTHROPIC_API_KEY"] == ("${PDOS_LLM_ANTHROPIC_API_KEY:-}")
+    assert api_environment["PDOS_LLM_OPENROUTER_API_KEY"] == ("${PDOS_LLM_OPENROUTER_API_KEY:-}")
+    assert api_environment["PDOS_LLM_OPENCODE_GO_API_KEY"] == ("${PDOS_LLM_OPENCODE_GO_API_KEY:-}")
     assert api_environment["PDOS_AI_DAILY_TOKEN_BUDGET"] == (
         "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
     )
@@ -95,6 +97,12 @@ def test_production_dispatcher_and_executor_have_disjoint_runtime_credentials() 
     assert "PDOS_ALLOW_SHARED_RUNTIME_DATABASE_URL" not in executor_environment
     assert not any(name.startswith("PDOS_LLM_") for name in dispatcher_environment)
     assert executor_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
+    assert executor_environment["PDOS_LLM_OPENROUTER_API_KEY"] == (
+        "${PDOS_LLM_OPENROUTER_API_KEY:-}"
+    )
+    assert executor_environment["PDOS_LLM_OPENCODE_GO_API_KEY"] == (
+        "${PDOS_LLM_OPENCODE_GO_API_KEY:-}"
+    )
     assert "scripts.run_dispatcher" in str(dispatcher_healthcheck["test"])
     assert "scripts.run_executor" in str(executor_healthcheck["test"])
 
@@ -133,6 +141,7 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     assert "USER pdos" in server_dockerfile
     assert "COPY server/golden ./golden" in server_dockerfile
     assert "COPY server/scripts ./scripts" in server_dockerfile
+    assert "COPY assets/cehub/deliverable-guide-manifest.json" in server_dockerfile
     assert "USER nextjs" in web_dockerfile
     assert "ARG PYTHON_BASE_IMAGE=" in server_dockerfile
     assert "ARG UV_BASE_IMAGE=" in server_dockerfile
@@ -163,6 +172,16 @@ def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> N
     ):
         assert header in next_config
     assert "/app/certs/ApsaraDB-CA-Chain.pem" in server_dockerfile
+
+
+def test_production_api_build_context_includes_the_frozen_task_manifest() -> None:
+    dockerignore = (REPOSITORY_ROOT / ".dockerignore").read_text().splitlines()
+
+    assert "assets/*" in dockerignore
+    assert "!assets/cehub/" in dockerignore
+    assert "assets/cehub/*" in dockerignore
+    assert "!assets/cehub/deliverable-guide-manifest.json" in dockerignore
+    assert (REPOSITORY_ROOT / "assets/cehub/deliverable-guide-manifest.json").is_file()
 
 
 def test_sprint_zero_runbook_has_preflight_smoke_and_rollback_gates() -> None:

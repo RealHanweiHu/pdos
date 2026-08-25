@@ -26,12 +26,22 @@ from app.migrations.cehub_v1 import (
     migrate_cehub_v1,
     normalize_project_code,
     source_project_inventory_fingerprint,
+    task_title_for,
 )
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SCHEMA = "legacy_cehub_s37"
 SOURCE_ROLE = "pdos_cehub_source_test"
 SOURCE_PASSWORD = "pdos-cehub-source-test"
+
+
+def test_task_titles_use_the_checked_in_deliverable_manifest() -> None:
+    assert task_title_for(project_type="npd", phase_id="dvt", task_id="v3") == "安规与认证"
+    assert task_title_for(project_type="obt", phase_id="intake", task_id="or6") == "报价"
+    assert (
+        task_title_for(project_type="npd", phase_id="evt", task_id="legacy-unknown")
+        == "legacy-unknown"
+    )
 
 
 @pytest.fixture(scope="module")
@@ -167,7 +177,7 @@ def _create_source_fixture(engine_url: str) -> None:
                          2, '2026-05-30', '2026-05-01', '2026-05-01T08:00:00Z', 'done', 'high',
                          '2026-05-28T08:00:00Z', '2026-05-01T00:00:00Z',
                          '2026-05-28T08:00:00Z'),
-                        (102, 'aBnbEdQG', 'dvt', 'dvt-verify', false, '执行 DVT', null,
+                        (102, 'aBnbEdQG', 'dvt', 'v3', false, '执行 DVT', null,
                          2, '2026-08-31', '2026-08-01', '2026-08-01T08:00:00Z', 'in_progress',
                          'critical', null, '2026-08-01T00:00:00Z',
                          '2026-08-10T00:00:00Z'),
@@ -498,6 +508,11 @@ def test_snapshot_dry_run_apply_replay_and_source_drift(
                 ).scalar_one()
                 == "internal"
             )
+            assert set(
+                connection.execute(
+                    select(tables.tasks.c.title).where(tables.tasks.c.tenant_id == tenant_id)
+                ).scalars()
+            ) == {"evt-verify", "安规与认证"}
         assert applied.selected_project_ids == ("aBnbEdQG",)
         assert applied.samples[0]["source_project_id"] == "aBnbEdQG"
         assert applied.samples[0]["project_name"] == "S18 试点项目"

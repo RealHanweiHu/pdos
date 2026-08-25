@@ -34,6 +34,8 @@ def test_catalog_defaults_to_minimax_and_freezes_two_protocol_shapes() -> None:
         ProviderName.GLM,
         ProviderName.OPENAI,
         ProviderName.ANTHROPIC,
+        ProviderName.OPENROUTER,
+        ProviderName.OPENCODE_GO,
     ]
 
 
@@ -47,6 +49,10 @@ def test_catalog_requires_both_credentials_and_passed_golden_qualification() -> 
             "PDOS_LLM_DEEPSEEK_MODEL": "deepseek-v4-flash",
             "PDOS_LLM_OPENAI_API_KEY": "openai-secret",
             "PDOS_LLM_OPENAI_MODEL": "gpt-5.1",
+            "PDOS_LLM_OPENROUTER_API_KEY": "openrouter-secret",
+            "PDOS_LLM_OPENROUTER_MODEL": "openai/gpt-5.2",
+            "PDOS_LLM_OPENCODE_GO_API_KEY": "opencode-go-secret",
+            "PDOS_LLM_OPENCODE_GO_MODEL": "deepseek-v4-flash",
         }
     )
 
@@ -54,6 +60,8 @@ def test_catalog_requires_both_credentials_and_passed_golden_qualification() -> 
         [
             passed(ProviderName.MINIMAX, "MiniMax-M2.7"),
             passed(ProviderName.OPENAI, "gpt-5.1"),
+            passed(ProviderName.OPENROUTER, "openai/gpt-5.2"),
+            passed(ProviderName.OPENCODE_GO, "deepseek-v4-flash"),
             GoldenQualification(
                 provider=ProviderName.DEEPSEEK,
                 model="deepseek-v4-flash",
@@ -68,7 +76,17 @@ def test_catalog_requires_both_credentials_and_passed_golden_qualification() -> 
     assert [(item.provider, item.model) for item in eligible] == [
         (ProviderName.MINIMAX, "MiniMax-M2.7"),
         (ProviderName.OPENAI, "gpt-5.1"),
+        (ProviderName.OPENROUTER, "openai/gpt-5.2"),
+        (ProviderName.OPENCODE_GO, "deepseek-v4-flash"),
     ]
+    openrouter = catalog.configuration_for(ProviderName.OPENROUTER)
+    opencode_go = catalog.configuration_for(ProviderName.OPENCODE_GO)
+    assert openrouter is not None
+    assert openrouter.base_url == "https://openrouter.ai/api/v1"
+    assert openrouter.protocol is ProtocolKind.OPENAI_COMPATIBLE
+    assert opencode_go is not None
+    assert opencode_go.base_url == "https://opencode.ai/zen/go/v1"
+    assert opencode_go.protocol is ProtocolKind.OPENAI_COMPATIBLE
     assert all("key" not in item.model_dump(mode="json") for item in eligible)
     assert all("base_url" not in item.model_dump(mode="json") for item in eligible)
 

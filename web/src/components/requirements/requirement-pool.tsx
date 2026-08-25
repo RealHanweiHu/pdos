@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
-import { requestPool } from "./requirement-api";
+import { createCustomer, requestPool, type CustomerCreateInput } from "./requirement-api";
 import { RequirementPoolError, RequirementPoolLoading } from "./requirement-pool-state";
 import { RequirementPoolView } from "./requirement-pool-view";
 import type { CustomerSummary } from "./requirement-types";
@@ -20,6 +20,10 @@ export function RequirementPool() {
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [customers, setCustomers] = useState<CustomerSummary[]>([]);
+  const [creatingCustomer, setCreatingCustomer] = useState(false);
+  const [customerBusy, setCustomerBusy] = useState(false);
+  const [customerError, setCustomerError] = useState<string | null>(null);
+  const [customerStatus, setCustomerStatus] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
@@ -91,29 +95,53 @@ export function RequirementPool() {
     }
   }
 
+  async function addCustomer(input: CustomerCreateInput) {
+    setCustomerBusy(true);
+    setCustomerError(null);
+    setCustomerStatus(null);
+    try {
+      const created = await createCustomer(input);
+      setCustomers((current) => [...current, created].sort((a, b) => a.code.localeCompare(b.code)));
+      setCreatingCustomer(false);
+      setCustomerStatus("客户已创建");
+      return true;
+    } catch (error) {
+      setCustomerError(error instanceof Error ? error.message : "客户创建失败，请稍后重试。");
+      return false;
+    } finally {
+      setCustomerBusy(false);
+    }
+  }
+
   return (
     <RequirementPoolView
       canEdit={canEdit}
+      creatingCustomer={creatingCustomer}
       creating={actions.creating}
+      customerBusy={customerBusy}
+      customerError={customerError}
       customers={customers}
       convertingRequirement={actions.convertingRequirement}
       editingRequirement={actions.editingRequirement}
       identity={identity}
       loggingOut={loggingOut}
       onCancelCreate={actions.cancelCreate}
+      onCancelCustomer={() => { setCreatingCustomer(false); setCustomerError(null); }}
       onCancelConversion={actions.cancelConversion}
       onCancelEdit={actions.cancelEdit}
       onCreate={actions.createRequirement}
+      onCreateCustomer={addCustomer}
       onConvert={actions.convertRequirement}
       onBeginConversion={actions.beginConversion}
       onLogout={() => void logout()}
-      onNew={actions.startCreate}
+      onNew={() => { setCreatingCustomer(false); setCustomerStatus(null); actions.startCreate(); }}
+      onNewCustomer={() => { actions.cancelCreate(); setCustomerError(null); setCustomerStatus(null); setCreatingCustomer(true); }}
       onReviewCrm={actions.reviewCrmRequirement}
       onSelect={actions.selectRequirement}
       onUpdate={actions.updateRequirement}
       requirements={actions.requirements}
       saving={actions.saving}
-      statusMessage={actions.statusMessage}
+      statusMessage={customerStatus ?? actions.statusMessage}
     />
   );
 }

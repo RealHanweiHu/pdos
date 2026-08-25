@@ -159,11 +159,11 @@ export function RequirementForm({
           </select>
         </label>
         <label className="text-xs font-medium" htmlFor="requirement-source">
-          来源
+          来源{requirement ? "（创建后不可修改）" : null}
           <input
             className={controlClass}
-            defaultValue={requirement?.source ?? "manual"}
-            disabled={busy}
+            defaultValue={requirement ? (requirement.source ?? "") : "manual"}
+            disabled={busy || Boolean(requirement)}
             id="requirement-source"
             maxLength={64}
             name="source"

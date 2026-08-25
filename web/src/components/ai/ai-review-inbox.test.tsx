@@ -85,6 +85,22 @@ describe("AiReviewInbox", () => {
     vi.unstubAllGlobals();
   });
 
+  it("does not imply that the Agent is healthy when the Finding queue is empty", async () => {
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path === "/api/ai/findings" && !init?.method) return jsonResponse({ items: [] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<AiReviewInbox />);
+
+    expect(await screen.findByRole("heading", { name: "当前没有 Finding" })).toBeInTheDocument();
+    expect(screen.getByText(/队列为空不代表模型或 Agent 可用/)).toBeInTheDocument();
+    expect(screen.queryByText("Agent 正在值守")).not.toBeInTheDocument();
+  });
+
   it("keeps accept and Apply as two independent human actions with evidence links", async () => {
     const user = userEvent.setup();
     const accepted = {
