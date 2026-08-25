@@ -33,6 +33,13 @@ VALID_ENVIRONMENT = {
     "JWT_SECRET": "production-only-jwt-secret-that-is-32-bytes",
     "PDOS_API_INTERNAL_URL": "http://api:8000",
     "PDOS_IMAGE_TAG": "cdfcab4",
+    "PDOS_LLM_PROVIDER": "minimax",
+    "PDOS_LLM_BASE_URL": "https://api.minimaxi.com/v1",
+    "PDOS_LLM_API_KEY": "production-minimax-primary-key",
+    "PDOS_LLM_MODEL": "MiniMax-M3",
+    "PDOS_LLM_MINIMAX_BASE_URL": "https://api.minimaxi.com/v1",
+    "PDOS_LLM_MINIMAX_MODEL": "MiniMax-M3",
+    "PDOS_LLM_MINIMAX_API_KEY": "production-minimax-provider-key",
     "S3_ACCESS_KEY_ID": "production-oss-key-id",
     "S3_BUCKET": "pdos-files",
     "S3_ENDPOINT": "https://oss-cn-beijing.aliyuncs.com",
@@ -84,6 +91,11 @@ def test_enabled_dingtalk_delivery_requires_complete_callback_configuration() ->
         ("JWT_SECRET", "too-short"),
         ("PDOS_API_INTERNAL_URL", "http://127.0.0.1:8000"),
         ("PDOS_IMAGE_TAG", "latest"),
+        ("PDOS_LLM_PROVIDER", "deepseek"),
+        ("PDOS_LLM_BASE_URL", "https://attacker.example/v1"),
+        ("PDOS_LLM_MODEL", "MiniMax-M2.7"),
+        ("PDOS_LLM_MINIMAX_BASE_URL", "https://attacker.example/v1"),
+        ("PDOS_LLM_MINIMAX_MODEL", "MiniMax-M2.7"),
         (
             "PDOS_WORKER_DATABASE_URL",
             "postgresql://pdos_app:secret@localhost:5432/pdos",
@@ -102,6 +114,36 @@ def test_enabled_dingtalk_delivery_requires_complete_callback_configuration() ->
 def test_unsafe_production_values_fail_closed(key: str, value: str) -> None:
     with pytest.raises(UnsafeProductionConfigurationError):
         validate_production_environment({**VALID_ENVIRONMENT, key: value})
+
+
+def test_production_minimax_m3_requires_at_least_one_server_side_credential() -> None:
+    with pytest.raises(UnsafeProductionConfigurationError):
+        validate_production_environment(
+            {
+                **VALID_ENVIRONMENT,
+                "PDOS_LLM_API_KEY": "",
+                "PDOS_LLM_MINIMAX_API_KEY": "",
+            }
+        )
+
+
+@pytest.mark.parametrize("missing_key", ["PDOS_LLM_API_KEY", "PDOS_LLM_MINIMAX_API_KEY"])
+def test_production_minimax_m3_accepts_primary_or_provider_specific_credential(
+    missing_key: str,
+) -> None:
+    validate_production_environment({**VALID_ENVIRONMENT, missing_key: ""})
+
+
+def test_production_minimax_m3_requires_the_checked_in_golden_qualification(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "app.deployment.preflight.load_golden_qualifications",
+        lambda *args, **kwargs: [],
+    )
+
+    with pytest.raises(UnsafeProductionConfigurationError):
+        validate_production_environment(VALID_ENVIRONMENT)
 
 
 @pytest.mark.parametrize(

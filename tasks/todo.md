@@ -1372,6 +1372,20 @@
 - [x] 区分部署事实与本地候选：`2d53622` MiniMax M3 资格记录、`492668f` Chat BFF 延时和 `89fc234` provider/migration `0033` 尚未据此部署或通过 Sprint 5 Exit
 - [x] 保持 canonical S5-1 checkbox、`delivery=false` 与全量切换待人工确认状态不变
 - [x] 合并态完整 `make check` 全绿：916 个锁定依赖/0 已知漏洞、Server 404、Web 145、Ruff/format、mypy 217、ESLint/typegen/TypeScript、Next 37 页生产构建与 compileall 全部通过
-- [x] 创建本地 merge commit；任何 remote push 仅在用户明确授权后执行
+- [x] 创建本地 merge commit，并在人明确授权后 push 到 `origin/codex/unify-sprint5-baseline`
 
 未纳入本次基线：未跟踪的 `docs/design/2026-08-21-product-usability-optimization-plan.md`（仍待 PO 拍板）。
+
+## In Progress: 生产默认启用 MiniMax M3（2026-08-24）
+
+- [x] 产品范围收窄：本次只启用平台托管凭据下的 MiniMax M3；不同时上线 M2.7、多模型选择或 OpenRouter Auto
+- [x] 非泄露就绪检查：本地生产文件的 provider/model、主/专用 MiniMax key 均为 READY/SET，未读取或输出密钥值
+- [x] RED：证明原 production preflight 会放过错 provider、错模型、篡改主/专用 base URL、无凭据与无资格等 6 类 AI 未激活状态
+- [x] GREEN：production preflight 固定本次 release 的 MiniMax M3、官方 endpoint、至少一个服务端 key 与 checked-in golden qualification；37 项聚焦测试全绿
+- [x] 本地生产文件的 M3 激活子集通过新门禁；Ruff/format/mypy 聚焦门禁全绿
+- [x] 完整 `make check` 全绿：916 个锁定依赖/0 已知漏洞、Server 413、Web 145、Ruff/253 format、mypy 217、ESLint/typegen/TypeScript、Next 37 页生产构建与 compileall 全部通过
+- [ ] 经人明确授权，将 3 条合成、白名单投影后的 golden-case 发送给 MiniMax M3 完成真实复验；安全审查未接受“启用生产”的概括授权作为评测数据出站授权
+- [ ] 人工复核 secret-free 报告：3/3、pass rate 100%、suite version/digest 与可信根精确匹配
+- [ ] 补齐本地 `.env.production` 的 `PDOS_WORKER_DATABASE_URL` 等受限生产账号配置后，完整 `make production-preflight` 全绿；账号值只由人提供
+- [ ] 创建并验收新的 release SHA；push、ECS build/deploy、migration、安全权限重施与容器重启均在各自人工授权后执行
+- [ ] 部署后 Owner/Admin governance ≥1 eligible model、MiniMax M3 被选中、合成 Chat 成功、invocation 留痕与移除模型降级演练全绿

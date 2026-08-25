@@ -35,3 +35,28 @@ an empty candidate pool when no reviewed qualification exists.
 
 Changing a model, provider, suite case, threshold, or prompt requires a full rerun and a new reviewed
 publication. Runtime processes and Agents never write these files.
+
+## 5. Activate the reviewed model in production
+
+The current production release policy is intentionally narrow: the default provider must be
+`minimax`, the model must be `MiniMax-M3`, and the effective base URL must be
+`https://api.minimaxi.com/v1`. At least one server-side MiniMax credential must be configured. The
+credential may use the primary or provider-specific environment variable; neither value is exposed
+through the governance API or browser.
+
+Run `make production-preflight` before building or deploying. The preflight fails closed unless the
+environment resolves to MiniMax M3 and the exact provider/model pair is present in the checked-in,
+suite-matched qualification file. This check does not replace the real evaluation and human review
+in sections 2–4.
+
+After an explicitly approved deployment, verify all of the following before declaring AI enabled:
+
+1. Owner/Admin model governance returns MiniMax M3 as an eligible and selected model.
+2. One synthetic `/api/ai/chat` request succeeds through the public BFF without exposing a key.
+3. The matching `model_invocations` row records provider, model, model version, tokens, latency,
+   prompt version and status.
+4. Removing the credential restores the visible fail-closed degradation path without a provider
+   call or business-table write.
+
+Rollback uses the previously verified release SHA. A model failure never authorizes bypassing the
+qualification gate, changing the trusted suite, or granting the Agent a business-table write path.

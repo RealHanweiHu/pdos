@@ -15,8 +15,17 @@ from dotenv import dotenv_values
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
+from app.ai.golden_suite import GoldenSuiteFileError, load_golden_suite
+from app.ai.model_catalog import ModelCatalog, ProviderName
+from app.ai.qualifications import GoldenQualificationFileError, load_golden_qualifications
+
 EXPECTED_DATABASE_HOST = "pgm-2ze135h6045td5ujvo.pg.rds.aliyuncs.com"
 EXPECTED_CA_PATH = "/app/certs/ApsaraDB-CA-Chain.pem"
+EXPECTED_MINIMAX_BASE_URL = "https://api.minimaxi.com/v1"
+EXPECTED_MINIMAX_MODEL = "MiniMax-M3"
+SERVER_ROOT = Path(__file__).resolve().parents[2]
+GOLDEN_SUITE_PATH = SERVER_ROOT / "golden" / "model-gateway-v1.json"
+MODEL_QUALIFICATIONS_PATH = SERVER_ROOT / "golden" / "model-qualifications.json"
 REQUIRED_VALUES = (
     "APP_PORT",
     "DATABASE_URL",
@@ -44,6 +53,71 @@ def _required(values: Mapping[str, str | None], key: str) -> str:
         message = f"Production configuration {key} must be set to a non-placeholder value"
         raise UnsafeProductionConfigurationError(message)
     return value
+
+
+def _optional_credential(values: Mapping[str, str | None], key: str) -> str | None:
+    value = values.get(key)
+    if value in {None, ""}:
+        return None
+    if value is None or value.strip() != value or "<" in value or ">" in value:
+        raise UnsafeProductionConfigurationError(
+            f"Production configuration {key} must be a non-placeholder value when set"
+        )
+    return value
+
+
+def validate_production_model_activation(values: Mapping[str, str | None]) -> None:
+    if _required(values, "PDOS_LLM_PROVIDER") != ProviderName.MINIMAX.value:
+        raise UnsafeProductionConfigurationError(
+            "Production AI provider must remain minimax for this release"
+        )
+    if _required(values, "PDOS_LLM_BASE_URL") != EXPECTED_MINIMAX_BASE_URL:
+        raise UnsafeProductionConfigurationError(
+            "Production MiniMax base URL must use the approved endpoint"
+        )
+    if _required(values, "PDOS_LLM_MODEL") != EXPECTED_MINIMAX_MODEL:
+        raise UnsafeProductionConfigurationError(
+            "Production AI default model must remain MiniMax-M3 for this release"
+        )
+
+    specific_base_url = values.get("PDOS_LLM_MINIMAX_BASE_URL")
+    if specific_base_url and specific_base_url != EXPECTED_MINIMAX_BASE_URL:
+        raise UnsafeProductionConfigurationError(
+            "Production MiniMax provider base URL must use the approved endpoint"
+        )
+    specific_model = values.get("PDOS_LLM_MINIMAX_MODEL")
+    if specific_model and specific_model != EXPECTED_MINIMAX_MODEL:
+        raise UnsafeProductionConfigurationError(
+            "Production MiniMax provider model must remain MiniMax-M3 for this release"
+        )
+
+    primary_key = _optional_credential(values, "PDOS_LLM_API_KEY")
+    provider_key = _optional_credential(values, "PDOS_LLM_MINIMAX_API_KEY")
+    if primary_key is None and provider_key is None:
+        raise UnsafeProductionConfigurationError(
+            "Production MiniMax M3 requires a server-side credential"
+        )
+
+    environment = {key: value for key, value in values.items() if value is not None}
+    try:
+        catalog = ModelCatalog.from_environment(environment)
+        trusted_suite = load_golden_suite(GOLDEN_SUITE_PATH)
+        qualifications = load_golden_qualifications(
+            MODEL_QUALIFICATIONS_PATH,
+            trusted_suite=trusted_suite,
+        )
+    except (GoldenQualificationFileError, GoldenSuiteFileError, ValueError) as error:
+        raise UnsafeProductionConfigurationError(
+            "Production MiniMax qualification inputs are invalid"
+        ) from error
+    eligible = {
+        (candidate.provider, candidate.model)
+        for candidate in catalog.eligible_models(qualifications)
+    }
+    if (ProviderName.MINIMAX, EXPECTED_MINIMAX_MODEL) not in eligible:
+        raise UnsafeProductionConfigurationError(
+            "Production MiniMax M3 must be configured and golden-qualified"
+        )
 
 
 def validate_production_database_url(value: str, *, username: str) -> None:
@@ -100,6 +174,7 @@ def validate_production_environment(values: Mapping[str, str | None]) -> None:
         raise UnsafeProductionConfigurationError("Production BFF must use the compose API address")
     if re.fullmatch(r"[0-9a-f]{7,40}", resolved["PDOS_IMAGE_TAG"]) is None:
         raise UnsafeProductionConfigurationError("PDOS_IMAGE_TAG must be a git commit SHA")
+    validate_production_model_activation(values)
 
     s3_endpoint = urlparse(resolved["S3_ENDPOINT"])
     s3_hostname = s3_endpoint.hostname or ""
