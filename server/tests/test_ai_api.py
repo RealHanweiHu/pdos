@@ -633,7 +633,7 @@ def test_capabilities_endpoint_reports_contract_and_quality_controls(
     hard_gate = by_key["project_intelligence.risk_suggestion"]
     assert hard_gate["zone"] == "hard_gate"
     assert hard_gate["rollout"] == "live"
-    assert hard_gate["prompt_version"] == "project-intelligence-v1"
+    assert hard_gate["prompt_version"] == "project-intelligence-v2"
     assert hard_gate["finding_types"] == ["risk_suggestion"]
     assert hard_gate["quality_control"] == "finding_quality_control"
     test_plan = by_key["quality_intelligence.test_plan_change"]

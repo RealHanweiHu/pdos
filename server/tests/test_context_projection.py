@@ -183,3 +183,22 @@ def test_project_gateway_context_rejects_non_json_values_in_allowed_fields() -> 
 def test_project_gateway_context_rejects_wrong_container_shapes() -> None:
     with pytest.raises(ContextProjectionError, match="references must be a list"):
         project_gateway_context({"references": {"entity": "issue"}})
+
+
+def test_project_gateway_context_keeps_trigger_event_ids_for_evidence() -> None:
+    projection = project_gateway_context(
+        {
+            "trigger": {
+                "events": [{"event_id": 41, "payload": "raw"}, {"event_id": 42}],
+                "event_type": "ISSUE_CREATED",
+                "payload": {"description": "raw source"},
+            }
+        }
+    )
+
+    assert projection.payload["trigger"] == {
+        "events": [{"event_id": 41}, {"event_id": 42}],
+        "event_type": "ISSUE_CREATED",
+    }
+    assert "trigger.events[0].payload" in projection.removed_paths
+    assert "trigger.payload" in projection.removed_paths

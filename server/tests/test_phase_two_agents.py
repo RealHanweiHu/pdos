@@ -75,8 +75,8 @@ def assessment(
 
 def test_phase_two_prompts_are_versioned_and_routes_are_exact() -> None:
     assert {key: PROMPT_VERSIONS[key] for key in PHASE_TWO_AGENT_KEYS} == {
-        AgentKey.ENGINEERING_INTELLIGENCE: "engineering-intelligence-v1",
-        AgentKey.QUALITY_INTELLIGENCE: "quality-intelligence-v1",
+        AgentKey.ENGINEERING_INTELLIGENCE: "engineering-intelligence-v2",
+        AgentKey.QUALITY_INTELLIGENCE: "quality-intelligence-v2",
     }
     assert (
         SYSTEM_PROMPTS[AgentKey.ENGINEERING_INTELLIGENCE]

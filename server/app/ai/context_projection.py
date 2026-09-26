@@ -82,6 +82,7 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
         "agent_runs_today": None,
     },
     "trigger": {
+        "events": ({"event_id": None},),
         "event_type": None,
         "entity": None,
         "entity_id": None,

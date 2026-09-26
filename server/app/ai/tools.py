@@ -483,6 +483,38 @@ class AgentReadTools:
             ),
         )
 
+    def recent_events_anchor(self, *, project_id: UUID, through_id: int, limit: int = 20) -> int:
+        """Return the after_id that makes get_recent_events page the newest events up to through_id.
+
+        get_recent_events pages forward from after_id; starting at 0 would show the oldest
+        Project history and never reach the trigger in a busy Project.
+        """
+        self._assert_scope(project_id)
+        self._validate_page(after_id=through_id, limit=limit)
+        with self._engine.connect() as connection:
+            if self._run_store is not None and self._run_store.projection_only:
+                self._run_store.bind(connection)
+                anchor = connection.execute(
+                    text(
+                        "SELECT id FROM cehub_ai.agent_event_projection WHERE id <= :through_id "
+                        "ORDER BY id DESC OFFSET :limit LIMIT 1"
+                    ),
+                    {"through_id": through_id, "limit": limit},
+                ).scalar_one_or_none()
+            else:
+                anchor = connection.execute(
+                    select(tables.events.c.id)
+                    .where(
+                        tables.events.c.tenant_id == self._context.tenant_id,
+                        tables.events.c.project_id == self._context.project_id,
+                        tables.events.c.id <= through_id,
+                    )
+                    .order_by(tables.events.c.id.desc())
+                    .offset(limit)
+                    .limit(1)
+                ).scalar_one_or_none()
+        return int(anchor) if anchor is not None else 0
+
     def search_memory(
         self,
         *,

@@ -315,19 +315,19 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
             CapabilityKey.PROJECT_RISK_SUGGESTION,
             AgentKey.PROJECT_INTELLIGENCE,
             "risk_suggestion",
-            prompt_version="project-intelligence-v1",
+            prompt_version="project-intelligence-v2",
         ),
         CapabilityKey.PROJECT_BLOCKER_ALERT: _finding_capability(
             CapabilityKey.PROJECT_BLOCKER_ALERT,
             AgentKey.PROJECT_INTELLIGENCE,
             "blocker_alert",
-            prompt_version="project-intelligence-v1",
+            prompt_version="project-intelligence-v2",
         ),
         CapabilityKey.PROJECT_GATE_READINESS_ANOMALY: _finding_capability(
             CapabilityKey.PROJECT_GATE_READINESS_ANOMALY,
             AgentKey.PROJECT_INTELLIGENCE,
             "gate_readiness_anomaly",
-            prompt_version="project-intelligence-v1",
+            prompt_version="project-intelligence-v2",
         ),
         CapabilityKey.PROJECT_RISK_SUGGESTION_API: CapabilityContract(
             key=CapabilityKey.PROJECT_RISK_SUGGESTION_API,
@@ -342,25 +342,25 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
             CapabilityKey.KNOWLEDGE_DRAFT,
             AgentKey.KNOWLEDGE_LITE,
             "knowledge_draft",
-            prompt_version="knowledge-lite-v1",
+            prompt_version="knowledge-lite-v2",
         ),
         CapabilityKey.ENGINEERING_BOM_IMPACT: _finding_capability(
             CapabilityKey.ENGINEERING_BOM_IMPACT,
             AgentKey.ENGINEERING_INTELLIGENCE,
             "bom_impact_suggestion",
-            prompt_version="engineering-intelligence-v1",
+            prompt_version="engineering-intelligence-v2",
         ),
         CapabilityKey.ENGINEERING_CHANGE_IMPACT: _finding_capability(
             CapabilityKey.ENGINEERING_CHANGE_IMPACT,
             AgentKey.ENGINEERING_INTELLIGENCE,
             "change_impact_suggestion",
-            prompt_version="engineering-intelligence-v1",
+            prompt_version="engineering-intelligence-v2",
         ),
         CapabilityKey.QUALITY_CLUSTER_ALERT: _finding_capability(
             CapabilityKey.QUALITY_CLUSTER_ALERT,
             AgentKey.QUALITY_INTELLIGENCE,
             "quality_cluster_alert",
-            prompt_version="quality-intelligence-v1",
+            prompt_version="quality-intelligence-v2",
         ),
         CapabilityKey.ENGINEERING_COST_DISCUSSION_FOLLOWUP: CapabilityContract(
             key=CapabilityKey.ENGINEERING_COST_DISCUSSION_FOLLOWUP,
@@ -435,7 +435,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
             CapabilityKey.QUALITY_CAPA_SUGGESTION,
             AgentKey.QUALITY_INTELLIGENCE,
             "capa_suggestion",
-            prompt_version="quality-intelligence-v1",
+            prompt_version="quality-intelligence-v2",
         ),
         CapabilityKey.QUALITY_TEST_PLAN_CHANGE: CapabilityContract(
             key=CapabilityKey.QUALITY_TEST_PLAN_CHANGE,
@@ -462,13 +462,13 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
             CapabilityKey.SUPPLIER_DELAY_RISK,
             AgentKey.SUPPLIER_INTELLIGENCE,
             "supplier_delay_risk",
-            prompt_version="supplier-intelligence-v1",
+            prompt_version="supplier-intelligence-v2",
         ),
         CapabilityKey.EXECUTIVE_PORTFOLIO_BRIEF: _finding_capability(
             CapabilityKey.EXECUTIVE_PORTFOLIO_BRIEF,
             AgentKey.EXECUTIVE_INTELLIGENCE,
             "executive_portfolio_brief",
-            prompt_version="executive-intelligence-v1",
+            prompt_version="executive-intelligence-v2",
         ),
     }
 )

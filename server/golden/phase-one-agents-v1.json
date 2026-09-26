@@ -2,8 +2,8 @@
   "schema_version": 1,
   "suite_version": "s2-phase-one-agents-v1",
   "prompt_versions": {
-    "project_intelligence": "project-intelligence-v1",
-    "knowledge_lite": "knowledge-lite-v1"
+    "project_intelligence": "project-intelligence-v2",
+    "knowledge_lite": "knowledge-lite-v2"
   },
   "cases": [
     {

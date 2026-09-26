@@ -2,8 +2,8 @@
   "schema_version": 1,
   "suite_version": "s5-phase-three-agents-v1",
   "prompt_versions": {
-    "supplier_intelligence": "supplier-intelligence-v1",
-    "executive_intelligence": "executive-intelligence-v1"
+    "supplier_intelligence": "supplier-intelligence-v2",
+    "executive_intelligence": "executive-intelligence-v2"
   },
   "cases": [
     {

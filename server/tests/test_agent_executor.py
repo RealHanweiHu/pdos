@@ -456,3 +456,82 @@ def test_queued_run_rechecks_rollout_before_context_tools_or_model(
             assert row["run_context"] == {}
     finally:
         engine.dispose()
+
+
+def test_model_sees_trigger_ids_and_the_newest_events_up_to_the_trigger(
+    executor_database_url: str,
+) -> None:
+    """A busy Project must not hide the trigger behind its oldest history (N7-02)."""
+    engine = create_engine(psycopg_database_url(executor_database_url))
+    now = datetime.now(UTC)
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection)
+            history = [
+                int(
+                    connection.execute(
+                        tables.events.insert()
+                        .values(
+                            tenant_id=tenant_id,
+                            project_id=project_id,
+                            event_id=f"task:{uuid4()}",
+                            event_type="TASK_CREATED",
+                            schema_version=1,
+                            source="executor_test",
+                            entity="task",
+                            entity_id=uuid4(),
+                            payload={},
+                            timestamp=now - timedelta(minutes=60 - index),
+                        )
+                        .returning(tables.events.c.id)
+                    ).scalar_one()
+                )
+                for index in range(25)
+            ]
+            event_id = append_trigger(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                occurred_at=now - timedelta(minutes=16),
+            )
+        dispatcher = AgentDispatcher(engine)
+        dispatcher.dispatch_tenant(tenant_id=tenant_id)
+        dispatcher.seal_due_runs(now=now)
+        invoker = FakeModelInvoker(
+            GatewayResult(
+                status="succeeded",
+                output=AgentAssessment(
+                    disposition="human_review_candidate",
+                    candidate_type="blocker_alert",
+                    summary="Review the new issue.",
+                    proposed_payload=RiskSuggestionPayload(
+                        title="Review the new issue",
+                        description="The issue may block delivery.",
+                        likelihood=3,
+                        impact=4,
+                    ),
+                    evidence_event_ids=(event_id,),
+                    confidence=0.8,
+                ),
+                error_code=None,
+                structured_attempts=1,
+                removed_context_paths=(),
+            )
+        )
+
+        result = AgentExecutor(engine, model_invoker=invoker).execute_next(now=now)
+
+        assert result.status == "succeeded"
+        invocation = invoker.invocations[0]
+        trigger = cast(dict[str, object], invocation.context["trigger"])
+        assert trigger["events"] == [{"event_id": event_id}]
+        references = cast(list[dict[str, object]], invocation.context["references"])
+        cited = [
+            int(str(reference["reference_id"]).removeprefix("event:"))
+            for reference in references
+            if str(reference["reference_id"]).startswith("event:")
+        ]
+        assert cited == [*history[-19:], event_id]
+        assert history[0] not in cited
+    finally:
+        engine.dispose()

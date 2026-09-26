@@ -62,27 +62,27 @@ def _load_prompt(filename: str, *, expected_agent: AgentKey) -> PromptFile:
 
 _PROMPTS = {
     AgentKey.PROJECT_INTELLIGENCE: _load_prompt(
-        "project_intelligence_v1.json",
+        "project_intelligence_v2.json",
         expected_agent=AgentKey.PROJECT_INTELLIGENCE,
     ),
     AgentKey.KNOWLEDGE_LITE: _load_prompt(
-        "knowledge_lite_v1.json",
+        "knowledge_lite_v2.json",
         expected_agent=AgentKey.KNOWLEDGE_LITE,
     ),
     AgentKey.ENGINEERING_INTELLIGENCE: _load_prompt(
-        "engineering_intelligence_v1.json",
+        "engineering_intelligence_v2.json",
         expected_agent=AgentKey.ENGINEERING_INTELLIGENCE,
     ),
     AgentKey.QUALITY_INTELLIGENCE: _load_prompt(
-        "quality_intelligence_v1.json",
+        "quality_intelligence_v2.json",
         expected_agent=AgentKey.QUALITY_INTELLIGENCE,
     ),
     AgentKey.SUPPLIER_INTELLIGENCE: _load_prompt(
-        "supplier_intelligence_v1.json",
+        "supplier_intelligence_v2.json",
         expected_agent=AgentKey.SUPPLIER_INTELLIGENCE,
     ),
     AgentKey.EXECUTIVE_INTELLIGENCE: _load_prompt(
-        "executive_intelligence_v1.json",
+        "executive_intelligence_v2.json",
         expected_agent=AgentKey.EXECUTIVE_INTELLIGENCE,
     ),
 }
@@ -330,6 +330,7 @@ class ExecutorState(TypedDict, total=False):
     run_context: FrozenRunContext
     project_context: ProjectContextResult
     recent_events: ToolPage
+    recent_events_after_id: int
     memory: ToolPage
     domain_evidence: ToolPage
     gateway_result: GatewayResult[AgentAssessment]
@@ -692,6 +693,11 @@ class AgentExecutor:
                 arguments["limit"] = 20
             if key == "search_memory":
                 arguments["query"] = "Project evidence relevant to the current trigger events"
+            if key == "get_recent_events":
+                # Record the exact page read: the newest events up to the trigger.
+                after_id = self._recent_events_after_id(context)
+                arguments["after_id"] = after_id
+                state = {**state, "recent_events_after_id": after_id}
             call_id = self._observations.prepare(
                 context=context,
                 call_key=f"initial.{key}",
@@ -763,12 +769,27 @@ class AgentExecutor:
             run_store=self._run_store,
             embedding_gateway=self._embedding_gateway,
         )
+        after_id = state.get("recent_events_after_id")
         return {
             "recent_events": tools.get_recent_events(
                 project_id=context.project_id,
+                after_id=self._recent_events_after_id(context) if after_id is None else after_id,
                 limit=20,
             )
         }
+
+    def _recent_events_after_id(self, context: FrozenRunContext) -> int:
+        """Page the newest Project events up to the last trigger, so the trigger is in view."""
+        return AgentReadTools(
+            self._engine,
+            run_context=context,
+            run_store=self._run_store,
+            embedding_gateway=self._embedding_gateway,
+        ).recent_events_anchor(
+            project_id=context.project_id,
+            through_id=max(event.id for event in context.trigger_events),
+            limit=20,
+        )
 
     def _search_memory(self, state: ExecutorState) -> dict[str, ToolPage]:
         context = state["run_context"]
@@ -1112,6 +1133,10 @@ class AgentExecutor:
     def _trigger(context: FrozenRunContext) -> dict[str, object]:
         event = context.trigger_events[-1]
         return {
+            # The only ids a Finding may cite (preflight and create_agent_finding enforce it).
+            "events": [
+                {"event_id": item.id} for item in sorted(context.trigger_events, key=lambda e: e.id)
+            ],
             "event_type": event.event_type,
             "entity": event.entity,
             "entity_id": str(event.entity_id),

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "suite_version": "s4-phase-two-agents-v1",
   "prompt_versions": {
-    "engineering_intelligence": "engineering-intelligence-v1",
-    "quality_intelligence": "quality-intelligence-v1"
+    "engineering_intelligence": "engineering-intelligence-v2",
+    "quality_intelligence": "quality-intelligence-v2"
   },
   "cases": [
     {
