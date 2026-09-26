@@ -623,6 +623,28 @@ WHERE cehub_ai.agent_scope_allows(bom.tenant_id, bom.project_id)
 GROUP BY bom.id
 UNION ALL
 SELECT
+    item.tenant_id,
+    item.project_id,
+    'development_bom_item'::text AS entity,
+    item.id AS entity_id,
+    bom.code || ' · #' || item.line_number::text || ' · ' || item.part_number AS label,
+    concat(
+        'description=', left(item.description, 1000),
+        '; quantity=', trim_scale(item.quantity)::text, ' ', item.unit,
+        CASE
+            WHEN nullif(btrim(coalesce(item.material_reference, '')), '') IS NULL THEN ''
+            ELSE '; material_reference=' || item.material_reference
+        END
+    ) AS excerpt,
+    item.updated_at AS observed_at
+FROM cehub_product.development_bom_items AS item
+JOIN cehub_product.development_boms AS bom
+  ON bom.tenant_id = item.tenant_id
+ AND bom.project_id = item.project_id
+ AND bom.id = item.bom_id
+WHERE cehub_ai.agent_scope_allows(item.tenant_id, item.project_id)
+UNION ALL
+SELECT
     ecr.tenant_id,
     ecr.project_id,
     'engineering_change_request'::text AS entity,
@@ -641,6 +663,34 @@ LEFT JOIN cehub_product.ecr_affected_boms AS affected
  AND affected.ecr_id = ecr.id
 WHERE cehub_ai.agent_scope_allows(ecr.tenant_id, ecr.project_id)
 GROUP BY ecr.id;
+
+-- Project Intelligence Issue evidence. Like Complaint evidence it carries bounded free text but
+-- no owner/reporter/verifier identity; the prompts treat evidence text as data, not instructions.
+CREATE OR REPLACE VIEW cehub_ai.agent_issue_evidence_projection
+WITH (security_barrier = true)
+AS
+SELECT
+    issue.tenant_id,
+    issue.project_id,
+    'issue'::text AS entity,
+    issue.id AS entity_id,
+    issue.title AS label,
+    concat(
+        'type=', issue.issue_type,
+        '; severity=', issue.severity,
+        '; status=', issue.status,
+        CASE
+            WHEN nullif(btrim(coalesce(issue.description, '')), '') IS NULL THEN ''
+            ELSE '; description=' || left(issue.description, 2000)
+        END,
+        CASE
+            WHEN nullif(btrim(coalesce(issue.root_cause, '')), '') IS NULL THEN ''
+            ELSE '; root_cause=' || left(issue.root_cause, 1000)
+        END
+    ) AS excerpt,
+    issue.updated_at AS observed_at
+FROM cehub_project.issues AS issue
+WHERE cehub_ai.agent_scope_allows(issue.tenant_id, issue.project_id);
 
 CREATE OR REPLACE VIEW cehub_ai.agent_quality_evidence_projection
 WITH (security_barrier = true)
@@ -1239,6 +1289,7 @@ GRANT SELECT ON
     cehub_ai.agent_user_role_projection,
     cehub_ai.agent_memory_projection,
     cehub_ai.agent_engineering_evidence_projection,
+    cehub_ai.agent_issue_evidence_projection,
     cehub_ai.agent_quality_evidence_projection,
     cehub_ai.agent_supplier_delay_projection,
     cehub_ai.agent_portfolio_projection,
@@ -1714,6 +1765,7 @@ BEGIN
   RAISE EXCEPTION 'AGENT_OBSERVATION_INVALID' USING ERRCODE='22023';
  END IF;
  IF (wanted_tool IN ('get_project_context','get_recent_events','search_memory') OR
+  wanted_tool='get_issue_evidence' AND r.agent_key='project_intelligence' OR
   wanted_tool='get_engineering_evidence' AND r.agent_key='engineering_intelligence' OR
   wanted_tool='get_quality_evidence' AND r.agent_key='quality_intelligence' OR
   wanted_tool='get_supplier_delay_evidence' AND r.agent_key='supplier_intelligence' OR
@@ -1891,6 +1943,7 @@ BEGIN
   RAISE EXCEPTION 'AGENT_TOOL_INTENT_INVALID' USING ERRCODE='22023';
  END IF;
  IF (wanted_tool IN ('get_project_context','get_recent_events','search_memory') OR
+  wanted_tool='get_issue_evidence' AND r.agent_key='project_intelligence' OR
   wanted_tool='get_engineering_evidence' AND r.agent_key='engineering_intelligence' OR
   wanted_tool='get_quality_evidence' AND r.agent_key='quality_intelligence' OR
   wanted_tool='get_supplier_delay_evidence' AND r.agent_key='supplier_intelligence' OR

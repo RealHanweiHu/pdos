@@ -179,7 +179,9 @@ def test_tool_definitions_freeze_use_do_not_use_negative_example_and_boundary() 
         definition.name
         for definition in tool_definitions_for_agent(AgentKey.EXECUTIVE_INTELLIGENCE)
     ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_portfolio_brief"]
-    assert tool_definitions_for_agent(AgentKey.PROJECT_INTELLIGENCE) is TOOL_DEFINITIONS
+    assert [
+        definition.name for definition in tool_definitions_for_agent(AgentKey.PROJECT_INTELLIGENCE)
+    ] == [*([definition.name for definition in TOOL_DEFINITIONS]), "get_issue_evidence"]
 
 
 def test_tools_fail_close_on_claimed_scope_and_memory_is_explicitly_not_enabled(
@@ -552,21 +554,28 @@ def test_engineering_evidence_is_project_bound_allowlisted_and_paginated(
             ),
         )
 
-        first = tools.get_engineering_evidence(project_id=project_id, limit=1)
+        first = tools.get_engineering_evidence(project_id=project_id, limit=2)
         second = tools.get_engineering_evidence(
             project_id=project_id,
             offset=first.next_after_id or 0,
-            limit=1,
+            limit=2,
         )
 
-        assert first.shown_count == 1 and first.total_count == 2 and first.truncated
-        assert second.shown_count == 1 and second.total_count == 2 and not second.truncated
+        assert first.shown_count == 2 and first.total_count == 4 and first.truncated
+        assert second.shown_count == 2 and second.total_count == 4 and not second.truncated
         evidence = (*first.items, *second.items)
         assert {item["entity"] for item in evidence} == {
             "development_bom",
+            "development_bom_item",
             "engineering_change_request",
         }
         assert "item_count=2" in str(evidence)
+        bom_items = [item for item in evidence if item["entity"] == "development_bom_item"]
+        assert sorted(item["label"] for item in bom_items) == [
+            "EBOM-1 · #10 · PART-10",
+            "EBOM-1 · #20 · PART-20",
+        ]
+        assert all("description=Connector; quantity=1 ea" in item["excerpt"] for item in bom_items)
         assert "OTHER-EBOM" not in str(evidence)
         assert "supplier_secret" not in str(evidence)
         assert set(evidence[0]) == {
@@ -926,5 +935,90 @@ def test_existing_tool_instance_rechecks_rollout_before_read(
             tools.get_recent_events(project_id=context.project_id)
         with pytest.raises(CapabilityUnavailableError):
             tools.search_memory(project_id=context.project_id, query="project")
+    finally:
+        engine.dispose()
+
+
+def test_issue_evidence_is_project_bound_and_carries_no_people(
+    agent_tools_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(agent_tools_database_url))
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection, slug="issue-evidence")
+            other_tenant_id, other_project_id = seed_project(connection, slug="issue-other")
+            owner_id = uuid4()
+            connection.execute(
+                tables.users.insert(),
+                {
+                    "id": owner_id,
+                    "tenant_id": tenant_id,
+                    "username": "issue-owner",
+                    "display_name": "Issue Owner",
+                    "role": "engineer",
+                },
+            )
+            issue_id = uuid4()
+            connection.execute(
+                tables.issues.insert(),
+                [
+                    {
+                        "id": issue_id,
+                        "tenant_id": tenant_id,
+                        "project_id": project_id,
+                        "owner_user_id": owner_id,
+                        "reported_by_user_id": owner_id,
+                        "title": "Charging temperature over limit",
+                        "description": "Cell reached 52C against a 45C limit on two units.",
+                        "issue_type": "test_failure",
+                        "severity": "high",
+                        "root_cause": "Charge current too high",
+                    },
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": project_id,
+                        "owner_user_id": None,
+                        "reported_by_user_id": None,
+                        "title": "Blank description issue",
+                        "description": "   ",
+                        "issue_type": "engineering",
+                        "severity": "medium",
+                        "root_cause": None,
+                    },
+                ],
+            )
+            connection.execute(
+                tables.issues.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": other_tenant_id,
+                    "project_id": other_project_id,
+                    "title": "Other tenant issue",
+                },
+            )
+        tools = AgentReadTools(
+            engine,
+            run_context=frozen_context(tenant_id=tenant_id, project_id=project_id),
+        )
+
+        page = tools.get_issue_evidence(project_id=project_id, limit=10)
+
+        assert page.shown_count == 2 and page.total_count == 2 and not page.truncated
+        by_label = {item["label"]: item for item in page.items}
+        assert set(by_label) == {"Charging temperature over limit", "Blank description issue"}
+        issue = by_label["Charging temperature over limit"]
+        assert issue["reference_id"] == f"issue:{issue_id}"
+        assert issue["excerpt"] == (
+            "type=test_failure; severity=high; status=open; "
+            "description=Cell reached 52C against a 45C limit on two units.; "
+            "root_cause=Charge current too high"
+        )
+        assert "description=" not in by_label["Blank description issue"]["excerpt"]
+        assert str(owner_id) not in str(page.items)
+        assert "Issue Owner" not in str(page.items)
+        assert "Other tenant issue" not in str(page.items)
+        with pytest.raises(ToolScopeViolationError):
+            tools.get_issue_evidence(project_id=other_project_id)
     finally:
         engine.dispose()

@@ -79,7 +79,7 @@ def test_actual_loop_has_admitted_revision_chain_and_exact_receipts(loop_setup: 
         assert manifest.event_watermark is not None and manifest.event_watermark >= integer(
             ids["event_a"]
         )
-        assert len(manifest.observation_ids) == 2 + index
+        assert len(manifest.observation_ids) == 3 + index
         assert manifest.completeness == "context_incomplete" and manifest.missing
         assert any("search_memory" in s for s in manifest.omission_reasons)
         assert not manifest.skill_versions and manifest.goal_revision == 1

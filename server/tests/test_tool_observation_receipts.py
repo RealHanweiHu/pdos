@@ -63,11 +63,12 @@ def test_real_factory_persists_observations_and_exact_projected_context(
         "get_project_context",
         "get_recent_events",
         "search_memory",
+        "get_issue_evidence",
     ]
-    assert [r["sequence"] for r in observations] == [1, 2, 3]
+    assert [r["sequence"] for r in observations] == [1, 2, 3, 4]
     for row in observations:
         assert Observation.model_validate(row["metadata"]).id == row["id"]
-    memory = evidence(observations[-1]["metadata"])
+    memory = evidence(next(r for r in observations if r["tool_key"] == "search_memory")["metadata"])
     assert memory["status"] == "unavailable" and memory["total_count"] is None
     assert memory["error_code"] == "TOOL_NOT_ENABLED"
     receipt = rows(owner, tables.agent_context_receipts)[0]
@@ -80,7 +81,9 @@ def test_real_factory_persists_observations_and_exact_projected_context(
     body = json.loads(calls[0].content)
     actual = json.loads(body["messages"][1]["content"].split("PDOS_CONTEXT_JSON\n")[1])
     assert actual == evidence(receipt["body"])["context"]
-    assert actual["tool_observations"][-1]["status"] == "unavailable"
+    by_tool = {item["tool"]: item for item in actual["tool_observations"]}
+    assert by_tool["search_memory"]["status"] == "unavailable"
+    assert by_tool["get_issue_evidence"]["status"] == "completed"
     with owner.connect() as c:
         assert c.execute(
             text("""SELECT bool_and(metadata->>'input_digest'=
@@ -211,7 +214,7 @@ def test_observation_ports_enforce_idempotency_scope_and_conflicts(
 
         monkeypatch.setattr(runtime.executor._model_invoker, "invoke", check_port)
         assert runtime.executor.execute_next().status == "succeeded"
-    assert len(calls) == 1 and len(rows(owner, tables.agent_tool_observations)) == 3
+    assert len(calls) == 1 and len(rows(owner, tables.agent_tool_observations)) == 4
 
 
 def test_observation_and_receipt_history_is_append_only_and_not_role_readable(
@@ -258,7 +261,7 @@ def test_unavailable_model_without_trace_stays_explicitly_degraded(
     assert result.status == "degraded" and result.error_code == "MODEL_NOT_AVAILABLE"
     assert calls == [] and not rows(owner, tables.model_invocations)
     assert not rows(owner, tables.agent_result_checkpoints)
-    assert len(rows(owner, tables.agent_tool_observations)) == 3
+    assert len(rows(owner, tables.agent_tool_observations)) == 4
 
 
 def test_schema_roundtrip_and_persistent_evidence_guard(setup: CheckpointSetup) -> None:
@@ -400,13 +403,13 @@ def test_concurrent_append_uses_one_sequence_and_preserves_original_time(
 
             with ThreadPoolExecutor(max_workers=2) as pool:
                 results = list(pool.map(append, range(2)))
-            assert results[0] == results[1] and results[0]["sequence"] == 4
+            assert results[0] == results[1] and results[0]["sequence"] == 5
             return invoke(invocation)
 
         monkeypatch.setattr(runtime.executor._model_invoker, "invoke", check_concurrent)
         assert runtime.executor.execute_next().status == "succeeded"
-    assert len(rows(owner, tables.agent_tool_observations)) == 4
-    assert len(rows(owner, tables.agent_context_observations)) == 3
+    assert len(rows(owner, tables.agent_tool_observations)) == 5
+    assert len(rows(owner, tables.agent_context_observations)) == 4
 
 
 def test_actual_paginated_read_records_partial_status_and_continuation(

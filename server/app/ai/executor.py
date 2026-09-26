@@ -231,6 +231,7 @@ class LoopToolRequest(BaseModel):
         "get_quality_evidence",
         "get_supplier_delay_evidence",
         "get_portfolio_brief",
+        "get_issue_evidence",
     ]
     query: str | None = Field(default=None, min_length=1, max_length=500)
     after_id: int = Field(default=0, ge=0, strict=True)
@@ -681,6 +682,7 @@ class AgentExecutor:
             tool_key = key
             if key == "get_domain_evidence":
                 tool_key = {
+                    AgentKey.PROJECT_INTELLIGENCE: "get_issue_evidence",
                     AgentKey.ENGINEERING_INTELLIGENCE: "get_engineering_evidence",
                     AgentKey.QUALITY_INTELLIGENCE: "get_quality_evidence",
                     AgentKey.SUPPLIER_INTELLIGENCE: "get_supplier_delay_evidence",
@@ -815,7 +817,9 @@ class AgentExecutor:
             run_store=self._run_store,
             embedding_gateway=self._embedding_gateway,
         )
-        if context.agent_key is AgentKey.ENGINEERING_INTELLIGENCE:
+        if context.agent_key is AgentKey.PROJECT_INTELLIGENCE:
+            page = tools.get_issue_evidence(project_id=context.project_id, limit=20)
+        elif context.agent_key is AgentKey.ENGINEERING_INTELLIGENCE:
             page = tools.get_engineering_evidence(project_id=context.project_id, limit=20)
         elif context.agent_key is AgentKey.QUALITY_INTELLIGENCE:
             page = tools.get_quality_evidence(project_id=context.project_id, limit=20)

@@ -699,6 +699,26 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                     "narrowed_reason": "test quality threshold",
                 },
             )
+            issue_a = uuid4()
+            connection.execute(
+                tables.issues.insert(),
+                [
+                    {
+                        "id": issue_a,
+                        "tenant_id": ids["tenant_a"],
+                        "project_id": ids["project_a"],
+                        "title": "Scoped issue",
+                        "description": "Visible only inside the bound run scope",
+                    },
+                    {
+                        "id": uuid4(),
+                        "tenant_id": ids["tenant_b"],
+                        "project_id": ids["project_b"],
+                        "title": "Other tenant issue",
+                        "description": "Must stay outside tenant A scope",
+                    },
+                ],
+            )
         memory_a = seed_verified_memory(
             owner_engine,
             tenant_id=UUID(str(ids["tenant_a"])),
@@ -737,6 +757,12 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 ).scalar_one()
                 == 0
             )
+            assert (
+                connection.execute(
+                    text("SELECT count(*) FROM cehub_ai.agent_issue_evidence_projection")
+                ).scalar_one()
+                == 0
+            )
             claim = (
                 connection.execute(
                     text("SELECT * FROM cehub_ai.claim_agent_run(:started_at)"),
@@ -767,6 +793,23 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 ).mappings()
             )
             assert memories == [{"memory_id": memory_a, "tenant_id": ids["tenant_a"]}]
+            issues = list(
+                connection.execute(
+                    text(
+                        "SELECT entity_id, tenant_id, label, excerpt "
+                        "FROM cehub_ai.agent_issue_evidence_projection"
+                    )
+                ).mappings()
+            )
+            assert issues == [
+                {
+                    "entity_id": issue_a,
+                    "tenant_id": ids["tenant_a"],
+                    "label": "Scoped issue",
+                    "excerpt": "type=engineering; severity=medium; status=open; "
+                    "description=Visible only inside the bound run scope",
+                }
+            ]
             assert (
                 connection.execute(
                     text("SELECT count(*) FROM cehub_ai.agent_document_fragment_projection")
@@ -813,6 +856,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 {},
             )
             denied(connection, "SELECT * FROM cehub_core.users", {})
+            denied(connection, "SELECT * FROM cehub_project.issues", {})
             denied(connection, "SELECT * FROM cehub_project.project_members", {})
             denied(connection, "SELECT * FROM cehub_memory.memories", {})
             denied(

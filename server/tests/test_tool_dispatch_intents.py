@@ -72,7 +72,7 @@ def prepare(
     return result
 
 
-@pytest.mark.parametrize("fill", [0, 5, 6])
+@pytest.mark.parametrize("fill", [0, 4, 6])
 def test_actual_handler_sees_committed_intent_and_quota_blocks_before_memory(
     setup: CheckpointSetup, monkeypatch: pytest.MonkeyPatch, fill: int
 ) -> None:
@@ -118,7 +118,7 @@ def test_actual_handler_sees_committed_intent_and_quota_blocks_before_memory(
     observations = rows(owner, tables.agent_tool_observations)
     for row in observations:
         assert str(row["tool_intent_id"]) == evidence(row["metadata"])["tool_call_id"]
-    assert len(rows(owner, tables.agent_tool_intents)) == (3 + fill if fill < 6 else 8)
+    assert len(rows(owner, tables.agent_tool_intents)) == (4 + fill if fill < 6 else 8)
 
 
 @pytest.mark.parametrize("change", ["same", "arguments", "tool", "call_id", "scope"])

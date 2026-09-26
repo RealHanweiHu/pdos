@@ -4,7 +4,7 @@ from alembic.config import Config
 from alembic.script import ScriptDirectory
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_HEAD = "0376_readable_audit_reports"
+EXPECTED_HEAD = "0377_issue_evidence_tool"
 EXPECTED_BASE = "0000_scaffold"
 
 
@@ -17,8 +17,8 @@ def test_migration_history_has_one_append_only_head() -> None:
     assert scripts.get_heads() == [EXPECTED_HEAD]
     assert scripts.get_bases() == [EXPECTED_BASE]
     chain = list(reversed(list(scripts.walk_revisions())))
-    assert len(chain) == 377
-    assert [step.revision[:4] for step in chain] == [f"{index:04d}" for index in range(377)]
+    assert len(chain) == 378
+    assert [step.revision[:4] for step in chain] == [f"{index:04d}" for index in range(378)]
     for index, step in enumerate(chain):
         assert step.down_revision == (chain[index - 1].revision if index else None)
         assert not step.dependencies

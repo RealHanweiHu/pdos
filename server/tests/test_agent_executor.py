@@ -535,3 +535,81 @@ def test_model_sees_trigger_ids_and_the_newest_events_up_to_the_trigger(
         assert history[0] not in cited
     finally:
         engine.dispose()
+
+
+def test_project_agent_reads_the_triggering_issue_through_issue_evidence(
+    executor_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(executor_database_url))
+    now = datetime.now(UTC)
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection)
+            issue_id = uuid4()
+            connection.execute(
+                tables.issues.insert(),
+                {
+                    "id": issue_id,
+                    "tenant_id": tenant_id,
+                    "project_id": project_id,
+                    "title": "Low temperature start failure",
+                    "description": "Two of three units fail to start after 2h at -10C.",
+                    "issue_type": "test_failure",
+                    "severity": "high",
+                },
+            )
+            event_id = int(
+                connection.execute(
+                    tables.events.insert()
+                    .values(
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        event_id=f"issue:{issue_id}",
+                        event_type="ISSUE_CREATED",
+                        schema_version=1,
+                        source="executor_test",
+                        entity="issue",
+                        entity_id=issue_id,
+                        payload={"description": "raw payload must never reach model"},
+                        timestamp=now - timedelta(minutes=16),
+                    )
+                    .returning(tables.events.c.id)
+                ).scalar_one()
+            )
+        dispatcher = AgentDispatcher(engine)
+        dispatcher.dispatch_tenant(tenant_id=tenant_id)
+        dispatcher.seal_due_runs(now=now)
+        invoker = FakeModelInvoker(
+            GatewayResult(
+                status="succeeded",
+                output=AgentAssessment(
+                    disposition="human_review_candidate",
+                    candidate_type="blocker_alert",
+                    summary="Review the start failure.",
+                    proposed_payload=RiskSuggestionPayload(
+                        title="Review the start failure",
+                        description="Cold start failures may block EVT exit.",
+                        likelihood=3,
+                        impact=4,
+                    ),
+                    evidence_event_ids=(event_id,),
+                    confidence=0.8,
+                ),
+                error_code=None,
+                structured_attempts=1,
+                removed_context_paths=(),
+            )
+        )
+
+        result = AgentExecutor(engine, model_invoker=invoker).execute_next(now=now)
+
+        assert result.status == "succeeded"
+        invocation = invoker.invocations[0]
+        references = cast(list[dict[str, object]], invocation.context["references"])
+        issue = next(ref for ref in references if ref["reference_id"] == f"issue:{issue_id}")
+        assert issue["label"] == "Low temperature start failure"
+        assert "Two of three units fail to start" in str(issue["excerpt"])
+        assert "raw payload must never reach model" not in str(references)
+        assert "get_issue_evidence" in invocation.system_prompt
+    finally:
+        engine.dispose()

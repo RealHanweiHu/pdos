@@ -43,6 +43,7 @@ DROP VIEW IF EXISTS
     cehub_ai.agent_document_fragment_projection,
     cehub_ai.agent_user_role_projection,
     cehub_ai.agent_quality_evidence_projection,
+    cehub_ai.agent_issue_evidence_projection,
     cehub_ai.agent_engineering_evidence_projection,
     cehub_ai.agent_supplier_delay_projection,
     cehub_ai.agent_portfolio_projection,

@@ -203,13 +203,13 @@ def test_actual_loop_executes_requested_page_then_uses_observation_to_finish(
     observations = sorted(
         rows(owner, tables.agent_tool_observations), key=lambda r: row_number(r, "sequence")
     )
-    assert len(observations) == 4
+    assert len(observations) == 5
     assert evidence(observations[-1]["input_body"])["after_id"] == event_ids[19]
     assert evidence(observations[-1]["metadata"])["status"] == "completed"
     traces = rows(owner, tables.model_invocations)
     assert len({t["budget_call_id"] for t in traces}) == 2
     assert len(rows(owner, tables.agent_context_receipts)) == 2
-    assert len(rows(owner, tables.agent_context_observations)) == 3 + 4
+    assert len(rows(owner, tables.agent_context_observations)) == 4 + 5
     assert len(rows(owner, tables.budget_lineages)) == 1
 
 
@@ -221,7 +221,7 @@ def test_last_model_step_does_not_dispatch_a_tool_that_cannot_be_followed(
     with runtime_factory.configured_agent_runtime(env) as runtime:
         result = runtime.executor.execute_next()
     assert result.status == "degraded" and result.error_code == "AGENT_LOOP_MODEL_LIMIT", result
-    assert len(calls) == 3 and len(rows(owner, tables.agent_tool_intents)) == 5
+    assert len(calls) == 3 and len(rows(owner, tables.agent_tool_intents)) == 6
     assert rows(owner, tables.findings) == []
 
 
@@ -237,7 +237,7 @@ def test_model_cannot_expand_tool_or_project_authority(loop_setup: LoopSetup, ba
     with runtime_factory.configured_agent_runtime(env) as runtime:
         result = runtime.executor.execute_next()
     assert result.status in {"failed", "degraded"}
-    assert len(calls) <= 3 and len(rows(owner, tables.agent_tool_intents)) == 3
+    assert len(calls) <= 3 and len(rows(owner, tables.agent_tool_intents)) == 4
     assert rows(owner, tables.findings) == []
     if bad == "wrong_agent":
         assert result.error_code == "AGENT_LOOP_TOOL_NOT_ALLOWED"
@@ -356,7 +356,7 @@ def test_multiple_requests_share_budget_and_unavailable_memory_is_visible(
     with runtime_factory.configured_agent_runtime(env) as runtime:
         result = runtime.executor.execute_next()
     assert result.status == "succeeded", result
-    assert len(calls) == 3 and len(rows(owner, tables.agent_tool_intents)) == 5
+    assert len(calls) == 3 and len(rows(owner, tables.agent_tool_intents)) == 6
     last = json.loads(calls[-1].content)
     context = json.loads(last["messages"][1]["content"].split("PDOS_CONTEXT_JSON\n")[1])
     observation = context["tool_observations"][-1]
@@ -376,7 +376,7 @@ def test_model_selected_tool_cannot_bypass_original_tool_quota(
         def consume(invocation: GatewayInvocation) -> GatewayResult[AgentLoopStep]:
             port = runtime.executor._observations
             assert port is not None
-            for i in range(5):
+            for i in range(4):
                 port._call(
                     "SELECT cehub_ai.prepare_agent_tool_call(:call,:key,:tool,:args)",
                     call=uuid4(),
@@ -389,7 +389,7 @@ def test_model_selected_tool_cannot_bypass_original_tool_quota(
         monkeypatch.setattr(runtime.executor._model_invoker, "decide", consume)
         result = runtime.executor.execute_next()
     assert result.error_code == "BUDGET_TOOL_CALL_COUNT_EXHAUSTED"
-    assert len(calls) == 1 and len(rows(owner, tables.agent_tool_dispatches)) == 3
+    assert len(calls) == 1 and len(rows(owner, tables.agent_tool_dispatches)) == 4
 
 
 def test_requested_handler_failure_records_observation_without_another_model(
