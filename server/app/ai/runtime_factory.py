@@ -127,7 +127,11 @@ def configured_agent_runtime(
                 catalog=catalog,
                 qualifications=qualifications,
                 governance=governance,
-                adapters=configured_provider_adapters(catalog, client),
+                # Event assessments on qualified models took up to ~29s in N7-02; a 30s ceiling
+                # dropped runs as PROVIDER_TRANSPORT_ERROR. The lease heartbeat covers 90s.
+                adapters=configured_provider_adapters(
+                    catalog, client, request_timeout_seconds=90.0
+                ),
                 rate_cards={},
                 run_store=run_store,
                 budget_controller=budget_controller,
