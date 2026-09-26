@@ -1,0 +1,81 @@
+{
+  "recorded_at": "2026-09-08T19:37:49.129296+00:00",
+  "git_base": "8d2ec5c75b9296b86e552582cdc44e69e9bc7d68",
+  "scope": "Local uncommitted candidate; not a deployable release approval. Checks include existing workspace changes.",
+  "results": {
+    "backend_full": {
+      "passed": 695,
+      "seconds": 452.92
+    },
+    "final_focused": {
+      "passed": 20,
+      "seconds": 17.73,
+      "note": "Includes one additional modify/exclude/revision test after full run; application code unchanged."
+    },
+    "frontend_full": {
+      "files": 68,
+      "passed": 256
+    },
+    "backend_format": {
+      "files": 349,
+      "passed": true
+    },
+    "mypy": {
+      "files": 149,
+      "passed": true
+    },
+    "eslint": true,
+    "typescript": true,
+    "next_webpack_build": true,
+    "python_compile": true,
+    "dependency_audit": {
+      "registry_versions": 916,
+      "batches": 2,
+      "known_vulnerability_records": 0
+    }
+  },
+  "source_sha256": {
+    "server/app/domain/test_plan_changes.py": "e0c9d3ad8c4490f71acf951ee4ac0c674f67571836fa931e028184c42e5b0734",
+    "server/app/ai/test_plan_suggestions.py": "d3b1bbd7a4088283bf36dcea347040ad0d36d94d4f0fa299b5e5502ea1272769",
+    "server/app/ai/prompts/test_plan_change_v1.json": "1f4f6638f6313ad355296630ae2c9d169ac2dee119fbd5fae4b6d844309a175b",
+    "server/app/ai/prompts/test_plan_change_v2.json": "2a1f26646945403899ee0ccd502d289ed8b607fa4b2b128628bd4601ca006f39",
+    "server/app/ai/prompts/test_plan_change_v3.json": "97391575ae603bc14a3f6fc74b8181a6739456cab662b674f0927a25d7829dee",
+    "server/app/ai/capability_contract.py": "214c7b61b2ba34d183d2339ad56eb74ee9841471baf166fe3b34327805a7b114",
+    "server/app/ai/context_projection.py": "1e4a469639bed6399bd6d77d3e2e5b7b9226d78eec835443d9637cae3065a804",
+    "server/app/ai/executor.py": "1d99928ebc51673f2d396f7e5271a6da2e2621771f3b38d4793b4c6d5bebeb4e",
+    "server/app/domain/findings.py": "a4e5fd3f9b4923987059406fe4c15f2df0c310b21d70db5b3f7b0e136a80aad4",
+    "server/app/api/findings.py": "0f8872e67dba3b703f98b6c7406633303f930b2bd6395ac008906b02c001c72e",
+    "server/app/api/npi_execution.py": "f8c8528a1d6e1c5181653268f98969ab7014ab488c5d43a2155b41177f7347ee",
+    "server/app/db/schema.py": "fd4b7d8a5d7bf3de00094f6aad36abb02fa033a352cd2f6ffa9c15310d43f0b6",
+    "server/migrations/versions/0058_ai_test_plan_changes.py": "8af43cd300e425bb03ddecc25ec602ae33e52fe105871df42997b95e944a919a",
+    "server/tests/test_ai_test_plan_changes.py": "a85aef349188c162c8e8a4f8913f4efbcfd20f095eb9e2605eff848225af6cc0",
+    "web/src/components/ai/test-plan-proposal.tsx": "e386ce4968473cbf0c41041060c00d3984724306410829dd000a8ceb10f1c430",
+    "web/src/components/ai/ai-review-inbox-view.tsx": "47c3af653323fa21b72a1d35d151d2231b222e31d156a2045abb86e05d6eb7b0",
+    "web/src/components/ai/ai-types.ts": "43dde42b5a6d4955b07de264f7dbaa9c886f9a6b03fbe69f1d00b876ad2bf81b",
+    "web/src/components/projects/project-test-conversation.tsx": "94f4a9106718b833c6829e4856ca7505d4c8adad4b81b835c7e54be51baa00df",
+    "web/src/components/projects/project-npi-panel.tsx": "6803395bdf9235959a5c1d0d6da450e2f209c4cf4aff4b9bc754b35a2bd42ec1",
+    "web/src/components/projects/project-npi-types.ts": "16a3e80e2cd61e4ae3345c48e2a9207a2b8f45a9a55795a85f305f8a17980958",
+    "web/src/lib/npi-bff.ts": "dcfc9ac95df3571af97a4b4738d285b3bab31cb477ec2b76748270b9bc66d759",
+    "web/src/lib/pdos-api.ts": "c43f53333feae2387c9a20b49c04970e23af384552b17b040695d699521cbe4e",
+    "web/src/app/api/ai/findings/[findingId]/review/route.ts": "4d1c7313d49189f1263b3d58002af4e09a1c566571ce2914fb9df58bbc2e743a",
+    "server/app/domain/test_templates/lithium-bicycle-pump-v1.json": "30a8967792f305df6f1485e456f52c182079c6a771d95fbc880ab0ba0c6d30dc",
+    "assets/pilots/d14-04-test-template-v1.json": "880a3d9f0f5eca6e6781d5e33c43b04632703f6fd2969153d69938696b72dd87"
+  },
+  "log_sha256": {
+    "server-full": "1c9b8b121d00274fe4a809bd45d8b5dfcbff199e69fc563d966a0177330af189",
+    "focused": "78c9833995ae93c1ff831df5467eba6585153a22de94418f02cf46ed6b7bf8a8",
+    "ruff": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "format": "c3a6466b10c008a6ecfea3d9ece178bd95b8b26fc69c04c6a2e44959794608a7",
+    "mypy": "e0882189711bb25ec70ba990a19f0fd4a9bc195cd7cd2484ec95ec37251d583c",
+    "web-full": "9a80adcb6174c588aa8ebaf6d26e746534e55d1dca67612065ef30d90e428ea3",
+    "web-lint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tsc": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "build": "a3a14662abb228723a7a7031e46fb95c5b5cee4a8d50712c257538223bd73e3b",
+    "dependencies": "3f52969b68428603f7b5af171269340e6de4b62f9655f51e351e910106f1b108"
+  },
+  "limits": [
+    "Synthetic MiniMax-M3/browser scenario only; no real D14-04 report sent.",
+    "Client file/specification version selection and semantic conflict evaluation are follow-up scope.",
+    "No production, external delivery, golden suite or Phase Exit approval changed."
+  ]
+}

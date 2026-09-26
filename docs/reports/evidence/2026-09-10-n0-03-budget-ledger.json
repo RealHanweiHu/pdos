@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 transactional budget storage; not wired to runtime factories",
+  "tests": {
+    "budget_database": 15,
+    "gateway_schema_migration_safety": 29,
+    "contracts_calendar": 160,
+    "distinct_total": 204,
+    "completed_run_replay_recheck": "1 passed; included in budget_database"
+  },
+  "checks": {
+    "ruff_files": 6,
+    "format_files": 6,
+    "mypy": "budget_ledger passed",
+    "metadata_comparison": "new tables/columns/defaults/indexes/FKs match; checks and triggers separately tested"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration": "0060_budget_reservations"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "3a73d5de3e9addfe5a5d5ba25e989c871d6dffa042dc8b821bd5ccbe62102d1f",
+      "sources_verified": 174,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/budget_ledger.py": "ae67962460158184b6c2e8706caf60b42187f90a1175c21a5e3274510632e183",
+    "server/app/db/schema.py": "5ddd3da7240ce25046871b9df077064ce9df1a4b251fee1292627e2297650242",
+    "server/migrations/versions/0060_budget_reservations.py": "87c5d529b389cbf9eaf1f248f2e6c9cc374e08bdaf89e12c5e4201fc98e6bb7b",
+    "server/tests/test_budget_ledger.py": "9735ed3b496510bd1118ec71eb015d6e244772f909a1452a0a8b65d8078b8dc0",
+    "server/tests/test_migrations.py": "7020013c91e504c9d92bd2e4ab43716544e8ebd0950d0b71f8bc82e24f6ecb15",
+    "server/tests/test_model_gateway_schema.py": "e5415df9875269afd527b4b5f1ef035339dc640429d5d7d04edb5b18ffdf792f",
+    "docs/reports/2026-09-10-n0-03-budget-ledger-validation.md": "adf72cde01483bfdf8af1db2eed2b22cc03c2de341b2cd3f507d60db247617db"
+  },
+  "remaining": [
+    "real provider/tool admission and token metering",
+    "qualified model windows and profile intersection",
+    "active-time/worker leases",
+    "restricted role service interface",
+    "legacy usage accounting",
+    "price/cached meter and monetary enforcement"
+  ]
+}

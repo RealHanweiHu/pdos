@@ -1,0 +1,44 @@
+# 事件上下文 Manifest 与运行内容版本
+
+2026-09-11，N0-03，本地候选 `0080_context_manifests`。预算绑定事件运行已把实际模型尝试接到不可变 ContextManifest，并在首次读取前保存运行内容版本。此记录不替代部署批准或真实模型用途评测。
+
+## 实际顺序
+
+1. 领取事件运行，沿0079签发当前服务授权。
+2. 执行器保存运行内容包：本地server Python、prompt JSON、迁移和数据库安全脚本的文件摘要，以及实际编译的Agent能力、工具定义、出站投影和prompt摘要。后续调用和恢复必须与原内容包一致；已有工具/模型/checkpoint历史却没有内容包时拒绝补写。
+3. 执行真实只读工具，保存Observation，冻结本次投影后的ContextReceipt。
+4. Gateway在输入计量前复核运行内容包、授权及已消费知识的当前验证状态，再按合格模型与实际结构化消息计量、原子预留原lineage预算。准入失败不会产生Manifest，也不会伪造输入量或输出预留。
+5. 在唯一派发许可前，受限端口从数据库读取实际准入行、ContextReceipt、授权和观察集合，生成Manifest。记录提交后才允许实际provider调用。
+6. 后续推理和结构化修复各自追加revision；同一结构化调用的修复共用ContextReceipt，但使用不同attempt、请求摘要和预算准入行。最终trace仍通过ContextReceipt和稳定model_call_id关联所有实际尝试。
+
+## 记录内容
+
+Manifest采用已冻结的ContextManifest DTO，保存run/授权、连续revision与parent、goal revision、内容包/能力/prompt/工具集/投影/模型资格/schema/政策版本、顺序Observation IDs、事件watermark、来源、遗漏、完整性和digest。
+
+输入估计与输出预留直接来自已提交的预算准入行，不使用工具结果长度、模型自报值或零占位。Manifest通过tenant/run复合外键关联授权、ContextReceipt、实际预算准入行和parent。digest是除digest字段外的JSONB正文按PostgreSQL规范文本编码后计算的SHA-256。
+
+来源来自本次ContextReceipt关联的真实Observation；同一来源记录去重并确定排序。watermark取触发事件及本次来源中已观察到的事件最大行号。投影删除路径和工具未展示部分写入omission_reasons；工具不可用/失败/取消记为context_incomplete，分页未完整读取记为partial。这里的complete只描述本次已选择的上下文输入，不证明整个业务知识库完备。
+
+事件目标在当前模式下固定，goal_revision为首次版本1。当前事件路径没有执行独立Skill包，skill_versions为空。交互式目标修订和Skill运行需要后续显式接线，不借这些字段声称已完成。
+
+模型资格版本摘要包括实际passed通用资格记录、输入计量引用/版本和该run已冻结的循环用途资格。首个Manifest之后，更换模型资格、prompt或输出schema会拒绝继续调用。准入行另保留实际请求摘要、协议、模型、计量窗口及输出限制。
+
+工具集摘要来自实际system prompt末尾编译后的工具定义。循环模式只记录模型实际可选的工具，并保留服务端移除project_id后的输入示例；登记但未接入循环的工具不会被算作模型可用工具。
+
+## 约束与恢复
+
+已消费知识在计量前、Manifest冻结（含幂等重取）、预算派发及成功结果/Finding创建前复核当前验证状态、项目范围和正文摘要。原生token计量可能向供应商发送提示词，因此也受计量前的复核约束。计量前失败时没有新预留；冻结后撤权则取消尚未派发的预留；模型响应后撤权保留已发生用量与trace，并停止发布候选。这里复核直接消费的知识条目，不宣称已完成所有衍生来源ACL。
+
+Manifest为追加历史，不能UPDATE/DELETE；execution_bundle首次保存后不可改写。Agent/Worker没有Manifest表的直接读写权，只允许当前Agent租约调用绑定/冻结端口。租户和run来自数据库当前租约，不由模型传参。
+
+数据库派发触发器要求新预算事件的模型dispatch已有Manifest；trace触发器要求每个声称发生的结构化attempt都能找到同run、ContextReceipt和model_call_id的Manifest。冻结失败时，服务尝试取消尚未派发的预留；已经失去权限或状态未知时保留原持有，不把它归零。
+
+迁移前已经派发的请求仍可结算真实用量；新增门禁不阻塞旧调用结算。旧未绑定预算事件继续兼容路径，不补造Manifest或内容包。已有最终checkpoint的正常恢复复用历史Manifest与原结果，不新增模型调用；运行内容包变化则在恢复读取前停止。
+
+0080新增agent_context_manifests、运行内容包字段及预算准入复合键。空历史可降回0079；已有内容包或Manifest时拒绝降级。DBA模板包含受限端口并在末尾统一COMMIT；撤销脚本撤销端口权限，历史仍保留。
+
+## 边界和后续
+
+内容包标识本地服务端源码与编译配置，不宣称已部署release、完整环境/依赖锁定或操作者批准；生产版本供应和不可变进程资产仍需部署流程证明。Manifest模型资格引用也不替代真实评测。
+
+当前实现覆盖预算事件模型调用。完整多锚点/用户委托/Owner授权、应用入口Manifest、压缩与CompactionRecord、衍生来源ACL、持久等待和中途逐步恢复、收费工具/嵌入费用以及真实用途资格与生产采用继续。N0-03保持部分完成。

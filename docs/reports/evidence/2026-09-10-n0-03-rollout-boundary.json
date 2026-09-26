@@ -1,0 +1,72 @@
+{
+  "date": "2026-09-10",
+  "scope": "ordinary employee runtime rollout guards; N0-03 partial",
+  "tests": {
+    "distinct_runtime_api": 75,
+    "contracts_calendar": 160,
+    "distinct_total": 235,
+    "initial_failures": "2 assertions expected NULL; existing unbuilt run_context default is {}; corrected and passed",
+    "collection_confirmed": 75
+  },
+  "checks": {
+    "ruff_files": 22,
+    "formatted_files": 22,
+    "mypy_files": 14,
+    "git_diff_check": "passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "head": "0059_invocation_cost_evidence",
+    "new_migrations": 0
+  },
+  "contract_verification": {
+    "pdos-v1": {
+      "current_manifest_sha256": "4f6db55e4360f840d583eba00a6a964317b75363064a9e5dd8aa9489600841d8",
+      "sources_verified": 173,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/capability_contract.py": "30c914767e0f5ea2fd738ecba4e9aa377c674b119c73c8839036e004b833d8da",
+    "server/app/ai/rollout_guard.py": "4e1eb605e0848099f7ade3c651779b9861a0094478cc79e4ece33c683ef66ea7",
+    "server/app/ai/executor.py": "c55ba365b60733df551986215d08f6968aaeec7aee5435c07c39457f10d0f81d",
+    "server/app/ai/finding_writer.py": "0cefad2d79c5b0273a24f38a08bd985496e15ff88a807135adf20397554e9f5f",
+    "server/app/ai/tools.py": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+    "server/app/ai/risk_suggestions.py": "b9b088f12f93b6a58918e5928e0fe20fb759a788939cba017a76ef7f2dde4875",
+    "server/app/ai/test_plan_suggestions.py": "ee9782de61e7720a5a3d7762186e27173f5c8286488775b211babd4407cc3270",
+    "server/app/worker/dispatcher.py": "f66e7d70224b260f96ac2cbfba0d282e1c75dc0f350ec593a97061e0eb2982d8",
+    "server/app/domain/findings.py": "222d5415b7fbea9dda4bd650fb2e6f744aa376da09fcde741b81b4a4e169b1fa",
+    "server/app/domain/review_inbox.py": "67366a80bf3945e49ff449b2e534d7130cd29bd2dfecfbca8e07146137fae7a7",
+    "server/app/domain/my_work.py": "27f0da8ba6be3f5cceaec9baf7338b2648e08be09bb24e3ab624b823443fb06e",
+    "server/app/api/findings.py": "e1eadad1e0b7bb73ceee6c7b420bf743424d2ab985748c7d5c927c70381f4cc2",
+    "server/app/api/ai.py": "0ea8ed4a060efd80e41eed5ebe5480f476e09d005976dc79061b4346d8910a71",
+    "server/app/api/npi_execution.py": "7f30b05d0ab997acd6f0c8ed37002e6c65ad354c772f537a2b6defffcd9c2756",
+    "server/tests/rollout_support.py": "c01659702614a956e5d8413680b4a39a095cb5d5ca66e7cb7254729293fde97e",
+    "server/tests/test_capability_contract.py": "b0ec51608a906a446faf5c9d0fd493d6d0ff3481b6b410c69709814a5eaec2f3",
+    "server/tests/test_agent_dispatcher.py": "2ef8a38b7caf1f45d46a0a3e86aba95f50a0c4f3be07bc1891bc7e6e1b0b4551",
+    "server/tests/test_agent_executor.py": "08169715e2b6ce32470629d66e4cc8f53f6479462ffc102613e57ffe4f786aee",
+    "server/tests/test_findings_service.py": "a5d2da32937c5828a7f2948d3171459b71a460f9e991b2272bfbe594f05deb01",
+    "server/tests/test_agent_tools.py": "7354b0b079ad47864009f5063d90cbc7fe094a666b3e5c21194168a359d9883c",
+    "server/tests/test_ai_api.py": "aec3153683dc259a5ccbc735c3ef6c99e5c18af2af1b6b31cf04e71d589ce20b",
+    "server/tests/test_ai_test_plan_changes.py": "1cc0f8401c12fe1b313d12a3a63bac03938c738a779b7881d57c5367a11da5bf",
+    "docs/reports/2026-09-10-n0-03-rollout-boundary-validation.md": "09fd2b7087f2e523216aa0fbbdd6349a50ccf71d70b3d7584b176b1d0a33579a"
+  },
+  "not_implemented": [
+    "tenant policy publication and cross-process synchronization",
+    "pinned generation rollout provenance",
+    "shadow evaluation and admin result store",
+    "database role rollout enforcement",
+    "atomic budgets and tool loop"
+  ]
+}

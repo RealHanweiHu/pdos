@@ -1,0 +1,94 @@
+{
+  "date": "2026-09-11",
+  "scope": "actual bounded internal read-tool model loop; creation-time qualified loop binding, same budget/lease, next-step observations and final checkpoint recovery",
+  "tests": {
+    "distinct_passed": 200,
+    "new_cases": 20,
+    "regression_cases": 180,
+    "real_role_batch_passed": 111,
+    "shared_batch_passed": 64,
+    "deployment_config_passed": 25,
+    "distinct_formula": "111 + 64 + 25",
+    "initial_loop_cases": {
+      "passed": 6,
+      "invalid_synthetic_meter_window_failures": 8
+    },
+    "second_loop_batch_passed": 14,
+    "first_full_batch": {
+      "passed": 104,
+      "json_null_compatibility_failures": 7
+    },
+    "targeted_null_fix": {
+      "passed": 9,
+      "invalid_synthetic_event_window_failure": 1
+    },
+    "logs": {
+      "real_role_final": "........................................................................ [ 64%]\n.......................................                                  [100%]\n111 passed in 221.79s (0:03:41)\n",
+      "shared_regression": "................................................................         [100%]\n64 passed in 100.21s (0:01:40)\n",
+      "deployment_config": ".........................                                                [100%]\n25 passed in 27.07s\n"
+    }
+  },
+  "checks": {
+    "ruff_files": 13,
+    "format_files": 13,
+    "mypy_files": 10,
+    "contract_exports": "common 4 and runtime 5 checked",
+    "approved_manifests": "unchanged",
+    "dba_read_port_parity": "passed",
+    "dba_final_commit": "passed",
+    "actual_database_binding_function": "both test databases passed",
+    "actual_read_function": "shared test database passed",
+    "scoped_diff_and_whitespace": "passed"
+  },
+  "migration_head": "0078_event_loop_binding",
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "container": "pdos-loop-test",
+  "container_removed": true,
+  "shared_role_changes": false,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "real_loop_qualification_published": false,
+  "golden_writes": false,
+  "git_push": false,
+  "production_operations": false,
+  "default_loop_mode": "fixed pipeline; separate operator purpose publication required",
+  "goal_item_status": "N0-03 partial",
+  "remaining": [
+    "complete authorization envelope and runtime version bundle",
+    "full context manifest and compression",
+    "all derived-source ACLs",
+    "paid tool and real embedding cost reservations and unknown usage reconciliation",
+    "Owner leases and persistent waits",
+    "intermediate step checkpoints and recovery",
+    "full tool/domain capabilities and production adoption"
+  ],
+  "sources": {
+    "server/app/ai/loop_policy.py": "d7d39d00d31af8906459dbd8ad4e7f28fac319148b9f8e1ea1e8698339fd4fe0",
+    "server/app/ai/executor.py": "8c5ab5689e5b75240e71fbbffcb5840d5e89b8708ef19298a17bbdcd7f3efe1a",
+    "server/app/ai/runtime_factory.py": "c46fe976c132a3e7c87cfeb9f8d173f9b839b9dd93e73dcdd8bcbf7f149febc3",
+    "server/app/ai/gateway.py": "29675ca7825890536b7f9dfd99f9be87712c14cdf490066465c18452d636d097",
+    "server/app/ai/context_projection.py": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+    "server/app/ai/observations.py": "e2948ca588386bbb6c1a3cb5f0866686ce57785ec222857fbea8496e1c686f00",
+    "server/app/ai/call_identity.py": "05a80bc2a5da87662c7eaa13cdbbe56822817c4222c7983053ee4c35ddbcbf4b",
+    "server/app/worker/dispatcher.py": "44f6896b27584357a03f23f0abcd2475eaad524dac026461c9c404b84cdb918c",
+    "server/scripts/run_dispatcher.py": "891ee61ec2f09e64bb344acfb0e2d7562b55f766eb2073f69b1d261e4f414e37",
+    "server/migrations/versions/0078_event_loop_binding.py": "49548f6abdc6cfeac6c601dc5d13d9694c3d13f0c80f4fbf1d89316e89912f8d",
+    "server/tests/test_agent_tool_loop.py": "f5180340713f052e53f4c2ac9917a772fb5654870737e3c22322fb0e28f2fb46",
+    "server/tests/test_agent_runtime_schema.py": "3b520a0d63621a0fafdd2c2f80fbf9da2e656e28bbeea3bc9b7fd08042062223",
+    "server/app/db/schema.py": "60cab21d7bc5111a95c8770e76a62dcc883a4c1a4684f0deb1c003c0f266f16a",
+    "infra/postgres/security/agent-runtime.sql": "a635539791a50f24e7af10cef91886712816fa810c9ddfb88d1f10fe27723560",
+    "infra/postgres/security/agent-runtime-revert.sql": "19aa327d6f1051ec340c6a717dd1ae3f748edfc4cab2961f818b0bcd2b637bf0",
+    ".env.example": "b7437cd6a8ef3a8bd87def70ec8bfd03123fb447dc772afc6fe6889dd903125d",
+    ".env.production.example": "f60564404a862790a036d2c0485c002dba8dce77c07fcee2cc69286cc2ddc1a6",
+    "compose.production.yaml": "d080101cc93dfc64fb6d9796932a419335cede78508144e92557dfe0b37cbd6e",
+    "docs/runbooks/agent-bounded-tool-loop.md": "edbf47391f0520a06756c43ce3936ae50dab3667a57eba6bb8069ed140c578d0",
+    "docs/reports/2026-09-11-n0-03-bounded-tool-loop-validation.md": "203dcbcdc3b875e2111b4ee953a54f2f10db3b778e1c2a24cc8f666cac97f9d5",
+    "tasks/ai-native-integrated-todo.md": "3c0e08a7e53937e6610d75ccfdc9585b29b0cb8deee78348624a0c9ee7464e2e",
+    "tasks/todo.md": "ea932cafe3edd94e48bb34bbfa58e38949384cd3dd191ca6f1c60fcfca893352",
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  }
+}

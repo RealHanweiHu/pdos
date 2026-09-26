@@ -79,4 +79,4 @@ psql "$PDOS_APP_DATABASE_URL" --set=ON_ERROR_STOP=1 \
   --file infra/postgres/security/agent-runtime-revert.sql
 ```
 
-回滚模板会移除投影视图、受控函数和角色授权，但不会删除登录角色或修改其密码。恢复运行前必须重新执行当前发布版本的正式模板并完整复验；不得临时把 `pdos_app` 凭据交给 executor 绕过故障。
+回滚模板会移除投影视图、受限运行端口和角色授权，但不会删除登录角色或修改其密码。由迁移维护的队列到期清理、过期运行恢复及其租约判定函数保留给 schema owner；PUBLIC 无执行权，worker/agent 的函数权限和 schema 使用权限仍全部撤回。恢复运行前必须重新执行当前发布版本的正式模板并完整复验；不得临时把 `pdos_app` 凭据交给 executor 绕过故障。

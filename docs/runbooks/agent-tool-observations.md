@@ -1,0 +1,35 @@
+# Agent工具观察与调用上下文记录
+
+2026-09-10，N0-03，本地候选migration `0076_tool_observation_receipts`。实际受限Agent执行器的初始读取节点现在追加持久Observation，并将模型调用前经过出站投影的上下文与具体观察、后续模型trace关联。生产采用、真实模型资格及各Exit仍走原批准关卡，本次未部署。
+
+## 实际接线
+
+现有get_project_context、get_recent_events、search_memory及各Agent适用的专业证据handler执行后写入`agent_tool_observations`。没有专业证据节点的Agent不制造“已经执行专业工具”的记录。失败记录只保存固定错误码，不把异常堆栈或任意异常文本写进模型上下文；错误清理不再调用模型。
+
+Observation正文采用已批准DTO：租户/运行、tool_call_id、顺序、工具版本、状态、SourceRef、as_of/observed_at、用途/ACL政策、taint、输入输出摘要、数量、截断及续读信息。模型只看到用途所需的工具状态/数量/续读摘要；内部完整记录不进入模型工具列表。
+
+冻结项目快照的as_of仍是原冻结时间；其他结果使用实际读取完成时的时间，observed_at由数据库记录。fresh_until为NULL，不能据此宣称来源始终新鲜。缺少嵌入配置时，知识查询明确unavailable、total_count未知且无verified事实；真实分页保留partial、显示数/总数及continuation，不能把第一页当成全部。
+
+每个run的sequence由数据库行锁串行分配。相同call_key、工具、输入输出及语义元数据幂等复用，冲突拒绝；重复保存不会刷新原观察时间。输入输出摘要使用数据库JSONB规范文本计算，SourceRef摘要使用服务端规范JSON计算。metadata里的摘要与实际落盘正文一致，不用调用方自报digest代替实际计算。
+
+## 模型上下文关联
+
+`agent_context_receipts`保存准备调用的出站投影、原prompt版本、系统提示词/原始指令/输出schema摘要、稳定model_call_id和正文摘要。`agent_context_observations`以顺序和复合外键保存实际选择的观察ID；关联只能属于同租户同run。相同model_call_id同正文/观察顺序幂等，不同内容或乱序/缺失ID拒绝。
+
+Gateway在准入前重新执行同一出站投影，并验证与冻结记录一致；允许出站字段被修改时零模型调用拒绝，未允许的内部字段被过滤而非透传。模型trace新增`context_receipt_id`及租户/run复合外键；缺少run或关联到其他run均拒绝。
+
+上下文记录在调用前准备，不能仅凭它声称模型已经调用或消费。是否真实派发/成功/未知，以及结构化尝试次数，以原model_call、预算和invocation记录为准。provider消息中的固定格式修复指令仍由Gateway生成，本表记录原始指令与同一投影；不冒充完整请求字节或完整部署版本束。
+
+结果checkpoint恢复沿用原观察及上下文记录，不重复嵌入/模型调用，也不把实时来源复查伪装成模型已经消费的新观察。模型不可用且没有invocation_id时，运行保持明确degraded，不强造trace或结果checkpoint。
+
+## 权限、迁移及范围
+
+Agent只增加三个当前lease服务端口：追加观察、冻结上下文记录、验证记录；对三张新表没有直接读写权限，Worker也不能读取这些正文。API/模型不暴露这些写端口。业务写出口仍是Finding及其人工接受/独立应用。
+
+三类记录追加后不可UPDATE/DELETE，有历史时迁移拒绝降级。角色尚未创建的全新实例也可以运行安全撤销脚本；本次同时修复了旧0075列权限撤销在缺角色时失败的问题。默认预算仍legacy，真实环境保留/清理政策和采用门禁尚未通过。
+
+后续0077已接通实际初始读取的调用前登记、一次性派发及原预算链累计次数，详见[工具调用登记](agent-tool-dispatch-intents.md)。结果新增同租户/run的tool_intent_id关联；旧记录不补造派发。DBA模板的提交已移到全部端口定义之后，保证整份装配在同一事务中。
+
+后续0078已接通[有界内部工具循环](agent-bounded-tool-loop.md)：模型选择的实际工具观察按顺序加入下一轮ContextReceipt，原固定流程仍独立保留。全范围工具和逐步恢复尚未据此完成。
+
+当前仅接现有固定读取流程及其模型调用。这些ContextReceipt不是完整的ContextManifest：AuthorizationEnvelope、全量版本束/资格绑定、修订/压缩/省略原因、所有衍生来源ACL、收费工具费用预留及未知费用对账、工具循环与分步恢复、waiting_input和Owner租约继续。不能根据本片的记录存在宣称这些能力已经完成。

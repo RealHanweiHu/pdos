@@ -1,0 +1,10 @@
+{
+  "server/app/domain/tasks.py": "ec63b54c528c3b6c2fb7a95300efe965ab1e911bf2209b70bf36f61368717091",
+  "server/app/domain/reminders.py": "cfed31b029c5ec9f4affe78a570dd278fe90a24c77a5ab1d177de84e6939f323",
+  "server/app/domain/risk_candidates.py": "fbf85e177e2cdc544813052e10be1e56cb4fdea2cf200b452936490b97cae67d",
+  "server/app/api/review_candidates.py": "e5a4f9d04aa0e3ad8886131a652c576d3fbfdb8f9eef12c06144d42c19c3ae18",
+  "server/app/main.py": "0dc677194a5feddd93e25776d5325c2c61803d8bb5d73812498cf694f60ddd7f",
+  "server/tests/test_task_list_query_budget.py": "85e3044a947f65cd0d07b493f1f146e42f65bd766e513a84b7abff16859dc746",
+  "server/tests/test_notification_query_budget.py": "c5341ed915641199f5edb174f3ea6cc0ec4f2eaad6f1e94ca27158f0556cf003",
+  "server/tests/test_review_candidates_api.py": "549775802dd54ee2b3fa29bdaf0b11f9b25ee8306eddc5c02e80c5969c0e8aaf"
+}

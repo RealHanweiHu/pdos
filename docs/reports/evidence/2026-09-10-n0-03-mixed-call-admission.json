@@ -1,0 +1,75 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 bidirectional exclusion between registered legacy in-flight calls and durable budget admission",
+  "tests": {
+    "related_regression_passed": 129,
+    "restricted_database_passed": 17,
+    "contracts_calendar_passed": 160,
+    "distinct_total": 306,
+    "new_tests": 14,
+    "new_real_http_tests": 2
+  },
+  "checks": {
+    "ruff_files": 10,
+    "format_files": 10,
+    "mypy_files": 2,
+    "exports": "both passed"
+  },
+  "test_databases": [
+    {
+      "host": "127.0.0.1",
+      "port": 57432,
+      "database": "pdos_test",
+      "migration": "0065_mixed_call_admission"
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 57433,
+      "database": "pdos_test",
+      "migration": "0065_mixed_call_admission",
+      "postgres": "16.14",
+      "container": "pdos-mixed-admission-test",
+      "isolation": "ephemeral dedicated cluster; no shared runtime role changes",
+      "cleanup": "stopped and auto-removed after tests"
+    }
+  ],
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "1afe4bff428de5528afa0f2545595d70f494eb1c7bc01b183feca666e5f23384",
+      "sources_verified": 179,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/budget_ledger.py": "2308379ebd60797f44664ea10f7234570d6feb7751512548e04181ea0164a7e6",
+    "server/migrations/versions/0065_mixed_call_admission.py": "8095820a6998390878ed62aa6b770feb8092dd8997b9daa1882d8f2af3cb3aaf",
+    "server/tests/test_mixed_call_admission.py": "cb0969090c4ab901cdb5ce116aee8fc2ffa89dacf34daab131828aa8208477f3",
+    "server/tests/test_model_call_fence_security.py": "c5e232e43052e1b352b71d6c60b06a7be64e89413740551ec8481a49df39d2a5",
+    "server/tests/test_model_call_fence.py": "583e3d51b842ee0192c8b3d43edb04c2d55b00338ab19621140ed6021ce31baf",
+    "server/tests/test_budget_accounting.py": "b8fd4abaca62b8bcc779b66c1d893185174ba56ea56a10b382fb442dea4a1fcb",
+    "server/tests/test_model_budget_controller.py": "31a59698639b02dc03c84c9731b773ffb810902b9d10757598a7c4adb91e31ff",
+    "server/tests/test_model_gateway_schema.py": "f1d071821c817b93fb512d5feccfc9cc6975e8439d8bf35cfedf279f821dbd55",
+    "server/tests/test_migrations.py": "acdaffb315cc076f6623e4c6f2cea6e193af20525a39cd1bb1ca5b12a5d99dae",
+    "server/tests/test_budget_ledger.py": "24664903424c34be7aa4317ef8e9dfe47601be027b197ae851a110030b106e8b",
+    "docs/reports/2026-09-10-n0-03-mixed-call-admission-validation.md": "a9eb54d3320d8583675e61c60470c810cfeb877334b31d79e31b5b3cae4662bd"
+  },
+  "remaining": [
+    "old binaries and unregistered provider traffic require deployment coverage and drain evidence",
+    "legacy-to-legacy compatibility does not implement per-attempt atomic reservations",
+    "real qualified input metering and model capability loading",
+    "restricted role budget service and full default factory adoption",
+    "stable business run and call identity",
+    "operator recovery without trace and verified reconciliation",
+    "active leases and checkpoint/resume",
+    "tool budget loop and persistent rollout/current ACL"
+  ]
+}

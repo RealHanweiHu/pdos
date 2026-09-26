@@ -1,0 +1,5091 @@
+{
+  "decision_brief": {
+    "business_proposal": "typed_finding_review_then_independent_apply_and_domain_gates",
+    "consensus_does_not_approve": true,
+    "dissent_and_costs_preserved": true,
+    "read_only": "direct_authorized_display",
+    "schema": "DecisionBrief"
+  },
+  "hard_gates": [
+    {
+      "action": "Baseline版本批准",
+      "approver_rule": "计划批准人",
+      "key": "baseline_change",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N2-04/06"
+    },
+    {
+      "action": "对外/跨团队Commitment确认",
+      "approver_rule": "承诺责任人及适用批准人",
+      "key": "commitment_change",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N2-06"
+    },
+    {
+      "action": "Gate结论",
+      "approver_rule": "当轮版本化签核席位",
+      "key": "gate_conclusion",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N4-07"
+    },
+    {
+      "action": "DCP商业结论",
+      "approver_rule": "商业批准人",
+      "key": "dcp_conclusion",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "typed_product_scope",
+      "work_item": "N1-07"
+    },
+    {
+      "action": "TR技术结论",
+      "approver_rule": "具名专业评审人",
+      "key": "tr_conclusion",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "typed_product_or_project_scope",
+      "work_item": "N1-07/N4-06"
+    },
+    {
+      "action": "开发BOM冻结",
+      "approver_rule": "BOM批准人",
+      "key": "bom_freeze",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N4-03"
+    },
+    {
+      "action": "ECN生效",
+      "approver_rule": "适用变更批准席位",
+      "key": "ecn_effectivity",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N4-04/06"
+    },
+    {
+      "action": "供应商选定",
+      "approver_rule": "采购/品质及适用商业批准人",
+      "key": "supplier_selection",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N5-04/05"
+    },
+    {
+      "action": "高/严重Issue关闭",
+      "approver_rule": "Owner以外的独立Verifier",
+      "key": "high_critical_issue_close",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N0-04/N4-05"
+    },
+    {
+      "action": "真实外发/外部写",
+      "approver_rule": "具备具体或已批准自动化授权的主体",
+      "key": "external_send_or_write",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "authorized_audience_scope",
+      "work_item": "N3-05/06/P3"
+    },
+    {
+      "action": "历史删除/覆盖",
+      "approver_rule": "授权治理人；不可违反冻结历史保护",
+      "key": "history_delete_or_overwrite",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "governed_scope",
+      "work_item": "N0-03/N7"
+    },
+    {
+      "action": "正式金额批准/承诺",
+      "approver_rule": "适用金额权限批准人",
+      "key": "financial_approval_or_commitment",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "business_scope",
+      "work_item": "N5-06/N6-03"
+    },
+    {
+      "action": "产品定义发布",
+      "approver_rule": "产品及适用专业批准人",
+      "key": "product_definition_publish",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "product_definition",
+      "work_item": "N1-06/07"
+    },
+    {
+      "action": "项目执行批准",
+      "approver_rule": "适用项目执行批准人",
+      "key": "project_execution_approval",
+      "model_callable": false,
+      "rule": "current_domain_permission_sources_versions_and_applicable_separation",
+      "scope_rule": "project",
+      "work_item": "N2-04"
+    }
+  ],
+  "legacy_capabilities": [
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "project_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "risk_suggestion"
+        ],
+        "key": "project_intelligence.risk_suggestion",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "project-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "project_intelligence.risk_suggestion",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "requirement_readiness",
+        "schedule_control"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "project_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "blocker_alert"
+        ],
+        "key": "project_intelligence.blocker_alert",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "project-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "project_intelligence.blocker_alert",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "execution_followup",
+        "schedule_control"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "project_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "gate_readiness_anomaly"
+        ],
+        "key": "project_intelligence.gate_readiness_anomaly",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "project-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "project_intelligence.gate_readiness_anomaly",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "gate_readiness"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context"
+      ],
+      "current_declaration": {
+        "agent_key": "project_intelligence",
+        "event_driven": true,
+        "finding_types": [],
+        "key": "project_intelligence.risk_suggestion_api",
+        "projections": [
+          "project_context"
+        ],
+        "prompt_version": "risk-suggestion-api-v1",
+        "quality_control": "human_accept_per_call",
+        "rollout": "live",
+        "tools": [],
+        "zone": "confirm"
+      },
+      "entry_kind": "user",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "project_intelligence.risk_suggestion_api",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "zone_confirm_to_finding_double_action; no_runtime_downgrade",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "execution_followup"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "knowledge_lite",
+        "event_driven": true,
+        "finding_types": [
+          "knowledge_draft"
+        ],
+        "key": "knowledge_lite.knowledge_draft",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "knowledge-lite-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "knowledge_lite.knowledge_draft",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "project_memory",
+        "meeting_minutes",
+        "document_extract"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "engineering_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "bom_impact_suggestion"
+        ],
+        "key": "engineering_intelligence.bom_impact_suggestion",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "engineering-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot",
+          "get_engineering_evidence"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "engineering_intelligence.bom_impact_suggestion",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "spec_bom",
+        "material_substitution"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "engineering_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "change_impact_suggestion"
+        ],
+        "key": "engineering_intelligence.change_impact_suggestion",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "engineering-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot",
+          "get_engineering_evidence"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "engineering_intelligence.change_impact_suggestion",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "change_impact"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "quality_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "quality_cluster_alert"
+        ],
+        "key": "quality_intelligence.quality_cluster_alert",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "quality-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot",
+          "get_quality_evidence"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "quality_intelligence.quality_cluster_alert",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "test_quality",
+        "issue_verification"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "quality_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "capa_suggestion"
+        ],
+        "key": "quality_intelligence.capa_suggestion",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "quality-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot",
+          "get_quality_evidence"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "quality_intelligence.capa_suggestion",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "capa_recurrence"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "work_package",
+      "context_source": [
+        "test_plan",
+        "references",
+        "question"
+      ],
+      "current_declaration": {
+        "agent_key": "quality_intelligence",
+        "event_driven": false,
+        "finding_types": [
+          "test_plan_change"
+        ],
+        "key": "quality_intelligence.test_plan_change",
+        "projections": [
+          "test_plan",
+          "references",
+          "question"
+        ],
+        "prompt_version": "test-plan-change-v5",
+        "quality_control": "finding_quality_control",
+        "rollout": "live",
+        "tools": [],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "user",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "quality_intelligence.test_plan_change",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "test_quality"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "work_package",
+      "context_source": [],
+      "current_declaration": {
+        "agent_key": "quality_intelligence",
+        "event_driven": true,
+        "finding_types": [],
+        "key": "quality_intelligence.test_report_import",
+        "projections": [],
+        "prompt_version": "test-report-import-v1",
+        "quality_control": "import_batch_confirm",
+        "rollout": "live",
+        "tools": [],
+        "zone": "confirm"
+      },
+      "entry_kind": "user",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "quality_intelligence.test_report_import",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "split_model_mapping_from_deterministic_raw_values; preview_tool_read_only",
+      "retention_candidate": "standard",
+      "target_exit": "deterministic_raw_import_with_human_confirm",
+      "target_semantics": [
+        "document_extract"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "supplier_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "supplier_delay_risk"
+        ],
+        "key": "supplier_intelligence.supplier_delay_risk",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "supplier-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "shadow",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot",
+          "get_supplier_delay_evidence"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "supplier_intelligence.supplier_delay_risk",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "supplier_delay",
+        "material_readiness",
+        "sourcing_risk"
+      ]
+    },
+    {
+      "adoption": "preserve_current_until_explicit_version_adoption",
+      "budget_candidate": "short",
+      "context_source": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "current_declaration": {
+        "agent_key": "executive_intelligence",
+        "event_driven": true,
+        "finding_types": [
+          "executive_portfolio_brief"
+        ],
+        "key": "executive_intelligence.executive_portfolio_brief",
+        "projections": [
+          "project_context",
+          "recent_events",
+          "memory",
+          "domain_evidence"
+        ],
+        "prompt_version": "executive-intelligence-v1",
+        "quality_control": "finding_quality_control",
+        "rollout": "shadow",
+        "tools": [
+          "get_project_context",
+          "search_memory",
+          "get_recent_events",
+          "web_search",
+          "web_fetch",
+          "source_snapshot",
+          "get_portfolio_brief"
+        ],
+        "zone": "hard_gate"
+      },
+      "entry_kind": "event",
+      "expired_or_disabled": "deny_new_disclosure_and_apply; preserve_history",
+      "idempotency": "reuse_origin_and_digest; changed_payload_conflicts",
+      "key": "executive_intelligence.executive_portfolio_brief",
+      "mapping_strength": "partial_reuse_not_full_semantic_coverage",
+      "registry_correction": "inherit_finding_boundary; add_scope_budget_and_qualification",
+      "retention_candidate": "standard",
+      "target_exit": "finding_review_then_apply",
+      "target_semantics": [
+        "decision_brief",
+        "portfolio_schedule",
+        "resource_conflict"
+      ]
+    }
+  ],
+  "raw_import": {
+    "actual_values": "never_model_generated",
+    "formal_test_runs": "existing_authorized_human_confirmation_with_event_audit",
+    "mapping_acceptance": "human_confirm_of_exact_mapping_and_preview",
+    "model_tool": "read_existing_batch_only",
+    "parser": "deterministic_original_cells",
+    "reuse_confirmed_mapping": "same_fingerprint_zero_model",
+    "unknown_mapping": "model_mapping_proposal"
+  },
+  "semantic_details": {
+    "capa_recurrence": {
+      "context_fields": [
+        "ncr_issue",
+        "failure_evidence",
+        "hypotheses",
+        "effectiveness_plan"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N4-05/N6-05",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "change_impact": {
+      "context_fields": [
+        "change_versions",
+        "spec_bom_graph",
+        "sample_test_config",
+        "four_times"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N4-04/06",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "competitor_analysis": {
+      "context_fields": [
+        "competitor_snapshots",
+        "units_conditions",
+        "comparison_scope",
+        "source_conflicts"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-03",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "decision_brief": {
+      "context_fields": [
+        "anchored_subjects",
+        "seat_evidence",
+        "consensus_dissent",
+        "costs_and_unknowns"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N3-07/N6-03",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "document_extract": {
+      "context_fields": [
+        "document_fragments",
+        "parser_version",
+        "original_locators",
+        "mapping_status"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-02/N3-08/10/N4-01",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "execution_followup": {
+      "context_fields": [
+        "tasks_actuals",
+        "issues",
+        "decisions",
+        "reminder_history"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N2-07/N3-02",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "experiment_design": {
+      "context_fields": [
+        "hypotheses",
+        "falsification",
+        "value_usability_feasibility_viability",
+        "results"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-04",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "gate_readiness": {
+      "context_fields": [
+        "gate_round",
+        "policy",
+        "required_evidence",
+        "valid_reviews"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N0-04/N4-07",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "issue_verification": {
+      "context_fields": [
+        "issue_state",
+        "owner_verifier",
+        "closure_conditions",
+        "investigation_evidence"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N0-04/N4-05",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "market_analysis": {
+      "context_fields": [
+        "market_evidence",
+        "jtbd",
+        "deterministic_estimates",
+        "assumptions"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-04",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "material_readiness": {
+      "context_fields": [
+        "kit_engine_result",
+        "build_demand",
+        "supply_as_of",
+        "allocation_versions"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N5-02/03",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "material_substitution": {
+      "context_fields": [
+        "material_versions",
+        "test_evidence",
+        "supply_snapshots",
+        "cost_estimates"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N4-03/N5-05/06",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "meeting_minutes": {
+      "context_fields": [
+        "transcript_segments",
+        "participants",
+        "agenda",
+        "existing_actions"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N3-06",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "opportunity_mapping": {
+      "context_fields": [
+        "desired_outcomes",
+        "evidence",
+        "solution_alternatives",
+        "scoring_policy"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-04",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "portfolio_schedule": {
+      "context_fields": [
+        "authorized_project_set",
+        "four_time_projections",
+        "cross_project_edges"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N6-02/03",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "product_definition": {
+      "context_fields": [
+        "strategy_version",
+        "features_included_excluded",
+        "spec_items",
+        "verification_and_constraints"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-06/07",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "product_matrix": {
+      "context_fields": [
+        "product_hierarchy",
+        "market_coverage",
+        "platform_reuse",
+        "authorized_portfolio"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N6-04",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "product_strategy": {
+      "context_fields": [
+        "nine_area_canvas",
+        "alternatives",
+        "professional_constraints",
+        "evidence_assumptions"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-05",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "project_memory": {
+      "context_fields": [
+        "decisions",
+        "outcomes",
+        "verified_memory",
+        "applicability"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N3-03/N6-05",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "requirement_readiness": {
+      "context_fields": [
+        "requirement_versions",
+        "definition_items",
+        "professional_constraints"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-07/N2-03",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "research_planning": {
+      "context_fields": [
+        "research_question",
+        "market_users_channels",
+        "time_window",
+        "source_policy"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N1-02",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "resource_conflict": {
+      "context_fields": [
+        "resource_identity",
+        "capacity_calendar",
+        "reservations",
+        "priority_policy"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N6-01/02",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "schedule_control": {
+      "context_fields": [
+        "plan_draft",
+        "four_times",
+        "calendar_capacity",
+        "id_constraints"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N2-03/06",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "sourcing_risk": {
+      "context_fields": [
+        "supplier_qualification",
+        "pcn_eol",
+        "critical_parts",
+        "verification_requirements"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N5-04/05",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "spec_bom": {
+      "context_fields": [
+        "spec_versions",
+        "bom_versions",
+        "interfaces",
+        "design_constraints"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N4-03",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "supplier_delay": {
+      "context_fields": [
+        "supplier_commitments",
+        "supply_snapshots",
+        "affected_builds",
+        "four_times"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N5-03/05",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    },
+    "test_quality": {
+      "context_fields": [
+        "features",
+        "test_plan",
+        "run_config_versions",
+        "raw_results"
+      ],
+      "event_policy": "milestone_outcome_or_failure_within_180s; frequent_edit_900s_separate",
+      "event_policy_adoption": "requires_N0_03_routing_implementation",
+      "implementation_work": "N4-01/02",
+      "qualification": "pending_domain_golden_publication",
+      "quality_requirements": [
+        "cited_source_correctness",
+        "scope_injection_zero",
+        "explicit_unknowns",
+        "executable_output",
+        "human_accept_modify_reject_by_scenario"
+      ],
+      "quality_threshold": "inherit_hard_lines; new_professional_threshold_pending",
+      "user_queue_visibility_seconds": 5,
+      "user_trigger": "immediate_queue_not_event_debounce"
+    }
+  },
+  "status": "candidate_not_wired_not_qualified",
+  "target_capabilities": [
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "project_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "short",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "requirement_readiness.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "定义/Case的立项输入检查"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "project_intelligence.requirement_readiness",
+      "manual_fallback": "在定义/Case的立项输入检查读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "requirement_readiness.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "requirement_readiness.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "定义/Case的立项输入检查",
+      "quality_profile": {
+        "key": "requirement_readiness.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "定义/Case的立项输入检查",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_definition",
+          "opportunity",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "requirement_readiness"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "project_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "schedule_control.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "初始计划/项目时间控制"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "initial_plan"
+      ],
+      "key": "project_intelligence.schedule_control",
+      "manual_fallback": "在初始计划/项目时间控制读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "schedule_control.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "schedule_control.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "初始计划/项目时间控制",
+      "quality_profile": {
+        "key": "schedule_control.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "初始计划/项目时间控制",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_definition",
+          "opportunity",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "schedule_control"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "schedule.evaluate_scenario",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "planning.prepare_initial_plan",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "project_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "short",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "execution_followup.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "My Work执行偏差和恢复"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "execution_recovery"
+      ],
+      "key": "project_intelligence.execution_followup",
+      "manual_fallback": "在My Work执行偏差和恢复读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "execution_followup.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "execution_followup.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "My Work执行偏差和恢复",
+      "quality_profile": {
+        "key": "execution_followup.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "My Work执行偏差和恢复",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "execution_followup"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "schedule.evaluate_scenario",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "project_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "short",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "gate_readiness.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "项目Gate缺项说明"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "project_intelligence.gate_readiness",
+      "manual_fallback": "在项目Gate缺项说明读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "gate_readiness.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "gate_readiness.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "项目Gate缺项说明",
+      "quality_profile": {
+        "key": "gate_readiness.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "项目Gate缺项说明",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "gate_readiness"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "knowledge_lite",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "meeting_minutes.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "项目会议纪要候选"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "meeting_minutes"
+      ],
+      "key": "knowledge_lite.meeting_minutes",
+      "manual_fallback": "在项目会议纪要候选读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "meeting_minutes.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "meeting_minutes.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "项目会议纪要候选",
+      "quality_profile": {
+        "key": "meeting_minutes.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "项目会议纪要候选",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "meeting_minutes"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "knowledge.search_applicable",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "knowledge_lite",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "document_extract.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "授权文档抽取/报告映射预览"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "knowledge_lite.document_extract",
+      "manual_fallback": "在授权文档抽取/报告映射预览读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "document_extract.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "document_extract.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "授权文档抽取/报告映射预览",
+      "quality_profile": {
+        "key": "document_extract.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "授权文档抽取/报告映射预览",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "document_extract"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "knowledge.search_applicable",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "knowledge_lite",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "short",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "project_memory.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "知识候选/适用经验卡"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "knowledge_draft"
+      ],
+      "key": "knowledge_lite.project_memory",
+      "manual_fallback": "在知识候选/适用经验卡读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "project_memory.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "project_memory.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "知识候选/适用经验卡",
+      "quality_profile": {
+        "key": "project_memory.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "知识候选/适用经验卡",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "project_memory"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "knowledge.search_applicable",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "engineering_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "spec_bom.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "规格与开发BOM关联"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "spec_bom_change"
+      ],
+      "key": "engineering_intelligence.spec_bom",
+      "manual_fallback": "在规格与开发BOM关联读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "spec_bom.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "spec_bom.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "规格与开发BOM关联",
+      "quality_profile": {
+        "key": "spec_bom.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "规格与开发BOM关联",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "spec_bom"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "engineering.trace_impact",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "engineering_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "material_substitution.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "替代件对比与验证候选"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "material_substitution"
+      ],
+      "key": "engineering_intelligence.material_substitution",
+      "manual_fallback": "在替代件对比与验证候选读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "material_substitution.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "material_substitution.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "替代件对比与验证候选",
+      "quality_profile": {
+        "key": "material_substitution.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "替代件对比与验证候选",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "material_substitution"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "engineering.trace_impact",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "change.prepare_work_package",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "engineering_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "change_impact.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "工程变更影响/复验工作包"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "change_work_package"
+      ],
+      "key": "engineering_intelligence.change_impact",
+      "manual_fallback": "在工程变更影响/复验工作包读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "change_impact.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "change_impact.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "工程变更影响/复验工作包",
+      "quality_profile": {
+        "key": "change_impact.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "工程变更影响/复验工作包",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "change_impact"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "engineering.trace_impact",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "change.prepare_work_package",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "quality_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "test_quality.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "测试矩阵/证据与计划变更"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "test_plan_change"
+      ],
+      "key": "quality_intelligence.test_quality",
+      "manual_fallback": "在测试矩阵/证据与计划变更读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "test_quality.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "test_quality.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "测试矩阵/证据与计划变更",
+      "quality_profile": {
+        "key": "test_quality.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "测试矩阵/证据与计划变更",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "test_quality"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.prepare_plan_change",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "reports.preview_import",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "quality_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "short",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "issue_verification.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "Issue调查与独立验证辅助"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "issue_verification_advice"
+      ],
+      "key": "quality_intelligence.issue_verification",
+      "manual_fallback": "在Issue调查与独立验证辅助读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "issue_verification.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "issue_verification.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "Issue调查与独立验证辅助",
+      "quality_profile": {
+        "key": "issue_verification.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "Issue调查与独立验证辅助",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "issue_verification"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "quality_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "capa_recurrence.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "CAPA和复发知识"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "capa_work_package"
+      ],
+      "key": "quality_intelligence.capa_recurrence",
+      "manual_fallback": "在CAPA和复发知识读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "capa_recurrence.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "capa_recurrence.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "CAPA和复发知识",
+      "quality_profile": {
+        "key": "capa_recurrence.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "CAPA和复发知识",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "capa_recurrence"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "quality.prepare_capa",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "knowledge.search_applicable",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "supplier_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "short",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "material_readiness.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "Build齐套/短缺说明"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "supplier_intelligence.material_readiness",
+      "manual_fallback": "在Build齐套/短缺说明读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "material_readiness.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "material_readiness.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "Build齐套/短缺说明",
+      "quality_profile": {
+        "key": "material_readiness.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "Build齐套/短缺说明",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "material_readiness"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "supplier_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "supplier_delay.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "供应延期恢复建议"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "supplier_recovery"
+      ],
+      "key": "supplier_intelligence.supplier_delay",
+      "manual_fallback": "在供应延期恢复建议读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "supplier_delay.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "supplier_delay.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "供应延期恢复建议",
+      "quality_profile": {
+        "key": "supplier_delay.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "供应延期恢复建议",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "supplier_delay"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "schedule.evaluate_scenario",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "supplier_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "sourcing_risk.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "供方/EOL/PCN证据与验证"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "sourcing_verification"
+      ],
+      "key": "supplier_intelligence.sourcing_risk",
+      "manual_fallback": "在供方/EOL/PCN证据与验证读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "sourcing_risk.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "sourcing_risk.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "供方/EOL/PCN证据与验证",
+      "quality_profile": {
+        "key": "sourcing_risk.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "供方/EOL/PCN证据与验证",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "sourcing_risk"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "engineering.trace_impact",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "executive_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "portfolio_schedule.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "组合时间方案说明"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "executive_intelligence.portfolio_schedule",
+      "manual_fallback": "在组合时间方案说明读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "portfolio_schedule.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "portfolio_schedule.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "组合时间方案说明",
+      "quality_profile": {
+        "key": "portfolio_schedule.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "组合时间方案说明",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "portfolio"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "portfolio_schedule"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "schedule.evaluate_scenario",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "executive_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "resource_conflict.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "共享资源容量冲突情景"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "executive_intelligence.resource_conflict",
+      "manual_fallback": "在共享资源容量冲突情景读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "resource_conflict.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "resource_conflict.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "共享资源容量冲突情景",
+      "quality_profile": {
+        "key": "resource_conflict.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "共享资源容量冲突情景",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "portfolio"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "resource_conflict"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "schedule.evaluate_scenario",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "executive_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "research_discussion",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "decision_brief.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "多专业Decision Brief"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "decision_brief"
+      ],
+      "key": "executive_intelligence.decision_brief",
+      "manual_fallback": "在多专业Decision Brief读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "DecisionBrief",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "decision_brief.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "多专业Decision Brief",
+      "quality_profile": {
+        "key": "decision_brief.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "多专业Decision Brief",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "decision_brief"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "knowledge.search_applicable",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "authorized_run"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "research_discussion",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "research_planning.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "产品工作台研究任务计划"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "research_plan"
+      ],
+      "key": "product_management_intelligence.research_planning",
+      "manual_fallback": "在产品工作台研究任务计划读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "research_planning.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "research_planning.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "产品工作台研究任务计划",
+      "quality_profile": {
+        "key": "research_planning.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "产品工作台研究任务计划",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "research_planning"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "research_discussion",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "competitor_analysis.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "同工况竞品对照"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "product_management_intelligence.competitor_analysis",
+      "manual_fallback": "在同工况竞品对照读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "competitor_analysis.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "competitor_analysis.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "同工况竞品对照",
+      "quality_profile": {
+        "key": "competitor_analysis.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "同工况竞品对照",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "competitor_analysis"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "verification.get_evidence",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": null,
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "research_discussion",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "market_analysis.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "市场/JTBD/量化说明"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [],
+      "key": "product_management_intelligence.market_analysis",
+      "manual_fallback": "在市场/JTBD/量化说明读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only"
+      ],
+      "output_schema": {
+        "key": "market_analysis.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "market_analysis.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "市场/JTBD/量化说明",
+      "quality_profile": {
+        "key": "market_analysis.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "市场/JTBD/量化说明",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": null,
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "market_analysis"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "free"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "research_discussion",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "opportunity_mapping.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "机会树及至少三方案"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "opportunity_tree"
+      ],
+      "key": "product_management_intelligence.opportunity_mapping",
+      "manual_fallback": "在机会树及至少三方案读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "opportunity_mapping.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "opportunity_mapping.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "机会树及至少三方案",
+      "quality_profile": {
+        "key": "opportunity_mapping.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "机会树及至少三方案",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "opportunity_mapping"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "experiment_design.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "VUVF实验计划与结果回链"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "experiment_plan"
+      ],
+      "key": "product_management_intelligence.experiment_design",
+      "manual_fallback": "在VUVF实验计划与结果回链读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "experiment_design.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "experiment_design.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "VUVF实验计划与结果回链",
+      "quality_profile": {
+        "key": "experiment_design.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "VUVF实验计划与结果回链",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "experiment_design"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "research_discussion",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "product_strategy.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "九区Canvas与开发策略"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "product_strategy"
+      ],
+      "key": "product_management_intelligence.product_strategy",
+      "manual_fallback": "在九区Canvas与开发策略读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "product_strategy.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "product_strategy.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "九区Canvas与开发策略",
+      "quality_profile": {
+        "key": "product_strategy.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "九区Canvas与开发策略",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "product_strategy"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "product_definition.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "产品定义与正式发布候选"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "product_definition"
+      ],
+      "key": "product_management_intelligence.product_definition",
+      "manual_fallback": "在产品定义与正式发布候选读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "product_definition.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "product_definition.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "产品定义与正式发布候选",
+      "quality_profile": {
+        "key": "product_definition.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "产品定义与正式发布候选",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "product_definition"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "product.prepare_definition",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "readiness.evaluate",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "event"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    },
+    {
+      "apply_action": {
+        "key": "finding.apply",
+        "version": "candidate.v2"
+      },
+      "binding": {
+        "handler": null,
+        "owner_module": "product_management_intelligence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "context_builder": {
+        "key": "product_matrix.context",
+        "version": "candidate.v2"
+      },
+      "deduplication": "tenant_scope_capability_goal_source_version",
+      "entry_points": [
+        "产品家族矩阵/路线图"
+      ],
+      "expiration_policy": "critical_source_target_policy_versions_and_current_acl",
+      "finding_types": [
+        "product_roadmap"
+      ],
+      "key": "product_management_intelligence.product_matrix",
+      "manual_fallback": "在产品家族矩阵/路线图读取原始来源并通过对应人工表单办理；缺项显式保留",
+      "model_qualification": null,
+      "output_modes": [
+        "read_only",
+        "propose_finding"
+      ],
+      "output_schema": {
+        "key": "product_matrix.output",
+        "version": "candidate.v2"
+      },
+      "prompt": {
+        "key": "product_matrix.prompt",
+        "version": "candidate.v2"
+      },
+      "purpose": "产品家族矩阵/路线图",
+      "quality_profile": {
+        "key": "product_matrix.quality",
+        "version": "candidate.v2"
+      },
+      "result_backlink": "产品家族矩阵/路线图",
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "review_action": {
+        "key": "finding.review",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "product_line",
+          "portfolio"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "semantic_keys": [
+        "product_matrix"
+      ],
+      "skill_pins": [],
+      "tool_pins": [
+        {
+          "key": "research.search_sources",
+          "version": "candidate.v2"
+        },
+        {
+          "key": "research.capture_snapshot",
+          "version": "candidate.v2"
+        }
+      ],
+      "triggers": [
+        "user",
+        "scheduled"
+      ],
+      "version": "candidate.v2",
+      "zone": "hard_gate"
+    }
+  ],
+  "tool_implementation": {
+    "change.prepare_work_package": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N3-01/N4-03/04/06",
+      "reuse_source": null,
+      "schema_status": "candidate_executable"
+    },
+    "engineering.trace_impact": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N4-04",
+      "reuse_source": "app.ai.tools.AgentReadTools.get_engineering_evidence",
+      "schema_status": "candidate_executable"
+    },
+    "handoff.prepare_package": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N3-04/N4-07",
+      "reuse_source": null,
+      "schema_status": "candidate_executable"
+    },
+    "knowledge.search_applicable": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N3-03",
+      "reuse_source": "app.ai.tools.AgentReadTools.search_memory",
+      "schema_status": "candidate_executable"
+    },
+    "planning.prepare_initial_plan": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N2-03/04",
+      "reuse_source": null,
+      "schema_status": "candidate_executable"
+    },
+    "product.prepare_definition": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N1-05/06",
+      "reuse_source": null,
+      "schema_status": "candidate_executable"
+    },
+    "quality.prepare_capa": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N4-05",
+      "reuse_source": null,
+      "schema_status": "candidate_executable"
+    },
+    "readiness.evaluate": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N0-04/N4-07",
+      "reuse_source": "app.domain.gates",
+      "schema_status": "candidate_executable"
+    },
+    "reports.preview_import": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N4-01/N3-10",
+      "reuse_source": "app.domain.test_report_import",
+      "schema_status": "candidate_executable"
+    },
+    "research.capture_snapshot": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N1-02",
+      "reuse_source": "app.ai.reach",
+      "schema_status": "candidate_executable"
+    },
+    "research.search_sources": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N1-02",
+      "reuse_source": "app.ai.reach",
+      "schema_status": "candidate_executable"
+    },
+    "schedule.evaluate_scenario": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N2-01/02/N6-01/02",
+      "reuse_source": null,
+      "schema_status": "candidate_executable"
+    },
+    "verification.get_evidence": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N4-01/02",
+      "reuse_source": "app.ai.tools.AgentReadTools.get_quality_evidence",
+      "schema_status": "candidate_executable"
+    },
+    "verification.prepare_plan_change": {
+      "future_domain_extension": "versioned_before_live",
+      "handler_status": "not_wired",
+      "implementation_work": "N4-02",
+      "reuse_source": "app.domain.test_plan_changes",
+      "schema_status": "candidate_executable"
+    }
+  },
+  "tools": [
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "evidence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not cite snippets as facts; capture the original source first",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "SearchSourcesInput",
+        "version": "candidate.v2"
+      },
+      "key": "research.search_sources",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "SearchSourcesResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "read",
+      "timeout_seconds": 10,
+      "use_when": "Find public source leads for a bounded research query",
+      "validator": "SearchSourcesInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "evidence",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "No credentials, login, internal addresses or executable downloads",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "run_call_digest",
+      "input_schema": {
+        "key": "CaptureSnapshotInput",
+        "version": "candidate.v2"
+      },
+      "key": "research.capture_snapshot",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "EvidenceResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "record_observation",
+      "timeout_seconds": 20,
+      "use_when": "Capture an authorized public URL as a tainted evidence snapshot",
+      "validator": "CaptureSnapshotInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "memories",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not promote past model output to verified knowledge or bypass source ACL",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "SearchKnowledgeInput",
+        "version": "candidate.v2"
+      },
+      "key": "knowledge.search_applicable",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "EvidenceResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "read",
+      "timeout_seconds": 10,
+      "use_when": "Retrieve reviewed knowledge with product, phase and applicability constraints",
+      "validator": "SearchKnowledgeInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "quality",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Attachment existence is not a passing test; never fill missing actual values",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "GetVerificationEvidenceInput",
+        "version": "candidate.v2"
+      },
+      "key": "verification.get_evidence",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "EvidenceResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "read",
+      "timeout_seconds": 10,
+      "use_when": "Inspect spec/case/sample/build/run evidence and configuration gaps",
+      "validator": "GetVerificationEvidenceInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "gates",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Does not approve Gate, close Issue or replace the action's current checks",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "EvaluateReadinessInput",
+        "version": "candidate.v2"
+      },
+      "key": "readiness.evaluate",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "ReadinessResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "read",
+      "timeout_seconds": 10,
+      "use_when": "Evaluate current prerequisites for a named action at an exact version",
+      "validator": "EvaluateReadinessInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "planning",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Never change baseline/commitment or reserve capacity; missing inputs stay explicit",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "EvaluateScenarioInput",
+        "version": "candidate.v2"
+      },
+      "key": "schedule.evaluate_scenario",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "ScenarioResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "simulate",
+      "timeout_seconds": 10,
+      "use_when": "Compute a proposed task graph using calendar/capacity input snapshots",
+      "validator": "EvaluateScenarioInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "product_engineering",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Does not execute ECN or convert evidence links into execution dependencies",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "TraceImpactInput",
+        "version": "candidate.v2"
+      },
+      "key": "engineering.trace_impact",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "ImpactResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "read",
+      "timeout_seconds": 10,
+      "use_when": "Trace versioned spec/BOM/configuration/test/plan relations for a proposed change",
+      "validator": "TraceImpactInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "product",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not publish definitions, confirm unknown criteria or call a hidden second model",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "finding_origin_digest",
+      "input_schema": {
+        "key": "PrepareDefinitionInput",
+        "version": "candidate.v2"
+      },
+      "key": "product.prepare_definition",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "FindingResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_line",
+          "opportunity",
+          "product_definition"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "propose_finding",
+      "timeout_seconds": 10,
+      "use_when": "Validate and package the model's structured definition draft into a Finding",
+      "validator": "PrepareDefinitionInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "planning",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not create Project/Task/Baseline or treat unconfirmed estimates as commitments",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "finding_origin_digest",
+      "input_schema": {
+        "key": "PrepareInitialPlanInput",
+        "version": "candidate.v2"
+      },
+      "key": "planning.prepare_initial_plan",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "FindingResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "product_definition",
+          "opportunity",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "propose_finding",
+      "timeout_seconds": 10,
+      "use_when": "Validate the supplied plan draft, sources and scenario for a plan Finding",
+      "validator": "PrepareInitialPlanInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "quality",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not copy old results as new configuration passes or invent test results",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "finding_origin_digest",
+      "input_schema": {
+        "key": "PreparePlanChangeInput",
+        "version": "candidate.v2"
+      },
+      "key": "verification.prepare_plan_change",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "FindingResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "propose_finding",
+      "timeout_seconds": 10,
+      "use_when": "Package a typed test-plan diff for new requirements as a Finding",
+      "validator": "PreparePlanChangeInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "quality",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not parse new uploads, create drafts, confirm mappings or synthesize cell values",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "query_version",
+      "input_schema": {
+        "key": "PreviewImportInput",
+        "version": "candidate.v2"
+      },
+      "key": "reports.preview_import",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "ImportPreviewResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "read",
+      "timeout_seconds": 10,
+      "use_when": "Read original values and mapping state from an already authorized import batch",
+      "validator": "PreviewImportInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "change_governance",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Customer confirmation does not replace internal ECN approval; do not apply",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "finding_origin_digest",
+      "input_schema": {
+        "key": "PrepareChangePackageInput",
+        "version": "candidate.v2"
+      },
+      "key": "change.prepare_work_package",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "FindingResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "propose_finding",
+      "timeout_seconds": 10,
+      "use_when": "Package the model's cross-domain change and revalidation actions as a Finding",
+      "validator": "PrepareChangePackageInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "quality",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Do not mark hypotheses proven, actions completed or effectiveness verified",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "finding_origin_digest",
+      "input_schema": {
+        "key": "PrepareCapaInput",
+        "version": "candidate.v2"
+      },
+      "key": "quality.prepare_capa",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "FindingResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "propose_finding",
+      "timeout_seconds": 10,
+      "use_when": "Package failure evidence, root-cause hypotheses and effectiveness plan as a CAPA Finding",
+      "validator": "PrepareCapaInput",
+      "version": "candidate.v2"
+    },
+    {
+      "binding": {
+        "handler": null,
+        "owner_module": "projects",
+        "status": "planned",
+        "verification_ref": null
+      },
+      "budget_profile": {
+        "key": "work_package",
+        "version": "candidate.v2"
+      },
+      "cancellation": "cooperative_with_lease_fence",
+      "citation_policy": "resolved_source_version_locator",
+      "do_not_use_when": "Generating or sending a package is not acceptance; never impersonate the receiver",
+      "egress_policy": {
+        "key": "source_aware_egress",
+        "version": "candidate.v2"
+      },
+      "freshness_policy": "current_acl_and_critical_versions",
+      "hidden_model_calls": false,
+      "idempotency": "finding_origin_digest",
+      "input_schema": {
+        "key": "PrepareHandoffInput",
+        "version": "candidate.v2"
+      },
+      "key": "handoff.prepare_package",
+      "max_attempts": 2,
+      "max_payload_bytes": 2097152,
+      "output_schema": {
+        "key": "HandoffResult",
+        "version": "candidate.v2"
+      },
+      "retention_policy": {
+        "key": "standard",
+        "version": "candidate.v2"
+      },
+      "rollout": "disabled",
+      "scope_policy": {
+        "allowed_scopes": [
+          "tenant",
+          "market_space",
+          "product_line",
+          "opportunity",
+          "product_definition",
+          "portfolio",
+          "project"
+        ],
+        "current_acl_checks": [
+          "tool",
+          "model_egress",
+          "disclosure",
+          "export",
+          "apply"
+        ],
+        "delegation": "principal_delegate_intersection",
+        "derived_sources_inherit_acl": true,
+        "persona_grants_permissions": false,
+        "principal_source": "server_authenticated_run",
+        "project_role_null": "preserve_existing_role_and_membership",
+        "project_role_set": "tenant_project_intersection",
+        "scope_change": "authorized_linked_run_preserve_lineage"
+      },
+      "side_effect": "propose_finding",
+      "timeout_seconds": 10,
+      "use_when": "Read handoff gaps or propose a versioned package with sender/receiver and evidence",
+      "validator": "PrepareHandoffInput",
+      "version": "candidate.v2"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "date": "2026-09-10",
+  "scope": "persist authenticated read-only Chat runs, replay and current disclosure; actual API budget integration",
+  "tests": {
+    "existing_api_dispatcher": 21,
+    "new_chat": 15,
+    "schema_roundtrip": 3,
+    "isolated_real_roles_budget": 29,
+    "call_identity": 5,
+    "distinct_backend_passed": 73,
+    "frontend": "10 passed: project-ai-chat.test.tsx and ai-api.test.ts in original installation; temporary copy cancelled and removed"
+  },
+  "checks": {
+    "mypy_files": 4,
+    "ruff_files": 11,
+    "format_files": 11,
+    "exports": "common 4 and runtime 5 passed",
+    "typescript": "full project passed after excluding duplicate generated Next type files",
+    "eslint": "4 files passed"
+  },
+  "migration": "0068_chat_request_runs",
+  "databases": {
+    "shared_test": "127.0.0.1:57432/pdos_test",
+    "role_tests": "temporary 127.0.0.1:57433/pdos_test; container removed",
+    "shared_role_passwords_changed": false
+  },
+  "real_model_calls": 0,
+  "sources": {
+    "server/migrations/versions/0068_chat_request_runs.py": "9645198de3682ca5b8e54dd79d748f91dd1aa804abeac5add897a907b5c5f7a3",
+    "server/app/db/schema.py": "4af5bb15f63eca5cb45a185940929bade67f7d9b5c2a11e5dedef39a5768568c",
+    "server/app/ai/chat.py": "0515c719ec74b214d571901569274046711919c4362fad7bea6e5239f5733de4",
+    "server/app/ai/chat_runs.py": "8776d2538daa2b6832cc0be1be18c742343dc8b6f264ec781d2a77d3ab880225",
+    "server/app/ai/call_identity.py": "bd84e538e06602ac061b6b95cdc5c5e9b9857e77a26a767b0b1690b0a7683960",
+    "server/app/api/ai.py": "b6f8d48155d0a5a8f3f0d075ea7c19d4b5fb2a1455b1621484eb1de1bf6ca55d",
+    "infra/postgres/security/agent-runtime.sql": "36a9476a0b66b8332d118cd40f773bb7b66553d43c50e8d566677103685f6e3d",
+    "server/tests/test_chat_requests.py": "2bb2429751578f279be0bfa1aba3ffaf901283d3558e3f1a7a83be314ca60cef",
+    "server/tests/test_agent_runtime_schema.py": "81c9f0bfeca75e5533cd2e8ff7f0378a77c2904c5851d9af451774a16f0393c2",
+    "server/tests/test_agent_database_security.py": "51f3ccbb45ad8e5039d2a6d88ee9290408a3637228c125498f674fdd0e480054",
+    "server/tests/test_ai_api.py": "01c6aead694bf0c6b5111816ee385f4bb16bfd3a824d4a867380fa33fe88d249",
+    "server/tests/test_input_metering.py": "a45ad396706ffd32af2a76f461097f0bd7acfb1ba4151eccc14b802cfdc82e73",
+    "web/src/components/ai/ai-api.ts": "28fa3be013dd615b7edb4b6a922c2cb9bdb4d85f1dff5c0e21358da8e24882db",
+    "web/src/components/ai/project-ai-chat.tsx": "03aed6d38107c0e407af4902b493950eb080957ff436d7d88ebfa3327b9e7c95",
+    "web/src/components/ai/project-ai-chat.test.tsx": "a8e53b14bf52256a5768179eadef9ae580c4c2f3f554924d2b14a80c5ad0a612",
+    "web/src/components/ai/agent-runs-card.tsx": "090805145bbca6120ec5f062d7a53ed4613a592d49db9fb75afc6a19ed6b791c",
+    "docs/runbooks/chat-request-runs.md": "3b3e5824ea0e56b9c654fa13105b596d6c5653b738b354ae5da232603f66ae7e",
+    "docs/runbooks/application-budget-adoption.md": "df653836eabbd94439b075358d7b18cd99554da6fc4bace60f4cc3b57630dd92",
+    "docs/reports/2026-09-10-n0-03-chat-request-runs-validation.md": "cf90bbcd5f572ce89618d922bbfab2f4899a8d255dab46c6f101d35deacc689c",
+    "web/tsconfig.json": "3dd23061d2fe379ebac37ba21dcff5b80eed44efbc00ba9212187f425690973e"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "9e66159094c3fc47a0a730a6f02d1a09261e6dae2d54ae812a99cb0a64cece76",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "bacb038dd1ed30e161274a9a54acd2256cca761e41f4d9c6910274bf4d283066",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "follow_up": {
+    "report": "docs/reports/2026-09-10-n0-03-import-mapping-runs-validation.md",
+    "current_sources_sha256": {
+      "server/migrations/versions/0068_chat_request_runs.py": "9645198de3682ca5b8e54dd79d748f91dd1aa804abeac5add897a907b5c5f7a3",
+      "server/app/db/schema.py": "986c1ebd904704aff91cf2fe7988ac2af55a77e4e620eb06210d73dc4a47da9d",
+      "server/app/ai/chat.py": "0515c719ec74b214d571901569274046711919c4362fad7bea6e5239f5733de4",
+      "server/app/ai/chat_runs.py": "8776d2538daa2b6832cc0be1be18c742343dc8b6f264ec781d2a77d3ab880225",
+      "server/app/ai/call_identity.py": "d2c69847c62bdc06956ffc7a8b84a0e0cfc85024c666598284e1a0e14759548b",
+      "server/app/api/ai.py": "da0efffb35289b97ceb17665a9f4a69029fdc380811031ce3c649f0fc29f2389",
+      "infra/postgres/security/agent-runtime.sql": "36a9476a0b66b8332d118cd40f773bb7b66553d43c50e8d566677103685f6e3d",
+      "server/tests/test_chat_requests.py": "639866aec55d8183725946f5904c917d90e3df304fdafa6f8a0745934e52e241",
+      "server/tests/test_agent_runtime_schema.py": "81c9f0bfeca75e5533cd2e8ff7f0378a77c2904c5851d9af451774a16f0393c2",
+      "server/tests/test_agent_database_security.py": "51f3ccbb45ad8e5039d2a6d88ee9290408a3637228c125498f674fdd0e480054",
+      "server/tests/test_ai_api.py": "01c6aead694bf0c6b5111816ee385f4bb16bfd3a824d4a867380fa33fe88d249",
+      "server/tests/test_input_metering.py": "a45ad396706ffd32af2a76f461097f0bd7acfb1ba4151eccc14b802cfdc82e73",
+      "web/src/components/ai/ai-api.ts": "28fa3be013dd615b7edb4b6a922c2cb9bdb4d85f1dff5c0e21358da8e24882db",
+      "web/src/components/ai/project-ai-chat.tsx": "03aed6d38107c0e407af4902b493950eb080957ff436d7d88ebfa3327b9e7c95",
+      "web/src/components/ai/project-ai-chat.test.tsx": "a8e53b14bf52256a5768179eadef9ae580c4c2f3f554924d2b14a80c5ad0a612",
+      "web/src/components/ai/agent-runs-card.tsx": "dacd488ec2c0b9e7a2537797855519679fd6d9c4fb7ff84d8a937c85fbd7a869",
+      "docs/runbooks/chat-request-runs.md": "8f1d527de35316f6753d2955f90c5586bd67ee11ce1cf2c955c2c9f7504a2b8c",
+      "docs/runbooks/application-budget-adoption.md": "794c78a2a1f7cfeb602ddc3d2394ac86bbb4bfca2631bccdf7143261ad10d50e",
+      "docs/reports/2026-09-10-n0-03-chat-request-runs-validation.md": "50776859de0ddfcdabb70265230d9bc0d39c8fe3c23474bf41bd7f811ad72a60",
+      "web/tsconfig.json": "3dd23061d2fe379ebac37ba21dcff5b80eed44efbc00ba9212187f425690973e"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "date": "2026-09-10",
+  "scope": "completed model result checkpoints and expired event-run recovery with tenant/run composite receipt keys",
+  "tests": {
+    "distinct_passed": 113,
+    "new_cases": 25,
+    "regression_cases": 88,
+    "initial_batch_passed": 43,
+    "expanded_batch_passed": 39,
+    "overlap": 14,
+    "runtime_and_application_passed_after_schema_list_repair": 33,
+    "pure_heartbeat_and_factory_passed": 6,
+    "new_composite_scope_cases": 6,
+    "final_0074_checkpoint_batch": {
+      "passed": 22,
+      "fixture_failures": 3
+    },
+    "final_repaired_scope_and_runtime_schema_passed": 9,
+    "additional_restricted_factory_recheck_passed": 21,
+    "initial_failures_resolved": [
+      "unrelated second tenant event was still pending in recovery fixture",
+      "missing update import",
+      "old precise schema table list omitted 0072 and 0073 tables",
+      "new wrong-run scope fixture used window_start/window_end instead of window_started_at/window_ended_at"
+    ]
+  },
+  "checks": {
+    "ruff_files": 9,
+    "format_files": 9,
+    "mypy_files": 5,
+    "dba_three_port_parity": "passed",
+    "exports": "common 4 and runtime 5 passed",
+    "approved_manifest_hashes": "unchanged",
+    "scoped_diff_check": "passed"
+  },
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "migration_head": "0074_checkpoint_scope_keys",
+  "isolated_container": "pdos-checkpoint-test",
+  "isolated_container_removed": true,
+  "shared_role_password_changes": false,
+  "migration_checks": "empty-history downgrade/upgrade plus persistent-history downgrade refusal; shared final 0074 forward upgrade",
+  "real_model_calls": 0,
+  "synthetic": [
+    "HTTP model transport",
+    "meter qualifications",
+    "embedding gateway",
+    "database lease expiry fault injection"
+  ],
+  "physical_process_kill_test": false,
+  "default_budget_mode": "legacy",
+  "production_operations": false,
+  "goal_item_status": "N0-03 partial",
+  "sources": {
+    "server/app/ai/checkpoints.py": "981704f5e05fb76a37392f0405dab864ad1d13518c6ec0d744086acbf056d612",
+    "server/app/ai/executor.py": "68077745b32fd8dc840aaca8b3b217898391a39696f732ddb277c5dd7881b7fd",
+    "server/app/db/schema.py": "463196f1891401a0a343829b6ae099a6fd5c50c16f22db9468ff9badae7d393a",
+    "server/app/worker/dispatcher.py": "5e9e6092fd10066aef493a479b9707244eaeafb053a69b3ab56c4362048ecb9c",
+    "server/scripts/run_dispatcher.py": "c726a95128097dc8052904b0f381f8808a3ec1b39e36c8c05e33aa81d7362dd6",
+    "server/migrations/versions/0073_agent_result_checkpoints.py": "41cee637835516d6a6d0bc3579aeee16c64a9c711b0325bb5da83df602918f7c",
+    "server/migrations/versions/0074_checkpoint_scope_keys.py": "ea09218f1996d3244c34b43bc7d06dec8f2a991d34acdb7537e4a38fc3930919",
+    "server/tests/test_agent_checkpoints.py": "36c9cd003bb52d4bdc514af2f6653d677db2122a0a7d2728c3577b38a76bd09e",
+    "server/tests/test_agent_runtime_schema.py": "bdf055635414d8d2804ca1e52b6c43667e62be36e7c7455341867c77eede164c",
+    "infra/postgres/security/agent-runtime.sql": "0fa8371d23a195838a6362d04baa568340fbf63578bd7a53a83d4d6b5982f9e5",
+    "infra/postgres/security/agent-runtime-revert.sql": "42b7f88bd3c125ecfd2d51e35f4a80c06858df67dd99df54bec62f1ec54df3e0",
+    "docs/runbooks/agent-result-checkpoint-recovery.md": "9cd6cd2c5a858e79683b608ee49a059da2911fc9308278e555ec18a6372fce25",
+    "docs/reports/2026-09-10-n0-03-agent-checkpoint-recovery-validation.md": "1403e032f92ff46c5d1faf2b854f734beb9061cd89ac3a61d5c1d469c31ef949"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "38678a01089c8425539e2501ccda0fdecefa86cd9a4a3cd4fa285bdbadadd0cd",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "6244706cab7830b008b2bdd1ee65ab9fc91357f65937bbe816da99f001526450",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "in-flight model/tool step persistent checkpoints and waiting_input",
+    "Owner request lease and complete generation/runtime version bundle",
+    "external unknown receipt queries and evidence-based reconciliation",
+    "in-flight cancellation and model-tool loop",
+    "all derived source ACL authorization envelopes",
+    "real meter qualification and separately approved production adoption"
+  ]
+}

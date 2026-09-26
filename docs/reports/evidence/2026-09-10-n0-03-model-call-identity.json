@@ -1,0 +1,37 @@
+{
+  "date": "2026-09-10",
+  "scope": "stable model call identity for three existing persisted-run entry points",
+  "tests_passed": 33,
+  "new_tests": 6,
+  "ruff_files": 9,
+  "sources": {
+    "server/app/ai/call_identity.py": "42c7ab158046a7674b49615ee9320743227c611bde8ce49796b5ff2aa5942c2f",
+    "server/app/ai/executor.py": "305d6c0baaae666f007aac3a912c6d794e623b826f68cf8e4bcbebad66591a3e",
+    "server/app/ai/risk_suggestions.py": "2fe6543276b538527ae291702c2693186ecff465cc0f45a8f48c47d9e2fdbc6c",
+    "server/app/ai/test_plan_suggestions.py": "0b9d72b983a664d50010bfdbe170af8906038898b4f815caebbd663eb62faa78",
+    "server/tests/test_call_identity.py": "4170dee3964bb45930233a752a78736fb1a024401293bfc5fe54961687b1a37c",
+    "server/tests/test_agent_executor.py": "9aa6c2d4079d3b97527e9d1f002629aa93bfb1a9589ee987d41c7c268ad5ecd6",
+    "server/tests/test_ai_api.py": "5bcabddcb8466afa810c3a5ab4dc49b596b094fa6e58fc49c48a2160399006e6",
+    "server/tests/test_ai_test_plan_changes.py": "383eaf8242aced0c5d3750d4d2a0ff8dfd508f491ea815bc243f51cf5489e290",
+    "server/tests/test_model_budget_controller.py": "4c93e9b05822833e1df7000a125b4397c11ff627bf291c926aad677e52cf3183",
+    "docs/reports/2026-09-10-n0-03-model-call-identity-validation.md": "ab4a074c8a5c6631b803b3dfc4a38c8e12ae79f8685d4b49093ecd172e7e9380"
+  },
+  "remaining": [
+    "cross-HTTP business idempotency and run reuse",
+    "persistent Chat and import-mapping runs",
+    "automatic budget provisioning and default factory adoption",
+    "real metering publication and recovery"
+  ],
+  "mypy_files": 4,
+  "exports": "both passed after runtime inventory refresh",
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "88ab4788842ad227e9e9685cd60ec0340f3db13804491486eb64149e1f9c585b",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "b6f99c0e65b63aa4c7b4d54b6a16e73af5ee93c01815ae8abdfbe26de494872c",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  }
+}

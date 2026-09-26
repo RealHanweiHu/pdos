@@ -1,0 +1,81 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0091_application_cancellation",
+  "tests": {
+    "backend_distinct_passed": 9,
+    "new_control_cases": 3,
+    "existing_chat_queue_cases": 6,
+    "repair_focused_passed": 4,
+    "frontend_distinct_passed": 9,
+    "total_distinct_passed": 18,
+    "repair": "Resolve test-plan actor from existing application authorization; four related cases passed after fix.",
+    "frontend_setup_repair": "Copied canonical vitest.config.mts into isolated source snapshot."
+  },
+  "static_checks": {
+    "mypy_files": 5,
+    "ruff_files": 7,
+    "eslint_files": 4,
+    "typescript_full": true,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0091_application_cancellation",
+    "functions": {
+      "reject_cancelled_lineage_link": true,
+      "cancel_application_request": true,
+      "check_run_active_budget": true
+    },
+    "direct_table_privileges": {
+      "pdos_agent": false,
+      "pdos_worker": false
+    },
+    "cancel_function_execute": {
+      "pdos_agent": false,
+      "pdos_worker": false
+    }
+  },
+  "web_snapshot": {
+    "matching_source_files": 319,
+    "matching_lockfile_sha256": "4cb2e2e0099c58b7d0b26c4954bb19f57be457629ee63bb76c0c0808aa3fb251"
+  },
+  "source_sha256": {
+    "server/app/ai/application_control.py": "23fcf72f978ca432a83a05e417c38b4789fcde1e45b84276a94114ad34722c22",
+    "server/app/ai/budget_ledger.py": "166404f522defc3a7316d6465e50e8985e798ebe4f127cfba68efe11dd92f8d2",
+    "server/app/ai/chat_queue.py": "7493420bbc5ef57738ecf74fee474850b181ad57953baaf60b2d29b06a1f29e4",
+    "server/app/api/ai.py": "edcae2ca37d06865a282e2edb23d5dbe7eacacd7e35530e6149e133056093246",
+    "server/app/db/schema.py": "e8a91e90528f6c84d5ca952ab1856152d19ea643c6b22af1f31e2c459d309a0b",
+    "server/migrations/versions/0091_application_cancellation.py": "a5b7a46a249f3a7582ba8dc36e08557f51dea0625201a0876beed105e7567a35",
+    "server/tests/test_application_control.py": "f2a36b6edf8fd3eebd67fdc858f6f137fe0cc0e81135e42638edfdee2039b95f",
+    "web/src/components/ai/agent-runs-card.tsx": "7a65a150a12f8ac4d86d6dedcd6cf6e54f4d85b8ecebece7deaf9a7c99d85203",
+    "web/src/components/ai/agent-runs-card.test.tsx": "8215760dd95783769f771076b84e1c9dd408e202ad3ef3445ba5522311e18775",
+    "web/src/components/ai/ai-api.ts": "6b7ac1ff7e7feac510aab485deacb8536e5a9b5fa110242c6026af0a8e177697",
+    "web/src/components/ai/ai-types.ts": "024021ed73058f188127690cd4ca8b32621ad3b56fcc6047c582dff83a030249",
+    "docs/runbooks/application-cancellation.md": "c56b7f0dd72f7e6438e97f86820a01405fba838cd22cb69f68e672df808a61ed",
+    "docs/reports/2026-09-11-n0-03-application-control-validation.md": "194e74433681938a457a0e8636692e4b81fa1e18ccb7d8f1ccbbd58c1cf17d8a"
+  },
+  "log_sha256": {
+    "/tmp/pdos-application-control-tests.log": "9229c40dfa8e2bfef43206c4ebfdb5bc5030f3ff2f86587f0fafe61a38c45aa6",
+    "/tmp/pdos-application-control-repair.log": "fdcba4970787838846442d5115264b495bf65065fcfa4f309ce141e2c98ebf6d",
+    "/tmp/pdos-application-control-web-tests.log": "49ccd026d970e9225d5d5a070ebd93add928a2221f59348c365d84fa0436f623",
+    "/tmp/pdos-application-control-mypy.log": "e317872697c2cbfdefa321527a6efe73290dff3a390b0fa8723b87092eccba6a",
+    "/tmp/pdos-application-control-mypy-repair.log": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+    "/tmp/pdos-application-control-ruff.log": "0be7adce665690956090205e08186f7efd9939d7fe606e4a0d117c570ab71599",
+    "/tmp/pdos-application-control-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-application-control-eslint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-application-control-migration.log": "b121bad9bc6be35a889c77a14e5c5a45e50f7ccf8e98cce5e6337703604f48df"
+  },
+  "approved_manifest_sha256": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "temporary_container_removed": "pdos-application-control-test",
+  "active_items": 65,
+  "production_changed": false,
+  "real_provider_calls": false,
+  "goal_complete": false,
+  "temporary_web_snapshot_removed": true
+}

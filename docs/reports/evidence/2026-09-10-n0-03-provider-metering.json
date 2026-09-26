@@ -1,0 +1,63 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 provider usage normalization, explicit bounded gateway interface; not enabled in runtime factories",
+  "tests": {
+    "provider_unit": 38,
+    "gateway_http_schema_migrations_budget": 53,
+    "contracts_calendar": 160,
+    "distinct_total": 251
+  },
+  "initial_failure": "17 passed / 3 failed: old cost constraint rejected not_invoked for output limit configuration rejection; resolved with migration 0061 and verified final 53 tests",
+  "checks": {
+    "ruff_files": 11,
+    "format_files": 11,
+    "mypy_files": 3,
+    "export_checks": "both current contract exporters passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration": "0061_provider_admission"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "b1116abb17f2173f1502cd833243b4409c719286bbbcb95024924b9b4d8277ce",
+      "sources_verified": 175,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/provider_adapters.py": "e9342222377eb283aa3f2c51550c8fe411a1a876cf66abcccfe66b29ad69f6bf",
+    "server/app/ai/gateway.py": "674bd8e30b68229409c4ecfd40cc865e6578805429e52322d10d4b2e64f1f74f",
+    "server/app/db/schema.py": "258f7996bbbcdf78b57b86f097d38d91c5d22faba046647dbea3243519c8f4a1",
+    "server/migrations/versions/0061_provider_admission.py": "45439c3b6d8d5a9ee4c603b4b135ef69985523ba47ad3b512b3031fb87508bbb",
+    "server/tests/test_provider_bounded_usage.py": "9f524ae5bbf50935b195f602e8963ace101054194a734a82a637ed7e1784c570",
+    "server/tests/test_model_provider_adapters.py": "dff59c3b3a05c60b4113cfbd1b52d06abc53e2e7f3a8df84db901a9919cbbc99",
+    "server/tests/test_model_gateway.py": "7da54dec24af1918ba3bbf43dcff13797598c6242d1d097a1546f8efcee6e129",
+    "server/tests/test_model_provider_http_contract.py": "f8b9c4d25c7591cfc4222615617945a85c17236c0877e1e723a85b4950281c1e",
+    "server/tests/test_model_gateway_schema.py": "91e6e029be158e8ea9d71024077f7d244fce48b4b3648958561360d5db866a4a",
+    "server/tests/test_migrations.py": "c928c3e034bf429a3bb2047a0880e549815f8183290654b38774d14c95d6156f",
+    "server/tests/test_budget_ledger.py": "c29c8f67cdfceb4999c5251ca36da0904fd8ba5d36ef0d57538cd1ed4ca819a3",
+    "docs/reports/2026-09-10-n0-03-provider-metering-validation.md": "71e262600bd5b0253f67db6fdd04f082a71bf3c0ce6112c01f544f68fa0dde65"
+  },
+  "remaining": [
+    "per-attempt ledger/provider/tool admission and receipts",
+    "qualified model window and input token metering",
+    "profile intersection",
+    "legacy usage accounting without double count",
+    "restricted role service interface",
+    "active leases",
+    "persistent rollout and bundle pins",
+    "tool loop and source ACL/checkpoint recovery"
+  ]
+}

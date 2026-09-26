@@ -1,0 +1,5786 @@
+{
+  "components": {
+    "schemas": {
+      "ActivationRequirement": {
+        "additionalProperties": false,
+        "properties": {
+          "adoption_approval": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adoption Approval"
+          },
+          "approval_required": {
+            "const": true,
+            "default": true,
+            "title": "Approval Required",
+            "type": "boolean"
+          },
+          "component_sources": {
+            "items": {
+              "$ref": "#/components/schemas/ComponentSource"
+            },
+            "minItems": 1,
+            "title": "Component Sources",
+            "type": "array"
+          },
+          "current_rollout": {
+            "enum": [
+              "disabled",
+              "shadow",
+              "live"
+            ],
+            "title": "Current Rollout",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "qualification_evidence": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qualification Evidence"
+          },
+          "qualification_scope": {
+            "const": "capability_bundle_not_provider_only",
+            "default": "capability_bundle_not_provider_only",
+            "title": "Qualification Scope",
+            "type": "string"
+          },
+          "regression_evidence": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regression Evidence"
+          },
+          "requested_rollout": {
+            "enum": [
+              "disabled",
+              "shadow",
+              "live"
+            ],
+            "title": "Requested Rollout",
+            "type": "string"
+          },
+          "required_scope_tests": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Required Scope Tests",
+            "type": "array"
+          }
+        },
+        "required": [
+          "key",
+          "component_sources",
+          "required_scope_tests",
+          "current_rollout",
+          "requested_rollout",
+          "qualification_evidence",
+          "regression_evidence",
+          "adoption_approval"
+        ],
+        "title": "ActivationRequirement",
+        "type": "object"
+      },
+      "BoundHandle": {
+        "additionalProperties": false,
+        "properties": {
+          "digest": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Digest"
+          },
+          "handle": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Handle",
+            "type": "string"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Version"
+          }
+        },
+        "required": [
+          "handle"
+        ],
+        "title": "BoundHandle",
+        "type": "object"
+      },
+      "BriefOption": {
+        "additionalProperties": false,
+        "properties": {
+          "benefits": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Benefits",
+            "type": "array"
+          },
+          "costs": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Costs",
+            "type": "array"
+          },
+          "dissent": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Dissent",
+            "type": "array"
+          },
+          "option_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Option Key",
+            "type": "string"
+          },
+          "proposal": {
+            "$ref": "#/components/schemas/CitedStatement"
+          }
+        },
+        "required": [
+          "option_key",
+          "proposal",
+          "benefits",
+          "costs",
+          "dissent"
+        ],
+        "title": "BriefOption",
+        "type": "object"
+      },
+      "BudgetEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "format": "uuid",
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "charged_cost_microusd": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Charged Cost Microusd"
+          },
+          "charged_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Charged Tokens"
+          },
+          "held_tokens": {
+            "minimum": 0,
+            "title": "Held Tokens",
+            "type": "integer"
+          },
+          "lineage_id": {
+            "format": "uuid",
+            "title": "Lineage Id",
+            "type": "string"
+          },
+          "policy_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "price_status": {
+            "enum": [
+              "priced",
+              "unknown",
+              "test_fixture"
+            ],
+            "title": "Price Status",
+            "type": "string"
+          },
+          "provider_request_id": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Request Id"
+          },
+          "rate_card": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PolicyPin"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reconciliation_ref": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reconciliation Ref"
+          },
+          "reservation_status": {
+            "enum": [
+              "reserved",
+              "settled",
+              "unknown",
+              "cancelled_before_dispatch"
+            ],
+            "title": "Reservation Status",
+            "type": "string"
+          },
+          "reserved_cost_microusd": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reserved Cost Microusd"
+          },
+          "reserved_tokens": {
+            "minimum": 1,
+            "title": "Reserved Tokens",
+            "type": "integer"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "tenant_id": {
+            "format": "uuid",
+            "title": "Tenant Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "lineage_id",
+          "run_id",
+          "attempt_id",
+          "policy_version",
+          "reservation_status",
+          "reserved_tokens",
+          "charged_tokens",
+          "held_tokens",
+          "price_status",
+          "rate_card",
+          "reserved_cost_microusd",
+          "charged_cost_microusd",
+          "provider_request_id",
+          "reconciliation_ref"
+        ],
+        "title": "BudgetEntry",
+        "type": "object"
+      },
+      "CapabilityPolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "apply_action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PolicyPin"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "binding": {
+            "$ref": "#/components/schemas/ImplementationBinding"
+          },
+          "budget_profile": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "context_builder": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "deduplication": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Deduplication",
+            "type": "string"
+          },
+          "entry_points": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Entry Points",
+            "type": "array"
+          },
+          "expiration_policy": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Expiration Policy",
+            "type": "string"
+          },
+          "finding_types": {
+            "default": [],
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "title": "Finding Types",
+            "type": "array"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "manual_fallback": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Manual Fallback",
+            "type": "string"
+          },
+          "model_qualification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PolicyPin"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "output_modes": {
+            "items": {
+              "enum": [
+                "read_only",
+                "propose_finding"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Output Modes",
+            "type": "array"
+          },
+          "output_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "prompt": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "purpose": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Purpose",
+            "type": "string"
+          },
+          "quality_profile": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "result_backlink": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Result Backlink",
+            "type": "string"
+          },
+          "retention_policy": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "review_action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PolicyPin"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "rollout": {
+            "enum": [
+              "disabled",
+              "shadow",
+              "live"
+            ],
+            "title": "Rollout",
+            "type": "string"
+          },
+          "scope_policy": {
+            "$ref": "#/components/schemas/ScopePolicy"
+          },
+          "semantic_keys": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Semantic Keys",
+            "type": "array"
+          },
+          "skill_pins": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PolicyPin"
+            },
+            "title": "Skill Pins",
+            "type": "array"
+          },
+          "tool_pins": {
+            "items": {
+              "$ref": "#/components/schemas/PolicyPin"
+            },
+            "title": "Tool Pins",
+            "type": "array"
+          },
+          "triggers": {
+            "items": {
+              "enum": [
+                "user",
+                "event",
+                "scheduled",
+                "authorized_run"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Triggers",
+            "type": "array"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          },
+          "zone": {
+            "enum": [
+              "free",
+              "hard_gate"
+            ],
+            "title": "Zone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "semantic_keys",
+          "purpose",
+          "entry_points",
+          "triggers",
+          "deduplication",
+          "scope_policy",
+          "context_builder",
+          "prompt",
+          "tool_pins",
+          "output_schema",
+          "output_modes",
+          "zone",
+          "rollout",
+          "binding",
+          "model_qualification",
+          "quality_profile",
+          "budget_profile",
+          "retention_policy",
+          "expiration_policy",
+          "manual_fallback",
+          "result_backlink"
+        ],
+        "title": "CapabilityPolicy",
+        "type": "object"
+      },
+      "CaptureSnapshotInput": {
+        "additionalProperties": false,
+        "properties": {
+          "purpose": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Purpose",
+            "type": "string"
+          },
+          "url": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "purpose"
+        ],
+        "title": "CaptureSnapshotInput",
+        "type": "object"
+      },
+      "CitedStatement": {
+        "additionalProperties": false,
+        "properties": {
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Citations",
+            "type": "array"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "nature": {
+            "enum": [
+              "observed",
+              "derived",
+              "hypothesis"
+            ],
+            "title": "Nature",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "nature",
+          "citations"
+        ],
+        "title": "CitedStatement",
+        "type": "object"
+      },
+      "ComponentSource": {
+        "additionalProperties": false,
+        "properties": {
+          "implementation_work": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Implementation Work",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          },
+          "status": {
+            "enum": [
+              "present",
+              "planned"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_.:-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "required": [
+          "key",
+          "status",
+          "path",
+          "symbol",
+          "sha256",
+          "version",
+          "implementation_work"
+        ],
+        "title": "ComponentSource",
+        "type": "object"
+      },
+      "DebatePolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "business_scenario_allowlist": {
+            "const": false,
+            "default": false,
+            "title": "Business Scenario Allowlist",
+            "type": "boolean"
+          },
+          "hidden_chain_of_thought_visible": {
+            "const": false,
+            "default": false,
+            "title": "Hidden Chain Of Thought Visible",
+            "type": "boolean"
+          },
+          "initiation": {
+            "const": "inside_authorized_run",
+            "default": "inside_authorized_run",
+            "title": "Initiation",
+            "type": "string"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "new_internal_scope": {
+            "const": "new_authorized_linked_run",
+            "default": "new_authorized_linked_run",
+            "title": "New Internal Scope",
+            "type": "string"
+          },
+          "outside_run_messages": {
+            "const": false,
+            "default": false,
+            "title": "Outside Run Messages",
+            "type": "boolean"
+          },
+          "shared_lineage_budget": {
+            "const": true,
+            "default": true,
+            "title": "Shared Lineage Budget",
+            "type": "boolean"
+          },
+          "stop_on_no_evidence_increment": {
+            "const": true,
+            "default": true,
+            "title": "Stop On No Evidence Increment",
+            "type": "boolean"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          },
+          "visible_output": {
+            "const": "brief_sources_disagreements_tradeoffs_progress",
+            "default": "brief_sources_disagreements_tradeoffs_progress",
+            "title": "Visible Output",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version"
+        ],
+        "title": "DebatePolicy",
+        "type": "object"
+      },
+      "DecisionBrief": {
+        "additionalProperties": false,
+        "properties": {
+          "consensus": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Consensus",
+            "type": "array"
+          },
+          "context": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Context",
+            "type": "array"
+          },
+          "finding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_use": {
+            "enum": [
+              "read_only",
+              "business_proposal"
+            ],
+            "title": "Intended Use",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/BriefOption"
+            },
+            "minItems": 1,
+            "title": "Options",
+            "type": "array"
+          },
+          "rationale": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Rationale",
+            "type": "array"
+          },
+          "recommended_option": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_.:-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommended Option"
+          },
+          "source_handles": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "minItems": 1,
+            "title": "Source Handles",
+            "type": "array"
+          },
+          "stop_reason": {
+            "enum": [
+              "sufficient_evidence",
+              "no_information_gain",
+              "budget_limit",
+              "missing_input",
+              "cancelled"
+            ],
+            "title": "Stop Reason",
+            "type": "string"
+          },
+          "topic": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Topic",
+            "type": "string"
+          },
+          "unresolved": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Unresolved",
+            "type": "array"
+          }
+        },
+        "required": [
+          "topic",
+          "context",
+          "consensus",
+          "options",
+          "recommended_option",
+          "rationale",
+          "unresolved",
+          "source_handles",
+          "intended_use",
+          "finding",
+          "stop_reason"
+        ],
+        "title": "DecisionBrief",
+        "type": "object"
+      },
+      "DraftDependency": {
+        "additionalProperties": false,
+        "properties": {
+          "lag": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,16}|(?=[\\d.]{1,25}0*$)\\d{0,16}\\.\\d{0,8}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Lag"
+          },
+          "lag_unit": {
+            "enum": [
+              "working_hours",
+              "calendar_days"
+            ],
+            "title": "Lag Unit",
+            "type": "string"
+          },
+          "predecessor": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Predecessor",
+            "type": "string"
+          },
+          "relation": {
+            "enum": [
+              "fs",
+              "ss",
+              "ff",
+              "sf"
+            ],
+            "title": "Relation",
+            "type": "string"
+          },
+          "successor": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Successor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "predecessor",
+          "successor",
+          "relation",
+          "lag",
+          "lag_unit"
+        ],
+        "title": "DraftDependency",
+        "type": "object"
+      },
+      "DraftSpecification": {
+        "additionalProperties": false,
+        "properties": {
+          "acceptance_criterion": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Criterion"
+          },
+          "conditions": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Conditions",
+            "type": "array"
+          },
+          "item_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Item Key",
+            "type": "string"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "priority": {
+            "enum": [
+              "must",
+              "should",
+              "could"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "rationale": {
+            "$ref": "#/components/schemas/CitedStatement"
+          },
+          "target_text": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Text"
+          },
+          "target_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,16}|(?=[\\d.]{1,25}0*$)\\d{0,16}\\.\\d{0,8}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Value"
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "verification_method": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Method"
+          }
+        },
+        "required": [
+          "item_key",
+          "title",
+          "target_text",
+          "target_value",
+          "unit",
+          "conditions",
+          "priority",
+          "rationale",
+          "verification_method",
+          "acceptance_criterion",
+          "missing"
+        ],
+        "title": "DraftSpecification",
+        "type": "object"
+      },
+      "DraftTask": {
+        "additionalProperties": false,
+        "properties": {
+          "acceptance_criteria": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Acceptance Criteria",
+            "type": "string"
+          },
+          "discipline": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Discipline",
+            "type": "string"
+          },
+          "effort_hours": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,16}|(?=[\\d.]{1,25}0*$)\\d{0,16}\\.\\d{0,8}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effort Hours"
+          },
+          "estimate_basis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CitedStatement"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "expected_output": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Expected Output",
+            "type": "string"
+          },
+          "missing": {
+            "default": [],
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "node_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Node Key",
+            "type": "string"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "receiver": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          },
+          "waiting_days": {
+            "default": 0,
+            "minimum": 0,
+            "title": "Waiting Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "node_key",
+          "title",
+          "discipline",
+          "owner",
+          "receiver",
+          "expected_output",
+          "acceptance_criteria",
+          "effort_hours"
+        ],
+        "title": "DraftTask",
+        "type": "object"
+      },
+      "EgressPolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "block_private_login_and_executable": {
+            "const": true,
+            "default": true,
+            "title": "Block Private Login And Executable",
+            "type": "boolean"
+          },
+          "credentials_visible_to_model": {
+            "const": false,
+            "default": false,
+            "title": "Credentials Visible To Model",
+            "type": "boolean"
+          },
+          "each_redirect_and_all_resolved_ips_checked": {
+            "const": true,
+            "default": true,
+            "title": "Each Redirect And All Resolved Ips Checked",
+            "type": "boolean"
+          },
+          "first_domain_approval": {
+            "const": false,
+            "default": false,
+            "title": "First Domain Approval",
+            "type": "boolean"
+          },
+          "internal_authorization_visible_to_model": {
+            "const": false,
+            "default": false,
+            "title": "Internal Authorization Visible To Model",
+            "type": "boolean"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "max_public_bytes": {
+            "default": 2097152,
+            "minimum": 1,
+            "title": "Max Public Bytes",
+            "type": "integer"
+          },
+          "max_redirects": {
+            "default": 3,
+            "minimum": 0,
+            "title": "Max Redirects",
+            "type": "integer"
+          },
+          "projection": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "public_all_seats": {
+            "const": true,
+            "default": true,
+            "title": "Public All Seats",
+            "type": "boolean"
+          },
+          "public_credentials_allowed": {
+            "const": false,
+            "default": false,
+            "title": "Public Credentials Allowed",
+            "type": "boolean"
+          },
+          "public_http_method": {
+            "const": "GET",
+            "default": "GET",
+            "title": "Public Http Method",
+            "type": "string"
+          },
+          "public_research": {
+            "const": "default_allow_with_blocklist",
+            "default": "default_allow_with_blocklist",
+            "title": "Public Research",
+            "type": "string"
+          },
+          "source_acl_and_purpose_required": {
+            "const": true,
+            "default": true,
+            "title": "Source Acl And Purpose Required",
+            "type": "boolean"
+          },
+          "taint_inherited": {
+            "const": true,
+            "default": true,
+            "title": "Taint Inherited",
+            "type": "boolean"
+          },
+          "unavailable_is_zero_results": {
+            "const": false,
+            "default": false,
+            "title": "Unavailable Is Zero Results",
+            "type": "boolean"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "projection"
+        ],
+        "title": "EgressPolicy",
+        "type": "object"
+      },
+      "EnginePolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Algorithm Version",
+            "type": "string"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/ImplementationBinding"
+          },
+          "calendar_policy": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_.:-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calendar Policy"
+          },
+          "input_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "invokes_model": {
+            "const": false,
+            "default": false,
+            "title": "Invokes Model",
+            "type": "boolean"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "max_edges": {
+            "minimum": 1,
+            "title": "Max Edges",
+            "type": "integer"
+          },
+          "max_nodes": {
+            "minimum": 1,
+            "title": "Max Nodes",
+            "type": "integer"
+          },
+          "missing_input": {
+            "const": "explicit_partial_or_not_computable",
+            "default": "explicit_partial_or_not_computable",
+            "title": "Missing Input",
+            "type": "string"
+          },
+          "output_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "source_snapshot_required": {
+            "const": true,
+            "default": true,
+            "title": "Source Snapshot Required",
+            "type": "boolean"
+          },
+          "timeout_seconds": {
+            "minimum": 1,
+            "title": "Timeout Seconds",
+            "type": "integer"
+          },
+          "unit_policy": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Unit Policy",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          },
+          "writes_business": {
+            "const": false,
+            "default": false,
+            "title": "Writes Business",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "input_schema",
+          "output_schema",
+          "binding",
+          "algorithm_version",
+          "unit_policy",
+          "calendar_policy",
+          "max_nodes",
+          "max_edges",
+          "timeout_seconds"
+        ],
+        "title": "EnginePolicy",
+        "type": "object"
+      },
+      "EvaluateReadinessInput": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Action",
+            "type": "string"
+          },
+          "policy_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/BoundHandle"
+          }
+        },
+        "required": [
+          "target",
+          "action",
+          "policy_version"
+        ],
+        "title": "EvaluateReadinessInput",
+        "type": "object"
+      },
+      "EvaluateScenarioInput": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Algorithm Version",
+            "type": "string"
+          },
+          "calendars": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Calendars",
+            "type": "array"
+          },
+          "capacities": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Capacities",
+            "type": "array"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/PlanDraft"
+          },
+          "expected_input_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Expected Input Digest",
+            "type": "string"
+          }
+        },
+        "required": [
+          "draft",
+          "calendars",
+          "capacities",
+          "expected_input_digest",
+          "algorithm_version"
+        ],
+        "title": "EvaluateScenarioInput",
+        "type": "object"
+      },
+      "EvidenceCard": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "excerpt": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Excerpt",
+            "type": "string"
+          },
+          "freshness": {
+            "enum": [
+              "current",
+              "stale",
+              "unknown"
+            ],
+            "title": "Freshness",
+            "type": "string"
+          },
+          "locator": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locator"
+          },
+          "reference": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "taint": {
+            "enum": [
+              "untrusted_external",
+              "internal",
+              "verified"
+            ],
+            "title": "Taint",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "title",
+          "excerpt",
+          "locator",
+          "as_of",
+          "freshness",
+          "taint"
+        ],
+        "title": "EvidenceCard",
+        "type": "object"
+      },
+      "EvidenceData": {
+        "additionalProperties": false,
+        "properties": {
+          "cards": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceCard"
+            },
+            "title": "Cards",
+            "type": "array"
+          },
+          "kind": {
+            "const": "evidence",
+            "default": "evidence",
+            "title": "Kind",
+            "type": "string"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cards",
+          "missing"
+        ],
+        "title": "EvidenceData",
+        "type": "object"
+      },
+      "EvidenceResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "EvidenceResult",
+        "type": "object"
+      },
+      "FindingData": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Candidate Digest",
+            "type": "string"
+          },
+          "finding": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "finding_type": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Finding Type",
+            "type": "string"
+          },
+          "kind": {
+            "const": "finding",
+            "default": "finding",
+            "title": "Kind",
+            "type": "string"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "status": {
+            "const": "pending_review",
+            "default": "pending_review",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "finding",
+          "finding_type",
+          "candidate_digest",
+          "missing",
+          "receipt"
+        ],
+        "title": "FindingData",
+        "type": "object"
+      },
+      "FindingResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FindingData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "FindingResult",
+        "type": "object"
+      },
+      "GetVerificationEvidenceInput": {
+        "additionalProperties": false,
+        "properties": {
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Continuation"
+          },
+          "facets": {
+            "items": {
+              "enum": [
+                "spec",
+                "case",
+                "sample",
+                "build",
+                "run",
+                "certification"
+              ],
+              "type": "string"
+            },
+            "title": "Facets",
+            "type": "array"
+          },
+          "targets": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Targets",
+            "type": "array"
+          }
+        },
+        "required": [
+          "targets",
+          "facets"
+        ],
+        "title": "GetVerificationEvidenceInput",
+        "type": "object"
+      },
+      "HandoffResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReadinessData"
+              },
+              {
+                "$ref": "#/components/schemas/FindingData"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "HandoffResult",
+        "type": "object"
+      },
+      "HumanActionPolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "action_kind": {
+            "enum": [
+              "review",
+              "apply",
+              "publish",
+              "professional_approval",
+              "confirm_raw_import",
+              "send"
+            ],
+            "title": "Action Kind",
+            "type": "string"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/ImplementationBinding"
+          },
+          "current_source_and_target_check": {
+            "const": true,
+            "default": true,
+            "title": "Current Source And Target Check",
+            "type": "boolean"
+          },
+          "evidence_policy": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Evidence Policy",
+            "type": "string"
+          },
+          "idempotency": {
+            "const": "tenant_action_key_digest",
+            "default": "tenant_action_key_digest",
+            "title": "Idempotency",
+            "type": "string"
+          },
+          "input_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "model_callable": {
+            "const": false,
+            "default": false,
+            "title": "Model Callable",
+            "type": "boolean"
+          },
+          "output_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "prior_review_required": {
+            "title": "Prior Review Required",
+            "type": "boolean"
+          },
+          "required_permission": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Required Permission",
+            "type": "string"
+          },
+          "scope_policy": {
+            "$ref": "#/components/schemas/ScopePolicy"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "action_kind",
+          "input_schema",
+          "output_schema",
+          "binding",
+          "scope_policy",
+          "required_permission",
+          "prior_review_required",
+          "evidence_policy"
+        ],
+        "title": "HumanActionPolicy",
+        "type": "object"
+      },
+      "ImpactData": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "impact",
+            "default": "impact",
+            "title": "Kind",
+            "type": "string"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/ImpactLink"
+            },
+            "title": "Links",
+            "type": "array"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          }
+        },
+        "required": [
+          "links",
+          "missing"
+        ],
+        "title": "ImpactData",
+        "type": "object"
+      },
+      "ImpactLink": {
+        "additionalProperties": false,
+        "properties": {
+          "rationale": {
+            "$ref": "#/components/schemas/CitedStatement"
+          },
+          "relation": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Relation",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "target": {
+            "$ref": "#/components/schemas/BoundHandle"
+          }
+        },
+        "required": [
+          "source",
+          "target",
+          "relation",
+          "rationale"
+        ],
+        "title": "ImpactLink",
+        "type": "object"
+      },
+      "ImpactResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImpactData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ImpactResult",
+        "type": "object"
+      },
+      "ImplementationBinding": {
+        "additionalProperties": false,
+        "properties": {
+          "handler": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Handler"
+          },
+          "owner_module": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Owner Module",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "planned",
+              "implemented"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "verification_ref": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Ref"
+          }
+        },
+        "required": [
+          "status",
+          "owner_module",
+          "handler",
+          "verification_ref"
+        ],
+        "title": "ImplementationBinding",
+        "type": "object"
+      },
+      "ImportPreviewData": {
+        "additionalProperties": false,
+        "properties": {
+          "batch": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/RawCell"
+            },
+            "title": "Cells",
+            "type": "array"
+          },
+          "kind": {
+            "const": "import_preview",
+            "default": "import_preview",
+            "title": "Kind",
+            "type": "string"
+          },
+          "mapping_status": {
+            "enum": [
+              "confirmed",
+              "proposed",
+              "missing"
+            ],
+            "title": "Mapping Status",
+            "type": "string"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          }
+        },
+        "required": [
+          "batch",
+          "mapping_status",
+          "cells",
+          "missing"
+        ],
+        "title": "ImportPreviewData",
+        "type": "object"
+      },
+      "ImportPreviewResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImportPreviewData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ImportPreviewResult",
+        "type": "object"
+      },
+      "PlanDraft": {
+        "additionalProperties": false,
+        "properties": {
+          "dependencies": {
+            "items": {
+              "$ref": "#/components/schemas/DraftDependency"
+            },
+            "maxItems": 5000,
+            "title": "Dependencies",
+            "type": "array"
+          },
+          "source_handles": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "minItems": 1,
+            "title": "Source Handles",
+            "type": "array"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/DraftTask"
+            },
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Tasks",
+            "type": "array"
+          },
+          "template": {
+            "$ref": "#/components/schemas/BoundHandle"
+          }
+        },
+        "required": [
+          "template",
+          "tasks",
+          "dependencies",
+          "source_handles"
+        ],
+        "title": "PlanDraft",
+        "type": "object"
+      },
+      "PolicyCatalog": {
+        "additionalProperties": false,
+        "description": "Cross-register document validation, not a runtime policy loader.",
+        "properties": {
+          "budgets": {
+            "items": {
+              "$ref": "#/components/schemas/RunBudgetProfile"
+            },
+            "title": "Budgets",
+            "type": "array"
+          },
+          "capabilities": {
+            "items": {
+              "$ref": "#/components/schemas/CapabilityPolicy"
+            },
+            "title": "Capabilities",
+            "type": "array"
+          },
+          "debate_policy": {
+            "$ref": "#/components/schemas/DebatePolicy"
+          },
+          "egress_policies": {
+            "items": {
+              "$ref": "#/components/schemas/EgressPolicy"
+            },
+            "title": "Egress Policies",
+            "type": "array"
+          },
+          "engines": {
+            "items": {
+              "$ref": "#/components/schemas/EnginePolicy"
+            },
+            "title": "Engines",
+            "type": "array"
+          },
+          "human_actions": {
+            "items": {
+              "$ref": "#/components/schemas/HumanActionPolicy"
+            },
+            "title": "Human Actions",
+            "type": "array"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "retentions": {
+            "items": {
+              "$ref": "#/components/schemas/RetentionPolicy"
+            },
+            "title": "Retentions",
+            "type": "array"
+          },
+          "status": {
+            "const": "candidate",
+            "default": "candidate",
+            "title": "Status",
+            "type": "string"
+          },
+          "tools": {
+            "items": {
+              "$ref": "#/components/schemas/ToolPolicy"
+            },
+            "title": "Tools",
+            "type": "array"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "budgets",
+          "retentions",
+          "egress_policies",
+          "tools",
+          "engines",
+          "human_actions",
+          "capabilities",
+          "debate_policy"
+        ],
+        "title": "PolicyCatalog",
+        "type": "object"
+      },
+      "PolicyPin": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version"
+        ],
+        "title": "PolicyPin",
+        "type": "object"
+      },
+      "PrepareCapaInput": {
+        "additionalProperties": false,
+        "properties": {
+          "containment": {
+            "items": {
+              "$ref": "#/components/schemas/ProposedAction"
+            },
+            "title": "Containment",
+            "type": "array"
+          },
+          "corrective_actions": {
+            "items": {
+              "$ref": "#/components/schemas/ProposedAction"
+            },
+            "minItems": 1,
+            "title": "Corrective Actions",
+            "type": "array"
+          },
+          "effectiveness_plan": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Effectiveness Plan",
+            "type": "string"
+          },
+          "failure_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "minItems": 1,
+            "title": "Failure Evidence",
+            "type": "array"
+          },
+          "issue": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "root_cause_hypotheses": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "minItems": 1,
+            "title": "Root Cause Hypotheses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "issue",
+          "failure_evidence",
+          "root_cause_hypotheses",
+          "containment",
+          "corrective_actions",
+          "effectiveness_plan",
+          "missing"
+        ],
+        "title": "PrepareCapaInput",
+        "type": "object"
+      },
+      "PrepareChangePackageInput": {
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/ProposedAction"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Actions",
+            "type": "array"
+          },
+          "affected_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "minItems": 1,
+            "title": "Affected Versions",
+            "type": "array"
+          },
+          "change": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "impact_result": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "rationale": {
+            "$ref": "#/components/schemas/CitedStatement"
+          }
+        },
+        "required": [
+          "change",
+          "impact_result",
+          "rationale",
+          "actions",
+          "affected_versions",
+          "missing"
+        ],
+        "title": "PrepareChangePackageInput",
+        "type": "object"
+      },
+      "PrepareDefinitionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "constraints": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Constraints",
+            "type": "array"
+          },
+          "excluded_features": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "title": "Excluded Features",
+            "type": "array"
+          },
+          "included_features": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "title": "Included Features",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DraftSpecification"
+            },
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "product": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "scenarios": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "strategy": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "target_users": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Target Users",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "strategy",
+          "product",
+          "title",
+          "target_users",
+          "scenarios",
+          "included_features",
+          "excluded_features",
+          "items",
+          "constraints",
+          "missing"
+        ],
+        "title": "PrepareDefinitionInput",
+        "type": "object"
+      },
+      "PrepareHandoffInput": {
+        "additionalProperties": false,
+        "properties": {
+          "approved_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Approved Versions",
+            "type": "array"
+          },
+          "delivery_evidence": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Delivery Evidence",
+            "type": "array"
+          },
+          "mode": {
+            "enum": [
+              "readiness_only",
+              "propose_package"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "open_items": {
+            "items": {
+              "$ref": "#/components/schemas/CitedStatement"
+            },
+            "title": "Open Items",
+            "type": "array"
+          },
+          "receiver": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sender": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target": {
+            "$ref": "#/components/schemas/BoundHandle"
+          }
+        },
+        "required": [
+          "target",
+          "approved_versions",
+          "delivery_evidence",
+          "sender",
+          "receiver",
+          "open_items",
+          "mode"
+        ],
+        "title": "PrepareHandoffInput",
+        "type": "object"
+      },
+      "PrepareInitialPlanInput": {
+        "additionalProperties": false,
+        "properties": {
+          "case": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "current_missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Current Missing",
+            "type": "array"
+          },
+          "definition": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "draft": {
+            "$ref": "#/components/schemas/PlanDraft"
+          },
+          "scenario_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "case",
+          "definition",
+          "draft",
+          "scenario_result",
+          "current_missing"
+        ],
+        "title": "PrepareInitialPlanInput",
+        "type": "object"
+      },
+      "PreparePlanChangeInput": {
+        "additionalProperties": false,
+        "properties": {
+          "additions": {
+            "items": {
+              "$ref": "#/components/schemas/ProposedTest"
+            },
+            "title": "Additions",
+            "type": "array"
+          },
+          "changed_requirements": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "minItems": 1,
+            "title": "Changed Requirements",
+            "type": "array"
+          },
+          "plan": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/CitedStatement"
+          },
+          "retire_item_keys": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "title": "Retire Item Keys",
+            "type": "array"
+          }
+        },
+        "required": [
+          "plan",
+          "reason",
+          "additions",
+          "retire_item_keys",
+          "changed_requirements"
+        ],
+        "title": "PreparePlanChangeInput",
+        "type": "object"
+      },
+      "PreviewImportInput": {
+        "additionalProperties": false,
+        "properties": {
+          "batch": {
+            "$ref": "#/components/schemas/BoundHandle"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Continuation"
+          },
+          "mapping": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "plan": {
+            "$ref": "#/components/schemas/BoundHandle"
+          }
+        },
+        "required": [
+          "batch",
+          "plan",
+          "mapping"
+        ],
+        "title": "PreviewImportInput",
+        "type": "object"
+      },
+      "ProposedAction": {
+        "additionalProperties": false,
+        "properties": {
+          "action_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Action Key",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "output": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Output",
+            "type": "string"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoundHandle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "predecessors": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "title": "Predecessors",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          },
+          "verification": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Verification",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action_key",
+          "title",
+          "owner",
+          "output",
+          "verification",
+          "predecessors",
+          "evidence"
+        ],
+        "title": "ProposedAction",
+        "type": "object"
+      },
+      "ProposedTest": {
+        "additionalProperties": false,
+        "properties": {
+          "acceptance_criterion": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Criterion"
+          },
+          "applicability": {
+            "$ref": "#/components/schemas/CitedStatement"
+          },
+          "conditions": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Conditions",
+            "type": "array"
+          },
+          "feature": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Feature",
+            "type": "string"
+          },
+          "item_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Item Key",
+            "type": "string"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_key",
+          "feature",
+          "title",
+          "method",
+          "conditions",
+          "acceptance_criterion",
+          "applicability",
+          "missing"
+        ],
+        "title": "ProposedTest",
+        "type": "object"
+      },
+      "RawCell": {
+        "additionalProperties": false,
+        "properties": {
+          "issue": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Issue"
+          },
+          "locator": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Locator",
+            "type": "string"
+          },
+          "mapped_item": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_.:-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mapped Item"
+          },
+          "original_text": {
+            "maxLength": 10000,
+            "title": "Original Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "locator",
+          "original_text",
+          "mapped_item",
+          "issue"
+        ],
+        "title": "RawCell",
+        "type": "object"
+      },
+      "ReadinessData": {
+        "additionalProperties": false,
+        "properties": {
+          "blockers": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "eligible": {
+            "title": "Eligible",
+            "type": "boolean"
+          },
+          "kind": {
+            "const": "readiness",
+            "default": "readiness",
+            "title": "Kind",
+            "type": "string"
+          },
+          "policy_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/BoundHandle"
+          }
+        },
+        "required": [
+          "target",
+          "eligible",
+          "blockers",
+          "sources",
+          "policy_version"
+        ],
+        "title": "ReadinessData",
+        "type": "object"
+      },
+      "ReadinessResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReadinessData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ReadinessResult",
+        "type": "object"
+      },
+      "RetentionPolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "display_cache_seconds": {
+            "default": 86400,
+            "minimum": 1,
+            "title": "Display Cache Seconds",
+            "type": "integer"
+          },
+          "inbox_archive_days": {
+            "default": 14,
+            "minimum": 1,
+            "title": "Inbox Archive Days",
+            "type": "integer"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "mandatory_source_deletion": {
+            "const": "authorized_tombstone_and_invalidate_references",
+            "default": "authorized_tombstone_and_invalidate_references",
+            "title": "Mandatory Source Deletion",
+            "type": "string"
+          },
+          "metadata_days": {
+            "default": 365,
+            "minimum": 1,
+            "title": "Metadata Days",
+            "type": "integer"
+          },
+          "protected_records": {
+            "default": [
+              "body",
+              "manifest",
+              "observation",
+              "compaction_index",
+              "reference_mapping"
+            ],
+            "items": {
+              "enum": [
+                "body",
+                "manifest",
+                "observation",
+                "compaction_index",
+                "reference_mapping"
+              ],
+              "type": "string"
+            },
+            "title": "Protected Records",
+            "type": "array"
+          },
+          "purge_enabled": {
+            "const": false,
+            "default": false,
+            "title": "Purge Enabled",
+            "type": "boolean"
+          },
+          "reference_protection": {
+            "const": "business_policy_overrides_temporary_ttl",
+            "default": "business_policy_overrides_temporary_ttl",
+            "title": "Reference Protection",
+            "type": "string"
+          },
+          "retrieval_cache_seconds": {
+            "default": 300,
+            "minimum": 1,
+            "title": "Retrieval Cache Seconds",
+            "type": "integer"
+          },
+          "revoked_cache": {
+            "const": "invalidate_immediately_reauthorize_each_use",
+            "default": "invalidate_immediately_reauthorize_each_use",
+            "title": "Revoked Cache",
+            "type": "string"
+          },
+          "temporary_body_days": {
+            "minimum": 1,
+            "title": "Temporary Body Days",
+            "type": "integer"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "temporary_body_days"
+        ],
+        "title": "RetentionPolicy",
+        "type": "object"
+      },
+      "RunBudgetProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "active_seconds": {
+            "minimum": 1,
+            "title": "Active Seconds",
+            "type": "integer"
+          },
+          "include_retries_and_seats": {
+            "const": true,
+            "default": true,
+            "title": "Include Retries And Seats",
+            "type": "boolean"
+          },
+          "input_token_limit": {
+            "minimum": 1,
+            "title": "Input Token Limit",
+            "type": "integer"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "lease_seconds": {
+            "default": 60,
+            "minimum": 1,
+            "title": "Lease Seconds",
+            "type": "integer"
+          },
+          "lifetime_seconds": {
+            "minimum": 1,
+            "title": "Lifetime Seconds",
+            "type": "integer"
+          },
+          "lineage_parallel_calls": {
+            "const": 1,
+            "default": 1,
+            "title": "Lineage Parallel Calls",
+            "type": "integer"
+          },
+          "lineage_token_limit": {
+            "minimum": 1,
+            "title": "Lineage Token Limit",
+            "type": "integer"
+          },
+          "max_backoff_seconds": {
+            "default": 8,
+            "minimum": 1,
+            "title": "Max Backoff Seconds",
+            "type": "integer"
+          },
+          "min_safety_tokens": {
+            "default": 1024,
+            "minimum": 1,
+            "title": "Min Safety Tokens",
+            "type": "integer"
+          },
+          "model_call_limit": {
+            "minimum": 1,
+            "title": "Model Call Limit",
+            "type": "integer"
+          },
+          "monetary_limit_microusd": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Monetary Limit Microusd"
+          },
+          "next_tool_token_reserve": {
+            "default": 2048,
+            "minimum": 1,
+            "title": "Next Tool Token Reserve",
+            "type": "integer"
+          },
+          "output_token_reserve": {
+            "minimum": 1,
+            "title": "Output Token Reserve",
+            "type": "integer"
+          },
+          "renew_seconds": {
+            "default": 20,
+            "minimum": 1,
+            "title": "Renew Seconds",
+            "type": "integer"
+          },
+          "resume_resets_budget": {
+            "const": false,
+            "default": false,
+            "title": "Resume Resets Budget",
+            "type": "boolean"
+          },
+          "tenant_parallel_lineages": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Tenant Parallel Lineages",
+            "type": "integer"
+          },
+          "tool_call_limit": {
+            "minimum": 1,
+            "title": "Tool Call Limit",
+            "type": "integer"
+          },
+          "transient_attempt_limit": {
+            "default": 2,
+            "maximum": 3,
+            "minimum": 1,
+            "title": "Transient Attempt Limit",
+            "type": "integer"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          },
+          "wait_consumes_active_budget": {
+            "const": false,
+            "default": false,
+            "title": "Wait Consumes Active Budget",
+            "type": "boolean"
+          },
+          "window_safety_percent": {
+            "default": 5,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Window Safety Percent",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "input_token_limit",
+          "output_token_reserve",
+          "lineage_token_limit",
+          "tool_call_limit",
+          "model_call_limit",
+          "active_seconds",
+          "lifetime_seconds"
+        ],
+        "title": "RunBudgetProfile",
+        "type": "object"
+      },
+      "ScenarioData": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Algorithm Version",
+            "type": "string"
+          },
+          "completeness": {
+            "enum": [
+              "complete",
+              "partial",
+              "not_computable"
+            ],
+            "title": "Completeness",
+            "type": "string"
+          },
+          "conflicts": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Conflicts",
+            "type": "array"
+          },
+          "critical_path": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.:-]+$",
+              "type": "string"
+            },
+            "title": "Critical Path",
+            "type": "array"
+          },
+          "input_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Input Digest",
+            "type": "string"
+          },
+          "kind": {
+            "const": "scenario",
+            "default": "scenario",
+            "title": "Kind",
+            "type": "string"
+          },
+          "missing": {
+            "items": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "node_times": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioNodeTime"
+            },
+            "title": "Node Times",
+            "type": "array"
+          }
+        },
+        "required": [
+          "input_digest",
+          "algorithm_version",
+          "completeness",
+          "node_times",
+          "critical_path",
+          "conflicts",
+          "missing"
+        ],
+        "title": "ScenarioData",
+        "type": "object"
+      },
+      "ScenarioNodeTime": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "node_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Node Key",
+            "type": "string"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          }
+        },
+        "required": [
+          "node_key",
+          "start",
+          "end"
+        ],
+        "title": "ScenarioNodeTime",
+        "type": "object"
+      },
+      "ScenarioResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScenarioData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ScenarioResult",
+        "type": "object"
+      },
+      "ScopePolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_scopes": {
+            "items": {
+              "enum": [
+                "tenant",
+                "market_space",
+                "product_line",
+                "opportunity",
+                "product_definition",
+                "portfolio",
+                "project"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Allowed Scopes",
+            "type": "array"
+          },
+          "current_acl_checks": {
+            "default": [
+              "tool",
+              "model_egress",
+              "disclosure",
+              "export",
+              "apply"
+            ],
+            "items": {
+              "enum": [
+                "tool",
+                "model_egress",
+                "disclosure",
+                "export",
+                "apply"
+              ],
+              "type": "string"
+            },
+            "title": "Current Acl Checks",
+            "type": "array"
+          },
+          "delegation": {
+            "const": "principal_delegate_intersection",
+            "default": "principal_delegate_intersection",
+            "title": "Delegation",
+            "type": "string"
+          },
+          "derived_sources_inherit_acl": {
+            "const": true,
+            "default": true,
+            "title": "Derived Sources Inherit Acl",
+            "type": "boolean"
+          },
+          "persona_grants_permissions": {
+            "const": false,
+            "default": false,
+            "title": "Persona Grants Permissions",
+            "type": "boolean"
+          },
+          "principal_source": {
+            "const": "server_authenticated_run",
+            "default": "server_authenticated_run",
+            "title": "Principal Source",
+            "type": "string"
+          },
+          "project_role_null": {
+            "const": "preserve_existing_role_and_membership",
+            "default": "preserve_existing_role_and_membership",
+            "title": "Project Role Null",
+            "type": "string"
+          },
+          "project_role_set": {
+            "const": "tenant_project_intersection",
+            "default": "tenant_project_intersection",
+            "title": "Project Role Set",
+            "type": "string"
+          },
+          "scope_change": {
+            "const": "authorized_linked_run_preserve_lineage",
+            "default": "authorized_linked_run_preserve_lineage",
+            "title": "Scope Change",
+            "type": "string"
+          }
+        },
+        "required": [
+          "allowed_scopes"
+        ],
+        "title": "ScopePolicy",
+        "type": "object"
+      },
+      "SearchData": {
+        "additionalProperties": false,
+        "properties": {
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            },
+            "title": "Hits",
+            "type": "array"
+          },
+          "kind": {
+            "const": "search",
+            "default": "search",
+            "title": "Kind",
+            "type": "string"
+          },
+          "provider_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Provider Version",
+            "type": "string"
+          },
+          "query": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "hits",
+          "query",
+          "provider_version"
+        ],
+        "title": "SearchData",
+        "type": "object"
+      },
+      "SearchHit": {
+        "additionalProperties": false,
+        "properties": {
+          "citable": {
+            "const": false,
+            "default": false,
+            "title": "Citable",
+            "type": "boolean"
+          },
+          "snippet": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Snippet",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "title",
+          "snippet"
+        ],
+        "title": "SearchHit",
+        "type": "object"
+      },
+      "SearchKnowledgeInput": {
+        "additionalProperties": false,
+        "properties": {
+          "applicability": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Applicability",
+            "type": "array"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Continuation"
+          },
+          "limit": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "applicability"
+        ],
+        "title": "SearchKnowledgeInput",
+        "type": "object"
+      },
+      "SearchSourcesInput": {
+        "additionalProperties": false,
+        "properties": {
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Continuation"
+          },
+          "date_from": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Date From"
+          },
+          "date_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Date To"
+          },
+          "limit": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Query",
+            "type": "string"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Region"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "SearchSourcesInput",
+        "type": "object"
+      },
+      "SearchSourcesResult": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "SearchSourcesResult",
+        "type": "object"
+      },
+      "ToolError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "tool_unavailable",
+              "scope_denied",
+              "source_unavailable",
+              "source_stale",
+              "context_incomplete",
+              "input_invalid",
+              "dependency_unmet",
+              "budget_exhausted",
+              "rate_limited",
+              "timeout",
+              "cancelled",
+              "version_conflict",
+              "not_ready"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "retryable"
+        ],
+        "title": "ToolError",
+        "type": "object"
+      },
+      "ToolPolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "binding": {
+            "$ref": "#/components/schemas/ImplementationBinding"
+          },
+          "budget_profile": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "cancellation": {
+            "const": "cooperative_with_lease_fence",
+            "default": "cooperative_with_lease_fence",
+            "title": "Cancellation",
+            "type": "string"
+          },
+          "citation_policy": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Citation Policy",
+            "type": "string"
+          },
+          "do_not_use_when": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Do Not Use When",
+            "type": "string"
+          },
+          "egress_policy": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "freshness_policy": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Freshness Policy",
+            "type": "string"
+          },
+          "hidden_model_calls": {
+            "const": false,
+            "default": false,
+            "title": "Hidden Model Calls",
+            "type": "boolean"
+          },
+          "idempotency": {
+            "enum": [
+              "query_version",
+              "run_call_digest",
+              "finding_origin_digest"
+            ],
+            "title": "Idempotency",
+            "type": "string"
+          },
+          "input_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "max_attempts": {
+            "maximum": 3,
+            "minimum": 1,
+            "title": "Max Attempts",
+            "type": "integer"
+          },
+          "max_payload_bytes": {
+            "minimum": 1,
+            "title": "Max Payload Bytes",
+            "type": "integer"
+          },
+          "output_schema": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "retention_policy": {
+            "$ref": "#/components/schemas/PolicyPin"
+          },
+          "rollout": {
+            "enum": [
+              "disabled",
+              "shadow",
+              "live"
+            ],
+            "title": "Rollout",
+            "type": "string"
+          },
+          "scope_policy": {
+            "$ref": "#/components/schemas/ScopePolicy"
+          },
+          "side_effect": {
+            "enum": [
+              "read",
+              "simulate",
+              "record_observation",
+              "propose_finding"
+            ],
+            "title": "Side Effect",
+            "type": "string"
+          },
+          "timeout_seconds": {
+            "minimum": 1,
+            "title": "Timeout Seconds",
+            "type": "integer"
+          },
+          "use_when": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Use When",
+            "type": "string"
+          },
+          "validator": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Validator",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "use_when",
+          "do_not_use_when",
+          "input_schema",
+          "output_schema",
+          "scope_policy",
+          "side_effect",
+          "binding",
+          "rollout",
+          "timeout_seconds",
+          "max_attempts",
+          "max_payload_bytes",
+          "idempotency",
+          "citation_policy",
+          "freshness_policy",
+          "validator",
+          "egress_policy",
+          "retention_policy",
+          "budget_profile"
+        ],
+        "title": "ToolPolicy",
+        "type": "object"
+      },
+      "ToolResult[EvidenceData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[EvidenceData]",
+        "type": "object"
+      },
+      "ToolResult[FindingData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FindingData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[FindingData]",
+        "type": "object"
+      },
+      "ToolResult[ImpactData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImpactData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[ImpactData]",
+        "type": "object"
+      },
+      "ToolResult[ImportPreviewData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImportPreviewData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[ImportPreviewData]",
+        "type": "object"
+      },
+      "ToolResult[ReadinessData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReadinessData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[ReadinessData]",
+        "type": "object"
+      },
+      "ToolResult[ScenarioData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScenarioData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[ScenarioData]",
+        "type": "object"
+      },
+      "ToolResult[SearchData]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[SearchData]",
+        "type": "object"
+      },
+      "ToolResult[Union[ReadinessData, FindingData]]": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Continuation"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReadinessData"
+              },
+              {
+                "$ref": "#/components/schemas/FindingData"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ToolError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "source_versions": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "title": "Source Versions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "zero_results",
+              "duplicate_reused",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tool_call_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Call Id",
+            "type": "string"
+          },
+          "tool_version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Tool Version",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ToolUsage"
+          }
+        },
+        "required": [
+          "operation_id",
+          "tool_call_id",
+          "tool_version",
+          "status",
+          "data",
+          "evidence_refs",
+          "source_versions",
+          "as_of",
+          "continuation",
+          "error",
+          "usage"
+        ],
+        "title": "ToolResult[Union[ReadinessData, FindingData]]",
+        "type": "object"
+      },
+      "ToolUsage": {
+        "additionalProperties": false,
+        "properties": {
+          "elapsed_ms": {
+            "minimum": 0,
+            "title": "Elapsed Ms",
+            "type": "integer"
+          },
+          "payload_bytes": {
+            "minimum": 0,
+            "title": "Payload Bytes",
+            "type": "integer"
+          },
+          "price_status": {
+            "enum": [
+              "priced",
+              "unknown",
+              "test_fixture"
+            ],
+            "title": "Price Status",
+            "type": "string"
+          },
+          "tool_cost_microusd": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tool Cost Microusd"
+          }
+        },
+        "required": [
+          "elapsed_ms",
+          "payload_bytes",
+          "tool_cost_microusd",
+          "price_status"
+        ],
+        "title": "ToolUsage",
+        "type": "object"
+      },
+      "TraceImpactInput": {
+        "additionalProperties": false,
+        "properties": {
+          "changed_objects": {
+            "items": {
+              "$ref": "#/components/schemas/BoundHandle"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Changed Objects",
+            "type": "array"
+          },
+          "continuation": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Continuation"
+          },
+          "depth": {
+            "default": 3,
+            "maximum": 5,
+            "minimum": 1,
+            "title": "Depth",
+            "type": "integer"
+          },
+          "proposed_change": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Proposed Change",
+            "type": "string"
+          }
+        },
+        "required": [
+          "changed_objects",
+          "proposed_change"
+        ],
+        "title": "TraceImpactInput",
+        "type": "object"
+      },
+      "TriggerPolicy": {
+        "additionalProperties": false,
+        "properties": {
+          "cancellation_preempts": {
+            "const": true,
+            "default": true,
+            "title": "Cancellation Preempts",
+            "type": "boolean"
+          },
+          "coalesce_seconds": {
+            "minimum": 0,
+            "title": "Coalesce Seconds",
+            "type": "integer"
+          },
+          "deadline_includes_queue_and_debounce": {
+            "const": true,
+            "default": true,
+            "title": "Deadline Includes Queue And Debounce",
+            "type": "boolean"
+          },
+          "deduplication": {
+            "const": "tenant_scope_capability_goal_source_versions",
+            "default": "tenant_scope_capability_goal_source_versions",
+            "title": "Deduplication",
+            "type": "string"
+          },
+          "error_cleanup_model_calls": {
+            "const": 0,
+            "default": 0,
+            "title": "Error Cleanup Model Calls",
+            "type": "integer"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "model_allowed": {
+            "title": "Model Allowed",
+            "type": "boolean"
+          },
+          "origin": {
+            "enum": [
+              "user",
+              "event",
+              "scheduled",
+              "control"
+            ],
+            "title": "Origin",
+            "type": "string"
+          },
+          "outcome_deadline_seconds": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome Deadline Seconds"
+          },
+          "priority": {
+            "enum": [
+              "control",
+              "interactive",
+              "milestone",
+              "background"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "queue_visible_seconds": {
+            "default": 5,
+            "minimum": 1,
+            "title": "Queue Visible Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "origin",
+          "priority",
+          "coalesce_seconds",
+          "outcome_deadline_seconds",
+          "model_allowed"
+        ],
+        "title": "TriggerPolicy",
+        "type": "object"
+      },
+      "VersionedRateCard": {
+        "additionalProperties": false,
+        "properties": {
+          "cache_read_rate": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cache Read Rate"
+          },
+          "cache_write_rate": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cache Write Rate"
+          },
+          "effective_from": {
+            "format": "date-time",
+            "title": "Effective From",
+            "type": "string"
+          },
+          "input_rate": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Rate"
+          },
+          "key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Key",
+            "type": "string"
+          },
+          "model": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Model",
+            "type": "string"
+          },
+          "output_rate": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Rate"
+          },
+          "provider": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Provider",
+            "type": "string"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "minLength": 1,
+                "pattern": "\\S",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "status": {
+            "enum": [
+              "priced",
+              "unknown",
+              "test_fixture"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "unit": {
+            "const": "microusd_per_million_tokens",
+            "default": "microusd_per_million_tokens",
+            "title": "Unit",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "version",
+          "provider",
+          "model",
+          "status",
+          "input_rate",
+          "output_rate",
+          "source",
+          "effective_from"
+        ],
+        "title": "VersionedRateCard",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "PDOS N0-02 policy contract candidates",
+    "version": "1.0.0-draft.3"
+  },
+  "openapi": "3.1.0",
+  "paths": {},
+  "x-status": "candidate-not-runtime-wired",
+  "x-validation": "Pydantic validators supplement JSON Schema; not ACL evidence"
+}

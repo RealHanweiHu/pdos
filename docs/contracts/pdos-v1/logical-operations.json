@@ -1,0 +1,484 @@
+{
+  "error_http_status": {
+    "approval_required": 409,
+    "dependency_unavailable": 503,
+    "dependency_unmet": 409,
+    "idempotency_conflict": 409,
+    "input_invalid": 422,
+    "object_not_found": 404,
+    "scope_denied": 403,
+    "source_stale": 409,
+    "version_conflict": 409
+  },
+  "existence_hiding": "Return object_not_found instead of scope_denied when current ACL policy hides existence",
+  "lifecycles": {
+    "definition": {
+      "draft": [
+        "in_review"
+      ],
+      "in_review": [
+        "draft",
+        "published"
+      ],
+      "published": []
+    },
+    "experiment": {
+      "approved": [
+        "running",
+        "cancelled"
+      ],
+      "cancelled": [],
+      "concluded": [],
+      "draft": [
+        "approved",
+        "cancelled"
+      ],
+      "running": [
+        "concluded",
+        "cancelled"
+      ]
+    },
+    "project_adoption": {
+      "adopted": [],
+      "inventoried": [
+        "preparing"
+      ],
+      "preparing": [
+        "adopted"
+      ]
+    },
+    "research_task": {
+      "active": [
+        "completed",
+        "cancelled"
+      ],
+      "cancelled": [],
+      "completed": [],
+      "draft": [
+        "active",
+        "cancelled"
+      ]
+    },
+    "reservation": {
+      "cancelled": [],
+      "proposed": [
+        "reserved",
+        "cancelled"
+      ],
+      "released": [],
+      "reserved": [
+        "released",
+        "cancelled"
+      ]
+    },
+    "review": {
+      "draft": [
+        "in_review",
+        "withdrawn"
+      ],
+      "finalized": [],
+      "in_review": [
+        "finalized",
+        "withdrawn"
+      ],
+      "withdrawn": []
+    },
+    "scoped_work_item": {
+      "cancelled": [],
+      "completed": [],
+      "in_progress": [
+        "submitted",
+        "completed",
+        "cancelled"
+      ],
+      "pending_assignment": [
+        "ready",
+        "cancelled"
+      ],
+      "ready": [
+        "in_progress",
+        "cancelled"
+      ],
+      "submitted": [
+        "in_progress",
+        "completed",
+        "cancelled"
+      ]
+    }
+  },
+  "model_dispatch": "No runtime registration; capability routes and bounded triggers belong to N0-02/03",
+  "operations": [
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "my_work_projection"
+      ],
+      "event_payload_schema": "ResearchTaskChangedPayload",
+      "event_type": "RESEARCH_TASK_CHANGED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "research.start",
+      "policy_checks": [
+        "current_scope_acl",
+        "owner",
+        "draft_to_active"
+      ],
+      "producer": "research_service",
+      "request_schema": "ResearchStartRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N1-02"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "research_projection",
+        "my_work_projection"
+      ],
+      "event_payload_schema": "ResearchTaskChangedPayload",
+      "event_type": "RESEARCH_TASK_CHANGED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "research.conclude",
+      "policy_checks": [
+        "current_scope_acl",
+        "current_sources",
+        "active_to_completed"
+      ],
+      "producer": "research_service",
+      "request_schema": "ResearchConcludeRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N1-02"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "requirement_candidates"
+      ],
+      "event_payload_schema": "DefinitionPublishedPayload",
+      "event_type": "DEFINITION_PUBLISHED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "definition.publish",
+      "policy_checks": [
+        "definition_publisher",
+        "current_source_digest",
+        "required_items_confirmed",
+        "published_body_immutable"
+      ],
+      "producer": "product_definition_service",
+      "request_schema": "DefinitionPublishRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N1-06"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "gate_readiness",
+        "plan_readiness"
+      ],
+      "event_payload_schema": "ReviewFinalizedPayload",
+      "event_type": "REVIEW_FINALIZED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "review.finalize",
+      "policy_checks": [
+        "review_role_policy",
+        "current_round_sources",
+        "required_signoffs"
+      ],
+      "producer": "review_service",
+      "request_schema": "ReviewFinalizeRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N1-07"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "schedule_projection",
+        "my_work_projection"
+      ],
+      "event_payload_schema": "InitialPlanAppliedPayload",
+      "event_type": "INITIAL_PLAN_APPLIED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "plan.apply",
+      "policy_checks": [
+        "accepted_finding",
+        "current_source_and_target_acl",
+        "case_project_conversion",
+        "execution_approval_digest",
+        "current_required_inputs",
+        "single_active_work_truth"
+      ],
+      "producer": "initial_plan_service",
+      "request_schema": "InitialPlanApplyRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-04"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "project_readiness"
+      ],
+      "event_payload_schema": "ProjectContractAdoptedPayload",
+      "event_type": "PROJECT_CONTRACT_ADOPTED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "project.adopt_contract",
+      "policy_checks": [
+        "current_project_acl",
+        "unchanged_project_lifecycle",
+        "remediation_receipt",
+        "no_fabricated_historical_approval"
+      ],
+      "producer": "project_contract_service",
+      "request_schema": "ProjectAdoptionRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-04"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "schedule_projection"
+      ],
+      "event_payload_schema": "ReservationChangedPayload",
+      "event_type": "RESOURCE_RESERVATION_CHANGED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "reservation.reserve",
+      "policy_checks": [
+        "current_project_resource_acl",
+        "capacity_calendar_versions",
+        "capacity_lock_no_overbooking",
+        "approval_policy"
+      ],
+      "producer": "resource_service",
+      "request_schema": "ReservationReserveRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-02"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "schedule_projection"
+      ],
+      "event_payload_schema": "ReservationChangedPayload",
+      "event_type": "RESOURCE_RESERVATION_CHANGED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "reservation.release",
+      "policy_checks": [
+        "current_project_resource_acl",
+        "current_reservation_version",
+        "idempotent_capacity_release"
+      ],
+      "producer": "resource_service",
+      "request_schema": "ReservationReleaseRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-02"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "schedule_projection"
+      ],
+      "event_payload_schema": "BaselineVersionApprovedPayload",
+      "event_type": "BASELINE_VERSION_APPROVED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "baseline.apply_version",
+      "policy_checks": [
+        "current_project_acl",
+        "approved_candidate_digest",
+        "accepted_if_model_finding",
+        "current_source_versions",
+        "immutable_previous_baseline",
+        "no_commitment_or_actual_write"
+      ],
+      "producer": "baseline_service",
+      "request_schema": "BaselineApplyVersionRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-04"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "four_time_comparison",
+        "execution_followup"
+      ],
+      "event_payload_schema": "ForecastRecalculatedPayload",
+      "event_type": "FORECAST_RECALCULATED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "schedule.recompute",
+      "policy_checks": [
+        "current_project_acl",
+        "input_and_algorithm_versions",
+        "same_input_reuse",
+        "no_baseline_commitment_or_actual_write"
+      ],
+      "producer": "schedule_engine",
+      "request_schema": "ForecastRecomputeRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-06"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "four_time_comparison"
+      ],
+      "event_payload_schema": "CommitmentConfirmedPayload",
+      "event_type": "COMMITMENT_CONFIRMED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "commitment.confirm",
+      "policy_checks": [
+        "authorized_commitment_confirmer",
+        "current_sources",
+        "explicit_human_action",
+        "no_external_send",
+        "no_baseline_or_actual_write"
+      ],
+      "producer": "commitment_service",
+      "request_schema": "CommitmentConfirmRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-07"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "forecast_recompute",
+        "four_time_comparison"
+      ],
+      "event_payload_schema": "ActualRecordedPayload",
+      "event_type": "ACTUAL_RECORDED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "actual.record",
+      "policy_checks": [
+        "actual_recorder",
+        "current_evidence_acl",
+        "observed_times",
+        "no_model_measurement_fabrication"
+      ],
+      "producer": "actual_service",
+      "request_schema": "ActualRecordRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-07"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "forecast_recompute",
+        "four_time_comparison"
+      ],
+      "event_payload_schema": "ActualRecordedPayload",
+      "event_type": "ACTUAL_RECORDED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "actual.correct",
+      "policy_checks": [
+        "actual_correction_authority",
+        "original_actual_current_version",
+        "current_evidence_acl",
+        "append_new_revision_not_overwrite",
+        "downstream_invalidation"
+      ],
+      "producer": "actual_service",
+      "request_schema": "ActualCorrectRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N2-07"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "kit_recompute"
+      ],
+      "event_payload_schema": "SupplySnapshotCapturedPayload",
+      "event_type": "SUPPLY_SNAPSHOT_CAPTURED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "supply.capture_snapshot",
+      "policy_checks": [
+        "authorized_connector_or_import",
+        "exact_source_capture",
+        "current_source_acl",
+        "source_asof_digest_dedup",
+        "no_erp_writes"
+      ],
+      "producer": "supply_snapshot_service",
+      "request_schema": "SupplySnapshotCaptureRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N5-02"
+    },
+    {
+      "atomicity": "objects+relations+event+audit+receipt in one transaction",
+      "consumers": [
+        "current_reference_projection",
+        "dependent_readiness"
+      ],
+      "event_payload_schema": "VersionValidityChangedPayload",
+      "event_type": "VERSION_VALIDITY_CHANGED",
+      "failure_schema": "CommandFailure",
+      "idempotency": "unique(tenant,operation,idempotency_key); same digest reuse; different digest 409",
+      "key": "version.change_validity",
+      "policy_checks": [
+        "domain_specific_validity_authority",
+        "current_control_version",
+        "expected_body_digest",
+        "replacement_same_logical_lineage",
+        "append_control_only",
+        "preserve_body_and_downstream_references"
+      ],
+      "producer": "version_validity_service",
+      "request_schema": "VersionValidityChangeRequest",
+      "response_schema": "CommandResult",
+      "status": "candidate-not-registered",
+      "work_item": "N0-03"
+    }
+  ],
+  "queries": [
+    {
+      "key": "plan.validate",
+      "policy_checks": [
+        "current_candidate_acl",
+        "current_source_digest",
+        "current_vs_future_inputs"
+      ],
+      "request_schema": "PlanValidateRequest",
+      "response_schema": "PlanValidationResult",
+      "side_effect": "read_or_simulate_no_business_write",
+      "status": "candidate-not-registered",
+      "work_item": "N2-03"
+    },
+    {
+      "key": "schedule.evaluate",
+      "policy_checks": [
+        "current_candidate_acl",
+        "calendar_capacity_source_versions",
+        "deterministic_engine",
+        "no_formal_reservation_or_time_write"
+      ],
+      "request_schema": "ScheduleEvaluateRequest",
+      "response_schema": "ScheduleEvaluationResult",
+      "side_effect": "read_or_simulate_no_business_write",
+      "status": "candidate-not-registered",
+      "work_item": "N2-01"
+    }
+  ],
+  "status": "candidate-not-registered"
+}

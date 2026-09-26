@@ -1,0 +1,939 @@
+{
+  "based_on_common_contract": "1.0.0",
+  "capabilities": [
+    {
+      "agent_key": "project_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "risk_suggestion"
+      ],
+      "key": "project_intelligence.risk_suggestion",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "project-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "project_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "blocker_alert"
+      ],
+      "key": "project_intelligence.blocker_alert",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "project-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "project_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "gate_readiness_anomaly"
+      ],
+      "key": "project_intelligence.gate_readiness_anomaly",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "project-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "project_intelligence",
+      "event_driven": true,
+      "finding_types": [],
+      "key": "project_intelligence.risk_suggestion_api",
+      "projections": [
+        "project_context"
+      ],
+      "prompt_version": "risk-suggestion-api-v1",
+      "quality_control": "human_accept_per_call",
+      "rollout": "live",
+      "tools": [],
+      "zone": "confirm"
+    },
+    {
+      "agent_key": "knowledge_lite",
+      "event_driven": true,
+      "finding_types": [
+        "knowledge_draft"
+      ],
+      "key": "knowledge_lite.knowledge_draft",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "knowledge-lite-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "engineering_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "bom_impact_suggestion"
+      ],
+      "key": "engineering_intelligence.bom_impact_suggestion",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "engineering-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
+        "get_engineering_evidence"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "engineering_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "change_impact_suggestion"
+      ],
+      "key": "engineering_intelligence.change_impact_suggestion",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "engineering-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
+        "get_engineering_evidence"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "quality_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "quality_cluster_alert"
+      ],
+      "key": "quality_intelligence.quality_cluster_alert",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "quality-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
+        "get_quality_evidence"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "quality_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "capa_suggestion"
+      ],
+      "key": "quality_intelligence.capa_suggestion",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "quality-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
+        "get_quality_evidence"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "quality_intelligence",
+      "event_driven": false,
+      "finding_types": [
+        "test_plan_change"
+      ],
+      "key": "quality_intelligence.test_plan_change",
+      "projections": [
+        "test_plan",
+        "references",
+        "question"
+      ],
+      "prompt_version": "test-plan-change-v5",
+      "quality_control": "finding_quality_control",
+      "rollout": "live",
+      "tools": [],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "quality_intelligence",
+      "event_driven": true,
+      "finding_types": [],
+      "key": "quality_intelligence.test_report_import",
+      "projections": [],
+      "prompt_version": "test-report-import-v1",
+      "quality_control": "import_batch_confirm",
+      "rollout": "live",
+      "tools": [],
+      "zone": "confirm"
+    },
+    {
+      "agent_key": "supplier_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "supplier_delay_risk"
+      ],
+      "key": "supplier_intelligence.supplier_delay_risk",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "supplier-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "shadow",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
+        "get_supplier_delay_evidence"
+      ],
+      "zone": "hard_gate"
+    },
+    {
+      "agent_key": "executive_intelligence",
+      "event_driven": true,
+      "finding_types": [
+        "executive_portfolio_brief"
+      ],
+      "key": "executive_intelligence.executive_portfolio_brief",
+      "projections": [
+        "project_context",
+        "recent_events",
+        "memory",
+        "domain_evidence"
+      ],
+      "prompt_version": "executive-intelligence-v1",
+      "quality_control": "finding_quality_control",
+      "rollout": "shadow",
+      "tools": [
+        "get_project_context",
+        "search_memory",
+        "get_recent_events",
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
+        "get_portfolio_brief"
+      ],
+      "zone": "hard_gate"
+    }
+  ],
+  "role_actions": {
+    "admin": [
+      "ai_chat.use",
+      "capa.execute",
+      "capa.manage",
+      "capa.verify",
+      "change.approve",
+      "change.edit",
+      "change.view",
+      "complaint.create",
+      "development_case.create",
+      "development_case.edit",
+      "development_case.transition",
+      "development_case.view",
+      "document.analyze",
+      "event.ingest",
+      "event_debug.view",
+      "evidence.capture",
+      "evidence.view",
+      "external.respond",
+      "finding.apply",
+      "finding.review",
+      "finding.view",
+      "gate.manage",
+      "gate.sign",
+      "gate.view",
+      "handoff.execute",
+      "handoff.prepare",
+      "handoff.reconcile",
+      "handoff.view",
+      "integration.bind_self",
+      "integration.manage",
+      "integration.project_manage",
+      "integration.project_send",
+      "integration.view",
+      "issue.assign",
+      "issue.execute",
+      "issue.verify",
+      "meeting.link_manage",
+      "meeting.manage",
+      "meeting.transcript_upload",
+      "meeting.view",
+      "memory.archive",
+      "memory.draft",
+      "memory.verify",
+      "memory.view",
+      "model_governance.manage",
+      "model_governance.view",
+      "my_work.view",
+      "product_engineering.edit",
+      "product_engineering.view",
+      "project.create",
+      "project.edit",
+      "project.members.manage",
+      "project.view",
+      "quality.manage",
+      "quality.view",
+      "requirement.create",
+      "requirement.edit",
+      "requirement.view",
+      "research_source.manage",
+      "risk_suggestion.create",
+      "user.manage",
+      "work_item.edit",
+      "work_item.view"
+    ],
+    "customer": [
+      "external.respond",
+      "project.view"
+    ],
+    "engineer": [
+      "ai_chat.use",
+      "capa.execute",
+      "change.edit",
+      "change.view",
+      "complaint.create",
+      "development_case.view",
+      "document.analyze",
+      "evidence.capture",
+      "evidence.view",
+      "finding.apply",
+      "finding.review",
+      "finding.view",
+      "gate.sign",
+      "gate.view",
+      "handoff.view",
+      "integration.bind_self",
+      "integration.view",
+      "issue.execute",
+      "issue.verify",
+      "meeting.transcript_upload",
+      "meeting.view",
+      "memory.draft",
+      "memory.view",
+      "my_work.view",
+      "product_engineering.edit",
+      "product_engineering.view",
+      "project.view",
+      "quality.view",
+      "requirement.view",
+      "risk_suggestion.create",
+      "work_item.edit",
+      "work_item.view"
+    ],
+    "owner": [
+      "ai_chat.use",
+      "capa.execute",
+      "capa.manage",
+      "capa.verify",
+      "change.approve",
+      "change.edit",
+      "change.view",
+      "complaint.create",
+      "development_case.create",
+      "development_case.edit",
+      "development_case.transition",
+      "development_case.view",
+      "document.analyze",
+      "event.ingest",
+      "event_debug.view",
+      "evidence.capture",
+      "evidence.view",
+      "external.respond",
+      "finding.apply",
+      "finding.review",
+      "finding.view",
+      "gate.manage",
+      "gate.sign",
+      "gate.view",
+      "handoff.execute",
+      "handoff.prepare",
+      "handoff.reconcile",
+      "handoff.view",
+      "integration.bind_self",
+      "integration.manage",
+      "integration.project_manage",
+      "integration.project_send",
+      "integration.view",
+      "issue.assign",
+      "issue.execute",
+      "issue.verify",
+      "meeting.link_manage",
+      "meeting.manage",
+      "meeting.transcript_upload",
+      "meeting.view",
+      "memory.archive",
+      "memory.draft",
+      "memory.verify",
+      "memory.view",
+      "model_governance.manage",
+      "model_governance.view",
+      "my_work.view",
+      "product_engineering.edit",
+      "product_engineering.view",
+      "project.create",
+      "project.edit",
+      "project.members.manage",
+      "project.view",
+      "quality.manage",
+      "quality.view",
+      "requirement.create",
+      "requirement.edit",
+      "requirement.view",
+      "research_source.manage",
+      "risk_suggestion.create",
+      "tenant.manage",
+      "user.manage",
+      "work_item.edit",
+      "work_item.view"
+    ],
+    "project_manager": [
+      "ai_chat.use",
+      "capa.execute",
+      "change.approve",
+      "change.edit",
+      "change.view",
+      "complaint.create",
+      "development_case.create",
+      "development_case.edit",
+      "development_case.transition",
+      "development_case.view",
+      "document.analyze",
+      "event.ingest",
+      "evidence.capture",
+      "evidence.view",
+      "finding.apply",
+      "finding.review",
+      "finding.view",
+      "gate.manage",
+      "gate.sign",
+      "gate.view",
+      "handoff.execute",
+      "handoff.prepare",
+      "handoff.view",
+      "integration.bind_self",
+      "integration.project_manage",
+      "integration.project_send",
+      "integration.view",
+      "issue.assign",
+      "issue.execute",
+      "issue.verify",
+      "meeting.link_manage",
+      "meeting.manage",
+      "meeting.transcript_upload",
+      "meeting.view",
+      "memory.archive",
+      "memory.draft",
+      "memory.verify",
+      "memory.view",
+      "my_work.view",
+      "product_engineering.edit",
+      "product_engineering.view",
+      "project.create",
+      "project.edit",
+      "project.members.manage",
+      "project.view",
+      "quality.manage",
+      "quality.view",
+      "requirement.create",
+      "requirement.edit",
+      "requirement.view",
+      "research_source.manage",
+      "risk_suggestion.create",
+      "work_item.edit",
+      "work_item.view"
+    ],
+    "quality": [
+      "ai_chat.use",
+      "capa.execute",
+      "capa.manage",
+      "capa.verify",
+      "change.view",
+      "complaint.create",
+      "development_case.view",
+      "document.analyze",
+      "evidence.capture",
+      "evidence.view",
+      "finding.apply",
+      "finding.review",
+      "finding.view",
+      "gate.sign",
+      "gate.view",
+      "handoff.view",
+      "integration.bind_self",
+      "integration.view",
+      "issue.assign",
+      "issue.execute",
+      "issue.verify",
+      "meeting.transcript_upload",
+      "meeting.view",
+      "memory.archive",
+      "memory.draft",
+      "memory.verify",
+      "memory.view",
+      "my_work.view",
+      "product_engineering.view",
+      "project.view",
+      "quality.manage",
+      "quality.view",
+      "requirement.view",
+      "risk_suggestion.create",
+      "work_item.edit",
+      "work_item.view"
+    ],
+    "supplier": [
+      "external.respond",
+      "project.view"
+    ]
+  },
+  "seat_tool_declarations": {
+    "engineering_intelligence": [
+      {
+        "description": "Use when the Agent needs the server-frozen Project snapshot and deterministic execution metrics. Do not use when a recent event or verified memory is needed. Negative example: never request another Project to compare tenants. Boundary: project_id must exactly match the run scope; the server rejects any mismatch.",
+        "input_example": {
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_project_context"
+      },
+      {
+        "description": "Use when the Agent needs concise, human-verified organizational memory relevant to a query. Do not use for raw documents, drafts, or current event history. Negative example: never treat an unverified document upload as memory. Boundary: tenant and Project come only from the run; pagination is explicit and results may be empty.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+          "query": "gate readiness lessons"
+        },
+        "name": "search_memory"
+      },
+      {
+        "description": "Use when the Agent needs recent allowlisted event references for the current Project. Do not use to reconstruct full business state or read event payloads. Negative example: never pass a different Project id supplied by model text. Boundary: server-bound tenant/Project only; after_id and limit paginate explicitly.",
+        "input_example": {
+          "after_id": 0,
+          "limit": 20,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_recent_events"
+      },
+      {
+        "description": "Use when the Agent needs candidate public URLs for a research question. Do not use to read a page; search returns links and snippets only. Negative example: never treat a search snippet as a fact — fetch the page and cite the snapshot. Boundary: results are filtered by the reach blocklist, and the tool fails with an explicit unavailable error when no search provider is configured rather than returning an empty list.",
+        "input_example": {
+          "limit": 10,
+          "query": "锂电池气泵 噪声 标准"
+        },
+        "name": "web_search"
+      },
+      {
+        "description": "Use when the Agent needs the text of a specific public page. Do not use for internal hosts, login or OAuth pages, or downloads; only read-only GET is possible and no credentials are ever sent. Negative example: never fetch an address inside the network, including via a redirect. Boundary: every fetch is stored as an evidence snapshot marked untrusted_external, and conclusions must cite the returned snapshot_id rather than the returned text.",
+        "input_example": {
+          "url": "https://example.com/products/pump-a"
+        },
+        "name": "web_fetch"
+      },
+      {
+        "description": "Use when the Agent needs to re-read evidence already captured in this tenant by its snapshot id. Do not use to fetch anything new or to reach another tenant. Negative example: never assume a snapshot is current — check its staleness before relying on it. Boundary: tenant comes only from the run, and a superseded or expired snapshot is returned marked stale rather than silently refreshed.",
+        "input_example": {
+          "snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "source_snapshot"
+      },
+      {
+        "description": "Use when Engineering Intelligence needs allowlisted Development BOM and engineering change summaries for the current Project. Do not use for ERP execution facts or raw BOM attributes. Negative example: never infer another Project's affected parts. Boundary: the server-bound tenant and Project are immutable; results are explicitly paginated and contain summaries, not business-write authority.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_engineering_evidence"
+      }
+    ],
+    "executive_intelligence": [
+      {
+        "description": "Use when the Agent needs the server-frozen Project snapshot and deterministic execution metrics. Do not use when a recent event or verified memory is needed. Negative example: never request another Project to compare tenants. Boundary: project_id must exactly match the run scope; the server rejects any mismatch.",
+        "input_example": {
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_project_context"
+      },
+      {
+        "description": "Use when the Agent needs concise, human-verified organizational memory relevant to a query. Do not use for raw documents, drafts, or current event history. Negative example: never treat an unverified document upload as memory. Boundary: tenant and Project come only from the run; pagination is explicit and results may be empty.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+          "query": "gate readiness lessons"
+        },
+        "name": "search_memory"
+      },
+      {
+        "description": "Use when the Agent needs recent allowlisted event references for the current Project. Do not use to reconstruct full business state or read event payloads. Negative example: never pass a different Project id supplied by model text. Boundary: server-bound tenant/Project only; after_id and limit paginate explicitly.",
+        "input_example": {
+          "after_id": 0,
+          "limit": 20,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_recent_events"
+      },
+      {
+        "description": "Use when the Agent needs candidate public URLs for a research question. Do not use to read a page; search returns links and snippets only. Negative example: never treat a search snippet as a fact — fetch the page and cite the snapshot. Boundary: results are filtered by the reach blocklist, and the tool fails with an explicit unavailable error when no search provider is configured rather than returning an empty list.",
+        "input_example": {
+          "limit": 10,
+          "query": "锂电池气泵 噪声 标准"
+        },
+        "name": "web_search"
+      },
+      {
+        "description": "Use when the Agent needs the text of a specific public page. Do not use for internal hosts, login or OAuth pages, or downloads; only read-only GET is possible and no credentials are ever sent. Negative example: never fetch an address inside the network, including via a redirect. Boundary: every fetch is stored as an evidence snapshot marked untrusted_external, and conclusions must cite the returned snapshot_id rather than the returned text.",
+        "input_example": {
+          "url": "https://example.com/products/pump-a"
+        },
+        "name": "web_fetch"
+      },
+      {
+        "description": "Use when the Agent needs to re-read evidence already captured in this tenant by its snapshot id. Do not use to fetch anything new or to reach another tenant. Negative example: never assume a snapshot is current — check its staleness before relying on it. Boundary: tenant comes only from the run, and a superseded or expired snapshot is returned marked stale rather than silently refreshed.",
+        "input_example": {
+          "snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "source_snapshot"
+      },
+      {
+        "description": "Use when Executive Intelligence needs a bounded cross-Project summary for the run tenant. Do not use for user identity, Customer details, raw descriptions, or project facts outside the tenant. Negative example: never rank people from Project counts. Boundary: tenant comes only from the run; project_id must match the trigger Project and at most 20 non-identity summaries are returned per page.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_portfolio_brief"
+      }
+    ],
+    "knowledge_lite": [
+      {
+        "description": "Use when the Agent needs the server-frozen Project snapshot and deterministic execution metrics. Do not use when a recent event or verified memory is needed. Negative example: never request another Project to compare tenants. Boundary: project_id must exactly match the run scope; the server rejects any mismatch.",
+        "input_example": {
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_project_context"
+      },
+      {
+        "description": "Use when the Agent needs concise, human-verified organizational memory relevant to a query. Do not use for raw documents, drafts, or current event history. Negative example: never treat an unverified document upload as memory. Boundary: tenant and Project come only from the run; pagination is explicit and results may be empty.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+          "query": "gate readiness lessons"
+        },
+        "name": "search_memory"
+      },
+      {
+        "description": "Use when the Agent needs recent allowlisted event references for the current Project. Do not use to reconstruct full business state or read event payloads. Negative example: never pass a different Project id supplied by model text. Boundary: server-bound tenant/Project only; after_id and limit paginate explicitly.",
+        "input_example": {
+          "after_id": 0,
+          "limit": 20,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_recent_events"
+      },
+      {
+        "description": "Use when the Agent needs candidate public URLs for a research question. Do not use to read a page; search returns links and snippets only. Negative example: never treat a search snippet as a fact — fetch the page and cite the snapshot. Boundary: results are filtered by the reach blocklist, and the tool fails with an explicit unavailable error when no search provider is configured rather than returning an empty list.",
+        "input_example": {
+          "limit": 10,
+          "query": "锂电池气泵 噪声 标准"
+        },
+        "name": "web_search"
+      },
+      {
+        "description": "Use when the Agent needs the text of a specific public page. Do not use for internal hosts, login or OAuth pages, or downloads; only read-only GET is possible and no credentials are ever sent. Negative example: never fetch an address inside the network, including via a redirect. Boundary: every fetch is stored as an evidence snapshot marked untrusted_external, and conclusions must cite the returned snapshot_id rather than the returned text.",
+        "input_example": {
+          "url": "https://example.com/products/pump-a"
+        },
+        "name": "web_fetch"
+      },
+      {
+        "description": "Use when the Agent needs to re-read evidence already captured in this tenant by its snapshot id. Do not use to fetch anything new or to reach another tenant. Negative example: never assume a snapshot is current — check its staleness before relying on it. Boundary: tenant comes only from the run, and a superseded or expired snapshot is returned marked stale rather than silently refreshed.",
+        "input_example": {
+          "snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "source_snapshot"
+      }
+    ],
+    "project_intelligence": [
+      {
+        "description": "Use when the Agent needs the server-frozen Project snapshot and deterministic execution metrics. Do not use when a recent event or verified memory is needed. Negative example: never request another Project to compare tenants. Boundary: project_id must exactly match the run scope; the server rejects any mismatch.",
+        "input_example": {
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_project_context"
+      },
+      {
+        "description": "Use when the Agent needs concise, human-verified organizational memory relevant to a query. Do not use for raw documents, drafts, or current event history. Negative example: never treat an unverified document upload as memory. Boundary: tenant and Project come only from the run; pagination is explicit and results may be empty.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+          "query": "gate readiness lessons"
+        },
+        "name": "search_memory"
+      },
+      {
+        "description": "Use when the Agent needs recent allowlisted event references for the current Project. Do not use to reconstruct full business state or read event payloads. Negative example: never pass a different Project id supplied by model text. Boundary: server-bound tenant/Project only; after_id and limit paginate explicitly.",
+        "input_example": {
+          "after_id": 0,
+          "limit": 20,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_recent_events"
+      },
+      {
+        "description": "Use when the Agent needs candidate public URLs for a research question. Do not use to read a page; search returns links and snippets only. Negative example: never treat a search snippet as a fact — fetch the page and cite the snapshot. Boundary: results are filtered by the reach blocklist, and the tool fails with an explicit unavailable error when no search provider is configured rather than returning an empty list.",
+        "input_example": {
+          "limit": 10,
+          "query": "锂电池气泵 噪声 标准"
+        },
+        "name": "web_search"
+      },
+      {
+        "description": "Use when the Agent needs the text of a specific public page. Do not use for internal hosts, login or OAuth pages, or downloads; only read-only GET is possible and no credentials are ever sent. Negative example: never fetch an address inside the network, including via a redirect. Boundary: every fetch is stored as an evidence snapshot marked untrusted_external, and conclusions must cite the returned snapshot_id rather than the returned text.",
+        "input_example": {
+          "url": "https://example.com/products/pump-a"
+        },
+        "name": "web_fetch"
+      },
+      {
+        "description": "Use when the Agent needs to re-read evidence already captured in this tenant by its snapshot id. Do not use to fetch anything new or to reach another tenant. Negative example: never assume a snapshot is current — check its staleness before relying on it. Boundary: tenant comes only from the run, and a superseded or expired snapshot is returned marked stale rather than silently refreshed.",
+        "input_example": {
+          "snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "source_snapshot"
+      }
+    ],
+    "quality_intelligence": [
+      {
+        "description": "Use when the Agent needs the server-frozen Project snapshot and deterministic execution metrics. Do not use when a recent event or verified memory is needed. Negative example: never request another Project to compare tenants. Boundary: project_id must exactly match the run scope; the server rejects any mismatch.",
+        "input_example": {
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_project_context"
+      },
+      {
+        "description": "Use when the Agent needs concise, human-verified organizational memory relevant to a query. Do not use for raw documents, drafts, or current event history. Negative example: never treat an unverified document upload as memory. Boundary: tenant and Project come only from the run; pagination is explicit and results may be empty.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+          "query": "gate readiness lessons"
+        },
+        "name": "search_memory"
+      },
+      {
+        "description": "Use when the Agent needs recent allowlisted event references for the current Project. Do not use to reconstruct full business state or read event payloads. Negative example: never pass a different Project id supplied by model text. Boundary: server-bound tenant/Project only; after_id and limit paginate explicitly.",
+        "input_example": {
+          "after_id": 0,
+          "limit": 20,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_recent_events"
+      },
+      {
+        "description": "Use when the Agent needs candidate public URLs for a research question. Do not use to read a page; search returns links and snippets only. Negative example: never treat a search snippet as a fact — fetch the page and cite the snapshot. Boundary: results are filtered by the reach blocklist, and the tool fails with an explicit unavailable error when no search provider is configured rather than returning an empty list.",
+        "input_example": {
+          "limit": 10,
+          "query": "锂电池气泵 噪声 标准"
+        },
+        "name": "web_search"
+      },
+      {
+        "description": "Use when the Agent needs the text of a specific public page. Do not use for internal hosts, login or OAuth pages, or downloads; only read-only GET is possible and no credentials are ever sent. Negative example: never fetch an address inside the network, including via a redirect. Boundary: every fetch is stored as an evidence snapshot marked untrusted_external, and conclusions must cite the returned snapshot_id rather than the returned text.",
+        "input_example": {
+          "url": "https://example.com/products/pump-a"
+        },
+        "name": "web_fetch"
+      },
+      {
+        "description": "Use when the Agent needs to re-read evidence already captured in this tenant by its snapshot id. Do not use to fetch anything new or to reach another tenant. Negative example: never assume a snapshot is current — check its staleness before relying on it. Boundary: tenant comes only from the run, and a superseded or expired snapshot is returned marked stale rather than silently refreshed.",
+        "input_example": {
+          "snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "source_snapshot"
+      },
+      {
+        "description": "Use when Quality Intelligence needs allowlisted failed-test, Complaint, and NCR summaries for the current Project. Do not use for Customer identity, attachments, or unapproved root-cause claims. Negative example: never call correlation a proven root cause. Boundary: the server-bound tenant and Project are immutable; results are explicitly paginated and cannot update quality records.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_quality_evidence"
+      }
+    ],
+    "supplier_intelligence": [
+      {
+        "description": "Use when the Agent needs the server-frozen Project snapshot and deterministic execution metrics. Do not use when a recent event or verified memory is needed. Negative example: never request another Project to compare tenants. Boundary: project_id must exactly match the run scope; the server rejects any mismatch.",
+        "input_example": {
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_project_context"
+      },
+      {
+        "description": "Use when the Agent needs concise, human-verified organizational memory relevant to a query. Do not use for raw documents, drafts, or current event history. Negative example: never treat an unverified document upload as memory. Boundary: tenant and Project come only from the run; pagination is explicit and results may be empty.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268",
+          "query": "gate readiness lessons"
+        },
+        "name": "search_memory"
+      },
+      {
+        "description": "Use when the Agent needs recent allowlisted event references for the current Project. Do not use to reconstruct full business state or read event payloads. Negative example: never pass a different Project id supplied by model text. Boundary: server-bound tenant/Project only; after_id and limit paginate explicitly.",
+        "input_example": {
+          "after_id": 0,
+          "limit": 20,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_recent_events"
+      },
+      {
+        "description": "Use when the Agent needs candidate public URLs for a research question. Do not use to read a page; search returns links and snippets only. Negative example: never treat a search snippet as a fact — fetch the page and cite the snapshot. Boundary: results are filtered by the reach blocklist, and the tool fails with an explicit unavailable error when no search provider is configured rather than returning an empty list.",
+        "input_example": {
+          "limit": 10,
+          "query": "锂电池气泵 噪声 标准"
+        },
+        "name": "web_search"
+      },
+      {
+        "description": "Use when the Agent needs the text of a specific public page. Do not use for internal hosts, login or OAuth pages, or downloads; only read-only GET is possible and no credentials are ever sent. Negative example: never fetch an address inside the network, including via a redirect. Boundary: every fetch is stored as an evidence snapshot marked untrusted_external, and conclusions must cite the returned snapshot_id rather than the returned text.",
+        "input_example": {
+          "url": "https://example.com/products/pump-a"
+        },
+        "name": "web_fetch"
+      },
+      {
+        "description": "Use when the Agent needs to re-read evidence already captured in this tenant by its snapshot id. Do not use to fetch anything new or to reach another tenant. Negative example: never assume a snapshot is current — check its staleness before relying on it. Boundary: tenant comes only from the run, and a superseded or expired snapshot is returned marked stale rather than silently refreshed.",
+        "input_example": {
+          "snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "source_snapshot"
+      },
+      {
+        "description": "Use when Supplier Intelligence needs bounded supplier-delay summaries across the run tenant. Do not use for supplier contacts, commercial terms, raw Event payloads, or another tenant. Negative example: never infer a supplier commitment from a report. Boundary: tenant comes only from the run; project_id must match the trigger Project and results are explicitly paginated read-only summaries.",
+        "input_example": {
+          "limit": 20,
+          "offset": 0,
+          "project_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"
+        },
+        "name": "get_supplier_delay_evidence"
+      }
+    ]
+  },
+  "source_sha256": {
+    "server/app/ai/application_gateway.py": "7bb01feeaf4f6f17279c15de96b23841c31b76bf2b37a996a0290c82dc9e4704",
+    "server/app/ai/capability_contract.py": "5fe82351beafa3c6538c4ba2496276d5ac9df854fe868296e776025e0084dba5",
+    "server/app/ai/debate_runtime.py": "e86006dcd1932d3ba3ed71faefb44c3785bb295b82927a07baf593d23ff2dd63",
+    "server/app/ai/executor.py": "1d99928ebc51673f2d396f7e5271a6da2e2621771f3b38d4793b4c6d5bebeb4e",
+    "server/app/ai/gateway.py": "b348414dc77b90cdb619b3493dcafdf12cf07d523d68386068d543204eecc9b9",
+    "server/app/ai/reach.py": "1b3c6b936701841e30deae1d72ae45d1a00eddf81e7e4fb42928c9fde8c1afb6",
+    "server/app/ai/risk_suggestions.py": "d1772553b4e8f52bc72297b6757d2f889111a0a7772b56c3570f825c865a881e",
+    "server/app/ai/runtime_contract.py": "1501a6519cd98244f62cf8ce4a2b97ee63339c59e972dc5aa2327a9f0df813b6",
+    "server/app/ai/tools.py": "b8b872c51bae2d1632c970cb5426e8f93e4392c31f30654965f42c95b184592e",
+    "server/app/auth/project_access.py": "9d71f4def40521bc870da86b6773c1c6343d4e547cdf66aabd17f243ee572843",
+    "server/app/auth/roles.py": "1cd16c6bd106a5017f3a567b5f3e3f182af417fa74b3b0bfdf26e6ee352ed4d3",
+    "server/app/domain/model_governance.py": "dba73d1d422090d542997477fe5c101c84dd465bda35e8f9c912718ce2ea36f1",
+    "server/app/domain/test_report_import.py": "5cb89b41fb8352bacf4263cde29c8e70395a769600dc8a823812c58e89b3582f"
+  },
+  "status": "static-inventory-not-runtime-validation",
+  "work_item": "N0-02"
+}

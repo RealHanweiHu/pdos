@@ -1,0 +1,6 @@
+{
+  "scenario": "unreachable local pdos_test",
+  "exit_code": 1,
+  "stderr": "reminder_cycle_failed error_type=OperationalError",
+  "stdout": ""
+}

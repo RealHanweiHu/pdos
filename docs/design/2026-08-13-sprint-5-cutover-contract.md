@@ -2,6 +2,8 @@
 
 > 状态：本地发布候选契约。本文只冻结流程和机器门禁，不代表生产切换已经执行。所有 ECS、RDS、CEHub 权限、Nginx/DNS 操作仍需逐次获得人的明确授权。
 
+> 2026-09-08 校准：用户已选择补验 S5-1；原版生产出口见 [当前口径](2026-09-08-original-production-exit.md)。生产最后已验证为 release `905e888fb3b183be8f14d9fad13b20535569c1d7` / migration `0032`。08-13 的 `0030` 候选及延期记录仅为历史依据，本轮须重新绑定获批 release、迁移头与源指纹。
+
 ## 1. 目标与边界
 
 切换完成的定义不是“新版本已部署”，而是以下结果同时成立：
@@ -11,7 +13,7 @@
 3. `pdos.beepump.net` 被业务 Owner 宣布为主入口，登录和核心项目查询通过；
 4. 老 CEHub 停止业务写入并保留审计查询能力；
 5. 观察窗没有数据完整性、安全边界或持续可用性异常；
-6. S5-1 的真实钉钉发送仍处于明确的延期例外，生产保持 `delivery=false`，不被本次切换隐式放开。
+6. 按 2026-09-08 的补验决定取得 S5-1 真实钉钉 Exit 证据；切换不隐式启用或扩大外发，`delivery` 的测试后状态及常态通知范围须单独记录并获批。
 
 v1 只迁移 User、Project、Task、Gate review 与 File reference；文件正文仍在原私有对象存储，迁移只保留可审计引用。ERP/CRM 等外部系统不因切换改变事实源边界。
 
@@ -37,7 +39,7 @@ stateDiagram-v2
     InventoryCaptured --> InventoryApproved: Data Owner 绑定清单指纹
     InventoryApproved --> SourceFrozen: CEHub 写冻结
     SourceFrozen --> DryRunApproved: 全量 dry-run + 抽查
-    DryRunApproved --> ReleaseDeployed: 获批 release / migration 0030
+    DryRunApproved --> ReleaseDeployed: 获批 release / 对应迁移头
     ReleaseDeployed --> Applied: 同指纹、同顺序、同 tenant apply
     Applied --> Replayed: 幂等重放零新增
     Replayed --> Primary: Owner 宣布 PDOS 主入口
@@ -49,7 +51,7 @@ stateDiagram-v2
     Applied --> RolledBack: 停止转正，保留审计数据并人工对账
 ```
 
-以下对象必须在最终批准记录中一次绑定：完整 release SHA、Alembic head `0030_phase_three_agents`、目标 tenant UUID、迁移 actor UUID、`inventory_fingerprint`、有序的全部源项目 ID、dry-run `source_fingerprint`、低峰窗口、Data Owner 与发布 Owner。
+以下对象必须在最终批准记录中一次绑定：完整 release SHA、该 release 经验证的唯一 Alembic head、目标 tenant UUID、迁移 actor UUID、`inventory_fingerprint`、有序的全部源项目 ID、dry-run `source_fingerprint`、低峰窗口、Data Owner 与发布 Owner。不得向已验证 `0032` 的生产套用旧候选 `0030`；不得从含 vNext 的当前工作树直接发布。用户本人可承担各 Owner 职责并逐项确认，产品权限和两个人工动作约束不变。
 
 ## 4. 硬门禁
 
@@ -85,7 +87,7 @@ stateDiagram-v2
 - 迁移五类行数、全部项目清单、代表性 Task/Gate/File reference 抽查；
 - PDOS 登录/项目查询与 CEHub 只读证明；
 - 30 分钟健康/错误日志观察；
-- 钉钉 `delivery=false` 延期例外；
+- S5-1 真实补验及人工确认、钉钉测试后开关状态与常态外发范围记录；
 - Sprint 5 Exit 与切换退役的人工确认。
 
 操作步骤与命令模板见 `docs/runbooks/sprint-5-cutover-and-retirement.md`。

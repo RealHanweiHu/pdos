@@ -1,0 +1,79 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 pinned text tokenization, native counter and explicit published qualification adoption",
+  "tests": {
+    "related_regression_initial_passed": 131,
+    "additional_distinct_duplicate_receipt_test_passed": 1,
+    "probe_script_passed": 2,
+    "contracts_calendar_planning_passed": 160,
+    "distinct_total": 294,
+    "new_tests": 39,
+    "new_real_local_http_tests": 1
+  },
+  "checks": {
+    "ruff_files": 9,
+    "format_files": 9,
+    "mypy_files": 5,
+    "uv_lock": "passed",
+    "exports": "both passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration": "0065_mixed_call_admission",
+    "migration_added": false,
+    "restricted_role_passwords_modified": false
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "1afe4bff428de5528afa0f2545595d70f494eb1c7bc01b183feca666e5f23384",
+      "sources_verified": 179,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/input_metering.py": "8267332164c181b6787923ceadab2301a912b46fdf21a383b0e9219d6fb1edb2",
+    "server/app/ai/model_budget.py": "ae2182207792037950e4e9d53a1d51f7489429662c6e5cd2f914e34500659db0",
+    "server/app/ai/provider_adapters.py": "68299f0dd50621cec7aeb9885c96cba90f6b6a4cba039f0548d7dc134e6cdc88",
+    "server/scripts/verify_input_metering.py": "f99b73d0949b9dbc29c8a50e7045daf0fb69b8dabc681d349e13b39c341c6c39",
+    "server/scripts/probe_minimax_input_metering.py": "333a23ddd6278ceac7f3dff7fc803746593a8a1943b3e0d92a1552d51cf130a1",
+    "server/tests/test_input_metering.py": "50165ce6fc54085ce9e133720b511eb5f542b81c1038f93f408358923b299dad",
+    "server/tests/test_published_model_budget.py": "fbb37a21811a00223fd1565280de4f4ff01ddc7bb81b313159ad3e67065fe5bb",
+    "server/tests/test_meter_probe.py": "d6987683c7b8e49387cb647c0c91978632ca38a1f7dc04ca28c09db4bb2e2dc4",
+    "server/tests/test_model_provider_http_contract.py": "c24b167aa69184aceab8e3312c0fba143b764a77199db94dd34aea76ce46c882",
+    "server/pyproject.toml": "af0a966102a5fce0844248363b8da98dcf9b9c8ef522f01a7fa313ba64377bbd",
+    "server/uv.lock": "d090a04dd1cea16299c8dcfb1c352da651586c378b40bc93164789206bc2bd0e",
+    "docs/runbooks/model-input-metering.md": "4c5019c1a806874193cbdeff487f2877498cbb34ad5b7b676490fe024aae6e2f",
+    "docs/reports/2026-09-10-n0-03-input-metering-validation.md": "c8377fc28886feee33aea119112840e3a61ac1e04eea281415c455ea5eb7ab70",
+    "docs/reports/evidence/2026-09-10-minimax-m3-meter-preflight.json": "fe0ff51c455bb467b016e72bfb11bff8de9f70ccc9f34d679fb55560f94b86c2"
+  },
+  "real_provider_probe": {
+    "status": "not_executed_pending_explicit_authorization",
+    "automatic_approval_review": "rejected: real external service calls and billing require specific authorization",
+    "actual_requests": 0,
+    "local_estimated_input_tokens": 16604,
+    "max_requested_output_tokens_per_call": 32,
+    "max_calls": 4,
+    "automatic_retries": 0,
+    "qualification_published": false,
+    "official_tokenizer_revision": "f0e1c1e04d40177e4673a22097036854f536e9c0"
+  },
+  "remaining": [
+    "real provider usage receipts and input/output/window qualification",
+    "operator-approved immutable publication",
+    "restricted role budget service and stable run/call identity",
+    "default factory adoption and old process drain",
+    "crash reconciliation and checkpoint/resume",
+    "tool loops and persistent ACL/rollout"
+  ]
+}

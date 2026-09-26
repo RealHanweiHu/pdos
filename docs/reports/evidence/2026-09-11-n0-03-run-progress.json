@@ -1,0 +1,40 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0095_event_run_cancellation",
+  "new_migration": false,
+  "tests": {
+    "backend_passed": 4,
+    "new_panel_passed": 4,
+    "existing_card_passed": 3,
+    "total_distinct_passed": 11
+  },
+  "static_checks": {
+    "mypy_files": 2,
+    "ruff_files": 3,
+    "eslint_files": 5,
+    "typescript_full": true,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "database": {
+    "test_database": "pdos_test",
+    "temporary_container_removed": true
+  },
+  "frontend_copy": {
+    "source_files_identical": 321,
+    "matching_lockfile": true,
+    "removed": true
+  },
+  "scope": {
+    "production_changed": false,
+    "real_model_calls": false,
+    "git_push": false,
+    "exit_approved": false
+  },
+  "approved_manifest_sha256": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  }
+}

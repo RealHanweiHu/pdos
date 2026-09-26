@@ -2,11 +2,13 @@
 
 > 本手册不授权生产操作。每次 ECS/RDS/CEHub 权限、Nginx/DNS 操作都必须先取得人的明确授权。执行时从经验证 Git bundle 的全新 release 目录运行；不得从本地脏工作树或线上旧镜像运行。
 
+> 2026-09-08：按 [原版生产出口口径](../design/2026-09-08-original-production-exit.md) 收口；S5-1 已选择补验，历史延期不作为本轮免验依据。生产最后已验证 `0032`，原 `0030` 目标已过时；本轮命令只使用获批 release 的迁移头、源清单和双指纹，已存在的迁移数据须先对账。
+
 ## 1. 发布窗口前准备
 
-1. 冻结完整 release SHA，运行全量本地门禁并保存报告；生产目标 head 为 `0030_phase_three_agents`。
+1. 冻结完整 release SHA、纳入范围及该版本唯一迁移头，运行全量本地门禁并保存报告；本轮目标不得照抄旧 `0030_phase_three_agents`，生产 schema 只前向演进。核对原版候选未意外纳入 vNext 功能/迁移。
 2. 在 ECS 复制上一版本 `.env.production` 到新 release 目录并保持 owner/mode `0600`。确认包含 `CEHUB_SOURCE_DATABASE_URL`、`CEHUB_SOURCE_SCHEMA`、`DATABASE_URL`、`PDOS_TENANT_ID`、`PDOS_MIGRATION_ACTOR_USER_ID`；连接串不得出现在终端输出、工单或报告。
-3. 保持 `PDOS_DINGTALK_DELIVERY_ENABLED=false`。本次切换不执行真实钉钉外发，也不把 S5-1 延期例外改写为 PASS。
+3. 本切换步骤默认保持 `PDOS_DINGTALK_DELIVERY_ENABLED=false`。真实钉钉补验按 S5-1 手册单独授权执行，不由切换命令隐式启用；归档其真实验收结果、测试后开关与常态通知范围。若最终仍禁用常态通知，须记录用户对此运行方式及影响的明确确认。
 4. 记录部署前 API/Web image ID、完整 SHA、Alembic head、CEHub 写冻结/恢复负责人和低峰窗口。
 5. 按 `docs/runbooks/sprint-0-ecs-smoke.md` 验证 bundle/release 目录并构建候选镜像，但未获部署授权前不要执行 `deploy`。
 
@@ -220,7 +222,7 @@ docker run --rm --read-only --security-opt no-new-privileges \
 
 ## 5. 部署、apply 与幂等重放
 
-先取得这一次 release 部署授权，再使用唯一受控入口升级到获批 SHA；脚本会执行 migration 0030、重施 Agent 权限和健康检查：
+先取得这一次 release 部署授权，再使用唯一受控入口升级到获批 SHA；脚本会升级至该获批 release 的迁移头、重施 Agent 权限和健康检查。若预检确认目标版本已在生产，先核对既有部署证据，不为完成清单重复执行迁移或重启：
 
 ```bash
 export PDOS_DEPLOY_CONFIRM="deploy:${PDOS_CUTOVER_SHA}"
@@ -258,7 +260,7 @@ docker run --rm --read-only --security-opt no-new-privileges \
 4. 保持 CEHub 数据库默认只读/写服务冻结，保留审计查询入口；用审计账号验证读取可用，并验证业务写操作 fail-close。记录 CEHub 归档入口、保留期限与 Owner。
 5. 运行 `./scripts/deploy-ecs.sh status`，观察至少 30 分钟；检查 5xx、容器重启、数据库错误、权限错误和迁移对账告警。
 
-只有 Data Owner、发布 Owner 和业务 Owner 均签字，才能确认 Sprint 5 Exit 与切换退役完成。S5-1 延期项必须作为残余风险单独保留。
+只有 Data Owner、发布 Owner 和业务 Owner 均确认，且原版生产出口中的 AI、S5-1 与其余验收证据齐全，才能确认 Sprint 5 Exit 与切换退役完成。按 2026-09-08 已确认的独立开发者方式，用户本人可逐项承担上述职责；历史 S5-1 延期记录不替代本轮真实补验与确认。
 
 ## 7. 停止与回滚
 

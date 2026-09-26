@@ -1,0 +1,80 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 shared atomic reservation/accounting and complete explicitly provisioned restricted model budget path",
+  "tests": {
+    "database_security_gateway_and_migrations_passed": 181,
+    "contracts_calendar_planning_passed": 160,
+    "distinct_total": 341,
+    "new_tests": 22,
+    "new_real_local_http_tests": 1,
+    "new_reservation_row_lock_tests": 2
+  },
+  "checks": {
+    "ruff_files": 17,
+    "format_files": 17,
+    "mypy_files": 5,
+    "exports": "both passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57433,
+    "database": "pdos_test",
+    "postgres": "16.15",
+    "migration": "0067_model_budget_reservation",
+    "container": "pdos-budget-reservation-test",
+    "isolation": "ephemeral dedicated cluster; no shared runtime role changes",
+    "remaining_test_tenants": 0,
+    "cleanup": "stopped and auto-removed"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "88ab4788842ad227e9e9685cd60ec0340f3db13804491486eb64149e1f9c585b",
+      "sources_verified": 181,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/agent_budget.py": "449cdfa420208a3d6648251ab3253404b0a1d7bd579baf828528f3def6566dac",
+    "server/app/ai/budget_ledger.py": "1423f94c63117d8515492a6b29eef44b86f8f743aad557d4184b6398b8eb33f5",
+    "server/app/ai/budget_accounting.py": "ef3f125486e4ed72690fd37962f9d049c6bea2eebb69fc15e5eaee44f045cae2",
+    "server/app/ai/model_budget.py": "c6dd8cf60df6e77ffa50118b596aa5b92ce099a8a2bf5e8a3d65b8cbcfd2b6a9",
+    "server/app/ai/model_call_fence.py": "c60b50f0240381d9e029d495128379ce724ca7ee530815ccfb33d7855c4342a7",
+    "server/migrations/versions/0067_model_budget_reservation.py": "a43a554ea66f20b6c65bda5fc3b27f90550081e62e61f8823a8a23114d88c2f2",
+    "server/tests/test_agent_budget_reservation.py": "b639110b6947ecfe709e92972d4399f3d7cabf2cedaeb585bcf10b743199dd4e",
+    "server/tests/test_bound_budget_dispatch.py": "b4a67d850458329f639f73d84ab25be7473125d0bc2e9da3d97ca17432d11348",
+    "server/tests/test_agent_budget_transitions.py": "6edad3f459b4fd984be39c6aaf65b0da156a5b52a848b7c28c7e97f7523515f5",
+    "server/tests/test_budget_ledger.py": "94cee40a032716ac8d481d542c3d9187f405e095ea969c5e05d062bf4049606f",
+    "server/tests/test_budget_accounting.py": "488f1ff1cefef3a1c882472a61fedb530db71350e5b54fc39b77606077830f98",
+    "server/tests/test_model_call_fence.py": "037c9cb4ed07b3982fbe7fe7f86a8bbef1aca075a1c29916ef989a3e5fae1064",
+    "server/tests/test_migrations.py": "050b3c3607903701bc94d96a7989dcc490a354a720adee8a53c95e0edda9391c",
+    "server/tests/test_model_gateway_schema.py": "68f1d151bea73d39c8f8e8c5c21a0548c6edf49577133e0e5e0c93573d689044",
+    "server/tests/test_model_budget_controller.py": "2242e402a53817cb0833a69ef7da3fc06dd3735c3a6f2383ff605a7fcaec922a",
+    "server/tests/test_mixed_call_admission.py": "606967c9be8e35f4000afcf1c33b338825a2b727a1b971afb87b4d5bb5e528a7",
+    "server/tests/test_model_call_fence_security.py": "4525c48ed5ba22330b0cc36085678935b60c051b2027b463c1eb8fda8efc21a1",
+    "infra/postgres/security/agent-runtime.sql": "8f048d8b66b7fec48d5956d45ebb7a53fffec44148059fca813cc93e2ac2f683",
+    "infra/postgres/security/agent-runtime-revert.sql": "d417b9555a766890c870d138711e3b07f635996fc881370d54dc1efdd1222b19",
+    "docs/runbooks/agent-budget-reservations.md": "891f4175419664a3302fff90f003362513c3167d89eaa7ba13ee9b0d2f714d8a",
+    "docs/runbooks/agent-budget-transitions.md": "9b0d9d80b793ea913010cfc2d2822ba093924fb1593784135c1e6ded78d04d1b",
+    "docs/reports/2026-09-10-n0-03-agent-budget-reservation-validation.md": "244df5aa306b6f8c5ae5b72abe40cc90ebc5fac53923196c39c772a5754e4c92"
+  },
+  "real_model_calls": 0,
+  "default_agent_budget_adopted": false,
+  "explicit_preprovisioned_restricted_gateway_validated": true,
+  "remaining": [
+    "automatic trusted budget profile selection and immutable run provisioning",
+    "stable business run/call identity and default factory adoption",
+    "real provider metering qualification pending explicit external-call authorization",
+    "deployment coverage and old process drain",
+    "active-time leases, crash reconciliation and checkpoint/resume",
+    "tool loops and persistent ACL/rollout"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 default Gateway call-session fence and restricted legacy admission; full budget adoption remains incomplete",
+  "tests": {
+    "related_regression_initial_passed": 115,
+    "related_regression_initial_failed": 1,
+    "schema_final_passed": 17,
+    "related_distinct_passed": 116,
+    "restricted_runtime_distinct_passed": 16,
+    "contracts_calendar_passed": 160,
+    "distinct_total": 292,
+    "new_fence_tests": 25
+  },
+  "checks": {
+    "ruff_files": 12,
+    "format_files": 12,
+    "mypy_files": 3,
+    "schema_comparison": "seven budget/fence tables compared; lifecycle, append triggers, trace binding and lease boundaries exercised",
+    "exports": "both passed"
+  },
+  "test_databases": [
+    {
+      "host": "127.0.0.1",
+      "port": 57432,
+      "database": "pdos_test",
+      "migration": "0064_model_call_fence"
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 57433,
+      "database": "pdos_test",
+      "migration": "0064_model_call_fence",
+      "postgres": "16.14",
+      "container": "pdos-fence-security-test",
+      "isolation": "dedicated ephemeral cluster; role fixture never ran on shared cluster",
+      "cleanup": "stopped and auto-removed after tests"
+    }
+  ],
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "18959a5129fd4fe5cfe5e17b8baae03bc889e55b762a9fae4b7b34dd649e168e",
+      "sources_verified": 178,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/model_call_fence.py": "08fe656a10b6783ee422e059556ca0f332e7eec26705ab7bcb21b11186a04a75",
+    "server/app/ai/gateway.py": "9da3ef7f36a6383aa4e82a05276768701a576ce257371edbeceb14d8223f657d",
+    "server/app/db/schema.py": "9e6be867b928fd180e186d83800056243bffe26dbfdb734ab1e2718b4de07d29",
+    "server/migrations/versions/0064_model_call_fence.py": "ca02fdaa26f3d4d7ca872555509c61e9ea76d7e0b4724229fdfcdac94b27676a",
+    "infra/postgres/security/agent-runtime.sql": "9362f99314d7afc1c67e132bf0e8d305483050471350b7ab484a15e47b96dbed",
+    "infra/postgres/security/agent-runtime-revert.sql": "26d38bf9d05092a18c687029ae7325e68eaa5c3a235ac75689d98dafab016115",
+    "server/tests/test_model_call_fence.py": "44c87a1d4d3c2e22a3261cef13bf8cbba74163a59019b4fe3acee7724790aade",
+    "server/tests/test_model_call_fence_security.py": "03cb081340b0795b272be0ddb5182a37a1936428557cbccf148427db6f0549de",
+    "server/tests/test_agent_database_security.py": "0397eb287fc8db9a682fcc0fbf3ae2173cad629aa68eab8ec3f6578f793864d5",
+    "server/tests/test_budget_ledger.py": "a09e4217520da205ebff42bb73cf7fc5f7a60ce5d26dd071179b190d75d82a0f",
+    "server/tests/test_model_budget_controller.py": "20c284599290fa9bade4e29bc4dcdf5f0f5458abfafd03c1c3045a777294509b",
+    "server/tests/test_model_gateway_schema.py": "f8b51b364ca50dd4b0aa35678e02838f7bb8598d61e50a5935d6f4a8145cdcfd",
+    "server/tests/test_budget_accounting.py": "3b865b1183e489145d674b49af8076f15f7ade4e67826e2d2803a8c8dba97b62",
+    "server/tests/test_migrations.py": "22abfea5461d773d1bda47493d954cf7cb4083c8df2634849e44d3a9ac570449",
+    "docs/reports/2026-09-10-n0-03-model-call-fence-validation.md": "cea485f443fd53c37af75652b4a225597e94e01b81437921ff0f357543ccc0ba"
+  },
+  "remaining": [
+    "deployment coverage and draining old binaries without session registration",
+    "real qualified input metering and capability loading",
+    "restricted role budget reserve/settle service",
+    "default full budget factory adoption and stable business run/call identity",
+    "operator verified recovery for crashes without a trace",
+    "active leases and checkpoint/resume",
+    "unified budget and drain visibility",
+    "tool budget/loop and persistent rollout/bundle/current source ACL"
+  ]
+}

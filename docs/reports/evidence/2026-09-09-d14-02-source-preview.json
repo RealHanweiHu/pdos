@@ -1,0 +1,433 @@
+{
+  "date": "2026-09-09",
+  "project_attribution": {
+    "model": "D14-02",
+    "basis": "用户本轮明确可使用此前报告的 D14-02 测试内容和结果；可靠性页型号缺失不回填原件。"
+  },
+  "scope": "本地只读原件和解析预览；未写业务库、未确认测试结论、未外发模型、未改原件。",
+  "files": [
+    {
+      "kind": "whole_unit",
+      "filename": "1整机测试报告(1).xlsx",
+      "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+      "worksheet_count": 22,
+      "airflow_cells": {
+        "A1": "空气流量测试",
+        "D2": "D14-02",
+        "P2": "2025-11-05T00:00:00",
+        "A3": "测试目的",
+        "D3": "检测机芯性能是否合格",
+        "A4": "测试仪器",
+        "D4": "测试样机、空气流量器",
+        "A5": "测试方法",
+        "D5": "1、样机满电状态，连接空气流量器；\n2、正常启动马达；\n3，待流量计稳定，记录测试数据；",
+        "A6": "判定标准",
+        "D6": "参照规格书",
+        "A7": "测试记录",
+        "A8": "序号",
+        "D8": "实测流量值",
+        "A9": 1,
+        "D9": "       20.56       L/min",
+        "A10": "结论",
+        "D10": "合格",
+        "A11": "备注"
+      },
+      "layout": "test_form_v1",
+      "test_page_count": 18,
+      "candidate_count": 8,
+      "held_count": 10,
+      "held_reasons": {
+        "missing_observations": 5,
+        "missing_test_date": 3,
+        "non_decisive_result": 2
+      },
+      "pages": [
+        {
+          "sheet": "按键逻辑",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "手电筒功能",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "校准功能",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "自动关机功能",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "数据记忆功能",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_observations"
+          ]
+        },
+        {
+          "sheet": "空气流量",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "气压精度",
+          "model_from_report": "D14-02",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "高压测试",
+          "model_from_report": "D14-02",
+          "date": "2025-11-07",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "充电协议及参数",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_observations"
+          ]
+        },
+        {
+          "sheet": "充电功率",
+          "model_from_report": "D14-02",
+          "date": "2025-11-06",
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_observations"
+          ]
+        },
+        {
+          "sheet": "充电时长及温升",
+          "model_from_report": "D14-02",
+          "date": "2025-11-06",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "静态功耗",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_observations"
+          ]
+        },
+        {
+          "sheet": "(自行车泵)工作温升",
+          "model_from_report": "D14-02",
+          "date": "2025-11-06",
+          "reported_result": "参考",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "non_decisive_result"
+          ]
+        },
+        {
+          "sheet": "工作功率",
+          "model_from_report": "D14-02",
+          "date": "2025-11-06",
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_observations"
+          ]
+        },
+        {
+          "sheet": "压力传感器异常报错",
+          "model_from_report": "D14-02",
+          "date": "2025-11-05",
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": true,
+          "held_reasons": []
+        },
+        {
+          "sheet": "漏气提示报错",
+          "model_from_report": "D14-02",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "工作噪音",
+          "model_from_report": "D14-02",
+          "date": "2025-11-07",
+          "reported_result": "参考",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "non_decisive_result"
+          ]
+        },
+        {
+          "sheet": "整机续航测试",
+          "model_from_report": "D14-02",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        }
+      ],
+      "airflow_candidate": {
+        "row": 10,
+        "source": {
+          "sheet": "空气流量",
+          "row": 10,
+          "title": "空气流量",
+          "title_cell": "J2",
+          "result_cell": "D10",
+          "reported_result": "合格",
+          "model": "D14-02",
+          "reported_date": "2025-11-05",
+          "date_cell": "P2",
+          "raw_date": "2025-11-05T00:00:00",
+          "method": "1、样机满电状态，连接空气流量器；\n2、正常启动马达；\n3，待流量计稳定，记录测试数据；",
+          "standard": "参照规格书",
+          "equipment": "测试样机、空气流量器",
+          "records": [
+            {
+              "row": 8,
+              "cells": {
+                "A8": "序号",
+                "D8": "实测流量值"
+              }
+            },
+            {
+              "row": 9,
+              "cells": {
+                "A9": 1,
+                "D9": "       20.56       L/min"
+              }
+            }
+          ],
+          "has_observations": true,
+          "date_precision": "day",
+          "granularity": "worksheet_summary",
+          "images_reviewed": false
+        },
+        "case_title": "空气流量",
+        "sample_serial": "",
+        "status": "passed",
+        "metrics": [],
+        "notes": null,
+        "config": {}
+      }
+    },
+    {
+      "kind": "reliability",
+      "filename": "2可靠性测试报告(1).xlsx",
+      "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+      "worksheet_count": 16,
+      "layout": "test_form_v1",
+      "test_page_count": 12,
+      "candidate_count": 0,
+      "held_count": 12,
+      "held_reasons": {
+        "missing_test_date": 12
+      },
+      "pages": [
+        {
+          "sheet": "裸机跌落测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "ESD静电测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "按键寿命测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "裸机插拔测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "高温存储测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "低温存储测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "高温高湿存储测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "高低温循环存储测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "高温工作测试",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "低温工作测试(聚合物电池)",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": true,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "氣管可靠度測試",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        },
+        {
+          "sheet": "出氣嘴使用功能測試",
+          "model_from_report": "",
+          "date": null,
+          "reported_result": "合格",
+          "has_text_observations": false,
+          "candidate": false,
+          "held_reasons": [
+            "missing_test_date"
+          ]
+        }
+      ]
+    }
+  ],
+  "parser_source_sha256": {
+    "server/app/domain/test_report_workbook.py": "8a9cc2a4a20447d022a0717c37322d721db69e7e9803696ae73fadba5f43d9dc",
+    "server/app/domain/test_report_import.py": "b70e99e74d50585a7c008087e6e8115b5025bb75ba5b3db6702357ff39465b3a"
+  },
+  "checks": {
+    "originals_unchanged": true,
+    "source_identity_and_date_agree": true,
+    "page_counts_reconciled": true,
+    "business_writes": 0,
+    "model_calls": 0,
+    "d14_04_results_written": 0
+  }
+}

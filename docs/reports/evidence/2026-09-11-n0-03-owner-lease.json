@@ -1,0 +1,341 @@
+{
+  "date": "2026-09-11",
+  "scope": "0084 application Owner leases, admitted dispatch and publication fences, activity-time binding and deterministic expiry",
+  "tests": {
+    "distinct_passed": 265,
+    "application_and_dispatcher_cases": 193,
+    "restricted_event_cases": 57,
+    "activity_cases": 15,
+    "new_net_cases": 17,
+    "formula": "192 shared cases after one updated table-list assertion + 1 new lease metadata case + 57 restricted/event cases + 15 activity cases = 265; focused/extra/lifecycle repeats excluded",
+    "shared_final_initial": {
+      "passed": 191,
+      "failed": 1,
+      "failure": "expected migration table list lacked application_run_leases"
+    },
+    "shared_extra_after_assertion_update": 4,
+    "final_lifecycle_and_actual_api_batch": 26,
+    "restricted_final_initial": {
+      "passed": 69,
+      "failed": 2,
+      "failures": [
+        "new JSON SQL parameter lacked explicit text cast",
+        "old restricted test attached budget after a legacy claim"
+      ]
+    },
+    "activity_followup_initial": {
+      "passed": 14,
+      "failed": 1,
+      "failure": "new test imported RestrictedBudgetLedger from wrong module"
+    },
+    "activity_followup_final": 15,
+    "interrupted_batch": "Stopped before the active-execution module because it includes role-mutating fixtures; all final activity tests ran only on dedicated 57433/pdos_test; not counted"
+  },
+  "checks": {
+    "mypy_implementation_files": 10,
+    "ruff_files": 20,
+    "common_contract_artifacts": 4,
+    "runtime_contract_artifacts": 5,
+    "approved_manifests_unchanged": {
+      "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "source_sha256": {
+    "server/app/ai/application_leases.py": "60b95cbf4f149e7383a85f061cd70d9922ff065f646b9005953ae6aeb6a290c2",
+    "server/app/ai/application_gateway.py": "cfe9338b5029574357eccd8dcf320c3e2192118e7f0de177cce1bde368b2f3a4",
+    "server/app/ai/gateway.py": "1b8685ba2a7e29c3064f158f79f30f4af9cb5614f9ad43ebd2d0db97f43cca52",
+    "server/app/ai/run_budget_creation.py": "101b0f950ad7c9d8e2908c8df8f907ebcb3dbc50cebeb31ad16eab0b23a2e9cd",
+    "server/app/ai/application_context.py": "6c32c887a6b2c5580a9658de7aa8cc1c95ef91f54d634793bfb6178a8fa3c585",
+    "server/app/ai/chat_runs.py": "37d8db74d549279a1a2c3207c322b0f4c772f383a2c9492e420bcf052e1f0db9",
+    "server/app/ai/import_mapping_runs.py": "e6aa765d10f0b8a4cf53ca5baed65e34104e63b3f4f97304071ec69b2530d4ad",
+    "server/app/ai/risk_suggestions.py": "c91948129f7e1e205988625474888b7b4f42a89010b648cc3f0c7814eac50682",
+    "server/app/ai/test_plan_suggestions.py": "d4961c35de053f52770b3c029849ed82082add57a58e936d90e95fd0935f1772",
+    "server/app/worker/dispatcher.py": "4ca459b82bfc16465fd7134b1e17f9adefada0a1fb050799905f5dedc192fa06",
+    "server/app/db/schema.py": "bcda96b16c3640f3a6dfda133993e12ac90ec8607c0a0fc2de0ae935c25947b9",
+    "server/migrations/versions/0084_application_run_leases.py": "0001d091ece2d22a5aa2d5ff2f9eee0a1ea0663ad8fd2f9314f7e08cbd64803e",
+    "server/tests/test_application_leases.py": "a7ff9fd67d914197b8441e548be2dfe9ccdee2941e39f572b13a260d4a7d0f9e",
+    "server/tests/test_application_authorization.py": "59cab462ce6aecadf7ebe408e71a6e5da9d355ea2fca97a867721d772714bcd4",
+    "server/tests/test_application_context.py": "d2699056c6beff68b344b70fec80a22c22ed614405a23b76b66c890962bbc5a7",
+    "server/tests/test_application_domain_context.py": "432773d1157a3e7d58abaf4d9c131f8f51ccfa2e4f44f90a90b93b291a90d339",
+    "server/tests/test_report_context.py": "0e83781da7cc083950263ff0a174f6271fc1d56e64b4c9593a7996bf33f34eba",
+    "server/tests/test_application_authorization_security.py": "9b16c1f538b7e1dcfaecbb87bc8319838c2f1f55e7aec87ed0c4f73f82bf1593",
+    "server/tests/test_active_execution_budget.py": "619e2a4241a9d8ae8a6092d6aba36e2a4c12481f8f03387ee54bf98f6999c46e",
+    "server/tests/test_agent_runtime_schema.py": "efe6de04e5d1f48183f700b611578e9e0bea7c000d8df717905b236e6269a1ea",
+    "infra/postgres/security/agent-runtime.sql": "204a7171f8f69cb48b574ee1edb422990cec003e643b62062429870ebc2ea585"
+  },
+  "log_sha256": {
+    "pdos-owner-lease-regression-final.log": "15c40b13daf4800d5626f19fae56f839d14adf9620e76af8f3fd5e3eb63b0222",
+    "pdos-owner-lease-extra-final.log": "1ae771fd56a20660ed0a5adea816c51eb90ff84274d2eecb62f26ed75274e9f8",
+    "pdos-owner-lease-roles-final.log": "118b8a8ac9c37b2dd809bb9998eb494f6b250c37a7ab7f8c21818aa55672b4bf",
+    "pdos-owner-lease-activity-checked.log": "e1792e3e4e536547d38b9d18fdef8de336f75df82bf4dba09d1fb14f671f5036",
+    "pdos-owner-lease-lifecycle-final.log": "9a747309295db52d5fe6ef41180f842e08082700fe79761920ac5edd8ac45b74",
+    "pdos-owner-lease-first.log": "f2b33757bfa46b1162f402bf778a692d36d14daf82d13a5757f2a9ccde40d4ea",
+    "pdos-owner-lease-focused.log": "15e0e5b21e4ec824aba72fa79ad148528735d6541ecbc0c7112bae58037e911e",
+    "pdos-owner-lease-regression.log": "1856fa2a19887f131021f04349822b2a5fa92b8cf56fe25815f8798e7a3b4a92",
+    "pdos-owner-lease-role-extra.log": "d079d2677b09ed2411277136d26ea8c141d494a14a151201c3fb4334c97dc970",
+    "pdos-owner-lease-activity-final.log": "fc25957a72e40b858be50abcd9952056aca343b3a302e2630195d9bf8e47e950",
+    "pdos-owner-lease-mypy.log": "14fdf673bd175fe32ef42df34666481bb15e465313f7dbef32d0aea2ba76a26e"
+  },
+  "database_verification": {
+    "57432": {
+      "database": "pdos_test",
+      "head": "0084_application_run_leases",
+      "functions": {
+        "application_lease_is_current": {
+          "body_sha256": "a6a1281c913b30ce8fd54fa881d34b0a37ade3c6c8fff63e092700cdce882ceb",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "protect_application_lease": {
+          "body_sha256": "227577d67617c76d39de2ca53a7f16c36e51e8359b50efa1ea9a835f36db5c59",
+          "matches_migration": true,
+          "security_definer": false,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "track_application_lease": {
+          "body_sha256": "b3a674ea98b16a295f44bc735b674b077690c6e9dd3cbf316128879df04ea46a",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "require_application_lease_dispatch": {
+          "body_sha256": "2318ba248b8b4fd6b7a88ddd7223ce4c15ce0788d19a9b8c15e74a2c66b97b85",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "require_application_publication_lease": {
+          "body_sha256": "fb37f3e4b06fe538748b04cb76989c49181ac95a6cd944d470de53c733c6a34c",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "finish_application_lease": {
+          "body_sha256": "1394d55cdd58cc2b905ae0319721d33710db9d93acbb7af27aa738400a4b8f9f",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "expire_application_runs": {
+          "body_sha256": "427f43dcc5e7ef7f4beea033308636dc2d6bc71531394a89d24b3f154d19b2e5",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": true
+          }
+        },
+        "sync_run_activity": {
+          "body_sha256": "32c698ed0b922c11c601b5aa1f9e8e8083a2ca7cead3dc18e94043faf428cd41",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      },
+      "lease_table_access": {
+        "pdos_agent": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        },
+        "pdos_worker": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        }
+      },
+      "manifest_lease_fk": "FOREIGN KEY (tenant_id, run_id, owner_lease_id) REFERENCES cehub_ai.application_run_leases(tenant_id, run_id, id) ON DELETE RESTRICT",
+      "final_lifecycle_constraint": "CHECK (((renewed_at >= issued_at) AND (expires_at > renewed_at) AND (((ended_at IS NULL) AND (stop_reason IS NULL)) OR ((ended_at IS NOT NULL) AND (ended_at >= issued_at) AND (stop_reason IS NOT NULL) AND (btrim((stop_reason)::text) <> ''::text)))))"
+    },
+    "57433": {
+      "database": "pdos_test",
+      "head": "0084_application_run_leases",
+      "functions": {
+        "application_lease_is_current": {
+          "body_sha256": "a6a1281c913b30ce8fd54fa881d34b0a37ade3c6c8fff63e092700cdce882ceb",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "protect_application_lease": {
+          "body_sha256": "227577d67617c76d39de2ca53a7f16c36e51e8359b50efa1ea9a835f36db5c59",
+          "matches_migration": true,
+          "security_definer": false,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "track_application_lease": {
+          "body_sha256": "b3a674ea98b16a295f44bc735b674b077690c6e9dd3cbf316128879df04ea46a",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "require_application_lease_dispatch": {
+          "body_sha256": "2318ba248b8b4fd6b7a88ddd7223ce4c15ce0788d19a9b8c15e74a2c66b97b85",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "require_application_publication_lease": {
+          "body_sha256": "fb37f3e4b06fe538748b04cb76989c49181ac95a6cd944d470de53c733c6a34c",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "finish_application_lease": {
+          "body_sha256": "1394d55cdd58cc2b905ae0319721d33710db9d93acbb7af27aa738400a4b8f9f",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "expire_application_runs": {
+          "body_sha256": "427f43dcc5e7ef7f4beea033308636dc2d6bc71531394a89d24b3f154d19b2e5",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "sync_run_activity": {
+          "body_sha256": "32c698ed0b922c11c601b5aa1f9e8e8083a2ca7cead3dc18e94043faf428cd41",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      },
+      "lease_table_access": {
+        "pdos_agent": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        },
+        "pdos_worker": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        }
+      },
+      "manifest_lease_fk": "FOREIGN KEY (tenant_id, run_id, owner_lease_id) REFERENCES cehub_ai.application_run_leases(tenant_id, run_id, id) ON DELETE RESTRICT"
+    }
+  },
+  "verification_boundary": "Both test DBs validated final lease functions and scoped FK; final NULL-pair lifecycle constraint was tightened and revalidated on 57432 after the dedicated container had been removed. Worker expiry execute permission was positively tested during DBA installation; dedicated final snapshot follows fixture-wide privilege revert.",
+  "dedicated_container": {
+    "name": "pdos-owner-lease-test",
+    "image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+    "removed": true
+  },
+  "environment_repair": "Cloud-evicted _pytest/terminal.py restored from local package cache after matching installed RECORD sha256=KMSp68oCQzhbFU9H7Lg7GKHfQV4LkS69lwecXqADZFk; no dependency version change",
+  "remaining": [
+    "claimable application queue and new-owner handoff",
+    "persistent waiting_input",
+    "stepwise checkpoints and resumption",
+    "unknown provider receipt reconciliation",
+    "initial failed-read observations",
+    "derived and multi-anchor source ACL",
+    "atomic source and dispatch validation"
+  ],
+  "status": {
+    "N0-03": "partial",
+    "production_changed": false,
+    "production_delivery": false,
+    "real_model_calls": 0,
+    "golden_files_written": false,
+    "goal_complete": false
+  }
+}

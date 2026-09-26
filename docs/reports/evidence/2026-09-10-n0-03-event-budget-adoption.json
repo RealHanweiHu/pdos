@@ -1,0 +1,69 @@
+{
+  "date": "2026-09-10",
+  "scope": "event run creation-time approved budget freezing and actual restricted Agent runtime factory adoption",
+  "tests": {
+    "new_event_adoption": 11,
+    "real_role_security": 9,
+    "restricted_reservations": 20,
+    "budget_configuration_and_factory": 22,
+    "dispatcher_schema_mixed_admission_application_chat": 40,
+    "production_contract_local": 25,
+    "distinct_passed": 127
+  },
+  "checks": {
+    "ruff_files": 10,
+    "format_files": 10,
+    "mypy_files": 4,
+    "exports": "common 4 and runtime 5 passed"
+  },
+  "migration": "0070_event_budget_binding",
+  "databases": {
+    "shared": "127.0.0.1:57432/pdos_test",
+    "role_tests": "temporary 127.0.0.1:57433/pdos_test; container stopped and automatically removed",
+    "shared_role_password_changes": false
+  },
+  "real_model_calls": 0,
+  "default_budget_mode": "legacy",
+  "sources": {
+    "server/migrations/versions/0070_event_budget_binding.py": "87392ec99927480ebf490ecd56844e32a19a878037b76f1da932acfc05fa67f3",
+    "server/app/ai/budget_adoption.py": "f8bff4b7fe2d1413548736607bb14e7af981fef1ba397d24a3c4ecaa2abdca12",
+    "server/app/ai/runtime_factory.py": "cbd6c0c114de27926478d811eee6e74e1b8ccec8b5e82b77735fd504e03f9680",
+    "server/app/worker/dispatcher.py": "620450e6942b175f06eb1b60996e2f7cba218e864c1608f9a4c6b9db3567dd2c",
+    "server/scripts/run_dispatcher.py": "72624da203f4cd90f91f6edbbccbc6e071d2178f4bb536d60316d248d3f506d6",
+    "server/tests/test_event_budget_adoption.py": "e3813a0a42e2ba94210acf3041df7bc58fbdc1576d6e31c0a8b9b9eaa40fdb69",
+    "server/tests/test_budget_adoption.py": "ef972cc3e660943dc741420da23239662b3387d5e35460dc1b208b4eec58b901",
+    "server/tests/test_agent_runtime_factory.py": "30f58a6b56b558b3b5d81eb6716d701a59350f501cb194b501025c9a082f0bef",
+    "server/tests/test_agent_database_security.py": "51f3ccbb45ad8e5039d2a6d88ee9290408a3637228c125498f674fdd0e480054",
+    "server/tests/test_agent_budget_reservation.py": "b639110b6947ecfe709e92972d4399f3d7cabf2cedaeb585bcf10b743199dd4e",
+    "server/tests/test_agent_dispatcher.py": "2ef8a38b7caf1f45d46a0a3e86aba95f50a0c4f3be07bc1891bc7e6e1b0b4551",
+    "server/tests/test_agent_runtime_schema.py": "81c9f0bfeca75e5533cd2e8ff7f0378a77c2904c5851d9af451774a16f0393c2",
+    "server/tests/test_mixed_call_admission.py": "d76a4d3b4f1c1f81ba12731e76e3619c3d3f75e02a3f53e402cc4d61144e1bf3",
+    "server/tests/test_application_budget_factory.py": "ee09a685f446e31b84e0d7239573cfa766050076a9c89b9d52be7c5e3d4a59f6",
+    "server/tests/test_chat_requests.py": "b8fcaee40fdcf8ae66b7f520891e7a9fb1434422940e017e1c30806d7b0d58c5",
+    "server/tests/test_production_deployment_contract.py": "cb1556fd7cca0136bccd8a8378ac2cb1223d02b7e85ca82f0480a09dbc95ae3c",
+    "compose.production.yaml": "d3fe550564561626d1845f7666bace6a8ed10e6ceaf14cea86f526595370f22e",
+    ".env.example": "7e5cc08bf8d06d2d48e44548b4b68a11031adff1af3b32b3d870ad5c20c2b426",
+    ".env.production.example": "97d2d35b882fd99a6a7caabc0fb61ddcba90c6cfe4ff001c4eda9cd39f13c01d",
+    "docs/runbooks/event-budget-adoption.md": "ef8cd12a6dc9ad6cf6bc43aaf4e59e2b1b57d3e2a376d5c27153ae8f3d336b37",
+    "docs/runbooks/agent-budget-reservations.md": "78f11a91bae0f991cb606c315004b5b6c5ff7b3ee0b6677e31feeb468b52379a",
+    "docs/runbooks/application-budget-adoption.md": "dd1f2a562cc35bcbaa26fa3b511308a4ebe3a43bf64fae78b4ecb296e1f6d8c5",
+    "docs/reports/2026-09-10-n0-03-event-budget-adoption-validation.md": "8a5ecf884e092cb95ba5d6399f6f975e1755ec41e4d71a1473d99919019c26b5"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "ceab15bdb20d04352d6643cbac4f40b875fdb7dc0f62972f020b5bb71510d828",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "2952390415ac1576a749f1f48368fc98d5c236fc89b511113460d2a19a14e4c4",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "application run creation-time freezing",
+    "actual related-run lineage adoption",
+    "real metering qualification and tenant mode switch/process drain",
+    "active time/checkpoint recovery",
+    "tool loop and embeddings coverage"
+  ]
+}

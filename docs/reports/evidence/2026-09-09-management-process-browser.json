@@ -1,0 +1,64 @@
+{
+  "recorded_at": "2026-09-09T10:15:56.664016+00:00",
+  "scope": "合成NPD流程项目、真实本机浏览器、pdos_test回滚事务；无真实项目资料或业务写入留存。",
+  "fixture_limits": "全部为合成项目、用户与计划，仅验证页面入口及现有阶段硬闸；EVT、sample_size=1 不表示任何真实项目的阶段或样机数量。无真实材料导入，未创建 Build/Sample。单个 Owner 用于技术测试，不代表实际业务由一人承担。",
+  "ids": {
+    "tenant_id": "9e3fafe9-2397-4c6b-aa70-c5177859d3f3",
+    "project_id": "b5598708-8927-4df0-8462-1732d7039729",
+    "owner_id": "cfdceede-1ad4-4c83-a905-3c6d0d747f50",
+    "plan_id": "1cb06efc-bc31-45fa-9428-8b4904ea77e3"
+  },
+  "imports": [],
+  "database_revision": [
+    "0058_ai_test_plan_changes"
+  ],
+  "browser_final_counts": {
+    "documents": 0,
+    "test_report_import_batches": 0,
+    "test_runs": 0
+  },
+  "browser_batches": [],
+  "cleanup": {
+    "transaction_rolled_back": true,
+    "test_tenant_remaining": 0,
+    "stored_file_bytes_discarded": true,
+    "truncated_existing_tables": false
+  },
+  "source_sha256": {
+    "web/src/components/projects/project-process-rules.ts": "bee12c71952d024600d91e0ad3466899b301f74f3fc20140efbf3e6a0a93195a",
+    "web/src/components/projects/project-process-guide.tsx": "9f35f82ac1374f741da9c3618eabddb655325fe22bc0c5973b74490f171ac681",
+    "web/src/components/projects/project-process-guide.test.tsx": "6e2d143bcec219469d16786a8e423907444911397af08a7e7385c9258f483c10",
+    "web/src/components/projects/project-workspace-view.tsx": "94a0ccad0726587a260f3c35c0fe71b4f8f5f87032c6b08bf0e861335edb2b42"
+  },
+  "browser_checks": {
+    "current_stage": "evt",
+    "role_responsibilities_visible": true,
+    "links": [
+      "quality",
+      "work-items",
+      "gates"
+    ],
+    "stage_guard": {
+      "status": 409,
+      "body": {
+        "detail": {
+          "code": "PROJECT_GATE_NOT_APPROVED",
+          "message": "Current Stage Gate must be approved before advancement"
+        }
+      }
+    },
+    "complete_process_visible": true,
+    "mobile_overflow": false,
+    "page_errors": [],
+    "gate_readiness_loaded": true,
+    "deliverable_panel_loaded": true
+  },
+  "engineering_checks": {
+    "frontend_test_files": 74,
+    "frontend_tests_passed": 354,
+    "affected_eslint": "passed",
+    "production_build_with_typecheck": "passed",
+    "desktop_visual_inspection": "passed",
+    "mobile_visual_inspection": "passed"
+  }
+}

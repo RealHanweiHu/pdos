@@ -1,0 +1,21 @@
+{
+  "cpu": "Apple M1 Max",
+  "ram_bytes": 34359738368,
+  "os": "macOS 26.5.1 (25F80)",
+  "browser": "Chrome 152.0.7977.76",
+  "cli": "playwright-cli 1.63.0-alpha-2026-08-31",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "locale": "zh-CN",
+  "timezone": "America/Los_Angeles",
+  "device_scale_factor": 1,
+  "db": "ephemeral pgvector/pgvector:0.8.6-pg16-bookworm, pdos_test, 127.0.0.1:58432",
+  "source_baseline": "/private/tmp/pdos-ux10-20260908",
+  "source_after": "/private/tmp/pdos-ux10-after-20260908",
+  "network": "loopback, unthrottled",
+  "cpu_throttle": 1,
+  "external_delivery": false,
+  "model_calls": 0
+}

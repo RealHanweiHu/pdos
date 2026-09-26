@@ -1,0 +1,58 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-02 approval and N0-03 invocation cost evidence; partial implementation",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "server": "PostgreSQL 16.14",
+    "head": "0059_invocation_cost_evidence"
+  },
+  "tests": {
+    "gateway_schema_migration_safety": 29,
+    "event_to_model": 1,
+    "contracts_calendar_factory_adapters": 177,
+    "distinct_total": 207,
+    "budget_no_call_recheck": "1 passed; already counted"
+  },
+  "contract_verification": {
+    "pdos-v1": {
+      "current_manifest_sha256": "95d450d5fb219da67b9b4a3b9233da075f8c2393b73e1258a99f0622cdc65766",
+      "source_files_verified": 173,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "1c3cb9ae48d160eaadd6419b8d8bf6b2cbed51292f5015818673afabb7c031e6",
+      "source_files_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "approved_to_current_runtime_artifact_differences": {
+    "runtime-policy.openapi.json": [
+      "/info/title",
+      "/info/version",
+      "/x-status"
+    ],
+    "runtime-policy-defaults.json": [
+      "/source",
+      "/status"
+    ],
+    "capability-policy-matrix.json": [],
+    "runtime-adoption-inventory.json": []
+  },
+  "implementation_sources": {
+    "server/app/ai/gateway.py": "6083d909c9f057f6b2c4d89c68df6d5160c88d7fb150ccf6b3601b186c00b576",
+    "server/app/ai/application_gateway.py": "3e445f15de7d8b22cd9ef1dcd8ac0f170de782e4e015ae92920a237f13ff66b6",
+    "server/app/ai/runtime_factory.py": "70c608802ee51e6329c66ec20db9f39a875b21fe9dcb5ef9d9ebe2083d595c6b",
+    "server/app/db/schema.py": "21c351d63cc22039500bbe788872401056345f61c5cb28f0e2111ced729825a3",
+    "server/migrations/versions/0059_invocation_cost_evidence.py": "737811aa0aea4cb3ee83a7c7db552a45ea7dccb11d73e06767195ff6ee6e9816",
+    "server/tests/test_model_gateway.py": "434d28c188ac638ecd91be1d1c50668ba503c8f885f660e4fe373e98383965bf",
+    "server/tests/test_model_gateway_schema.py": "a29069c9b5b1b9dba7f679d751f427f1c0f2115b774317bb916585910e796b51",
+    "server/tests/test_migrations.py": "7b73df9ad2a8e34a36c427832a3b0852f14fcade864fa157d7a72e7e21781b03",
+    "docs/reports/2026-09-10-n0-03-cost-evidence-validation.md": "68591854c20310adf5f16a1c04d4961ed475abfbb11d0aed110139ea1a023e0f"
+  }
+}

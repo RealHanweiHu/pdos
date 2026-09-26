@@ -1,0 +1,33 @@
+# Chat 读取观察与 ContextManifest
+
+0083 已接续三个领域入口及应用 trace 数据库门禁，见[主动入口的领域来源与模型上下文](application-domain-context.md)。下文保留 0082 切片的实现与验收范围；其待办以该后续说明为准。
+
+2026-09-11，本地候选0082。预算Chat的成功证据读取已关联不可变Observation、实际出站上下文快照和逐次模型Manifest。其余主动入口仍沿0081用户授权执行，等待各自的来源适配器接入此持久化结构。
+
+## 实际接线
+
+ChatService使用现有ChatEvidenceRepository完成项目、工作项、事件、文档及可选知识读取，完成原有当前来源检查后，在准备实际模型调用时记录该次收集结果。Observation的来源ID、摘要、展示数量和正文来自真正返回的ChatEvidence，不从模型输出反推；读取实例ID是服务端记录标识，不宣称已有持久工具派发或Owner租约。
+
+应用观察保存同一run的用户授权ID、稳定model_call_id、原始引用结果，以及投影后的问题/引用、prompt/instruction/schema摘要。原始引用中的href仅保留在服务端记录，模型仍使用原出站投影。成功收集的记录不能更新或删除，同号不同正文或内容包拒绝覆盖。
+
+该读取器有固定候选窗口，未证明全库总数，因此Observation的total_count为空、status为partial；truncated=false表示没有声称已知遗漏数量。Manifest同时写明bounded_chat_collection_total_unknown，不把有界引用集合标为完整项目知识。失败的初始读取仍使用既有run错误结果，本片未将该失败路径补成Observation。
+
+本地内容包包含服务端Python、prompt JSON、迁移与安全SQL的摘要，并固定实际Chat prompt、输出schema、投影规则和收集器版本。Chat模型没有可选函数工具，model_tools为空；收集器版本与模型工具集分别记录。内容包在存储前统一为JSON表示，避免元组/数组转换造成误判。
+
+## 模型准入与记录
+
+Gateway在调用登记前检查原用户授权、实际出站上下文、prompt/instruction/schema与记录是否一致。在输入计量前、预留后派发前以及模型响应后复核当前来源；使用既有still_current的确定性查询，不重新运行嵌入检索。内容包、问题或引用、合同、当前来源变化分别返回可识别的不可用原因。
+
+每个实际结构化尝试在原预算准入之后、唯一派发之前提交ContextManifest。输入估计和输出预留取自真实预算行；版本、观察集合、来源、水位及遗漏从服务端冻结记录构建。修复重试复用同一收集观察，但追加revision/parent与独立准入行；模型资格或计量版本不能在中途更换。数据库触发器要求预算Chat的模型派发已有Manifest，即使跳过应用冻结回调也不能直接派发。
+
+Manifest digest是除digest字段外、JSON模式正文按sort_keys=True和紧凑分隔符编码的SHA-256；其规范与事件Manifest的PostgreSQL JSONB文本规范分别明确，不混用。模型trace通过稳定budget_call_id及实际准入request_binding关联观察和Manifest，本片未新增应用trace专用数据库触发器。
+
+计量前失败没有新预留；预留后失败取消尚未派发的预留。模型响应后失权或来源变化时不返回输出，但已发生用量和trace保持真实。重复已完成的Chat请求沿原重放/来源复核路径，不产生第二次模型调用或重复Manifest。
+
+## 数据库与边界
+
+application_context_observations和application_context_manifests使用既有cehub_ai namespace。观察关联同租户/run授权；Manifest通过复合外键关联授权、观察、实际预算行和上一revision。历史禁止UPDATE/DELETE，有上下文历史时拒绝降级；空历史可回退0081。
+
+Agent/Worker无新增表直接权限，无新增可调用端口。仅限本地候选，不代替部署批准、真实模型用途资格或完整环境/依赖锁定。
+
+后续继续风险/测试计划/报告映射的Observation与Manifest、初始读取失败观察、衍生来源ACL与来源数据库原子校验、Owner租约/持久派发、等待及逐步恢复。现有来源复核沿Chat收集器当前窗口，新增条目挤出旧引用时会保守停止，不声称已实现全量历史来源查询。N0-03仍部分完成。

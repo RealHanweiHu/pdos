@@ -1,0 +1,92 @@
+{
+  "my-work": {
+    "baseline_warm": {
+      "p95_ms": 133.3,
+      "p50_ms": 118.3,
+      "success": 30,
+      "in_viewport": 0,
+      "api_requests": 3
+    },
+    "baseline_cold": {
+      "p95_ms": 395.7,
+      "p50_ms": 208.9,
+      "success": 30,
+      "in_viewport": 0,
+      "api_requests": 3
+    },
+    "after_warm": {
+      "p95_ms": 133.6,
+      "p50_ms": 120.3,
+      "success": 30,
+      "in_viewport": 30,
+      "api_requests": 3
+    },
+    "after_cold": {
+      "p95_ms": 229.2,
+      "p50_ms": 209.4,
+      "success": 30,
+      "in_viewport": 30,
+      "api_requests": 3
+    }
+  },
+  "project": {
+    "baseline_warm": {
+      "p95_ms": 1138.3,
+      "p50_ms": 1007.5,
+      "success": 30,
+      "in_viewport": 0,
+      "api_requests": 7
+    },
+    "baseline_cold": {
+      "p95_ms": 1245.1,
+      "p50_ms": 1098.5,
+      "success": 30,
+      "in_viewport": 0,
+      "api_requests": 7
+    },
+    "after_warm": {
+      "p95_ms": 254.2,
+      "p50_ms": 209.7,
+      "success": 30,
+      "in_viewport": 30,
+      "api_requests": 7
+    },
+    "after_cold": {
+      "p95_ms": 316.8,
+      "p50_ms": 298.9,
+      "success": 30,
+      "in_viewport": 30,
+      "api_requests": 7
+    }
+  },
+  "review": {
+    "baseline_warm": {
+      "p95_ms": 387.2,
+      "p50_ms": 356.1,
+      "success": 30,
+      "in_viewport": 0,
+      "api_requests": 29
+    },
+    "baseline_cold": {
+      "p95_ms": 501.3,
+      "p50_ms": 472.4,
+      "success": 30,
+      "in_viewport": 0,
+      "api_requests": 29
+    },
+    "after_warm": {
+      "p95_ms": 147.8,
+      "p50_ms": 132.2,
+      "success": 30,
+      "in_viewport": 30,
+      "api_requests": 5
+    },
+    "after_cold": {
+      "p95_ms": 245.3,
+      "p50_ms": 231.8,
+      "success": 30,
+      "in_viewport": 30,
+      "api_requests": 5
+    }
+  }
+}

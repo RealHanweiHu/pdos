@@ -1,0 +1,356 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0086_application_recovery",
+  "tests": {
+    "total_distinct_passed": 197,
+    "new_cases": 19,
+    "lease_checkpoint_baseline": 27,
+    "recovery_batch": 18,
+    "business_regression": 109,
+    "restricted_batch": 42,
+    "dispatch_repair": 1,
+    "initial_business_batch": {
+      "passed": 109,
+      "failed": 1
+    },
+    "repaired_failure": "Unbound test reservation propagated the expected database rejection as DBAPIError; production-bound reservation correctly translates to BudgetLedgerError; corrected test passed.",
+    "earlier_overlapping_results_excluded": true
+  },
+  "static_checks": {
+    "ruff_files": 12,
+    "mypy_files": 7,
+    "common_export_checks": 4,
+    "runtime_export_checks": 5
+  },
+  "source_sha256": {
+    "server/app/ai/application_recovery.py": "7230ca6df485c237c9883578d8993dd05b65f1c654d60526f1fe32334e15cbeb",
+    "server/app/ai/application_leases.py": "a90f4dacd787b1bee249ccc9df7de0e6cbf6819beb213da98b02d12aef002345",
+    "server/app/ai/chat_runs.py": "2437514d0dcf7159c7786848e1c48a8234c951ba43a79949cd742a7968dcfa44",
+    "server/app/ai/import_mapping_runs.py": "7558b1476f8f4b7618b1899488a7d789bee9de2c85d459c9a89c8f9518572e3d",
+    "server/app/ai/chat.py": "dc788edfc06cfa0ff9e4b147faa3776da9f8cdbc8c039361b610dae379d3916c",
+    "server/app/ai/risk_suggestions.py": "186549e6b6a270eb46f4950c6c5734afa24417c26c9d07f20dcc4e1f580c11ce",
+    "server/app/ai/test_plan_suggestions.py": "badb2fd52fd5ba7b9d45a9f81f3ae3f19170c9c0068e196a61920f34eb795dd7",
+    "server/app/db/schema.py": "d96c1183f022a044f518cf0396e1e96510fefb1f834ccb85271c176f7bd79544",
+    "server/migrations/versions/0086_application_recovery.py": "01e39d3a2b69ecbd5688b639914cee83231b9576bb35e1919d1ac4f44d520d95",
+    "server/tests/test_application_recovery.py": "b3bd4229ca79088f5513a64bf23ac8f1817ff5eb713bd0b1df01c5f57133204b",
+    "server/tests/test_application_authorization_security.py": "6c3102ef8ea7a941f27735fbaf87289fc5f8577b77a7fd7c1033b59a4abe0c07",
+    "server/tests/test_application_checkpoints.py": "bfb4cbacb2c41c620e13ea634b591d01be159fac93f1d449d44b8426564cdcba",
+    "docs/runbooks/application-result-recovery.md": "1eec2f7123b17fb14e9bdc7e48cdc542c29358e91e77ad8452ce36f0cefb4d55",
+    "docs/reports/2026-09-11-n0-03-application-recovery-validation.md": "3bc6db13f2135c228212e522657068815454aef15f9bbd8e3c7bb25c48d86eec"
+  },
+  "log_sha256": {
+    "/tmp/pdos-application-recovery-focused.log": "e3e0cdfc6b04a7efa889d54ee0dcfb5fae0d971d5f04809a78f59c95f2a91cda",
+    "/tmp/pdos-application-recovery-complete.log": "b697d3dfaae6fbf27ea8e086539521cb2cd735a2222596f7d614fdbffeb799a7",
+    "/tmp/pdos-application-recovery-restricted.log": "280c7850bf80ade7889b603f128124a777416c148e72c6d9e3a6dff5c4cf9b21",
+    "/tmp/pdos-application-recovery-regression.log": "5365549c3fcdbf4f2a7d3b0a3fad8a794f2a51de821295b1608992b3e65ebf7e",
+    "/tmp/pdos-application-recovery-dispatch-final.log": "ef3606c6dad136df99da1688317d2eb4284f0c8d6c240a668689b9b1f43e5832",
+    "/tmp/pdos-application-recovery-mypy.log": "050c52a2b0c61e8b681ef5c485e0bc03340b8d55148e0acef27d744c8be42033",
+    "/tmp/pdos-application-recovery-lint-final.log": "f89b5905d1ee7ee5fa75e6f76b46c3aebd944a531bb138a53c505a8f711e2fcd"
+  },
+  "databases": [
+    {
+      "database": "pdos_test",
+      "port": 57432,
+      "head": "0086_application_recovery",
+      "functions": [
+        {
+          "name": "sync_run_activity",
+          "body_sha256": "614477408e0755ccecbef7694beca447585e6def625f48aec6b10ee8829bd988",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "protect_application_lease",
+          "body_sha256": "492e34c092192a76e79ec3645a20c1c1fab8eb3a9690e77dec9203915a346dfb",
+          "security_definer": false,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "claim_application_result_run",
+          "body_sha256": "cc8f3c0bf2fc03bd67d523f352adabeb3d3c78fdee7ce62123bc64fd0af1ec3e",
+          "security_definer": false,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "require_application_lease_chain",
+          "body_sha256": "cf7f009446837e8a0d2d52d6f82d3d54178a85f0db2d3a83690bdccfc27f227f",
+          "security_definer": false,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "forbid_application_recovery_dispatch",
+          "body_sha256": "154e569e5bd6823e331153078bf298e5b0c8272da5354d96bf531557d8a51ce3",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "conname": "ck_application_run_leases_generation",
+          "contype": "c",
+          "definition": "CHECK (((generation > 0) AND (((generation = 1) AND (previous_lease_id IS NULL) AND (recovery_checkpoint_id IS NULL)) OR ((generation > 1) AND (previous_lease_id IS NOT NULL) AND (recovery_checkpoint_id IS NOT NULL)))))"
+        },
+        {
+          "conname": "ck_application_run_leases_lifecycle",
+          "contype": "c",
+          "definition": "CHECK (((renewed_at >= issued_at) AND (expires_at > renewed_at) AND (((ended_at IS NULL) AND (stop_reason IS NULL)) OR ((ended_at IS NOT NULL) AND (ended_at >= issued_at) AND (stop_reason IS NOT NULL) AND (btrim((stop_reason)::text) <> ''::text)))))"
+        },
+        {
+          "conname": "fk_application_lease_checkpoint",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, recovery_checkpoint_id) REFERENCES cehub_ai.application_result_checkpoints(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_lease_previous",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, previous_lease_id) REFERENCES cehub_ai.application_run_leases(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_run_leases_tenant_id_application_authorizations",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, authorization_id) REFERENCES cehub_ai.application_authorizations(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "pk_application_run_leases",
+          "contype": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "conname": "uq_application_lease_generation",
+          "contype": "u",
+          "definition": "UNIQUE (tenant_id, run_id, generation)"
+        },
+        {
+          "conname": "uq_application_lease_scope",
+          "contype": "u",
+          "definition": "UNIQUE (tenant_id, run_id, id)"
+        }
+      ],
+      "indexes": [
+        {
+          "indexname": "pk_application_run_leases",
+          "indexdef": "CREATE UNIQUE INDEX pk_application_run_leases ON cehub_ai.application_run_leases USING btree (id)"
+        },
+        {
+          "indexname": "uq_application_lease_active",
+          "indexdef": "CREATE UNIQUE INDEX uq_application_lease_active ON cehub_ai.application_run_leases USING btree (tenant_id, run_id) WHERE (ended_at IS NULL)"
+        },
+        {
+          "indexname": "uq_application_lease_generation",
+          "indexdef": "CREATE UNIQUE INDEX uq_application_lease_generation ON cehub_ai.application_run_leases USING btree (tenant_id, run_id, generation)"
+        },
+        {
+          "indexname": "uq_application_lease_scope",
+          "indexdef": "CREATE UNIQUE INDEX uq_application_lease_scope ON cehub_ai.application_run_leases USING btree (tenant_id, run_id, id)"
+        }
+      ],
+      "table_privileges": {
+        "pdos_agent": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        },
+        "pdos_worker": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        }
+      }
+    },
+    {
+      "database": "pdos_test",
+      "port": 57433,
+      "head": "0086_application_recovery",
+      "functions": [
+        {
+          "name": "sync_run_activity",
+          "body_sha256": "614477408e0755ccecbef7694beca447585e6def625f48aec6b10ee8829bd988",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "protect_application_lease",
+          "body_sha256": "492e34c092192a76e79ec3645a20c1c1fab8eb3a9690e77dec9203915a346dfb",
+          "security_definer": false,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "claim_application_result_run",
+          "body_sha256": "cc8f3c0bf2fc03bd67d523f352adabeb3d3c78fdee7ce62123bc64fd0af1ec3e",
+          "security_definer": false,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "require_application_lease_chain",
+          "body_sha256": "cf7f009446837e8a0d2d52d6f82d3d54178a85f0db2d3a83690bdccfc27f227f",
+          "security_definer": false,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "forbid_application_recovery_dispatch",
+          "body_sha256": "154e569e5bd6823e331153078bf298e5b0c8272da5354d96bf531557d8a51ce3",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "conname": "ck_application_run_leases_generation",
+          "contype": "c",
+          "definition": "CHECK (((generation > 0) AND (((generation = 1) AND (previous_lease_id IS NULL) AND (recovery_checkpoint_id IS NULL)) OR ((generation > 1) AND (previous_lease_id IS NOT NULL) AND (recovery_checkpoint_id IS NOT NULL)))))"
+        },
+        {
+          "conname": "ck_application_run_leases_lifecycle",
+          "contype": "c",
+          "definition": "CHECK (((renewed_at >= issued_at) AND (expires_at > renewed_at) AND (((ended_at IS NULL) AND (stop_reason IS NULL)) OR ((ended_at IS NOT NULL) AND (ended_at >= issued_at) AND (stop_reason IS NOT NULL) AND (btrim((stop_reason)::text) <> ''::text)))))"
+        },
+        {
+          "conname": "fk_application_lease_checkpoint",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, recovery_checkpoint_id) REFERENCES cehub_ai.application_result_checkpoints(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_lease_previous",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, previous_lease_id) REFERENCES cehub_ai.application_run_leases(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_run_leases_tenant_id_application_authorizations",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, authorization_id) REFERENCES cehub_ai.application_authorizations(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "pk_application_run_leases",
+          "contype": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "conname": "uq_application_lease_generation",
+          "contype": "u",
+          "definition": "UNIQUE (tenant_id, run_id, generation)"
+        },
+        {
+          "conname": "uq_application_lease_scope",
+          "contype": "u",
+          "definition": "UNIQUE (tenant_id, run_id, id)"
+        }
+      ],
+      "indexes": [
+        {
+          "indexname": "pk_application_run_leases",
+          "indexdef": "CREATE UNIQUE INDEX pk_application_run_leases ON cehub_ai.application_run_leases USING btree (id)"
+        },
+        {
+          "indexname": "uq_application_lease_active",
+          "indexdef": "CREATE UNIQUE INDEX uq_application_lease_active ON cehub_ai.application_run_leases USING btree (tenant_id, run_id) WHERE (ended_at IS NULL)"
+        },
+        {
+          "indexname": "uq_application_lease_generation",
+          "indexdef": "CREATE UNIQUE INDEX uq_application_lease_generation ON cehub_ai.application_run_leases USING btree (tenant_id, run_id, generation)"
+        },
+        {
+          "indexname": "uq_application_lease_scope",
+          "indexdef": "CREATE UNIQUE INDEX uq_application_lease_scope ON cehub_ai.application_run_leases USING btree (tenant_id, run_id, id)"
+        }
+      ],
+      "table_privileges": {
+        "pdos_agent": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        },
+        "pdos_worker": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        }
+      }
+    }
+  ],
+  "approved_manifests": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "active_items": 65,
+  "temporary_container": {
+    "name": "pdos-application-recovery-test",
+    "removed": true
+  },
+  "limitations": [
+    "Original HTTP retry resumes saved results; no background claimable application queue yet",
+    "Persistent waiting and stepwise recovery without final results remain",
+    "Atomic source/dispatch validation, initial failure observations and derived/multi-anchor ACL remain",
+    "Unknown receipts are not automatically reconciled or redispatched",
+    "Synthetic model transports only; production delivery=false"
+  ],
+  "production_operations": false,
+  "real_model_calls": false,
+  "golden_changes": false,
+  "git_push": false
+}

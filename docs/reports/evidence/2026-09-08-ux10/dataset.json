@@ -1,0 +1,168 @@
+{
+  "dataset": "ux10-synthetic-v1",
+  "frozen_at": "2026-09-08T12:00:00+00:00",
+  "tenant_slug": "beepump",
+  "role": "owner",
+  "projects": [
+    {
+      "id": "b1355164-1e83-41f6-80ac-835d50d46f87",
+      "code": "UX-01",
+      "finding_id": "83c32d55-e562-4503-ae3d-c99acd0a6778",
+      "task_id": "7403f789-fe8f-4722-b1a1-84f35c39b189"
+    },
+    {
+      "id": "682e85de-d005-431d-bf09-f1e8ca1aa04d",
+      "code": "UX-02",
+      "finding_id": "c2d833f0-dbb3-4d8b-b75a-4181086f37a3",
+      "task_id": "82a69d57-f3ab-4c62-af00-0f0890a27e9e"
+    },
+    {
+      "id": "b606161e-be6a-4df3-b1f4-4344da932a14",
+      "code": "UX-03",
+      "finding_id": "df5c00e9-3daf-4ef9-a151-6586d95694e9",
+      "task_id": "3c987ee5-660a-4397-a380-2b7ac8557a1d"
+    },
+    {
+      "id": "4d8f00d8-4015-4fb6-9e35-2c5b9f6692c7",
+      "code": "UX-04",
+      "finding_id": "9ba30441-2b33-465e-9e65-b22b25f924ef",
+      "task_id": "4a148981-2b41-4d52-9d2f-768e6d61e70c"
+    },
+    {
+      "id": "e95285f6-4304-4844-a292-2a277010be37",
+      "code": "UX-05",
+      "finding_id": "10e27607-2547-4bab-81f3-4799c56566c0",
+      "task_id": "c2f9c07d-db28-4772-b1d7-5d897ebe39f5"
+    },
+    {
+      "id": "1abf93f9-74fb-4257-878b-41bca13c8d7b",
+      "code": "UX-06",
+      "finding_id": "eec8b1b9-3ef2-4833-9e9b-d3205f499c63",
+      "task_id": "f3fac7b6-cc95-4022-a2dc-e465553fc180"
+    },
+    {
+      "id": "dcf7117e-c3fb-47b3-9497-97c3c884d387",
+      "code": "UX-07",
+      "finding_id": "ec148a97-1e66-46f2-91d6-de01129da640",
+      "task_id": "6bc81bcc-e574-421d-a373-5714af109d23"
+    },
+    {
+      "id": "c97ec065-d098-4669-8441-f4ef3bd77598",
+      "code": "UX-08",
+      "finding_id": "2347e925-6723-41e0-bde8-72980035abb7",
+      "task_id": "d982d828-8571-4c35-8335-453edd75620b"
+    },
+    {
+      "id": "a98401cf-f435-4d2f-8057-5cbc5f70a086",
+      "code": "UX-09",
+      "finding_id": "9f3c74d2-ee14-49cf-8d21-a7e7d7bd4c47",
+      "task_id": "aa8a2596-5d29-480e-a72a-ad9a5d276538"
+    },
+    {
+      "id": "a760125b-b7e3-4307-913b-1c5fba48a7cc",
+      "code": "UX-10",
+      "finding_id": "233fb224-8754-4834-bc90-256511da1955",
+      "task_id": "cf4b7099-7179-43ef-8422-70195ca047fb"
+    },
+    {
+      "id": "b85e9a20-14cf-4496-a51e-49969bb7ce2d",
+      "code": "UX-11",
+      "finding_id": "9f698418-33f0-4771-a359-0e68afdccb77",
+      "task_id": "3bda169e-fdb0-4d6e-be4b-ce355fddae76"
+    },
+    {
+      "id": "666a6669-81fe-4856-b72b-816c40049adf",
+      "code": "UX-12",
+      "finding_id": "67bfaf94-4813-4031-ad88-3f482c79c6bf",
+      "task_id": "9402c74b-e761-4b01-b65a-b4367e5706e9"
+    },
+    {
+      "id": "f79108fa-a6bb-4ec2-8fa0-18d703279bff",
+      "code": "UX-13",
+      "finding_id": "83aebcd9-345c-4709-92de-48c2649b8ea7",
+      "task_id": "6db4fffb-a65a-4a25-ba88-2d20ba1405b5"
+    },
+    {
+      "id": "17fa022b-b4a8-40a3-9600-a92b04cf4c88",
+      "code": "UX-14",
+      "finding_id": "c9dc468c-914b-4ee1-b2fc-e58829d7b110",
+      "task_id": "8eebaf45-2701-4884-9db6-8ab881f3f831"
+    },
+    {
+      "id": "7d586a25-d79f-4272-be6a-0d1383af762a",
+      "code": "UX-15",
+      "finding_id": "76f1a64c-bee9-484f-a618-4263f6f74e74",
+      "task_id": "625748ff-a0a3-4c29-9ea8-939d05ff2267"
+    },
+    {
+      "id": "7bfc8229-4bcf-44cb-a143-6c098a7ababf",
+      "code": "UX-16",
+      "finding_id": "2ed8f09c-040b-4fdf-b342-f33392b1b831",
+      "task_id": "304da01b-e79a-48d4-969a-5d9d5bff0346"
+    },
+    {
+      "id": "041e1d30-e7db-4414-9fc6-d06cd6f5eadc",
+      "code": "UX-17",
+      "finding_id": "54113af7-9369-4b46-9fbe-b66765c9e775",
+      "task_id": "dd4e3f31-dd1f-4a64-bc39-9743776bd1bb"
+    },
+    {
+      "id": "debea322-3516-4121-a80e-962661f8f4fa",
+      "code": "UX-18",
+      "finding_id": "ceeb497b-af3a-404d-872f-5087387f4772",
+      "task_id": "368eb5d4-91c3-42c4-b5d0-08bd357c19b2"
+    },
+    {
+      "id": "2b94cc83-a5e7-4229-b944-af8b7d02c977",
+      "code": "UX-19",
+      "finding_id": "b373be8a-16c4-4f27-9c44-b5bd3c99c5cc",
+      "task_id": "48b15508-d2ff-44ab-b5ed-21693a0237f3"
+    },
+    {
+      "id": "831a100c-ff52-40d0-b075-9c8a285d008e",
+      "code": "UX-20",
+      "finding_id": "072f82a3-8815-4834-aa5a-4850fc16f857",
+      "task_id": "e1547e37-d1ad-4ffa-8309-f8f13b49e74f"
+    },
+    {
+      "id": "ca9cd244-688a-42e3-ac76-f2e0d84285e5",
+      "code": "UX-21",
+      "finding_id": "d6a1cfef-c341-42ec-b551-ae41c89dacb8",
+      "task_id": "8e7dce3c-02d6-4695-b6c1-ad8c80e267fd"
+    },
+    {
+      "id": "6e984fba-e81b-44ba-8c59-20ab28678dba",
+      "code": "UX-22",
+      "finding_id": "ae9882c0-c0b1-4c42-a803-a436dad2efb6",
+      "task_id": "d4906d82-60ec-4bf1-b781-8b443ec7ae61"
+    },
+    {
+      "id": "43d89122-ea4a-4205-9cb8-30aa00ee757b",
+      "code": "UX-23",
+      "finding_id": "76c0ee76-f958-4f0b-ad38-332eb7992e9c",
+      "task_id": "ae0cc61e-65d3-46cc-8441-8ff463017e39"
+    },
+    {
+      "id": "a6df4367-7158-4783-83bf-7947f2c099d7",
+      "code": "UX-24",
+      "finding_id": "ee0ab3a5-6bf2-4a32-a4db-f6e929e519a3",
+      "task_id": "825d992f-29a9-4cfc-938c-89761a9164be"
+    },
+    {
+      "id": "ab1eef5f-339f-4154-ae49-6b3391bc08b2",
+      "code": "UX-25",
+      "finding_id": "c502c971-c8bd-4e4f-b782-c544b490be35",
+      "task_id": "3e550958-7c51-46d5-b5cb-c8f97d057ef4"
+    }
+  ],
+  "counts": {
+    "projects": 25,
+    "tasks": 1460,
+    "task_dependencies": 2820,
+    "issues": 500,
+    "risks": 200,
+    "findings": 100,
+    "reminders": 200
+  },
+  "migration": "0058_ai_test_plan_changes"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "kind": "my-work",
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "primaryTop": 455.6953125,
+    "primaryInViewport": true
+  },
+  {
+    "kind": "project",
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "primaryTop": 509.140625,
+    "primaryInViewport": true
+  },
+  {
+    "kind": "review",
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "primaryTop": 441.046875,
+    "primaryInViewport": true
+  },
+  {
+    "kind": "my-work",
+    "width": 320,
+    "height": 568,
+    "overflow": false,
+    "primaryTop": 455.6953125,
+    "primaryInViewport": true
+  },
+  {
+    "kind": "project",
+    "width": 320,
+    "height": 568,
+    "overflow": false,
+    "primaryTop": 509.140625,
+    "primaryInViewport": true
+  },
+  {
+    "kind": "review",
+    "width": 320,
+    "height": 568,
+    "overflow": false,
+    "primaryTop": 441.046875,
+    "primaryInViewport": true
+  }
+]

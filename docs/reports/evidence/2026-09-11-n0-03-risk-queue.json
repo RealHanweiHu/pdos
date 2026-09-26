@@ -1,0 +1,57 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0092_risk_application_queue",
+  "tests": {
+    "backend_distinct_passed": 10,
+    "risk_queue_cases": 3,
+    "existing_chat_queue": 6,
+    "synchronous_risk_compatibility": 1,
+    "test_only_repair": "Corrected OwnerAgentRunStore.claim method name; focused test passed."
+  },
+  "static_checks": {
+    "mypy_files": 8,
+    "ruff_files": 10,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0092_risk_application_queue",
+    "constraints": {
+      "ck_agent_runs_event_bounds_consistent": "CHECK (((((((agent_key)::text = 'ai_chat'::text) OR (((agent_key)::text = 'quality_intelligence'::text) AND ((context_version)::text = 'report-mapping-request-v1'::text))) AND (subscription_id IS NULL) AND (first_event_row_id IS NULL) AND (last_event_row_id IS NULL) AND (event_count = 0) AND (event_row_ids = '[]'::jsonb) AND (request_id IS NOT NULL) AND (btrim((request_id)::text) <> ''::text) AND (requested_by_user_id IS NOT NULL) AND (((status)::text = ANY ((ARRAY['running'::character varying, 'succeeded'::character varying, 'degraded'::character varying, 'failed'::character varying])::text[])) OR (((agent_key)::text = 'ai_chat'::text) AND ((status)::text = 'queued'::text)))) OR (((agent_key)::text <> 'ai_chat'::text) AND (subscription_id IS NOT NULL) AND (((request_id IS NULL) AND (requested_by_user_id IS NULL)) OR (((agent_key)::text = 'project_intelligence'::text) AND ((context_version)::text = 'risk-suggestion-request-v1'::text) AND (request_id IS NOT NULL) AND (btrim((request_id)::text) <> ''::text) AND (requested_by_user_id IS NOT NULL))) AND (first_event_row_id IS NOT NULL) AND (last_event_row_id IS NOT NULL) AND\nCASE\n    WHEN (jsonb_typeof(event_row_ids) = 'array'::text) THEN ((event_count > 0) AND (first_event_row_id > 0) AND (last_event_row_id >= first_event_row_id) AND (jsonb_array_length(event_row_ids) = event_count) AND (((event_row_ids ->> 0))::bigint = first_event_row_id) AND (((event_row_ids ->> (event_count - 1)))::bigint = last_event_row_id))\n    ELSE false\nEND)) IS TRUE))",
+      "ck_agent_runs_lifecycle_consistent": "CHECK (((((status)::text = ANY ((ARRAY['debouncing'::character varying, 'queued'::character varying])::text[])) AND (started_at IS NULL) AND (completed_at IS NULL)) OR (((status)::text = ANY ((ARRAY['running'::character varying, 'waiting_input'::character varying])::text[])) AND (started_at IS NOT NULL) AND (completed_at IS NULL)) OR (((status)::text = ANY ((ARRAY['succeeded'::character varying, 'degraded'::character varying, 'failed'::character varying])::text[])) AND (started_at IS NOT NULL) AND (completed_at IS NOT NULL)) OR ((((status)::text = 'failed'::text) AND (started_at IS NULL) AND (completed_at IS NOT NULL) AND ((((dispatch_policy)::text = 'milestone.v1'::text) AND (dispatch_deadline IS NOT NULL) AND ((error_code)::text = 'AGENT_TRIGGER_DEADLINE_EXCEEDED'::text)) OR ((error_code)::text = ANY ((ARRAY['BUDGET_LINEAGE_EXPIRED'::character varying, 'AGENT_AUTHORIZATION_CHANGED'::character varying])::text[])) OR (((agent_key)::text = ANY ((ARRAY['ai_chat'::character varying, 'project_intelligence'::character varying])::text[])) AND ((run_context ->> 'application_queue_version'::text) = '1'::text)))) IS TRUE)))"
+    },
+    "queue_index": "CREATE INDEX ix_application_risk_queue ON cehub_ai.agent_runs USING btree (created_at, id) WHERE (((agent_key)::text = 'project_intelligence'::text) AND (request_id IS NOT NULL) AND ((status)::text = 'queued'::text))"
+  },
+  "source_sha256": {
+    "server/app/ai/application_queue_claim.py": "bbc17c079481f304334261fbb7ee03d45e1e353916ae18f047e2a6a2acf05141",
+    "server/app/ai/chat_runs.py": "740a499526afc36c4d2880ce8778f613f331b93c8b463e34d3cf59c99ec68201",
+    "server/app/ai/risk_queue.py": "631ace8287ebdf7f76087d8276b1074cd768957edd661a24567ed1f17475e343",
+    "server/app/ai/risk_suggestions.py": "317f73b0d64adbb39ed2ca99833a7ff97bef154f7f935f383d93b3d890cc928b",
+    "server/app/ai/run_store.py": "25d45217945092c5b506f0fffd2e71502f109df51664c4de3cc06bef56793e58",
+    "server/app/api/ai.py": "284839dae9912a8a9ace56322dcec5e9c3882b3441ecd3b67a459628b7cb6feb",
+    "server/app/db/schema.py": "30a7b558333127d257b13d4ad438d74d2aee76317603940efca973201fe7c7aa",
+    "server/scripts/run_application_worker.py": "0139e6492a1778f327c51ec5343465a1507e26d41e71d8e9a57623565cff6396",
+    "server/migrations/versions/0092_risk_application_queue.py": "00736663609089e277acab611eee5302c1ef474830b1490e584e65846de63e5e",
+    "server/tests/test_risk_queue.py": "666ad2172391da508db86ed1aefd853f668ff06c98183663e982173fea8cae3c",
+    "docs/runbooks/risk-application-queue.md": "2e2f97adcbd0966e40ccc3d962ffbae08df90ff0d394a5ea071e41f3956872ca",
+    "docs/reports/2026-09-11-n0-03-risk-queue-validation.md": "eb4f7acbbfbc5b264f1078fd8586b1f59c3632b07c3dc74b3ae189e65f153e14"
+  },
+  "log_sha256": {
+    "/tmp/pdos-risk-queue-tests.log": "e94b2273992a58b95256c21c9e4f963fe607985b443a086de47f83d40222b780",
+    "/tmp/pdos-risk-queue-repair.log": "732760a7870e440c27b01f7050cbc0b59de973d60de25370705d56e61b9cd4fe",
+    "/tmp/pdos-risk-queue-mypy.log": "157a09cfcdfdfb5977479c5a1c08345149263a3e990a2ec976ef28aaeec9cae6",
+    "/tmp/pdos-risk-queue-ruff.log": "dbbc151b04b61d60452d8e21226a32e1c497fc1ec16d7f6e70245ef7ea4a6993",
+    "/tmp/pdos-risk-queue-migration.log": "6f0bb597a91c988dd46d4585684926f908dae75d23fe652580370d3331d9cfec"
+  },
+  "approved_manifest_sha256": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "temporary_container_removed": "pdos-risk-queue-test",
+  "production_changed": false,
+  "real_provider_calls": false,
+  "goal_complete": false
+}
