@@ -1,0 +1,186 @@
+"""Persistent engineering change work-package candidates.
+Revision ID: 0192_change_work_package_runs
+Revises: 0191_change_execution_followups
+"""
+
+import sqlalchemy as sa
+from alembic import op
+
+revision = "0192_change_work_package_runs"
+down_revision = "0191_change_execution_followups"
+branch_labels = None
+depends_on = None
+CHANGES = [
+    (
+        "agent_runs",
+        "ck_agent_runs_event_bounds_consistent",
+        """
+(((agent_key = 'ai_chat' OR (agent_key = 'quality_intelligence' AND context_version =
+'report-mapping-request-v1') OR (agent_key='knowledge_lite' AND context_version IN
+('meeting-reading-request-v1','meeting-minutes-request-v1','meeting-actions-request-v1','meeting-decisions-request-v1','meeting-business-request-v1')))
+AND subscription_id IS NULL AND first_event_row_id IS NULL AND last_event_row_id IS NULL AND
+event_count = 0 AND event_row_ids = '[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)
+<> '' AND requested_by_user_id IS NOT NULL AND (status IN ('running', 'succeeded', 'degraded',
+'failed') OR (agent_key IN ('ai_chat','quality_intelligence') AND status = 'queued'))) OR
+(agent_key <> 'ai_chat' AND subscription_id IS NOT NULL AND ((request_id IS NULL AND
+requested_by_user_id IS NULL) OR ((agent_key='project_intelligence' AND
+context_version='risk-suggestion-request-v1' OR agent_key='quality_intelligence' AND
+context_version='test-plan-request-v1') AND request_id IS NOT NULL AND btrim(request_id)<>'' AND
+requested_by_user_id IS NOT NULL)) AND first_event_row_id IS NOT NULL AND last_event_row_id IS
+NOT NULL AND CASE WHEN jsonb_typeof(event_row_ids) = 'array' THEN event_count > 0 AND
+first_event_row_id > 0 AND last_event_row_id >= first_event_row_id AND
+jsonb_array_length(event_row_ids) = event_count AND (event_row_ids->>0)::bigint =
+first_event_row_id AND (event_row_ids->>(event_count - 1))::bigint = last_event_row_id ELSE
+false END)) IS TRUE
+""",
+        """
+(((agent_key = 'ai_chat' OR (agent_key = 'quality_intelligence' AND context_version =
+'report-mapping-request-v1') OR (agent_key='knowledge_lite' AND context_version IN
+('meeting-reading-request-v1','meeting-minutes-request-v1','meeting-actions-request-v1','meeting-decisions-request-v1','meeting-business-request-v1'))
+OR (agent_key='engineering_intelligence' AND context_version='change-work-package-request-v1'))
+AND subscription_id IS NULL AND first_event_row_id IS NULL AND last_event_row_id IS NULL AND
+event_count = 0 AND event_row_ids = '[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)
+<> '' AND requested_by_user_id IS NOT NULL AND (status IN ('running', 'succeeded', 'degraded',
+'failed') OR (agent_key IN ('ai_chat','quality_intelligence') AND status = 'queued'))) OR
+(agent_key <> 'ai_chat' AND subscription_id IS NOT NULL AND ((request_id IS NULL AND
+requested_by_user_id IS NULL) OR ((agent_key='project_intelligence' AND
+context_version='risk-suggestion-request-v1' OR agent_key='quality_intelligence' AND
+context_version='test-plan-request-v1') AND request_id IS NOT NULL AND btrim(request_id)<>'' AND
+requested_by_user_id IS NOT NULL)) AND first_event_row_id IS NOT NULL AND last_event_row_id IS
+NOT NULL AND CASE WHEN jsonb_typeof(event_row_ids) = 'array' THEN event_count > 0 AND
+first_event_row_id > 0 AND last_event_row_id >= first_event_row_id AND
+jsonb_array_length(event_row_ids) = event_count AND (event_row_ids->>0)::bigint =
+first_event_row_id AND (event_row_ids->>(event_count - 1))::bigint = last_event_row_id ELSE
+false END)) IS TRUE
+""",
+    ),
+    (
+        "findings",
+        "ck_findings_evidence_event_ids_array",
+        """
+jsonb_typeof(evidence_event_ids) = 'array' AND (jsonb_array_length(evidence_event_ids) > 0 OR
+(finding_type IN
+('meeting_minutes','meeting_action','meeting_decision','meeting_issue','meeting_risk','meeting_change')
+AND evidence_event_ids='[]'::jsonb))
+""",
+        """
+jsonb_typeof(evidence_event_ids) = 'array' AND (jsonb_array_length(evidence_event_ids) > 0 OR
+(finding_type IN
+('meeting_minutes','meeting_action','meeting_decision','meeting_issue','meeting_risk','meeting_change','change_work_package')
+AND evidence_event_ids='[]'::jsonb))
+""",
+    ),
+    (
+        "findings",
+        "ck_findings_type_allowed",
+        """
+(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', 'blocker_alert',
+'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' AND finding_type IN
+('knowledge_draft', 'meeting_minutes', 'meeting_action', 'meeting_decision', 'meeting_issue',
+'meeting_risk', 'meeting_change')) OR (agent_key = 'engineering_intelligence' AND finding_type
+IN ('bom_impact_suggestion', 'change_impact_suggestion')) OR (agent_key = 'quality_intelligence'
+AND finding_type IN ('quality_cluster_alert', 'capa_suggestion', 'test_plan_change')) OR
+(agent_key = 'supplier_intelligence' AND finding_type = 'supplier_delay_risk') OR (agent_key =
+'executive_intelligence' AND finding_type = 'executive_portfolio_brief')
+""",
+        """
+(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', 'blocker_alert',
+'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' AND finding_type IN
+('knowledge_draft', 'meeting_minutes', 'meeting_action', 'meeting_decision', 'meeting_issue',
+'meeting_risk', 'meeting_change')) OR (agent_key = 'engineering_intelligence' AND finding_type
+IN ('bom_impact_suggestion', 'change_impact_suggestion', 'change_work_package')) OR (agent_key =
+'quality_intelligence' AND finding_type IN ('quality_cluster_alert', 'capa_suggestion',
+'test_plan_change')) OR (agent_key = 'supplier_intelligence' AND finding_type =
+'supplier_delay_risk') OR (agent_key = 'executive_intelligence' AND finding_type =
+'executive_portfolio_brief')
+""",
+    ),
+    (
+        "finding_quality_controls",
+        "ck_finding_quality_controls_type_allowed",
+        """
+(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', 'blocker_alert',
+'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' AND finding_type IN
+('knowledge_draft', 'meeting_minutes', 'meeting_action', 'meeting_decision', 'meeting_issue',
+'meeting_risk', 'meeting_change')) OR (agent_key = 'engineering_intelligence' AND finding_type
+IN ('bom_impact_suggestion', 'change_impact_suggestion')) OR (agent_key = 'quality_intelligence'
+AND finding_type IN ('quality_cluster_alert', 'capa_suggestion', 'test_plan_change')) OR
+(agent_key = 'supplier_intelligence' AND finding_type = 'supplier_delay_risk') OR (agent_key =
+'executive_intelligence' AND finding_type = 'executive_portfolio_brief')
+""",
+        """
+(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', 'blocker_alert',
+'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' AND finding_type IN
+('knowledge_draft', 'meeting_minutes', 'meeting_action', 'meeting_decision', 'meeting_issue',
+'meeting_risk', 'meeting_change')) OR (agent_key = 'engineering_intelligence' AND finding_type
+IN ('bom_impact_suggestion', 'change_impact_suggestion', 'change_work_package')) OR (agent_key =
+'quality_intelligence' AND finding_type IN ('quality_cluster_alert', 'capa_suggestion',
+'test_plan_change')) OR (agent_key = 'supplier_intelligence' AND finding_type =
+'supplier_delay_risk') OR (agent_key = 'executive_intelligence' AND finding_type =
+'executive_portfolio_brief')
+""",
+    ),
+]
+GUARD = """
+CREATE FUNCTION cehub_ai.guard_change_work_package_finding() RETURNS trigger
+LANGUAGE plpgsql SET search_path=pg_catalog AS $$
+BEGIN
+IF TG_OP='UPDATE' AND OLD.finding_type='change_work_package' AND
+(NEW.finding_type<>OLD.finding_type OR NEW.proposed_payload IS DISTINCT FROM OLD.proposed_payload
+OR NEW.run_id<>OLD.run_id OR NEW.model_invocation_id<>OLD.model_invocation_id)
+THEN RAISE EXCEPTION 'Change candidate origin is immutable' USING ERRCODE='23514'; END IF;
+IF NEW.finding_type<>'change_work_package' THEN RETURN NEW; END IF;
+IF NEW.evidence_event_ids<>'[]'::jsonb OR NOT EXISTS(
+SELECT 1 FROM cehub_ai.agent_runs r JOIN cehub_ai.model_invocations i
+ON i.tenant_id=r.tenant_id AND i.project_id=r.project_id AND i.run_id=r.id
+WHERE r.tenant_id=NEW.tenant_id AND r.project_id=NEW.project_id AND r.id=NEW.run_id
+AND r.agent_key='engineering_intelligence' AND r.context_version='change-work-package-request-v1'
+AND i.id=NEW.model_invocation_id AND i.agent_key=r.agent_key AND i.status='succeeded'
+AND i.prompt_version=r.run_context->>'impact_prompt_version'
+AND NEW.proposed_payload->>'ecr_id'=r.run_context->'impact_source'->>'ecr_id'
+AND NEW.proposed_payload->>'source_digest'=r.run_context->'impact_source'->>'digest'
+AND NEW.proposed_payload->>'depth'=r.run_context->>'impact_depth'
+) THEN RAISE EXCEPTION 'Change candidate must bind actual model run and sources'
+USING ERRCODE='23514'; END IF;
+IF NEW.accepted_payload IS NOT NULL AND EXISTS(SELECT 1 FROM
+unnest(ARRAY['ecr_id','source_digest','depth','assessment']) k
+WHERE NEW.accepted_payload->k IS DISTINCT FROM NEW.proposed_payload->k)
+THEN RAISE EXCEPTION 'Review must retain source and original assessment'
+USING ERRCODE='23514'; END IF;
+RETURN NEW;
+END $$
+"""
+
+
+def upgrade() -> None:
+    for table, name, _, after in CHANGES:
+        op.drop_constraint(op.f(name), table, schema="cehub_ai", type_="check")
+        op.create_check_constraint(op.f(name), table, after, schema="cehub_ai")
+    op.execute(sa.text(GUARD))
+    op.execute(
+        "CREATE TRIGGER guard_change_work_package_finding BEFORE INSERT OR UPDATE "
+        "ON cehub_ai.findings FOR EACH ROW EXECUTE FUNCTION "
+        "cehub_ai.guard_change_work_package_finding()"
+    )
+
+
+def downgrade() -> None:
+    if (
+        op.get_bind()
+        .execute(
+            sa.text(
+                "SELECT EXISTS(SELECT 1 FROM cehub_ai.agent_runs "
+                "WHERE context_version='change-work-package-request-v1') OR EXISTS(SELECT 1 "
+                "FROM cehub_ai.findings WHERE finding_type='change_work_package') "
+                "OR EXISTS(SELECT 1 "
+                "FROM cehub_ai.finding_quality_controls WHERE finding_type='change_work_package')"
+            )
+        )
+        .scalar()
+    ):
+        raise RuntimeError("Refusing to discard engineering analysis history")
+    op.execute("DROP TRIGGER guard_change_work_package_finding ON cehub_ai.findings")
+    op.execute("DROP FUNCTION cehub_ai.guard_change_work_package_finding()")
+    for table, name, before, _ in reversed(CHANGES):
+        op.drop_constraint(op.f(name), table, schema="cehub_ai", type_="check")
+        op.create_check_constraint(op.f(name), table, before, schema="cehub_ai")

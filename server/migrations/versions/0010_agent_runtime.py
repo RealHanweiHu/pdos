@@ -322,6 +322,10 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # Later dispatch migrations also install this function without the optional
+    # DBA runtime template. Do not leave its PL/pgSQL body referring to a removed
+    # agent_runs table when reverting past the runtime's owning revision.
+    op.execute("DROP FUNCTION IF EXISTS cehub_ai.claim_agent_run(timestamptz)")
     op.drop_constraint(
         "fk_model_invocations_tenant_run",
         "model_invocations",

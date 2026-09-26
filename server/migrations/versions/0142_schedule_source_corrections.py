@@ -1,0 +1,126 @@
+"""Append-only human corrections of business schedule actual windows."""
+
+import sqlalchemy as sa
+from alembic import op
+
+revision = "0142_schedule_source_corrections"
+down_revision = "0141_recertification_lineage"
+branch_labels = None
+depends_on = None
+
+
+def upgrade() -> None:
+    op.execute(
+        "\nCREATE TABLE cehub_project.schedule_source_corrections (\n\ti"
+        "d UUID NOT NULL, \n\ttenant_id UUID NOT NULL, \n\tproject_id UUI"
+        "D NOT NULL, \n\tnode_id UUID NOT NULL, \n\tobservation_id UUID N"
+        "OT NULL, \n\tversion INTEGER NOT NULL, \n\toriginal_snapshot JSO"
+        "NB NOT NULL, \n\tprevious_snapshot JSONB NOT NULL, \n\tstarted_a"
+        "t TIMESTAMP WITH TIME ZONE, \n\tfinished_at TIMESTAMP WITH TIM"
+        "E ZONE, \n\treason TEXT NOT NULL, \n\tevidence TEXT NOT NULL, \n\t"
+        "actor_user_id UUID NOT NULL, \n\tevent_row_id BIGINT NOT NULL,"
+        " \n\taudit_row_id BIGINT NOT NULL, \n\trequest_id UUID NOT NULL,"
+        " \n\trequest_digest VARCHAR(64) NOT NULL, \n\tcreated_at TIMESTA"
+        "MP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, \n\tCONS"
+        "TRAINT pk_schedule_source_corrections PRIMARY KEY (id), \n\tCO"
+        "NSTRAINT uq_source_correction_scope UNIQUE (tenant_id, proje"
+        "ct_id, id), \n\tCONSTRAINT uq_source_correction_version UNIQUE"
+        " (tenant_id, node_id, version), \n\tCONSTRAINT uq_source_corre"
+        "ction_request UNIQUE (tenant_id, actor_user_id, request_id),"
+        " \n\tCONSTRAINT fk_source_correction_node FOREIGN KEY(tenant_i"
+        "d, project_id, node_id) REFERENCES cehub_project.schedule_no"
+        "des (tenant_id, project_id, id) ON DELETE RESTRICT, \n\tCONSTR"
+        "AINT fk_source_correction_observation FOREIGN KEY(tenant_id,"
+        " project_id, observation_id) REFERENCES cehub_project.schedu"
+        "le_source_observations (tenant_id, project_id, id) ON DELETE"
+        " RESTRICT, \n\tCONSTRAINT fk_schedule_source_corrections_tenan"
+        "t_id_users FOREIGN KEY(tenant_id, actor_user_id) REFERENCES "
+        "cehub_core.users (tenant_id, id) ON DELETE RESTRICT, \n\tCONST"
+        "RAINT fk_schedule_source_corrections_tenant_id_events FOREIG"
+        "N KEY(tenant_id, event_row_id) REFERENCES cehub_event.events"
+        " (tenant_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT fk_schedul"
+        "e_source_corrections_tenant_id_audit_log FOREIGN KEY(tenant_"
+        "id, audit_row_id) REFERENCES cehub_audit.audit_log (tenant_i"
+        "d, id) ON DELETE RESTRICT, \n\tCONSTRAINT ck_schedule_source_c"
+        "orrections_source_correction_values CHECK (version>0 AND len"
+        "gth(btrim(reason))>0 AND length(btrim(evidence))>0 AND (star"
+        "ted_at IS NULL OR finished_at IS NULL OR finished_at>=starte"
+        "d_at))\n)\n\n"
+    )
+    op.execute(
+        "CREATE FUNCTION cehub_project.guard_source_actual_correction"
+        "() RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catal"
+        "og AS $$\nDECLARE observation cehub_project.schedule_source_o"
+        "bservations%ROWTYPE; latest integer;\nBEGIN\n PERFORM 1 FROM c"
+        "ehub_project.projects WHERE tenant_id=NEW.tenant_id AND id=N"
+        "EW.project_id FOR UPDATE;\n SELECT * INTO observation FROM ce"
+        "hub_project.schedule_source_observations WHERE tenant_id=NEW"
+        ".tenant_id AND project_id=NEW.project_id AND node_id=NEW.nod"
+        "e_id ORDER BY version DESC LIMIT 1;\n SELECT max(version) INT"
+        "O latest FROM cehub_project.schedule_source_corrections WHER"
+        "E tenant_id=NEW.tenant_id AND node_id=NEW.node_id;\n IF obser"
+        "vation.id IS DISTINCT FROM NEW.observation_id OR NEW.version"
+        "<>COALESCE(latest,0)+1 OR NEW.original_snapshot->>'id' IS DI"
+        "STINCT FROM observation.id::text OR NEW.original_snapshot->>"
+        "'node_id' IS DISTINCT FROM NEW.node_id::text OR (NEW.origina"
+        "l_snapshot->>'started_at')::timestamptz IS DISTINCT FROM obs"
+        "ervation.started_at OR (NEW.original_snapshot->>'finished_at"
+        "')::timestamptz IS DISTINCT FROM observation.finished_at THE"
+        "N RAISE EXCEPTION 'Actual correction requires the exact late"
+        "st scoped source observation' USING ERRCODE='23514'; END IF;"
+        "\n IF observation.node_kind='milestone' AND (NEW.started_at I"
+        "S NULL OR NEW.finished_at IS DISTINCT FROM NEW.started_at) T"
+        "HEN RAISE EXCEPTION 'Milestone corrections must remain one a"
+        "ctual instant' USING ERRCODE='23514'; END IF;\n IF NEW.starte"
+        "d_at IS NOT NULL AND observation.started_at IS NULL AND obse"
+        "rvation.source_status NOT IN ('in_progress','completed','pas"
+        "sed','failed','aborted','approved','conditional','hold','rej"
+        "ected','valid','expired','revoked') THEN RAISE EXCEPTION 'Co"
+        "rrection cannot stand in for starting source work' USING ERR"
+        "CODE='23514'; END IF;\n IF NEW.finished_at IS NOT NULL AND ob"
+        "servation.finished_at IS NULL AND observation.source_status "
+        "NOT IN ('completed','passed','failed','aborted','approved','"
+        "conditional','hold','rejected','valid','expired','revoked') "
+        "THEN RAISE EXCEPTION 'Correction cannot stand in for a sourc"
+        "e completion decision' USING ERRCODE='23514'; END IF;\n IF NO"
+        "T EXISTS(SELECT 1 FROM cehub_audit.audit_log a JOIN cehub_ev"
+        "ent.events e ON e.tenant_id=a.tenant_id AND e.project_id=a.p"
+        "roject_id AND e.event_id=a.event_id AND e.entity_id=a.entity"
+        "_id WHERE a.tenant_id=NEW.tenant_id AND a.project_id=NEW.pro"
+        "ject_id AND a.id=NEW.audit_row_id AND e.id=NEW.event_row_id "
+        "AND a.entity_id=NEW.node_id AND a.actor_user_id=NEW.actor_us"
+        "er_id AND a.action='schedule_source_actual.correct' AND e.ev"
+        "ent_type='SCHEDULE_SOURCE_ACTUAL_CORRECTED' AND e.source='pl"
+        "anning_service' AND e.timestamp=a.timestamp AND a.before_sna"
+        "pshot=NEW.previous_snapshot AND a.after_snapshot->>'id'=NEW."
+        "id::text AND a.after_snapshot->>'observation_id'=NEW.observa"
+        "tion_id::text AND a.after_snapshot->>'version'=NEW.version::"
+        "text AND (a.after_snapshot->>'started_at')::timestamptz IS N"
+        "OT DISTINCT FROM NEW.started_at AND (a.after_snapshot->>'fin"
+        "ished_at')::timestamptz IS NOT DISTINCT FROM NEW.finished_at"
+        " AND a.after_snapshot->>'reason'=NEW.reason AND a.after_snap"
+        "shot->>'evidence'=NEW.evidence AND (NEW.started_at IS NULL O"
+        "R NEW.started_at<=a.timestamp) AND (NEW.finished_at IS NULL "
+        "OR NEW.finished_at<=a.timestamp)) THEN RAISE EXCEPTION 'Actu"
+        "al correction must retain its human event, times and evidenc"
+        "e' USING ERRCODE='23514'; END IF;\n RETURN NEW;\nEND $$;\nCREAT"
+        "E TRIGGER guard_source_actual_correction BEFORE INSERT ON ce"
+        "hub_project.schedule_source_corrections FOR EACH ROW EXECUTE"
+        " FUNCTION cehub_project.guard_source_actual_correction();\nCR"
+        "EATE TRIGGER protect_capacity_history BEFORE UPDATE OR DELET"
+        "E ON cehub_project.schedule_source_corrections FOR EACH ROW "
+        "EXECUTE FUNCTION cehub_project.protect_capacity_history();\nR"
+        "EVOKE ALL ON FUNCTION cehub_project.guard_source_actual_corr"
+        "ection() FROM PUBLIC;\n"
+    )
+
+
+def downgrade() -> None:
+    if (
+        op.get_bind()
+        .execute(sa.text("SELECT EXISTS(SELECT 1 FROM cehub_project.schedule_source_corrections)"))
+        .scalar_one()
+    ):
+        raise RuntimeError("Refusing to discard human correction history")
+    op.drop_table("schedule_source_corrections", schema="cehub_project")
+    op.execute("DROP FUNCTION cehub_project.guard_source_actual_correction()")

@@ -1,0 +1,127 @@
+"""Add Risk supplemental-field generation while retaining v1-v8 contracts."""
+
+from alembic import op
+
+revision = "0289_template_generation_v9"
+down_revision = "0288_risk_template_fields"
+branch_labels = None
+depends_on = None
+
+V8 = (
+    "\n\nCREATE OR REPLACE FUNCTION cehub_ai.guard_tenant_template_run("
+    ") RETURNS trigger\nLANGUAGE plpgsql SET search_path=pg_catalog AS"
+    " $$\nDECLARE b cehub_core.process_template_briefs;\nBEGIN\n IF TG_O"
+    "P='UPDATE' AND (NEW.scope_kind,NEW.project_id) IS DISTINCT FROM\n"
+    "(OLD.scope_kind,OLD.project_id) THEN\n  RAISE EXCEPTION 'Run scop"
+    "e is immutable';\n END IF;\n IF NEW.scope_kind<>'tenant' THEN RETU"
+    "RN NEW; END IF;\n IF TG_OP='UPDATE' AND (NEW.tenant_id,NEW.agent_"
+    "key,NEW.request_id,NEW.requested_by_user_id,\n  NEW.context_versi"
+    "on,NEW.run_context->'process_template_brief_id',\n  NEW.run_conte"
+    "xt->'process_template_root_brief_id',\n  NEW.run_context->'proces"
+    "s_template_source_digest',NEW.run_context->'process_template_sou"
+    "rce',\nNEW.run_context->'process_template_prompt_version',NEW.run"
+    "_context->'process_template_schema_digest')\n  IS DISTINCT FROM ("
+    "OLD.tenant_id,OLD.agent_key,OLD.request_id,OLD.requested_by_user"
+    "_id,\n  OLD.context_version,OLD.run_context->'process_template_br"
+    "ief_id',\n  OLD.run_context->'process_template_root_brief_id',\n  "
+    "OLD.run_context->'process_template_source_digest',OLD.run_contex"
+    "t->'process_template_source',\nOLD.run_context->'process_template"
+    "_prompt_version',OLD.run_context->'process_template_schema_diges"
+    "t')\nTHEN\n  RAISE EXCEPTION 'Organization run input identity is i"
+    "mmutable';\n END IF;\n SELECT * INTO b FROM cehub_core.process_tem"
+    "plate_briefs WHERE tenant_id=NEW.tenant_id\n  AND id::text=NEW.ru"
+    "n_context->>'process_template_brief_id';\n IF b.id IS NULL OR NEW"
+    ".run_context->'process_template_source' IS DISTINCT FROM b.sourc"
+    "e_snapshot\n  OR NEW.run_context->>'process_template_source_diges"
+    "t' IS DISTINCT FROM b.source_digest\n  OR coalesce(NEW.run_contex"
+    "t->>'process_template_prompt_version','') NOT IN\n('process-templ"
+    "ate-configuration-v1','process-template-configuration-v2','proce"
+    "ss-template-configuration-v3','process-template-configuration-v4"
+    "','process-template-configuration-v5','process-template-configur"
+    "ation-v6','process-template-configuration-v7','process-template-"
+    "configuration-v8')\n  OR coalesce(NEW.run_context->>'process_temp"
+    "late_schema_digest','') !~ '^[a-f0-9]{64}$' THEN\n  RAISE EXCEPTI"
+    "ON 'Organization run requires an exact saved source and fixed pr"
+    "ompt contract';\n END IF;\n IF NEW.run_context->>'process_template"
+    "_root_brief_id' IS DISTINCT FROM (\n  WITH RECURSIVE ancestry AS "
+    "(\n   SELECT id,previous_brief_id FROM cehub_core.process_templat"
+    "e_briefs WHERE id=b.id\n   UNION ALL\n   SELECT p.id,p.previous_br"
+    "ief_id FROM cehub_core.process_template_briefs p\n    JOIN ancest"
+    "ry a ON p.id=a.previous_brief_id WHERE p.tenant_id=NEW.tenant_id"
+    "\n  ) SELECT id::text FROM ancestry WHERE previous_brief_id IS NU"
+    "LL\n ) THEN RAISE EXCEPTION 'Organization run must retain origina"
+    "l requirement lineage'; END IF;\n IF TG_OP='INSERT' AND NOT EXIST"
+    "S(SELECT 1 FROM cehub_core.users u JOIN cehub_core.tenants t ON\n"
+    "t.id=u.tenant_id\n  WHERE u.tenant_id=NEW.tenant_id AND u.id=NEW."
+    "requested_by_user_id AND u.is_active\n  AND u.role IN ('owner','a"
+    "dmin') AND t.status='active') THEN\n  RAISE EXCEPTION 'Organizati"
+    "on run requires a current named administrator';\n END IF;\n RETURN"
+    " NEW;\nEND $$;\nREVOKE ALL ON FUNCTION cehub_ai.guard_tenant_templ"
+    "ate_run() FROM PUBLIC;\n"
+)
+
+V9 = (
+    "\n\nCREATE OR REPLACE FUNCTION cehub_ai.guard_tenant_template_run("
+    ") RETURNS trigger\nLANGUAGE plpgsql SET search_path=pg_catalog AS"
+    " $$\nDECLARE b cehub_core.process_template_briefs;\nBEGIN\n IF TG_O"
+    "P='UPDATE' AND (NEW.scope_kind,NEW.project_id) IS DISTINCT FROM\n"
+    "(OLD.scope_kind,OLD.project_id) THEN\n  RAISE EXCEPTION 'Run scop"
+    "e is immutable';\n END IF;\n IF NEW.scope_kind<>'tenant' THEN RETU"
+    "RN NEW; END IF;\n IF TG_OP='UPDATE' AND (NEW.tenant_id,NEW.agent_"
+    "key,NEW.request_id,NEW.requested_by_user_id,\n  NEW.context_versi"
+    "on,NEW.run_context->'process_template_brief_id',\n  NEW.run_conte"
+    "xt->'process_template_root_brief_id',\n  NEW.run_context->'proces"
+    "s_template_source_digest',NEW.run_context->'process_template_sou"
+    "rce',\nNEW.run_context->'process_template_prompt_version',NEW.run"
+    "_context->'process_template_schema_digest')\n  IS DISTINCT FROM ("
+    "OLD.tenant_id,OLD.agent_key,OLD.request_id,OLD.requested_by_user"
+    "_id,\n  OLD.context_version,OLD.run_context->'process_template_br"
+    "ief_id',\n  OLD.run_context->'process_template_root_brief_id',\n  "
+    "OLD.run_context->'process_template_source_digest',OLD.run_contex"
+    "t->'process_template_source',\nOLD.run_context->'process_template"
+    "_prompt_version',OLD.run_context->'process_template_schema_diges"
+    "t')\nTHEN\n  RAISE EXCEPTION 'Organization run input identity is i"
+    "mmutable';\n END IF;\n SELECT * INTO b FROM cehub_core.process_tem"
+    "plate_briefs WHERE tenant_id=NEW.tenant_id\n  AND id::text=NEW.ru"
+    "n_context->>'process_template_brief_id';\n IF b.id IS NULL OR NEW"
+    ".run_context->'process_template_source' IS DISTINCT FROM b.sourc"
+    "e_snapshot\n  OR NEW.run_context->>'process_template_source_diges"
+    "t' IS DISTINCT FROM b.source_digest\n  OR coalesce(NEW.run_contex"
+    "t->>'process_template_prompt_version','') NOT IN\n('process-templ"
+    "ate-configuration-v1','process-template-configuration-v2','proce"
+    "ss-template-configuration-v3','process-template-configuration-v4"
+    "','process-template-configuration-v5','process-template-configur"
+    "ation-v6','process-template-configuration-v7','process-template-"
+    "configuration-v8','process-template-configuration-v9')\n  OR coal"
+    "esce(NEW.run_context->>'process_template_schema_digest','') !~ '"
+    "^[a-f0-9]{64}$' THEN\n  RAISE EXCEPTION 'Organization run require"
+    "s an exact saved source and fixed prompt contract';\n END IF;\n IF"
+    " NEW.run_context->>'process_template_root_brief_id' IS DISTINCT "
+    "FROM (\n  WITH RECURSIVE ancestry AS (\n   SELECT id,previous_brie"
+    "f_id FROM cehub_core.process_template_briefs WHERE id=b.id\n   UN"
+    "ION ALL\n   SELECT p.id,p.previous_brief_id FROM cehub_core.proce"
+    "ss_template_briefs p\n    JOIN ancestry a ON p.id=a.previous_brie"
+    "f_id WHERE p.tenant_id=NEW.tenant_id\n  ) SELECT id::text FROM an"
+    "cestry WHERE previous_brief_id IS NULL\n ) THEN RAISE EXCEPTION '"
+    "Organization run must retain original requirement lineage'; END "
+    "IF;\n IF TG_OP='INSERT' AND NOT EXISTS(SELECT 1 FROM cehub_core.u"
+    "sers u JOIN cehub_core.tenants t ON\nt.id=u.tenant_id\n  WHERE u.t"
+    "enant_id=NEW.tenant_id AND u.id=NEW.requested_by_user_id AND u.i"
+    "s_active\n  AND u.role IN ('owner','admin') AND t.status='active'"
+    ") THEN\n  RAISE EXCEPTION 'Organization run requires a current na"
+    "med administrator';\n END IF;\n RETURN NEW;\nEND $$;\nREVOKE ALL ON "
+    "FUNCTION cehub_ai.guard_tenant_template_run() FROM PUBLIC;\n"
+)
+
+
+def upgrade() -> None:
+    op.execute(V9)
+
+
+def downgrade() -> None:
+    op.execute("""DO $$ BEGIN
+    IF EXISTS(SELECT 1 FROM cehub_ai.agent_runs WHERE scope_kind='tenant'
+      AND run_context->>'process_template_prompt_version'='process-template-configuration-v9')
+    THEN RAISE EXCEPTION 'Risk field generation v9 history must be retained'; END IF;
+    END $$""")
+    op.execute(V8)
