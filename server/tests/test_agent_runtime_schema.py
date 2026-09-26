@@ -17,14 +17,15 @@ from sqlalchemy import (
     UniqueConstraint,
     create_engine,
     inspect,
-    text,
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.schema import Constraint, DefaultClause
 
-from app.db.schema import tables
+from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -84,9 +85,18 @@ def test_agent_runtime_metadata_freezes_control_and_execution_records() -> None:
     )
 
     assert set(tables.agent_runs.c.keys()) == {
+        "request_id",
+        "requested_by_user_id",
+        "dispatch_key",
+        "dispatch_policy",
+        "dispatch_deadline",
+        "loop_binding",
+        "execution_bundle",
         "id",
         "tenant_id",
         "project_id",
+        "scope_kind",
+        "market_space_id",
         "subscription_id",
         "agent_key",
         "status",
@@ -113,10 +123,13 @@ def test_agent_runtime_metadata_freezes_control_and_execution_records() -> None:
         "ck_agent_runs_context_object",
         "ck_agent_runs_lifecycle_consistent",
         "ck_agent_runs_error_consistent",
+        "ck_agent_runs_scope",
     } <= constraint_names(tables.agent_runs, CheckConstraint)
     assert {
         "fk_agent_runs_tenant_project",
         "fk_agent_runs_tenant_subscription_agent",
+        "fk_agent_runs_tenant_request_user",
+        "fk_agent_runs_market_space",
     } <= constraint_names(tables.agent_runs, ForeignKeyConstraint)
     assert "uq_agent_runs_tenant_project_agent_window" in constraint_names(
         tables.agent_runs, UniqueConstraint
@@ -140,19 +153,22 @@ def agent_runtime_database_url() -> Iterator[str]:
     previous_database_url = os.environ.get("DATABASE_URL")
     os.environ["DATABASE_URL"] = test_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
-    command.downgrade(config, "0009_invocation_cache_tokens")
-    command.upgrade(config, "head")
     engine = create_engine(psycopg_database_url(test_url))
     try:
+        command.upgrade(config, "head")
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
-        engine.dispose()
-        if previous_database_url is None:
-            os.environ.pop("DATABASE_URL", None)
-        else:
-            os.environ["DATABASE_URL"] = previous_database_url
+        try:
+            with engine.begin() as connection:
+                clear_test_tenants(connection)
+        finally:
+            engine.dispose()
+            if previous_database_url is None:
+                os.environ.pop("DATABASE_URL", None)
+            else:
+                os.environ["DATABASE_URL"] = previous_database_url
 
 
 def seed_project(database_url: str) -> tuple[UUID, UUID, UUID]:
@@ -313,22 +329,17 @@ def test_agent_runtime_migration_round_trip(agent_runtime_database_url: str) -> 
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     engine = create_engine(psycopg_database_url(agent_runtime_database_url))
     try:
-        command.downgrade(config, "0009_invocation_cache_tokens")
+        migrate_test_database_in_steps(config, engine, "0009_invocation_cache_tokens")
         assert set(inspect(engine).get_table_names(schema="cehub_ai")) == {
             "model_invocations",
             "tenant_model_settings",
         }
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "head")
         assert set(inspect(engine).get_table_names(schema="cehub_ai")) == {
-            "agent_dispatcher_cursors",
-            "agent_runs",
-            "agent_subscriptions",
-            "finding_actions",
-            "finding_quality_controls",
-            "findings",
-            "model_invocations",
-            "tenant_model_settings",
+            table.name for table in metadata.tables.values() if table.schema == "cehub_ai"
         }
     finally:
-        command.upgrade(config, "head")
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()

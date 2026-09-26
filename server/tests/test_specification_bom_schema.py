@@ -8,13 +8,14 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import CheckConstraint, Connection, UniqueConstraint, create_engine, text
+from sqlalchemy import CheckConstraint, Connection, UniqueConstraint, create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.schema import Constraint
 
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -58,7 +59,7 @@ def specification_bom_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()

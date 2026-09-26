@@ -16,6 +16,8 @@ from app.auth.roles import Role
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 BACKFILL_TENANT_ID = uuid4()
@@ -30,10 +32,13 @@ def rbac_database_url() -> Iterator[str]:
     os.environ["DATABASE_URL"] = test_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
 
+    engine = create_engine(psycopg_database_url(test_url))
     try:
-        command.downgrade(config, "0001_initial_entities")
-        engine = create_engine(psycopg_database_url(test_url))
+        command.upgrade(config, "head")
+        with engine.begin() as connection:
+            clear_test_tenants(connection)
         try:
+            migrate_test_database_in_steps(config, engine, "0001_initial_entities")
             inspector = inspect(engine)
             assert "role" not in {
                 column["name"] for column in inspector.get_columns("users", schema="cehub_core")
@@ -69,11 +74,10 @@ def rbac_database_url() -> Iterator[str]:
                     ],
                 )
         finally:
-            engine.dispose()
-
-        command.upgrade(config, "head")
+            migrate_test_database_in_steps(config, engine, "head")
         yield test_url
     finally:
+        engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)
         else:

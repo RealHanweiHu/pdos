@@ -6,12 +6,12 @@ from pathlib import Path
 from typing import Any, cast
 from uuid import UUID, uuid4
 
+import httpx2
 import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from httpx2 import Response
-from sqlalchemy import create_engine, select, text
+from sqlalchemy import create_engine, select
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -21,6 +21,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -48,7 +49,7 @@ def isolated_case_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -98,7 +99,7 @@ def convert_requirement(
     requirement_id: str,
     *,
     code: str = "CASE-001",
-) -> Response:
+) -> httpx2.Response:
     return client.post(
         f"/api/requirements/{requirement_id}/convert-to-case",
         headers=headers,

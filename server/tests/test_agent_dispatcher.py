@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Connection, create_engine, select, text
+from sqlalchemy import Connection, create_engine, select
 
 from app.ai.context_builder import RunContextBuilder
 from app.ai.runtime_contract import AgentKey
@@ -17,6 +17,7 @@ from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.worker.dispatcher import AgentDispatcher
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,7 +31,7 @@ def dispatcher_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -381,5 +382,29 @@ def test_due_run_is_sealed_with_server_preaggregated_frozen_context(
             "remaining_tokens_today": 2_000_000,
             "agent_runs_today": 1,
         }
+    finally:
+        engine.dispose()
+
+
+def test_dispatcher_does_not_queue_shadow_agents_in_employee_worker(
+    dispatcher_database_url: str,
+) -> None:
+    engine = create_engine(psycopg_database_url(dispatcher_database_url))
+    try:
+        with engine.begin() as connection:
+            tenant_id, project_id = seed_project(connection, slug="shadow")
+            event_id = append_event(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                event_type="SUPPLIER_DELAY_REPORTED",
+                occurred_at=datetime.now(UTC),
+            )
+        result = AgentDispatcher(engine).dispatch_tenant(tenant_id=tenant_id)
+        assert result.last_event_row_id == event_id
+        with engine.connect() as connection:
+            keys = set(connection.execute(select(tables.agent_runs.c.agent_key)).scalars())
+        assert "supplier_intelligence" not in keys
+        assert "executive_intelligence" not in keys
     finally:
         engine.dispose()

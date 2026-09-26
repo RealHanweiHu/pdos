@@ -21,6 +21,7 @@ from app.db.url import psycopg_database_url
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -48,7 +49,7 @@ def isolated_event_api_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()

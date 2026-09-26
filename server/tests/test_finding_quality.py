@@ -9,12 +9,14 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Connection, create_engine, inspect, select, text
+from sqlalchemy import Connection, create_engine, inspect, select
 
 from app.ai.quality import FindingQualityService
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,7 +30,7 @@ def quality_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -242,9 +244,11 @@ def test_quality_control_migration_round_trip(quality_database_url: str) -> None
     engine = create_engine(psycopg_database_url(quality_database_url))
     try:
         assert "finding_quality_controls" in inspect(engine).get_table_names(schema="cehub_ai")
-        command.downgrade(config, "0013_ai_api_documents")
+        migrate_test_database_in_steps(config, engine, "0013_ai_api_documents")
         assert "finding_quality_controls" not in inspect(engine).get_table_names(schema="cehub_ai")
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "head")
     finally:
-        command.upgrade(config, "head")
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()

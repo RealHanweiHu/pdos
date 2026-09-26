@@ -4,7 +4,7 @@ import os
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import cast
+from typing import TypedDict
 from uuid import UUID, uuid4
 
 import pytest
@@ -25,8 +25,27 @@ from app.domain.findings import (
     KnowledgeDraftPayload,
     RiskSuggestionPayload,
 )
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
+
+
+class FindingSeed(TypedDict):
+    tenant_id: UUID
+    project_id: UUID
+    reviewer_id: UUID
+    outsider_id: UUID
+    external_id: UUID
+    run_id: UUID
+    finding_id: UUID
+    event_id: int
+    now: datetime
+
+
+class FindingActorArguments(TypedDict):
+    tenant_id: UUID
+    finding_id: UUID
+    actor_user_id: UUID
 
 
 @pytest.fixture
@@ -38,7 +57,7 @@ def findings_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -55,7 +74,7 @@ def seed_reviewable_finding(
     event_type: str = "ISSUE_CREATED",
     finding_type: str = "risk_suggestion",
     proposed_payload: dict[str, object] | None = None,
-) -> dict[str, UUID | int | datetime]:
+) -> FindingSeed:
     tenant_id = uuid4()
     workflow_id = uuid4()
     project_id = uuid4()
@@ -247,14 +266,14 @@ def test_accept_and_apply_are_two_audited_human_actions(
 ) -> None:
     ids = seed_reviewable_finding(findings_database_url)
     service = FindingService(create_engine(psycopg_database_url(findings_database_url)))
-    seeded_at = cast(datetime, ids["now"])
+    seeded_at = ids["now"]
     reviewed_at = seeded_at + timedelta(minutes=1)
     applied_at = seeded_at + timedelta(minutes=2)
 
     accepted = service.review(
-        tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-        actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-        finding_id=ids["finding_id"],  # type: ignore[arg-type]
+        tenant_id=ids["tenant_id"],
+        actor_user_id=ids["reviewer_id"],
+        finding_id=ids["finding_id"],
         review=FindingReview(
             decision="accepted",
             edited_payload=RiskSuggestionPayload(
@@ -272,15 +291,15 @@ def test_accept_and_apply_are_two_audited_human_actions(
     assert accepted.applied_entity_id is None
 
     result = service.apply(
-        tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-        actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-        finding_id=ids["finding_id"],  # type: ignore[arg-type]
+        tenant_id=ids["tenant_id"],
+        actor_user_id=ids["reviewer_id"],
+        finding_id=ids["finding_id"],
         now=applied_at,
     )
     replay = service.apply(
-        tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-        actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-        finding_id=ids["finding_id"],  # type: ignore[arg-type]
+        tenant_id=ids["tenant_id"],
+        actor_user_id=ids["reviewer_id"],
+        finding_id=ids["finding_id"],
         now=applied_at + timedelta(seconds=1),
     )
     assert result.finding.status == "applied"
@@ -371,27 +390,39 @@ def test_phase_two_findings_require_review_then_apply_to_audited_project_risk(
     engine = create_engine(psycopg_database_url(findings_database_url))
     service = FindingService(engine)
     try:
+        if agent_key in {"supplier_intelligence", "executive_intelligence"}:
+            from app.ai.rollout_guard import CapabilityUnavailableError
+
+            with pytest.raises(CapabilityUnavailableError, match="CAPABILITY_SHADOW"):
+                service.review(
+                    tenant_id=ids["tenant_id"],
+                    actor_user_id=ids["reviewer_id"],
+                    finding_id=ids["finding_id"],
+                    review=FindingReview(decision="accepted"),
+                )
+            assert service.list(tenant_id=ids["tenant_id"]) == []
+            return
         accepted = service.review(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
             review=FindingReview(decision="accepted", comment="Evidence confirmed."),
-            now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+            now=ids["now"] + timedelta(minutes=1),
         )
         assert accepted.status == "accepted"
         assert accepted.applied_entity_id is None
 
         applied = service.apply(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
-            now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
+            now=ids["now"] + timedelta(minutes=2),
         )
         replay = service.apply(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
-            now=cast(datetime, ids["now"]) + timedelta(minutes=3),
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
+            now=ids["now"] + timedelta(minutes=3),
         )
 
         assert applied.applied_entity_type == "risk"
@@ -451,9 +482,9 @@ def test_knowledge_draft_apply_creates_unverified_memory_not_business_truth(
     service = FindingService(engine)
     try:
         accepted = service.review(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
             review=FindingReview(
                 decision="accepted",
                 edited_payload=KnowledgeDraftPayload(
@@ -462,16 +493,16 @@ def test_knowledge_draft_apply_creates_unverified_memory_not_business_truth(
                     applicability="Projects using the same connector family.",
                 ),
             ),
-            now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+            now=ids["now"] + timedelta(minutes=1),
         )
 
         assert accepted.status == "accepted"
         assert accepted.finding_type == "knowledge_draft"
         applied = service.apply(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
-            now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
+            now=ids["now"] + timedelta(minutes=2),
         )
 
         with engine.connect() as connection:
@@ -511,19 +542,19 @@ def test_reject_is_terminal_and_cannot_apply(findings_database_url: str) -> None
     ids = seed_reviewable_finding(findings_database_url)
     service = FindingService(create_engine(psycopg_database_url(findings_database_url)))
     rejected = service.review(
-        tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-        actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-        finding_id=ids["finding_id"],  # type: ignore[arg-type]
+        tenant_id=ids["tenant_id"],
+        actor_user_id=ids["reviewer_id"],
+        finding_id=ids["finding_id"],
         review=FindingReview(decision="rejected", comment="Not actionable."),
-        now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+        now=ids["now"] + timedelta(minutes=1),
     )
     assert rejected.status == "rejected"
     with pytest.raises(FindingInvalidTransitionError):
         service.apply(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
-            now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
+            now=ids["now"] + timedelta(minutes=2),
         )
 
 
@@ -532,14 +563,14 @@ def test_review_apply_require_internal_project_permission(
 ) -> None:
     ids = seed_reviewable_finding(findings_database_url)
     service = FindingService(create_engine(psycopg_database_url(findings_database_url)))
-    for actor_key in ("outsider_id", "external_id"):
+    for actor_id in (ids["outsider_id"], ids["external_id"]):
         with pytest.raises(FindingApplyPermissionError):
             service.review(
-                tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-                actor_user_id=ids[actor_key],  # type: ignore[arg-type]
-                finding_id=ids["finding_id"],  # type: ignore[arg-type]
+                tenant_id=ids["tenant_id"],
+                actor_user_id=actor_id,
+                finding_id=ids["finding_id"],
                 review=FindingReview(decision="accepted"),
-                now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+                now=ids["now"] + timedelta(minutes=1),
             )
 
 
@@ -547,11 +578,11 @@ def test_apply_rechecks_database_ground_truth(findings_database_url: str) -> Non
     ids = seed_reviewable_finding(findings_database_url)
     service = FindingService(create_engine(psycopg_database_url(findings_database_url)))
     service.review(
-        tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-        actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-        finding_id=ids["finding_id"],  # type: ignore[arg-type]
+        tenant_id=ids["tenant_id"],
+        actor_user_id=ids["reviewer_id"],
+        finding_id=ids["finding_id"],
         review=FindingReview(decision="accepted"),
-        now=cast(datetime, ids["now"]) + timedelta(minutes=1),
+        now=ids["now"] + timedelta(minutes=1),
     )
     engine = create_engine(psycopg_database_url(findings_database_url))
     try:
@@ -565,8 +596,63 @@ def test_apply_rechecks_database_ground_truth(findings_database_url: str) -> Non
         engine.dispose()
     with pytest.raises(FindingGroundTruthConflictError):
         service.apply(
-            tenant_id=ids["tenant_id"],  # type: ignore[arg-type]
-            actor_user_id=ids["reviewer_id"],  # type: ignore[arg-type]
-            finding_id=ids["finding_id"],  # type: ignore[arg-type]
-            now=cast(datetime, ids["now"]) + timedelta(minutes=2),
+            tenant_id=ids["tenant_id"],
+            actor_user_id=ids["reviewer_id"],
+            finding_id=ids["finding_id"],
+            now=ids["now"] + timedelta(minutes=2),
         )
+
+
+@pytest.mark.parametrize("rollout", ["disabled", "shadow"])
+def test_rollout_stop_hides_candidates_and_blocks_review_and_apply(
+    findings_database_url: str,
+    monkeypatch: pytest.MonkeyPatch,
+    rollout: str,
+) -> None:
+    from app.ai.capability_contract import CapabilityRollout
+    from app.ai.rollout_guard import CapabilityUnavailableError
+    from app.ai.runtime_contract import AgentKey
+    from app.domain.my_work import MyWorkService
+    from app.domain.review_inbox import ReviewInboxService
+    from tests.rollout_support import set_agent_rollout
+
+    ids = seed_reviewable_finding(findings_database_url)
+    engine = create_engine(psycopg_database_url(findings_database_url))
+    service = FindingService(engine)
+    args: FindingActorArguments = {
+        "tenant_id": ids["tenant_id"],
+        "finding_id": ids["finding_id"],
+        "actor_user_id": ids["reviewer_id"],
+    }
+    try:
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout(rollout))
+        assert service.list(tenant_id=ids["tenant_id"]) == []
+        assert ReviewInboxService(engine).digest(tenant_id=ids["tenant_id"]).finding_count == 0
+        work = MyWorkService(engine).load(
+            tenant_id=ids["tenant_id"], user_id=ids["reviewer_id"], role=Role.OWNER, limit=20
+        )
+        assert work.counts.findings == 0 and work.findings == ()
+        with pytest.raises(CapabilityUnavailableError, match=f"CAPABILITY_{rollout.upper()}"):
+            service.get(tenant_id=ids["tenant_id"], finding_id=ids["finding_id"])
+        with pytest.raises(CapabilityUnavailableError):
+            service.review(**args, review=FindingReview(decision="accepted"))
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout.LIVE)
+        service.review(**args, review=FindingReview(decision="accepted"))
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout(rollout))
+        with pytest.raises(CapabilityUnavailableError):
+            service.apply(**args)
+        with engine.connect() as connection:
+            assert connection.execute(select(tables.risks.c.id)).first() is None
+            assert connection.execute(select(tables.findings.c.status)).scalar_one() == "accepted"
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout.LIVE)
+        applied = service.apply(**args, now=ids["now"] + timedelta(minutes=2))
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout(rollout))
+        assert (
+            service.get(tenant_id=ids["tenant_id"], finding_id=ids["finding_id"]).status
+            == "applied"
+        )
+        assert service.list(tenant_id=ids["tenant_id"])[0].status == "applied"
+        replay = service.apply(**args)
+        assert replay.idempotent_replay and replay.applied_entity_id == applied.applied_entity_id
+    finally:
+        engine.dispose()

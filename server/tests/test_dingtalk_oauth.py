@@ -12,7 +12,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, select, text, update
+from sqlalchemy import create_engine, select, update
 
 from app.api.dingtalk import get_dingtalk_http_client
 from app.db.engine import get_engine
@@ -22,6 +22,7 @@ from app.db.url import psycopg_database_url
 from app.integrations.dingtalk_client import ME_URL, TOKEN_URL
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 JWT_SECRET = "dingtalk-oauth-test-jwt-secret-is-at-least-32-bytes"
@@ -54,7 +55,7 @@ def isolated_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()

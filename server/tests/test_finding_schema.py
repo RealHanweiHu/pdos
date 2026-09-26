@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
+from importlib import import_module
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -18,7 +19,6 @@ from sqlalchemy import (
     create_engine,
     inspect,
     select,
-    text,
 )
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.sql.schema import Constraint
@@ -26,6 +26,11 @@ from sqlalchemy.sql.schema import Constraint
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import (
+    migrate_test_database_in_steps,
+    rollback_migration_operations,
+)
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -51,6 +56,7 @@ def test_finding_metadata_freezes_review_and_apply_as_separate_actions() -> None
         "id",
         "tenant_id",
         "project_id",
+        "scope_kind",
         "run_id",
         "model_invocation_id",
         "agent_key",
@@ -85,6 +91,7 @@ def test_finding_metadata_freezes_review_and_apply_as_separate_actions() -> None
         "ck_findings_apply_lifecycle_consistent",
     } <= constraint_names(tables.findings, CheckConstraint)
     assert {
+        "fk_finding_run_scope",
         "fk_findings_tenant_project_run_agent",
         "fk_findings_tenant_model_invocation",
     } <= constraint_names(tables.findings, ForeignKeyConstraint)
@@ -106,9 +113,16 @@ def test_finding_metadata_freezes_review_and_apply_as_separate_actions() -> None
         "detail",
         "created_at",
     }
-    assert "uq_finding_actions_tenant_finding_action" in constraint_names(
-        tables.finding_actions, UniqueConstraint
+    terminal = next(
+        index
+        for index in tables.finding_actions.indexes
+        if index.name == "uq_finding_actions_terminal"
     )
+    assert terminal.unique
+    assert list(terminal.columns.keys()) == ["tenant_id", "finding_id", "action"]
+    # Review undo and repeated archive/restore remain auditable; creation and
+    # actual application are still unique terminal receipts.
+    assert str(terminal.dialect_options["postgresql"]["where"]) == "action IN ('created','applied')"
 
 
 @pytest.fixture
@@ -118,13 +132,12 @@ def finding_database_url() -> Iterator[str]:
     os.environ["DATABASE_URL"] = test_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     engine = create_engine(psycopg_database_url(test_url))
-    with engine.begin() as connection:
-        connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
-    command.downgrade(config, "0010_agent_runtime")
+    # The explicit migration test below owns the historical round trip; each
+    # constraint scenario needs only the current schema and clean tenant rows.
     command.upgrade(config, "head")
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -322,14 +335,16 @@ def test_finding_migration_round_trip(finding_database_url: str) -> None:
         assert {"findings", "finding_actions"} <= set(
             inspect(engine).get_table_names(schema="cehub_ai")
         )
-        command.downgrade(config, "0010_agent_runtime")
+        migrate_test_database_in_steps(config, engine, "0010_agent_runtime")
         assert {"findings", "finding_actions"}.isdisjoint(
             inspect(engine).get_table_names(schema="cehub_ai")
         )
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "head")
     finally:
-        command.upgrade(config, "head")
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()
 
 
 def test_phase_one_migration_refuses_lossy_downgrade(finding_database_url: str) -> None:
@@ -351,8 +366,11 @@ def test_phase_one_migration_refuses_lossy_downgrade(finding_database_url: str) 
                 },
             )
 
-        with pytest.raises(DBAPIError):
-            command.downgrade(Config(str(SERVER_ROOT / "alembic.ini")), "0011_ai_findings")
+        with (
+            pytest.raises(DBAPIError, match="Cannot downgrade 0012"),
+            rollback_migration_operations(engine),
+        ):
+            import_module("migrations.versions.0012_phase_one_agents").downgrade()
 
         with engine.connect() as connection:
             assert (
@@ -365,4 +383,69 @@ def test_phase_one_migration_refuses_lossy_downgrade(finding_database_url: str) 
             )
     finally:
         command.upgrade(Config(str(SERVER_ROOT / "alembic.ini")), "head")
+        engine.dispose()
+
+
+def test_apply_target_check_follows_object_contract_whitelist(
+    finding_database_url: str,
+) -> None:
+    ids = seed_finding_dependencies(finding_database_url)
+    engine = create_engine(psycopg_database_url(finding_database_url))
+    now = datetime.now(UTC)
+    try:
+        with engine.begin() as connection:
+            reviewer_id = uuid4()
+            connection.execute(
+                tables.users.insert(),
+                {
+                    "id": reviewer_id,
+                    "tenant_id": ids["tenant_id"],
+                    "username": f"apply-reviewer-{reviewer_id}",
+                    "display_name": "Apply Reviewer",
+                    "role": "quality",
+                },
+            )
+            base = pending_finding(ids)
+            applied = {
+                **base,
+                "status": "applied",
+                "accepted_payload": base["proposed_payload"],
+                "reviewed_by_user_id": reviewer_id,
+                "reviewed_at": now - timedelta(minutes=5),
+                "review_comment": "ok",
+                "applied_by_user_id": reviewer_id,
+                "applied_at": now,
+                "applied_entity_id": uuid4(),
+            }
+            for allowed in (
+                "risk",
+                "memory",
+                "issue",
+                "task",
+                "test_run",
+                "sample_build_configuration",
+                "knowledge_candidate",
+                "schedule_change_proposal",
+                "material_exception",
+            ):
+                connection.execute(
+                    tables.findings.insert(),
+                    {
+                        **applied,
+                        "id": uuid4(),
+                        "origin_key": f"apply-{allowed}",
+                        "applied_entity_type": allowed,
+                    },
+                )
+            with pytest.raises(IntegrityError), connection.begin_nested():
+                connection.execute(
+                    tables.findings.insert(),
+                    {
+                        **applied,
+                        "id": uuid4(),
+                        "origin_key": "apply-outside-whitelist",
+                        "applied_entity_type": "supplier",
+                    },
+                )
+    finally:
         engine.dispose()

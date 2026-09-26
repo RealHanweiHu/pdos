@@ -2,14 +2,18 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
+from types import MappingProxyType
 from typing import Literal
 from uuid import uuid4
 
 import pytest
 
+from app.ai import capability_contract as registry
+from app.ai.capability_contract import CapabilityRollout
 from app.ai.executor import INSTRUCTIONS, PROMPT_VERSIONS, SYSTEM_PROMPTS, AgentAssessment
 from app.ai.finding_writer import FindingPreflightError, preflight_assessment
 from app.ai.phase_three_suite import load_phase_three_golden_suite
+from app.ai.rollout_guard import CapabilityUnavailableError
 from app.ai.runtime_contract import (
     PHASE_THREE_AGENT_KEYS,
     AgentKey,
@@ -22,6 +26,15 @@ from app.ai.runtime_contract import (
 from app.domain.findings import RiskSuggestionPayload
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
+
+
+def enable_offline_contract_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Exercise archived golden contracts without promoting runtime capabilities."""
+    entries = dict(registry.CAPABILITY_CONTRACTS)
+    for key, contract in entries.items():
+        if contract.agent_key in PHASE_THREE_AGENT_KEYS:
+            entries[key] = contract.model_copy(update={"rollout": CapabilityRollout.LIVE})
+    monkeypatch.setattr(registry, "CAPABILITY_CONTRACTS", MappingProxyType(entries))
 
 
 def run_context(*, agent_key: AgentKey, event_type: str) -> FrozenRunContext:
@@ -113,10 +126,17 @@ def test_phase_three_prompts_are_versioned_and_routes_are_exact() -> None:
     ],
 )
 def test_phase_three_preflight_accepts_only_agent_event_type_contract(
+    monkeypatch: pytest.MonkeyPatch,
     agent_key: AgentKey,
     event_type: str,
     candidate_type: Literal["supplier_delay_risk", "executive_portfolio_brief"],
 ) -> None:
+    with pytest.raises(CapabilityUnavailableError, match="CAPABILITY_SHADOW"):
+        preflight_assessment(
+            assessment(candidate_type),
+            context=run_context(agent_key=agent_key, event_type=event_type),
+        )
+    enable_offline_contract_check(monkeypatch)
     candidate = preflight_assessment(
         assessment(candidate_type),
         context=run_context(agent_key=agent_key, event_type=event_type),
@@ -127,7 +147,10 @@ def test_phase_three_preflight_accepts_only_agent_event_type_contract(
     assert isinstance(candidate.payload, RiskSuggestionPayload)
 
 
-def test_phase_three_preflight_rejects_cross_agent_and_cross_run_evidence() -> None:
+def test_phase_three_preflight_rejects_cross_agent_and_cross_run_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    enable_offline_contract_check(monkeypatch)
     executive_context = run_context(
         agent_key=AgentKey.EXECUTIVE_INTELLIGENCE,
         event_type="PROJECT_STAGE_CHANGED",
@@ -145,7 +168,10 @@ def test_phase_three_preflight_rejects_cross_agent_and_cross_run_evidence() -> N
         preflight_assessment(wrong_evidence, context=executive_context)
 
 
-def test_checked_in_phase_three_golden_cases_match_prompts_routes_and_preflight() -> None:
+def test_checked_in_phase_three_golden_cases_match_prompts_routes_and_preflight(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    enable_offline_contract_check(monkeypatch)
     suite = load_phase_three_golden_suite(SERVER_ROOT / "golden" / "phase-three-agents-v1.json")
 
     assert suite.prompt_versions == {key: PROMPT_VERSIONS[key] for key in PHASE_THREE_AGENT_KEYS}

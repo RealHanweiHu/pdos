@@ -17,6 +17,7 @@ from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.deliverable_checks import EXPECTED_CHECK_ITEM_COUNT, load_manifest
+from tests.test_migrations import EXPECTED_HEAD
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -91,5 +92,5 @@ def test_deliverable_migration_matches_metadata_and_single_head(
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0033_expand_model_providers"
+        EXPECTED_HEAD
     ]

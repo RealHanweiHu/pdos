@@ -11,9 +11,18 @@ from app.auth.roles import Action, Role
 
 
 class StubProjectAccessRepository:
-    def __init__(self, *, project_exists: bool = True, is_member: bool = False) -> None:
+    def __init__(
+        self,
+        *,
+        project_exists: bool = True,
+        is_member: bool = False,
+        member_ids: frozenset[UUID] = frozenset(),
+        principals: tuple[UUID, ...] = (),
+    ) -> None:
         self.project_exists_result = project_exists
         self.is_member_result = is_member
+        self.member_ids = member_ids
+        self.principals = principals
         self.last_tenant_id: UUID | None = None
         self.last_user_id: UUID | None = None
 
@@ -30,7 +39,17 @@ class StubProjectAccessRepository:
     ) -> bool:
         self.last_tenant_id = tenant_id
         self.last_user_id = user_id
+        if self.member_ids:
+            return user_id in self.member_ids
         return self.is_member_result
+
+    def delegated_principals(
+        self,
+        *,
+        tenant_id: UUID,
+        delegate_user_id: UUID,
+    ) -> tuple[UUID, ...]:
+        return self.principals
 
 
 def auth_context(role: Role) -> AuthContext:
@@ -123,3 +142,47 @@ def test_missing_or_cross_tenant_project_fails_with_the_same_denial() -> None:
             project_id=uuid4(),
             action=Action.PROJECT_VIEW,
         )
+
+
+def test_active_delegate_borrows_project_reach_without_borrowing_role() -> None:
+    """V1-A11: delegation lends membership, never permissions."""
+    context = auth_context(Role.ENGINEER)
+    principal_id = uuid4()
+    repository = StubProjectAccessRepository(
+        member_ids=frozenset({principal_id}),
+        principals=(principal_id,),
+    )
+    service = ProjectAccessService(repository)
+    project_id = uuid4()
+
+    access = service.authorize(context=context, project_id=project_id, action=Action.WORK_ITEM_VIEW)
+    assert access.acting_for_user_id == principal_id
+    assert access.user_id == context.user.id
+    assert access.role is Role.ENGINEER
+
+    # The delegate's own role still gates the action: an engineer borrowing a
+    # project manager's membership does not gain project-manager actions.
+    with pytest.raises(ObjectPermissionDeniedError):
+        service.authorize(
+            context=context, project_id=project_id, action=Action.PROJECT_MEMBERS_MANAGE
+        )
+
+
+def test_delegation_to_a_non_member_principal_grants_nothing() -> None:
+    context = auth_context(Role.ENGINEER)
+    repository = StubProjectAccessRepository(
+        member_ids=frozenset({uuid4()}),
+        principals=(uuid4(),),
+    )
+    service = ProjectAccessService(repository)
+    with pytest.raises(ObjectPermissionDeniedError):
+        service.authorize(context=context, project_id=uuid4(), action=Action.WORK_ITEM_VIEW)
+
+
+def test_direct_members_never_pay_the_delegation_lookup() -> None:
+    context = auth_context(Role.ENGINEER)
+    repository = StubProjectAccessRepository(is_member=True)
+    repository.principals = ()
+    service = ProjectAccessService(repository)
+    access = service.authorize(context=context, project_id=uuid4(), action=Action.WORK_ITEM_VIEW)
+    assert access.acting_for_user_id is None

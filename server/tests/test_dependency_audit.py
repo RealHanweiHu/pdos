@@ -20,7 +20,7 @@ def test_repository_lockfiles_produce_only_registry_package_versions() -> None:
     packages = collect_locked_packages(REPOSITORY_ROOT)
 
     assert packages
-    assert LockedPackage("npm", "next", "16.3.0") in packages
+    assert LockedPackage("npm", "next", "16.3.3") in packages
     assert LockedPackage("PyPI", "cryptography", "50.0.0") in packages
     assert not any(package.name == "pdos-server" for package in packages)
     assert OSV_ENDPOINT == "https://api.osv.dev/v1/querybatch"
@@ -71,7 +71,7 @@ def test_audit_fails_for_vulnerability_and_invalid_or_incomplete_response() -> N
 
 
 def test_audit_propagates_network_failure_instead_of_skipping() -> None:
-    package = LockedPackage("npm", "next", "16.3.0")
+    package = LockedPackage("npm", "next", "16.3.3")
 
     def failed_transport(_: bytes) -> bytes:
         raise DependencyAuditError("DEPENDENCY_AUDIT_NETWORK_ERROR")

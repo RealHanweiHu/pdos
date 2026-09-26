@@ -25,8 +25,10 @@ from app.ai.run_store import RestrictedAgentRunStore
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from app.domain.memories import MemoryDraft, MemoryService, memory_review_digest
 from app.domain.model_governance import ModelGovernanceService
 from app.worker.dispatcher import AgentDispatcher
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = SERVER_ROOT.parent
@@ -91,26 +93,51 @@ def secured_agent_database_url() -> Iterator[str]:
     test_url = configured_test_database_url()
     previous_database_url = os.environ.get("DATABASE_URL")
     os.environ["DATABASE_URL"] = test_url
-    command.upgrade(Config(str(SERVER_ROOT / "alembic.ini")), "head")
-    engine = create_engine(psycopg_database_url(test_url))
     try:
-        with engine.begin() as connection:
-            execute_sql_file(connection, SECURITY_REVERT)
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
-            execute_sql_file(connection, SECURITY_ROLES)
-            execute_sql_file(connection, SECURITY_ROLES)
-            connection.execute(text("ALTER ROLE pdos_worker PASSWORD 'pdos_worker_test_only'"))
-            connection.execute(text("ALTER ROLE pdos_agent PASSWORD 'pdos_agent_test_only'"))
-            execute_sql_file(connection, SECURITY_TEMPLATE)
-            execute_sql_file(connection, SECURITY_TEMPLATE)
-        yield test_url
+        command.upgrade(Config(str(SERVER_ROOT / "alembic.ini")), "head")
+        engine = create_engine(psycopg_database_url(test_url))
+        try:
+            try:
+                with engine.begin() as connection:
+                    execute_sql_file(connection, SECURITY_REVERT)
+                # Cleanup needs a fresh transaction before any security DDL assigns an XID.
+                with engine.begin() as connection:
+                    clear_test_tenants(connection)
+                with engine.begin() as connection:
+                    execute_sql_file(connection, SECURITY_ROLES)
+                    execute_sql_file(connection, SECURITY_ROLES)
+                    connection.execute(
+                        text("ALTER ROLE pdos_worker PASSWORD 'pdos_worker_test_only'")
+                    )
+                    connection.execute(
+                        text("ALTER ROLE pdos_agent PASSWORD 'pdos_agent_test_only'")
+                    )
+                    execute_sql_file(connection, SECURITY_TEMPLATE)
+                    execute_sql_file(connection, SECURITY_TEMPLATE)
+                yield test_url
+            finally:
+                try:
+                    with engine.begin() as connection:
+                        execute_sql_file(connection, SECURITY_REVERT)
+                    with engine.begin() as connection:
+                        clear_test_tenants(connection)
+                finally:
+                    # Setup may fail before both roles exist; never leave a test password behind.
+                    with engine.begin() as connection:
+                        for role, statement in (
+                            ("pdos_worker", "ALTER ROLE pdos_worker PASSWORD NULL"),
+                            ("pdos_agent", "ALTER ROLE pdos_agent PASSWORD NULL"),
+                        ):
+                            if connection.execute(
+                                text(
+                                    "SELECT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :role)"
+                                ),
+                                {"role": role},
+                            ).scalar_one():
+                                connection.execute(text(statement))
+        finally:
+            engine.dispose()
     finally:
-        with engine.begin() as connection:
-            execute_sql_file(connection, SECURITY_REVERT)
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
-            connection.execute(text("ALTER ROLE pdos_worker PASSWORD NULL"))
-            connection.execute(text("ALTER ROLE pdos_agent PASSWORD NULL"))
-        engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)
         else:
@@ -245,71 +272,56 @@ def denied(connection: Connection, statement: str, parameters: Mapping[str, obje
 
 
 def seed_verified_memory(
-    connection: Connection,
+    engine: Engine,
     *,
     tenant_id: UUID,
     project_id: UUID,
     suffix: str,
 ) -> UUID:
-    creator_id = uuid4()
-    verifier_id = uuid4()
-    memory_id = uuid4()
-    now = datetime.now(UTC)
-    connection.execute(
-        tables.users.insert(),
-        [
-            {
-                "id": creator_id,
-                "tenant_id": tenant_id,
-                "username": f"memory-creator-{suffix}",
-                "display_name": "Memory Creator",
-                "role": "quality",
-            },
-            {
-                "id": verifier_id,
-                "tenant_id": tenant_id,
-                "username": f"memory-verifier-{suffix}",
-                "display_name": "Memory Verifier",
-                "role": "quality",
-            },
-        ],
+    """Create classified synthetic guidance and independently verify its frozen draft."""
+    creator_id, verifier_id = uuid4(), uuid4()
+    with engine.begin() as connection:
+        connection.execute(
+            tables.users.insert(),
+            [
+                {
+                    "id": creator_id,
+                    "tenant_id": tenant_id,
+                    "username": f"memory-creator-{suffix}",
+                    "display_name": "Memory Creator",
+                    "role": "quality",
+                },
+                {
+                    "id": verifier_id,
+                    "tenant_id": tenant_id,
+                    "username": f"memory-verifier-{suffix}",
+                    "display_name": "Memory Verifier",
+                    "role": "quality",
+                },
+            ],
+        )
+    service = MemoryService(engine)
+    candidate = service.create(
+        tenant_id=tenant_id,
+        project_id=project_id,
+        actor_user_id=creator_id,
+        draft=MemoryDraft(
+            title=f"Verified memory {suffix}",
+            content="Scoped verified guidance.",
+            knowledge_kind="design_rule",
+        ),
     )
-    connection.execute(
-        tables.memories.insert(),
-        {
-            "id": memory_id,
-            "tenant_id": tenant_id,
-            "project_id": project_id,
-            "created_by_user_id": creator_id,
-            "verified_by_user_id": verifier_id,
-            "title": f"Verified memory {suffix}",
-            "content": "Scoped verified guidance.",
-            "tags": [],
-            "source_refs": [],
-            "content_sha256": suffix[0].lower() * 64,
-            "status": "verified",
-            "verified_at": now,
-            "created_at": now,
-            "updated_at": now,
-        },
+    verified = service.verify(
+        tenant_id=tenant_id,
+        project_id=project_id,
+        actor_user_id=verifier_id,
+        memory_id=candidate.id,
+        gateway=FakeEmbeddingGateway(),
+        expected_review_digest=memory_review_digest(candidate),
     )
-    connection.execute(
-        tables.memory_embeddings.insert(),
-        {
-            "id": uuid4(),
-            "tenant_id": tenant_id,
-            "project_id": project_id,
-            "memory_id": memory_id,
-            "created_by_user_id": verifier_id,
-            "provider": "test",
-            "model": "memory-v1",
-            "dimensions": 3,
-            "content_sha256": suffix[0].lower() * 64,
-            "embedding": [1.0, 0.0, 0.0],
-            "created_at": now,
-        },
-    )
-    return memory_id
+    assert verified.status == "verified"
+    assert verified.created_by_user_id != verified.verified_by_user_id
+    return verified.id
 
 
 def seed_phase_two_evidence(
@@ -625,6 +637,16 @@ def test_worker_permissions_allow_control_plane_and_deny_business_mutation(
         dispatch = dispatcher.dispatch_tenant(tenant_id=UUID(str(ids["tenant_a"])))
         assert dispatch.scanned_event_count == 1
         with engine.begin() as connection:
+            denied(
+                connection,
+                "INSERT INTO cehub_ai.agent_runs (request_id) VALUES ('forged-user-request')",
+                {},
+            )
+            denied(
+                connection,
+                "UPDATE cehub_ai.agent_runs SET requested_by_user_id = gen_random_uuid()",
+                {},
+            )
             assert (
                 connection.execute(text("SELECT count(*) FROM cehub_event.events")).scalar_one()
                 == 2
@@ -659,18 +681,6 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
     try:
         with owner_engine.begin() as connection:
             ids = seed_two_tenants(connection)
-            memory_a = seed_verified_memory(
-                connection,
-                tenant_id=UUID(str(ids["tenant_a"])),
-                project_id=UUID(str(ids["project_a"])),
-                suffix="a",
-            )
-            seed_verified_memory(
-                connection,
-                tenant_id=UUID(str(ids["tenant_b"])),
-                project_id=UUID(str(ids["project_b"])),
-                suffix="b",
-            )
             connection.execute(
                 tables.finding_quality_controls.insert(),
                 {
@@ -689,6 +699,31 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                     "narrowed_reason": "test quality threshold",
                 },
             )
+        memory_a = seed_verified_memory(
+            owner_engine,
+            tenant_id=UUID(str(ids["tenant_a"])),
+            project_id=UUID(str(ids["project_a"])),
+            suffix="a",
+        )
+        seed_verified_memory(
+            owner_engine,
+            tenant_id=UUID(str(ids["tenant_b"])),
+            project_id=UUID(str(ids["project_b"])),
+            suffix="b",
+        )
+        with owner_engine.connect() as connection:
+            expected_events = list(
+                connection.execute(
+                    select(tables.events.c.id, tables.events.c.tenant_id)
+                    .where(
+                        tables.events.c.tenant_id == ids["tenant_a"],
+                        tables.events.c.project_id == ids["project_a"],
+                    )
+                    .order_by(tables.events.c.id)
+                ).mappings()
+            )
+        assert len(expected_events) == 4  # Original issue plus draft/verify/embed receipts.
+        assert expected_events[0]["id"] == ids["event_a"]
         with engine.begin() as connection:
             assert (
                 connection.execute(
@@ -722,10 +757,10 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
             assert projects == [{"id": ids["project_a"], "tenant_id": ids["tenant_a"]}]
             events = list(
                 connection.execute(
-                    text("SELECT id, tenant_id FROM cehub_ai.agent_event_projection")
+                    text("SELECT id, tenant_id FROM cehub_ai.agent_event_projection ORDER BY id")
                 ).mappings()
             )
-            assert events == [{"id": ids["event_a"], "tenant_id": ids["tenant_a"]}]
+            assert events == expected_events
             memories = list(
                 connection.execute(
                     text("SELECT memory_id, tenant_id FROM cehub_ai.agent_memory_projection")
@@ -1208,18 +1243,6 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 agent_key=agent_key,
                 event_type=event_type,
             )
-            seed_verified_memory(
-                connection,
-                tenant_id=UUID(str(ids["tenant_a"])),
-                project_id=UUID(str(ids["project_a"])),
-                suffix="a",
-            )
-            seed_verified_memory(
-                connection,
-                tenant_id=UUID(str(ids["tenant_b"])),
-                project_id=UUID(str(ids["project_b"])),
-                suffix="b",
-            )
             phase_two_evidence = seed_phase_two_evidence(
                 connection,
                 ids=ids,
@@ -1230,6 +1253,18 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
                 ids=ids,
                 agent_key=agent_key,
             )
+        seed_verified_memory(
+            owner_engine,
+            tenant_id=UUID(str(ids["tenant_a"])),
+            project_id=UUID(str(ids["project_a"])),
+            suffix="a",
+        )
+        seed_verified_memory(
+            owner_engine,
+            tenant_id=UUID(str(ids["tenant_b"])),
+            project_id=UUID(str(ids["project_b"])),
+            suffix="b",
+        )
         run_store = RestrictedAgentRunStore(agent_engine)
         catalog = ModelCatalog.from_environment(
             {
@@ -1281,6 +1316,17 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
             embedding_gateway=FakeEmbeddingGateway(),
         ).execute_next(now=now)
 
+        if agent_key in {"supplier_intelligence", "executive_intelligence"}:
+            # Current frozen rollout keeps these capabilities in shadow. The
+            # ordinary restricted worker must reject before invoking a model.
+            assert result.status == "degraded"
+            assert result.error_code == "CAPABILITY_SHADOW"
+            assert result.finding_id is None and adapter.calls == []
+            with owner_engine.connect() as connection:
+                assert connection.execute(select(tables.model_invocations.c.id)).first() is None
+                assert connection.execute(select(tables.model_call_sessions.c.id)).first() is None
+                assert connection.execute(select(tables.findings.c.id)).first() is None
+            return
         assert result.status == "succeeded"
         assert result.run_id == ids["run_a"]
         assert len(adapter.calls) == 1
@@ -1341,6 +1387,64 @@ def test_restricted_agent_executes_projection_gateway_and_trace_end_to_end(
         assert finding["agent_key"] == agent_key
         assert finding["finding_type"] == candidate_type
         assert finding["model_invocation_id"] == invocation["id"]
+    finally:
+        agent_engine.dispose()
+        owner_engine.dispose()
+
+
+VNEXT_BUSINESS_TABLES = (
+    ("cehub_event", "reminders"),
+    ("cehub_quality", "test_runs"),
+    ("cehub_quality", "import_mapping_versions"),
+    ("cehub_quality", "test_report_import_batches"),
+    ("cehub_product", "fw_releases"),
+    ("cehub_product", "sample_build_configurations"),
+    # V2-1: agents may *draft* a meeting (确认区), but only through the SECURITY
+    # DEFINER whitelist — never by writing these tables directly.
+    ("cehub_project", "meetings"),
+    ("cehub_project", "meeting_recurrences"),
+    ("cehub_project", "meeting_participants"),
+    ("cehub_project", "meeting_agenda_items"),
+    ("cehub_project", "meeting_transcripts"),
+    ("cehub_project", "meeting_transcript_segments"),
+    # V2-7: agents capture evidence through the SECURITY DEFINER whitelist
+    # (自由区), never by writing the snapshot tables directly.
+    ("cehub_evidence", "research_sources"),
+    ("cehub_evidence", "evidence_snapshots"),
+)
+
+
+def test_agent_role_has_zero_grants_on_vnext_business_tables(
+    secured_agent_database_url: str,
+) -> None:
+    """D32 hard boundary: pdos_agent writes flow only through the SECURITY
+    DEFINER whitelist — new vNext tables must carry no direct grants at all."""
+    owner_engine = create_engine(psycopg_database_url(secured_agent_database_url))
+    agent_engine = role_engine(secured_agent_database_url, "pdos_agent")
+    try:
+        with owner_engine.connect() as connection:
+            granted = connection.execute(
+                text(
+                    "SELECT table_schema, table_name, privilege_type "
+                    "FROM information_schema.role_table_grants "
+                    "WHERE grantee = 'pdos_agent'"
+                )
+            ).all()
+        granted_tables = {(row.table_schema, row.table_name) for row in granted}
+        leaked = granted_tables.intersection(VNEXT_BUSINESS_TABLES)
+        assert not leaked, f"pdos_agent must have zero grants on {sorted(leaked)}"
+        with agent_engine.begin() as connection:
+            for schema_name, table_name in VNEXT_BUSINESS_TABLES:
+                denied(
+                    connection,
+                    f"SELECT count(*) FROM {schema_name}.{table_name}",
+                    {},
+                )
+                denied(
+                    connection,
+                    f"DELETE FROM {schema_name}.{table_name}",
+                    {},
+                )
     finally:
         agent_engine.dispose()
         owner_engine.dispose()

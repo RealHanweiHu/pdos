@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor, wait
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from threading import Barrier, Event
 from typing import Any
@@ -13,7 +13,8 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, func, select, text
+from sqlalchemy import create_engine, func, select
+from sqlalchemy.exc import IntegrityError
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -22,6 +23,8 @@ from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.gates import (
+    GateCondition,
+    GateConditionsRequiredError,
     GateInvalidStateError,
     GateReadinessRecord,
     GateRoundNotOpenError,
@@ -32,6 +35,7 @@ from app.domain.gates import (
 from app.domain.issues import IssueService, IssueUpdate
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -59,7 +63,7 @@ def isolated_gate_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -691,3 +695,326 @@ def test_gate_approval_serializes_with_new_readiness_blockers(
         blocker_future.result(timeout=5)
 
     assert was_serialized
+
+
+def _sign_all(
+    service: GateService,
+    *,
+    tenant_id: UUID,
+    project_id: UUID,
+    gate_id: UUID,
+    round_id: UUID,
+    owner_id: UUID,
+) -> None:
+    for slot in ("product", "engineering", "quality"):
+        service.sign(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            gate_id=gate_id,
+            round_id=round_id,
+            actor_user_id=owner_id,
+            actor_role=Role.OWNER,
+            slot=slot,
+            status="approved",
+            note=f"{slot} evidence reviewed",
+        )
+
+
+def test_conditional_pass_records_its_strings_as_tracked_gate_actions(
+    client: TestClient,
+    isolated_gate_database: str,
+) -> None:
+    """V1-B6: "approved with conditions" must not lose the conditions."""
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _, _, gate_id, _ = seed_project(
+        isolated_gate_database, tenant_id=tenant_id, owner_id=owner_id
+    )
+    engine = create_engine(psycopg_database_url(isolated_gate_database))
+    try:
+        service = GateService(engine)
+        opened = service.open_round(
+            tenant_id=tenant_id, project_id=project_id, gate_id=gate_id, actor_user_id=owner_id
+        )
+        assert opened.round is not None
+        _sign_all(
+            service,
+            tenant_id=tenant_id,
+            project_id=project_id,
+            gate_id=gate_id,
+            round_id=opened.round.id,
+            owner_id=owner_id,
+        )
+
+        decided = service.decide(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            gate_id=gate_id,
+            actor_user_id=owner_id,
+            status="conditional",
+            rationale="Pass with two open items",
+            conditions=(
+                GateCondition(
+                    title="补齐 EMC 预测试报告",
+                    owner_user_id=owner_id,
+                    due_date=date(2026, 9, 15),
+                    closure_evidence="doc://emc-pretest",
+                ),
+                GateCondition(
+                    title="关闭轴承供应商偏差单",
+                    owner_user_id=owner_id,
+                    due_date=date(2026, 9, 30),
+                    closure_evidence="doc://supplier-deviation",
+                ),
+            ),
+        )
+        assert decided.status == "conditional"
+
+        with engine.connect() as connection:
+            rows = (
+                connection.execute(
+                    select(tables.tasks).where(
+                        tables.tasks.c.tenant_id == tenant_id,
+                        tables.tasks.c.kind == "gate_action",
+                    )
+                )
+                .mappings()
+                .all()
+            )
+        assert len(rows) == 2
+        # Each condition is a tracked action with an owner, a date, and the
+        # evidence that will close it — not a sentence in a rationale.
+        assert {row["title"] for row in rows} == {
+            "补齐 EMC 预测试报告",
+            "关闭轴承供应商偏差单",
+        }
+        for row in rows:
+            assert row["source_entity"] == "gate"
+            assert row["source_entity_id"] == gate_id
+            assert row["assignee_user_id"] == owner_id
+            assert row["due_date"] is not None
+            assert row["expected_output"].startswith("doc://")
+    finally:
+        engine.dispose()
+
+
+def test_conditions_belong_only_to_a_conditional_pass(
+    client: TestClient,
+    isolated_gate_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _, _, gate_id, _ = seed_project(
+        isolated_gate_database, tenant_id=tenant_id, owner_id=owner_id
+    )
+    engine = create_engine(psycopg_database_url(isolated_gate_database))
+    try:
+        service = GateService(engine)
+        opened = service.open_round(
+            tenant_id=tenant_id, project_id=project_id, gate_id=gate_id, actor_user_id=owner_id
+        )
+        assert opened.round is not None
+        _sign_all(
+            service,
+            tenant_id=tenant_id,
+            project_id=project_id,
+            gate_id=gate_id,
+            round_id=opened.round.id,
+            owner_id=owner_id,
+        )
+
+        # A conditional pass with no conditions is just an approval in disguise.
+        with pytest.raises(GateConditionsRequiredError):
+            service.decide(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                gate_id=gate_id,
+                actor_user_id=owner_id,
+                status="conditional",
+                rationale="No strings named",
+            )
+        # A clean pass carrying conditions is equally incoherent.
+        with pytest.raises(GateConditionsRequiredError):
+            service.decide(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                gate_id=gate_id,
+                actor_user_id=owner_id,
+                status="approved",
+                rationale="Clean pass",
+                conditions=(
+                    GateCondition(
+                        title="不该存在的条件",
+                        owner_user_id=owner_id,
+                        due_date=date(2026, 9, 15),
+                        closure_evidence="doc://x",
+                    ),
+                ),
+            )
+    finally:
+        engine.dispose()
+
+
+def test_hold_is_a_distinct_outcome_that_reopens(
+    client: TestClient,
+    isolated_gate_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _, _, gate_id, _ = seed_project(
+        isolated_gate_database, tenant_id=tenant_id, owner_id=owner_id
+    )
+    engine = create_engine(psycopg_database_url(isolated_gate_database))
+    try:
+        service = GateService(engine)
+        service.open_round(
+            tenant_id=tenant_id, project_id=project_id, gate_id=gate_id, actor_user_id=owner_id
+        )
+        held = service.decide(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            gate_id=gate_id,
+            actor_user_id=owner_id,
+            status="hold",
+            rationale="Waiting on the customer's spec answer",
+        )
+        # Hold is not rejection: the work is not wrong, it is waiting.
+        assert held.status == "hold"
+        assert held.round is not None
+        assert held.round.status == "completed"
+
+        reopened = service.open_round(
+            tenant_id=tenant_id, project_id=project_id, gate_id=gate_id, actor_user_id=owner_id
+        )
+        assert reopened.status == "reviewing"
+        assert reopened.round is not None
+        assert reopened.round.round_number == 2
+    finally:
+        engine.dispose()
+
+
+def test_a_gate_deliverable_cannot_be_closed_without_evidence(
+    client: TestClient,
+    isolated_gate_database: str,
+) -> None:
+    """The service refuses it; this proves the database does too."""
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _, evt_stage_id, _, _ = seed_project(
+        isolated_gate_database, tenant_id=tenant_id, owner_id=owner_id
+    )
+    engine = create_engine(psycopg_database_url(isolated_gate_database))
+    try:
+        with engine.begin() as connection:
+            workflow_id = connection.execute(
+                select(tables.projects.c.workflow_id).where(tables.projects.c.id == project_id)
+            ).scalar_one()
+        template_id = uuid4()
+        with engine.begin() as connection:
+            connection.execute(
+                tables.deliverable_check_templates.insert(),
+                {
+                    "id": template_id,
+                    "tenant_id": tenant_id,
+                    "asset_schema_version": "1",
+                    "template_versions": ["v1"],
+                    "check_item_key": "evt/gate-doc",
+                    "deliverable_name": "EMC 报告",
+                    "requirement": "必须附报告",
+                    "source": "seed",
+                    "bindings": [],
+                    "content_hash": "a" * 64,
+                    "imported_at": datetime.now(UTC),
+                },
+            )
+        base_item = {
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "workflow_id": workflow_id,
+            "stage_id": evt_stage_id,
+            "template_id": template_id,
+            "created_by_user_id": owner_id,
+            "binding_key": "evt/gate-doc",
+            "phase_id": "p1",
+            "phase_code": "evt",
+            "phase_name": "EVT",
+            "task_id": "t1",
+            "task_name": "Gate deliverable",
+            "deliverable_name": "EMC 报告",
+            "requirement": "必须附报告",
+            "is_gate": True,
+            "status": "completed",
+            "completed_by_user_id": owner_id,
+            "completed_at": datetime.now(UTC),
+        }
+        with pytest.raises(IntegrityError), engine.begin() as connection:
+            connection.execute(tables.project_check_items.insert(), {"id": uuid4(), **base_item})
+        with engine.begin() as connection:
+            connection.execute(
+                tables.project_check_items.insert(),
+                {"id": uuid4(), **base_item, "evidence_reference": "doc://emc-report"},
+            )
+    finally:
+        engine.dispose()
+
+
+def test_build_purpose_enumerates_certification_sampling(
+    client: TestClient,
+    isolated_gate_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    project_id, _, evt_stage_id, _, _ = seed_project(
+        isolated_gate_database, tenant_id=tenant_id, owner_id=owner_id
+    )
+    engine = create_engine(psycopg_database_url(isolated_gate_database))
+    try:
+        with engine.begin() as connection:
+            workflow_id = connection.execute(
+                select(tables.projects.c.workflow_id).where(tables.projects.c.id == project_id)
+            ).scalar_one()
+        batch = {
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "workflow_id": workflow_id,
+            "stage_id": evt_stage_id,
+            "created_by_user_id": owner_id,
+            "phase": "evt",
+            "planned_quantity": 3,
+            "status": "planned",
+        }
+        with engine.begin() as connection:
+            connection.execute(
+                tables.build_batches.insert(),
+                {
+                    "id": uuid4(),
+                    **batch,
+                    "code": "BATCH-CERT",
+                    "purpose": "certification_sample",
+                },
+            )
+            default_id = uuid4()
+            connection.execute(
+                tables.build_batches.insert(),
+                {"id": default_id, **batch, "code": "BATCH-DEFAULT"},
+            )
+            assert (
+                connection.execute(
+                    select(tables.build_batches.c.purpose).where(
+                        tables.build_batches.c.id == default_id
+                    )
+                ).scalar_one()
+                == "engineering_build"
+            )
+        with pytest.raises(IntegrityError), engine.begin() as connection:
+            connection.execute(
+                tables.build_batches.insert(),
+                {"id": uuid4(), **batch, "code": "BATCH-BAD", "purpose": "whatever"},
+            )
+    finally:
+        engine.dispose()

@@ -16,6 +16,9 @@ from app.db.namespaces import SCHEMAS
 from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
+from tests.test_migrations import EXPECTED_HEAD
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 QUALITY_CAPA_TABLES = {
@@ -86,6 +89,13 @@ def test_quality_capa_migration_matches_metadata_and_keeps_one_head(
         engine.dispose()
 
     config = Config(str(SERVER_ROOT / "alembic.ini"))
-    command.downgrade(config, "0020_cehub_migration_v1")
-    command.upgrade(config, "head")
-    assert ScriptDirectory.from_config(config).get_heads() == ["0033_expand_model_providers"]
+    try:
+        with engine.begin() as connection:
+            clear_test_tenants(connection)
+        migrate_test_database_in_steps(config, engine, "0020_cehub_migration_v1")
+    finally:
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()
+    assert ScriptDirectory.from_config(config).get_heads() == [EXPECTED_HEAD]

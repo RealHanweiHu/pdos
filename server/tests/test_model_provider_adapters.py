@@ -127,7 +127,7 @@ def test_anthropic_adapter_uses_native_messages_contract() -> None:
     )
 
     assert response.content == '{"risk":"low"}'
-    assert response.input_tokens == 9
+    assert response.input_tokens == 17
     assert response.output_tokens == 4
     assert response.cache_read_tokens == 5
     assert response.cache_creation_tokens == 3
@@ -194,3 +194,69 @@ def test_adapter_denies_an_injected_route_before_the_http_transport() -> None:
 
     assert error.value.code == "provider_egress_denied"
     assert transport_calls == 0
+
+
+@pytest.mark.parametrize("protocol", list(ProtocolKind))
+@pytest.mark.parametrize("seconds", [30.0, 90.0])
+def test_provider_transport_honors_bounded_server_wait_policy(
+    protocol: ProtocolKind, seconds: float
+) -> None:
+    calls = 0
+
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        nonlocal calls
+        calls += 1
+        assert request.extensions["timeout"] == dict.fromkeys(
+            ("connect", "read", "write", "pool"), seconds
+        )
+        return httpx2.Response(529, text="provider overloaded")
+
+    resolved = route(protocol)
+    adapter_type = (
+        AnthropicNativeAdapter
+        if protocol is ProtocolKind.ANTHROPIC_NATIVE
+        else OpenAICompatibleAdapter
+    )
+    with httpx2.Client(transport=httpx2.MockTransport(handler)) as client:
+        with pytest.raises(ProviderRequestError) as error:
+            adapter_type(client, policy(resolved), request_timeout_seconds=seconds).complete(
+                resolved, [ChatMessage(role="user", content="synthetic test")]
+            )
+        assert error.value.code == "provider_http_529"
+        assert calls == 1
+        for invalid in (0, 91, float("nan")):
+            with pytest.raises(ValueError, match="between 1 and 90"):
+                adapter_type(client, policy(resolved), request_timeout_seconds=invalid)
+
+
+@pytest.mark.parametrize(
+    ("route_name", "seconds", "attempts"),
+    [("suggest_test_plan_changes", 90.0, 1), ("chat", 30.0, 2), (None, 30.0, 2)],
+)
+def test_long_wait_is_bound_to_server_test_plan_route(
+    monkeypatch: pytest.MonkeyPatch, route_name: str | None, seconds: float, attempts: int
+) -> None:
+    from collections.abc import Iterator
+    from contextlib import contextmanager
+    from types import SimpleNamespace
+
+    from sqlalchemy import create_engine
+    from starlette.requests import Request
+
+    from app.api import ai
+
+    marker = object()
+
+    @contextmanager
+    def gateway(engine: object, **kwargs: object) -> Iterator[object]:
+        assert kwargs == {
+            "request_timeout_seconds": seconds,
+            "max_structured_attempts": attempts,
+        }
+        yield marker
+
+    monkeypatch.setattr(ai, "configured_application_gateway", gateway)
+    request = Request({"type": "http", "route": SimpleNamespace(name=route_name)})
+    engine = create_engine("sqlite://")
+    assert list(ai.get_application_gateway(request, engine)) == [marker]
+    engine.dispose()

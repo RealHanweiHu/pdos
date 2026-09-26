@@ -13,8 +13,10 @@ from fastapi.testclient import TestClient
 from openpyxl import Workbook
 from pydantic import BaseModel
 from pypdf import PdfWriter
-from sqlalchemy import create_engine, select, text
+from sqlalchemy import create_engine, select
 
+from app.ai.call_identity import ModelCallSlot, model_call_id
+from app.ai.capability_contract import CapabilityKey
 from app.ai.chat import ChatAssessment, ChatClaim
 from app.ai.embeddings import EmbeddingResult
 from app.ai.executor import AgentAssessment
@@ -27,11 +29,13 @@ from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.findings import RiskSuggestionPayload
-from app.domain.memories import MemoryDraft, MemoryService
+from app.domain.memories import MemoryDraft, MemoryService, memory_review_digest
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 from app.main import app
 from app.settings import get_settings
 from app.storage.documents import DocumentObjectStore, get_document_object_store
+from tests.db_cleanup import clear_test_tenants
+from tests.provider_environment import clear_provider_environment
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -76,6 +80,13 @@ class FakeGateway:
         invocation: GatewayInvocation,
         output_type: type[OutputT],
     ) -> GatewayResult[OutputT]:
+        if invocation.run_id is not None:
+            assert invocation.model_call_id == model_call_id(
+                invocation.run_id,
+                ModelCallSlot.CHAT_ANSWER
+                if invocation.agent_key == "ai_chat"
+                else ModelCallSlot.RISK_SUGGESTION,
+            )
         self.invocations.append(invocation)
         output: BaseModel = self.chat_output if output_type is ChatAssessment else self.risk_output
         invocation_id = uuid4()
@@ -124,6 +135,7 @@ def isolated_ai_api_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     monkeypatch.setenv("JWT_SECRET", TEST_JWT_SECRET)
     monkeypatch.setenv("JWT_ISSUER", "pdos-test")
     monkeypatch.setenv("JWT_AUDIENCE", "pdos-test-client")
+    clear_provider_environment(monkeypatch)
     get_settings.cache_clear()
     get_engine.cache_clear()
     os.environ["DATABASE_URL"] = test_url
@@ -131,7 +143,7 @@ def isolated_ai_api_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -445,6 +457,7 @@ def test_chat_can_cite_only_verified_memory_without_exposing_vectors(
                 title="Connector DVT lesson",
                 content="Validate connector pin mapping before the DVT build.",
                 tags=("DVT", "connector"),
+                knowledge_kind="design_rule",
             ),
         )
         MemoryService(engine).verify(
@@ -452,6 +465,7 @@ def test_chat_can_cite_only_verified_memory_without_exposing_vectors(
             project_id=project_id,
             actor_user_id=verifier_id,
             memory_id=memory.id,
+            expected_review_digest=memory_review_digest(memory),
             gateway=embedding_gateway,
         )
     finally:
@@ -545,7 +559,7 @@ def test_risk_suggestion_creates_only_pending_finding_and_is_idempotent(
     assert brief.json()["narrowed_output_count"] == 0
     assert brief.json()["items"][0]["finding_id"] == created.json()["finding_id"]
     assert brief.json()["items"][0]["evidence"][0]["href"] == (
-        f"/projects?project={project_id}&tab=timeline&event_id={event_row_id}"
+        f"/projects?project={project_id}&tab=overview&event_id={event_row_id}"
     )
     engine = create_engine(psycopg_database_url(isolated_ai_api_database))
     try:
@@ -581,3 +595,268 @@ def test_ai_and_document_actions_are_denied_to_external_roles(
         files={"file": ("risks.xlsx", xlsx_bytes())},
     )
     assert chat.status_code == upload.status_code == 403
+
+
+def test_capabilities_endpoint_reports_contract_and_quality_controls(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+) -> None:
+    client, _, _ = api_context
+    _, _, headers = setup_owner(client)
+
+    response = client.get("/api/ai/capabilities", headers=headers)
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    items = response.json()["items"]
+    keys = [item["capability_key"] for item in items]
+    assert len(keys) == len(set(keys))
+    assert set(keys) == {key.value for key in CapabilityKey}
+    # Keep the original capabilities and their relative presentation order while
+    # requiring all registered additions to be visible in the governance API.
+    legacy_keys = [
+        "project_intelligence.risk_suggestion",
+        "project_intelligence.blocker_alert",
+        "project_intelligence.gate_readiness_anomaly",
+        "project_intelligence.risk_suggestion_api",
+        "knowledge_lite.knowledge_draft",
+        "engineering_intelligence.bom_impact_suggestion",
+        "engineering_intelligence.change_impact_suggestion",
+        "quality_intelligence.quality_cluster_alert",
+        "quality_intelligence.capa_suggestion",
+        "quality_intelligence.test_plan_change",
+        "quality_intelligence.test_report_import",
+        "supplier_intelligence.supplier_delay_risk",
+        "executive_intelligence.executive_portfolio_brief",
+    ]
+    assert [key for key in keys if key in legacy_keys] == legacy_keys
+    by_key = {item["capability_key"]: item for item in items}
+    hard_gate = by_key["project_intelligence.risk_suggestion"]
+    assert hard_gate["zone"] == "hard_gate"
+    assert hard_gate["rollout"] == "live"
+    assert hard_gate["prompt_version"] == "project-intelligence-v1"
+    assert hard_gate["finding_types"] == ["risk_suggestion"]
+    assert hard_gate["quality_control"] == "finding_quality_control"
+    test_plan = by_key["quality_intelligence.test_plan_change"]
+    assert test_plan["zone"] == "hard_gate"
+    assert test_plan["finding_types"] == ["test_plan_change"]
+    assert test_plan["prompt_version"] == "test-plan-change-v5"
+    assert test_plan["tools"] == []  # Explicit API request, no event-worker tool access.
+    confirm = by_key["quality_intelligence.test_report_import"]
+    assert confirm["zone"] == "confirm"
+    assert confirm["finding_types"] == []
+    shadow = by_key["supplier_intelligence.supplier_delay_risk"]
+    assert shadow["rollout"] == "shadow"
+
+    assert client.get("/api/ai/capabilities").status_code == 401
+
+
+def test_touchpoints_report_explicit_disabled_states_with_manual_paths(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+) -> None:
+    client, _, _ = api_context
+    _, _, headers = setup_owner(client)
+
+    response = client.get("/api/ai/touchpoints", headers=headers)
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert [item["key"] for item in items] == [
+        "ai_brief",
+        "ai_chat",
+        "document_analyze",
+        "risk_suggestion_api",
+        "test_report_import",
+        "agent_runs",
+    ]
+    for item in items:
+        assert item["manual_alternative"].strip()
+        if item["reason_code"] is None:
+            assert item["state"] == "enabled"
+        elif item["key"] == "test_report_import":
+            assert item["state"] == "degraded"
+        else:
+            assert item["state"] == "disabled"
+
+    assert client.get("/api/ai/touchpoints").status_code == 401
+
+
+def test_usage_endpoint_reports_budget_and_capability_rows(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+) -> None:
+    client, _, _ = api_context
+    _, _, headers = setup_owner(client)
+
+    response = client.get("/api/ai/usage", headers=headers)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["rows"] == []
+    assert body["budget_exhausted"] in {True, False}
+    assert set(body) == {
+        "daily_token_budget",
+        "used_tokens_today",
+        "remaining_tokens_today",
+        "budget_exhausted",
+        "rows",
+    }
+
+
+@pytest.mark.parametrize("stop_during_model", [False, True])
+def test_risk_request_rechecks_rollout_and_records_midcall_stop(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+    monkeypatch: pytest.MonkeyPatch,
+    stop_during_model: bool,
+) -> None:
+    from app.ai.capability_contract import CapabilityRollout
+    from app.ai.runtime_contract import AgentKey
+    from tests.rollout_support import set_agent_rollout
+
+    client, _, gateway = api_context
+    tenant_id, _, headers = setup_owner(client)
+    project_id, event_id = seed_project_and_users(isolated_ai_api_database, tenant_id=tenant_id)
+    original = gateway.invoke_structured
+
+    def invoke_then_disable[OutputT: BaseModel](
+        invocation: GatewayInvocation, output_type: type[OutputT]
+    ) -> GatewayResult[OutputT]:
+        result = original(invocation, output_type)
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout.DISABLED)
+        return result
+
+    if stop_during_model:
+        monkeypatch.setattr(gateway, "invoke_structured", invoke_then_disable)
+    else:
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout.DISABLED)
+    response = client.post(
+        "/api/ai/create-risk-suggestion",
+        headers=headers,
+        json={
+            "project_id": str(project_id),
+            "request_id": "rollout-stop",
+            "concern": "Check the issue",
+            "evidence_event_ids": [event_id],
+        },
+    )
+    if stop_during_model:
+        assert response.status_code == 200, response.text
+        assert response.json()["status"] == "unavailable"
+        assert response.json()["error_code"] == "CAPABILITY_DISABLED"
+        with get_engine().connect() as connection:
+            run = connection.execute(select(tables.agent_runs)).mappings().one()
+            assert run["status"] == "degraded"
+            assert connection.execute(select(tables.findings.c.id)).first() is None
+    else:
+        assert response.status_code == 409, response.text
+        assert response.json()["detail"]["code"] == "CAPABILITY_DISABLED"
+    assert len(gateway.invocations) == int(stop_during_model)
+
+
+@pytest.mark.parametrize(
+    "variant", ["same_request", "other_actor", "changed_content", "legacy_unbound"]
+)
+def test_risk_request_replay_preserves_origin_and_does_not_call_again(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+    variant: str,
+) -> None:
+    client, _, gateway = api_context
+    tenant, owner, headers = setup_owner(client)
+    project, event = seed_project_and_users(isolated_ai_api_database, tenant_id=tenant)
+    body = dict(
+        project_id=str(project),
+        request_id="bound-risk-request",
+        concern="Assess evidence.",
+        evidence_event_ids=[event],
+    )
+    first = client.post("/api/ai/create-risk-suggestion", headers=headers, json=body)
+    assert first.status_code == 200, first.text
+    engine = create_engine(psycopg_database_url(isolated_ai_api_database))
+    try:
+        with engine.begin() as connection:
+            run = connection.execute(select(tables.agent_runs)).mappings().one()
+            assert run["run_context"]["api_actor_user_id"] == str(owner)
+            if variant == "other_actor":
+                manager = connection.execute(
+                    select(tables.users.c.id).where(
+                        tables.users.c.tenant_id == tenant, tables.users.c.username == "manager"
+                    )
+                ).scalar_one()
+                connection.execute(
+                    tables.project_members.insert(),
+                    dict(
+                        id=uuid4(),
+                        tenant_id=tenant,
+                        project_id=project,
+                        user_id=manager,
+                        added_by_user_id=owner,
+                    ),
+                )
+            if variant == "legacy_unbound":
+                old = dict(run["run_context"])
+                old.pop("api_actor_user_id")
+                connection.execute(
+                    tables.agent_runs.update()
+                    .where(tables.agent_runs.c.id == run["id"])
+                    .values(run_context=old)
+                )
+        if variant == "other_actor":
+            headers = login(client, "manager")
+        if variant == "changed_content":
+            body["concern"] = "Another request."
+        replay = client.post("/api/ai/create-risk-suggestion", headers=headers, json=body)
+        if variant == "same_request":
+            assert replay.status_code == 200 and replay.json() == first.json()
+        else:
+            assert replay.status_code == 409, replay.text
+            assert replay.json()["detail"]["code"] == "RISK_REQUEST_CONFLICT"
+        assert len(gateway.invocations) == 1
+        with engine.connect() as connection:
+            assert len(connection.execute(select(tables.agent_runs)).all()) == 1
+    finally:
+        engine.dispose()
+
+
+def test_concurrent_risk_request_creates_one_run_and_one_model_call(
+    api_context: tuple[TestClient, FakeObjectStore, FakeGateway],
+    isolated_ai_api_database: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+
+    client, _, gateway = api_context
+    tenant, _, headers = setup_owner(client)
+    project, event = seed_project_and_users(isolated_ai_api_database, tenant_id=tenant)
+    body = dict(
+        project_id=str(project),
+        request_id="in-flight-risk",
+        concern="Assess evidence.",
+        evidence_event_ids=[event],
+    )
+    entered, release = Event(), Event()
+    original = gateway.invoke_structured
+
+    def held[OutputT: BaseModel](
+        invocation: GatewayInvocation, output_type: type[OutputT]
+    ) -> GatewayResult[OutputT]:
+        entered.set()
+        assert release.wait(10), "test did not release provider"
+        return original(invocation, output_type)
+
+    monkeypatch.setattr(gateway, "invoke_structured", held)
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        first = executor.submit(
+            client.post, "/api/ai/create-risk-suggestion", headers=headers, json=body
+        )
+        try:
+            assert entered.wait(5), "first request did not reach model"
+            second = client.post("/api/ai/create-risk-suggestion", headers=headers, json=body)
+            assert second.status_code == 409, second.text
+        finally:
+            release.set()
+        result = first.result(timeout=5)
+    assert result.status_code == 200, result.text
+    replay = client.post("/api/ai/create-risk-suggestion", headers=headers, json=body)
+    assert replay.json() == result.json()
+    assert len(gateway.invocations) == 1

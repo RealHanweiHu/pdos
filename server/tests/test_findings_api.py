@@ -9,7 +9,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, select
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -19,6 +19,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -38,7 +39,7 @@ def isolated_findings_api_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -265,7 +266,7 @@ def test_findings_http_keeps_accept_and_apply_separate(
             "event_row_id": ids["event_id"],
             "label": f"事件 #{ids['event_id']}",
             "href": (
-                f"/projects?project={ids['project_id']}&tab=timeline&event_id={ids['event_id']}"
+                f"/projects?project={ids['project_id']}&tab=overview&event_id={ids['event_id']}"
             ),
         }
     ]
@@ -355,3 +356,142 @@ def test_reject_requires_a_human_reason(
     assert rejected.status_code == 200
     assert rejected.json()["status"] == "rejected"
     assert rejected.json()["review_comment"] == "证据不足"
+
+
+def test_archive_ttl_sweep_is_reversible_and_leaves_audit(
+    client: TestClient, isolated_findings_api_database: str
+) -> None:
+    ids = seed_api_finding(isolated_findings_api_database)
+    finding_id = ids["finding_id"]
+    headers = login_headers(client, "owner")
+
+    fresh = client.post("/api/ai/findings/archive-stale", headers=headers, json={})
+    assert fresh.status_code == 200
+    assert fresh.json()["archived"] == []
+
+    engine = create_engine(psycopg_database_url(isolated_findings_api_database))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.findings.update()
+                .where(tables.findings.c.id == finding_id)
+                .values(created_at=datetime.now(UTC) - timedelta(days=15))
+            )
+    finally:
+        engine.dispose()
+
+    # Age alone is insufficient: a recently changed or restored finding keeps
+    # its full inactivity window, even when its original creation date is old.
+    recent = client.post("/api/ai/findings/archive-stale", headers=headers, json={})
+    assert recent.status_code == 200
+    assert recent.json()["archived"] == []
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.findings.update()
+                .where(tables.findings.c.id == finding_id)
+                .values(updated_at=tables.findings.c.created_at)
+            )
+    finally:
+        engine.dispose()
+
+    swept = client.post("/api/ai/findings/archive-stale", headers=headers, json={})
+    assert swept.status_code == 200
+    archived_items = swept.json()["archived"]
+    assert [item["id"] for item in archived_items] == [str(finding_id)]
+    assert archived_items[0]["status"] == "archived"
+
+    pending = client.get("/api/ai/findings?status=pending_review", headers=headers)
+    assert pending.json()["items"] == []
+    archived_list = client.get("/api/ai/findings?status=archived", headers=headers)
+    assert [item["id"] for item in archived_list.json()["items"]] == [str(finding_id)]
+
+    reviewing_archived = client.post(
+        f"/api/ai/findings/{finding_id}/review",
+        headers=headers,
+        json={"decision": "accepted"},
+    )
+    assert reviewing_archived.status_code == 409
+
+    restored = client.post(f"/api/ai/findings/{finding_id}/restore", headers=headers)
+    assert restored.status_code == 200
+    assert restored.json()["status"] == "pending_review"
+
+    repeat_restore = client.post(f"/api/ai/findings/{finding_id}/restore", headers=headers)
+    assert repeat_restore.status_code == 409
+
+    engine = create_engine(psycopg_database_url(isolated_findings_api_database))
+    try:
+        with engine.connect() as connection:
+            actions = [
+                row.action
+                for row in connection.execute(
+                    select(tables.finding_actions.c.action)
+                    .where(tables.finding_actions.c.finding_id == finding_id)
+                    .order_by(tables.finding_actions.c.created_at)
+                )
+            ]
+    finally:
+        engine.dispose()
+    assert actions == ["created", "archived", "restored"]
+
+
+def test_review_inbox_digest_groups_and_counts(
+    client: TestClient, isolated_findings_api_database: str
+) -> None:
+    ids = seed_api_finding(isolated_findings_api_database)
+    headers = login_headers(client, "owner")
+
+    engine = create_engine(psycopg_database_url(isolated_findings_api_database))
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.risks.insert(),
+                {
+                    "id": uuid4(),
+                    "tenant_id": ids["tenant_id"],
+                    "project_id": ids["project_id"],
+                    "title": "规则候选：任务逾期",
+                    "likelihood": 3,
+                    "impact": 3,
+                    "draft_state": "draft",
+                    "origin_key": f"task_overdue:{uuid4()}",
+                    "rule_key": "task_overdue",
+                    "source_entity": "task",
+                    "source_entity_id": uuid4(),
+                },
+            )
+    finally:
+        engine.dispose()
+
+    inbox = client.get("/api/ai/review-inbox", headers=headers)
+    assert inbox.status_code == 200
+    body = inbox.json()
+    assert body["finding_count"] == 1
+    assert body["risk_candidate_count"] == 1
+    assert body["import_batch_count"] == 0
+    assert body["archived_count"] == 0
+    assert len(body["groups"]) == 1
+    kinds = [item["kind"] for item in body["groups"][0]["items"]]
+    assert kinds == ["finding", "risk_candidate"]
+    finding_item = body["groups"][0]["items"][0]
+    assert finding_item["href"].startswith("/ai-review?finding=")
+    assert finding_item["confidence_basis_points"] is not None
+
+    engine = create_engine(psycopg_database_url(isolated_findings_api_database))
+    try:
+        with engine.begin() as connection:
+            stale_at = datetime.now(UTC) - timedelta(days=15)
+            connection.execute(
+                tables.findings.update()
+                .where(tables.findings.c.id == ids["finding_id"])
+                .values(created_at=stale_at, updated_at=stale_at)
+            )
+    finally:
+        engine.dispose()
+    swept = client.post("/api/ai/findings/archive-stale", headers=headers, json={})
+    assert len(swept.json()["archived"]) == 1
+    after = client.get("/api/ai/review-inbox", headers=headers).json()
+    assert after["finding_count"] == 0
+    assert after["archived_count"] == 1
+    assert [item["kind"] for item in after["groups"][0]["items"]] == ["risk_candidate"]

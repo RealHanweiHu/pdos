@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
+from importlib import import_module
 from pathlib import Path
 
 import pytest
@@ -10,13 +11,16 @@ from alembic.autogenerate import compare_metadata
 from alembic.config import Config
 from alembic.migration import MigrationContext
 from alembic.script import ScriptDirectory
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import DBAPIError
 
 from app.db.namespaces import SCHEMAS
 from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps, rollback_migration_operations
+from tests.test_migrations import EXPECTED_HEAD
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 DINGTALK_TABLES = {
@@ -93,7 +97,7 @@ def test_dingtalk_migration_matches_metadata_and_keeps_one_head(
         engine.dispose()
 
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0033_expand_model_providers"
+        EXPECTED_HEAD
     ]
 
 
@@ -104,11 +108,17 @@ def test_dingtalk_migration_round_trip_and_lossy_downgrade_guard(
     cleanup_engine = create_engine(psycopg_database_url(connector_database_url))
     try:
         with cleanup_engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
     finally:
         cleanup_engine.dispose()
-    command.downgrade(config, "0025_context_builder_v2")
-    command.upgrade(config, "head")
+    round_trip_engine = create_engine(psycopg_database_url(connector_database_url))
+    try:
+        migrate_test_database_in_steps(config, round_trip_engine, "0025_context_builder_v2")
+    finally:
+        try:
+            migrate_test_database_in_steps(config, round_trip_engine, "head")
+        finally:
+            round_trip_engine.dispose()
 
     engine = create_engine(psycopg_database_url(connector_database_url))
     try:
@@ -140,8 +150,13 @@ def test_dingtalk_migration_round_trip_and_lossy_downgrade_guard(
                 )
             )
 
-        with pytest.raises(DBAPIError, match="Cannot downgrade 0026"):
-            command.downgrade(config, "0025_context_builder_v2")
+        with (
+            rollback_migration_operations(engine),
+            pytest.raises(DBAPIError, match="Cannot downgrade 0026"),
+        ):
+            import_module(
+                "migrations.versions.0026_dingtalk_connector_add_dingtalk_connector"
+            ).downgrade()
 
         with engine.begin() as connection:
             connection.execute(
@@ -163,5 +178,11 @@ def test_dingtalk_migration_round_trip_and_lossy_downgrade_guard(
     finally:
         engine.dispose()
 
-    command.downgrade(config, "0025_context_builder_v2")
-    command.upgrade(config, "head")
+    round_trip_engine = create_engine(psycopg_database_url(connector_database_url))
+    try:
+        migrate_test_database_in_steps(config, round_trip_engine, "0025_context_builder_v2")
+    finally:
+        try:
+            migrate_test_database_in_steps(config, round_trip_engine, "head")
+        finally:
+            round_trip_engine.dispose()

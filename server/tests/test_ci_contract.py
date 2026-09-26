@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -47,7 +48,9 @@ def test_web_typecheck_generates_route_types_in_a_clean_checkout() -> None:
     assert scripts["typecheck"] == "next typegen && tsc --noEmit"
 
 
-def test_runtime_cannot_mutate_the_golden_trust_root() -> None:
+def test_runtime_cannot_mutate_the_golden_trust_root(tmp_path: Path) -> None:
+    from scripts.probe_minimax_input_metering import candidate_evidence_path
+
     runtime_roots = [
         REPOSITORY_ROOT / "server" / "app",
         REPOSITORY_ROOT / "server" / "scripts",
@@ -62,3 +65,10 @@ def test_runtime_cannot_mutate_the_golden_trust_root() -> None:
                 disallowed.append(path.relative_to(REPOSITORY_ROOT))
 
     assert disallowed == []
+    trusted = REPOSITORY_ROOT / "server/golden"
+    alias = tmp_path / "trusted-alias"
+    alias.symlink_to(trusted, target_is_directory=True)
+    for output in (trusted / "candidate.json", alias / "candidate.json"):
+        with pytest.raises(ValueError, match="golden trust root"):
+            candidate_evidence_path(output)
+    assert candidate_evidence_path(tmp_path / "candidate.json") == tmp_path / "candidate.json"

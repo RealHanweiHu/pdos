@@ -2,6 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import cast
 
+import pytest
 import yaml
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -18,17 +19,31 @@ def production_services() -> dict[str, dict[str, object]]:
 def test_production_compose_exposes_only_the_web_service() -> None:
     services = production_services()
 
-    assert set(services) == {"migrate", "api", "dispatcher", "executor", "dingtalk", "web"}
+    assert set(services) == {
+        "migrate",
+        "api",
+        "dispatcher",
+        "executor",
+        "dingtalk",
+        "reminders",
+        "schedule-propagation",
+        "web",
+    }
     assert "ports" not in services["api"]
     assert "ports" not in services["migrate"]
     assert "ports" not in services["dispatcher"]
     assert "ports" not in services["executor"]
     assert "ports" not in services["dingtalk"]
+    assert "ports" not in services["reminders"]
+    assert "ports" not in services["schedule-propagation"]
     assert "extra_hosts" not in services["api"]
     assert "extra_hosts" not in services["migrate"]
     assert "extra_hosts" not in services["dispatcher"]
     assert "extra_hosts" not in services["executor"]
     assert "extra_hosts" not in services["dingtalk"]
+    assert "extra_hosts" not in services["reminders"]
+    assert "extra_hosts" not in services["schedule-propagation"]
+    assert services["schedule-propagation"]["profiles"] == ["schedule-propagation"]
     assert services["web"]["ports"] == ["127.0.0.1:${APP_PORT:-3002}:3000"]
     assert services["web"]["networks"] == {
         "default": {"aliases": ["pdos-web"]},
@@ -43,6 +58,7 @@ def test_production_startup_orders_migration_api_and_web() -> None:
     dispatcher_dependencies = cast(dict[str, dict[str, str]], services["dispatcher"]["depends_on"])
     executor_dependencies = cast(dict[str, dict[str, str]], services["executor"]["depends_on"])
     dingtalk_dependencies = cast(dict[str, dict[str, str]], services["dingtalk"]["depends_on"])
+    reminder_dependencies = cast(dict[str, dict[str, str]], services["reminders"]["depends_on"])
     web_dependencies = cast(dict[str, dict[str, str]], services["web"]["depends_on"])
     api_healthcheck = cast(dict[str, object], services["api"]["healthcheck"])
     web_healthcheck = cast(dict[str, object], services["web"]["healthcheck"])
@@ -52,6 +68,7 @@ def test_production_startup_orders_migration_api_and_web() -> None:
     assert dispatcher_dependencies["migrate"]["condition"] == "service_completed_successfully"
     assert executor_dependencies["migrate"]["condition"] == "service_completed_successfully"
     assert dingtalk_dependencies["migrate"]["condition"] == "service_completed_successfully"
+    assert reminder_dependencies["migrate"]["condition"] == "service_completed_successfully"
     assert web_dependencies["api"]["condition"] == "service_healthy"
     assert api_healthcheck["test"]
     assert web_healthcheck["test"]
@@ -59,6 +76,17 @@ def test_production_startup_orders_migration_api_and_web() -> None:
 
 def test_production_api_receives_only_server_side_model_configuration() -> None:
     api_environment = cast(dict[str, str], production_services()["api"]["environment"])
+    assert api_environment["PDOS_APPLICATION_MODEL_BUDGET_MODE"] == (
+        "${PDOS_APPLICATION_MODEL_BUDGET_MODE:-legacy}"
+    )
+    for key in ("BUDGET_PROFILE", "METER_PATH", "METER_SHA256"):
+        variable = "PDOS_APPLICATION_MODEL_" + key
+        assert api_environment[variable] == "${" + variable + ":-}"
+    for service in ("web", "dispatcher", "executor"):
+        environment = production_services()[service]["environment"]
+        assert isinstance(environment, dict)
+        assert all(isinstance(name, str) for name in environment)
+        assert not any(name.startswith("PDOS_APPLICATION_") for name in environment)
 
     assert api_environment["PDOS_LLM_PROVIDER"] == "${PDOS_LLM_PROVIDER:-minimax}"
     assert api_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
@@ -96,6 +124,18 @@ def test_production_dispatcher_and_executor_have_disjoint_runtime_credentials() 
     assert "PDOS_ALLOW_SHARED_RUNTIME_DATABASE_URL" not in dispatcher_environment
     assert "PDOS_ALLOW_SHARED_RUNTIME_DATABASE_URL" not in executor_environment
     assert not any(name.startswith("PDOS_LLM_") for name in dispatcher_environment)
+    for environment in (dispatcher_environment, executor_environment):
+        assert environment["PDOS_AGENT_MODEL_BUDGET_MODE"] == (
+            "${PDOS_AGENT_MODEL_BUDGET_MODE:-legacy}"
+        )
+        assert environment["PDOS_AGENT_MODEL_BUDGET_PROFILE"] == (
+            "${PDOS_AGENT_MODEL_BUDGET_PROFILE:-}"
+        )
+    assert "PDOS_AGENT_MODEL_METER_PATH" not in dispatcher_environment
+    assert "PDOS_AGENT_MODEL_METER_SHA256" not in dispatcher_environment
+    assert executor_environment["PDOS_AGENT_MODEL_METER_PATH"] == (
+        "${PDOS_AGENT_MODEL_METER_PATH:-}"
+    )
     assert executor_environment["PDOS_LLM_API_KEY"] == "${PDOS_LLM_API_KEY:-}"
     assert executor_environment["PDOS_LLM_OPENROUTER_API_KEY"] == (
         "${PDOS_LLM_OPENROUTER_API_KEY:-}"
@@ -134,6 +174,135 @@ def test_production_dingtalk_worker_is_app_role_fail_closed_and_fixed_egress() -
     assert "follow_redirects=False" in source
     assert "trust_env=False" in source
     assert "scripts.run_dingtalk_connector" in str(healthcheck["test"])
+
+
+def test_reminder_scheduler_uses_app_role_without_external_credentials() -> None:
+    services = production_services()
+    service = services["reminders"]
+    environment = cast(dict[str, str], service["environment"])
+    healthcheck = cast(dict[str, object], service["healthcheck"])
+
+    assert service["command"] == ["python", "-m", "scripts.run_reminder_scheduler"]
+    assert environment == {
+        "DATABASE_URL": "${DATABASE_URL:?DATABASE_URL must be set}",
+        "JWT_SECRET": "${JWT_SECRET:?JWT_SECRET must be set}",
+        "PDOS_PUBLIC_BASE_URL": "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}",
+        "PDOS_DINGTALK_DELIVERY_ENABLED": "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}",
+        "PDOS_REMINDER_SCAN_SECONDS": "${PDOS_REMINDER_SCAN_SECONDS:-60}",
+        "PDOS_REMINDER_QUIET_HOURS": "${PDOS_REMINDER_QUIET_HOURS:-21:00-08:00}",
+        "PDOS_REMINDER_DAILY_DM_CAP": "${PDOS_REMINDER_DAILY_DM_CAP:-50}",
+    }
+    api_environment = cast(dict[str, str], services["api"]["environment"])
+    for setting in ("PDOS_REMINDER_QUIET_HOURS", "PDOS_REMINDER_DAILY_DM_CAP"):
+        assert api_environment[setting] == environment[setting]
+    assert service["read_only"] is True
+    assert service["restart"] == "unless-stopped"
+    assert service["stop_grace_period"] == "30s"
+    assert "scripts.run_reminder_scheduler" in str(healthcheck["test"])
+
+    smoke = yaml.safe_load((REPOSITORY_ROOT / "compose.production-smoke.yaml").read_text())
+    assert smoke["services"]["reminders"]["extra_hosts"] == ["host.docker.internal:host-gateway"]
+    for filename in (".env.example", ".env.production.example"):
+        source = (REPOSITORY_ROOT / filename).read_text()
+        assert "PDOS_REMINDER_SCAN_SECONDS=60" in source
+        assert "PDOS_REMINDER_QUIET_HOURS=21:00-08:00" in source
+        assert "PDOS_REMINDER_DAILY_DM_CAP=50" in source
+        assert "PDOS_DINGTALK_DELIVERY_ENABLED=false" in source
+
+
+def test_reminder_scheduler_is_in_deployment_and_rollback_service_lists() -> None:
+    source = (REPOSITORY_ROOT / "scripts" / "deploy-ecs.sh").read_text()
+
+    assert "logs --since 10m --no-color api dispatcher executor dingtalk reminders web" in source
+    assert "up -d --no-build --wait --no-deps api dispatcher executor dingtalk reminders" in source
+    assert "up -d --no-deps --no-build --wait api dispatcher executor dingtalk reminders" in source
+
+
+@pytest.mark.parametrize("scheduler_supported", [True, False])
+def test_scheduler_rollback_preserves_releases_without_the_scheduler(
+    scheduler_supported: bool,
+) -> None:
+    source = (REPOSITORY_ROOT / "scripts" / "deploy-ecs.sh").read_text()
+    rollback_functions = source[
+        source.index("reminder_scheduler_image_supported()") : source.index('case "$action"')
+    ]
+    # Execute the production branches using shell stubs; never invoke Docker or deploy.
+    stubs = """
+set -euo pipefail
+require_release_files() { :; }
+release_identity() { :; }
+require_confirmation() { :; }
+verify_image_revisions() { :; }
+verify_release() { :; }
+docker() { printf 'probe %s\\n' "$*"; return "$PROBE_EXIT"; }
+compose_config() { printf 'compose %s %s\\n' "${PDOS_COMPOSE_IMAGE_TAG_OVERRIDE:-current}" "$*"; }
+"""
+    revision = "1" * 40
+    result = subprocess.run(
+        ["bash"],
+        input=(
+            stubs
+            + f"\nPROBE_EXIT={0 if scheduler_supported else 1}\n"
+            + f"PDOS_ROLLBACK_IMAGE_TAG={revision}\n"
+            + rollback_functions
+            + "\nrollback_release\n"
+        ),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert f"--entrypoint python pdos-api:{revision}" in result.stdout
+    assert "--network none --read-only --cap-drop ALL" in result.stdout
+    assert "--security-opt no-new-privileges:true" in result.stdout
+    dockerfile = (REPOSITORY_ROOT / "server" / "Dockerfile").read_text()
+    assert "WORKDIR /app/server" in dockerfile
+    assert "COPY server/scripts ./scripts" in dockerfile
+    assert "/app/server/scripts/run_reminder_scheduler.py" in result.stdout
+    startup = f"compose {revision} up -d --no-deps --no-build --wait"
+    if scheduler_supported:
+        assert f"{startup} api dispatcher executor dingtalk reminders\n" in result.stdout
+        assert "stop reminders" not in result.stdout
+    else:
+        assert "compose current stop reminders\n" in result.stdout
+        assert f"{startup} api dispatcher executor dingtalk\n" in result.stdout
+        assert f"{startup} api dispatcher executor dingtalk reminders" not in result.stdout
+        assert result.stdout.index("stop reminders") < result.stdout.index(startup)
+    assert f"{startup} web\n" in result.stdout
+
+
+@pytest.mark.parametrize(
+    ("log_event", "expected_exit"),
+    [
+        ("reminder_project_failed", 1),
+        ("reminder_cycle_failed", 1),
+        ("reminder_cycle", 0),
+    ],
+)
+def test_release_verification_rejects_scheduler_failure_logs(
+    log_event: str, expected_exit: int
+) -> None:
+    source = (REPOSITORY_ROOT / "scripts" / "deploy-ecs.sh").read_text()
+    verification = source[source.index("verify_release()") : source.index("deploy_release()")]
+    stubs = """
+set -euo pipefail
+app_port=3002
+curl() { :; }
+verify_public_dingtalk_callback_edge() { :; }
+compose_config() {
+  if [[ "$1" == "logs" ]]; then printf '%s\\n' "$LOG_EVENT"; fi
+}
+"""
+    result = subprocess.run(
+        ["bash"],
+        input=stubs + f"\nLOG_EVENT={log_event}\n" + verification + "\nverify_release\n",
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == expected_exit, result.stdout + result.stderr
+    if expected_exit:
+        assert "Release verification found a fatal pattern" in result.stderr
+    else:
+        assert "bounded-log verification passed" in result.stdout
 
 
 def test_production_images_run_as_non_root_and_web_uses_standalone_output() -> None:
@@ -248,7 +417,8 @@ def test_sprint_five_cutover_requires_complete_history_and_two_approved_snapshot
     assert "inventory_fingerprint" in contract
     assert "source_fingerprint" in contract
     assert "Data Owner" in contract
-    assert "S5-1" in contract and "delivery=false" in contract
+    assert "S5-1" in contract and "切换不隐式启用或扩大外发" in contract
+    assert "`delivery`" in contract and "单独记录并获批" in contract
     assert (
         'text("SET TRANSACTION READ ONLY")'
         in (REPOSITORY_ROOT / "server" / "app" / "migrations" / "cehub_v1.py").read_text()

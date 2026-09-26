@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
+from importlib import import_module
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -16,6 +17,8 @@ from app.ai.context_builder import RunContextBuilder
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps, rollback_migration_operations
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,7 +32,7 @@ def context_builder_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -385,13 +388,13 @@ def test_context_v2_migration_round_trip_and_lossy_downgrade_guard(
     engine = create_engine(psycopg_database_url(context_builder_database_url))
     occurred_at = datetime(2026, 8, 13, 4, tzinfo=UTC)
     try:
-        command.downgrade(config, "0024_phase_two_agents")
+        migrate_test_database_in_steps(config, engine, "0024_phase_two_agents")
         columns = {
             column["name"]: column
             for column in inspect(engine).get_columns("agent_runs", schema="cehub_ai")
         }
         assert columns["context_version"]["default"] == "'run-context-v1'::character varying"
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "head")
         with engine.begin() as connection:
             tenant_id, project_id, _, _ = seed_project(connection, slug="v2-guard")
             subscription_id = uuid4()
@@ -426,10 +429,12 @@ def test_context_v2_migration_round_trip_and_lossy_downgrade_guard(
                 {"run_id": run_id},
             ).scalar_one()
         assert version == "run-context-v2"
-        with pytest.raises(DBAPIError):
-            command.downgrade(config, "0024_phase_two_agents")
+        with rollback_migration_operations(engine), pytest.raises(DBAPIError):
+            import_module("migrations.versions.0025_context_builder_v2").downgrade()
     finally:
-        with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
-        command.upgrade(config, "head")
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+            with engine.begin() as connection:
+                clear_test_tenants(connection)
+        finally:
+            engine.dispose()

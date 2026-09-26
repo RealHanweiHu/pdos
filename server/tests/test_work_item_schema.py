@@ -18,7 +18,6 @@ from sqlalchemy import (
     UniqueConstraint,
     create_engine,
     inspect,
-    text,
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.schema import Constraint
@@ -26,6 +25,8 @@ from sqlalchemy.sql.schema import Constraint
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -83,8 +84,15 @@ def test_work_item_metadata_freezes_dependency_and_lifecycle_contracts() -> None
         "ck_task_dependencies_no_self_reference",
     } <= constraint_names(tables.task_dependencies, CheckConstraint)
     assert {
-        "uq_task_dependencies_tenant_project_edge",
+        "uq_task_dependency_baseline_edge",
     } <= constraint_names(tables.task_dependencies, UniqueConstraint)
+    manual_edge = next(
+        index
+        for index in tables.task_dependencies.indexes
+        if index.name == "uq_task_dependency_manual_edge"
+    )
+    assert manual_edge.unique
+    assert str(manual_edge.dialect_options["postgresql"]["where"]) == "baseline_id IS NULL"
     assert {
         "fk_task_dependencies_tenant_project_task",
         "fk_task_dependencies_tenant_project_predecessor",
@@ -103,7 +111,7 @@ def work_item_schema_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -271,10 +279,12 @@ def test_work_item_migration_round_trip(
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     engine = create_engine(psycopg_database_url(work_item_schema_database_url))
     try:
-        command.downgrade(config, "0006_project_lifecycle")
+        migrate_test_database_in_steps(config, engine, "0006_project_lifecycle")
         assert "task_dependencies" not in inspect(engine).get_table_names(schema="cehub_project")
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "head")
         assert "task_dependencies" in inspect(engine).get_table_names(schema="cehub_project")
     finally:
-        command.upgrade(config, "head")
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()

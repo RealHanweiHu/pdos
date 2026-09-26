@@ -10,12 +10,14 @@ from alembic import command
 from alembic.autogenerate import compare_metadata
 from alembic.config import Config
 from alembic.migration import MigrationContext
-from sqlalchemy import create_engine, inspect, select
+from sqlalchemy import Table, create_engine, inspect, select
 from sqlalchemy.exc import IntegrityError
 
 from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SCHEMAS = {
@@ -29,10 +31,13 @@ EXPECTED_SCHEMAS = {
     "cehub_memory",
     "cehub_event",
     "cehub_audit",
+    "cehub_evidence",
 }
 EXPECTED_TABLES = {
     ("cehub_core", "tenants"),
     ("cehub_core", "users"),
+    ("cehub_core", "departments"),
+    ("cehub_core", "user_delegations"),
     ("cehub_core", "customers"),
     ("cehub_supplier", "suppliers"),
     ("cehub_project", "requirements"),
@@ -63,6 +68,9 @@ EXPECTED_TABLES = {
     ("cehub_product", "erp_bom_references"),
     ("cehub_product", "build_batches"),
     ("cehub_product", "samples"),
+    ("cehub_product", "fw_releases"),
+    ("cehub_product", "sample_build_configurations"),
+    ("cehub_product", "customer_change_requests"),
     ("cehub_product", "engineering_change_requests"),
     ("cehub_product", "ecr_affected_boms"),
     ("cehub_product", "engineering_change_notices"),
@@ -73,6 +81,9 @@ EXPECTED_TABLES = {
     ("cehub_quality", "sample_signoff_samples"),
     ("cehub_quality", "test_plans"),
     ("cehub_quality", "test_cases"),
+    ("cehub_quality", "test_runs"),
+    ("cehub_quality", "import_mapping_versions"),
+    ("cehub_quality", "test_report_import_batches"),
     ("cehub_quality", "test_case_samples"),
     ("cehub_quality", "test_reports"),
     ("cehub_quality", "certifications"),
@@ -82,10 +93,23 @@ EXPECTED_TABLES = {
     ("cehub_quality", "root_cause_analyses"),
     ("cehub_quality", "capa_actions"),
     ("cehub_quality", "effectiveness_reviews"),
+    ("cehub_ai", "debate_sessions"),
+    ("cehub_ai", "debate_seats"),
+    ("cehub_ai", "debate_turns"),
+    ("cehub_ai", "debate_briefs"),
+    ("cehub_evidence", "research_sources"),
+    ("cehub_evidence", "evidence_snapshots"),
+    ("cehub_project", "meetings"),
+    ("cehub_project", "meeting_recurrences"),
+    ("cehub_project", "meeting_participants"),
+    ("cehub_project", "meeting_agenda_items"),
+    ("cehub_project", "meeting_transcripts"),
+    ("cehub_project", "meeting_transcript_segments"),
     ("cehub_cost", "cost_bom_items"),
     ("cehub_cost", "costs"),
     ("cehub_memory", "memories"),
     ("cehub_memory", "memory_embeddings"),
+    ("cehub_memory", "knowledge_pushes"),
     ("cehub_event", "events"),
     ("cehub_audit", "audit_log"),
     ("cehub_audit", "migration_runs"),
@@ -104,6 +128,7 @@ EXPECTED_TABLES = {
     ("cehub_project", "dingtalk_project_channels"),
     ("cehub_event", "integration_outbox"),
     ("cehub_event", "integration_receipts"),
+    ("cehub_event", "reminders"),
     ("cehub_project", "dingtalk_approval_instances"),
     ("cehub_project", "dingtalk_interactive_cards"),
 }
@@ -116,17 +141,19 @@ def migrated_database_url() -> Iterator[str]:
     os.environ["DATABASE_URL"] = test_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
 
+    engine = create_engine(psycopg_database_url(test_url))
     try:
-        command.downgrade(config, "0000_scaffold")
-        engine = create_engine(psycopg_database_url(test_url))
+        command.upgrade(config, "head")
+        with engine.begin() as connection:
+            clear_test_tenants(connection)
         try:
+            migrate_test_database_in_steps(config, engine, "0000_scaffold")
             assert EXPECTED_SCHEMAS.isdisjoint(inspect(engine).get_schema_names())
         finally:
-            engine.dispose()
-
-        command.upgrade(config, "head")
+            migrate_test_database_in_steps(config, engine, "head")
         yield test_url
     finally:
+        engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)
         else:
@@ -136,14 +163,34 @@ def migrated_database_url() -> Iterator[str]:
 def test_metadata_contains_the_frozen_s0_2_entities_and_s0_4_membership() -> None:
     actual_tables = {(table.schema, table.name) for table in metadata.tables.values()}
 
-    assert actual_tables == EXPECTED_TABLES
+    # Preserve the original entities while allowing the approved vNext objects.
+    assert actual_tables >= EXPECTED_TABLES
     for table in metadata.tables.values():
-        if table.name != "tenants":
-            assert not table.c.tenant_id.nullable
+        if table is tables.tenants:
+            continue
+        if table is tables.agent_tool_accounting_epochs:
+            # The explicitly global accounting activation marker has no business payload.
+            assert set(table.c.keys()) == {"id", "activated_at"}
+            continue
+        assert not table.c.tenant_id.nullable
+        if (table.schema, table.name) in EXPECTED_TABLES:
             assert any(
-                foreign_key.target_fullname == "cehub_core.tenants.id"
-                for foreign_key in table.c.tenant_id.foreign_keys
+                key.target_fullname == "cehub_core.tenants.id"
+                for key in table.c.tenant_id.foreign_keys
             )
+        # New compound scope keys must still lead to the actual tenant root.
+        pending: list[Table] = [table]
+        visited: set[Table] = set()
+        while pending:
+            current = pending.pop()
+            if current is tables.tenants:
+                break
+            if current in visited:
+                continue
+            visited.add(current)
+            pending.extend(key.column.table for key in current.c.tenant_id.foreign_keys)
+        else:
+            pytest.fail(f"No tenant foreign-key path for {table.fullname}")
 
 
 def test_migration_round_trip_creates_the_exact_namespaces_and_tables(
@@ -158,7 +205,7 @@ def test_migration_round_trip_creates_the_exact_namespaces_and_tables(
             for schema in EXPECTED_SCHEMAS
             for table_name in inspector.get_table_names(schema=schema)
         }
-        assert actual_tables == EXPECTED_TABLES
+        assert actual_tables == {(table.schema, table.name) for table in metadata.tables.values()}
     finally:
         engine.dispose()
 

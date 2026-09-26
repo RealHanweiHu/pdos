@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
+from importlib import import_module
 from pathlib import Path
 from uuid import uuid4
 
@@ -11,13 +12,16 @@ from alembic.autogenerate import compare_metadata
 from alembic.config import Config
 from alembic.migration import MigrationContext
 from alembic.script import ScriptDirectory
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import DBAPIError
 
 from app.db.namespaces import SCHEMAS
 from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import rollback_migration_operations
+from tests.test_migrations import EXPECTED_HEAD
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 FINAL_ENTITY_TABLES = {
@@ -118,7 +122,7 @@ def test_final_entity_migration_matches_metadata_and_single_head(
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0033_expand_model_providers"
+        EXPECTED_HEAD
     ]
 
 
@@ -274,7 +278,7 @@ def test_final_entity_migration_refuses_lossy_downgrade(
     tenant_id = uuid4()
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
             connection.execute(
                 tables.tenants.insert(),
                 {"id": tenant_id, "slug": f"entity-guard-{tenant_id}", "name": "Guard"},
@@ -289,10 +293,13 @@ def test_final_entity_migration_refuses_lossy_downgrade(
                 },
             )
 
-        with pytest.raises(RuntimeError, match="refusing lossy downgrade"):
-            command.downgrade(config, "0028_erp_handoff_executor")
+        with (
+            rollback_migration_operations(engine),
+            pytest.raises(RuntimeError, match="refusing lossy downgrade"),
+        ):
+            import_module("migrations.versions.0029_crm_entities").downgrade()
     finally:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         command.upgrade(config, "head")
         engine.dispose()

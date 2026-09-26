@@ -16,6 +16,7 @@ from app.db.namespaces import SCHEMAS
 from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.test_migrations import EXPECTED_HEAD
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 CHANGE_TABLES = {
@@ -77,5 +78,5 @@ def test_change_migration_matches_metadata_and_single_head(change_database_url: 
     finally:
         engine.dispose()
     assert ScriptDirectory.from_config(Config(str(SERVER_ROOT / "alembic.ini"))).get_heads() == [
-        "0033_expand_model_providers"
+        EXPECTED_HEAD
     ]

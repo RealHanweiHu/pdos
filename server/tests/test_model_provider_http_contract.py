@@ -7,11 +7,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
 
 import httpx2
+import pytest
 from pydantic import SecretStr
 
 from app.ai.egress import ProviderEgressPolicy
 from app.ai.model_catalog import AgentTier, ProtocolKind, ProviderName, ResolvedModelRoute
-from app.ai.provider_adapters import AnthropicNativeAdapter, ChatMessage, OpenAICompatibleAdapter
+from app.ai.provider_adapters import (
+    AnthropicNativeAdapter,
+    ChatMessage,
+    OpenAICompatibleAdapter,
+    ProviderCallLimits,
+)
 
 
 class FakeProviderHandler(BaseHTTPRequestHandler):
@@ -23,12 +29,14 @@ class FakeProviderHandler(BaseHTTPRequestHandler):
         headers = {name.lower(): value for name, value in self.headers.items()}
         self.requests.append((self.path, headers, body))
         if self.path == "/openai/v1/chat/completions":
-            payload = {
+            payload: dict[str, object] = {
                 "id": "real-http-openai",
                 "model": "minimax-fake-v1",
                 "choices": [{"message": {"content": '{"label":"high"}'}}],
                 "usage": {"prompt_tokens": 7, "completion_tokens": 3},
             }
+        elif self.path == "/anthropic/v1/messages/count_tokens":
+            payload = {"input_tokens": 8}
         elif self.path == "/anthropic/v1/messages":
             payload = {
                 "id": "real-http-anthropic",
@@ -64,7 +72,8 @@ def fake_provider() -> Iterator[str]:
         thread.join(timeout=2)
 
 
-def test_both_frozen_protocols_cross_a_real_http_socket() -> None:
+@pytest.mark.parametrize("bounded", [False, True])
+def test_both_frozen_protocols_cross_a_real_http_socket(bounded: bool) -> None:
     with fake_provider() as base_url:
         openai_route = ResolvedModelRoute(
             provider=ProviderName.MINIMAX,
@@ -84,17 +93,22 @@ def test_both_frozen_protocols_cross_a_real_http_socket() -> None:
         )
         policy = ProviderEgressPolicy.from_routes([openai_route, anthropic_route])
         with httpx2.Client(follow_redirects=False, trust_env=False) as client:
-            openai = OpenAICompatibleAdapter(client, policy).complete(
-                openai_route,
-                [ChatMessage(role="user", content="Return JSON")],
-            )
-            anthropic = AnthropicNativeAdapter(client, policy).complete(
-                anthropic_route,
-                [
-                    ChatMessage(role="system", content="Frozen system"),
-                    ChatMessage(role="user", content="Return JSON"),
-                ],
-            )
+            openai_adapter = OpenAICompatibleAdapter(client, policy)
+            anthropic_adapter = AnthropicNativeAdapter(client, policy)
+            messages = [
+                ChatMessage(role="system", content="Frozen system"),
+                ChatMessage(role="user", content="Return JSON"),
+            ]
+            if bounded:
+                openai = openai_adapter.complete_bounded(
+                    openai_route, messages, limits=ProviderCallLimits(73, "max_completion_tokens")
+                )
+                anthropic = anthropic_adapter.complete_bounded(
+                    anthropic_route, messages, limits=ProviderCallLimits(61)
+                )
+            else:
+                openai = openai_adapter.complete(openai_route, messages)
+                anthropic = anthropic_adapter.complete(anthropic_route, messages)
 
     assert openai.request_id == "real-http-openai"
     assert anthropic.request_id == "real-http-anthropic"
@@ -106,3 +120,37 @@ def test_both_frozen_protocols_cross_a_real_http_socket() -> None:
     assert FakeProviderHandler.requests[1][1]["x-api-key"] == "anthropic-fake-secret"
     assert FakeProviderHandler.requests[0][2]["temperature"] == 0
     assert FakeProviderHandler.requests[1][2]["system"] == "Frozen system"
+    if bounded:
+        assert FakeProviderHandler.requests[0][2]["max_completion_tokens"] == 73
+        assert "max_tokens" not in FakeProviderHandler.requests[0][2]
+        assert FakeProviderHandler.requests[1][2]["max_tokens"] == 61
+
+
+def test_native_token_count_crosses_real_http_without_generating() -> None:
+    from app.ai.input_metering import AnthropicInputMeter
+
+    with fake_provider() as base_url:
+        route = ResolvedModelRoute(
+            provider=ProviderName.ANTHROPIC,
+            protocol=ProtocolKind.ANTHROPIC_NATIVE,
+            base_url=f"{base_url}/anthropic",
+            model="claude-fake",
+            api_key=SecretStr("fake-meter-key"),
+            agent_tier=AgentTier.DEFAULT,
+        )
+        with httpx2.Client(follow_redirects=False, trust_env=False) as client:
+            assert (
+                AnthropicInputMeter(client, ProviderEgressPolicy.from_routes([route])).count(
+                    route,
+                    [
+                        ChatMessage(role="system", content="Frozen system"),
+                        ChatMessage(role="user", content="Synthetic 中文 question"),
+                    ],
+                )
+                == 8
+            )
+    assert len(FakeProviderHandler.requests) == 1
+    path, headers, body = FakeProviderHandler.requests[0]
+    assert path == "/anthropic/v1/messages/count_tokens"
+    assert body["system"] == "Frozen system" and "max_tokens" not in body
+    assert headers["x-api-key"] == "fake-meter-key"

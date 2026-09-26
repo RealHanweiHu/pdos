@@ -63,6 +63,8 @@ def test_static_phase_one_event_routes_are_exact_and_unknown_events_are_ignored(
         AgentKey.EXECUTIVE_INTELLIGENCE,
     )
     assert agents_for_event("ISSUE_CREATED") == (AgentKey.PROJECT_INTELLIGENCE,)
+    assert agents_for_event("ISSUE_STATUS_CHANGED") == (AgentKey.PROJECT_INTELLIGENCE,)
+    assert agents_for_event("NCR_CREATED") == (AgentKey.QUALITY_INTELLIGENCE,)
     assert agents_for_event("TEST_FAILED") == (
         AgentKey.PROJECT_INTELLIGENCE,
         AgentKey.QUALITY_INTELLIGENCE,
@@ -124,3 +126,15 @@ def test_run_state_machine_rejects_skips_retries_and_terminal_mutation(
 ) -> None:
     with pytest.raises(InvalidRunTransitionError):
         allowed_run_transition(current, next_status)
+
+
+def test_every_catalog_event_has_an_explicit_route_or_no_route_decision() -> None:
+    from app.ai.runtime_contract import _EVENT_AGENT_ROUTES, NO_ROUTE_EVENT_TYPES
+    from app.events.catalog import EVENT_REGISTRY
+
+    routed = set(_EVENT_AGENT_ROUTES)
+    assert routed.isdisjoint(NO_ROUTE_EVENT_TYPES)
+    undecided = set(EVENT_REGISTRY) - routed - NO_ROUTE_EVENT_TYPES
+    assert not undecided, f"catalog events missing a route/no-route decision: {sorted(undecided)}"
+    stale = (routed | NO_ROUTE_EVENT_TYPES) - set(EVENT_REGISTRY)
+    assert not stale, f"route decisions reference unknown events: {sorted(stale)}"

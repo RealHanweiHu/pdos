@@ -16,6 +16,9 @@ from app.db.namespaces import SCHEMAS
 from app.db.schema import metadata, tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
+from tests.test_migrations import EXPECTED_HEAD
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 GATE_TABLES = {
@@ -85,8 +88,17 @@ def test_migration_has_one_open_round_per_gate_and_matches_metadata(
 
 
 def test_gate_migration_round_trip_preserves_single_head(gate_database_url: str) -> None:
-    del gate_database_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
-    command.downgrade(config, "0015_specification_boms")
-    command.upgrade(config, "head")
-    assert ScriptDirectory.from_config(config).get_heads() == ["0033_expand_model_providers"]
+    # Downgrades guard against silently dropping tenant data, so the round trip
+    # has to start from an empty tenant regardless of what earlier tests left.
+    engine = create_engine(psycopg_database_url(gate_database_url))
+    try:
+        with engine.begin() as connection:
+            clear_test_tenants(connection)
+        migrate_test_database_in_steps(config, engine, "0015_specification_boms")
+    finally:
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()
+    assert ScriptDirectory.from_config(config).get_heads() == [EXPECTED_HEAD]

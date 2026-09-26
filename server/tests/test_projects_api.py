@@ -10,7 +10,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, func, select, text
+from sqlalchemy import create_engine, event, func, select
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -18,9 +18,12 @@ from app.db.engine import get_engine
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from app.domain.projects import ProjectService
 from app.domain.workflow_templates import NPD_WORKFLOW_TEMPLATE
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
+from tests.stage_plan_fixtures import seed_formal_task
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -48,7 +51,7 @@ def isolated_project_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -165,6 +168,54 @@ def test_npd_template_is_versioned_and_exact() -> None:
         ("pvt", "PVT 试产验证", 6),
         ("mp", "量产稳定与移交", 7),
     ]
+
+
+def test_project_list_batches_stages_without_changing_workflow_contents(
+    client: TestClient, isolated_project_database: str
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD)
+    assert setup.status_code == 201
+    headers = bearer_headers(client)
+    expected = []
+    for index in range(5):
+        case = approved_case(client, headers, suffix=f"BATCH-{index}")
+        response = create_project(client, headers, case["id"], code=f"BATCH-{index}")
+        assert response.status_code == 201
+        expected.append(response.json())
+
+    engine = create_engine(psycopg_database_url(isolated_project_database))
+    statements: list[str] = []
+
+    def track_query(
+        connection: Any,
+        cursor: Any,
+        statement: str,
+        parameters: Any,
+        context: Any,
+        executemany: bool,
+    ) -> None:
+        statements.append(statement)
+
+    try:
+        with engine.connect() as connection:
+            tenant_id = connection.execute(select(tables.tenants.c.id)).scalar_one()
+        event.listen(engine, "before_cursor_execute", track_query)
+        records = ProjectService(engine).list(tenant_id=tenant_id, member_user_id=None)
+        assert len(statements) == 2
+        assert [record.code for record in records] == [item["code"] for item in reversed(expected)]
+        by_id = {item["id"]: item for item in expected}
+        for record in records:
+            original = by_id[str(record.id)]
+            assert [str(stage.id) for stage in record.workflow.stages] == [
+                stage["id"] for stage in original["workflow"]["stages"]
+            ]
+            assert str(record.current_stage.id) == original["current_stage"]["id"]
+        statements.clear()
+        assert ProjectService(engine).list(tenant_id=tenant_id, member_user_id=uuid4()) == []
+        assert len(statements) == 1
+    finally:
+        event.remove(engine, "before_cursor_execute", track_query)
+        engine.dispose()
 
 
 def test_project_creation_atomically_instantiates_workflow_stages_and_case_transition(
@@ -389,7 +440,27 @@ def test_project_state_stage_and_member_permissions(
     assert manager_id == UUID(edited.json()["owner_user_id"])
 
     transition_url = f"{project_url}/transitions"
-    for state in ("proposed", "approved", "active"):
+    proposed = client.post(transition_url, headers=manager_headers, json={"to_status": "proposed"})
+    assert proposed.status_code == 200
+    # Case-derived projects now require a recorded plan approval and application.
+    unapproved = client.post(
+        transition_url, headers=manager_headers, json={"to_status": "approved"}
+    )
+    assert unapproved.status_code == 409
+    fixture_engine = create_engine(psycopg_database_url(isolated_project_database))
+    try:
+        with fixture_engine.begin() as connection:
+            seed_formal_task(connection, tenant_id, UUID(project["id"]), owner_id, engineer_id)
+            # The execution approval service, rather than the generic transition
+            # endpoint, produces this state; prepare it for stage permission checks.
+            connection.execute(
+                tables.projects.update()
+                .where(tables.projects.c.id == UUID(project["id"]))
+                .values(status="approved")
+            )
+    finally:
+        fixture_engine.dispose()
+    for state in ("active",):
         response = client.post(transition_url, headers=manager_headers, json={"to_status": state})
         assert response.status_code == 200
         assert response.json()["status"] == state

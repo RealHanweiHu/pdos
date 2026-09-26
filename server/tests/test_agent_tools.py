@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Connection, create_engine, text
+from sqlalchemy import Connection, create_engine
 
 from app.ai.embeddings import EmbeddingResult
 from app.ai.runtime_contract import (
@@ -28,7 +28,8 @@ from app.ai.tools import (
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
-from app.domain.memories import MemoryDraft, MemoryService
+from app.domain.memories import MemoryDraft, MemoryService, memory_review_digest
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -52,7 +53,7 @@ def agent_tools_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -152,6 +153,10 @@ def test_tool_definitions_freeze_use_do_not_use_negative_example_and_boundary() 
         "get_project_context",
         "search_memory",
         "get_recent_events",
+        # V2-8 (D25): reach is available to every seat, not a per-agent extra.
+        "web_search",
+        "web_fetch",
+        "source_snapshot",
     ]
     for definition in TOOL_DEFINITIONS:
         assert "Use when" in definition.description
@@ -257,6 +262,7 @@ def test_memory_search_returns_only_verified_project_scoped_memory(
                 title="Gate readiness lesson",
                 content="Validate connector pin mapping before DVT.",
                 tags=("DVT",),
+                knowledge_kind="design_rule",
             ),
         )
         service.verify(
@@ -264,6 +270,7 @@ def test_memory_search_returns_only_verified_project_scoped_memory(
             project_id=project_id,
             actor_user_id=verifier_id,
             memory_id=verified.id,
+            expected_review_digest=memory_review_digest(verified),
             gateway=gateway,
         )
         service.create(
@@ -276,13 +283,16 @@ def test_memory_search_returns_only_verified_project_scoped_memory(
             tenant_id=other_tenant_id,
             project_id=other_project_id,
             actor_user_id=other_creator_id,
-            draft=MemoryDraft(title="Other tenant", content="Must remain isolated."),
+            draft=MemoryDraft(
+                title="Other tenant", content="Must remain isolated.", knowledge_kind="design_rule"
+            ),
         )
         service.verify(
             tenant_id=other_tenant_id,
             project_id=other_project_id,
             actor_user_id=other_verifier_id,
             memory_id=other.id,
+            expected_review_digest=memory_review_digest(other),
             gateway=gateway,
         )
         tools = AgentReadTools(
@@ -708,7 +718,14 @@ def test_quality_evidence_excludes_customer_and_document_identifiers(
 
 def test_phase_three_tools_are_tenant_aggregated_bounded_and_identity_free(
     agent_tools_database_url: str,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    from app.ai.capability_contract import CapabilityRollout
+    from tests.rollout_support import set_agent_rollout
+
+    # Exercise the projection implementation using synthetic test adoption only.
+    set_agent_rollout(monkeypatch, AgentKey.SUPPLIER_INTELLIGENCE, CapabilityRollout.LIVE)
+    set_agent_rollout(monkeypatch, AgentKey.EXECUTIVE_INTELLIGENCE, CapabilityRollout.LIVE)
     engine = create_engine(psycopg_database_url(agent_tools_database_url))
     now = datetime.now(UTC)
     try:
@@ -884,5 +901,30 @@ def test_phase_three_tools_are_tenant_aggregated_bounded_and_identity_free(
             supplier_tools.get_supplier_delay_evidence(project_id=portfolio_project_id)
         with pytest.raises(ToolScopeViolationError):
             executive_tools.get_portfolio_brief(project_id=portfolio_project_id)
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize("rollout", ["shadow", "disabled"])
+def test_existing_tool_instance_rechecks_rollout_before_read(
+    monkeypatch: pytest.MonkeyPatch,
+    rollout: str,
+) -> None:
+    from app.ai.capability_contract import CapabilityRollout
+    from app.ai.rollout_guard import CapabilityUnavailableError
+    from tests.rollout_support import set_agent_rollout
+
+    context = frozen_context(tenant_id=uuid4(), project_id=uuid4())
+    # An unconnected engine makes any accidental database read fail the test.
+    engine = create_engine("postgresql+psycopg://invalid:invalid@127.0.0.1:1/pdos_test")
+    tools = AgentReadTools(engine, run_context=context)
+    set_agent_rollout(monkeypatch, context.agent_key, CapabilityRollout(rollout))
+    try:
+        with pytest.raises(CapabilityUnavailableError, match=f"CAPABILITY_{rollout.upper()}"):
+            tools.get_project_context(project_id=context.project_id)
+        with pytest.raises(CapabilityUnavailableError):
+            tools.get_recent_events(project_id=context.project_id)
+        with pytest.raises(CapabilityUnavailableError):
+            tools.search_memory(project_id=context.project_id, query="project")
     finally:
         engine.dispose()

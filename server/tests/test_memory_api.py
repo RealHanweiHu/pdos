@@ -10,7 +10,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import Connection, create_engine, select, text
+from sqlalchemy import Connection, create_engine, select
 
 from app.ai.chat import ChatEvidenceRepository
 from app.ai.embeddings import EmbeddingError, EmbeddingResult
@@ -23,6 +23,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -73,7 +74,7 @@ def isolated_memory_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         app.dependency_overrides.clear()
@@ -230,6 +231,7 @@ def draft_payload(title: str = "Thermal connector lesson") -> dict[str, object]:
         "content": "Connector retention must be checked after thermal cycling.",
         "applicability": "Products using the C4 connector family.",
         "tags": ["connector", "thermal"],
+        "knowledge_kind": "design_rule",
     }
 
 
@@ -267,6 +269,7 @@ def test_verified_only_search_four_eyes_archive_and_event_audit_chain(
         client.post(
             f"/api/projects/{project_id}/memories/{memory_id}/verify",
             headers=login(client, "engineer"),
+            json={"expected_review_digest": created.json()["review_digest"]},
         ).status_code
         == 403
     )
@@ -274,6 +277,7 @@ def test_verified_only_search_four_eyes_archive_and_event_audit_chain(
     verified = client.post(
         f"/api/projects/{project_id}/memories/{memory_id}/verify",
         headers=login(client, "quality"),
+        json={"expected_review_digest": created.json()["review_digest"]},
     )
     assert verified.status_code == 200, verified.text
     assert verified.json()["status"] == "verified"
@@ -357,6 +361,7 @@ def test_self_verification_and_embedding_failure_leave_draft_untrusted(
     self_verify = client.post(
         f"/api/projects/{project_id}/memories/{created['id']}/verify",
         headers=login(client, "quality"),
+        json={"expected_review_digest": created["review_digest"]},
     )
     assert self_verify.status_code == 409
     assert self_verify.json()["detail"]["code"] == "MEMORY_FOUR_EYES_REQUIRED"
@@ -367,6 +372,7 @@ def test_self_verification_and_embedding_failure_leave_draft_untrusted(
     failed = client.post(
         f"/api/projects/{project_id}/memories/{created['id']}/verify",
         headers=login(client, "reviewer"),
+        json={"expected_review_digest": created["review_digest"]},
     )
     assert failed.status_code == 503
     assert failed.json()["detail"]["code"] == "EMBEDDING_TRANSPORT_ERROR"
@@ -461,6 +467,7 @@ def test_closed_ncr_can_seed_one_project_bound_memory_draft(
     verified = client.post(
         f"/api/projects/{project_id}/memories/{created.json()['id']}/verify",
         headers=login(client, "quality"),
+        json={"expected_review_digest": created.json()["review_digest"]},
     )
     assert verified.status_code == 200
     engine = create_engine(psycopg_database_url(isolated_memory_database))

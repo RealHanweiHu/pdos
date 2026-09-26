@@ -13,7 +13,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from pydantic import SecretStr
-from sqlalchemy import create_engine, func, select, text
+from sqlalchemy import create_engine, func, select
 
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
@@ -37,6 +37,7 @@ from app.integrations.dingtalk_outbox import (
 )
 from app.integrations.dingtalk_readiness import assess_dingtalk_readiness
 from app.settings import Settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 DATABASE_SENTINEL = "postgresql://pdos:pdos@localhost:57432/pdos_test"
@@ -52,18 +53,13 @@ def isolated_database() -> Iterator[str]:
     previous = os.environ.get("DATABASE_URL")
     os.environ["DATABASE_URL"] = test_url
     config = Config(str(SERVER_ROOT / "alembic.ini"))
-    cleanup_engine = create_engine(psycopg_database_url(test_url))
-    try:
-        with cleanup_engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
-    finally:
-        cleanup_engine.dispose()
-    command.downgrade(config, "0025_context_builder_v2")
+    # Dedicated connector schema tests cover historical migration round trips.
+    # Delivery scenarios only need the current schema and isolated tenant rows.
     command.upgrade(config, "head")
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()

@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Connection, create_engine, select, text
+from sqlalchemy import Connection, create_engine, select
 
 from app.ai.executor import AgentExecutor, GatewayAgentModelInvoker
 from app.ai.gateway import ProviderRateCard, StructuredModelGateway
@@ -26,6 +26,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.model_governance import ModelGovernanceService
 from app.worker.dispatcher import AgentDispatcher
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -62,11 +63,11 @@ def event_to_model_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)

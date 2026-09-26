@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import (
     CheckConstraint,
     Connection,
@@ -27,6 +28,8 @@ from sqlalchemy.sql.schema import Constraint
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
+from tests.db_cleanup import clear_test_tenants
+from tests.migration_fixtures import migrate_test_database_in_steps
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -90,6 +93,11 @@ def test_model_gateway_metadata_freezes_settings_and_invocation_contracts() -> N
         "project_id",
         "run_id",
         "request_id",
+        "budget_call_id",
+        "model_call_session_id",
+        "context_receipt_id",
+        "usage_status",
+        "input_meter_version",
         "agent_key",
         "agent_tier",
         "prompt_version",
@@ -105,6 +113,8 @@ def test_model_gateway_metadata_freezes_settings_and_invocation_contracts() -> N
         "cache_creation_tokens",
         "latency_ms",
         "normalized_cost_microusd",
+        "cost_status",
+        "rate_card_snapshot",
         "structured_attempts",
         "error_code",
         "created_at",
@@ -144,7 +154,7 @@ def model_gateway_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -349,13 +359,173 @@ def test_model_gateway_migration_round_trip(model_gateway_database_url: str) -> 
     config = Config(str(SERVER_ROOT / "alembic.ini"))
     engine = create_engine(psycopg_database_url(model_gateway_database_url))
     try:
-        command.downgrade(config, "0007_work_item_lifecycle")
+        migrate_test_database_in_steps(config, engine, "0007_work_item_lifecycle")
         assert inspect(engine).get_table_names(schema="cehub_ai") == []
-        command.upgrade(config, "0009_invocation_cache_tokens")
+        with engine.connect() as connection:
+            assert (
+                connection.scalar(
+                    text("SELECT to_regprocedure('cehub_ai.claim_agent_run(timestamptz)')")
+                )
+                is None
+            )
+        migrate_test_database_in_steps(config, engine, "0009_invocation_cache_tokens")
         assert set(inspect(engine).get_table_names(schema="cehub_ai")) == {
             "model_invocations",
             "tenant_model_settings",
         }
     finally:
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()
+
+
+def test_cost_migration_preserves_legacy_trace_and_refuses_evidence_loss(
+    model_gateway_database_url: str,
+) -> None:
+    config = Config(str(SERVER_ROOT / "alembic.ini"))
+    engine = create_engine(psycopg_database_url(model_gateway_database_url))
+    tenant_id = uuid4()
+    old = valid_invocation(tenant_id)
+    try:
+        command.downgrade(config, "0058_ai_test_plan_changes")
+        with engine.begin() as connection:
+            connection.execute(
+                tables.tenants.insert(),
+                {
+                    "id": tenant_id,
+                    "slug": "cost-history",
+                    "name": "Cost history",
+                },
+            )
+            # Explicit columns support the prior schema without the new fields.
+            connection.execute(tables.model_invocations.insert(), old)
         command.upgrade(config, "head")
+        with engine.connect() as connection:
+            row = connection.execute(select(tables.model_invocations)).mappings().one()
+            assert row["id"] == old["id"]
+            assert row["normalized_cost_microusd"] == 15
+            assert row["cost_status"] == "legacy_unverified"
+            assert row["rate_card_snapshot"] is None
+        # With only old evidence the migration is reversible.
+        command.downgrade(config, "0058_ai_test_plan_changes")
+        command.upgrade(config, "head")
+        new = valid_invocation(tenant_id)
+        new.update(normalized_cost_microusd=None, cost_status="unknown")
+        with engine.begin() as connection:
+            connection.execute(tables.model_invocations.insert(), new)
+        with pytest.raises(RuntimeError, match="refusing downgrade: cost evidence"):
+            command.downgrade(config, "0058_ai_test_plan_changes")
+        with engine.connect() as connection:
+            assert (
+                connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
+                == ScriptDirectory.from_config(config).get_current_head()
+            )
+        with pytest.raises(DBAPIError, match="append-only"), engine.begin() as connection:
+            connection.execute(update(tables.model_invocations).values(normalized_cost_microusd=0))
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"cost_status": "unknown", "normalized_cost_microusd": 0},
+        {"cost_status": "priced", "normalized_cost_microusd": 0},
+        {"cost_status": "priced", "normalized_cost_microusd": 0, "rate_card_snapshot": {}},
+        {"cost_status": "not_invoked", "normalized_cost_microusd": 0},
+        {"cost_status": "invented", "normalized_cost_microusd": None},
+    ],
+)
+def test_database_rejects_inconsistent_cost_evidence(
+    model_gateway_database_url: str,
+    changes: dict[str, object],
+) -> None:
+    engine = create_engine(psycopg_database_url(model_gateway_database_url))
+    tenant_id = uuid4()
+    try:
+        with engine.begin() as connection:
+            connection.execute(
+                tables.tenants.insert(),
+                {"id": tenant_id, "slug": "cost-constraint", "name": "Cost"},
+            )
+        record = valid_invocation(tenant_id)
+        record.update(changes)
+        with (
+            pytest.raises(IntegrityError, match="cost_evidence_consistent"),
+            engine.begin() as connection,
+        ):
+            connection.execute(tables.model_invocations.insert(), record)
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [
+        {"normalized_cost_microusd": None},
+        {"input_tokens": 1, "total_tokens": 1},
+        {"cache_read_tokens": 1},
+        {"cache_creation_tokens": 1},
+        {"structured_attempts": 1},
+        {"error_code": "PROVIDER_TRANSPORT_ERROR"},
+        None,
+    ],
+)
+def test_provider_admission_zero_cost_requires_zero_call_evidence(
+    model_gateway_database_url: str, invalid: dict[str, object] | None
+) -> None:
+    config = Config(str(SERVER_ROOT / "alembic.ini"))
+    engine = create_engine(psycopg_database_url(model_gateway_database_url))
+    tenant_id = uuid4()
+    record = valid_invocation(tenant_id)
+    record.update(
+        status="provider_error",
+        error_code="PROVIDER_OUTPUT_LIMIT_UNCONFIGURED",
+        input_tokens=0,
+        output_tokens=0,
+        total_tokens=0,
+        cache_read_tokens=0,
+        cache_creation_tokens=0,
+        structured_attempts=0,
+        normalized_cost_microusd=0,
+        cost_status="not_invoked",
+    )
+    try:
+        if invalid is None:
+            # Empty upgrade/downgrade roundtrip must also preserve this constraint.
+            command.downgrade(config, "0060_budget_reservations")
+            command.upgrade(config, "head")
+        with engine.begin() as connection:
+            connection.execute(
+                tables.tenants.insert(),
+                {
+                    "id": tenant_id,
+                    "slug": "admission-cost",
+                    "name": "Admission cost",
+                },
+            )
+        if invalid is not None:
+            record.update(invalid)
+            with (
+                pytest.raises(IntegrityError, match="cost_evidence_consistent"),
+                engine.begin() as connection,
+            ):
+                connection.execute(tables.model_invocations.insert(), record)
+        else:
+            with engine.begin() as connection:
+                connection.execute(tables.model_invocations.insert(), record)
+            with pytest.raises(
+                RuntimeError, match="refusing downgrade: provider admission evidence"
+            ):
+                command.downgrade(config, "0060_budget_reservations")
+            with engine.connect() as connection:
+                assert (
+                    connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
+                    == ScriptDirectory.from_config(config).get_current_head()
+                )
+                persisted = connection.execute(select(tables.model_invocations)).mappings().one()
+                assert persisted["id"] == record["id"]
+                assert persisted["cost_status"] == "not_invoked"
+    finally:
         engine.dispose()

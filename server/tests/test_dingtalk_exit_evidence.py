@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import create_engine, func, select, text, update
+from sqlalchemy import create_engine, func, select, update
 
 from app.db.schema import tables
 from app.db.test_safety import configured_test_database_url
@@ -21,6 +21,7 @@ from app.integrations.dingtalk_exit_evidence import (
     serialize_dingtalk_exit_baseline,
     verify_dingtalk_exit_evidence,
 )
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 RELEASE_SHA = "8e58e7a0657bfd2a29ba916eb8e25ba07da63d93"
@@ -35,7 +36,7 @@ def isolated_database() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()

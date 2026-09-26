@@ -10,7 +10,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, func, select, text
+from sqlalchemy import create_engine, func, select
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -20,6 +20,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.main import app
 from app.settings import get_settings
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 TEST_JWT_SECRET = "test-only-jwt-secret-that-is-at-least-32-bytes"
@@ -47,7 +48,7 @@ def isolated_work_item_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         engine.dispose()
@@ -355,6 +356,14 @@ def test_issue_and_risk_lifecycles_are_explicit_and_audited(
     headers = bearer_headers(client)
     project_id = scope["project_id"]
 
+    verifier_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="issue_verifier",
+        role=Role.QUALITY,
+    )
     issue_response = client.post(
         f"/api/projects/{project_id}/issues",
         headers=headers,
@@ -363,6 +372,9 @@ def test_issue_and_risk_lifecycles_are_explicit_and_audited(
             "title": "Pump overheats during endurance test",
             "description": "Housing exceeds the temperature limit.",
             "severity": "critical",
+            "owner_user_id": str(owner_id),
+            "verifier_user_id": str(verifier_id),
+            "closure_criteria": "Housing stays under limit across endurance rerun",
             "target_date": "2026-09-15",
         },
     )
@@ -370,6 +382,7 @@ def test_issue_and_risk_lifecycles_are_explicit_and_audited(
     issue = issue_response.json()
     assert issue["status"] == "open"
     assert issue["reported_by_user_id"] == str(owner_id)
+    assert issue["verifier_user_id"] == str(verifier_id)
     issue_patch = client.patch(
         f"/api/projects/{project_id}/issues/{issue['id']}",
         headers=headers,
@@ -385,7 +398,7 @@ def test_issue_and_risk_lifecycles_are_explicit_and_audited(
     )
     assert skipped_issue_state.status_code == 409
     assert skipped_issue_state.json()["detail"]["code"] == "ISSUE_INVALID_TRANSITION"
-    for next_status in ("analysis", "action", "verification", "closed"):
+    for next_status in ("analysis", "action", "verification"):
         response = client.post(
             issue_transition,
             headers=headers,
@@ -393,6 +406,17 @@ def test_issue_and_risk_lifecycles_are_explicit_and_audited(
         )
         assert response.status_code == 200
         assert response.json()["status"] == next_status
+    owner_close = client.post(issue_transition, headers=headers, json={"to_status": "closed"})
+    assert owner_close.status_code == 409
+    assert owner_close.json()["detail"]["code"] == "ISSUE_CLOSE_REQUIRES_VERIFIER"
+    verifier_headers = bearer_headers(client, username="issue_verifier")
+    response = client.post(
+        issue_transition,
+        headers=verifier_headers,
+        json={"to_status": "closed", "closure_evidence_ref": "Endurance rerun report ER-118"},
+    )
+    assert response.status_code == 200
+    assert response.json()["status"] == "closed"
     assert response.json()["closed_at"] is not None
     assert (
         client.patch(

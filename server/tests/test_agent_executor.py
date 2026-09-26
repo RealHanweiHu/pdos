@@ -10,8 +10,9 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Connection, Engine, create_engine, select, text
+from sqlalchemy import Connection, Engine, create_engine, select
 
+from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.executor import (
     INSTRUCTIONS,
     PROMPT_VERSIONS,
@@ -26,6 +27,7 @@ from app.db.test_safety import configured_test_database_url
 from app.db.url import psycopg_database_url
 from app.domain.findings import RiskSuggestionPayload
 from app.worker.dispatcher import AgentDispatcher
+from tests.db_cleanup import clear_test_tenants
 
 SERVER_ROOT = Path(__file__).resolve().parents[1]
 
@@ -36,6 +38,10 @@ class FakeModelInvoker:
         self.invocations: list[GatewayInvocation] = []
 
     def invoke(self, invocation: GatewayInvocation) -> GatewayResult[AgentAssessment]:
+        assert invocation.run_id is not None
+        assert invocation.model_call_id == model_call_id(
+            invocation.run_id, ModelCallSlot.EVENT_ASSESSMENT
+        )
         self.invocations.append(invocation)
         return self.result
 
@@ -45,6 +51,10 @@ class FailingModelInvoker:
         self.invocations: list[GatewayInvocation] = []
 
     def invoke(self, invocation: GatewayInvocation) -> GatewayResult[AgentAssessment]:
+        assert invocation.run_id is not None
+        assert invocation.model_call_id == model_call_id(
+            invocation.run_id, ModelCallSlot.EVENT_ASSESSMENT
+        )
         self.invocations.append(invocation)
         raise RuntimeError("simulated executor failure")
 
@@ -58,11 +68,11 @@ def executor_database_url() -> Iterator[str]:
     engine = create_engine(psycopg_database_url(test_url))
     try:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         yield test_url
     finally:
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE cehub_core.tenants CASCADE"))
+            clear_test_tenants(connection)
         engine.dispose()
         if previous_database_url is None:
             os.environ.pop("DATABASE_URL", None)
@@ -408,5 +418,41 @@ def test_failed_runs_trip_subscription_circuit_without_error_path_model_calls(
         assert paused_dispatch.routed_event_count == 0
         assert paused_dispatch.created_run_count == 0
         assert len(invoker.invocations) == 2
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize("rollout", ["disabled", "shadow"])
+def test_queued_run_rechecks_rollout_before_context_tools_or_model(
+    executor_database_url: str,
+    monkeypatch: pytest.MonkeyPatch,
+    rollout: str,
+) -> None:
+    from app.ai.capability_contract import CapabilityRollout
+    from tests.rollout_support import set_agent_rollout
+
+    engine = create_engine(psycopg_database_url(executor_database_url))
+    try:
+        now = datetime.now(UTC)
+        run_id, _, _ = queued_run(engine, now=now)
+        # The event was queued while live; a later stop still takes effect.
+        set_agent_rollout(monkeypatch, AgentKey.PROJECT_INTELLIGENCE, CapabilityRollout(rollout))
+        invoker = FailingModelInvoker()
+        result = AgentExecutor(engine, model_invoker=invoker).execute_next(now=now)
+        assert result.run_id == run_id
+        assert result.status == "degraded"
+        assert result.error_code == f"CAPABILITY_{rollout.upper()}"
+        assert invoker.invocations == []
+        with engine.connect() as connection:
+            row = (
+                connection.execute(
+                    select(tables.agent_runs).where(tables.agent_runs.c.id == run_id)
+                )
+                .mappings()
+                .one()
+            )
+            assert row["status"] == "degraded"
+            assert row["error_code"] == result.error_code
+            assert row["run_context"] == {}
     finally:
         engine.dispose()
