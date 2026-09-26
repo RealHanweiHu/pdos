@@ -38,6 +38,7 @@ from app.ai.quality import FindingQualityService
 from app.ai.risk_queue import RiskQueue, RiskQueueReceipt
 from app.ai.risk_suggestions import (
     RiskSuggestionEvidenceError,
+    RiskSuggestionEvidenceInUseError,
     RiskSuggestionRequestConflictError,
     RiskSuggestionService,
 )
@@ -1073,6 +1074,14 @@ def create_risk_suggestion(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={"code": "RISK_EVIDENCE_INVALID", "message": str(error)},
+        ) from error
+    except RiskSuggestionEvidenceInUseError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": error.code,
+                "message": "所选最早证据已有风险建议运行；请沿原建议办理，或以更新的证据事件发起",
+            },
         ) from error
     except RiskSuggestionRequestConflictError as error:
         raise HTTPException(

@@ -51,6 +51,12 @@ class RiskSuggestionRequestConflictError(ValueError):
     pass
 
 
+class RiskSuggestionEvidenceInUseError(RiskSuggestionRequestConflictError):
+    """Another run already owns this evidence window; follow it or cite newer evidence."""
+
+    code = "RISK_EVIDENCE_IN_USE"
+
+
 @dataclass(frozen=True)
 class RiskSuggestionResult:
     status: Literal["created", "no_action", "unavailable", "queued", "running"]
@@ -412,6 +418,25 @@ class RiskSuggestionService:
             last_timestamp = max(event["timestamp"] for event in events).astimezone(UTC)
             window_started_at = min(first_timestamp, requested_at) - timedelta(microseconds=1)
             window_ended_at = max(last_timestamp, requested_at) + timedelta(microseconds=1)
+            # The run window is unique per Project Agent (uq_agent_runs_tenant_project_agent_window)
+            # and starts at the earliest evidence, so a second request on that evidence must be
+            # refused explicitly rather than surfacing the database constraint. The Project row
+            # lock serialises concurrent requests so the check cannot race the insert.
+            connection.execute(
+                select(tables.projects.c.id)
+                .where(tables.projects.c.tenant_id == tenant_id, tables.projects.c.id == project_id)
+                .with_for_update()
+            )
+            if connection.execute(
+                select(tables.agent_runs.c.id).where(
+                    tables.agent_runs.c.tenant_id == tenant_id,
+                    tables.agent_runs.c.project_id == project_id,
+                    tables.agent_runs.c.agent_key == AgentKey.PROJECT_INTELLIGENCE.value,
+                    tables.agent_runs.c.window_started_at == window_started_at,
+                    tables.agent_runs.c.dispatch_key.is_(None),
+                )
+            ).first():
+                raise RiskSuggestionEvidenceInUseError(request_id)
             run_id = uuid4()
             connection.execute(
                 tables.agent_runs.insert(),
