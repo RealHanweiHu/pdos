@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -62,6 +63,7 @@ class ComplaintRecord:
     closed_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    closed_by_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -101,6 +103,14 @@ def _complaint_statement() -> Any:
         tables.complaints.c.closed_at,
         tables.complaints.c.created_at,
         tables.complaints.c.updated_at,
+        select(tables.users.c.display_name)
+        .where(
+            tables.users.c.tenant_id == tables.complaints.c.tenant_id,
+            tables.users.c.id == tables.complaints.c.closed_by_user_id,
+        )
+        .correlate(tables.complaints)
+        .scalar_subquery()
+        .label("closed_by_name"),
     )
 
 
@@ -234,13 +244,16 @@ class ComplaintService:
         actor_user_id: UUID,
         project_id: UUID,
         draft: ComplaintDraft,
+        connection: Connection | None = None,
     ) -> ComplaintRecord:
         complaint_id = uuid4()
         reported_at = datetime.now(UTC)
         occurred_at = draft.occurred_at.astimezone(UTC)
         if occurred_at > reported_at:
             raise ComplaintTimeError
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise ComplaintNotFoundError
             self._validate_member(

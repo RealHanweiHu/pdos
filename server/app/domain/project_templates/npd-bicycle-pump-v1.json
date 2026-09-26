@@ -1,0 +1,657 @@
+{
+  "version": 1,
+  "workflow": "npd",
+  "workflow_version": 1,
+  "languages": [
+    "zh-CN",
+    "en"
+  ],
+  "tasks": [
+    {
+      "code": "REQ",
+      "stage": "concept",
+      "discipline": "项目/产品",
+      "title": "确认需求与产品边界",
+      "depends_on": [],
+      "output": "需求版本、产品类型、场景与范围；作为四专业共同输入",
+      "receiver": "ID、结构、硬件、嵌入式负责人",
+      "title_en": "Confirm requirements and product scope",
+      "responsibility": "product_management",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "ID-PLAN",
+      "stage": "concept",
+      "discipline": "ID",
+      "title": "确认 ID 专项计划",
+      "depends_on": [
+        "REQ"
+      ],
+      "output": "ID 来源、范围、负责人、预算、周期、评审轮次、等待/缓冲、冻结日期；项目/产品确认记录",
+      "receiver": "项目/产品负责人及各专业负责人",
+      "title_en": "Confirm the industrial design plan",
+      "responsibility": "industrial_design",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "ID-CONCEPT",
+      "stage": "planning",
+      "discipline": "ID",
+      "title": "评审 ID 方向与候选方案",
+      "depends_on": [
+        "ID-PLAN"
+      ],
+      "output": "外观方向、候选方案、初步包络和操作布局、产品/客户反馈",
+      "receiver": "结构、硬件与产品负责人",
+      "title_en": "Review industrial design concepts",
+      "responsibility": "industrial_design",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "ARCH",
+      "stage": "planning",
+      "discipline": "四专业协同",
+      "title": "确认系统架构与规格",
+      "depends_on": [
+        "REQ"
+      ],
+      "output": "规格、功能分配、主要器件/空间/功耗约束与待验证假设",
+      "receiver": "结构、硬件、嵌入式负责人",
+      "title_en": "Confirm architecture and specifications",
+      "responsibility": "product_management",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "MD-PRE",
+      "stage": "planning",
+      "discipline": "结构",
+      "title": "结构布局与可制造性预研",
+      "depends_on": [
+        "ARCH"
+      ],
+      "output": "泵体/电池布局、装配与散热约束；未冻结假设明确标注",
+      "receiver": "ID 与硬件负责人",
+      "title_en": "Study mechanical layout and manufacturability",
+      "responsibility": "mechanical",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "EE-PRE",
+      "stage": "planning",
+      "discipline": "硬件",
+      "title": "电路方案与关键器件预研",
+      "depends_on": [
+        "ARCH"
+      ],
+      "output": "主控、电源、传感器选型、尺寸与功耗约束",
+      "receiver": "结构与嵌入式负责人",
+      "title_en": "Study circuits and critical components",
+      "responsibility": "hardware",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "FW-PRE",
+      "stage": "planning",
+      "discipline": "嵌入式",
+      "title": "控制逻辑与软件架构预研",
+      "depends_on": [
+        "ARCH"
+      ],
+      "output": "状态机、控制算法、开发板验证方案与硬件接口需求",
+      "receiver": "硬件与品质负责人",
+      "title_en": "Study firmware architecture",
+      "responsibility": "firmware",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "INTERFACE",
+      "stage": "planning",
+      "discipline": "四专业协同",
+      "title": "共同确认接口与空间约束",
+      "depends_on": [
+        "ID-CONCEPT",
+        "MD-PRE",
+        "EE-PRE",
+        "FW-PRE"
+      ],
+      "output": "包络、显示/按键、PCB/电池/泵位置、接口/PIN/协议约束版本与四方确认",
+      "receiver": "ID、结构、硬件、嵌入式负责人",
+      "title_en": "Confirm interfaces and space constraints",
+      "responsibility": "product_management",
+      "required_features": [],
+      "hard_milestone": true,
+      "minimum_evidence": [
+        "versioned_output",
+        "receiver_confirmation"
+      ]
+    },
+    {
+      "code": "ID-FREEZE",
+      "stage": "design",
+      "discipline": "ID",
+      "title": "确认外观样并冻结 ID",
+      "depends_on": [
+        "ID-CONCEPT",
+        "INTERFACE"
+      ],
+      "output": "外观样/图档、曲面与尺寸、CMF、操作布局版本；产品/客户确认及结构/硬件可行性评审",
+      "receiver": "结构与硬件负责人",
+      "title_en": "Freeze industrial design",
+      "responsibility": "industrial_design",
+      "required_features": [],
+      "hard_milestone": true,
+      "minimum_evidence": [
+        "versioned_output",
+        "receiver_confirmation"
+      ]
+    },
+    {
+      "code": "MD-ENVELOPE",
+      "stage": "design",
+      "discipline": "结构",
+      "title": "发布结构空间与板框基线",
+      "depends_on": [
+        "ID-FREEZE",
+        "INTERFACE"
+      ],
+      "output": "关键尺寸、板框、安装孔、连接器位置及禁布区的已确认版本",
+      "receiver": "硬件负责人及结构详细设计",
+      "title_en": "Release mechanical envelope and board outline",
+      "responsibility": "mechanical",
+      "required_features": [],
+      "hard_milestone": true,
+      "minimum_evidence": [
+        "versioned_output",
+        "receiver_confirmation"
+      ]
+    },
+    {
+      "code": "MD-DETAIL",
+      "stage": "design",
+      "discipline": "结构",
+      "title": "完成结构详细设计与装配评审",
+      "depends_on": [
+        "MD-ENVELOPE"
+      ],
+      "output": "3D/2D、材料与公差、装配/散热/DFM 结论和结构 BOM",
+      "receiver": "硬件、样机制作与品质负责人",
+      "title_en": "Complete detailed mechanical design",
+      "responsibility": "mechanical",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "EE-PCB",
+      "stage": "design",
+      "discipline": "硬件",
+      "title": "完成原理图、PCB 与样板检查",
+      "depends_on": [
+        "EE-PRE",
+        "MD-ENVELOPE",
+        "INTERFACE"
+      ],
+      "output": "原理图/PCB/BOM、硬件版本、样板及上电检查记录",
+      "receiver": "嵌入式与样机制作负责人",
+      "title_en": "Complete schematics and PCB review",
+      "responsibility": "hardware",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "FW-BASE",
+      "stage": "design",
+      "discipline": "嵌入式",
+      "title": "完成固件基础功能开发",
+      "depends_on": [
+        "FW-PRE",
+        "INTERFACE"
+      ],
+      "output": "可在开发板验证的控制逻辑、驱动接口、固件版本与自测记录",
+      "receiver": "硬件负责人及板级联调",
+      "title_en": "Implement core firmware",
+      "responsibility": "firmware",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "FW-BRINGUP",
+      "stage": "design",
+      "discipline": "嵌入式",
+      "title": "完成硬件与固件板级联调",
+      "depends_on": [
+        "EE-PCB",
+        "FW-BASE"
+      ],
+      "output": "目标板固件、驱动/通信/控制验证记录与兼容版本组合",
+      "receiver": "结构、品质与整机集成负责人",
+      "title_en": "Complete board and firmware integration",
+      "responsibility": "firmware",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "DESIGN-REVIEW",
+      "stage": "design",
+      "discipline": "四专业协同",
+      "title": "评审整机设计与 EVT 输入",
+      "depends_on": [
+        "ID-FREEZE",
+        "MD-DETAIL",
+        "EE-PCB",
+        "FW-BRINGUP",
+        "DQE-DESIGN",
+        "SQE-PARTS",
+        "IE-DESIGN",
+        "LAMP-DESIGN"
+      ],
+      "output": "ID/结构/硬件/固件兼容版本清单、设计评审结论与 EVT 制作输入",
+      "receiver": "样机制作与品质负责人",
+      "title_en": "Review integrated design and EVT inputs",
+      "responsibility": "product_management",
+      "required_features": [],
+      "hard_milestone": true,
+      "minimum_evidence": [
+        "versioned_output",
+        "receiver_confirmation"
+      ]
+    },
+    {
+      "code": "EVT-BUILD",
+      "stage": "evt",
+      "discipline": "结构/整机集成",
+      "title": "制作 EVT 整机样机",
+      "depends_on": [
+        "DESIGN-REVIEW"
+      ],
+      "output": "试制批次、样机编号及四专业版本对应关系",
+      "receiver": "品质与各专业负责人",
+      "title_en": "Build EVT samples",
+      "responsibility": "mechanical",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "EVT-VERIFY",
+      "stage": "evt",
+      "discipline": "品质/四专业协同",
+      "title": "完成 EVT 验证与整改复测",
+      "depends_on": [
+        "EVT-BUILD"
+      ],
+      "output": "功能报告、问题分工、受影响专业/版本、独立复测与关闭记录",
+      "receiver": "DVT 设计验证负责人",
+      "title_en": "Complete EVT verification and retesting",
+      "responsibility": "design_quality",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "DVT-VERIFY",
+      "stage": "dvt",
+      "discipline": "品质/四专业协同",
+      "title": "完成 DVT 验证及定型评审",
+      "depends_on": [
+        "EVT-VERIFY"
+      ],
+      "output": "定型配置、整机/可靠性/适用认证证据、差异处置与定型结论",
+      "receiver": "试产准备负责人",
+      "title_en": "Complete DVT verification",
+      "responsibility": "design_quality",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "PVT-VERIFY",
+      "stage": "pvt",
+      "discipline": "制造/品质/研发",
+      "title": "完成试产验证与准备交接",
+      "depends_on": [
+        "DVT-VERIFY",
+        "IE-PVT"
+      ],
+      "output": "试产记录、冻结 BOM、工艺与检验引用、交接准备清单；正式 ERP 交接仍需 PVT Gate 批准",
+      "receiver": "转产接收方",
+      "title_en": "Complete PVT verification and prepare handoff",
+      "responsibility": "industrial_engineering",
+      "required_features": [],
+      "hard_milestone": true,
+      "minimum_evidence": [
+        "versioned_output",
+        "receiver_confirmation"
+      ]
+    },
+    {
+      "code": "MP-HANDOVER",
+      "stage": "mp",
+      "discipline": "项目/接收方",
+      "title": "确认稳定观察、责任接收与结项清单",
+      "depends_on": [
+        "PVT-VERIFY"
+      ],
+      "output": "稳定观察记录、遗留项接收、最终版本索引、移交和结项确认",
+      "receiver": "项目负责人及维护团队",
+      "title_en": "Accept residual work and project handoff",
+      "responsibility": "industrial_engineering",
+      "required_features": [],
+      "hard_milestone": true,
+      "minimum_evidence": [
+        "versioned_output",
+        "receiver_confirmation"
+      ]
+    },
+    {
+      "code": "DQE-PLAN",
+      "stage": "concept",
+      "responsibility": "design_quality",
+      "discipline": "design_quality",
+      "title": "编制验证、可靠性与适用认证计划",
+      "title_en": "Plan verification, reliability and applicable certification",
+      "depends_on": [
+        "REQ"
+      ],
+      "output": "要求—测试矩阵、样本量与实验资源需求、适用法规待确认项",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "SQE-PLAN",
+      "stage": "concept",
+      "responsibility": "supplier_quality",
+      "discipline": "supplier_quality",
+      "title": "识别关键件与供方准入证据",
+      "title_en": "Identify critical parts and supplier qualification evidence",
+      "depends_on": [
+        "REQ"
+      ],
+      "output": "关键件清单、供样与长周期约束、供方过程及来料证据需求",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "IE-PLAN",
+      "stage": "planning",
+      "responsibility": "industrial_engineering",
+      "discipline": "industrial_engineering",
+      "title": "规划可制造性、产能与工装约束",
+      "title_en": "Plan manufacturability, capacity and tooling constraints",
+      "depends_on": [
+        "ARCH"
+      ],
+      "output": "装配和检验可达性、工装/台架/线体需求及产能假设",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "DQE-DESIGN",
+      "stage": "design",
+      "responsibility": "design_quality",
+      "discipline": "design_quality",
+      "title": "审查设计质量与验证覆盖",
+      "title_en": "Review design quality and verification coverage",
+      "depends_on": [
+        "INTERFACE",
+        "DQE-PLAN"
+      ],
+      "output": "设计风险、关键质量特性、试验方法/判据与接口验证覆盖",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "SQE-PARTS",
+      "stage": "design",
+      "responsibility": "supplier_quality",
+      "discipline": "supplier_quality",
+      "title": "确认关键供方与零件质量输入",
+      "title_en": "Confirm supplier and part quality inputs",
+      "depends_on": [
+        "SQE-PLAN",
+        "EE-PRE",
+        "MD-PRE"
+      ],
+      "output": "件版本与供应来源、检验计划、缺少资格及替代限制",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "IE-DESIGN",
+      "stage": "design",
+      "responsibility": "industrial_engineering",
+      "discipline": "industrial_engineering",
+      "title": "审查工艺与装配测试空间",
+      "title_en": "Review process and assembly test access",
+      "depends_on": [
+        "MD-ENVELOPE",
+        "IE-PLAN"
+      ],
+      "output": "DFM/装配/测试空间、工装方案和未关闭约束",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "IE-PVT",
+      "stage": "pvt",
+      "responsibility": "industrial_engineering",
+      "discipline": "industrial_engineering",
+      "title": "确认试产工艺与生产接收准备",
+      "title_en": "Confirm trial production processes and receiving readiness",
+      "depends_on": [
+        "DVT-VERIFY",
+        "IE-DESIGN"
+      ],
+      "output": "SOP、治具、检验引用、节拍/产出数据及接收责任",
+      "receiver": "对应下游专业负责人",
+      "required_features": [],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    },
+    {
+      "code": "LAMP-DESIGN",
+      "stage": "design",
+      "responsibility": "hardware",
+      "discipline": "hardware",
+      "title": "实现照明功能及接口验证",
+      "title_en": "Implement lighting and validate its interfaces",
+      "depends_on": [
+        "INTERFACE"
+      ],
+      "output": "照明器件/驱动/固件交互与实测证据",
+      "receiver": "对应下游专业负责人",
+      "required_features": [
+        "lighting"
+      ],
+      "hard_milestone": false,
+      "minimum_evidence": [
+        "work_output"
+      ]
+    }
+  ],
+  "initiation_checks": [
+    "ID 来源与范围：全新设计、沿用修改或客户提供；明确外观、尺寸、操作体验和 CMF 要求",
+    "具名负责人、内外部设计资源、产品/客户确认人及预算",
+    "开始日期、预计工期、方案评审轮次、客户反馈等待和修改缓冲分别估算",
+    "方向确认、外观样确认与 ID 冻结的目标日期，以及超期影响和处理人",
+    "结构、硬件、嵌入式可并行开展的预研，以及必须等 ID/接口冻结的工作"
+  ],
+  "features": {
+    "lighting": {
+      "label": "照明功能",
+      "label_en": "Lighting",
+      "default": false
+    }
+  },
+  "issue_fields": [
+    "owner_user_id",
+    "verifier_user_id",
+    "target_date",
+    "closure_criteria",
+    "closure_evidence_ref"
+  ],
+  "numbering": {
+    "project": "{project_code}",
+    "document": "{project_code}-{document_type}-{sequence}-R{revision}",
+    "sample": "{project_code}-{phase}-{sequence}",
+    "part_ids": [
+      "temporary_part_number",
+      "erp_part_number",
+      "customer_part_number"
+    ]
+  },
+  "handoff_items": [
+    "configuration",
+    "bom",
+    "manufacturing",
+    "test_certification",
+    "training",
+    "residuals",
+    "quality_follow_up"
+  ],
+  "source_language_policy": "保留原文及出处，译文另存并关联原文；未提供译文明确标记",
+  "stages": [
+    {
+      "code": "concept",
+      "sequence": 1,
+      "name": "概念",
+      "name_en": "Concept"
+    },
+    {
+      "code": "planning",
+      "sequence": 2,
+      "name": "规划",
+      "name_en": "Planning"
+    },
+    {
+      "code": "design",
+      "sequence": 3,
+      "name": "设计",
+      "name_en": "Design"
+    },
+    {
+      "code": "evt",
+      "sequence": 4,
+      "name": "工程验证",
+      "name_en": "Engineering verification"
+    },
+    {
+      "code": "dvt",
+      "sequence": 5,
+      "name": "设计验证",
+      "name_en": "Design validation"
+    },
+    {
+      "code": "pvt",
+      "sequence": 6,
+      "name": "试产验证",
+      "name_en": "Production validation"
+    },
+    {
+      "code": "mp",
+      "sequence": 7,
+      "name": "量产与交接",
+      "name_en": "Production and handoff"
+    }
+  ],
+  "gate_policy": "existing-versioned-slot-policy",
+  "freeze_evidence": {
+    "ID-FREEZE": [
+      "图档或外观样版本",
+      "关键尺寸/包络",
+      "CMF",
+      "操作布局",
+      "产品或客户确认",
+      "结构与硬件接口可行性"
+    ],
+    "INTERFACE": [
+      "空间与接口版本",
+      "四专业接收确认"
+    ]
+  },
+  "id": "npd-bicycle-pump",
+  "name": "锂电自行车泵 NPD",
+  "name_en": "Lithium bicycle pump NPD",
+  "product_type": "锂电自行车泵",
+  "evidence_status": "existing_project_reference",
+  "reference_project": "D14-04",
+  "test_profile": {
+    "template_id": "lithium-bicycle-pump",
+    "version": 1,
+    "product_type": "锂电自行车泵",
+    "feature_requirements": {
+      "whole_unit-02": "lighting"
+    }
+  }
+}

@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class AgentKey(StrEnum):
+    PRODUCT_MANAGEMENT_INTELLIGENCE = "product_management_intelligence"
     PROJECT_INTELLIGENCE = "project_intelligence"
     KNOWLEDGE_LITE = "knowledge_lite"
     ENGINEERING_INTELLIGENCE = "engineering_intelligence"
@@ -30,6 +31,7 @@ class AgentRunStatus(StrEnum):
     DEBOUNCING = "debouncing"
     QUEUED = "queued"
     RUNNING = "running"
+    WAITING_INPUT = "waiting_input"
     SUCCEEDED = "succeeded"
     DEGRADED = "degraded"
     FAILED = "failed"
@@ -45,6 +47,8 @@ _EVENT_AGENT_ROUTES: dict[str, tuple[AgentKey, ...]] = {
         AgentKey.EXECUTIVE_INTELLIGENCE,
     ),
     "ISSUE_CREATED": (AgentKey.PROJECT_INTELLIGENCE,),
+    "ISSUE_STATUS_CHANGED": (AgentKey.PROJECT_INTELLIGENCE,),
+    "NCR_CREATED": (AgentKey.QUALITY_INTELLIGENCE,),
     "TEST_FAILED": (
         AgentKey.PROJECT_INTELLIGENCE,
         AgentKey.QUALITY_INTELLIGENCE,
@@ -61,10 +65,183 @@ _EVENT_AGENT_ROUTES: dict[str, tuple[AgentKey, ...]] = {
     "SUPPLIER_DELAY_REPORTED": (AgentKey.SUPPLIER_INTELLIGENCE,),
 }
 
+# Explicit no-route decisions (vNext V1-A9): every catalog event type must appear
+# either in the route table above or here, so adding an event forces a decision.
+# Rationale buckets: identity/infra noise (USER_*, TENANT_*, DINGTALK_*, REMINDER_*),
+# rule-engine-covered signals (TASK_*, RISK_*), agent-output feedback loops
+# (AI_*, MEMORY_*), and low-signal CRUD updates already covered by a routed
+# sibling event.
+NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
+    {
+        # N7 consent, observations and independent reception receipts feed
+        # descriptive calculations only; participation never requests model work.
+        "RESEARCH_MEASUREMENT_RECORDED",
+        "RESEARCH_WORKPACK_RECORDED",
+        "VALUE_MEASUREMENT_RECORDED",
+        "VALUE_WORKPACK_RECORDED",
+        # Named output generation, release/withdrawal and evidence bundling are
+        # deterministic export operations, not inputs to an implicit model run.
+        "AUDIT_REPORT_BUNDLED",
+        "CUSTOMER_REPORT_RECORDED",
+        "PROJECT_REPORT_EXPORTED",
+        "PROJECT_REPORT_WITHDRAWN",
+        # Access and delivery audit facts retain their dedicated authorization
+        # paths; an API call or webhook receipt cannot grant model execution.
+        "OPEN_API_ACCESS_CHANGED",
+        "OPEN_API_CALLED",
+        "WEBHOOK_RECORDED",
+        "TENCENT_MEETING_IDENTITY_CHANGED",  # Account binding is identity administration.
+        # Capturing a source is not a delay finding. Supply projections use the
+        # fixed snapshot; the existing SUPPLIER_DELAY_REPORTED route stays separate.
+        "SUPPLY_SNAPSHOT_CAPTURED",
+        # Human intake/source correction and versioned template/meeting briefs
+        # are preparation records. AI preparation requires its explicit request.
+        "DECISION_INTAKE_SOURCE_RECORDED",
+        "ISSUE_INTAKE_SOURCE_RECORDED",
+        "PROJECT_INTAKE_RECORDED",
+        "PROCESS_TEMPLATE_BRIEF_CREATED",
+        "PROCESS_TEMPLATE_CHANGED",
+        "MEETING_PLANNING_CHANGED",
+        # Human review/application receipts must not feed back into a new run.
+        "INTAKE_AI_FINDING_RECORDED",
+        "PROCESS_TEMPLATE_FINDING_RECORDED",
+        "MEETING_PLAN_FINDING_RECORDED",
+        "QUALITY_WORK_PACKAGE_APPLIED",
+        # Recurring meeting setup and generation use the bounded scheduler;
+        # changing recurrence does not request model preparation or external delivery.
+        "MEETING_RECURRENCE_UPDATED",
+        # Named quality commands and FMEA candidates/revisions/publications use
+        # deterministic projections and human disposition, without model inference.
+        "FMEA_CANDIDATE_RECORDED",
+        "FMEA_VERSION_PUBLISHED",
+        "FMEA_VERSION_RECORDED",
+        "QUALITY_ISSUE_LINK_RECORDED",
+        "QUALITY_OPERATION_RECORDED",
+        # Scoring, follow-up and change-window decisions are deterministic or
+        # human-owned; portfolio AI explanation remains an explicit request.
+        "PORTFOLIO_COMPARISON_RECORDED",
+        "PORTFOLIO_ESCALATION_CHANGED",
+        "CHANGE_QUIET_PERIOD_RECORDED",
+        # N0–N2 manual workflows currently emit audit facts only. Their planned
+        # AI preparation capabilities require explicit runtime wiring before routing.
+        "BASELINE_CHANGE_RECORDED",
+        "CROSS_PROJECT_SCHEDULE_RECORDED",
+        "DEFINITION_PUBLISHED",
+        "FORECAST_CAPACITY_CHECKED",
+        "ID_DESIGN_RECORDED",
+        "INITIAL_PLAN_APPLIED",
+        "INITIAL_PLAN_PREPARED",
+        "INITIAL_PLAN_REVIEW_CHANGED",
+        "LEGACY_RESOURCE_RECONCILED",
+        "PLANNING_RESOURCE_CREATED",
+        "PLAN_CAPACITY_CHECKED",
+        "PLAN_RESPONSIBILITY_RESPONDED",
+        "PLAN_SCENARIO_CALCULATED",
+        "PREPROJECT_RECORD_CHANGED",
+        "PROJECT_EXECUTION_CHANGED",
+        "PROJECT_SCENARIO_CAPACITY_CHECKED",
+        "PROJECT_SCHEDULE_SCENARIO_EVALUATED",
+        "RESEARCH_TASK_CHANGED",
+        "RESOURCE_CAPACITY_PUBLISHED",
+        "RESOURCE_RESERVATION_CHANGED",
+        "RESOURCE_RESERVATION_RECORDED",
+        "RESOURCE_RESERVATION_REPLACED",
+        "REVIEW_FINALIZED",
+        "REVIEW_RECORD_CHANGED",
+        "SCHEDULE_ACTUAL_CORRECTED",
+        "SCHEDULE_COMMITMENT_CHANGED",
+        "SCHEDULE_FORECAST_RECALCULATED",
+        "SCHEDULE_MILESTONE_COMPLETED",
+        "SCHEDULE_NODE_REGISTERED",
+        "SCHEDULE_SOURCE_ACTUAL_CORRECTED",
+        "WORK_CALENDAR_PUBLISHED",
+        "AI_FEEDBACK_RECEIVED",
+        "AI_FINDING_CREATED",
+        "CAPA_ACTION_CREATED",
+        "CAPA_ACTION_STATUS_CHANGED",
+        "COMPLAINT_STATUS_CHANGED",
+        "CRM_REQUIREMENT_RECEIVED",
+        "CUSTOMER_CREATED",
+        "DECISION_RECORDED",
+        "DELIVERABLE_CHECK_CHANGED",
+        "DEPARTMENT_CREATED",
+        "DEVELOPMENT_CASE_CREATED",
+        "DEVELOPMENT_CASE_STATUS_CHANGED",
+        "DEVELOPMENT_CASE_UPDATED",
+        "DINGTALK_APPROVAL_UPDATED",
+        "DINGTALK_CARD_ACTION_RECEIVED",
+        "DINGTALK_IDENTITY_LINKED",
+        "DINGTALK_NOTIFICATION_DELIVERED",
+        "EFFECTIVENESS_REVIEWED",
+        "ERP_BOM_REFERENCE_ADDED",
+        "ISSUE_UPDATED",
+        # V2-1: meetings emit state changes, but no agent capability consumes
+        # them until V2-5 lands `meeting_minutes`.
+        "MEETING_STATE_CHANGED",
+        # V2-9: a debate is convened explicitly (by an agent or a person), so
+        # its state changes drive notifications, not another agent run.
+        "DEBATE_STATE_CHANGED",
+        # V2-7: evidence is captured by people today; V2-8 agent-reach adds the
+        # agent path, still without a dispatcher route back into an agent run.
+        "EVIDENCE_SNAPSHOT_CAPTURED",
+        "RESEARCH_SOURCE_CHANGED",
+        "KNOWLEDGE_CORRECTION_PROPOSED",  # Human correction queue, no automatic model work.
+        "KNOWLEDGE_CORRECTION_REVIEWED",
+        "KNOWLEDGE_REUSE_STATE_CHANGED",  # Retrieval receipt, never another agent run.
+        "KNOWLEDGE_USE_RECORDED",  # Human use receipt; does not request model work.
+        "MEMORY_ARCHIVED",
+        "MEMORY_DRAFT_CREATED",
+        "MEMORY_DRAFT_UPDATED",
+        "MEMORY_EMBEDDED",
+        "MEMORY_VERIFIED",
+        "NCR_PREVENTIVE_DISPOSITION_APPROVED",
+        "NCR_STATUS_CHANGED",
+        "NPI_RECORD_CHANGED",
+        "PROJECT_CREATED",
+        "PROJECT_STATUS_CHANGED",
+        "PROJECT_UPDATED",
+        "RESOURCE_RESERVATION_OWNER_TRANSFERRED",
+        "DECISION_RESPONSIBILITY_CHANGED",
+        "APPLICATION_INPUT_RESPONSIBILITY_CHANGED",  # Human follow-up only.
+        "QUALITY_RESPONSIBILITY_CHANGED",  # Human reassignment, no model work.
+        "REMINDER_STATE_CHANGED",
+        "REQUIREMENT_CONVERTED",
+        "REQUIREMENT_CREATED",
+        "REQUIREMENT_UPDATED",
+        "RISK_CREATED",
+        "RISK_STATUS_CHANGED",
+        "RISK_UPDATED",
+        "ROOT_CAUSE_ANALYSIS_CHANGED",
+        "SPECIFICATION_CREATED",
+        "TASK_TAKEOVER_RECORDED",  # Human handoff, never implicit model execution.
+        "TASK_CREATED",
+        "TASK_STATUS_CHANGED",
+        "TASK_UPDATED",
+        "TENANT_BOOTSTRAPPED",
+        "TENANT_MODEL_SETTINGS_UPDATED",
+        "USER_CREATED",
+        "USER_DELEGATION_GRANTED",
+        "USER_DELEGATION_REVOKED",
+        "USER_RESPONSIBILITY_TRANSFERRED",
+        "USER_PASSWORD_CHANGED",
+        "USER_PASSWORD_RESET",
+        "USER_SIGNED_IN",
+        "USER_UPDATED",
+    }
+)
+
 _RUN_EDGES: dict[AgentRunStatus, frozenset[AgentRunStatus]] = {
     AgentRunStatus.DEBOUNCING: frozenset({AgentRunStatus.QUEUED}),
     AgentRunStatus.QUEUED: frozenset({AgentRunStatus.RUNNING}),
     AgentRunStatus.RUNNING: frozenset(
+        {
+            AgentRunStatus.SUCCEEDED,
+            AgentRunStatus.DEGRADED,
+            AgentRunStatus.FAILED,
+            AgentRunStatus.WAITING_INPUT,
+        }
+    ),
+    AgentRunStatus.WAITING_INPUT: frozenset(
         {AgentRunStatus.SUCCEEDED, AgentRunStatus.DEGRADED, AgentRunStatus.FAILED}
     ),
     AgentRunStatus.SUCCEEDED: frozenset(),

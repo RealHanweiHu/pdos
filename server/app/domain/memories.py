@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Sequence
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, Literal
@@ -15,6 +16,13 @@ from sqlalchemy.exc import IntegrityError
 
 from app.ai.embeddings import EmbeddingGateway, EmbeddingResult
 from app.db.schema import tables
+from app.domain.knowledge_categories import (
+    KNOWLEDGE_KIND_LABELS,
+    KNOWLEDGE_KINDS,
+    KnowledgeKind,
+    require_knowledge_kind,
+)
+from app.domain.knowledge_sources import KnowledgeSourceSelection, resolve_selections
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 
@@ -44,6 +52,7 @@ class MemoryDraft:
     content: str
     applicability: str | None = None
     tags: tuple[str, ...] = ()
+    knowledge_kind: KnowledgeKind | None = None
 
 
 @dataclass(frozen=True)
@@ -53,6 +62,7 @@ class MemoryRecord:
     project_id: UUID
     source_finding_id: UUID | None
     source_ncr_id: UUID | None
+    source_issue_id: UUID | None
     created_by_user_id: UUID
     verified_by_user_id: UUID | None
     archived_by_user_id: UUID | None
@@ -67,6 +77,8 @@ class MemoryRecord:
     archived_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    last_edited_by_user_id: UUID | None = None
+    knowledge_kind: KnowledgeKind | None = None
 
 
 @dataclass(frozen=True)
@@ -78,13 +90,17 @@ class MemorySearchResult:
 
 
 def memory_content_hash(draft: MemoryDraft) -> str:
+    # Preserve legacy digests when classification has never been supplied.
+    value: dict[str, object] = {
+        "title": draft.title.strip(),
+        "content": draft.content.strip(),
+        "applicability": draft.applicability.strip() if draft.applicability else None,
+        "tags": list(draft.tags),
+    }
+    if draft.knowledge_kind is not None:
+        value["knowledge_kind"] = draft.knowledge_kind
     canonical = json.dumps(
-        {
-            "title": draft.title.strip(),
-            "content": draft.content.strip(),
-            "applicability": draft.applicability.strip() if draft.applicability else None,
-            "tags": list(draft.tags),
-        },
+        value,
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
@@ -94,6 +110,8 @@ def memory_content_hash(draft: MemoryDraft) -> str:
 
 def _embedding_text(record: MemoryRecord) -> str:
     parts = [record.title, record.content]
+    if record.knowledge_kind is not None:
+        parts.append("Knowledge kind: " + KNOWLEDGE_KIND_LABELS[record.knowledge_kind])
     if record.applicability:
         parts.append(f"Applicability: {record.applicability}")
     if record.tags:
@@ -108,6 +126,7 @@ def _record(row: RowMapping) -> MemoryRecord:
         project_id=row["project_id"],
         source_finding_id=row["source_finding_id"],
         source_ncr_id=row["source_ncr_id"],
+        source_issue_id=row["source_issue_id"],
         created_by_user_id=row["created_by_user_id"],
         verified_by_user_id=row["verified_by_user_id"],
         archived_by_user_id=row["archived_by_user_id"],
@@ -122,6 +141,8 @@ def _record(row: RowMapping) -> MemoryRecord:
         archived_at=row["archived_at"],
         created_at=row["created_at"],
         updated_at=row["updated_at"],
+        last_edited_by_user_id=row.get("last_edited_by_user_id"),
+        knowledge_kind=row.get("knowledge_kind"),
     )
 
 
@@ -131,6 +152,7 @@ def _snapshot(record: MemoryRecord) -> dict[str, Any]:
         "project_id": str(record.project_id),
         "source_finding_id": (str(record.source_finding_id) if record.source_finding_id else None),
         "source_ncr_id": str(record.source_ncr_id) if record.source_ncr_id else None,
+        "source_issue_id": str(record.source_issue_id) if record.source_issue_id else None,
         "created_by_user_id": str(record.created_by_user_id),
         "verified_by_user_id": (
             str(record.verified_by_user_id) if record.verified_by_user_id else None
@@ -138,16 +160,27 @@ def _snapshot(record: MemoryRecord) -> dict[str, Any]:
         "archived_by_user_id": (
             str(record.archived_by_user_id) if record.archived_by_user_id else None
         ),
+        "last_edited_by_user_id": str(record.last_edited_by_user_id)
+        if record.last_edited_by_user_id
+        else None,
         "title": record.title,
         "content": record.content,
         "applicability": record.applicability,
         "tags": list(record.tags),
+        "knowledge_kind": record.knowledge_kind,
         "source_refs": list(record.source_refs),
         "content_sha256": record.content_sha256,
         "status": record.status,
         "verified_at": record.verified_at.isoformat() if record.verified_at else None,
         "archived_at": record.archived_at.isoformat() if record.archived_at else None,
     }
+
+
+def memory_review_digest(record: MemoryRecord) -> str:
+    basis = {**_snapshot(record), "updated_at": record.updated_at.isoformat()}
+    return hashlib.sha256(
+        json.dumps(basis, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
 
 
 class MemoryService:
@@ -197,13 +230,26 @@ class MemoryService:
         draft: MemoryDraft,
         source_finding_id: UUID | None = None,
         source_ncr_id: UUID | None = None,
+        source_issue_id: UUID | None = None,
         source_refs: tuple[dict[str, object], ...] = (),
+        source_selections: tuple[KnowledgeSourceSelection, ...] = (),
         now: datetime | None = None,
+        connection: Connection | None = None,
     ) -> MemoryRecord:
         created_at = (now or datetime.now(UTC)).astimezone(UTC)
         normalized = self._normalized_draft(draft)
         memory_id = uuid4()
-        with self._engine.begin() as connection:
+        with self._engine.begin() if connection is None else nullcontext(connection) as connection:
+            source_refs = (
+                *source_refs,
+                *resolve_selections(
+                    connection,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    actor_id=actor_user_id,
+                    selections=source_selections,
+                ),
+            )
             self._validate_source(
                 connection,
                 tenant_id=tenant_id,
@@ -220,11 +266,13 @@ class MemoryService:
                         "project_id": project_id,
                         "source_finding_id": source_finding_id,
                         "source_ncr_id": source_ncr_id,
+                        "source_issue_id": source_issue_id,
                         "created_by_user_id": actor_user_id,
                         "title": normalized.title,
                         "content": normalized.content,
                         "applicability": normalized.applicability,
                         "tags": list(normalized.tags),
+                        "knowledge_kind": normalized.knowledge_kind,
                         "source_refs": list(source_refs),
                         "content_sha256": memory_content_hash(normalized),
                         "status": "draft",
@@ -254,7 +302,15 @@ class MemoryService:
                     payload={
                         "memory_id": str(memory_id),
                         "source_type": (
-                            "finding" if source_finding_id else "ncr" if source_ncr_id else "manual"
+                            "finding"
+                            if source_finding_id
+                            else "ncr"
+                            if source_ncr_id
+                            else "issue"
+                            if source_issue_id
+                            else "business_record"
+                            if any(ref.get("kind") == "event" for ref in source_refs)
+                            else "manual"
                         ),
                     },
                     occurred_at=created_at,
@@ -291,6 +347,8 @@ class MemoryService:
         actor_user_id: UUID,
         memory_id: UUID,
         draft: MemoryDraft,
+        expected_review_digest: str | None = None,
+        source_selections: tuple[KnowledgeSourceSelection, ...] | None = None,
         now: datetime | None = None,
     ) -> MemoryRecord:
         updated_at = (now or datetime.now(UTC)).astimezone(UTC)
@@ -305,6 +363,29 @@ class MemoryService:
             )
             if before.status != "draft":
                 raise MemoryInvalidTransitionError
+            if (
+                expected_review_digest is not None
+                and memory_review_digest(before) != expected_review_digest
+            ):
+                raise MemoryContentConflictError
+            refs = list(before.source_refs)
+            if source_selections is not None:
+                if expected_review_digest is None or not source_selections:
+                    raise MemoryContentConflictError
+                refs = [
+                    ref
+                    for ref in refs
+                    if ref.get("kind") not in {"document", "specification", "evidence_snapshot"}
+                ]
+                refs.extend(
+                    resolve_selections(
+                        connection,
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        actor_id=actor_user_id,
+                        selections=source_selections,
+                    )
+                )
             connection.execute(
                 update(tables.memories)
                 .where(
@@ -314,10 +395,13 @@ class MemoryService:
                     tables.memories.c.status == "draft",
                 )
                 .values(
+                    last_edited_by_user_id=actor_user_id,
+                    source_refs=refs,
                     title=normalized.title,
                     content=normalized.content,
                     applicability=normalized.applicability,
                     tags=list(normalized.tags),
+                    knowledge_kind=normalized.knowledge_kind,
                     content_sha256=memory_content_hash(normalized),
                     updated_at=updated_at,
                 )
@@ -335,7 +419,7 @@ class MemoryService:
                 project_id=project_id,
             ).record(
                 EventDraft(
-                    event_id=f"memory:{memory_id}:draft-updated:{after.content_sha256}",
+                    event_id=f"memory:{memory_id}:draft-updated:{memory_review_digest(after)}",
                     event_type="MEMORY_DRAFT_UPDATED",
                     source="memory_service",
                     entity_id=memory_id,
@@ -358,6 +442,7 @@ class MemoryService:
         actor_user_id: UUID,
         memory_id: UUID,
         gateway: EmbeddingGateway,
+        expected_review_digest: str | None = None,
         now: datetime | None = None,
     ) -> MemoryRecord:
         candidate = self.get(
@@ -367,8 +452,16 @@ class MemoryService:
         )
         if candidate.status != "draft":
             raise MemoryInvalidTransitionError
-        if candidate.created_by_user_id == actor_user_id:
+        if actor_user_id in {candidate.created_by_user_id, candidate.last_edited_by_user_id}:
             raise MemoryFourEyesError
+        if (
+            expected_review_digest is not None
+            and memory_review_digest(candidate) != expected_review_digest
+        ):
+            raise MemoryContentConflictError
+        require_knowledge_kind(candidate.knowledge_kind)
+        with self._engine.connect() as connection:
+            self._require_source_basis(connection, tenant_id, memory_id)
         embedding = gateway.embed(_embedding_text(candidate))
         self._validate_embedding_route(gateway, embedding)
         verified_at = (now or datetime.now(UTC)).astimezone(UTC)
@@ -382,10 +475,11 @@ class MemoryService:
             )
             if before.status != "draft":
                 raise MemoryInvalidTransitionError
-            if before.created_by_user_id == actor_user_id:
+            if actor_user_id in {before.created_by_user_id, before.last_edited_by_user_id}:
                 raise MemoryFourEyesError
-            if before.content_sha256 != candidate.content_sha256:
+            if memory_review_digest(before) != memory_review_digest(candidate):
                 raise MemoryContentConflictError
+            self._require_source_basis(connection, tenant_id, memory_id)
             self._insert_embedding(
                 connection,
                 memory=before,
@@ -567,10 +661,13 @@ class MemoryService:
         query: str,
         gateway: EmbeddingGateway,
         limit: int = 10,
+        knowledge_kind: str | None = None,
     ) -> Sequence[MemorySearchResult]:
         normalized = query.strip()
         if not normalized or len(normalized) > 500 or not 1 <= limit <= 20:
             raise ValueError("memory search parameters invalid")
+        if knowledge_kind is not None and knowledge_kind not in KNOWLEDGE_KINDS | {"unclassified"}:
+            raise ValueError("unknown knowledge classification")
         embedding = gateway.embed(normalized)
         self._validate_embedding_route(gateway, embedding)
         vector = self._vector_literal(embedding.values)
@@ -581,7 +678,13 @@ class MemoryService:
             "ON e.tenant_id = m.tenant_id AND e.project_id = m.project_id "
             "AND e.memory_id = m.id AND e.content_sha256 = m.content_sha256 "
             "WHERE m.tenant_id = :tenant_id AND m.project_id = :project_id "
-            "AND m.status = 'verified' AND e.provider = :provider "
+            "AND m.status = 'verified' AND EXISTS ("
+            "SELECT 1 FROM cehub_memory.memory_source_assessments a "
+            "WHERE a.tenant_id=m.tenant_id AND a.memory_id=m.id "
+            "AND a.state IN ('current','manual')) "
+            "AND (CAST(:knowledge_kind AS varchar) IS NULL OR m.knowledge_kind=:knowledge_kind "
+            "OR (:knowledge_kind='unclassified' AND m.knowledge_kind IS NULL)) "
+            "AND e.provider = :provider "
             "AND e.model = :model AND e.dimensions = :dimensions "
             "ORDER BY e.embedding <=> CAST(:embedding AS vector), m.id LIMIT :limit"
         )
@@ -596,6 +699,7 @@ class MemoryService:
                     "model": embedding.model,
                     "dimensions": embedding.dimensions,
                     "limit": limit,
+                    "knowledge_kind": knowledge_kind,
                 },
             ).mappings()
             return [
@@ -609,11 +713,28 @@ class MemoryService:
             ]
 
     @staticmethod
+    def _require_source_basis(connection: Connection, tenant_id: UUID, memory_id: UUID) -> None:
+        bad = connection.execute(
+            text(
+                "SELECT EXISTS(SELECT 1 FROM cehub_memory.memory_source_assessments a, "
+                "LATERAL jsonb_array_elements(a.sources) source "
+                "WHERE a.tenant_id=:tenant AND a.memory_id=:memory "
+                "AND source->>'state' IN ('stale','unavailable','needs_review'))"
+            ),
+            {"tenant": tenant_id, "memory": memory_id},
+        ).scalar_one()
+        if bad:
+            raise MemorySourceError
+
+    @staticmethod
     def _normalized_draft(draft: MemoryDraft) -> MemoryDraft:
         title = draft.title.strip()
         content = draft.content.strip()
         applicability = draft.applicability.strip() if draft.applicability else None
         tags = tuple(dict.fromkeys(tag.strip() for tag in draft.tags if tag.strip()))
+        if draft.knowledge_kind is not None:
+            require_knowledge_kind(draft.knowledge_kind)
+            tags = tuple(tag for tag in tags if tag != "classification_pending")
         if not title or len(title) > 512 or not content or len(content) > 20_000:
             raise ValueError("memory draft invalid")
         if applicability and len(applicability) > 5_000:
@@ -625,6 +746,7 @@ class MemoryService:
             content=content,
             applicability=applicability,
             tags=tags,
+            knowledge_kind=draft.knowledge_kind,
         )
 
     @staticmethod

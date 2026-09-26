@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Annotated, Self
+from typing import Annotated, Any, Self
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -21,6 +21,13 @@ from app.auth.repository import AuthContext
 from app.auth.roles import Action, Role, is_allowed
 from app.db.engine import get_engine
 from app.db.schema import tables
+from app.domain.case_requirements import CaseRequirementReadinessError
+from app.domain.case_reviews import CaseReviewNotReadyError
+from app.domain.process_template_gates import requirements as template_gate_requirements
+from app.domain.process_template_reminders import policy as template_reminder_policy
+from app.domain.project_completion import ProjectCompletionNotReadyError
+from app.domain.project_execution import ProjectExecutionNotReadyError
+from app.domain.project_templates import ProjectCreationTemplate, ProjectTemplateError, catalog
 from app.domain.projects import (
     DevelopmentCaseNotFoundForProjectError,
     ProjectAlreadyExistsError,
@@ -95,6 +102,7 @@ class ProjectCreateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     development_case_id: UUID
+    product_template: ProjectCreationTemplate | None = None
     code: str = Field(min_length=1, max_length=64)
     name: str = Field(min_length=1, max_length=256)
     description: str | None = Field(default=None, max_length=20_000)
@@ -274,6 +282,28 @@ def require_project_view(
     )
 
 
+@router.get("/creation-templates")
+def creation_templates(
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    if not is_allowed(context.user.role, Action.PROJECT_CREATE):
+        raise permission_denied()
+    no_store(response)
+    with engine.connect() as connection:
+        return {
+            "items": [
+                item
+                | {
+                    "gate_requirements": template_gate_requirements(item),
+                    "reminder_policy": template_reminder_policy(item).model_dump(mode="json"),
+                }
+                for item in catalog(connection=connection, tenant_id=context.tenant.id)
+            ]
+        }
+
+
 @router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 def create_project(
     payload: ProjectCreateRequest,
@@ -288,8 +318,13 @@ def create_project(
             tenant_id=context.tenant.id,
             actor_user_id=context.user.id,
             actor_role=context.user.role,
-            draft=ProjectDraft(**payload.model_dump()),
+            draft=ProjectDraft(**payload.model_dump(exclude={"product_template"})),
+            product_template=payload.product_template,
         )
+    except ProjectTemplateError as error:
+        raise HTTPException(
+            409, detail={"code": "PROJECT_TEMPLATE_INVALID", "message": str(error)}
+        ) from error
     except DevelopmentCaseNotFoundForProjectError as error:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -297,6 +332,10 @@ def create_project(
                 "code": "DEVELOPMENT_CASE_NOT_FOUND",
                 "message": "Development Case was not found",
             },
+        ) from error
+    except (CaseRequirementReadinessError, CaseReviewNotReadyError) as error:
+        raise HTTPException(
+            status_code=409, detail={"code": "CASE_REQUIREMENTS_NOT_READY", "message": str(error)}
         ) from error
     except ProjectCaseNotApprovedError as error:
         raise HTTPException(
@@ -471,6 +510,19 @@ def transition_project(
         )
     except ProjectNotFoundError as error:
         raise permission_denied() from error
+    except ProjectCompletionNotReadyError as error:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "PROJECT_COMPLETION_NOT_READY",
+                "message": str(error),
+                "blockers": error.blockers,
+            },
+        ) from error
+    except ProjectExecutionNotReadyError as error:
+        raise HTTPException(
+            status_code=409, detail={"code": "PROJECT_EXECUTION_NOT_READY", "message": str(error)}
+        ) from error
     except ProjectInvalidTransitionError as error:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

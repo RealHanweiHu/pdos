@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from typing import Any
@@ -190,10 +191,13 @@ class NonconformanceService:
         project_id: UUID,
         complaint_id: UUID,
         draft: NcrDraft,
+        connection: Connection | None = None,
     ) -> TriageResult:
         ncr_id = uuid4()
         occurred_at = datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise ComplaintNotFoundError
             before = ComplaintService._get(
@@ -348,6 +352,7 @@ class NonconformanceService:
         containment_action: str | None = None,
         effectiveness_criteria: str | None = None,
         observation_due_at: datetime | None = None,
+        connection: Connection | None = None,
     ) -> NcrRecord:
         occurred_at = datetime.now(UTC)
         transitions = {
@@ -357,7 +362,9 @@ class NonconformanceService:
             "action": "verification",
             "verification": "closed",
         }
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise NcrNotFoundError
             before = self._get(
@@ -508,9 +515,12 @@ class NonconformanceService:
         project_id: UUID,
         ncr_id: UUID,
         reason: str,
+        connection: Connection | None = None,
     ) -> NcrRecord:
         occurred_at = datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise NcrNotFoundError
             before = self._get(

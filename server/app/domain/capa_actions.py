@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from typing import Any
@@ -139,9 +140,12 @@ class CapaActionService:
         project_id: UUID,
         ncr_id: UUID,
         draft: CapaActionDraft,
+        connection: Connection | None = None,
     ) -> CapaActionRecord:
         action_id, occurred_at = uuid4(), datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise NcrNotFoundError
             ncr = NonconformanceService._get(
@@ -217,9 +221,12 @@ class CapaActionService:
         to_status: str,
         completion_summary: str | None,
         evidence_refs: list[dict[str, object]],
+        connection: Connection | None = None,
     ) -> CapaActionRecord:
         occurred_at = datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise CapaActionNotFoundError
             ncr = NonconformanceService._get(

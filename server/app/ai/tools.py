@@ -26,6 +26,46 @@ class ToolDefinition(BaseModel):
     input_example: dict[str, object]
 
 
+# V2-8 (D25). Reach tools are available to every seat, so they live in the
+# common set rather than behind an agent-specific branch.
+REACH_TOOL_DEFINITIONS: tuple[ToolDefinition, ...] = (
+    ToolDefinition(
+        name="web_search",
+        description=(
+            "Use when the Agent needs candidate public URLs for a research question. Do not "
+            "use to read a page; search returns links and snippets only. Negative example: "
+            "never treat a search snippet as a fact — fetch the page and cite the snapshot. "
+            "Boundary: results are filtered by the reach blocklist, and the tool fails with "
+            "an explicit unavailable error when no search provider is configured rather than "
+            "returning an empty list."
+        ),
+        input_example={"query": "锂电池气泵 噪声 标准", "limit": 10},
+    ),
+    ToolDefinition(
+        name="web_fetch",
+        description=(
+            "Use when the Agent needs the text of a specific public page. Do not use for "
+            "internal hosts, login or OAuth pages, or downloads; only read-only GET is "
+            "possible and no credentials are ever sent. Negative example: never fetch an "
+            "address inside the network, including via a redirect. Boundary: every fetch is "
+            "stored as an evidence snapshot marked untrusted_external, and conclusions must "
+            "cite the returned snapshot_id rather than the returned text."
+        ),
+        input_example={"url": "https://example.com/products/pump-a"},
+    ),
+    ToolDefinition(
+        name="source_snapshot",
+        description=(
+            "Use when the Agent needs to re-read evidence already captured in this tenant by "
+            "its snapshot id. Do not use to fetch anything new or to reach another tenant. "
+            "Negative example: never assume a snapshot is current — check its staleness "
+            "before relying on it. Boundary: tenant comes only from the run, and a superseded "
+            "or expired snapshot is returned marked stale rather than silently refreshed."
+        ),
+        input_example={"snapshot_id": "9a7b1a4f-8d8b-4a8b-a3c7-e9fb8198e268"},
+    ),
+)
+
 TOOL_DEFINITIONS: tuple[ToolDefinition, ...] = (
     ToolDefinition(
         name="get_project_context",
@@ -133,7 +173,13 @@ PORTFOLIO_BRIEF_TOOL = ToolDefinition(
 )
 
 
+# Reach is part of every seat's surface (D25: 全体席位可用).
+TOOL_DEFINITIONS = (*TOOL_DEFINITIONS, *REACH_TOOL_DEFINITIONS)
+
+
 def tool_definitions_for_agent(agent_key: AgentKey) -> tuple[ToolDefinition, ...]:
+    if agent_key is AgentKey.PRODUCT_MANAGEMENT_INTELLIGENCE:
+        return ()
     if agent_key is AgentKey.ENGINEERING_INTELLIGENCE:
         return (*TOOL_DEFINITIONS, ENGINEERING_EVIDENCE_TOOL)
     if agent_key is AgentKey.QUALITY_INTELLIGENCE:
@@ -492,7 +538,10 @@ class AgentReadTools:
                     {"tenant_id": self._context.tenant_id, "project_id": self._context.project_id}
                 )
             filters = (
-                f"{scope}m.status = 'verified' AND e.provider = :provider "
+                f"{scope}m.status = 'verified' AND EXISTS ("
+                "SELECT 1 FROM cehub_memory.memory_source_assessments a "
+                "WHERE a.tenant_id=m.tenant_id AND a.memory_id=m.id "
+                "AND a.state IN ('current','manual')) AND e.provider = :provider "
                 "AND e.model = :model AND e.dimensions = :dimensions"
             )
             if source == "cehub_ai.agent_memory_projection":
@@ -888,6 +937,10 @@ class AgentReadTools:
     def _assert_scope(self, claimed_project_id: UUID) -> None:
         if claimed_project_id != self._context.project_id:
             raise ToolScopeViolationError("tool Project scope does not match the Agent run")
+        # Imported here because capability registration owns the tool declarations.
+        from app.ai.rollout_guard import require_employee_agent
+
+        require_employee_agent(self._context.agent_key)
 
     @staticmethod
     def _validate_page(*, after_id: int, limit: int) -> None:

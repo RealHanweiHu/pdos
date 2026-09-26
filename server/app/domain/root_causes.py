@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -139,9 +140,12 @@ class RootCauseService:
         project_id: UUID,
         ncr_id: UUID,
         draft: RootCauseDraft,
+        connection: Connection | None = None,
     ) -> RootCauseRecord:
         root_cause_id, occurred_at = uuid4(), datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise NcrNotFoundError
             ncr = NonconformanceService._get(
@@ -268,9 +272,12 @@ class RootCauseService:
         project_id: UUID,
         ncr_id: UUID,
         root_cause_id: UUID,
+        connection: Connection | None = None,
     ) -> RootCauseRecord:
         occurred_at = datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise RootCauseNotFoundError
             before = self._get(
@@ -284,6 +291,24 @@ class RootCauseService:
                 raise RootCauseTerminalError
             if before.analyst_user_id == actor_user_id:
                 raise RootCauseFourEyesError
+            ncr = NonconformanceService._get(
+                connection, tenant_id=tenant_id, project_id=project_id, ncr_id=ncr_id
+            )
+            latest = connection.execute(
+                select(func.max(tables.root_cause_analyses.c.version)).where(
+                    tables.root_cause_analyses.c.tenant_id == tenant_id,
+                    tables.root_cause_analyses.c.ncr_id == ncr_id,
+                )
+            ).scalar_one()
+            if ncr.status != "root_cause" or before.version != latest:
+                raise RootCauseTerminalError
+            validate_evidence_refs(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                refs=before.evidence_refs,
+                required=True,
+            )
             ComplaintService._validate_member(
                 connection,
                 tenant_id=tenant_id,

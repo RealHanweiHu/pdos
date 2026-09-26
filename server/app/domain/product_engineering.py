@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from contextlib import nullcontext
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from decimal import Decimal
 from uuid import UUID, uuid4
@@ -34,6 +35,11 @@ class SpecificationRecord:
     code: str
     title: str
     version: int
+    requirement_id: UUID | None
+    owner_user_id: UUID | None
+    verification_method: str | None
+    acceptance_criteria: str | None
+    criticality: str
     content: dict[str, object]
     created_at: datetime
     updated_at: datetime
@@ -45,6 +51,11 @@ class SpecificationDraft:
     title: str
     version: int
     content: dict[str, object]
+    requirement_id: UUID | None = None
+    owner_user_id: UUID | None = None
+    verification_method: str | None = None
+    acceptance_criteria: str | None = None
+    criticality: str = "standard"
 
 
 @dataclass(frozen=True)
@@ -148,6 +159,11 @@ def _specification_record(values: RowMapping) -> SpecificationRecord:
         code=values["code"],
         title=values["title"],
         version=values["version"],
+        requirement_id=values["requirement_id"],
+        owner_user_id=values["owner_user_id"],
+        verification_method=values["verification_method"],
+        acceptance_criteria=values["acceptance_criteria"],
+        criticality=values["criticality"],
         content=dict(values["content"]),
         created_at=values["created_at"],
         updated_at=values["updated_at"],
@@ -203,6 +219,11 @@ def _specification_snapshot(record: SpecificationRecord) -> dict[str, object]:
         "code": record.code,
         "title": record.title,
         "version": record.version,
+        "requirement_id": str(record.requirement_id) if record.requirement_id else None,
+        "owner_user_id": str(record.owner_user_id) if record.owner_user_id else None,
+        "acceptance_criteria": record.acceptance_criteria,
+        "criticality": record.criticality,
+        "verification_method": record.verification_method,
         "content": record.content,
     }
 
@@ -413,10 +434,16 @@ class ProductEngineeringService:
         actor_user_id: UUID,
         project_id: UUID,
         draft: SpecificationDraft,
+        connection: Connection | None = None,
+        audit_draft: AuditDraft | None = None,
     ) -> SpecificationRecord:
         specification_id = uuid4()
         occurred_at = datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection)
+            if connection is not None
+            else self._engine.begin() as connection
+        ):
             self._require_project(connection, tenant_id=tenant_id, project_id=project_id)
             connection.execute(
                 tables.specifications.insert(),
@@ -428,6 +455,11 @@ class ProductEngineeringService:
                     "code": draft.code,
                     "title": draft.title,
                     "version": draft.version,
+                    "requirement_id": draft.requirement_id,
+                    "owner_user_id": draft.owner_user_id,
+                    "verification_method": draft.verification_method,
+                    "acceptance_criteria": draft.acceptance_criteria,
+                    "criticality": draft.criticality,
                     "content": draft.content,
                     "created_at": occurred_at,
                     "updated_at": occurred_at,
@@ -459,8 +491,8 @@ class ProductEngineeringService:
                     payload={"specification_code": record.code, "version": record.version},
                     occurred_at=occurred_at,
                 ),
-                AuditDraft(
-                    action="specification.create",
+                replace(
+                    audit_draft or AuditDraft(action="specification.create"),
                     after_snapshot=_specification_snapshot(record),
                 ),
             )

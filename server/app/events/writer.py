@@ -32,6 +32,10 @@ NON_SENSITIVE_METRIC_KEYS = frozenset(
         "total_tokens",
         "used_tokens_today",
         "remaining_tokens_today",
+        # V2-9 debate budget accounting. Counts, not credentials — but the
+        # substring guard cannot tell those apart, so each one is listed.
+        "budget_tokens",
+        "spent_tokens",
     }
 )
 
@@ -101,6 +105,7 @@ def _validate_payload(definition: EventDefinition, payload: dict[str, Any]) -> N
         "boolean": lambda value: isinstance(value, bool),
         "object": lambda value: isinstance(value, Mapping),
         "array": lambda value: isinstance(value, list),
+        "null": lambda value: value is None,
     }
     for name, value in payload.items():
         property_type = properties[name]["type"]
@@ -177,4 +182,92 @@ class EventAuditWriter:
         audit_row_id = self._connection.execute(
             tables.audit_log.insert().values(**audit_values).returning(tables.audit_log.c.id)
         ).scalar_one()
+        if self._project_id is not None and (
+            event.event_type == "GATE_APPROVED"
+            or (
+                event.event_type == "NPI_RECORD_CHANGED"
+                and event.payload.get("record_type")
+                in {"build", "test_run", "certification", "tooling_round"}
+            )
+        ):
+            from app.domain.schedule_source_actuals import observe_audit
+
+            observed = observe_audit(
+                self._connection, self._tenant_id, self._project_id, audit_row_id
+            )
+            if (
+                not observed
+                and self._actor_user_id is not None
+                and event.payload.get("record_type") == "tooling_round"
+            ):
+                from app.domain.formal_schedule import current_plan
+                from app.domain.schedule_forecasts import automatic_forecast
+
+                if current_plan(self._connection, self._tenant_id, self._project_id):
+                    automatic_forecast(
+                        self._connection,
+                        self._tenant_id,
+                        self._project_id,
+                        self._actor_user_id,
+                        "工装齐套条件更新后的预测传播",
+                        datetime.now(UTC),
+                    )
+        if (
+            self._project_id is not None
+            and self._actor_user_id is not None
+            and audit.after_snapshot is not None
+            and event.event_type
+            in {
+                "ISSUE_STATUS_CHANGED",
+                "DECISION_RECORDED",
+                "NPI_RECORD_CHANGED",
+                "MEETING_STATE_CHANGED",
+                "ROOT_CAUSE_ANALYSIS_CHANGED",
+                "EFFECTIVENESS_REVIEWED",
+            }
+        ):
+            from app.domain.knowledge_learning import enqueue_learning
+
+            enqueue_learning(
+                self._connection,
+                tenant_id=self._tenant_id,
+                project_id=self._project_id,
+                actor_id=self._actor_user_id,
+                event_type=event.event_type,
+                entity_id=event.entity_id,
+                event_id=event.event_id,
+                audit_id=audit_row_id,
+                payload=event.payload,
+                snapshot=audit.after_snapshot,
+                occurred_at=occurred_at,
+            )
+        if self._project_id is not None:
+            from app.domain.fmea_candidates import TRIGGERS, observe
+
+            if event.event_type in TRIGGERS:
+                observe(
+                    self._connection,
+                    self._tenant_id,
+                    self._project_id,
+                    self._actor_user_id,
+                    event.event_type,
+                    event.entity_id,
+                    event_row_id,
+                )
+        if self._project_id is not None and self._actor_user_id is not None:
+            from app.domain.knowledge_reuse import TRIGGERS as REUSE_TRIGGERS
+            from app.domain.knowledge_reuse import observe as observe_reuse
+
+            if event.event_type in REUSE_TRIGGERS:
+                observe_reuse(
+                    self._connection,
+                    tenant=self._tenant_id,
+                    project=self._project_id,
+                    actor=self._actor_user_id,
+                    event_type=event.event_type,
+                    entity=event.entity_id,
+                    payload=event.payload,
+                    audit_id=audit_row_id,
+                    occurred_at=occurred_at,
+                )
         return WrittenEventAudit(event_row_id=event_row_id, audit_row_id=audit_row_id)

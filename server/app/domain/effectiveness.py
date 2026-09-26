@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -135,9 +136,12 @@ class EffectivenessService:
         project_id: UUID,
         ncr_id: UUID,
         draft: EffectivenessReviewDraft,
+        connection: Connection | None = None,
     ) -> EffectivenessReviewResult:
         review_id, reviewed_at = uuid4(), datetime.now(UTC)
-        with self._engine.begin() as connection:
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise NcrNotFoundError
             before = NonconformanceService._get(
@@ -169,7 +173,11 @@ class EffectivenessService:
                     tables.capa_actions.c.owner_user_id == actor_user_id,
                 )
             ).scalar_one()
-            if owns_action:
+            from app.domain.quality_responsibilities import historical_capa_owners
+
+            if owns_action or actor_user_id in historical_capa_owners(
+                connection, tenant_id, project_id, ncr_id
+            ):
                 raise EffectivenessFourEyesError
             validate_evidence_refs(
                 connection,

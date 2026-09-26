@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Any, Self
+from typing import Annotated, Any, Literal, Self
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -13,7 +13,22 @@ from sqlalchemy import Engine
 from app.api.auth import current_context, no_store
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
+from app.contracts.object_operations import ReviewFinalizeRequest
 from app.db.engine import get_engine
+from app.domain.case_requirements import (
+    CaseRequirementCommand,
+    CaseRequirementReadinessError,
+    CaseRequirementService,
+    _case,
+)
+from app.domain.case_reviews import (
+    CaseReviewNotReadyError,
+    CaseReviewService,
+    ReviewAction,
+    ReviewDraft,
+    ReviewPolicyDraft,
+    ReviewSignoff,
+)
 from app.domain.development_cases import (
     CaseCodeConflictError,
     CaseInvalidTransitionError,
@@ -30,6 +45,8 @@ from app.domain.development_cases import (
     RequirementNotApprovedError,
     RequirementNotFoundForConversionError,
 )
+from app.domain.product_workspace import ProductWorkAccessError, ProductWorkError
+from app.domain.review_materials import material_options
 
 router = APIRouter(tags=["development-cases"])
 
@@ -327,6 +344,10 @@ def transition_development_case(
         )
     except DevelopmentCaseNotFoundError as error:
         raise case_not_found(error) from error
+    except (CaseRequirementReadinessError, CaseReviewNotReadyError) as error:
+        raise HTTPException(
+            status_code=409, detail={"code": "CASE_REQUIREMENTS_NOT_READY", "message": str(error)}
+        ) from error
     except CaseInvalidTransitionError as error:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -342,3 +363,203 @@ def transition_development_case(
         ) from error
     no_store(response)
     return case_response(record)
+
+
+# Scoped, human-maintained requirement relations alongside the original primary source.
+
+
+def case_link_error(error: Exception) -> HTTPException:
+    return HTTPException(
+        status_code=403 if isinstance(error, ProductWorkAccessError) else 409,
+        detail={"code": "CASE_REQUIREMENT_LINK_CONFLICT", "message": str(error)},
+    )
+
+
+@router.get("/api/development-cases/{case_id}/requirement-links")
+def case_requirement_links(
+    case_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseRequirementService(engine).detail(context, case_id)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.post("/api/development-cases/{case_id}/requirement-links")
+def change_case_requirement_links(
+    case_id: UUID,
+    payload: CaseRequirementCommand,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseRequirementService(engine).change(context, case_id, payload)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.get("/api/development-cases/{case_id}/requirement-options")
+def case_requirement_options(
+    case_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    q: str = "",
+) -> dict[str, Any]:
+    no_store(response)
+    if len(q) > 120:
+        raise HTTPException(status_code=422, detail={"message": "查询内容最多120字"})
+    try:
+        return CaseRequirementService(engine).options(context, case_id, q)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.get("/api/development-cases/{case_id}/requirement-link-history")
+def case_requirement_history(
+    case_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseRequirementService(engine).history(context, case_id)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.get("/api/requirements/{requirement_id}/case-links")
+def requirement_case_links(
+    requirement_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseRequirementService(engine).backlinks(context, requirement_id)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.get("/api/development-cases/{case_id}/reviews")
+def case_reviews(
+    case_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    review_id: UUID | None = None,
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseReviewService(engine).list(context, case_id, review_id=review_id)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.post("/api/development-cases/{case_id}/review-policies")
+def case_review_policy(
+    case_id: UUID,
+    payload: ReviewPolicyDraft,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseReviewService(engine).policy(context, case_id, payload)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.post("/api/development-cases/{case_id}/reviews")
+def create_case_review(
+    case_id: UUID,
+    payload: ReviewDraft,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseReviewService(engine).create(context, case_id, payload)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.post("/api/development-cases/{case_id}/reviews/{review_id}/actions")
+def case_review_action(
+    case_id: UUID,
+    review_id: UUID,
+    payload: ReviewAction,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseReviewService(engine).act(context, case_id, review_id, payload)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.post("/api/development-cases/{case_id}/reviews/{review_id}/signoffs")
+def case_review_signoff(
+    case_id: UUID,
+    review_id: UUID,
+    payload: ReviewSignoff,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseReviewService(engine).act(context, case_id, review_id, payload)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.post("/api/development-cases/{case_id}/reviews/{review_id}/finalize")
+def finalize_case_review(
+    case_id: UUID,
+    review_id: UUID,
+    payload: ReviewFinalizeRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return CaseReviewService(engine).act(context, case_id, review_id, payload)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error
+
+
+@router.get("/api/development-cases/{case_id}/review-materials")
+def case_review_material_options(
+    case_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    kind: Literal["specification", "test_report", "certification"],
+    q: str = "",
+) -> dict[str, Any]:
+    no_store(response)
+    require_case_action(context, Action.DEVELOPMENT_CASE_VIEW)
+    if len(q) > 120:
+        raise HTTPException(status_code=422, detail={"message": "查询内容最多120字"})
+    try:
+        with engine.connect() as connection:
+            _case(connection, context, case_id)
+            return material_options(
+                connection, context.tenant.id, case_id, context.user.id, kind, q
+            )
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise case_link_error(error) from error

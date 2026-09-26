@@ -176,8 +176,55 @@ class ChangeGovernanceService:
                     )
                 ).mappings():
                     affected[relation["ecr_id"]].append(relation["bom_id"])
+            id_sources: dict[UUID, list[dict[str, Any]]] = {}
+            links = tables.id_design_change_decisions
+            for link in connection.execute(
+                select(links).where(
+                    links.c.tenant_id == tenant_id,
+                    links.c.project_id == project_id,
+                    links.c.action == "route_ecr",
+                )
+            ).mappings():
+                basis = link["snapshot"]
+                id_sources.setdefault(link["ecr_id"], []).append(
+                    {
+                        "candidate_id": str(link["candidate_id"]),
+                        "freeze_id": basis["freeze"]["id"],
+                        "frozen_version": basis["frozen_revision"]["version"],
+                        "feedback_version": basis["feedback_revision"]["version"],
+                        "feedback": basis["feedback"]["content"],
+                        "source_reference": basis["feedback"]["source_reference"],
+                        "routing_reason": link["reason"],
+                    }
+                )
             for row in ecrs:
+                from app.domain.product_workspace import digest
+
+                row["analysis_digest"] = digest(_normalize(row["impact_analysis"]))
                 row["affected_bom_ids"] = affected[row["id"]]
+                row["id_design_sources"] = id_sources.get(row["id"], [])
+                from app.domain.professional_change_routes import (
+                    impact_basis as professional_basis,
+                )
+                from app.domain.professional_change_routes import (
+                    source_summaries,
+                )
+
+                professional = professional_basis(connection, tenant_id, project_id, row["id"])
+                row["professional_sources"] = source_summaries(professional) if professional else []
+                row["professional_basis_digest"] = digest(professional) if professional else None
+                from app.domain.change_impact_scope import current_basis as scope_basis
+
+                scope = scope_basis(connection, tenant_id, project_id, row["id"])
+                row["impact_scope"] = scope
+                row["impact_scope_digest"] = digest(scope) if scope else None
+                if row["id_design_sources"]:
+                    from app.domain.id_change_impact import impact_basis
+                    from app.domain.product_workspace import digest
+
+                    basis = impact_basis(connection, tenant_id, project_id, row["id"])
+                    row["id_impact_basis"] = basis
+                    row["id_impact_basis_digest"] = digest(basis)
 
             def rows(table: Any) -> list[dict[str, Any]]:
                 return [
@@ -191,6 +238,10 @@ class ChangeGovernanceService:
 
             return {
                 "ecrs": ecrs,
+                "bom_choices": [
+                    {key: row[key] for key in ("id", "code", "name", "version")}
+                    for row in rows(tables.development_boms)
+                ],
                 "ecns": rows(tables.engineering_change_notices),
                 "handoffs": rows(tables.erp_handoffs),
             }
@@ -205,42 +256,66 @@ class ChangeGovernanceService:
         title: str,
         reason: str,
     ) -> dict[str, Any]:
-        now = datetime.now(UTC)
-        record_id = uuid4()
         with self._engine.begin() as connection:
-            self._project(connection, tenant_id=tenant_id, project_id=project_id, lock=True)
-            row = (
-                connection.execute(
-                    tables.engineering_change_requests.insert()
-                    .values(
-                        id=record_id,
-                        tenant_id=tenant_id,
-                        project_id=project_id,
-                        requested_by_user_id=actor_user_id,
-                        code=code,
-                        title=title,
-                        reason=reason,
-                        status="request",
-                        created_at=now,
-                        updated_at=now,
-                    )
-                    .returning(tables.engineering_change_requests)
-                )
-                .mappings()
-                .one()
-            )
-            self._record(
+            return self.create_ecr_in_transaction(
                 connection,
                 tenant_id=tenant_id,
                 project_id=project_id,
                 actor_user_id=actor_user_id,
-                record_id=record_id,
-                record_type="ecr",
-                action="created",
-                before=None,
-                after=_snapshot(row),
+                code=code,
+                title=title,
+                reason=reason,
             )
-            return dict(row)
+
+    def create_ecr_in_transaction(
+        self,
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        actor_user_id: UUID,
+        code: str,
+        title: str,
+        reason: str,
+        source_finding_id: UUID | None = None,
+        now: datetime | None = None,
+    ) -> dict[str, Any]:
+        now = now or datetime.now(UTC)
+        record_id = uuid4()
+        self._project(connection, tenant_id=tenant_id, project_id=project_id, lock=True)
+        row = (
+            connection.execute(
+                tables.engineering_change_requests.insert()
+                .values(
+                    id=record_id,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    requested_by_user_id=actor_user_id,
+                    code=code,
+                    title=title,
+                    reason=reason,
+                    source_finding_id=source_finding_id,
+                    status="request",
+                    created_at=now,
+                    updated_at=now,
+                )
+                .returning(tables.engineering_change_requests)
+            )
+            .mappings()
+            .one()
+        )
+        self._record(
+            connection,
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=actor_user_id,
+            record_id=record_id,
+            record_type="ecr",
+            action="created",
+            before=None,
+            after=_snapshot(row),
+        )
+        return dict(row)
 
     def start_impact(
         self, *, tenant_id: UUID, project_id: UUID, actor_user_id: UUID, ecr_id: UUID
@@ -322,6 +397,41 @@ class ChangeGovernanceService:
             )
             if before["status"] != "impact_analysis":
                 raise ChangeTransitionError
+            from app.domain.id_change_impact import freeze_analysis
+
+            impact_analysis = freeze_analysis(
+                connection, tenant_id, project_id, ecr_id, impact_analysis
+            )
+            from app.domain.professional_change_routes import freeze_analysis as freeze_professional
+
+            impact_analysis = freeze_professional(
+                connection, tenant_id, project_id, ecr_id, impact_analysis
+            )
+
+            from app.domain.supplier_notice_impact import freeze as freeze_notices
+
+            impact_analysis = freeze_notices(
+                connection,
+                tenant_id,
+                project_id,
+                ecr_id,
+                actor_user_id,
+                impact_analysis,
+                affected_bom_ids,
+            )
+
+            from app.domain.change_impact_scope import freeze_analysis as freeze_scope
+
+            impact_analysis = freeze_scope(
+                connection, tenant_id, project_id, ecr_id, impact_analysis, affected_bom_ids
+            )
+
+            from app.domain.change_quiet_periods import freeze as freeze_quiet
+
+            impact_analysis = freeze_quiet(
+                connection, tenant_id, project_id, impact_analysis, ecr_id=ecr_id
+            )
+
             found = (
                 set(
                     connection.execute(
@@ -337,7 +447,27 @@ class ChangeGovernanceService:
             )
             if found != set(affected_bom_ids):
                 raise ChangeScopeError
-            if affected_bom_ids:
+            existing_boms = set(
+                connection.execute(
+                    select(tables.ecr_affected_boms.c.bom_id).where(
+                        tables.ecr_affected_boms.c.tenant_id == tenant_id,
+                        tables.ecr_affected_boms.c.project_id == project_id,
+                        tables.ecr_affected_boms.c.ecr_id == ecr_id,
+                    )
+                ).scalars()
+            )
+            removed = existing_boms - set(affected_bom_ids)
+            if removed:
+                connection.execute(
+                    tables.ecr_affected_boms.delete().where(
+                        tables.ecr_affected_boms.c.tenant_id == tenant_id,
+                        tables.ecr_affected_boms.c.project_id == project_id,
+                        tables.ecr_affected_boms.c.ecr_id == ecr_id,
+                        tables.ecr_affected_boms.c.bom_id.in_(removed),
+                    )
+                )
+            added = set(affected_bom_ids) - existing_boms
+            if added:
                 connection.execute(
                     tables.ecr_affected_boms.insert(),
                     [
@@ -347,7 +477,7 @@ class ChangeGovernanceService:
                             "ecr_id": ecr_id,
                             "bom_id": bom_id,
                         }
-                        for bom_id in affected_bom_ids
+                        for bom_id in added
                     ],
                 )
             row = self._changed_row(
@@ -379,6 +509,61 @@ class ChangeGovernanceService:
             )
             return dict(row)
 
+    def refresh_impact(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        actor_user_id: UUID,
+        ecr_id: UUID,
+        expected_digest: str,
+        reason: str,
+    ) -> dict[str, Any]:
+        from app.domain.product_workspace import ProductWorkError, digest
+
+        with self._engine.begin() as connection:
+            self._project(connection, tenant_id=tenant_id, project_id=project_id, lock=True)
+            before = self._row(
+                connection,
+                tables.engineering_change_requests,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                record_id=ecr_id,
+                lock=True,
+            )
+            if (
+                before["status"] != "approval"
+                or digest(_normalize(before["impact_analysis"])) != expected_digest
+            ):
+                raise ProductWorkError("待批准分析已变化，请刷新后重新办理")
+            if not reason.strip():
+                raise ProductWorkError("请说明重新分析的原因")
+            row = self._changed_row(
+                connection,
+                tables.engineering_change_requests,
+                tenant_id=tenant_id,
+                record_id=ecr_id,
+                values={
+                    "status": "impact_analysis",
+                    "impact_analysis": before["impact_analysis"],
+                    "analyzed_by_user_id": None,
+                    "analyzed_at": None,
+                    "updated_at": datetime.now(UTC),
+                },
+            )
+            self._record(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                actor_user_id=actor_user_id,
+                record_id=ecr_id,
+                record_type="ecr",
+                action="impact_reopened",
+                before=_snapshot(before),
+                after={**_snapshot(row), "reason": reason},
+            )
+            return dict(row)
+
     def decide_ecr(
         self,
         *,
@@ -402,8 +587,44 @@ class ChangeGovernanceService:
             )
             if before["status"] != "approval":
                 raise ChangeTransitionError
-            if before["requested_by_user_id"] == actor_user_id:
+            if actor_user_id in (before["requested_by_user_id"], before["analyzed_by_user_id"]):
                 raise ChangeFourEyesError
+            if outcome == "approved":
+                from app.domain.id_change_impact import require_current_impact
+
+                require_current_impact(
+                    connection, tenant_id, project_id, ecr_id, before["impact_analysis"]
+                )
+                from app.domain.professional_change_routes import (
+                    require_current_impact as require_professional,
+                )
+
+                require_professional(
+                    connection, tenant_id, project_id, ecr_id, before["impact_analysis"]
+                )
+
+            if outcome == "approved":
+                from app.domain.change_impact_scope import require_current as require_scope
+
+                require_scope(connection, tenant_id, project_id, ecr_id, before["impact_analysis"])
+
+            if outcome == "approved":
+                from app.domain.supplier_notice_impact import require_current as require_notices
+
+                require_notices(
+                    connection,
+                    tenant_id,
+                    project_id,
+                    ecr_id,
+                    actor_user_id,
+                    before["impact_analysis"],
+                )
+
+            if outcome == "approved":
+                from app.domain.change_quiet_periods import require_approval
+
+                require_approval(connection, tenant_id, project_id, ecr_id)
+
             decision_id = uuid4()
             connection.execute(
                 tables.decisions.insert(),

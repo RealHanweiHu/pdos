@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 import boto3  # type: ignore[import-untyped]
 from botocore.config import Config  # type: ignore[import-untyped]
@@ -15,6 +15,11 @@ class DocumentObjectStore(Protocol):
     def put(self, *, object_key: str, content: bytes, media_type: str, sha256: str) -> None: ...
 
     def delete(self, *, object_key: str) -> None: ...
+
+
+@runtime_checkable
+class ReadableDocumentObjectStore(DocumentObjectStore, Protocol):
+    def get(self, *, object_key: str, max_bytes: int) -> bytes: ...
 
 
 class S3DocumentObjectStore:
@@ -40,6 +45,21 @@ class S3DocumentObjectStore:
             ContentType=media_type,
             Metadata={"sha256": sha256},
         )
+
+    def get(self, *, object_key: str, max_bytes: int) -> bytes:
+        if not 1 <= max_bytes <= 20 * 1024 * 1024:
+            raise ValueError("invalid staged upload read bound")
+        response = self._client.get_object(Bucket=self._bucket, Key=object_key)
+        body = response["Body"]
+        try:
+            if int(response.get("ContentLength", 0)) > max_bytes:
+                raise ValueError("staged upload exceeds read bound")
+            content = body.read(max_bytes + 1)
+            if len(content) > max_bytes:
+                raise ValueError("staged upload exceeds read bound")
+            return bytes(content)
+        finally:
+            body.close()
 
     def delete(self, *, object_key: str) -> None:
         self._client.delete_object(Bucket=self._bucket, Key=object_key)

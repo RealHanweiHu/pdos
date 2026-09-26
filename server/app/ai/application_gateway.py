@@ -12,14 +12,18 @@ import httpx2
 from pydantic import BaseModel
 from sqlalchemy import Engine
 
+from app.ai.application_leases import ApplicationLeaseKeeper
+from app.ai.budget_adoption import ApplicationBudgetConfiguration
+from app.ai.budget_ledger import ExistingRunBudgetLedger
+from app.ai.egress import ProviderEgressPolicy
 from app.ai.gateway import (
     GatewayInvocation,
     GatewayResult,
-    ProviderRateCard,
     StructuredModelGateway,
 )
 from app.ai.golden_suite import load_golden_suite
-from app.ai.model_catalog import ModelCatalog, ProviderName
+from app.ai.model_budget import ModelBudgetController
+from app.ai.model_catalog import ModelCatalog
 from app.ai.provider_adapters import configured_provider_adapters
 from app.ai.qualifications import load_golden_qualifications
 from app.domain.model_governance import ModelGovernanceService
@@ -43,8 +47,12 @@ class ApplicationModelGateway(Protocol):
 def configured_application_gateway(
     engine: Engine,
     environment: Mapping[str, str] | None = None,
+    *,
+    request_timeout_seconds: float = 30.0,
+    max_structured_attempts: int = 2,
 ) -> Iterator[StructuredModelGateway]:
     values = os.environ if environment is None else environment
+    budget_configuration = ApplicationBudgetConfiguration.from_environment(values)
     catalog = ModelCatalog.from_environment(values)
     trusted_suite = load_golden_suite(DEFAULT_GOLDEN_SUITE_PATH)
     qualification_path = Path(
@@ -63,12 +71,33 @@ def configured_application_gateway(
         qualifications=qualifications,
         default_daily_token_budget=int(values.get("PDOS_AI_DAILY_TOKEN_BUDGET", "2000000")),
     )
-    with httpx2.Client(follow_redirects=False, trust_env=False) as client:
+    with (
+        httpx2.Client(follow_redirects=False, trust_env=False) as client,
+        ApplicationLeaseKeeper(engine) as lease_keeper,
+    ):
+        budget_controller = (
+            ModelBudgetController.from_publication(
+                ExistingRunBudgetLedger(engine),
+                profile=budget_configuration.profile,
+                path=budget_configuration.meter_path,
+                expected_sha256=budget_configuration.meter_sha256,
+                qualifications=qualifications,
+                client=client,
+                egress_policy=ProviderEgressPolicy.from_catalog(catalog),
+            )
+            if budget_configuration is not None
+            else None
+        )
         yield StructuredModelGateway(
             engine,
             catalog=catalog,
             qualifications=qualifications,
             governance=governance,
-            adapters=configured_provider_adapters(catalog, client),
-            rate_cards={provider: ProviderRateCard(0, 0) for provider in ProviderName},
+            adapters=configured_provider_adapters(
+                catalog, client, request_timeout_seconds=request_timeout_seconds
+            ),
+            max_structured_attempts=max_structured_attempts,
+            rate_cards={},
+            budget_controller=budget_controller,
+            application_lease_keeper=lease_keeper,
         )

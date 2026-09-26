@@ -12,6 +12,7 @@ from sqlalchemy.engine import RowMapping
 from sqlalchemy.exc import IntegrityError
 
 from app.db.schema import tables
+from app.domain.case_requirements import require_case_requirements_ready
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 
@@ -462,6 +463,21 @@ class DevelopmentCaseService:
                 raise DevelopmentCaseNotFoundError
             if to_status not in CASE_TRANSITIONS[locked_status]:
                 raise CaseInvalidTransitionError
+            if to_status == "approved":
+                case_row = (
+                    connection.execute(
+                        select(tables.development_cases).where(
+                            tables.development_cases.c.tenant_id == tenant_id,
+                            tables.development_cases.c.id == case_id,
+                        )
+                    )
+                    .mappings()
+                    .one()
+                )
+                from app.domain.case_reviews import require_case_reviews_ready
+
+                require_case_reviews_ready(connection, tenant_id, case_row)
+                require_case_requirements_ready(connection, tenant_id, case_row)
             if to_status == "converted":
                 project_id = connection.execute(
                     select(tables.projects.c.id).where(

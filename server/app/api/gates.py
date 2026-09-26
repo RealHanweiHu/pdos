@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated, Literal
+from datetime import date, datetime
+from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import Engine
 
@@ -15,8 +15,12 @@ from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.engine import get_engine
+from app.domain.gate_assignments import GateAssignmentError, GateAssignmentRequest
 from app.domain.gates import (
     GateAdditionRecord,
+    GateBasisChangedError,
+    GateCondition,
+    GateConditionsRequiredError,
     GateConflictError,
     GateGrandfatherNotAllowedError,
     GateGrandfatherPermissionError,
@@ -28,6 +32,7 @@ from app.domain.gates import (
     GateRecord,
     GateRequirementPromotionError,
     GateRoundNotOpenError,
+    GateRouteBlockedError,
     GateService,
     GateSigningDeniedError,
 )
@@ -73,6 +78,8 @@ class GateRoundResponse(BaseModel):
     supersede_reason: str | None
     completed_at: datetime | None
     signoffs: list[GateSignoffResponse]
+    routing_snapshot: dict[str, object] = Field(default_factory=dict)
+    routing_blockers: dict[str, list[str]] = Field(default_factory=dict)
 
 
 class GateReadinessResponse(BaseModel):
@@ -82,6 +89,7 @@ class GateReadinessResponse(BaseModel):
     blocker_keys: list[str]
     blockers: list[dict[str, str]]
     evaluated_at: datetime
+    material_digest: str | None = None
 
 
 class GateAdditionResponse(BaseModel):
@@ -116,6 +124,7 @@ class GateResponse(BaseModel):
     name: str
     status: str
     review_due_at: datetime | None
+    signing_basis: str
     decided_at: datetime | None
     decided_by_user_id: UUID | None
     is_current: bool
@@ -123,6 +132,7 @@ class GateResponse(BaseModel):
     readiness: GateReadinessResponse
     additions: list[GateAdditionResponse]
     grandfather_exemptions: list[GateGrandfatherResponse]
+    named_signer_policy: dict[str, Any] = Field(default_factory=dict)
 
 
 class GateListResponse(BaseModel):
@@ -135,6 +145,7 @@ class GateSignRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     status: Literal["approved", "conditional", "rejected"]
+    expected_basis: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     note: str | None = Field(default=None, max_length=20_000)
 
     @field_validator("note", mode="before")
@@ -159,11 +170,26 @@ class GateRequirementRequest(BaseModel):
         return value.strip() if isinstance(value, str) else value
 
 
+class GateConditionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(min_length=1, max_length=512)
+    owner_user_id: UUID
+    due_date: date
+    closure_evidence: str = Field(min_length=1, max_length=2_000)
+
+    @field_validator("title", "closure_evidence", mode="before")
+    @classmethod
+    def normalize(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
+
+
 class GateDecisionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    status: Literal["approved", "rejected"]
+    status: Literal["approved", "conditional", "hold", "rejected"]
     rationale: str = Field(min_length=1, max_length=20_000)
+    conditions: list[GateConditionRequest] = Field(default_factory=list, max_length=20)
 
     @field_validator("rationale", mode="before")
     @classmethod
@@ -197,10 +223,53 @@ def grandfather_response(record: GateGrandfatherRecord) -> GateGrandfatherRespon
 
 
 def gate_error(error: Exception) -> HTTPException:
+    if isinstance(error, GateAssignmentError):
+        return HTTPException(
+            409, detail={"code": "GATE_ASSIGNMENT_CONFLICT", "message": str(error)}
+        )
+    from app.domain.schedule_execution import ScheduleExecutionBlocked
+
+    if isinstance(error, ScheduleExecutionBlocked):
+        return HTTPException(
+            status_code=409,
+            detail={
+                "code": "SCHEDULE_EXECUTION_BLOCKED",
+                "message": str(error),
+                "blockers": error.blockers,
+            },
+        )
+    if isinstance(error, GateConditionsRequiredError):
+        return HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail={
+                "code": "GATE_CONDITIONS_REQUIRED",
+                "message": (
+                    "A conditional pass must name its conditions, and only a "
+                    "conditional pass may carry them"
+                ),
+            },
+        )
     if isinstance(error, GateNotFoundError):
         return HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "GATE_NOT_FOUND", "message": "Gate was not found"},
+        )
+    if isinstance(error, GateBasisChangedError):
+        return HTTPException(
+            status_code=409,
+            detail={
+                "code": "GATE_BASIS_CHANGED",
+                "message": "签核轮次、意见或前置状态已变化，请刷新后核对",
+            },
+        )
+    if isinstance(error, GateRouteBlockedError):
+        return HTTPException(
+            status_code=409,
+            detail={
+                "code": "GATE_ROUTE_BLOCKED",
+                "message": "前置签核尚未完成，请先办理前置专业签核",
+                "slots": error.slots,
+            },
         )
     if isinstance(error, GateSigningDeniedError):
         return HTTPException(
@@ -294,6 +363,7 @@ def open_round(
     response: Response,
     context: Annotated[AuthContext, Depends(current_context)],
     engine: Annotated[Engine, Depends(get_engine)],
+    body: GateAssignmentRequest | None = None,
 ) -> GateResponse:
     no_store(response)
     authorize_project(
@@ -306,6 +376,7 @@ def open_round(
                 project_id=project_id,
                 gate_id=gate_id,
                 actor_user_id=context.user.id,
+                assignment=body,
             )
         )
     except Exception as error:
@@ -342,6 +413,7 @@ def sign_round(
                 slot=slot,
                 status=body.status,
                 note=body.note,
+                expected_basis=body.expected_basis,
             )
         )
     except Exception as error:
@@ -403,6 +475,15 @@ def decide_gate(
                 actor_user_id=context.user.id,
                 status=body.status,
                 rationale=body.rationale,
+                conditions=tuple(
+                    GateCondition(
+                        title=item.title,
+                        owner_user_id=item.owner_user_id,
+                        due_date=item.due_date,
+                        closure_evidence=item.closure_evidence,
+                    )
+                    for item in body.conditions
+                ),
             )
         )
     except Exception as error:
@@ -439,5 +520,75 @@ def create_grandfather_exemption(
                 reason=body.reason,
             )
         )
+    except Exception as error:
+        raise gate_error(error) from error
+
+
+@router.get("/{gate_id}/assignment-options")
+def assignment_options(
+    project_id: UUID,
+    gate_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.domain.gate_assignments import options
+
+    no_store(response)
+    authorize_project(
+        engine=engine, context=context, project_id=project_id, action=Action.GATE_MANAGE
+    )
+    try:
+        with engine.connect() as connection:
+            return options(connection, context.tenant.id, project_id, gate_id)
+    except Exception as error:
+        raise gate_error(error) from error
+
+
+@router.get("/{gate_id}/rounds")
+def round_history(
+    project_id: UUID,
+    gate_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before: Annotated[int | None, Query(ge=1)] = None,
+    round_id: UUID | None = None,
+) -> dict[str, Any]:
+    from app.domain.gate_assignments import history
+
+    if before is not None and round_id is not None:
+        raise HTTPException(
+            422,
+            detail={"code": "INVALID_GATE_HISTORY", "message": "指定原轮次与历史翻页不能同时使用"},
+        )
+    no_store(response)
+    authorize_project(
+        engine=engine, context=context, project_id=project_id, action=Action.GATE_VIEW
+    )
+    try:
+        with engine.connect() as connection:
+            return history(connection, context.tenant.id, project_id, gate_id, before, round_id)
+    except Exception as error:
+        raise gate_error(error) from error
+
+
+@router.get("/{gate_id}/conditions")
+def condition_history(
+    project_id: UUID,
+    gate_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before: Annotated[int | None, Query(ge=1)] = None,
+) -> dict[str, Any]:
+    from app.domain.gate_conditions import history
+
+    no_store(response)
+    for action in (Action.GATE_VIEW, Action.WORK_ITEM_VIEW):
+        authorize_project(engine=engine, context=context, project_id=project_id, action=action)
+    try:
+        with engine.connect().execution_options(isolation_level="REPEATABLE READ") as c, c.begin():
+            return history(c, context.tenant.id, project_id, gate_id, before)
     except Exception as error:
         raise gate_error(error) from error

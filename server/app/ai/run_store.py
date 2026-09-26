@@ -7,11 +7,13 @@ from contextlib import AbstractContextManager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Literal, Protocol
+from typing import Any, Literal, Protocol, cast
 from uuid import UUID
 
 from sqlalchemy import Connection, Engine, RowMapping, select, text, update
+from sqlalchemy.exc import DBAPIError
 
+from app.ai.lease_heartbeat import AgentLeaseLostError, LeaseHeartbeat
 from app.ai.runtime_contract import FrozenRunContext
 from app.db.schema import tables
 
@@ -72,7 +74,17 @@ class OwnerAgentRunStore:
             run = (
                 connection.execute(
                     select(tables.agent_runs)
-                    .where(tables.agent_runs.c.status == "queued")
+                    .where(
+                        tables.agent_runs.c.status == "queued",
+                        tables.agent_runs.c.request_id.is_(None),
+                        tables.agent_runs.c.subscription_id.is_not(None),
+                        ~select(tables.event_run_pauses.c.id)
+                        .where(
+                            tables.event_run_pauses.c.run_id == tables.agent_runs.c.id,
+                            tables.event_run_pauses.c.resolved_at.is_(None),
+                        )
+                        .exists(),
+                    )
                     .order_by(tables.agent_runs.c.created_at, tables.agent_runs.c.id)
                     .limit(1)
                     .with_for_update(skip_locked=True)
@@ -223,6 +235,9 @@ class RestrictedAgentRunStore:
 
     def __init__(self, engine: Engine) -> None:
         self._engine = engine
+        self._heartbeat: ContextVar[LeaseHeartbeat | None] = ContextVar(
+            "pdos_agent_lease_heartbeat", default=None
+        )
         self._active_claim: ContextVar[ClaimedAgentRun | None] = ContextVar(
             "pdos_agent_run_claim",
             default=None,
@@ -249,20 +264,66 @@ class RestrictedAgentRunStore:
         claim = self._active_claim.get()
         if claim is None or claim.lease_token is None:
             raise RuntimeError("restricted Agent database access has no active run lease")
-        connection.execute(
-            text("SELECT cehub_ai.bind_agent_scope(:run_id, :lease_token)"),
-            {"run_id": claim.id, "lease_token": claim.lease_token},
-        )
+        heartbeat = self._heartbeat.get()
+        if heartbeat is not None:
+            heartbeat.require_current()
+        try:
+            connection.execute(
+                text("SELECT cehub_ai.bind_agent_scope(:run_id, :lease_token)"),
+                {"run_id": claim.id, "lease_token": claim.lease_token},
+            )
+        except DBAPIError as error:
+            self._raise_if_lease_lost(error)
+            raise
 
     @contextmanager
     def scope(self, claim: ClaimedAgentRun) -> Iterator[None]:
         if claim.lease_token is None:
             raise RuntimeError("restricted Agent run has no lease token")
         token = self._active_claim.set(claim)
+        heartbeat = LeaseHeartbeat(lambda: self.renew(claim))
+        heartbeat_token = self._heartbeat.set(heartbeat)
+        heartbeat.start()
         try:
             yield
         finally:
+            heartbeat.close()
+            self._heartbeat.reset(heartbeat_token)
             self._active_claim.reset(token)
+
+    @staticmethod
+    def _raise_if_lease_lost(error: DBAPIError) -> None:
+        message = getattr(getattr(error.orig, "diag", None), "message_primary", "")
+        if getattr(error.orig, "sqlstate", None) == "42501" and "lease" in message.lower():
+            raise AgentLeaseLostError("AGENT_RUN_LEASE_LOST") from error
+
+    def renew(self, claim: ClaimedAgentRun) -> datetime:
+        if claim.lease_token is None:
+            raise AgentLeaseLostError("AGENT_RUN_LEASE_LOST")
+        try:
+            with self._engine.begin() as connection:
+                connection.execute(text("SET LOCAL lock_timeout = '5s'"))
+                connection.execute(text("SET LOCAL statement_timeout = '5s'"))
+                return cast(
+                    datetime,
+                    connection.execute(
+                        text("SELECT cehub_ai.renew_agent_run_lease(:run, :token)"),
+                        {"run": claim.id, "token": claim.lease_token},
+                    ).scalar_one(),
+                )
+        except DBAPIError as error:
+            self._raise_if_lease_lost(error)
+            raise
+
+    @contextmanager
+    def _lease_connection(self) -> Iterator[Connection]:
+        try:
+            with self._engine.begin() as connection:
+                self.bind(connection)
+                yield connection
+        except DBAPIError as error:
+            self._raise_if_lease_lost(error)
+            raise
 
     def persist_context(
         self,
@@ -271,8 +332,7 @@ class RestrictedAgentRunStore:
         context: FrozenRunContext,
         persisted_at: datetime,
     ) -> None:
-        with self._engine.begin() as connection:
-            self.bind(connection)
+        with self._lease_connection() as connection:
             connection.execute(
                 text(
                     "SELECT cehub_ai.persist_agent_run_context("
@@ -294,8 +354,7 @@ class RestrictedAgentRunStore:
         error_code: str | None,
         completed_at: datetime,
     ) -> None:
-        with self._engine.begin() as connection:
-            self.bind(connection)
+        with self._lease_connection() as connection:
             connection.execute(
                 text(
                     "SELECT cehub_ai.complete_agent_run("
@@ -317,8 +376,7 @@ class RestrictedAgentRunStore:
         error_code: str,
         completed_at: datetime,
     ) -> None:
-        with self._engine.begin() as connection:
-            self.bind(connection)
+        with self._lease_connection() as connection:
             connection.execute(
                 text(
                     "SELECT cehub_ai.fail_agent_run(:run_id, :lease_token, :error_code, :failed_at)"

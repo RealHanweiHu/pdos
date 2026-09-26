@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Literal
@@ -106,6 +107,50 @@ class DingTalkIntentService:
                     ),
                 },
             )
+
+    def enqueue_reminder_dm(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        actor_user_id: UUID | None,
+        recipient_user_id: UUID,
+        reminder_id: UUID,
+        title: str,
+        connection: Connection | None = None,
+    ) -> OutboxRecord:
+        # Dispatch shares its locked transaction; standalone callers retain an
+        # owned transaction. Never borrow a second connection while holding the
+        # tenant dispatch lock, which can starve a saturated connection pool.
+        transaction = self._engine.begin() if connection is None else nullcontext(connection)
+        with transaction as active_connection:
+            staff_id = active_connection.execute(
+                select(tables.dingtalk_user_bindings.c.staff_id).where(
+                    tables.dingtalk_user_bindings.c.tenant_id == tenant_id,
+                    tables.dingtalk_user_bindings.c.user_id == recipient_user_id,
+                    tables.dingtalk_user_bindings.c.status == "active",
+                )
+            ).scalar_one_or_none()
+            if staff_id is None:
+                raise DingTalkIntentError("DINGTALK_USER_NOT_BOUND")
+            return self._insert_outbox(
+                active_connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                actor_user_id=actor_user_id,
+                operation="reminder_dm",
+                idempotency_key=f"reminder:{reminder_id}",
+                payload={
+                    "staff_id": staff_id,
+                    "recipient_user_id": str(recipient_user_id),
+                    "title": "PDOS 提醒",
+                    "text": self._text_with_my_work_link(text=title),
+                },
+            )
+
+    def _text_with_my_work_link(self, *, text: str) -> str:
+        base_url = self._validated_public_base_url()
+        return f"{text}\n\n[打开我的工作]({base_url}/my-work)"
 
     def list_outbox(
         self,
@@ -358,7 +403,7 @@ class DingTalkIntentService:
         *,
         tenant_id: UUID,
         project_id: UUID | None,
-        actor_user_id: UUID,
+        actor_user_id: UUID | None,
         outbox_id: UUID,
         action: str,
         before_status: str,
@@ -569,7 +614,7 @@ class DingTalkIntentService:
         *,
         tenant_id: UUID,
         project_id: UUID,
-        actor_user_id: UUID,
+        actor_user_id: UUID | None,
         operation: str,
         idempotency_key: str,
         payload: dict[str, str],
@@ -623,7 +668,7 @@ class DingTalkIntentService:
         )
         return _outbox_record(row)
 
-    def _group_text_with_project_link(self, *, project_id: UUID, text: str) -> str:
+    def _validated_public_base_url(self) -> str:
         base_url = self._settings.public_base_url.rstrip("/")
         parsed = urlparse(base_url)
         local_http = parsed.scheme == "http" and parsed.hostname in {"localhost", "127.0.0.1"}
@@ -637,6 +682,10 @@ class DingTalkIntentService:
             or parsed.fragment
         ):
             raise DingTalkIntentError("DINGTALK_PUBLIC_BASE_URL_INVALID")
+        return base_url
+
+    def _group_text_with_project_link(self, *, project_id: UUID, text: str) -> str:
+        base_url = self._validated_public_base_url()
         return f"{text}\n\n[Open PDOS]({base_url}/projects/{project_id})"
 
     @staticmethod
@@ -841,7 +890,7 @@ class DingTalkOutboxProcessor:
         if not self._settings.dingtalk_delivery_enabled:
             return None
         with self._engine.begin() as connection:
-            row = (
+            rows = (
                 connection.execute(
                     select(tables.integration_outbox)
                     .where(
@@ -858,27 +907,58 @@ class DingTalkOutboxProcessor:
                         tables.integration_outbox.c.created_at, tables.integration_outbox.c.id
                     )
                     .with_for_update(skip_locked=True)
-                    .limit(1)
+                    .limit(50)
                 )
                 .mappings()
-                .one_or_none()
+                .all()
             )
-            if row is None:
-                return None
-            connection.execute(
-                update(tables.integration_outbox)
-                .where(tables.integration_outbox.c.id == row["id"])
-                .values(
-                    status="sending",
-                    attempt_count=tables.integration_outbox.c.attempt_count + 1,
-                    lease_owner=self._worker_id,
-                    lease_expires_at=now + timedelta(minutes=2),
-                    updated_at=now,
+            for row in rows:
+                if row["operation"] in ("reminder_dm", "meeting_invite_dm"):
+                    from app.domain.reminder_preferences import reserve_delivery
+
+                    try:
+                        recipient = UUID(str(row["payload"].get("recipient_user_id")))
+                    except (ValueError, TypeError):
+                        connection.execute(
+                            update(tables.integration_outbox)
+                            .where(tables.integration_outbox.c.id == row["id"])
+                            .values(
+                                status="manual",
+                                last_error_code="REMINDER_RECIPIENT_INVALID",
+                                last_error_message="Reminder recipient requires correction",
+                                updated_at=now,
+                            )
+                        )
+                        continue
+                    reason = reserve_delivery(
+                        connection, row["tenant_id"], recipient, row["id"], self._settings, now
+                    )
+                    if reason:
+                        connection.execute(
+                            update(tables.integration_outbox)
+                            .where(tables.integration_outbox.c.id == row["id"])
+                            .values(
+                                next_attempt_at=now + timedelta(minutes=5),
+                                last_error_code=reason,
+                                last_error_message=reason,
+                            )
+                        )
+                        continue
+                connection.execute(
+                    update(tables.integration_outbox)
+                    .where(tables.integration_outbox.c.id == row["id"])
+                    .values(
+                        status="sending",
+                        attempt_count=tables.integration_outbox.c.attempt_count + 1,
+                        lease_owner=self._worker_id,
+                        lease_expires_at=now + timedelta(minutes=2),
+                        updated_at=now,
+                    )
                 )
-            )
-        claimed = dict(row)
-        claimed["attempt_count"] += 1
-        return claimed  # type: ignore[return-value]
+                claimed = dict(row)
+                claimed["attempt_count"] += 1
+                return claimed  # type: ignore[return-value]
+        return None
 
     def _quarantine_expired_leases(self, *, now: datetime) -> None:
         if not self._settings.dingtalk_delivery_enabled:
@@ -984,6 +1064,20 @@ class DingTalkOutboxProcessor:
                     token=token,
                     robot_code=binding["robot_code"],
                     open_conversation_id=channel["open_conversation_id"],
+                    title=payload["title"],
+                    text=payload["text"],
+                ).remote_reference
+            if operation in ("reminder_dm", "meeting_invite_dm"):
+                if operation == "meeting_invite_dm":
+                    from app.domain.meeting_notifications import validate_delivery
+
+                    validate_delivery(connection, row, self._settings)
+                if not binding["robot_code"]:
+                    raise DingTalkDeliveryError("DINGTALK_GROUP_NOT_CONFIGURED")
+                return self._client.send_oto_markdown(
+                    token=token,
+                    robot_code=binding["robot_code"],
+                    staff_id=payload["staff_id"],
                     title=payload["title"],
                     text=payload["text"],
                 ).remote_reference

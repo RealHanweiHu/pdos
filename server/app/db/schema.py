@@ -17,6 +17,7 @@ from sqlalchemy import (
     Identity,
     Index,
     Integer,
+    LargeBinary,
     MetaData,
     Numeric,
     SmallInteger,
@@ -25,9 +26,11 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     Uuid,
+    create_mock_engine,
     text,
 )
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from sqlalchemy.sql.elements import conv
 
 from app.db.namespaces import (
     AI_SCHEMA,
@@ -35,6 +38,7 @@ from app.db.namespaces import (
     CORE_SCHEMA,
     COST_SCHEMA,
     EVENT_SCHEMA,
+    EVIDENCE_SCHEMA,
     MEMORY_SCHEMA,
     PRODUCT_SCHEMA,
     PROJECT_SCHEMA,
@@ -97,6 +101,8 @@ users = Table(
     Column("auth_version", Integer, nullable=False, server_default=text("1")),
     Column("is_active", Boolean, nullable=False, server_default=text("true")),
     Column("last_signed_in_at", DateTime(timezone=True)),
+    Column("department_id", Uuid),
+    Column("manager_user_id", Uuid),
     Column(
         "created_at",
         DateTime(timezone=True),
@@ -115,10 +121,130 @@ users = Table(
         name="role_allowed",
     ),
     CheckConstraint("auth_version >= 1", name="auth_version_positive"),
+    CheckConstraint(
+        "manager_user_id IS NULL OR manager_user_id <> id",
+        name="manager_not_self",
+    ),
     UniqueConstraint("tenant_id", "id", name="uq_users_tenant_id_id"),
     UniqueConstraint("tenant_id", "username", name="uq_users_tenant_username"),
     UniqueConstraint("tenant_id", "email", name="uq_users_tenant_email"),
     Index("ix_users_tenant_active", "tenant_id", "is_active"),
+    ForeignKeyConstraint(
+        ["tenant_id", "department_id"],
+        [f"{CORE_SCHEMA}.departments.tenant_id", f"{CORE_SCHEMA}.departments.id"],
+        name="fk_users_tenant_department",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "manager_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_users_tenant_manager",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    schema=CORE_SCHEMA,
+)
+
+departments = Table(
+    "departments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("name", String(128), nullable=False),
+    Column("parent_department_id", Uuid),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
+    CheckConstraint(
+        "parent_department_id IS NULL OR parent_department_id <> id",
+        name="parent_not_self",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_departments_tenant_id_id"),
+    UniqueConstraint("tenant_id", "name", name="uq_departments_tenant_name"),
+    ForeignKeyConstraint(
+        ["tenant_id", "parent_department_id"],
+        [f"{CORE_SCHEMA}.departments.tenant_id", f"{CORE_SCHEMA}.departments.id"],
+        name="fk_departments_tenant_parent",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    schema=CORE_SCHEMA,
+)
+
+user_delegations = Table(
+    "user_delegations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("principal_user_id", Uuid, nullable=False),
+    Column("delegate_user_id", Uuid, nullable=False),
+    Column("starts_at", DateTime(timezone=True), nullable=False),
+    Column("ends_at", DateTime(timezone=True), nullable=False),
+    Column("reason", String(512), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("revoked_at", DateTime(timezone=True)),
+    Column("revoked_by_user_id", Uuid),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("ends_at > starts_at", name="window_ordered"),
+    CheckConstraint("principal_user_id <> delegate_user_id", name="distinct_parties"),
+    CheckConstraint("btrim(reason) <> ''", name="reason_nonblank"),
+    CheckConstraint(
+        "(revoked_at IS NULL AND revoked_by_user_id IS NULL) OR "
+        "(revoked_at IS NOT NULL AND revoked_by_user_id IS NOT NULL)",
+        name="revocation_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_user_delegations_tenant_id_id"),
+    Index("ix_user_delegations_tenant_delegate", "tenant_id", "delegate_user_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_user_delegations_tenant_principal",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "delegate_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_user_delegations_tenant_delegate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_user_delegations_tenant_created_by",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "revoked_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_user_delegations_tenant_revoked_by",
+        ondelete="RESTRICT",
+    ),
     schema=CORE_SCHEMA,
 )
 
@@ -209,6 +335,8 @@ requirements = Table(
     Column("title", String(512), nullable=False),
     Column("description", Text),
     Column("source", String(64)),
+    Column("tier", String(16), nullable=False, server_default=text("'customer'")),
+    Column("parent_requirement_id", Uuid),
     Column("status", String(32), nullable=False, server_default=text("'draft'")),
     Column("priority", String(16), nullable=False, server_default=text("'medium'")),
     Column("acceptance_criteria", json_type, nullable=False, server_default=text("'[]'::jsonb")),
@@ -229,6 +357,16 @@ requirements = Table(
         name="status_allowed",
     ),
     CheckConstraint("priority IN ('low', 'medium', 'high', 'critical')", name="priority_allowed"),
+    CheckConstraint("tier IN ('customer', 'market', 'product')", name="tier_allowed"),
+    CheckConstraint(
+        "parent_requirement_id IS NULL OR parent_requirement_id <> id", name="parent_not_self"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "parent_requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        name="fk_requirements_tenant_parent",
+        ondelete="RESTRICT",
+    ),
     CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
     CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
     CheckConstraint(
@@ -508,6 +646,8 @@ projects = Table(
     Column("code", String(64), nullable=False),
     Column("name", String(256), nullable=False),
     Column("description", Text),
+    Column("issue_verify_low", Boolean, nullable=False, server_default=text("false")),
+    Column("issue_verify_medium", Boolean, nullable=False, server_default=text("false")),
     Column("status", String(32), nullable=False, server_default=text("'draft'")),
     Column("start_date", Date),
     Column("target_date", Date),
@@ -750,6 +890,7 @@ resources = Table(
         ondelete="RESTRICT",
     ),
     UniqueConstraint("tenant_id", "id", name="uq_resources_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_resources_tenant_project_id"),
     UniqueConstraint(
         "tenant_id",
         "project_id",
@@ -779,6 +920,10 @@ documents = Table(
     Column("size_bytes", BigInteger, nullable=False),
     Column("sha256", String(64), nullable=False),
     Column("extraction_status", String(32), nullable=False),
+    Column("extraction_metadata", JSONB, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint(
+        "jsonb_typeof(extraction_metadata)='object'", name="extraction_metadata_object"
+    ),
     Column("fragment_count", Integer, nullable=False, server_default=text("0")),
     Column(
         "created_at",
@@ -794,7 +939,7 @@ documents = Table(
         name="classification_allowed",
     ),
     CheckConstraint(
-        "extraction_status IN ('extracted', 'ocr_required')",
+        "extraction_status IN ('extracted', 'ocr_required', 'preview_only')",
         name="extraction_status_allowed",
     ),
     CheckConstraint("size_bytes > 0", name="size_positive"),
@@ -802,7 +947,7 @@ documents = Table(
     CheckConstraint("fragment_count >= 0", name="fragment_count_nonnegative"),
     CheckConstraint(
         "(extraction_status = 'extracted' AND fragment_count > 0) OR "
-        "(extraction_status = 'ocr_required' AND fragment_count = 0)",
+        "(extraction_status IN ('ocr_required','preview_only') AND fragment_count = 0)",
         name="extraction_fragment_consistent",
     ),
     ForeignKeyConstraint(
@@ -877,6 +1022,7 @@ external_file_references = Table(
         ondelete="RESTRICT",
     ),
     UniqueConstraint("tenant_id", "id", name="uq_external_file_references_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_external_file_references_scope"),
     UniqueConstraint(
         "tenant_id",
         "source_system",
@@ -960,6 +1106,11 @@ specifications = Table(
     Column("code", String(64), nullable=False),
     Column("title", String(512), nullable=False),
     Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("requirement_id", Uuid),
+    Column("owner_user_id", Uuid),
+    Column("verification_method", Text),
+    Column("acceptance_criteria", Text),
+    Column("criticality", String(16), nullable=False, server_default=text("'standard'")),
     Column("content", json_type, nullable=False, server_default=text("'{}'::jsonb")),
     Column(
         "created_at",
@@ -1009,6 +1160,19 @@ specifications = Table(
         "project_id",
         "updated_at",
         "id",
+    ),
+    CheckConstraint("criticality IN ('standard', 'key')", name="criticality_allowed"),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        name="fk_specifications_tenant_requirement",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_specifications_tenant_owner",
+        ondelete="RESTRICT",
     ),
     schema=PRODUCT_SCHEMA,
 )
@@ -1339,6 +1503,9 @@ build_batches = Table(
     Column("stage_id", Uuid, nullable=False),
     Column("created_by_user_id", Uuid, nullable=False),
     Column("phase", String(8), nullable=False),
+    # What the build is for; certification sampling is a distinct purpose that
+    # the PVT/MP handoff checklist keys off (V1-B6).
+    Column("purpose", String(32), nullable=False, server_default=text("'engineering_build'")),
     Column("code", String(64), nullable=False),
     Column("planned_quantity", Integer, nullable=False),
     Column("completed_quantity", Integer, nullable=False, server_default=text("0")),
@@ -1359,6 +1526,11 @@ build_batches = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint("phase IN ('evt', 'dvt', 'pvt')", name="phase_allowed"),
+    CheckConstraint(
+        "purpose IN ('engineering_build', 'certification_sample', 'customer_sample', "
+        "'reliability_test', 'production_trial')",
+        name="purpose_allowed",
+    ),
     CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
     CheckConstraint(
         "planned_quantity > 0 AND completed_quantity BETWEEN 0 AND planned_quantity",
@@ -1415,6 +1587,2468 @@ build_batches = Table(
     schema=PRODUCT_SCHEMA,
 )
 
+supply_import_batches = Table(
+    "supply_import_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("document_digest", String(64), nullable=False),
+    Column("source_system", String(128), nullable=False),
+    Column("source_version", String(256), nullable=False),
+    Column("as_of", DateTime(timezone=True), nullable=False),
+    Column("fresh_until", DateTime(timezone=True), nullable=False),
+    Column("captured_at", DateTime(timezone=True), nullable=False),
+    Column("configuration", json_type, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("row_count", Integer, nullable=False),
+    Column("ignored_rows", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supply_import_batch_project"),
+    UniqueConstraint(
+        "tenant_id",
+        "source_system",
+        "source_version",
+        name="uq_supply_import_source_version",
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_supply_import_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "row_count BETWEEN 1 AND 2000 AND fresh_until>as_of AND captured_at>=as_of",
+        name="capture_limits",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(configuration)='object' AND jsonb_typeof(ignored_rows)='array'",
+        name="capture_objects",
+    ),
+    CheckConstraint(
+        "btrim(source_system)<>'' AND btrim(source_version)<>'' AND btrim(reason)<>''",
+        name="source_nonblank",
+    ),
+    CheckConstraint(
+        "document_digest ~ '^[0-9a-f]{64}$' AND content_digest ~ '^[0-9a-f]{64}$' AND "
+        "request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+supply_snapshots = Table(
+    "supply_snapshots",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_supply_snapshot_tenant"),
+    Column("project_id", Uuid, nullable=False),
+    Column("batch_id", Uuid, nullable=False),
+    Column("external_pool_id", String(256), nullable=False),
+    Column("external_item_id", String(256), nullable=False),
+    Column("quantity", Numeric(24, 8)),
+    Column("unit", String(64), nullable=False),
+    Column("availability", String(16), nullable=False),
+    Column("supply_kind", String(24), nullable=False),
+    Column("quality_status", String(16), nullable=False),
+    Column("expected_date", Date),
+    Column("lead_time_days", Integer),
+    Column("source_row", Integer, nullable=False),
+    Column("raw_cells", json_type, nullable=False),
+    Column("contract", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supply_snapshot_project"),
+    UniqueConstraint(
+        "tenant_id",
+        "batch_id",
+        "external_pool_id",
+        "external_item_id",
+        name="uq_supply_snapshot_pool_row",
+    ),
+    UniqueConstraint("tenant_id", "batch_id", "source_row", name="uq_supply_snapshot_source_row"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "batch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_import_batches.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_import_batches.project_id",
+            f"{SUPPLIER_SCHEMA}.supply_import_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(availability='unknown' AND quantity IS NULL) OR (availability='known' AND "
+        "quantity>=0 AND quantity IS NOT NULL)",
+        name="quantity_known",
+    ),
+    CheckConstraint(
+        "supply_kind IN ('on_hand','expected_receipt') AND quality_status IN "
+        "('released','frozen','unknown')",
+        name="source_states",
+    ),
+    CheckConstraint(
+        "source_row>1 AND (lead_time_days IS NULL OR lead_time_days BETWEEN 0 AND 36600)",
+        name="row_lead_time",
+    ),
+    CheckConstraint("supply_kind<>'on_hand' OR expected_date IS NULL", name="arrival_kind"),
+    CheckConstraint(
+        "jsonb_typeof(raw_cells)='object' AND jsonb_typeof(contract)='object'",
+        name="source_objects",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+material_movements = Table(
+    "material_movements",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column("build_id", Uuid, nullable=False),
+    Column("allocation_id", Uuid, nullable=False),
+    Column(
+        "parent_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_movements.id", ondelete="RESTRICT"),
+    ),
+    Column("kind", String(16), nullable=False),
+    Column("transaction_version", Integer, nullable=False, server_default=text("1")),
+    Column(
+        "replacement_of_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_movements.id", ondelete="RESTRICT"),
+        unique=True,
+    ),
+    CheckConstraint("transaction_version>0", name="transaction_version_valid"),
+    Column("quantity", Numeric(24, 8), nullable=False),
+    Column("occurred_at", DateTime(timezone=True), nullable=False),
+    Column("source_system", String(128), nullable=False),
+    Column("transaction_reference", String(256), nullable=False),
+    Column("qualified", Boolean, nullable=False),
+    Column("share_with_source", Boolean, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "allocation_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.material_supply_allocations.tenant_id",
+            f"{SUPPLIER_SCHEMA}.material_supply_allocations.project_id",
+            f"{SUPPLIER_SCHEMA}.material_supply_allocations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_system",
+        "kind",
+        "transaction_reference",
+        "transaction_version",
+        name="uq_material_movement_transaction",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_movement_request",
+    ),
+    CheckConstraint(
+        "kind IN ('issued','consumed','returned','scrapped') AND ((kind='issued' AND "
+        "parent_id IS NULL) OR (kind<>'issued' AND parent_id IS NOT NULL)) AND quantity>0"
+        " AND quantity::text NOT IN ('NaN','Infinity','-Infinity') AND "
+        "btrim(transaction_reference)<>''",
+        name="movement_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+material_movement_reconciliations = Table(
+    "material_movement_reconciliations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column(
+        "movement_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_movements.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("supply_snapshot_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("outcome", String(16), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "supply_snapshot_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.project_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "movement_id", "version", name="uq_material_reconciliation_version"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_reconciliation_request",
+    ),
+    CheckConstraint(
+        "version>0 AND outcome IN ('confirmed','withdrawn')",
+        name="reconciliation_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+
+material_movement_corrections = Table(
+    "material_movement_corrections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column(
+        "movement_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_movements.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    UniqueConstraint("tenant_id", "movement_id", name="uq_material_correction_movement"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_correction_request",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+cost_definition_feedback = Table(
+    "cost_definition_feedback",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("source_kind", String(32), nullable=False),
+    Column("source_id", Uuid, nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cdf_scope"),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cdf_request"),
+    CheckConstraint(
+        "jsonb_typeof(payload)='object' AND jsonb_typeof(snapshot)='object' AND "
+        "request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "definition_id",
+        "source_kind",
+        "source_id",
+        name="uq_cdf_source",
+    ),
+    CheckConstraint(
+        "source_kind IN ('gap_observation','cost_alternative','cost_backtest')",
+        name="source_kind",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        ["cehub_project.projects.tenant_id", "cehub_project.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            "cehub_product.product_definitions.tenant_id",
+            "cehub_product.product_definitions.market_space_id",
+            "cehub_product.product_definitions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Index("ix_cdf_history", "tenant_id", "project_id", "created_at", "id"),
+    Index(
+        "ix_cdf_definition",
+        "tenant_id",
+        "market_space_id",
+        "definition_id",
+        "created_at",
+        "id",
+    ),
+    schema=COST_SCHEMA,
+)
+cost_definition_dispositions = Table(
+    "cost_definition_dispositions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("feedback_id", Uuid, nullable=False),
+    Column("revision_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("action", String(32), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cdd_scope"),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cdd_request"),
+    CheckConstraint(
+        "jsonb_typeof(payload)='object' AND jsonb_typeof(snapshot)='object' AND "
+        "request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "feedback_id", "version", name="uq_cdd_version"),
+    CheckConstraint(
+        "version>0 AND action IN ('needs_information','no_change','link_revision') AND "
+        "((action='link_revision')=(revision_id IS NOT NULL))",
+        name="action",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        ["cehub_project.projects.tenant_id", "cehub_project.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "feedback_id"],
+        [
+            "cehub_cost.cost_definition_feedback.tenant_id",
+            "cehub_cost.cost_definition_feedback.project_id",
+            "cehub_cost.cost_definition_feedback.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "revision_id"],
+        [
+            "cehub_product.product_definitions.tenant_id",
+            "cehub_product.product_definitions.market_space_id",
+            "cehub_product.product_definitions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Index("ix_cdd_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+cost_alternatives = Table(
+    "cost_alternatives",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("root_id", Uuid, nullable=False),
+    Column("previous_id", Uuid),
+    Column("case_id", Uuid, nullable=False),
+    Column("observation_id", Uuid, nullable=False),
+    Column("proposal_rollup_id", Uuid),
+    Column("evidence_id", Uuid, nullable=False),
+    Column("revision_number", Integer, nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_alternative_scope"),
+    UniqueConstraint("tenant_id", "root_id", "revision_number", name="uq_cost_alternative_version"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_cost_alternative_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "root_id"],
+        [
+            "cehub_cost.cost_alternatives.tenant_id",
+            "cehub_cost.cost_alternatives.project_id",
+            "cehub_cost.cost_alternatives.id",
+        ],
+        name="fk_cost_alternative_root",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_id"],
+        [
+            "cehub_cost.cost_alternatives.tenant_id",
+            "cehub_cost.cost_alternatives.project_id",
+            "cehub_cost.cost_alternatives.id",
+        ],
+        name="fk_cost_alternative_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "case_id"],
+        [
+            "cehub_cost.cost_gap_cases.tenant_id",
+            "cehub_cost.cost_gap_cases.project_id",
+            "cehub_cost.cost_gap_cases.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "observation_id"],
+        [
+            "cehub_cost.cost_gap_observations.tenant_id",
+            "cehub_cost.cost_gap_observations.project_id",
+            "cehub_cost.cost_gap_observations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "proposal_rollup_id"],
+        [
+            "cehub_cost.cost_rollups.tenant_id",
+            "cehub_cost.cost_rollups.project_id",
+            "cehub_cost.cost_rollups.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            "cehub_project.documents.tenant_id",
+            "cehub_project.documents.project_id",
+            "cehub_project.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number>0 AND status IN ('proposed','withdrawn') AND btrim(title)<>'' "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(snapshot)='object' AND "
+        "jsonb_typeof(payload)='object'",
+        name="shape",
+    ),
+    Index(
+        "ix_cost_alternative_case",
+        "tenant_id",
+        "project_id",
+        "case_id",
+        "created_at",
+        "id",
+    ),
+    schema=COST_SCHEMA,
+)
+cost_gap_cases = Table(
+    "cost_gap_cases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("rollup_id", Uuid, nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("bom_id", Uuid, nullable=False),
+    Column("stage", String(16), nullable=False),
+    Column("subsystem", String(128), nullable=False),
+    Column("basis", String(8), nullable=False),
+    Column("scope_key", String(64), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "rollup_id"],
+        [
+            "cehub_cost.cost_rollups.tenant_id",
+            "cehub_cost.cost_rollups.project_id",
+            "cehub_cost.cost_rollups.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [
+            "cehub_project.issues.tenant_id",
+            "cehub_project.issues.project_id",
+            "cehub_project.issues.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            "cehub_product.development_boms.tenant_id",
+            "cehub_product.development_boms.project_id",
+            "cehub_product.development_boms.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_gap_scope"),
+    UniqueConstraint("tenant_id", "project_id", "scope_key", name="uq_cost_gap_key"),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cost_gap_request"),
+    CheckConstraint(
+        "basis IN ('unit','nre') AND stage IN ('estimate','quote','actual') AND "
+        "btrim(subsystem)<>'' AND scope_key ~ '^[0-9a-f]{64}$' AND request_digest ~ "
+        "'^[0-9a-f]{64}$' AND jsonb_typeof(snapshot)='object' AND "
+        "jsonb_typeof(payload)='object'",
+        name="shape",
+    ),
+    Index("ix_cost_gap_history", "tenant_id", "project_id", "created_at", "id"),
+    Index("ix_cost_gap_rollup_scope", "tenant_id", "project_id", "bom_id", "stage"),
+    Index("ix_cost_gap_issue", "tenant_id", "project_id", "issue_id"),
+    schema=COST_SCHEMA,
+)
+
+cost_gap_observations = Table(
+    "cost_gap_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("case_id", Uuid, nullable=False),
+    Column("rollup_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("state", String(24), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "case_id"],
+        [
+            "cehub_cost.cost_gap_cases.tenant_id",
+            "cehub_cost.cost_gap_cases.project_id",
+            "cehub_cost.cost_gap_cases.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "rollup_id"],
+        [
+            "cehub_cost.cost_rollups.tenant_id",
+            "cehub_cost.cost_rollups.project_id",
+            "cehub_cost.cost_rollups.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cgo_scope"),
+    UniqueConstraint("tenant_id", "case_id", "rollup_id", name="uq_cgo_rollup"),
+    UniqueConstraint("tenant_id", "case_id", "version", name="uq_cgo_version"),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cgo_request"),
+    CheckConstraint(
+        "version>0 AND state IN ('exceeded','within_target','needs_review') AND "
+        "request_digest ~ '^[0-9a-f]{64}$' AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    schema=COST_SCHEMA,
+)
+
+cost_import_batches = Table(
+    "cost_import_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("source_system", String(128), nullable=False),
+    Column("source_version", String(120), nullable=False),
+    Column("algorithm", String(64), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("receipts", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            "cehub_project.documents.tenant_id",
+            "cehub_project.documents.project_id",
+            "cehub_project.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_import_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "source_system",
+        "source_version",
+        name="uq_cost_import_source",
+    ),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cost_import_replay"),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND btrim(source_system)<>'' AND "
+        "btrim(source_version)<>'' AND jsonb_typeof(payload)='object' AND "
+        "jsonb_typeof(snapshot)='object' AND jsonb_typeof(receipts)='array'",
+        name="shape",
+    ),
+    Index("ix_cost_import_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+
+cost_import_rows = Table(
+    "cost_import_rows",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("batch_id", Uuid, nullable=False),
+    Column("row_number", Integer, nullable=False),
+    Column("input_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "batch_id"],
+        [
+            "cehub_cost.cost_import_batches.tenant_id",
+            "cehub_cost.cost_import_batches.project_id",
+            "cehub_cost.cost_import_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "input_id"],
+        [
+            "cehub_cost.cost_inputs.tenant_id",
+            "cehub_cost.cost_inputs.project_id",
+            "cehub_cost.cost_inputs.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "batch_id", "row_number", name="uq_cost_import_row"),
+    UniqueConstraint("tenant_id", "input_id", name="uq_cost_import_input"),
+    CheckConstraint("row_number BETWEEN 2 AND 600", name="row_number"),
+    schema=COST_SCHEMA,
+)
+
+cost_backtests = Table(
+    "cost_backtests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("freeze_id", Uuid, nullable=False),
+    Column("actual_rollup_id", Uuid, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column("algorithm", String(64), nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("purpose", String(32), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("comparison_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_id"],
+        [
+            "cehub_cost.cost_freezes.tenant_id",
+            "cehub_cost.cost_freezes.project_id",
+            "cehub_cost.cost_freezes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "actual_rollup_id"],
+        [
+            "cehub_cost.cost_rollups.tenant_id",
+            "cehub_cost.cost_rollups.project_id",
+            "cehub_cost.cost_rollups.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            "cehub_project.documents.tenant_id",
+            "cehub_project.documents.project_id",
+            "cehub_project.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_backtest_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_cost_backtest_request"
+    ),
+    CheckConstraint(
+        "btrim(title)<>'' AND purpose IN ('historical_snapshot','production_actual') AND "
+        "jsonb_typeof(snapshot)='object' AND jsonb_typeof(result)='object' AND "
+        "jsonb_typeof(payload)='object'",
+        name="shape",
+    ),
+    CheckConstraint(
+        "comparison_digest ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests",
+    ),
+    Index("ix_cost_backtests_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+
+cost_freeze_requests = Table(
+    "cost_freeze_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("rollup_id", Uuid, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("previous_freeze_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "rollup_id"],
+        [
+            "cehub_cost.cost_rollups.tenant_id",
+            "cehub_cost.cost_rollups.project_id",
+            "cehub_cost.cost_rollups.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+        name="fk_cfr_approver",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            "cehub_project.documents.tenant_id",
+            "cehub_project.documents.project_id",
+            "cehub_project.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_freeze_id"],
+        [
+            "cehub_cost.cost_freezes.tenant_id",
+            "cehub_cost.cost_freezes.project_id",
+            "cehub_cost.cost_freezes.id",
+        ],
+        ondelete="RESTRICT",
+        use_alter=True,
+        name="fk_cfr_previous",
+    ),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+        name="fk_cfr_creator",
+    ),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cfr_replay"),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest"),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cfr_scope"),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot"),
+    Index("ix_cfr_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+
+cost_freeze_decisions = Table(
+    "cost_freeze_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("freeze_request_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_request_id"],
+        [
+            "cehub_cost.cost_freeze_requests.tenant_id",
+            "cehub_cost.cost_freeze_requests.project_id",
+            "cehub_cost.cost_freeze_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "freeze_request_id", name="uq_cfd_decision"),
+    CheckConstraint(
+        "action IN ('approve','reject','withdraw') AND btrim(reason)<>''",
+        name="decision",
+    ),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+        name="fk_cfd_creator",
+    ),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cfd_replay"),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest"),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cfd_scope"),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot"),
+    Index("ix_cfd_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+
+cost_freezes = Table(
+    "cost_freezes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("freeze_request_id", Uuid, nullable=False),
+    Column("decision_id", Uuid, nullable=False),
+    Column("rollup_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("calculation_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("approved_by_user_id", Uuid, nullable=False),
+    Column("previous_freeze_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_request_id"],
+        [
+            "cehub_cost.cost_freeze_requests.tenant_id",
+            "cehub_cost.cost_freeze_requests.project_id",
+            "cehub_cost.cost_freeze_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "decision_id"],
+        [
+            "cehub_cost.cost_freeze_decisions.tenant_id",
+            "cehub_cost.cost_freeze_decisions.project_id",
+            "cehub_cost.cost_freeze_decisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "rollup_id"],
+        [
+            "cehub_cost.cost_rollups.tenant_id",
+            "cehub_cost.cost_rollups.project_id",
+            "cehub_cost.cost_rollups.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_freeze_id"],
+        [
+            "cehub_cost.cost_freezes.tenant_id",
+            "cehub_cost.cost_freezes.project_id",
+            "cehub_cost.cost_freezes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approved_by_user_id"],
+        ["cehub_core.users.tenant_id", "cehub_core.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "version", name="uq_cf_version"),
+    UniqueConstraint("tenant_id", "freeze_request_id", name="uq_cf_request"),
+    UniqueConstraint("tenant_id", "decision_id", name="uq_cf_decision"),
+    CheckConstraint("version > 0 AND calculation_digest ~ '^[0-9a-f]{64}$'", name="version"),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cf_scope"),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot"),
+    Index("ix_cf_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+
+cost_rollups = Table(
+    "cost_rollups",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("bom_id", Uuid, nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("algorithm", String(64), nullable=False),
+    Column("command", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("calculation_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_rollup_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_cost_rollup_request"
+    ),
+    CheckConstraint(
+        "btrim(title)<>'' AND btrim(algorithm)<>'' AND jsonb_typeof(command)='object' "
+        "AND jsonb_typeof(snapshot)='object' AND jsonb_typeof(result)='object'",
+        name="shape",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[0-9a-f]{64}$' AND calculation_digest ~ '^[0-9a-f]{64}$' "
+        "AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests",
+    ),
+    Index("ix_cost_rollups_history", "tenant_id", "project_id", "created_at", "id"),
+    schema=COST_SCHEMA,
+)
+
+cost_inputs = Table(
+    "cost_inputs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("record_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("kind", String(24), nullable=False),
+    Column("stage", String(16)),
+    Column("source_key", String(64), nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column("bom_item_id", Uuid),
+    Column("supplier_id", Uuid),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "bom_item_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_bom_items.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_bom_items.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "supplier_id"],
+        [f"{SUPPLIER_SCHEMA}.suppliers.tenant_id", f"{SUPPLIER_SCHEMA}.suppliers.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_input_scope"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "record_id", "version", name="uq_cost_input_version"
+    ),
+    UniqueConstraint("tenant_id", "created_by_user_id", "request_id", name="uq_cost_input_request"),
+    CheckConstraint(
+        "version>0 AND status IN ('active','withdrawn') AND btrim(reason)<>''",
+        name="state",
+    ),
+    CheckConstraint(
+        "((kind='price' AND stage IN ('target','estimate','quote','actual')) OR "
+        "(kind='exchange_rate' AND stage IS NULL AND bom_item_id IS NULL AND supplier_id "
+        "IS NULL)) IS TRUE",
+        name="kind",
+    ),
+    CheckConstraint(
+        "source_key ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$' "
+        "AND jsonb_typeof(payload)='object' AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    Index("ix_cost_inputs_current", "tenant_id", "project_id", "record_id", "version"),
+    Index("ix_cost_inputs_source", "tenant_id", "project_id", "source_key"),
+    schema=COST_SCHEMA,
+)
+
+supplier_engineering_records = Table(
+    "supplier_engineering_records",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column("supplier_id", Uuid, nullable=False),
+    Column("record_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("kind", String(32), nullable=False),
+    Column("source_reference", String(256), nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("payload", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "supplier_id"],
+        [f"{SUPPLIER_SCHEMA}.suppliers.tenant_id", f"{SUPPLIER_SCHEMA}.suppliers.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "record_id",
+        "version",
+        name="uq_supplier_engineering_version",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_supplier_engineering_request",
+    ),
+    CheckConstraint(
+        "version>0 AND kind IN "
+        "('sample_delivery','technical_response','engineering_failure') AND status IN "
+        "('active','withdrawn') AND btrim(source_reference)<>'' AND "
+        "jsonb_typeof(payload)='object'",
+        name="engineering_record_valid",
+    ),
+    Index(
+        "ix_supplier_engineering_profile",
+        "tenant_id",
+        "project_id",
+        "supplier_id",
+        "record_id",
+        "version",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+supplier_compliance_records = Table(
+    "supplier_compliance_records",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column("record_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("supplier_id", Uuid),
+    Column("payload", json_type, nullable=False),
+    Column("status", String(16), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "supplier_id"],
+        [f"{SUPPLIER_SCHEMA}.suppliers.tenant_id", f"{SUPPLIER_SCHEMA}.suppliers.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "record_id",
+        "version",
+        name="uq_supplier_compliance_version",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_supplier_compliance_request",
+    ),
+    CheckConstraint(
+        "version>0 AND status IN ('active','withdrawn') AND jsonb_typeof(payload)='object'",
+        name="compliance_record_valid",
+    ),
+    Index(
+        "ix_supplier_compliance_project",
+        "tenant_id",
+        "project_id",
+        "record_id",
+        "version",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+change_compliance_reviews = Table(
+    "change_compliance_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("record_id", Uuid, nullable=False),
+    Column("matrix_version_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("outcome", String(32), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["matrix_version_id"],
+        [f"{SUPPLIER_SCHEMA}.supplier_compliance_records.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "ecr_id",
+        "record_id",
+        "version",
+        name="uq_change_compliance_version",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_change_compliance_request",
+    ),
+    CheckConstraint(
+        "version>0 AND outcome IN ('needs_recheck','not_affected','reviewed')",
+        name="change_compliance_review_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+tooling_rounds = Table(
+    "tooling_rounds",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("planning_resource_id", Uuid),
+    Column("code", String(128), nullable=False),
+    Column("asset_reference", String(128), nullable=False),
+    Column("tooling_kind", String(16), nullable=False),
+    Column("round_label", String(64), nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("phase", String(16), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("outcome", String(16), nullable=False),
+    Column("started_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    Column("payload", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_tooling_round_scope"),
+    UniqueConstraint("tenant_id", "project_id", "code", name="uq_tooling_round_code"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "asset_reference",
+        "round_label",
+        name="uq_tooling_actual_round",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "planning_resource_id"],
+        [
+            f"{PROJECT_SCHEMA}.planning_resources.tenant_id",
+            f"{PROJECT_SCHEMA}.planning_resources.id",
+        ],
+        name="fk_tooling_round_planning_resource",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND tooling_kind IN ('mold','fixture','tooling') AND phase IN "
+        "('EVT','DVT','PVT','other') AND status IN "
+        "('planned','in_progress','completed','cancelled') AND outcome IN "
+        "('pending','accepted','conditional','rejected')",
+        name="tooling_round_valid",
+    ),
+    CheckConstraint(
+        "completed_at IS NULL OR (started_at IS NOT NULL AND completed_at>=started_at)",
+        name="tooling_actual_order",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+tooling_round_revisions = Table(
+    "tooling_round_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("evidence_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="record_valid",
+    ),
+    Column("round_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("payload", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "round_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.tooling_rounds.tenant_id",
+            f"{SUPPLIER_SCHEMA}.tooling_rounds.project_id",
+            f"{SUPPLIER_SCHEMA}.tooling_rounds.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "round_id",
+        "version",
+        name="uq_tooling_round_revision",
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_tooling_round_request"
+    ),
+    CheckConstraint("version>0 AND jsonb_typeof(payload)='object'", name="tooling_revision_valid"),
+    schema=SUPPLIER_SCHEMA,
+)
+
+supply_share_grants = Table(
+    "supply_share_grants",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="request_valid",
+    ),
+    Column("source_project_id", Uuid, nullable=False),
+    Column("recipient_project_id", Uuid, nullable=False),
+    Column("recipient_user_id", Uuid, nullable=False),
+    Column("supply_snapshot_id", Uuid, nullable=False),
+    Column("quantity_limit", Numeric(24, 8), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_supply_share_tenant"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_supply_share_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_project_id", "supply_snapshot_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.project_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_supply_share_recipient",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_project_id<>recipient_project_id AND "
+        "created_by_user_id<>recipient_user_id AND quantity_limit>=0 AND "
+        "quantity_limit::text NOT IN ('NaN','Infinity','-Infinity') AND "
+        "expires_at>created_at",
+        name="share_scope",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+supply_share_actions = Table(
+    "supply_share_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="request_valid",
+    ),
+    Column("grant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("outcome", String(16), nullable=False),
+    UniqueConstraint("tenant_id", "grant_id", "version", name="uq_supply_share_action_version"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_supply_share_action_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "grant_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_share_grants.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_share_grants.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND outcome IN ('accepted','rejected','revoked')", name="action_valid"
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+
+material_supplier_attributions = Table(
+    "material_supplier_attributions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("supply_snapshot_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("supplier_id", Uuid),
+    Column("evidence_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "supply_snapshot_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.project_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "supplier_id"],
+        [f"{SUPPLIER_SCHEMA}.suppliers.tenant_id", f"{SUPPLIER_SCHEMA}.suppliers.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "supply_snapshot_id", "version", name="uq_material_supplier_version"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_material_supplier_request"
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(reason)<>'' AND jsonb_typeof(snapshot)='object' AND "
+        "request_digest ~ '^[0-9a-f]{64}$'",
+        name="attribution_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+
+material_admission_policies = Table(
+    "material_admission_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("target_kind", String(8), nullable=False),
+    Column("target_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("configuration", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "target_kind",
+        "target_id",
+        "version",
+        name="uq_material_admission_policy_version",
+    ),
+    CheckConstraint(
+        "target_kind IN ('build','gate') AND version>0 AND jsonb_typeof(configuration)='object'",
+        name="policy_valid",
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>''", name="request_valid"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_admission_policies_request",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+material_admission_waivers = Table(
+    "material_admission_waivers",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column(
+        "policy_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_admission_policies.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("source_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("mitigations", Text, nullable=False),
+    Column("evidence", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_material_admission_approver",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "created_by_user_id<>approver_user_id AND expires_at>created_at AND btrim(mitigations)<>''",
+        name="independent_request",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[0-9a-f]{64}$' AND jsonb_typeof(snapshot)='object' AND "
+        "jsonb_typeof(evidence)='array' AND jsonb_array_length(evidence) BETWEEN 1 AND 20",
+        name="basis_valid",
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>''", name="request_valid"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_admission_waivers_request",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+material_admission_decisions = Table(
+    "material_admission_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column(
+        "waiver_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_admission_waivers.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("outcome", String(16), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "waiver_id", name="uq_material_admission_decision"),
+    CheckConstraint(
+        "outcome IN ('approved','rejected') AND jsonb_typeof(snapshot)='object'",
+        name="decision_valid",
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>''", name="request_valid"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_admission_decisions_request",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+material_admission_receipts = Table(
+    "material_admission_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column(
+        "policy_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_admission_policies.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("target_kind", String(8), nullable=False),
+    Column("target_id", Uuid, nullable=False),
+    Column("operation_key", Uuid, nullable=False),
+    Column("transaction_id", BigInteger, nullable=False, server_default=text("txid_current()")),
+    Column("source_digest", String(64), nullable=False),
+    Column(
+        "decision_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_admission_decisions.id", ondelete="RESTRICT"),
+    ),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "target_kind",
+        "operation_key",
+        name="uq_material_admission_operation",
+    ),
+    CheckConstraint(
+        "target_kind IN ('build','gate') AND source_digest ~ '^[0-9a-f]{64}$' AND "
+        "jsonb_typeof(snapshot)='object'",
+        name="receipt_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+
+material_schedule_bindings = Table(
+    "material_schedule_bindings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("exception_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column(
+        "review_id",
+        Uuid,
+        ForeignKey(f"{SUPPLIER_SCHEMA}.material_exception_reviews.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("mode", String(16), nullable=False),
+    Column("target_point", String(16), nullable=False),
+    Column("node_ids", json_type, nullable=False),
+    Column("ready_at", DateTime(timezone=True)),
+    Column("source_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "exception_id", "version", name="uq_material_schedule_version"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_schedule_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "exception_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.material_exceptions.tenant_id",
+            f"{SUPPLIER_SCHEMA}.material_exceptions.project_id",
+            f"{SUPPLIER_SCHEMA}.material_exceptions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND mode IN ('waiting','estimate','released') AND target_point IN "
+        "('start','remaining') AND btrim(reason)<>''",
+        name="binding_policy",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(node_ids)='array' AND jsonb_typeof(snapshot)='object' AND "
+        "jsonb_array_length(node_ids)<=100",
+        name="binding_objects",
+    ),
+    CheckConstraint(
+        "(mode='estimate' AND ready_at IS NOT NULL) OR (mode<>'estimate' AND ready_at IS NULL)",
+        name="binding_time",
+    ),
+    CheckConstraint(
+        "(mode='released' AND jsonb_array_length(node_ids)=0) OR (mode<>'released' AND "
+        "jsonb_array_length(node_ids)>0)",
+        name="binding_nodes",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+material_exceptions = Table(
+    "material_exceptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("build_id", Uuid, nullable=False),
+    Column("material_key", String(64), nullable=False),
+    Column("material_reference", String(256)),
+    Column("unit", String(64), nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_material_exception_scope"),
+    UniqueConstraint(
+        "tenant_id", "build_id", "material_key", name="uq_material_exception_identity"
+    ),
+    UniqueConstraint("tenant_id", "issue_id", name="uq_material_exception_issue"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_exception_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "build_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_batches.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_batches.project_id",
+            f"{PRODUCT_SCHEMA}.build_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [
+            f"{PROJECT_SCHEMA}.issues.tenant_id",
+            f"{PROJECT_SCHEMA}.issues.project_id",
+            f"{PROJECT_SCHEMA}.issues.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "material_key ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+material_exception_reviews = Table(
+    "material_exception_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("exception_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("revision_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("disposition", String(24), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "exception_id",
+        "version",
+        name="uq_material_exception_review_version",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_exception_review_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "exception_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.material_exceptions.tenant_id",
+            f"{SUPPLIER_SCHEMA}.material_exceptions.project_id",
+            f"{SUPPLIER_SCHEMA}.material_exceptions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_material_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_material_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.build_material_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND disposition IN ('follow_up','supply_ready','scope_changed') AND "
+        "btrim(reason)<>''",
+        name="review_disposition",
+    ),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot_object"),
+    CheckConstraint(
+        "basis_digest ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+material_allocation_batches = Table(
+    "material_allocation_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("build_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_material_allocation_batch_project"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_material_allocation_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "build_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_batches.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_batches.project_id",
+            f"{PRODUCT_SCHEMA}.build_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("action IN ('allocate','release') AND btrim(reason)<>''", name="action_reason"),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot_object"),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND basis_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_valid",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+material_supply_allocations = Table(
+    "material_supply_allocations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("build_id", Uuid, nullable=False),
+    Column("batch_id", Uuid, nullable=False),
+    Column("revision_id", Uuid, nullable=False),
+    Column("bom_item_id", Uuid, nullable=False),
+    Column("supply_snapshot_id", Uuid, nullable=False),
+    Column("supply_grant_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "supply_grant_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_share_grants.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_share_grants.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_material_allocation_supply_grant",
+    ),
+    Column("source_system", String(128), nullable=False),
+    Column("external_pool_id", String(256), nullable=False),
+    Column("external_item_id", String(256), nullable=False),
+    Column("unit", String(64), nullable=False),
+    Column("quantity", Numeric(24, 8), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_material_allocation_project"),
+    UniqueConstraint(
+        "tenant_id",
+        "batch_id",
+        "bom_item_id",
+        "supply_snapshot_id",
+        name="uq_material_allocation_batch_source",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "batch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.material_allocation_batches.tenant_id",
+            f"{SUPPLIER_SCHEMA}.material_allocation_batches.project_id",
+            f"{SUPPLIER_SCHEMA}.material_allocation_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_material_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_material_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.build_material_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "supply_snapshot_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.tenant_id",
+            f"{SUPPLIER_SCHEMA}.supply_snapshots.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "quantity>0 AND quantity::text NOT IN ('NaN','Infinity','-Infinity')",
+        name="quantity_positive",
+    ),
+    Index(
+        "ix_material_allocation_pool",
+        "tenant_id",
+        "source_system",
+        "external_pool_id",
+        "external_item_id",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+
+material_allocation_releases = Table(
+    "material_allocation_releases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("batch_id", Uuid, nullable=False),
+    Column("allocation_id", Uuid, nullable=False),
+    Column("quantity", Numeric(24, 8), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "batch_id", "allocation_id", name="uq_material_release_batch_item"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "batch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.material_allocation_batches.tenant_id",
+            f"{SUPPLIER_SCHEMA}.material_allocation_batches.project_id",
+            f"{SUPPLIER_SCHEMA}.material_allocation_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "allocation_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.material_supply_allocations.tenant_id",
+            f"{SUPPLIER_SCHEMA}.material_supply_allocations.project_id",
+            f"{SUPPLIER_SCHEMA}.material_supply_allocations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "quantity>0 AND quantity::text NOT IN ('NaN','Infinity','-Infinity')",
+        name="quantity_positive",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+build_material_revisions = Table(
+    "build_material_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("build_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("previous_revision_id", Uuid),
+    Column("ecn_id", Uuid),
+    Column("change_context", json_type),
+    Column("delta", json_type),
+    Column("bom_id", Uuid, nullable=False),
+    Column("need_by_node_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("lines", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_build_material_revision_project"),
+    UniqueConstraint("tenant_id", "build_id", "version", name="uq_build_material_revision_version"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_build_material_revision_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "build_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_batches.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_batches.project_id",
+            f"{PRODUCT_SCHEMA}.build_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "need_by_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "build_id", "ecn_id", name="uq_build_material_revision_ecn"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_material_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_material_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.build_material_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecn_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(version=1 AND previous_revision_id IS NULL AND ecn_id IS NULL "
+        "AND change_context IS NULL AND delta IS NULL) OR "
+        "(version>1 AND previous_revision_id IS NOT NULL AND ecn_id IS NOT NULL "
+        "AND change_context IS NOT NULL AND delta IS NOT NULL "
+        "AND jsonb_typeof(change_context)='object' AND jsonb_typeof(delta)='array')",
+        name="revision_lineage_valid",
+    ),
+    CheckConstraint("version > 0 AND btrim(reason) <> ''", name="version_reason_valid"),
+    CheckConstraint(
+        "jsonb_typeof(snapshot)='object' AND jsonb_typeof(lines)='array' "
+        "AND jsonb_array_length(lines)>0",
+        name="snapshot_lines_valid",
+    ),
+    CheckConstraint(
+        "COALESCE(snapshot->'bom'->'header'->>'bom_type', '')='prototype'",
+        name="prototype_bom_only",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND source_digest ~ '^[0-9a-f]{64}$' "
+        "AND content_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_valid",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
 samples = Table(
     "samples",
     metadata,
@@ -1438,6 +4072,10 @@ samples = Table(
         DateTime(timezone=True),
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("built_at_precision", String(16), nullable=False, server_default=text("'unknown'")),
+    CheckConstraint(
+        "built_at_precision IN ('unknown', 'day', 'instant')", name="built_at_precision_allowed"
     ),
     Column("notes", Text),
     Column(
@@ -1510,6 +4148,198 @@ samples = Table(
     Index("ix_samples_tenant_project_build", "tenant_id", "project_id", "build_batch_id", "id"),
     schema=PRODUCT_SCHEMA,
 )
+
+fw_releases = Table(
+    "fw_releases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("released_by_user_id", Uuid),
+    Column("version", String(64), nullable=False),
+    Column("release_notes", Text),
+    Column("released_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(version) <> ''", name="version_nonblank"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_fw_releases_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "released_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_fw_releases_tenant_releaser",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_fw_releases_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "version", name="uq_fw_releases_project_version"),
+    schema=PRODUCT_SCHEMA,
+)
+
+sample_build_configurations = Table(
+    "sample_build_configurations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    Column("fw_release_id", Uuid),
+    # The BOM row carries its own version, so linking it *is* the revision.
+    Column("development_bom_id", Uuid),
+    Column("source_document_id", Uuid),
+    Column("updated_by_user_id", Uuid),
+    Column("pcb_version", String(64)),
+    Column("structure_version", String(64)),
+    Column(
+        "key_component_suppliers", json_type, nullable=False, server_default=text("'{}'::jsonb")
+    ),
+    Column("build_date", Date),
+    Column("source", String(16), nullable=False, server_default=text("'manual'")),
+    Column("draft_state", String(16), nullable=False, server_default=text("'confirmed'")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("source IN ('manual', 'report_extract')", name="source_allowed"),
+    CheckConstraint("draft_state IN ('draft', 'confirmed')", name="draft_state_allowed"),
+    CheckConstraint(
+        "jsonb_typeof(key_component_suppliers) = 'object'",
+        name="key_component_suppliers_object",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_sample_build_configurations_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "sample_id"],
+        [f"{PRODUCT_SCHEMA}.samples.tenant_id", f"{PRODUCT_SCHEMA}.samples.id"],
+        name="fk_sample_build_configurations_tenant_sample",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "fw_release_id"],
+        [f"{PRODUCT_SCHEMA}.fw_releases.tenant_id", f"{PRODUCT_SCHEMA}.fw_releases.id"],
+        name="fk_sample_build_configurations_tenant_fw_release",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_document_id"],
+        [f"{PROJECT_SCHEMA}.documents.tenant_id", f"{PROJECT_SCHEMA}.documents.id"],
+        name="fk_sample_build_configurations_tenant_source_document",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "updated_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_sample_build_configurations_tenant_updater",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_sample_build_configurations_tenant_id_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "development_bom_id"],
+        [
+            f"{PRODUCT_SCHEMA}.development_boms.tenant_id",
+            f"{PRODUCT_SCHEMA}.development_boms.project_id",
+            f"{PRODUCT_SCHEMA}.development_boms.id",
+        ],
+        name="fk_sample_build_configurations_tenant_project_bom",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "sample_id", name="uq_sample_build_configurations_tenant_sample"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+sample_configuration_revisions = Table(
+    "sample_configuration_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    Column("revision_number", Integer, nullable=False),
+    Column("source", String(32), nullable=False),
+    Column("source_document_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "sample_id", "id", name="uq_sample_revision_scope"),
+    UniqueConstraint("tenant_id", "sample_id", "revision_number", name="uq_sample_revision_number"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "sample_id"],
+        [f"{PRODUCT_SCHEMA}.samples.tenant_id", f"{PRODUCT_SCHEMA}.samples.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_document_id"],
+        [f"{PROJECT_SCHEMA}.documents.tenant_id", f"{PROJECT_SCHEMA}.documents.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number > 0 AND jsonb_typeof(snapshot) = 'object' "
+        "AND content_digest ~ '^[0-9a-f]{64}$'",
+        name="content_valid",
+    ),
+    CheckConstraint(
+        "source IN ('manual', 'report_extract', 'current_observation')", name="source_allowed"
+    ),
+    CheckConstraint(
+        "source <> 'report_extract' OR source_document_id IS NOT NULL",
+        name="report_source_required",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+sample_build_configurations.append_column(Column("current_revision_id", Uuid))
+sample_build_configurations.append_constraint(
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "sample_id", "current_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.sample_configuration_revisions.{name}"
+            for name in ("tenant_id", "project_id", "sample_id", "id")
+        ],
+        name="fk_sample_configuration_current_revision",
+        ondelete="RESTRICT",
+    )
+)
+
 
 sample_signoffs = Table(
     "sample_signoffs",
@@ -1651,6 +4481,9 @@ test_plans = Table(
     Column("phase", String(8), nullable=False),
     Column("title", String(512), nullable=False),
     Column("scope", Text),
+    Column("template_snapshot", JSONB(none_as_null=True)),
+    Column("parent_plan_id", Uuid),
+    Column("source_finding_id", Uuid),
     Column("sample_size", Integer, nullable=False),
     Column("status", String(32), nullable=False, server_default=text("'draft'")),
     Column(
@@ -1667,6 +4500,10 @@ test_plans = Table(
     ),
     CheckConstraint("phase IN ('evt', 'dvt', 'pvt')", name="phase_allowed"),
     CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint(
+        "template_snapshot IS NULL OR jsonb_typeof(template_snapshot) = 'object'",
+        name="template_snapshot_object",
+    ),
     CheckConstraint("sample_size > 0", name="sample_size_positive"),
     CheckConstraint("status IN ('draft', 'active', 'completed')", name="status_allowed"),
     ForeignKeyConstraint(
@@ -1695,6 +4532,28 @@ test_plans = Table(
         name="fk_test_plans_tenant_creator",
         ondelete="RESTRICT",
     ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "parent_plan_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_plans.tenant_id",
+            f"{QUALITY_SCHEMA}.test_plans.project_id",
+            f"{QUALITY_SCHEMA}.test_plans.id",
+        ],
+        name="fk_test_plans_parent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [
+            f"{AI_SCHEMA}.findings.tenant_id",
+            f"{AI_SCHEMA}.findings.project_id",
+            f"{AI_SCHEMA}.findings.id",
+        ],
+        name="fk_test_plans_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "parent_plan_id", name="uq_test_plans_parent_revision"),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_test_plans_source_finding"),
     UniqueConstraint("tenant_id", "id", name="uq_test_plans_tenant_id_id"),
     UniqueConstraint("tenant_id", "project_id", "id", name="uq_test_plans_tenant_project_id"),
     Index(
@@ -1715,8 +4574,13 @@ test_cases = Table(
     ),
     Column("project_id", Uuid, nullable=False),
     Column("plan_id", Uuid, nullable=False),
+    Column("specification_id", Uuid),
     Column("related_issue_id", Uuid),
     Column("created_by_user_id", Uuid, nullable=False),
+    Column("template_item_key", String(128)),
+    UniqueConstraint(
+        "tenant_id", "plan_id", "template_item_key", name="uq_test_cases_tenant_plan_template_item"
+    ),
     Column("title", String(512), nullable=False),
     Column("category", String(64), nullable=False),
     Column("acceptance_criteria", Text, nullable=False),
@@ -1789,8 +4653,375 @@ test_cases = Table(
     Index(
         "ix_test_cases_tenant_project_plan_status", "tenant_id", "project_id", "plan_id", "status"
     ),
+    ForeignKeyConstraint(
+        ["tenant_id", "specification_id"],
+        [f"{PRODUCT_SCHEMA}.specifications.tenant_id", f"{PRODUCT_SCHEMA}.specifications.id"],
+        name="fk_test_cases_tenant_specification",
+        ondelete="RESTRICT",
+    ),
     schema=QUALITY_SCHEMA,
 )
+
+test_runs = Table(
+    "test_runs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("test_case_id", Uuid, nullable=False),
+    Column("sample_id", Uuid),
+    Column("sample_configuration_revision_id", Uuid),
+    Column(
+        "execution_time_precision", String(16), nullable=False, server_default=text("'unknown'")
+    ),
+    Column(
+        "execution_time_source", String(32), nullable=False, server_default=text("'legacy_unknown'")
+    ),
+    Column("operator_user_id", Uuid),
+    Column("evidence_document_id", Uuid),
+    Column("run_number", Integer, nullable=False),
+    Column("status", String(32), nullable=False, server_default=text("'planned'")),
+    Column("draft_state", String(16), nullable=False, server_default=text("'confirmed'")),
+    Column("conditions", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("metrics", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("equipment", String(256)),
+    Column("environment", String(256)),
+    Column("result_notes", Text),
+    Column("started_at", DateTime(timezone=True)),
+    Column("expected_completion_at", DateTime(timezone=True)),
+    Column("executed_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "status IN ('planned', 'in_progress', 'passed', 'failed', 'aborted')",
+        name="status_allowed",
+    ),
+    CheckConstraint("draft_state IN ('draft', 'confirmed')", name="draft_state_allowed"),
+    CheckConstraint("run_number > 0", name="run_number_positive"),
+    CheckConstraint("jsonb_typeof(conditions) = 'object'", name="conditions_object"),
+    CheckConstraint("jsonb_typeof(metrics) = 'array'", name="metrics_array"),
+    CheckConstraint(
+        "(status IN ('passed', 'failed', 'aborted') "
+        "AND (executed_at IS NOT NULL OR draft_state = 'draft')) "
+        "OR (status IN ('planned', 'in_progress') AND executed_at IS NULL)",
+        name="executed_at_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_test_runs_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "test_case_id"],
+        [f"{QUALITY_SCHEMA}.test_cases.tenant_id", f"{QUALITY_SCHEMA}.test_cases.id"],
+        name="fk_test_runs_tenant_test_case",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "sample_id"],
+        [f"{PRODUCT_SCHEMA}.samples.tenant_id", f"{PRODUCT_SCHEMA}.samples.id"],
+        name="fk_test_runs_tenant_sample",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "operator_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_runs_tenant_operator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "evidence_document_id"],
+        [f"{PROJECT_SCHEMA}.documents.tenant_id", f"{PROJECT_SCHEMA}.documents.id"],
+        name="fk_test_runs_tenant_evidence_document",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_test_runs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_test_runs_project_id"),
+    UniqueConstraint(
+        "tenant_id", "test_case_id", "run_number", name="uq_test_runs_case_run_number"
+    ),
+    Index("ix_test_runs_tenant_project_case", "tenant_id", "project_id", "test_case_id"),
+    CheckConstraint(
+        "execution_time_precision IN ('unknown', 'day', 'instant') "
+        "AND execution_time_source IN "
+        "('legacy_unknown', 'unknown', 'report', 'human', 'system_completion')",
+        name="execution_time_provenance",
+    ),
+    CheckConstraint(
+        "execution_time_precision = 'unknown' OR executed_at IS NOT NULL",
+        name="execution_time_known",
+    ),
+    CheckConstraint(
+        "sample_configuration_revision_id IS NULL OR sample_id IS NOT NULL",
+        name="revision_sample_required",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "sample_id", "sample_configuration_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.sample_configuration_revisions.{name}"
+            for name in ("tenant_id", "project_id", "sample_id", "id")
+        ],
+        name="fk_test_run_configuration_revision",
+        ondelete="RESTRICT",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+import_mapping_versions = Table(
+    "import_mapping_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("template_fingerprint", String(64), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("mapping", json_type, nullable=False),
+    Column("confirmed_by_user_id", Uuid, nullable=False),
+    Column("superseded_by_id", Uuid),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("version > 0", name="version_positive"),
+    CheckConstraint("jsonb_typeof(mapping) = 'object'", name="mapping_object"),
+    ForeignKeyConstraint(
+        ["tenant_id", "confirmed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_import_mapping_versions_tenant_confirmer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "superseded_by_id"],
+        [
+            f"{QUALITY_SCHEMA}.import_mapping_versions.tenant_id",
+            f"{QUALITY_SCHEMA}.import_mapping_versions.id",
+        ],
+        name="fk_import_mapping_versions_tenant_successor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_import_mapping_versions_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "template_fingerprint",
+        "version",
+        name="uq_import_mapping_versions_fingerprint_version",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+test_report_import_batches = Table(
+    "test_report_import_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("plan_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("mapping_version_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("confirmed_by_user_id", Uuid),
+    Column("confirmed_at", DateTime(timezone=True)),
+    Column("template_fingerprint", String(64), nullable=False),
+    Column("mapping_source", String(16), nullable=False),
+    Column("proposed_mapping", json_type),
+    Column("mapping_snapshot", json_type),
+    Column("parser_version", String(64)),
+    Column("workbook_layout", String(32)),
+    Column("parent_batch_id", Uuid),
+    Column("superseded_by_batch_id", Uuid),
+    Column("remap_request_id", Uuid),
+    Column("remap_request_digest", String(64)),
+    Column("remap_reason", Text),
+    Column("status", String(32), nullable=False, server_default=text("'parsed'")),
+    Column("parse_confidence", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("created_run_ids", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("skipped_rows", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("status IN ('parsed', 'confirmed', 'failed')", name="status_allowed"),
+    CheckConstraint(
+        "mapping_source IN ('mapping', 'model', 'human')", name="mapping_source_allowed"
+    ),
+    CheckConstraint("jsonb_typeof(parse_confidence) = 'object'", name="parse_confidence_object"),
+    CheckConstraint("jsonb_typeof(created_run_ids) = 'array'", name="created_run_ids_array"),
+    CheckConstraint("jsonb_typeof(skipped_rows) = 'array'", name="skipped_rows_array"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_test_report_import_batches_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "plan_id"],
+        [f"{QUALITY_SCHEMA}.test_plans.tenant_id", f"{QUALITY_SCHEMA}.test_plans.id"],
+        name="fk_test_report_import_batches_tenant_plan",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "document_id"],
+        [f"{PROJECT_SCHEMA}.documents.tenant_id", f"{PROJECT_SCHEMA}.documents.id"],
+        name="fk_test_report_import_batches_tenant_document",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "mapping_version_id"],
+        [
+            f"{QUALITY_SCHEMA}.import_mapping_versions.tenant_id",
+            f"{QUALITY_SCHEMA}.import_mapping_versions.id",
+        ],
+        name="fk_test_report_import_batches_tenant_mapping",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_test_report_import_batches_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_test_report_import_batches_tenant_id_id"),
+    Index(
+        "ix_test_report_import_batches_tenant_project",
+        "tenant_id",
+        "project_id",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "confirmed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_import_batch_confirmer",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(confirmed_by_user_id IS NULL AND confirmed_at IS NULL) "
+        "OR (status='confirmed' AND confirmed_by_user_id IS NOT NULL AND confirmed_at IS NOT NULL)",
+        name="confirmation_receipt",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "parent_batch_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_report_import_batches.tenant_id",
+            f"{QUALITY_SCHEMA}.test_report_import_batches.id",
+        ],
+        name="fk_import_parent_batch",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "superseded_by_batch_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_report_import_batches.tenant_id",
+            f"{QUALITY_SCHEMA}.test_report_import_batches.id",
+        ],
+        name="fk_import_successor_batch",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "parent_batch_id", "remap_request_id", name="uq_import_remap_request"
+    ),
+    CheckConstraint(
+        "mapping_snapshot IS NULL OR jsonb_typeof(mapping_snapshot) = 'object'",
+        name="mapping_snapshot_object",
+    ),
+    CheckConstraint(
+        "(parent_batch_id IS NULL AND remap_request_id IS NULL "
+        "AND remap_request_digest IS NULL AND remap_reason IS NULL) OR "
+        "(parent_batch_id IS NOT NULL AND remap_request_id IS NOT NULL "
+        "AND remap_request_digest IS NOT NULL AND remap_reason IS NOT NULL "
+        "AND remap_request_digest ~ '^[0-9a-f]{64}$' "
+        "AND length(trim(remap_reason)) BETWEEN 1 AND 2000)",
+        name="remap_receipt",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+
+test_import_sample_resolutions = Table(
+    "test_import_sample_resolutions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("batch_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    Column("run_ids", json_type, nullable=False),
+    Column("created_sample", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "batch_id", "request_id", name="uq_import_sample_resolution_request"
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_import_sample_resolution_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "batch_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_report_import_batches.tenant_id",
+            f"{QUALITY_SCHEMA}.test_report_import_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "sample_id"],
+        [
+            f"{PRODUCT_SCHEMA}.samples.tenant_id",
+            f"{PRODUCT_SCHEMA}.samples.project_id",
+            f"{PRODUCT_SCHEMA}.samples.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(run_ids) = 'array' AND jsonb_array_length(run_ids) BETWEEN 1 AND 100",
+        name="run_ids_valid",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND length(trim(reason)) BETWEEN 1 AND 2000",
+        name="input_valid",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
 
 test_case_samples = Table(
     "test_case_samples",
@@ -1936,6 +5167,47 @@ certifications = Table(
     Column("valid_from", Date),
     Column("valid_until", Date),
     Column("evidence_reference", Text),
+    Column("replaces_certification_id", Uuid),
+    Column("recertification_reason", Text),
+    Column("recertification_request_id", Uuid),
+    Column("recertification_request_digest", String(64)),
+    Column("recertification_source_digest", String(64)),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "recertification_request_id",
+        name="uq_certification_recertification_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "replaces_certification_id"],
+        [
+            f"{QUALITY_SCHEMA}.certifications.tenant_id",
+            f"{QUALITY_SCHEMA}.certifications.project_id",
+            f"{QUALITY_SCHEMA}.certifications.id",
+        ],
+        name="fk_certification_previous",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "(replaces_certification_id IS NULL AND recertification_reaso"
+            "n IS NULL AND recertification_request_id IS NULL AND recerti"
+            "fication_request_digest IS NULL AND recertification_source_d"
+            "igest IS NULL) OR (replaces_certification_id IS NOT NULL AND"
+            " replaces_certification_id<>id AND recertification_reason IS"
+            " NOT NULL AND length(btrim(recertification_reason))>0 AND re"
+            "certification_request_id IS NOT NULL AND recertification_req"
+            "uest_digest IS NOT NULL AND recertification_source_digest IS"
+            " NOT NULL)"
+        ),
+        name="recertification_provenance",
+    ),
+    Column("started_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    CheckConstraint(
+        "completed_at IS NULL OR (started_at IS NOT NULL AND completed_at>=started_at)",
+        name="certification_execution_order",
+    ),
     Column(
         "created_at",
         DateTime(timezone=True),
@@ -2297,6 +5569,1114 @@ nonconformance_reports = Table(
     schema=QUALITY_SCHEMA,
 )
 
+supplier_notice_scans = Table(
+    "supplier_notice_scans",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("watch_id", Uuid, nullable=False),
+    Column("watch_revision_id", Uuid, nullable=False),
+    Column("subscription_id", Uuid, nullable=False),
+    Column("snapshot_id", Uuid, nullable=False),
+    Column("collection_run_id", Uuid, nullable=False),
+    Column("policy_version", String(80), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("outcome", String(16), nullable=False),
+    Column("matches", JSONB, nullable=False),
+    Column("full_part_hits", Integer, nullable=False),
+    Column("truncated", Boolean, nullable=False),
+    Column("coverage", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supplier_notice_scan_scope"),
+    UniqueConstraint(
+        "watch_revision_id", "snapshot_id", "policy_version", name="uq_notice_scan_input"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_notice_scan_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watches.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_revision_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watch_revisions.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "subscription_id"],
+        [f"{EVIDENCE_SCHEMA}.research_subscriptions.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [f"{EVIDENCE_SCHEMA}.evidence_snapshots.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "collection_run_id"],
+        [f"{EVIDENCE_SCHEMA}.research_collection_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "outcome IN ('matched','no_match') AND full_part_hits>=0 "
+        "AND jsonb_typeof(matches)='array' AND jsonb_array_length(matches)<=50 "
+        "AND (outcome='matched')=(jsonb_array_length(matches)>0) "
+        "AND jsonb_typeof(source_snapshot)='object' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+supplier_notice_dispatches = Table(
+    "supplier_notice_dispatches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("watch_id", Uuid, nullable=False),
+    Column("watch_revision_id", Uuid, nullable=False),
+    Column("watch_version", Integer, nullable=False),
+    Column("subscription_id", Uuid, nullable=False),
+    Column("snapshot_id", Uuid, nullable=False),
+    Column("collection_run_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("policy_version", String(80), nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("attempts", Integer, nullable=False),
+    Column("scan_id", Uuid),
+    Column("last_error_code", String(80)),
+    Column("last_error_message", Text),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("updated_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "watch_revision_id", "snapshot_id", "policy_version", name="uq_notice_dispatch_input"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watches.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_revision_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watch_revisions.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scan_id"],
+        [f"{SUPPLIER_SCHEMA}.supplier_notice_scans.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "subscription_id"],
+        [f"{EVIDENCE_SCHEMA}.research_subscriptions.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [f"{EVIDENCE_SCHEMA}.evidence_snapshots.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "collection_run_id"],
+        [f"{EVIDENCE_SCHEMA}.research_collection_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "status IN ('queued','completed','blocked','cancelled') AND attempts>=0 "
+        "AND watch_version>0 AND (status='completed')=(scan_id IS NOT NULL) "
+        "AND policy_version='supplier-notice-literal-v1'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+Index(
+    "ix_notice_dispatch_queue",
+    supplier_notice_dispatches.c.created_at,
+    supplier_notice_dispatches.c.id,
+    postgresql_where=supplier_notice_dispatches.c.status == "queued",
+)
+supplier_notice_candidates = Table(
+    "supplier_notice_candidates",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("watch_id", Uuid, nullable=False),
+    Column("first_scan_id", Uuid, nullable=False),
+    Column("watch_revision_id", Uuid, nullable=False),
+    Column("snapshot_id", Uuid, nullable=False),
+    Column("origin_digest", String(64), nullable=False),
+    Column("scope_digest", String(64), nullable=False),
+    Column("evidence", JSONB, nullable=False),
+    Column("state", String(24), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_notice_candidate_scope"),
+    UniqueConstraint("watch_id", "origin_digest", name="uq_notice_candidate_origin"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watches.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "first_scan_id"],
+        [f"{SUPPLIER_SCHEMA}.supplier_notice_scans.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_revision_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watch_revisions.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [f"{EVIDENCE_SCHEMA}.evidence_snapshots.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "origin_digest ~ '^[a-f0-9]{64}$' AND scope_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(evidence)='object' AND state='pending_review'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+supplier_notice_applications = Table(
+    "supplier_notice_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("review_id", Uuid, nullable=False),
+    Column("notice_key", String(64), nullable=False),
+    Column("target_kind", String(16), nullable=False),
+    Column("issue_id", Uuid),
+    Column("ecr_id", Uuid),
+    Column("linked_from_id", Uuid),
+    Column("command", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_notice_application_scope"),
+    UniqueConstraint("candidate_id", "target_kind", name="uq_notice_application_candidate_kind"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_notice_application_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "candidate_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_candidates.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "review_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_reviews.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "linked_from_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_applications.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "((target_kind='issue' AND issue_id IS NOT NULL AND ecr_id IS NULL) OR "
+        "(target_kind='ecr' AND ecr_id IS NOT NULL AND issue_id IS NULL)) "
+        "AND jsonb_typeof(command)='object' AND jsonb_typeof(snapshot)='object' "
+        "AND notice_key ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+Index(
+    "uq_notice_application_canonical",
+    supplier_notice_applications.c.tenant_id,
+    supplier_notice_applications.c.project_id,
+    supplier_notice_applications.c.notice_key,
+    supplier_notice_applications.c.target_kind,
+    unique=True,
+    postgresql_where=supplier_notice_applications.c.linked_from_id.is_(None),
+)
+supplier_notice_reviews = Table(
+    "supplier_notice_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("decision", String(24), nullable=False),
+    Column("review", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_notice_review_scope"),
+    UniqueConstraint("candidate_id", "version", name="uq_notice_review_version"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_notice_review_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "candidate_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_candidates.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND decision IN ('accepted','excluded','needs_info') "
+        "AND jsonb_typeof(review)='object' AND jsonb_typeof(snapshot)='object' "
+        "AND source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+supplier_notice_watches = Table(
+    "supplier_notice_watches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("subscription_id", Uuid, nullable=False),
+    Column("bom_id", Uuid, nullable=False),
+    Column("bom_item_id", Uuid, nullable=False),
+    Column("manufacturer", String(128), nullable=False),
+    Column("manufacturer_part_number", String(128), nullable=False),
+    Column("manufacturer_part_key", String(128), nullable=False),
+    Column("active", Boolean, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("command", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("updated_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supplier_notice_watch_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "subscription_id",
+        "bom_item_id",
+        "manufacturer_part_key",
+        name="uq_supplier_notice_watch_mapping",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "subscription_id"],
+        [f"{EVIDENCE_SCHEMA}.research_subscriptions.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "bom_id"],
+        [f"{PRODUCT_SCHEMA}.development_boms.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "bom_id", "bom_item_id"],
+        [f"{PRODUCT_SCHEMA}.development_bom_items.{k}" for k in ("tenant_id", "bom_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(manufacturer)<>'' AND btrim(manufacturer_part_number)<>'' "
+        "AND source_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(command)='object' "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+supplier_notice_watch_revisions = Table(
+    "supplier_notice_watch_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("watch_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("command", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supplier_notice_revision_scope"),
+    UniqueConstraint("watch_id", "version", name="uq_supplier_notice_watch_version"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_supplier_watch_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "watch_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_notice_watches.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND source_digest ~ '^[a-f0-9]{64}$' "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(command)='object' "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+cost_discussion_inputs = Table(
+    "cost_discussion_inputs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("discussion_run_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("brief_digest", String(64), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", name="uq_cost_discussion_input_run"),
+    UniqueConstraint("tenant_id", "discussion_run_id", name="uq_cost_discussion_input_source"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        name="fk_cost_discussion_analysis",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "discussion_run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.{k}" for k in ("tenant_id", "run_id")],
+        name="fk_cost_discussion_original",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        name="fk_cost_discussion_project",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND brief_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(body)='object'",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+cost_reduction_applications = Table(
+    "cost_reduction_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("review", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_reduction_scope"),
+    UniqueConstraint("finding_id", name="uq_cost_reduction_finding"),
+    UniqueConstraint("tenant_id", "project_id", "source_digest", name="uq_cost_reduction_input"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(review)='object' AND jsonb_typeof(source_snapshot)='object'",
+        name="shape",
+    ),
+    schema=COST_SCHEMA,
+)
+cost_reduction_items = Table(
+    "cost_reduction_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("application_id", Uuid, nullable=False),
+    Column("proposal_key", String(80), nullable=False),
+    Column("alternative_id", Uuid, nullable=False),
+    UniqueConstraint("application_id", "proposal_key", name="uq_cost_reduction_item_key"),
+    UniqueConstraint("alternative_id", name="uq_cost_reduction_alternative"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_cost_reduction_item_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "application_id"],
+        [
+            f"{COST_SCHEMA}.cost_reduction_applications.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "alternative_id"],
+        [f"{COST_SCHEMA}.cost_alternatives.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(proposal_key)<>''",
+        name="shape",
+    ),
+    schema=COST_SCHEMA,
+)
+
+supplier_recovery_applications = Table(
+    "supplier_recovery_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("review", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supplier_recovery_scope"),
+    UniqueConstraint("finding_id", name="uq_supplier_recovery_finding"),
+    UniqueConstraint("tenant_id", "project_id", "source_digest", name="uq_supplier_recovery_input"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(review)='object' AND jsonb_typeof(source_snapshot)='object'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+supplier_recovery_items = Table(
+    "supplier_recovery_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("application_id", Uuid, nullable=False),
+    Column("proposal_key", String(80), nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    UniqueConstraint("application_id", "proposal_key", name="uq_supplier_recovery_item_key"),
+    UniqueConstraint("task_id", name="uq_supplier_recovery_task"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supplier_recovery_item_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "application_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_recovery_applications.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [f"{PROJECT_SCHEMA}.tasks.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(proposal_key)<>''",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+supplier_recovery_results = Table(
+    "supplier_recovery_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("item_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("response_to_review_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("report", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supply_result_scope"),
+    UniqueConstraint("item_id", "version", name="uq_supply_result_version"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_supply_result_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "item_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_recovery_items.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND source_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(report)='object'",
+        name="shape",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "response_to_review_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_recovery_reviews.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+supplier_recovery_reviews = Table(
+    "supplier_recovery_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("item_id", Uuid, nullable=False),
+    Column("result_id", Uuid, nullable=False),
+    Column("decision", String(24), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("review", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_supply_result_review_scope"),
+    UniqueConstraint("result_id", name="uq_supply_result_review_once"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_supply_review_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "item_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_recovery_items.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "result_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.supplier_recovery_results.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "decision IN ('confirmed','returned') AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(review)='object' AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    schema=SUPPLIER_SCHEMA,
+)
+
+quality_work_package_applications = Table(
+    "quality_work_package_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ncr_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("phase", String(32), nullable=False),
+    Column("review", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_quality_package_scope"),
+    UniqueConstraint("finding_id", name="uq_quality_package_finding"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "ncr_id", "source_digest", name="uq_quality_package_input"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [f"{QUALITY_SCHEMA}.nonconformance_reports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND phase IN ('investigation','actions') "
+        "AND jsonb_typeof(review)='object' AND jsonb_typeof(source_snapshot)='object'",
+        name="shape",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+quality_work_package_items = Table(
+    "quality_work_package_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("application_id", Uuid, nullable=False),
+    Column("proposal_key", String(80), nullable=False),
+    Column("task_id", Uuid),
+    Column("capa_action_id", Uuid),
+    UniqueConstraint("application_id", "proposal_key", name="uq_quality_package_item_key"),
+    UniqueConstraint("task_id", name="uq_quality_package_task"),
+    UniqueConstraint("capa_action_id", name="uq_quality_package_capa"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "application_id"],
+        [
+            f"{QUALITY_SCHEMA}.quality_work_package_applications.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [f"{PROJECT_SCHEMA}.tasks.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "capa_action_id"],
+        [f"{QUALITY_SCHEMA}.capa_actions.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(proposal_key)<>'' AND ((task_id IS NOT NULL AND capa_action_id IS NULL) "
+        "OR (task_id IS NULL AND capa_action_id IS NOT NULL))",
+        name="shape",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+quality_operation_receipts = Table(
+    "quality_operation_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ncr_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("command", JSONB, nullable=False),
+    Column("result", JSONB, nullable=False),
+    Column("before_digest", String(64), nullable=False),
+    Column("after_digest", String(64), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_quality_operation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [f"{QUALITY_SCHEMA}.nonconformance_reports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND before_digest ~ '^[a-f0-9]{64}$' "
+        "AND after_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(command)='object' "
+        "AND jsonb_typeof(result)='object'",
+        name="shape",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+quality_issue_links = Table(
+    "quality_issue_links",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("ncr_id", Uuid, nullable=False),
+    Column("origin", String(16), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_quality_issue_link_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_quality_issue_link_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [f"{QUALITY_SCHEMA}.nonconformance_reports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "origin IN ('linked','escalated') AND btrim(reason)<>'' "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+quality_issue_link_retractions = Table(
+    "quality_issue_link_retractions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("link_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("link_id", name="uq_quality_issue_link_retracted"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_quality_link_retraction_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "link_id"],
+        [f"{QUALITY_SCHEMA}.quality_issue_links.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$'", name="shape"),
+    schema=QUALITY_SCHEMA,
+)
+
+# Deterministic review inputs; creating a candidate never changes a FMEA version.
+fmea_revision_candidates = Table(
+    "fmea_revision_candidates",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("input_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_event_row_id", BigInteger),
+    Column("created_by_user_id", Uuid),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_fmea_candidate_scope"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "issue_id", "input_digest", name="uq_fmea_candidate_input"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "input_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(snapshot)='object'", name="shape"
+    ),
+    Index("ix_fmea_candidate_project", "tenant_id", "project_id", "created_at", "id"),
+    schema=QUALITY_SCHEMA,
+)
+fmea_candidate_dispositions = Table(
+    "fmea_candidate_dispositions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("action", String(32), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("entry_id", Uuid),
+    Column("version_id", Uuid),
+    Column("excluded_sources", JSONB, nullable=False),
+    UniqueConstraint("candidate_id", name="uq_fmea_candidate_disposition"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_fmea_candidate_disposition_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "candidate_id"],
+        [
+            f"{QUALITY_SCHEMA}.fmea_revision_candidates.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "entry_id", "version_id"],
+        [
+            f"{QUALITY_SCHEMA}.fmea_versions.{k}"
+            for k in ("tenant_id", "project_id", "entry_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND btrim(reason)<>'' "
+        "AND jsonb_typeof(excluded_sources)='array' "
+        "AND ((action='draft_created' AND entry_id IS NOT NULL AND version_id IS NOT NULL) "
+        "OR (action='not_applicable' AND entry_id IS NULL AND version_id IS NULL))",
+        name="shape",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+# FMEA revisions are immutable; publication is an explicit human receipt.
+fmea_entries = Table(
+    "fmea_entries",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_fmea_entry_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+fmea_versions = Table(
+    "fmea_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("entry_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("previous_version_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("sources", JSONB, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "entry_id", "id", name="uq_fmea_version_scope"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "entry_id", "version", name="uq_fmea_version_number"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_fmea_version_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "entry_id"],
+        [f"{QUALITY_SCHEMA}.fmea_entries.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "entry_id", "previous_version_id"],
+        [
+            f"{QUALITY_SCHEMA}.fmea_versions.{k}"
+            for k in ("tenant_id", "project_id", "entry_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(body)='object' "
+        "AND jsonb_typeof(sources)='array'",
+        name="shape",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+fmea_publications = Table(
+    "fmea_publications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("entry_id", Uuid, nullable=False),
+    Column("version_id", Uuid, nullable=False),
+    Column("previous_publication_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("published_by_user_id", Uuid, nullable=False),
+    Column("published_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "entry_id", "id", name="uq_fmea_publication_scope"),
+    UniqueConstraint("version_id", name="uq_fmea_published_version"),
+    UniqueConstraint(
+        "tenant_id", "published_by_user_id", "request_id", name="uq_fmea_publication_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "entry_id", "version_id"],
+        [
+            f"{QUALITY_SCHEMA}.fmea_versions.{k}"
+            for k in ("tenant_id", "project_id", "entry_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "entry_id", "previous_publication_id"],
+        [
+            f"{QUALITY_SCHEMA}.fmea_publications.{k}"
+            for k in ("tenant_id", "project_id", "entry_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "published_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[a-f0-9]{64}$' AND btrim(reason)<>''", name="shape"),
+    schema=QUALITY_SCHEMA,
+)
+
 root_cause_analyses = Table(
     "root_cause_analyses",
     metadata,
@@ -2558,6 +6938,163 @@ effectiveness_reviews = Table(
     schema=QUALITY_SCHEMA,
 )
 
+customer_change_requests = Table(
+    "customer_change_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("customer_id", Uuid, nullable=False),
+    # The customer-tier requirement the change lands on; the impact analysis
+    # walks down from here through specifications to test cases.
+    Column("requirement_id", Uuid, nullable=False),
+    Column("received_by_user_id", Uuid, nullable=False),
+    Column("analyzed_by_user_id", Uuid),
+    Column("reply_drafted_by_user_id", Uuid),
+    Column("reply_approved_by_user_id", Uuid),
+    Column("decision_recorded_by_user_id", Uuid),
+    # A CCR may raise an internal ECR, but it never *is* one: the customer
+    # track and the engineering track stay separate objects (G18 双轨).
+    Column("engineering_change_request_id", Uuid),
+    Column("code", String(64), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("description", Text),
+    Column("status", String(32), nullable=False, server_default=text("'received'")),
+    Column("impact_analysis", json_type),
+    Column("quote_note", Text),
+    Column("lead_time_days", Integer),
+    Column("customer_decision_note", Text),
+    Column("received_at", DateTime(timezone=True), nullable=False),
+    Column("analyzed_at", DateTime(timezone=True)),
+    Column("reply_drafted_at", DateTime(timezone=True)),
+    Column("reply_approved_at", DateTime(timezone=True)),
+    Column("decided_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "status IN ('received', 'impact_analyzed', 'reply_drafted', 'reply_approved', "
+        "'accepted', 'rejected', 'cancelled')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(code) <> '' AND btrim(title) <> ''", name="code_title_nonblank"),
+    CheckConstraint(
+        "impact_analysis IS NULL OR jsonb_typeof(impact_analysis) = 'object'",
+        name="impact_analysis_object",
+    ),
+    CheckConstraint(
+        "lead_time_days IS NULL OR lead_time_days BETWEEN 0 AND 3650",
+        name="lead_time_range",
+    ),
+    # Sending a commercial answer outward is a hard gate: whoever drafted the
+    # quote cannot be the one who approves it.
+    CheckConstraint(
+        "reply_approved_by_user_id IS NULL "
+        "OR reply_approved_by_user_id <> reply_drafted_by_user_id",
+        name="reply_four_eyes",
+    ),
+    CheckConstraint(
+        "(status = 'received' AND analyzed_at IS NULL AND reply_drafted_at IS NULL "
+        "AND reply_approved_at IS NULL AND decided_at IS NULL) OR "
+        "(status = 'impact_analyzed' AND analyzed_at IS NOT NULL "
+        "AND impact_analysis IS NOT NULL AND reply_approved_at IS NULL "
+        "AND decided_at IS NULL) OR "
+        "(status = 'reply_drafted' AND reply_drafted_at IS NOT NULL "
+        "AND quote_note IS NOT NULL AND lead_time_days IS NOT NULL "
+        "AND reply_approved_at IS NULL AND decided_at IS NULL) OR "
+        "(status = 'reply_approved' AND reply_approved_at IS NOT NULL "
+        "AND reply_approved_by_user_id IS NOT NULL AND decided_at IS NULL) OR "
+        "(status IN ('accepted', 'rejected') AND decided_at IS NOT NULL "
+        "AND decision_recorded_by_user_id IS NOT NULL "
+        "AND reply_approved_at IS NOT NULL) OR "
+        "(status = 'cancelled')",
+        name="lifecycle_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_customer_change_requests_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "code", name="uq_customer_change_requests_project_code"
+    ),
+    Index(
+        "ix_customer_change_requests_tenant_project_status",
+        "tenant_id",
+        "project_id",
+        "status",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_customer_change_requests_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "customer_id"],
+        [f"{CORE_SCHEMA}.customers.tenant_id", f"{CORE_SCHEMA}.customers.id"],
+        name="fk_customer_change_requests_tenant_customer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        name="fk_customer_change_requests_tenant_requirement",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "engineering_change_request_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        name="fk_customer_change_requests_tenant_project_ecr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "received_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_customer_change_requests_tenant_receiver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "analyzed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_customer_change_requests_tenant_analyst",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reply_drafted_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_customer_change_requests_tenant_drafter",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reply_approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_customer_change_requests_tenant_approver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "decision_recorded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_customer_change_requests_tenant_recorder",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
 engineering_change_requests = Table(
     "engineering_change_requests",
     metadata,
@@ -2649,6 +7186,16 @@ engineering_change_requests = Table(
     UniqueConstraint("tenant_id", "project_id", "id", name="uq_ecrs_tenant_project_id"),
     UniqueConstraint("tenant_id", "project_id", "code", name="uq_ecrs_tenant_project_code"),
     Index("ix_ecrs_tenant_project_status", "tenant_id", "project_id", "status", "updated_at"),
+    Column("source_finding_id", Uuid),
+    UniqueConstraint(
+        "tenant_id", "source_finding_id", name="uq_engineering_change_requests_finding"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_engineering_change_requests_finding",
+        ondelete="RESTRICT",
+    ),
     schema=PRODUCT_SCHEMA,
 )
 
@@ -2992,6 +7539,12 @@ project_check_items = Table(
         name="required_text_nonblank",
     ),
     CheckConstraint("status IN ('pending', 'completed', 'not_applicable')", name="status_allowed"),
+    # V1-B6: a gate deliverable cannot be closed on a promise. The service
+    # already refuses it; this makes the guarantee structural.
+    CheckConstraint(
+        "NOT is_gate OR status <> 'completed' OR evidence_reference IS NOT NULL",
+        name="gate_completion_needs_evidence",
+    ),
     CheckConstraint(
         "(status = 'pending' AND completed_by_user_id IS NULL AND completed_at IS NULL) OR "
         "(status IN ('completed', 'not_applicable') AND completed_by_user_id IS NOT NULL "
@@ -3089,7 +7642,7 @@ gates = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "status IN ('preparing', 'reviewing', 'approved', 'rejected')",
+        "status IN ('preparing', 'reviewing', 'approved', 'conditional', 'hold', 'rejected')",
         name="status_allowed",
     ),
     ForeignKeyConstraint(
@@ -3202,6 +7755,8 @@ gate_signoff_rounds = Table(
     Column("status", String(32), nullable=False, server_default=text("'open'")),
     Column("policy_version", String(64), nullable=False),
     Column("requirements", json_type, nullable=False),
+    Column("routing_snapshot", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint("jsonb_typeof(routing_snapshot) = 'object'", name="routing_snapshot_object"),
     Column("risk_snapshot", json_type, nullable=False, server_default=text("'{}'::jsonb")),
     Column("readiness_snapshot", json_type),
     Column("opened_by_user_id", Uuid, nullable=False),
@@ -3526,8 +8081,15 @@ tasks = Table(
     Column("stage_id", Uuid),
     Column("parent_task_id", Uuid),
     Column("assignee_user_id", Uuid),
+    Column("template_fields", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint("jsonb_typeof(template_fields)='object'", name="template_fields_object"),
     Column("title", String(512), nullable=False),
     Column("description", Text),
+    Column("kind", String(32), nullable=False, server_default=text("'task'")),
+    Column("source_entity", String(64)),
+    Column("source_entity_id", Uuid),
+    Column("expected_output", Text),
+    Column("completion_evidence_ref", Text),
     Column("status", String(32), nullable=False, server_default=text("'todo'")),
     Column("blocked_reason", Text),
     Column("priority", String(16), nullable=False, server_default=text("'medium'")),
@@ -3545,6 +8107,15 @@ tasks = Table(
         DateTime(timezone=True),
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "kind IN ('task', 'meeting_action', 'issue_action', 'gate_action', "
+        "'change_action', 'risk_action')",
+        name="kind_allowed",
+    ),
+    CheckConstraint(
+        "kind = 'task' OR (source_entity IS NOT NULL AND source_entity_id IS NOT NULL)",
+        name="action_source_consistent",
     ),
     CheckConstraint(
         "status IN ('todo', 'in_progress', 'blocked', 'done', 'skipped', 'pending_approval')",
@@ -3633,6 +8204,7 @@ task_dependencies = Table(
     ),
     Column("project_id", Uuid, nullable=False),
     Column("task_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=True),
     Column("depends_on_task_id", Uuid, nullable=False),
     Column(
         "created_at",
@@ -3661,12 +8233,31 @@ task_dependencies = Table(
         name="fk_task_dependencies_tenant_project_predecessor",
         ondelete="RESTRICT",
     ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_task_dependency_baseline",
+        ondelete="RESTRICT",
+    ),
     UniqueConstraint(
+        "tenant_id",
+        "baseline_id",
+        "task_id",
+        "depends_on_task_id",
+        name="uq_task_dependency_baseline_edge",
+    ),
+    Index(
+        "uq_task_dependency_manual_edge",
         "tenant_id",
         "project_id",
         "task_id",
         "depends_on_task_id",
-        name="uq_task_dependencies_tenant_project_edge",
+        unique=True,
+        postgresql_where=text("baseline_id IS NULL"),
     ),
     Index(
         "ix_task_dependencies_tenant_project_predecessor",
@@ -3691,13 +8282,23 @@ issues = Table(
     Column("workflow_id", Uuid),
     Column("stage_id", Uuid),
     Column("owner_user_id", Uuid),
+    Column("verifier_user_id", Uuid),
+    # Which physical unit the defect was found on (V1-B2): a defect on one
+    # build configuration is not the same finding as one on another.
+    Column("sample_id", Uuid),
     Column("reported_by_user_id", Uuid),
     Column("title", String(512), nullable=False),
     Column("description", Text),
+    Column("issue_type", String(32), nullable=False, server_default=text("'engineering'")),
     Column("status", String(32), nullable=False, server_default=text("'open'")),
     Column("severity", String(16), nullable=False, server_default=text("'medium'")),
+    Column("template_fields", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint("jsonb_typeof(template_fields) = 'object'", name="template_fields_object"),
     Column("root_cause", Text),
     Column("resolution", Text),
+    Column("closure_criteria", Text),
+    Column("closure_evidence_ref", Text),
+    Column("reopen_count", SmallInteger, nullable=False, server_default=text("0")),
     Column("target_date", Date),
     Column("closed_at", DateTime(timezone=True)),
     Column(
@@ -3717,6 +8318,16 @@ issues = Table(
         name="status_allowed",
     ),
     CheckConstraint("severity IN ('low', 'medium', 'high', 'critical')", name="severity_allowed"),
+    CheckConstraint(
+        "issue_type IN ('engineering', 'quality', 'supplier', 'test_failure', 'certification')",
+        name="issue_type_allowed",
+    ),
+    CheckConstraint("reopen_count >= 0", name="reopen_count_nonnegative"),
+    CheckConstraint(
+        "NOT (severity IN ('high', 'critical') AND owner_user_id IS NOT NULL "
+        "AND verifier_user_id IS NOT NULL AND owner_user_id = verifier_user_id)",
+        name="four_eyes_distinct",
+    ),
     CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
     CheckConstraint(
         "(status = 'closed' AND closed_at IS NOT NULL) "
@@ -3761,12 +8372,28 @@ issues = Table(
         ondelete="RESTRICT",
     ),
     ForeignKeyConstraint(
+        ["tenant_id", "verifier_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_issues_tenant_verifier",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
         ["tenant_id", "reported_by_user_id"],
         [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
         name="fk_issues_tenant_reporter",
         ondelete="RESTRICT",
     ),
     UniqueConstraint("tenant_id", "id", name="uq_issues_tenant_id_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "sample_id"],
+        [
+            f"{PRODUCT_SCHEMA}.samples.tenant_id",
+            f"{PRODUCT_SCHEMA}.samples.project_id",
+            f"{PRODUCT_SCHEMA}.samples.id",
+        ],
+        name="fk_issues_tenant_project_sample",
+        ondelete="RESTRICT",
+    ),
     UniqueConstraint("tenant_id", "project_id", "id", name="uq_issues_tenant_project_id"),
     Index(
         "ix_issues_tenant_project_status_severity",
@@ -3776,6 +8403,14 @@ issues = Table(
         "severity",
     ),
     Index("ix_issues_tenant_project_updated", "tenant_id", "project_id", "updated_at", "id"),
+    Column("source_finding_id", Uuid),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_issues_finding"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_issues_finding",
+        ondelete="RESTRICT",
+    ),
     schema=PROJECT_SCHEMA,
 )
 
@@ -3793,11 +8428,19 @@ risks = Table(
     Column("owner_user_id", Uuid),
     Column("title", String(512), nullable=False),
     Column("description", Text),
+    Column("template_fields", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint("jsonb_typeof(template_fields) = 'object'", name="template_fields_object"),
     Column("status", String(32), nullable=False, server_default=text("'open'")),
     Column("likelihood", SmallInteger, nullable=False, server_default=text("1")),
     Column("impact", SmallInteger, nullable=False, server_default=text("1")),
     Column("mitigation_plan", Text),
     Column("contingency_plan", Text),
+    Column("draft_state", String(16), nullable=False, server_default=text("'confirmed'")),
+    Column("origin_key", String(128)),
+    Column("rule_key", String(64)),
+    Column("source_entity", String(64)),
+    Column("source_entity_id", Uuid),
+    Column("dismissed_at", DateTime(timezone=True)),
     Column("target_date", Date),
     Column("closed_at", DateTime(timezone=True)),
     Column(
@@ -3814,6 +8457,22 @@ risks = Table(
     ),
     CheckConstraint(
         "status IN ('open', 'mitigating', 'watching', 'closed')", name="status_allowed"
+    ),
+    CheckConstraint("draft_state IN ('draft', 'confirmed', 'cleared')", name="draft_state_allowed"),
+    CheckConstraint(
+        "origin_key IS NOT NULL OR draft_state = 'confirmed'",
+        name="manual_risks_confirmed",
+    ),
+    CheckConstraint(
+        "dismissed_at IS NULL OR draft_state = 'cleared'",
+        name="dismissed_only_when_cleared",
+    ),
+    Index(
+        "uq_risks_tenant_origin_key",
+        "tenant_id",
+        "origin_key",
+        unique=True,
+        postgresql_where=text("origin_key IS NOT NULL"),
     ),
     CheckConstraint("likelihood BETWEEN 1 AND 5", name="likelihood_range"),
     CheckConstraint("impact BETWEEN 1 AND 5", name="impact_range"),
@@ -3839,6 +8498,14 @@ risks = Table(
     Index("ix_risks_tenant_project_status", "tenant_id", "project_id", "status"),
     Index("ix_risks_tenant_target_date", "tenant_id", "target_date"),
     Index("ix_risks_tenant_project_updated", "tenant_id", "project_id", "updated_at", "id"),
+    Column("source_finding_id", Uuid),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_risks_finding"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_risks_finding",
+        ondelete="RESTRICT",
+    ),
     schema=PROJECT_SCHEMA,
 )
 
@@ -3857,10 +8524,37 @@ decisions = Table(
     Column("project_id", Uuid),
     Column("gate_id", Uuid),
     Column("decided_by_user_id", Uuid),
+    Column("owner_user_id", Uuid),
+    Column("approver_user_id", Uuid),
+    Column("issue_id", Uuid),
     Column("decision_kind", String(64), nullable=False),
     Column("title", String(512), nullable=False),
+    Column("context", Text),
+    Column("historical_source", JSONB),
+    Column("options", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("trade_offs", Text),
     Column("outcome", Text, nullable=False),
     Column("rationale", Text),
+    Column("consequence", Text),
+    Column("evidence_refs", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("follow_up_state", String(16), nullable=False, server_default=text("'none'")),
+    Column("follow_up_note", Text),
+    Column("follow_up_task_id", Uuid),
+    Column(
+        "follow_up_audit_id",
+        BigInteger,
+        ForeignKey(f"{AUDIT_SCHEMA}.audit_log.id", ondelete="RESTRICT"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "follow_up_task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        name="fk_decisions_tenant_project_follow_up_task",
+        ondelete="RESTRICT",
+    ),
     Column(
         "decided_at",
         DateTime(timezone=True),
@@ -3885,6 +8579,55 @@ decisions = Table(
         name="subject_present",
     ),
     CheckConstraint("gate_id IS NULL OR project_id IS NOT NULL", name="gate_requires_project"),
+    CheckConstraint("issue_id IS NULL OR project_id IS NOT NULL", name="issue_requires_project"),
+    CheckConstraint(
+        "decision_kind IN ('requirement_to_development_case', 'gate_review', "
+        "'ecr_approval', 'ecn_effectivity', 'technical_choice', 'supplier_choice', "
+        "'process_decision', 'debate_brief', 'rebaseline', 'definition_release', "
+        "'ccr_response', 'historical_record')",
+        name="decision_kind_allowed",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_decisions_tenant_project_id"),
+    CheckConstraint(
+        "(historical_source IS NULL AND decision_kind <> 'historical_record') OR "
+        "(historical_source IS NOT NULL AND jsonb_typeof(historical_source)='object' "
+        "AND historical_source ?& ARRAY['source_row_id','document_id',"
+        "'reviewed_by_user_id','review_note'] "
+        "AND decision_kind='historical_record' AND project_id IS NOT NULL "
+        "AND decided_by_user_id IS NULL AND approver_user_id IS NULL AND owner_user_id IS NULL "
+        "AND gate_id IS NULL AND issue_id IS NULL AND requirement_id IS NULL "
+        "AND development_case_id IS NULL AND source_finding_id IS NULL "
+        "AND follow_up_state='none' AND follow_up_task_id IS NULL AND follow_up_audit_id IS NULL)",
+        name="historical_record",
+    ),
+    CheckConstraint("jsonb_typeof(options) = 'array'", name="options_array"),
+    CheckConstraint("jsonb_typeof(evidence_refs) = 'array'", name="evidence_refs_array"),
+    CheckConstraint(
+        "follow_up_state IN ('none', 'pending', 'completed')",
+        name="follow_up_state_allowed",
+    ),
+    CheckConstraint(
+        "(follow_up_state = 'none') = (follow_up_note IS NULL)",
+        name="follow_up_note_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_decisions_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_decisions_tenant_approver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.tenant_id", f"{PROJECT_SCHEMA}.issues.id"],
+        name="fk_decisions_tenant_issue",
+        ondelete="RESTRICT",
+    ),
     ForeignKeyConstraint(
         ["tenant_id", "requirement_id"],
         [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
@@ -3924,6 +8667,14 @@ decisions = Table(
     ),
     UniqueConstraint("tenant_id", "id", name="uq_decisions_tenant_id_id"),
     Index("ix_decisions_tenant_project_decided", "tenant_id", "project_id", "decided_at"),
+    Column("source_finding_id", Uuid),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_decision_source_finding"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_source_finding",
+        ondelete="RESTRICT",
+    ),
     schema=PROJECT_SCHEMA,
 )
 
@@ -3940,10 +8691,19 @@ memories = Table(
     Column("project_id", Uuid, nullable=False),
     Column("source_finding_id", Uuid),
     Column("source_ncr_id", Uuid),
+    Column("source_issue_id", Uuid),
     Column("created_by_user_id", Uuid, nullable=False),
+    Column("last_edited_by_user_id", Uuid),
     Column("verified_by_user_id", Uuid),
     Column("archived_by_user_id", Uuid),
     Column("title", String(512), nullable=False),
+    Column("knowledge_kind", String(32)),
+    CheckConstraint(
+        "knowledge_kind IS NULL OR knowledge_kind IN "
+        "('design_rule','failure_case','supplier_experience','benchmark')",
+        name="knowledge_kind_allowed",
+    ),
+    Index("ix_memories_project_kind", "tenant_id", "project_id", "knowledge_kind"),
     Column("content", Text, nullable=False),
     Column("applicability", Text),
     Column("tags", json_type, nullable=False, server_default=text("'[]'::jsonb")),
@@ -3970,7 +8730,9 @@ memories = Table(
     CheckConstraint("jsonb_typeof(tags) = 'array'", name="tags_array"),
     CheckConstraint("jsonb_typeof(source_refs) = 'array'", name="source_refs_array"),
     CheckConstraint(
-        "source_finding_id IS NULL OR source_ncr_id IS NULL",
+        "(CASE WHEN source_finding_id IS NULL THEN 0 ELSE 1 END) "
+        "+ (CASE WHEN source_ncr_id IS NULL THEN 0 ELSE 1 END) "
+        "+ (CASE WHEN source_issue_id IS NULL THEN 0 ELSE 1 END) <= 1",
         name="source_mutually_exclusive",
     ),
     CheckConstraint(
@@ -4013,6 +8775,16 @@ memories = Table(
         ondelete="RESTRICT",
     ),
     ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_issue_id"],
+        [
+            f"{PROJECT_SCHEMA}.issues.tenant_id",
+            f"{PROJECT_SCHEMA}.issues.project_id",
+            f"{PROJECT_SCHEMA}.issues.id",
+        ],
+        name="fk_memories_tenant_project_issue",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
         ["tenant_id", "created_by_user_id"],
         [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
         name="fk_memories_tenant_creator",
@@ -4034,7 +8806,20 @@ memories = Table(
     UniqueConstraint("tenant_id", "project_id", "id", name="uq_memories_tenant_project_id"),
     UniqueConstraint("tenant_id", "source_finding_id", name="uq_memories_tenant_finding"),
     UniqueConstraint("tenant_id", "source_ncr_id", name="uq_memories_tenant_ncr"),
+    # One candidate per Issue: reopen-then-reclose must not duplicate it.
+    UniqueConstraint("tenant_id", "source_issue_id", name="uq_memories_tenant_issue"),
     Index("ix_memories_tenant_project_status", "tenant_id", "project_id", "status", "updated_at"),
+    ForeignKeyConstraint(
+        ["tenant_id", "last_edited_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_memories_last_editor",
+    ),
+    CheckConstraint(
+        "last_edited_by_user_id IS NULL OR verified_by_user_id IS NULL OR "
+        "last_edited_by_user_id <> verified_by_user_id",
+        name="editor_four_eyes",
+    ),
     schema=MEMORY_SCHEMA,
 )
 
@@ -4098,6 +8883,381 @@ memory_embeddings = Table(
         "provider",
         "model",
         "dimensions",
+    ),
+    schema=MEMORY_SCHEMA,
+)
+
+knowledge_pushes = Table(
+    "knowledge_pushes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    # The project the push was surfaced *into*; the memory itself may come from
+    # another project, which is the whole point of organizational knowledge.
+    Column("project_id", Uuid, nullable=False),
+    Column("memory_id", Uuid, nullable=False),
+    Column("context_kind", String(32), nullable=False),
+    Column("context_sha256", String(64)),
+    Column("context_entity_id", Uuid, nullable=False),
+    Column("rank", SmallInteger, nullable=False),
+    Column("similarity_basis_points", Integer, nullable=False),
+    Column("pushed_at", DateTime(timezone=True), nullable=False),
+    Column("engaged_at", DateTime(timezone=True)),
+    Column("engaged_by_user_id", Uuid),
+    CheckConstraint(
+        "context_kind IN ('project_kickoff', 'change_request', 'part_selection', 'task_takeover')",
+        name="context_kind_allowed",
+    ),
+    CheckConstraint("rank BETWEEN 1 AND 20", name="rank_range"),
+    CheckConstraint(
+        "similarity_basis_points BETWEEN -10000 AND 10000",
+        name="similarity_range",
+    ),
+    CheckConstraint(
+        "(engaged_at IS NULL AND engaged_by_user_id IS NULL) OR "
+        "(engaged_at IS NOT NULL AND engaged_by_user_id IS NOT NULL)",
+        name="engagement_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_knowledge_pushes_tenant_id_id"),
+    # De-noising: one push per (context occurrence, memory). Re-running the
+    # retrieval must not re-surface what someone already saw and skipped.
+    UniqueConstraint(
+        "tenant_id",
+        "context_kind",
+        "context_entity_id",
+        "memory_id",
+        "context_sha256",
+        name="uq_knowledge_pushes_context_memory",
+    ),
+    Index(
+        "ix_knowledge_pushes_tenant_context",
+        "tenant_id",
+        "context_kind",
+        "context_entity_id",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_knowledge_pushes_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "memory_id"],
+        [f"{MEMORY_SCHEMA}.memories.tenant_id", f"{MEMORY_SCHEMA}.memories.id"],
+        name="fk_knowledge_pushes_tenant_memory",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "engaged_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_knowledge_pushes_tenant_engager",
+        ondelete="RESTRICT",
+    ),
+    schema=MEMORY_SCHEMA,
+)
+
+task_takeover_packets = Table(
+    "task_takeover_packets",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("submission_id", Uuid),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("basis", JSON, nullable=False),
+    Column("payload", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint("revision>0", name="revision_positive"),
+    CheckConstraint("action IN ('submitted','accepted','returned')", name="action_allowed"),
+    CheckConstraint(
+        "(action='submitted' AND submission_id IS NULL AND "
+        "actor_user_id<>receiver_user_id) OR (action IN ('accepted','returned') AND "
+        "submission_id IS NOT NULL AND actor_user_id=receiver_user_id)",
+        name="action_consistent",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_task_takeover_scope"),
+    UniqueConstraint("tenant_id", "task_id", "revision", name="uq_task_takeover_revision"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_task_takeover_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        name="fk_task_takeover_task",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_task_takeover_actor",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_task_takeover_receiver",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "submission_id"],
+        [
+            f"{PROJECT_SCHEMA}.task_takeover_packets.tenant_id",
+            f"{PROJECT_SCHEMA}.task_takeover_packets.project_id",
+            f"{PROJECT_SCHEMA}.task_takeover_packets.id",
+        ],
+        name="fk_task_takeover_submission",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+knowledge_reuse_jobs = Table(
+    "knowledge_reuse_jobs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("recipient_user_id", Uuid, nullable=False),
+    Column("context_kind", String(32), nullable=False),
+    Column("context_entity_id", Uuid, nullable=False),
+    Column("context_sha256", String(64), nullable=False),
+    Column("query_text", Text, nullable=False),
+    Column("source_audit_id", BigInteger, nullable=False),
+    Column("state", String(16), nullable=False),
+    Column("embedding_receipt", JSON),
+    Column("push_ids", JSON, nullable=False),
+    Column("reason", String(128)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("updated_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint(
+        "context_kind IN ('project_kickoff','part_selection','change_request','task_takeover')",
+        name="context_allowed",
+    ),
+    CheckConstraint(
+        "state IN ('pending','running','ready','empty','stale','failed','uncertain')",
+        name="state_allowed",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "recipient_user_id",
+        "context_kind",
+        "context_entity_id",
+        "context_sha256",
+        name="uq_knowledge_reuse_context",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_knowledge_reuse_project",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_knowledge_reuse_recipient",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_audit_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        name="fk_knowledge_reuse_audit",
+    ),
+    Index("ix_knowledge_reuse_pending", "state", "created_at"),
+    schema=MEMORY_SCHEMA,
+)
+
+knowledge_push_feedback = Table(
+    "knowledge_push_feedback",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("push_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("memory_content_sha256", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint("action IN ('adopted', 'not_useful')", name="action_allowed"),
+    CheckConstraint("length(btrim(reason)) BETWEEN 1 AND 5000", name="reason_present"),
+    UniqueConstraint("tenant_id", "push_id", "actor_user_id", name="uq_knowledge_feedback_actor"),
+    ForeignKeyConstraint(
+        ["tenant_id", "push_id"],
+        [f"{MEMORY_SCHEMA}.knowledge_pushes.tenant_id", f"{MEMORY_SCHEMA}.knowledge_pushes.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_feedback_push",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_feedback_actor",
+    ),
+    schema=MEMORY_SCHEMA,
+)
+
+knowledge_corrections = Table(
+    "knowledge_corrections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_memory_id", Uuid, nullable=False),
+    Column("proposer_user_id", Uuid, nullable=False),
+    Column("source_content_sha256", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("proposal", JSONB, nullable=False),
+    Column("proposal_sha256", String(64), nullable=False),
+    Column("source_selections", JSONB),
+    Column("proposed_source_refs", JSONB),
+    Column("reason", Text, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("replacement_memory_id", Uuid),
+    Column("reviewed_by_user_id", Uuid),
+    Column("review_reason", Text),
+    Column("reviewed_at", DateTime(timezone=True)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint(
+        "(source_selections IS NULL AND proposed_source_refs IS NULL) OR "
+        "(source_selections IS NOT NULL AND proposed_source_refs IS NOT NULL AND "
+        "jsonb_typeof(source_selections)='array' AND "
+        "jsonb_typeof(proposed_source_refs)='array' AND "
+        "jsonb_array_length(source_selections) BETWEEN 1 AND 20 AND "
+        "jsonb_array_length(source_selections)=jsonb_array_length(proposed_source_refs))",
+        name="source_choices_consistent",
+    ),
+    CheckConstraint("status IN ('pending', 'published', 'rejected')", name="status_allowed"),
+    CheckConstraint(
+        "reviewed_by_user_id IS NULL OR reviewed_by_user_id <> proposer_user_id", name="four_eyes"
+    ),
+    CheckConstraint(
+        "(status='pending' AND "
+        "reviewed_by_user_id IS NULL AND "
+        "review_reason IS NULL AND "
+        "reviewed_at IS NULL AND "
+        "replacement_memory_id IS NULL) OR "
+        "(status IN ('published','rejected') AND "
+        "reviewed_by_user_id IS NOT NULL AND "
+        "length(btrim(review_reason)) > 0 AND "
+        "reviewed_at IS NOT NULL AND "
+        "((status='published' AND "
+        "replacement_memory_id IS NOT NULL) OR "
+        "(status='rejected' AND "
+        "replacement_memory_id IS NULL)))",
+        name="review_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_correction_project",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_memory_id"],
+        [f"{MEMORY_SCHEMA}.memories.tenant_id", f"{MEMORY_SCHEMA}.memories.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_correction_source",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "replacement_memory_id"],
+        [f"{MEMORY_SCHEMA}.memories.tenant_id", f"{MEMORY_SCHEMA}.memories.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_correction_replacement",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "proposer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_correction_proposer",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_correction_reviewer",
+    ),
+    Index("ix_knowledge_corrections_project", "tenant_id", "project_id", "created_at"),
+    Index(
+        "uq_knowledge_correction_published_source",
+        "tenant_id",
+        "source_memory_id",
+        unique=True,
+        postgresql_where=text("status='published'"),
+    ),
+    schema=MEMORY_SCHEMA,
+)
+
+knowledge_candidate_jobs = Table(
+    "knowledge_candidate_jobs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("source_kind", String(32), nullable=False),
+    Column("source_id", Uuid, nullable=False),
+    Column("source_version", Integer, nullable=False, server_default=text("0")),
+    CheckConstraint("source_version >= 0", name="source_version_nonnegative"),
+    Column(
+        "source_audit_id", BigInteger, ForeignKey(f"{AUDIT_SCHEMA}.audit_log.id"), nullable=False
+    ),
+    Column("source_event_id", String(128), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("state", String(16), nullable=False),
+    Column("memory_id", Uuid),
+    Column("reason", String(128)),
+    Column("attempts", Integer, nullable=False, server_default=text("0")),
+    Column("available_at", DateTime(timezone=True), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("updated_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint(
+        "source_kind IN ('issue', 'decision', 'test_review', 'project_retrospective', "
+        "'root_cause', 'effectiveness_review')",
+        name="source_kind_allowed",
+    ),
+    CheckConstraint(
+        "state IN ('pending','created','duplicate','skipped','failed')", name="state_allowed"
+    ),
+    CheckConstraint("attempts >= 0", name="attempts_nonnegative"),
+    CheckConstraint(
+        "(state IN ('created','duplicate') AND memory_id IS NOT NULL) OR "
+        "(state NOT IN ('created','duplicate') AND memory_id IS NULL)",
+        name="result_consistent",
+    ),
+    UniqueConstraint("source_audit_id", name="uq_knowledge_candidate_audit"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_candidate_project",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_candidate_actor",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "memory_id"],
+        [f"{MEMORY_SCHEMA}.memories.tenant_id", f"{MEMORY_SCHEMA}.memories.id"],
+        ondelete="RESTRICT",
+        name="fk_knowledge_candidate_memory",
+    ),
+    Index("ix_knowledge_candidate_pending", "state", "available_at"),
+    Index(
+        "uq_knowledge_candidate_source",
+        "tenant_id",
+        "source_kind",
+        "source_id",
+        "source_version",
+        unique=True,
+        postgresql_where=text("state='created'"),
     ),
     schema=MEMORY_SCHEMA,
 )
@@ -4258,20 +9418,52 @@ agent_runs = Table(
     "agent_runs",
     metadata,
     Column("id", Uuid, primary_key=True),
+    Column("execution_bundle", JSONB(none_as_null=True)),
+    CheckConstraint(
+        "execution_bundle IS NULL OR jsonb_typeof(execution_bundle)='object'",
+        name="execution_bundle",
+    ),
+    Column("loop_binding", JSONB(none_as_null=True)),
     Column(
         "tenant_id",
         Uuid,
         ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
         nullable=False,
     ),
-    Column("project_id", Uuid, nullable=False),
-    Column("subscription_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
+    Column("market_space_id", Uuid),
+    Column("scope_kind", String(16), nullable=False, server_default=text("'project'")),
+    CheckConstraint(
+        "(scope_kind='project' AND project_id IS NOT NULL AND market_space_id IS NULL "
+        "AND context_version NOT IN "
+        "('process-template-request-v1','product-matrix-request-v1')) OR "
+        "(scope_kind='tenant' AND project_id IS NULL AND market_space_id IS NULL AND "
+        "agent_key='knowledge_lite' "
+        "AND context_version='process-template-request-v1') OR "
+        "(scope_kind='market_space' AND project_id IS NULL AND market_space_id IS NOT NULL "
+        "AND agent_key='product_management_intelligence' AND "
+        "context_version='product-matrix-request-v1')",
+        name="scope",
+    ),
+    Column("subscription_id", Uuid),
     Column("agent_key", String(64), nullable=False),
+    Column("request_id", String(128)),
+    Column("dispatch_key", String(128)),
+    Column("dispatch_policy", String(32)),
+    Column("dispatch_deadline", DateTime(timezone=True)),
+    CheckConstraint(
+        "(dispatch_policy IS NULL AND dispatch_key IS NULL AND dispatch_deadline IS NULL) OR "
+        "(dispatch_policy IS NOT NULL AND dispatch_key IS NOT NULL AND "
+        "((dispatch_policy='milestone.v1' AND dispatch_deadline IS NOT NULL) OR "
+        "(dispatch_policy='frequent_edit.v1' AND dispatch_deadline IS NULL)))",
+        name="dispatch_shape",
+    ),
+    Column("requested_by_user_id", Uuid),
     Column("status", String(32), nullable=False, server_default=text("'debouncing'")),
     Column("window_started_at", DateTime(timezone=True), nullable=False),
     Column("window_ended_at", DateTime(timezone=True), nullable=False),
-    Column("first_event_row_id", BigInteger, nullable=False),
-    Column("last_event_row_id", BigInteger, nullable=False),
+    Column("first_event_row_id", BigInteger),
+    Column("last_event_row_id", BigInteger),
     Column("event_count", Integer, nullable=False),
     Column("event_row_ids", json_type, nullable=False),
     Column("context_version", String(64), nullable=False, server_default=text("'run-context-v2'")),
@@ -4294,32 +9486,77 @@ agent_runs = Table(
     CheckConstraint(
         "agent_key IN ('project_intelligence', 'knowledge_lite', "
         "'engineering_intelligence', 'quality_intelligence', "
-        "'supplier_intelligence', 'executive_intelligence')",
+        "'supplier_intelligence', 'executive_intelligence', "
+        "'product_management_intelligence', 'ai_chat')",
         name="agent_key_allowed",
     ),
     CheckConstraint(
-        "status IN ('debouncing', 'queued', 'running', 'succeeded', 'degraded', 'failed')",
+        "status IN ('debouncing', 'queued', 'running', 'waiting_input', 'succeeded', "
+        "'degraded', 'failed')",
         name="status_allowed",
     ),
     CheckConstraint("window_started_at <= window_ended_at", name="window_order"),
     CheckConstraint(
-        "CASE WHEN jsonb_typeof(event_row_ids) = 'array' THEN "
-        "event_count > 0 AND first_event_row_id > 0 "
-        "AND last_event_row_id >= first_event_row_id "
-        "AND jsonb_array_length(event_row_ids) = event_count "
-        "AND (event_row_ids->>0)::bigint = first_event_row_id "
-        "AND (event_row_ids->>(event_count - 1))::bigint = last_event_row_id "
-        "ELSE false END",
+        "(((agent_key = 'ai_chat' OR (agent_key='product_management_intelligence' AND "
+        "context_version='product-matrix-request-v1') OR (agent_key='supplier_intelligence' AND "
+        "context_version='supplier-recovery-request-v1') OR (agent_key = "
+        "'quality_intelligence' AND context_version IN ('report-mapping-request-v1', "
+        "'quality-work-package-request-v1')) OR (agent_key='knowledge_lite' AND "
+        "context_version IN "
+        "('meeting-reading-request-v1','meeting-minutes-request-v1','meeting-actions-requ"
+        "est-v1','meeting-decisions-request-v1','meeting-business-request-v1','process-te"
+        "mplate-request-v1','intake-organization-request-v1','meeting-planning-request-v1"
+        "')) "
+        "OR (agent_key='engineering_intelligence' AND "
+        "context_version IN ('change-work-package-request-v1','cost-reduction-request-v1')) "
+        "OR (agent_key='executive_intelligence' AND "
+        "context_version IN ('portfolio-explanation-request-v1','executive-brief-request-v1'))) "
+        "AND subscription_id IS NULL "
+        "AND first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count = "
+        "0 AND event_row_ids = '[]'::jsonb AND request_id IS NOT NULL AND "
+        "btrim(request_id) <> '' AND requested_by_user_id IS NOT NULL AND (status IN "
+        "('running', 'succeeded', 'degraded', 'failed') OR (agent_key IN "
+        "('ai_chat','quality_intelligence') AND status = 'queued'))) OR (agent_key <> "
+        "'ai_chat' AND subscription_id IS NOT NULL AND ((request_id IS NULL AND "
+        "requested_by_user_id IS NULL) OR ((agent_key='project_intelligence' AND "
+        "context_version='risk-suggestion-request-v1' OR "
+        "agent_key='quality_intelligence' AND context_version='test-plan-request-v1') "
+        "AND request_id IS NOT NULL AND btrim(request_id)<>'' AND requested_by_user_id "
+        "IS NOT NULL)) AND first_event_row_id IS NOT NULL AND last_event_row_id IS NOT "
+        "NULL AND CASE WHEN jsonb_typeof(event_row_ids) = 'array' THEN event_count > 0 "
+        "AND first_event_row_id > 0 AND last_event_row_id >= first_event_row_id AND "
+        "jsonb_array_length(event_row_ids) = event_count AND "
+        "(event_row_ids->>0)::bigint = first_event_row_id AND "
+        "(event_row_ids->>(event_count - 1))::bigint = last_event_row_id ELSE false "
+        "END)) IS TRUE",
         name="event_bounds_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_agent_runs_tenant_request_user",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "agent_key", "request_id", name="uq_agent_runs_request"
     ),
     CheckConstraint("jsonb_typeof(event_row_ids) = 'array'", name="event_ids_array"),
     CheckConstraint("jsonb_typeof(run_context) = 'object'", name="context_object"),
     CheckConstraint("btrim(context_version) <> ''", name="context_version_nonblank"),
     CheckConstraint(
         "(status IN ('debouncing', 'queued') AND started_at IS NULL AND completed_at IS NULL) "
-        "OR (status = 'running' AND started_at IS NOT NULL AND completed_at IS NULL) "
+        "OR (status IN ('running', 'waiting_input') AND started_at IS NOT NULL AND "
+        "completed_at IS NULL) "
         "OR (status IN ('succeeded', 'degraded', 'failed') "
-        "AND started_at IS NOT NULL AND completed_at IS NOT NULL)",
+        "AND started_at IS NOT NULL AND completed_at IS NOT NULL) OR "
+        "(status='failed' AND started_at IS NULL AND completed_at IS NOT NULL "
+        "AND ((dispatch_policy='milestone.v1' AND dispatch_deadline IS NOT NULL "
+        "AND error_code='AGENT_TRIGGER_DEADLINE_EXCEEDED') OR "
+        "error_code IN ('BUDGET_LINEAGE_EXPIRED','AGENT_AUTHORIZATION_CHANGED') OR "
+        "(error_code='EVENT_RUN_CANCELLED' AND request_id IS NULL "
+        "AND requested_by_user_id IS NULL AND subscription_id IS NOT NULL) OR "
+        "(agent_key IN ('ai_chat','project_intelligence','quality_intelligence') "
+        "AND run_context->>'application_queue_version'='1'))) IS TRUE",
         name="lifecycle_consistent",
     ),
     CheckConstraint(
@@ -4344,7 +9581,31 @@ agent_runs = Table(
         name="fk_agent_runs_tenant_subscription_agent",
         ondelete="RESTRICT",
     ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.{k}" for k in ("tenant_id", "id")],
+        name="fk_agent_runs_market_space",
+        ondelete="RESTRICT",
+    ),
+    Index(
+        "uq_market_agent_run_request",
+        "tenant_id",
+        "market_space_id",
+        "agent_key",
+        "request_id",
+        unique=True,
+        postgresql_where=text("scope_kind='market_space'"),
+    ),
     UniqueConstraint("tenant_id", "id", name="uq_agent_runs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "scope_kind", "id", "agent_key", name="uq_agent_run_scope_agent"),
+    Index(
+        "uq_tenant_agent_run_request",
+        "tenant_id",
+        "agent_key",
+        "request_id",
+        unique=True,
+        postgresql_where=text("scope_kind='tenant'"),
+    ),
     UniqueConstraint(
         "tenant_id",
         "project_id",
@@ -4357,7 +9618,9 @@ agent_runs = Table(
         "project_id",
         "agent_key",
         "window_started_at",
+        "dispatch_key",
         name="uq_agent_runs_tenant_project_agent_window",
+        postgresql_nulls_not_distinct=True,
     ),
     Index("ix_agent_runs_tenant_status_created", "tenant_id", "status", "created_at", "id"),
     Index("ix_agent_runs_tenant_project_created", "tenant_id", "project_id", "created_at", "id"),
@@ -4378,6 +9641,17 @@ model_invocations = Table(
     Column("project_id", Uuid),
     Column("run_id", Uuid),
     Column("request_id", String(128)),
+    Column("budget_call_id", Uuid),
+    Column("model_call_session_id", Uuid),
+    Column("context_receipt_id", Uuid),
+    CheckConstraint("context_receipt_id IS NULL OR run_id IS NOT NULL", name="context_run"),
+    Column("usage_status", String(32), nullable=False, server_default=text("'legacy_unverified'")),
+    Column(
+        "input_meter_version",
+        String(32),
+        nullable=False,
+        server_default=text("'legacy_unverified'"),
+    ),
     Column("agent_key", String(64), nullable=False),
     Column("agent_tier", String(32), nullable=False, server_default=text("'default'")),
     Column("prompt_version", String(128), nullable=False),
@@ -4395,9 +9669,10 @@ model_invocations = Table(
     Column(
         "normalized_cost_microusd",
         BigInteger,
-        nullable=False,
-        server_default=text("0"),
+        nullable=True,
     ),
+    Column("cost_status", String(32), nullable=False, server_default=text("'legacy_unverified'")),
+    Column("rate_card_snapshot", JSONB(none_as_null=True)),
     Column("structured_attempts", SmallInteger, nullable=False, server_default=text("0")),
     Column("error_code", String(64)),
     Column(
@@ -4436,7 +9711,43 @@ model_invocations = Table(
         name="cache_tokens_nonnegative",
     ),
     CheckConstraint("latency_ms >= 0", name="latency_nonnegative"),
+    CheckConstraint(
+        "(usage_status = 'legacy_unverified' AND input_meter_version = 'legacy_unverified') OR "
+        "(input_meter_version = 'normalized_input.v1' AND "
+        "((usage_status = 'known' AND structured_attempts > 0) OR "
+        "(usage_status IN ('partial', 'unknown') AND structured_attempts > 0 "
+        "AND status = 'provider_error') OR (usage_status = 'not_invoked' "
+        "AND structured_attempts = 0 AND total_tokens = 0 AND cache_read_tokens = 0 "
+        "AND cache_creation_tokens = 0)))",
+        name="usage_evidence_consistent",
+    ),
     CheckConstraint("normalized_cost_microusd >= 0", name="cost_nonnegative"),
+    CheckConstraint(
+        "(cost_status = 'legacy_unverified' AND rate_card_snapshot IS NULL) OR "
+        "(cost_status = 'unknown' AND normalized_cost_microusd IS NULL "
+        "AND rate_card_snapshot IS NULL) OR "
+        "(cost_status = 'not_invoked' AND normalized_cost_microusd IS NOT NULL "
+        "AND normalized_cost_microusd = 0 AND structured_attempts = 0 "
+        "AND status = 'budget_exceeded' AND rate_card_snapshot IS NULL) OR "
+        "((cost_status = 'not_invoked' AND normalized_cost_microusd = 0 "
+        "AND structured_attempts = 0 AND status = 'provider_error' "
+        "AND error_code = 'PROVIDER_OUTPUT_LIMIT_UNCONFIGURED' "
+        "AND input_tokens = 0 AND output_tokens = 0 AND cache_read_tokens = 0 "
+        "AND cache_creation_tokens = 0 AND rate_card_snapshot IS NULL) IS TRUE) OR "
+        "((cost_status = 'priced' AND normalized_cost_microusd IS NOT NULL "
+        "AND rate_card_snapshot IS NOT NULL "
+        "AND jsonb_typeof(rate_card_snapshot) = 'object' "
+        "AND rate_card_snapshot ?& ARRAY['provider', 'model', 'version', 'source', "
+        "'currency', 'rate_unit', 'input_microusd_per_million_tokens', "
+        "'output_microusd_per_million_tokens', 'calculation'] "
+        "AND rate_card_snapshot->>'provider' = provider "
+        "AND rate_card_snapshot->>'model' = model "
+        "AND length(btrim(rate_card_snapshot->>'version')) > 0 "
+        "AND length(btrim(rate_card_snapshot->>'source')) > 0 "
+        "AND rate_card_snapshot->>'currency' = 'USD' "
+        "AND rate_card_snapshot->>'rate_unit' = 'microusd_per_million_tokens') IS TRUE)",
+        name="cost_evidence_consistent",
+    ),
     CheckConstraint(
         "structured_attempts BETWEEN 0 AND 3",
         name="structured_attempts_range",
@@ -4457,6 +9768,7 @@ model_invocations = Table(
         "id",
         name="uq_model_invocations_tenant_id_id",
     ),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_model_checkpoint_scope"),
     ForeignKeyConstraint(
         ["tenant_id", "run_id"],
         [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
@@ -4520,16 +9832,19 @@ finding_quality_controls = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "(agent_key = 'project_intelligence' AND finding_type IN "
-        "('risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly')) OR "
-        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft') OR "
+        "(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', "
+        "'blocker_alert', 'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' "
+        "AND finding_type IN ('knowledge_draft', 'meeting_minutes', 'meeting_action', "
+        "'meeting_decision', 'meeting_issue', 'meeting_risk', 'meeting_change', "
+        "'process_template_configuration','intake_organization','meeting_plan')) OR "
         "(agent_key = 'engineering_intelligence' AND finding_type IN "
-        "('bom_impact_suggestion', 'change_impact_suggestion')) OR "
-        "(agent_key = 'quality_intelligence' AND finding_type IN "
-        "('quality_cluster_alert', 'capa_suggestion')) OR "
-        "(agent_key = 'supplier_intelligence' AND finding_type = 'supplier_delay_risk') OR "
-        "(agent_key = 'executive_intelligence' AND finding_type = "
-        "'executive_portfolio_brief')",
+        "('bom_impact_suggestion', 'change_impact_suggestion', 'change_work_package', "
+        "'cost_reduction')) "
+        "OR (agent_key = 'quality_intelligence' AND finding_type IN "
+        "('quality_cluster_alert', 'capa_suggestion', 'test_plan_change', "
+        "'capa_work_package')) OR (agent_key = 'supplier_intelligence' AND finding_type "
+        "IN ('supplier_delay_risk','supplier_recovery')) OR (agent_key = "
+        "'executive_intelligence' AND finding_type = 'executive_portfolio_brief')",
         name="type_allowed",
     ),
     CheckConstraint("status IN ('active', 'narrowed')", name="status_allowed"),
@@ -4578,7 +9893,15 @@ findings = Table(
         ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
         nullable=False,
     ),
-    Column("project_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
+    Column("scope_kind", String(16), nullable=False, server_default=text("'project'")),
+    CheckConstraint(
+        "(scope_kind='project' AND project_id IS NOT NULL "
+        "AND finding_type<>'process_template_configuration') OR "
+        "(scope_kind='tenant' AND project_id IS NULL AND agent_key='knowledge_lite' "
+        "AND finding_type='process_template_configuration')",
+        name="scope",
+    ),
     Column("run_id", Uuid, nullable=False),
     Column("model_invocation_id", Uuid, nullable=False),
     Column("agent_key", String(64), nullable=False),
@@ -4612,20 +9935,23 @@ findings = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "(agent_key = 'project_intelligence' AND finding_type IN "
-        "('risk_suggestion', 'blocker_alert', 'gate_readiness_anomaly')) OR "
-        "(agent_key = 'knowledge_lite' AND finding_type = 'knowledge_draft') OR "
+        "(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', "
+        "'blocker_alert', 'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' "
+        "AND finding_type IN ('knowledge_draft', 'meeting_minutes', 'meeting_action', "
+        "'meeting_decision', 'meeting_issue', 'meeting_risk', 'meeting_change', "
+        "'process_template_configuration','intake_organization','meeting_plan')) OR "
         "(agent_key = 'engineering_intelligence' AND finding_type IN "
-        "('bom_impact_suggestion', 'change_impact_suggestion')) OR "
-        "(agent_key = 'quality_intelligence' AND finding_type IN "
-        "('quality_cluster_alert', 'capa_suggestion')) OR "
-        "(agent_key = 'supplier_intelligence' AND finding_type = 'supplier_delay_risk') OR "
-        "(agent_key = 'executive_intelligence' AND finding_type = "
-        "'executive_portfolio_brief')",
+        "('bom_impact_suggestion', 'change_impact_suggestion', 'change_work_package', "
+        "'cost_reduction')) "
+        "OR (agent_key = 'quality_intelligence' AND finding_type IN "
+        "('quality_cluster_alert', 'capa_suggestion', 'test_plan_change', "
+        "'capa_work_package')) OR (agent_key = 'supplier_intelligence' AND finding_type "
+        "IN ('supplier_delay_risk','supplier_recovery')) OR (agent_key = "
+        "'executive_intelligence' AND finding_type = 'executive_portfolio_brief')",
         name="type_allowed",
     ),
     CheckConstraint(
-        "status IN ('pending_review', 'accepted', 'rejected', 'applied')",
+        "status IN ('pending_review', 'accepted', 'rejected', 'applied', 'archived')",
         name="status_allowed",
     ),
     CheckConstraint("btrim(origin_key) <> ''", name="origin_key_nonblank"),
@@ -4638,7 +9964,13 @@ findings = Table(
         name="accepted_payload_object",
     ),
     CheckConstraint(
-        "jsonb_typeof(evidence_event_ids) = 'array' AND jsonb_array_length(evidence_event_ids) > 0",
+        "jsonb_typeof(evidence_event_ids) = 'array' AND "
+        "(jsonb_array_length(evidence_event_ids) > 0 OR (finding_type IN "
+        "('meeting_minutes','meeting_action','meeting_decision','meeting_issue','meeting_"
+        "risk','meeting_change','change_work_package','capa_work_package','supplier_recov"
+        "ery','cost_reduction','process_template_configuration','intake_organization','me"
+        "eting_plan') "
+        "AND evidence_event_ids='[]'::jsonb))",
         name="evidence_event_ids_array",
     ),
     CheckConstraint(
@@ -4653,14 +9985,22 @@ findings = Table(
         "(status = 'rejected' AND reviewed_by_user_id IS NOT NULL "
         "AND reviewed_at IS NOT NULL AND accepted_payload IS NULL) OR "
         "(status = 'applied' AND reviewed_by_user_id IS NOT NULL "
-        "AND reviewed_at IS NOT NULL AND accepted_payload IS NOT NULL)",
+        "AND reviewed_at IS NOT NULL AND accepted_payload IS NOT NULL) OR "
+        "(status = 'archived' AND reviewed_by_user_id IS NULL "
+        "AND reviewed_at IS NULL AND accepted_payload IS NULL)",
         name="review_lifecycle_consistent",
     ),
     CheckConstraint(
         "(status <> 'applied' AND applied_by_user_id IS NULL AND applied_at IS NULL "
         "AND applied_entity_type IS NULL AND applied_entity_id IS NULL) OR "
         "(status = 'applied' AND applied_by_user_id IS NOT NULL AND applied_at IS NOT NULL "
-        "AND applied_entity_type IN ('risk', 'memory') AND applied_entity_id IS NOT NULL "
+        "AND applied_entity_type IN ('risk', 'memory', 'issue', 'task', 'test_run', "
+        "'sample_build_configuration', 'knowledge_candidate', 'schedule_change_proposal', "
+        "'material_exception', 'test_plan', 'meeting_minutes', 'decision', 'ecr', "
+        "'change_impact_scope', 'quality_work_package', 'supplier_recovery', 'cost_reduction', "
+        "'process_template_revision', "
+        "'project_intake_proposal', 'meeting') "
+        "AND applied_entity_id IS NOT NULL "
         "AND reviewed_at < applied_at)",
         name="apply_lifecycle_consistent",
     ),
@@ -4696,7 +10036,14 @@ findings = Table(
         name="fk_findings_tenant_applier",
         ondelete="RESTRICT",
     ),
+    ForeignKeyConstraint(
+        ["tenant_id", "scope_kind", "run_id", "agent_key"],
+        [f"{AI_SCHEMA}.agent_runs.{key}" for key in ("tenant_id", "scope_kind", "id", "agent_key")],
+        name="fk_finding_run_scope",
+        ondelete="RESTRICT",
+    ),
     UniqueConstraint("tenant_id", "id", name="uq_findings_tenant_id_id"),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_finding_recovery_scope"),
     UniqueConstraint(
         "tenant_id",
         "project_id",
@@ -4709,8 +10056,57 @@ findings = Table(
         "origin_key",
         name="uq_findings_tenant_run_origin",
     ),
+    Index(
+        "ix_findings_pending_activity",
+        "tenant_id",
+        "project_id",
+        "updated_at",
+        "id",
+        postgresql_where=text("status='pending_review'"),
+    ),
     Index("ix_findings_tenant_status_created", "tenant_id", "status", "created_at", "id"),
+    Index(
+        "uq_meeting_plan_applied_origin",
+        "tenant_id",
+        "project_id",
+        "origin_key",
+        unique=True,
+        postgresql_where=text("finding_type='meeting_plan' AND status='applied'"),
+    ),
+    Index(
+        "uq_meeting_plan_applied_meeting",
+        "tenant_id",
+        "applied_entity_id",
+        unique=True,
+        postgresql_where=text("finding_type='meeting_plan' AND status='applied'"),
+    ),
     Index("ix_findings_tenant_project_status", "tenant_id", "project_id", "status", "id"),
+    Index(
+        "uq_applied_meeting_action_origin",
+        "tenant_id",
+        "project_id",
+        "origin_key",
+        unique=True,
+        postgresql_where=text("finding_type='meeting_action' AND status='applied'"),
+    ),
+    Index(
+        "uq_applied_meeting_decision_origin",
+        "tenant_id",
+        "project_id",
+        "origin_key",
+        unique=True,
+        postgresql_where=text("finding_type='meeting_decision' AND status='applied'"),
+    ),
+    Index(
+        "uq_applied_meeting_business_origin",
+        "tenant_id",
+        "project_id",
+        "origin_key",
+        unique=True,
+        postgresql_where=text(
+            "finding_type IN ('meeting_issue','meeting_risk','meeting_change') AND status='applied'"
+        ),
+    ),
     schema=AI_SCHEMA,
 )
 
@@ -4738,7 +10134,8 @@ finding_actions = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "action IN ('created', 'accepted', 'rejected', 'applied')",
+        "action IN ('created', 'accepted', 'rejected', 'applied', 'archived', 'restored',"
+        " 'review_undone')",
         name="action_allowed",
     ),
     CheckConstraint(
@@ -4747,7 +10144,14 @@ finding_actions = Table(
         "(action IN ('accepted', 'rejected') AND actor_user_id IS NOT NULL "
         "AND from_status = 'pending_review' AND to_status = action) OR "
         "(action = 'applied' AND actor_user_id IS NOT NULL "
-        "AND from_status = 'accepted' AND to_status = 'applied')",
+        "AND from_status = 'accepted' AND to_status = 'applied') OR "
+        "(action = 'archived' AND (actor_user_id IS NOT NULL OR "
+        "(detail->>'automatic'='true' AND detail->>'policy'='finding-inactivity-v1') IS TRUE) "
+        "AND from_status = 'pending_review' AND to_status = 'archived') OR "
+        "(action = 'restored' AND actor_user_id IS NOT NULL "
+        "AND from_status = 'archived' AND to_status = 'pending_review') OR "
+        "(action='review_undone' AND actor_user_id IS NOT NULL "
+        "AND from_status IN ('accepted','rejected') AND to_status='pending_review')",
         name="transition_consistent",
     ),
     CheckConstraint("jsonb_typeof(detail) = 'object'", name="detail_object"),
@@ -4767,11 +10171,13 @@ finding_actions = Table(
         name="fk_finding_actions_tenant_actor",
         ondelete="RESTRICT",
     ),
-    UniqueConstraint(
+    Index(
+        "uq_finding_actions_terminal",
         "tenant_id",
         "finding_id",
         "action",
-        name="uq_finding_actions_tenant_finding_action",
+        unique=True,
+        postgresql_where=text("action IN ('created','applied')"),
     ),
     Index(
         "ix_finding_actions_tenant_finding_created",
@@ -5058,7 +10464,8 @@ integration_outbox = Table(
     CheckConstraint("provider IN ('dingtalk', 'erp')", name="provider_allowed"),
     CheckConstraint(
         "(provider = 'dingtalk' AND operation IN ('group_markdown', "
-        "'gate_approval_create', 'interactive_card_create', 'interactive_card_update')) OR "
+        "'gate_approval_create', 'interactive_card_create', 'interactive_card_update', "
+        "'reminder_dm', 'meeting_invite_dm')) OR "
         "(provider = 'erp' AND operation = 'ebom_handoff')",
         name="operation_allowed",
     ),
@@ -5361,6 +10768,80 @@ dingtalk_interactive_cards = Table(
     schema=PROJECT_SCHEMA,
 )
 
+
+reminders = Table(
+    "reminders",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("recipient_user_id", Uuid, nullable=False),
+    Column("policy_key", String(64), nullable=False),
+    Column("target_entity", String(64), nullable=False),
+    Column("target_entity_id", Uuid, nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("dedupe_key", String(160), nullable=False),
+    Column("fire_at", DateTime(timezone=True), nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'scheduled'")),
+    Column("escalation_level", SmallInteger, nullable=False, server_default=text("0")),
+    Column("fired_at", DateTime(timezone=True)),
+    Column("acknowledged_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "status IN ('scheduled', 'fired', 'acknowledged', 'suppressed', 'cancelled')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "(status IN ('fired', 'acknowledged')) = (fired_at IS NOT NULL)",
+        name="fired_at_consistent",
+    ),
+    CheckConstraint(
+        "(status = 'acknowledged') = (acknowledged_at IS NOT NULL)",
+        name="acknowledged_at_consistent",
+    ),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("escalation_level >= 0", name="escalation_level_nonnegative"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_reminders_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_reminders_tenant_recipient",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_reminders_tenant_id"),
+    UniqueConstraint("tenant_id", "dedupe_key", name="uq_reminders_tenant_dedupe"),
+    Index(
+        "ix_reminders_tenant_recipient_status",
+        "tenant_id",
+        "recipient_user_id",
+        "status",
+        "fire_at",
+    ),
+    Index("ix_reminders_tenant_project_status", "tenant_id", "project_id", "status"),
+    schema=EVENT_SCHEMA,
+)
+
 events = Table(
     "events",
     metadata,
@@ -5452,6 +10933,7 @@ audit_log = Table(
         name="fk_audit_log_tenant_actor",
         ondelete="RESTRICT",
     ),
+    UniqueConstraint("tenant_id", "id", name="uq_audit_log_scope"),
     Index("ix_audit_log_tenant_id", "tenant_id", "id"),
     Index("ix_audit_log_tenant_project_id", "tenant_id", "project_id", "id"),
     Index("ix_audit_log_entity_id", "entity", "entity_id", "id"),
@@ -5551,15 +11033,17193 @@ migration_mappings = Table(
 )
 
 
+# V2-1 (D6/D35). Meetings are project-scoped on purpose: project membership is
+# this system's only authorization anchor, so a meeting without a project has
+# nothing to check "未授权会议不可接入" against. Cross-project meetings need a
+# portfolio-level authorization model, which belongs to the V6 组合 phase.
+meetings = Table(
+    "meetings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_type", String(32), nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("retrospective_conclusion", Text),
+    Column("retrospective_applicability", Text),
+    Column("retrospective_source_refs", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("retrospective_version", Integer, nullable=False, server_default=text("0")),
+    Column("retrospective_digest", String(64)),
+    Column("retrospective_confirmed_by_user_id", Uuid),
+    Column("retrospective_confirmed_at", DateTime(timezone=True)),
+    ForeignKeyConstraint(
+        ["tenant_id", "retrospective_confirmed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meetings_retrospective_confirmer",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(retrospective_version=0 AND retrospective_conclusion IS NULL "
+        "AND retrospective_applicability IS NULL AND retrospective_digest IS NULL "
+        "AND retrospective_confirmed_by_user_id IS NULL AND retrospective_confirmed_at IS NULL "
+        "AND retrospective_source_refs='[]'::jsonb) OR "
+        "(retrospective_version>0 AND meeting_type='project_retrospective' AND status='completed' "
+        "AND length(btrim(retrospective_conclusion)) BETWEEN 1 AND 15000 "
+        "AND length(btrim(retrospective_applicability)) BETWEEN 1 AND 3000 "
+        "AND retrospective_digest ~ '^[0-9a-f]{64}$' "
+        "AND retrospective_conclusion IS NOT NULL AND retrospective_applicability IS NOT NULL "
+        "AND retrospective_digest IS NOT NULL AND retrospective_confirmed_by_user_id IS NOT NULL "
+        "AND retrospective_confirmed_at IS NOT NULL)",
+        name="retrospective_consistent",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(retrospective_source_refs)='array'", name="retrospective_sources_array"
+    ),
+    Column("status", String(16), nullable=False, server_default=text("'scheduled'")),
+    Column("scheduled_start_at", DateTime(timezone=True), nullable=False),
+    Column("scheduled_end_at", DateTime(timezone=True), nullable=False),
+    Column("actual_start_at", DateTime(timezone=True)),
+    Column("actual_end_at", DateTime(timezone=True)),
+    Column("organizer_user_id", Uuid, nullable=False),
+    Column("source", String(24), nullable=False, server_default=text("'manual'")),
+    # External conference binding (D35). Bound as a unit or not at all; the
+    # provider must be a conference product, never a chat thread.
+    Column("external_provider", String(24)),
+    Column("external_meeting_id", String(256)),
+    Column("external_join_url", String(1024)),
+    Column("external_bound_at", DateTime(timezone=True)),
+    Column("external_bound_by_user_id", Uuid),
+    Column("retention_policy", String(16), nullable=False, server_default=text("'standard'")),
+    Column("archived_at", DateTime(timezone=True)),
+    Column("deleted_at", DateTime(timezone=True)),
+    Column("cancelled_reason", String(512)),
+    # V2-2: set when this meeting was generated from a recurrence policy. The
+    # occurrence date is what makes generation idempotent — re-running the
+    # generator can never produce a second 9am Monday review.
+    Column("recurrence_id", Uuid),
+    Column("occurrence_date", Date),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "(recurrence_id IS NULL AND occurrence_date IS NULL) OR "
+        "(recurrence_id IS NOT NULL AND occurrence_date IS NOT NULL)",
+        name="recurrence_pair_consistent",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "recurrence_id",
+        "occurrence_date",
+        name="uq_meetings_tenant_recurrence_occurrence",
+    ),
+    CheckConstraint(
+        "meeting_type IN ('weekly', 'material', 'special', 'technical_review', "
+        "'decision_checkpoint', 'pilot_review', 'project_retrospective')",
+        name="meeting_type_allowed",
+    ),
+    CheckConstraint(
+        "status IN ('scheduled', 'in_progress', 'completed', 'cancelled')",
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "source IN ('manual', 'dingtalk', 'tencent_meeting', 'agent_drafted')",
+        name="source_allowed",
+    ),
+    CheckConstraint(
+        "retention_policy IN ('standard', 'extended', 'minimal')",
+        name="retention_policy_allowed",
+    ),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("scheduled_end_at > scheduled_start_at", name="scheduled_window_ordered"),
+    CheckConstraint(
+        "actual_end_at IS NULL OR actual_start_at IS NOT NULL",
+        name="actual_end_requires_start",
+    ),
+    CheckConstraint(
+        "actual_end_at IS NULL OR actual_end_at >= actual_start_at",
+        name="actual_window_ordered",
+    ),
+    # A partially-bound external meeting is how an unauthorized link sneaks in;
+    # all five columns move together or none do.
+    CheckConstraint(
+        "(external_provider IS NULL AND external_meeting_id IS NULL "
+        "AND external_join_url IS NULL AND external_bound_at IS NULL "
+        "AND external_bound_by_user_id IS NULL) OR "
+        "(external_provider IS NOT NULL AND external_meeting_id IS NOT NULL "
+        "AND external_join_url IS NOT NULL AND external_bound_at IS NOT NULL "
+        "AND external_bound_by_user_id IS NOT NULL)",
+        name="external_binding_complete",
+    ),
+    CheckConstraint(
+        "external_provider IS NULL OR external_provider IN ('dingtalk', 'tencent_meeting')",
+        name="external_provider_allowed",
+    ),
+    # 私聊不可接入: only https conference URLs, never a chat deep link.
+    CheckConstraint(
+        "external_join_url IS NULL OR external_join_url ~ '^https://'",
+        name="external_join_url_https",
+    ),
+    CheckConstraint(
+        "cancelled_reason IS NULL OR status = 'cancelled'",
+        name="cancelled_reason_only_when_cancelled",
+    ),
+    # 删除/归档政策: a meeting is archived before it can be soft-deleted, so a
+    # transcript can never be dropped without leaving the archive trail.
+    CheckConstraint(
+        "deleted_at IS NULL OR archived_at IS NOT NULL",
+        name="delete_requires_archive",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_meetings_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_meetings_tenant_project_id"),
+    # One PDOS meeting per external conference: re-binding the same conference
+    # elsewhere would fork the transcript trail.
+    UniqueConstraint(
+        "tenant_id",
+        "external_provider",
+        "external_meeting_id",
+        name="uq_meetings_tenant_external",
+    ),
+    Index("ix_meetings_tenant_project_start", "tenant_id", "project_id", "scheduled_start_at"),
+    Index("ix_meetings_tenant_status", "tenant_id", "status"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_meetings_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "organizer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meetings_tenant_organizer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "external_bound_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meetings_tenant_external_binder",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recurrence_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_recurrences.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_recurrences.id",
+        ],
+        name="fk_meetings_tenant_recurrence",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+# V2-2 (D35). A cadence policy, not a calendar: the generator turns it into
+# concrete meetings, and the occurrence date makes that generation idempotent.
+meeting_recurrences = Table(
+    "meeting_recurrences",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_type", String(32), nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("cadence", String(16), nullable=False),
+    Column("start_date", Date),
+    # 1 = Monday .. 7 = Sunday (ISO), for weekly and biweekly cadences.
+    Column("day_of_week", SmallInteger),
+    Column("day_of_month", SmallInteger),
+    Column("start_minute_of_day", SmallInteger, nullable=False),
+    Column("duration_minutes", SmallInteger, nullable=False),
+    Column("timezone", String(64), nullable=False, server_default=text("'Asia/Shanghai'")),
+    Column("default_participants", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("agenda_template", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("auto_conference", Boolean, nullable=False, server_default=text("true")),
+    Column("status", String(16), nullable=False, server_default=text("'active'")),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "meeting_type IN ('weekly', 'material', 'special', 'technical_review', "
+        "'decision_checkpoint', 'pilot_review', 'project_retrospective')",
+        name="meeting_type_allowed",
+    ),
+    CheckConstraint("cadence IN ('weekly', 'biweekly', 'monthly')", name="cadence_allowed"),
+    CheckConstraint("status IN ('active', 'paused')", name="status_allowed"),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("start_minute_of_day BETWEEN 0 AND 1439", name="start_minute_range"),
+    CheckConstraint("duration_minutes BETWEEN 5 AND 720", name="duration_range"),
+    # A cadence must say exactly which day it falls on, and the field it uses
+    # depends on the cadence — a weekly policy with a day_of_month is a bug.
+    CheckConstraint(
+        "(cadence IN ('weekly', 'biweekly') AND day_of_week BETWEEN 1 AND 7 "
+        "AND day_of_month IS NULL) OR "
+        "(cadence = 'monthly' AND day_of_month BETWEEN 1 AND 28 "
+        "AND day_of_week IS NULL)",
+        name="cadence_day_consistent",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(default_participants) = 'array'",
+        name="default_participants_is_array",
+    ),
+    CheckConstraint("jsonb_typeof(agenda_template) = 'array'", name="agenda_template_is_array"),
+    UniqueConstraint("tenant_id", "id", name="uq_meeting_recurrences_tenant_id_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_meeting_recurrences_project_id"),
+    Index("ix_meeting_recurrences_tenant_project", "tenant_id", "project_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_meeting_recurrences_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_recurrences_tenant_creator",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+tencent_meeting_bindings = Table(
+    "tencent_meeting_bindings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("app_id", String(256), nullable=False),
+    Column("sdk_id", String(256), nullable=False),
+    Column("application_fingerprint", String(64), nullable=False),
+    Column("external_user_id", String(256), nullable=False),
+    Column("external_display_name", String(256), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("actor_name", String(256), nullable=False),
+    Column("evidence", Text, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "user_id", "version", name="uq_tencent_binding_version"),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_tencent_binding_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_tencent_binding_actor",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("version>0 AND status IN ('pending','active','revoked')", name="state"),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND application_fingerprint ~ '^[0-9a-f]{64}$'",
+        name="digests",
+    ),
+    CheckConstraint(
+        "length(btrim(external_user_id))>0 AND length(btrim(external_display_name))>0 AND"
+        " length(btrim(evidence))>0",
+        name="details",
+    ),
+    schema=CORE_SCHEMA,
+)
+
+
+meeting_conference_requests = Table(
+    "meeting_conference_requests",
+    metadata,
+    Column("provider", String(24), nullable=False, server_default=text("'dingtalk'")),
+    CheckConstraint("provider IN ('dingtalk','tencent_meeting')", name="provider"),
+    CheckConstraint(
+        "COALESCE(snapshot->>'provider','dingtalk')=provider", name="snapshot_provider"
+    ),
+    Column("id", Uuid, primary_key=True),
+    Column("sequence", BigInteger, Identity(), nullable=False, unique=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("actor_auth_version", Integer, nullable=False),
+    Column("operation", String(16), nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("result", JSONB),
+    Column("error_code", String(64)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("dispatched_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "meeting_id"],
+        [
+            f"{PROJECT_SCHEMA}.meetings.tenant_id",
+            f"{PROJECT_SCHEMA}.meetings.project_id",
+            f"{PROJECT_SCHEMA}.meetings.id",
+        ],
+        name="fk_meeting_conference_scope",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_conference_actor",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("operation IN ('create','update','cancel','query')", name="operation"),
+    CheckConstraint(
+        "status IN ('pending','sending','succeeded','failed','uncertain','withdrawn','resolved')",
+        name="status",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$' AND actor_auth_version>=0", name="request"),
+    CheckConstraint(
+        "jsonb_typeof(snapshot)='object' AND (result IS NULL OR jsonb_typeof(result)='object')",
+        name="objects",
+    ),
+    CheckConstraint(
+        "(status IN ('succeeded','failed','withdrawn','resolved'))=(completed_at IS NOT NULL)",
+        name="completion",
+    ),
+    CheckConstraint(
+        "status NOT IN ('sending','uncertain') OR dispatched_at IS NOT NULL",
+        name="dispatch",
+    ),
+    Index(
+        "ix_meeting_conference_pending",
+        "created_at",
+        postgresql_where=text("status='pending'"),
+    ),
+    Index(
+        "uq_meeting_conference_active",
+        "tenant_id",
+        "meeting_id",
+        unique=True,
+        postgresql_where=text("status IN ('pending','sending','uncertain')"),
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+meeting_generation_policies = Table(
+    "meeting_generation_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("recurrence_id", Uuid, nullable=False),
+    Column("conference_provider", String(24)),
+    Column("conference_identity", JSONB),
+    Column("notification_scope", JSONB),
+    CheckConstraint(
+        "notification_scope IS NULL OR jsonb_typeof(notification_scope)='object'",
+        name="notification_scope",
+    ),
+    CheckConstraint(
+        "(conference_provider IS NULL AND conference_identity IS NULL) OR "
+        "(conference_provider IS NOT NULL AND conference_provider IN "
+        "('dingtalk','tencent_meeting') "
+        "AND conference_identity IS NOT NULL AND jsonb_typeof(conference_identity)='object')",
+        name="conference_identity",
+    ),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("organizer_user_id", Uuid, nullable=False),
+    Column("organizer_auth_version", Integer, nullable=False),
+    Column("active_from", Date, nullable=False),
+    Column("active_until", Date, nullable=False),
+    Column("lead_days", SmallInteger, nullable=False),
+    Column("recurrence_digest", String(64), nullable=False),
+    Column("recurrence_snapshot", JSONB, nullable=False),
+    Column("next_check_at", DateTime(timezone=True)),
+    Column("last_scan_at", DateTime(timezone=True)),
+    Column("failure_count", SmallInteger, nullable=False, server_default=text("0")),
+    Column("last_error_code", String(64)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("updated_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "recurrence_id", name="uq_meeting_generation_recurrence"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "recurrence_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_recurrences.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_recurrences.project_id",
+            f"{PROJECT_SCHEMA}.meeting_recurrences.id",
+        ],
+        name="fk_meeting_generation_recurrence",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "organizer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_generation_organizer",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("version>0 AND organizer_auth_version>=0", name="versions"),
+    CheckConstraint("status IN ('enabled','paused','attention')", name="status"),
+    CheckConstraint("active_until>=active_from AND active_until-active_from<=366", name="dates"),
+    CheckConstraint("lead_days BETWEEN 1 AND 60 AND failure_count BETWEEN 0 AND 3", name="limits"),
+    CheckConstraint("(status='enabled')=(next_check_at IS NOT NULL)", name="next_check"),
+    CheckConstraint(
+        "recurrence_digest ~ '^[0-9a-f]{64}$' "
+        "AND jsonb_typeof(recurrence_snapshot)='object' "
+        "AND recurrence_snapshot ?& ARRAY['id','project_id','tenant_id'] "
+        "AND recurrence_snapshot->>'id'=recurrence_id::text "
+        "AND recurrence_snapshot->>'project_id'=project_id::text "
+        "AND recurrence_snapshot->>'tenant_id'=tenant_id::text",
+        name="snapshot",
+    ),
+    Index(
+        "ix_meeting_generation_due",
+        "next_check_at",
+        "id",
+        postgresql_where=text("status='enabled'"),
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+meeting_planning_briefs = Table(
+    "meeting_planning_briefs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("sequence", BigInteger, Identity(), nullable=False, unique=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("root_id", Uuid, nullable=False),
+    Column("parent_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_meeting_planning_scope"),
+    UniqueConstraint("tenant_id", "root_id", "version", name="uq_meeting_planning_version"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+        name="fk_meeting_planning_project",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_meeting_planning_actor",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "root_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.project_id",
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_meeting_planning_root",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "parent_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.project_id",
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_meeting_planning_parent",
+    ),
+    CheckConstraint(
+        "version>0 AND request_digest ~ '^[0-9a-f]{64}$' AND source_digest ~ '^[0-9a-f]{64}$'",
+        name="version",
+    ),
+    CheckConstraint("jsonb_typeof(source_snapshot)='object'", name="source"),
+    Index(
+        "ix_meeting_planning_owner",
+        "tenant_id",
+        "project_id",
+        "created_by_user_id",
+        "sequence",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+meeting_notification_batches = Table(
+    "meeting_notification_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("sequence", BigInteger, Identity(), nullable=False, unique=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("actor_auth_version", Integer, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "meeting_id"],
+        [
+            f"{PROJECT_SCHEMA}.meetings.tenant_id",
+            f"{PROJECT_SCHEMA}.meetings.project_id",
+            f"{PROJECT_SCHEMA}.meetings.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_meeting_notification_scope",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_meeting_notification_actor",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$' AND actor_auth_version>=0", name="request"),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot"),
+    Index(
+        "ix_meeting_notification_history",
+        "tenant_id",
+        "project_id",
+        "meeting_id",
+        "sequence",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+meeting_participants = Table(
+    "meeting_participants",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("user_id", Uuid, nullable=False),
+    Column("participation", String(16), nullable=False),
+    Column("attendance", String(16), nullable=False, server_default=text("'unknown'")),
+    Column(
+        "added_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "participation IN ('organizer', 'required', 'optional')",
+        name="participation_allowed",
+    ),
+    CheckConstraint("attendance IN ('unknown', 'attended', 'absent')", name="attendance_allowed"),
+    UniqueConstraint("tenant_id", "id", name="uq_meeting_participants_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id", "meeting_id", "user_id", name="uq_meeting_participants_tenant_member"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        name="fk_meeting_participants_tenant_meeting",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_participants_tenant_user",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+meeting_agenda_items = Table(
+    "meeting_agenda_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("position", SmallInteger, nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("item_kind", String(24), nullable=False),
+    Column("detail", Text),
+    Column("owner_user_id", Uuid),
+    # 可跳源 (V2-4): where this agenda item came from in the truth tables.
+    Column("source_kind", String(32)),
+    Column("source_entity_id", Uuid),
+    Column("source_digest", String(64)),
+    CheckConstraint(
+        "source_digest IS NULL OR (source_kind IS NOT NULL AND source_digest ~ '^[0-9a-f]{64}$')",
+        name="source_digest_consistent",
+    ),
+    # 下次会议自动复查未关闭项 (V2-6): the item this one carries forward.
+    Column("carried_from_item_id", Uuid),
+    Column("resolution_status", String(16), nullable=False, server_default=text("'open'")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "item_kind IN ('topic', 'review', 'decision', 'information', 'exception')",
+        name="item_kind_allowed",
+    ),
+    CheckConstraint(
+        "resolution_status IN ('open', 'closed', 'carried_over')",
+        name="resolution_status_allowed",
+    ),
+    CheckConstraint("btrim(title) <> ''", name="title_nonblank"),
+    CheckConstraint("position >= 1", name="position_positive"),
+    CheckConstraint(
+        "carried_from_item_id IS NULL OR carried_from_item_id <> id",
+        name="carried_from_not_self",
+    ),
+    CheckConstraint(
+        "source_kind IN ('task', 'issue', 'risk', 'decision', 'gate', "
+        "'requirement', 'change_request', 'finding', 'test_run', 'forecast') "
+        "OR source_kind IS NULL",
+        name="source_kind_allowed",
+    ),
+    CheckConstraint(
+        "(source_kind IS NULL AND source_entity_id IS NULL) OR "
+        "(source_kind IS NOT NULL AND source_entity_id IS NOT NULL)",
+        name="source_pair_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_meeting_agenda_items_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "meeting_id",
+        "position",
+        name="uq_meeting_agenda_items_tenant_position",
+    ),
+    Index("ix_meeting_agenda_items_tenant_meeting", "tenant_id", "meeting_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        name="fk_meeting_agenda_items_tenant_meeting",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_agenda_items_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "carried_from_item_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_agenda_items.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_agenda_items.id",
+        ],
+        name="fk_meeting_agenda_items_tenant_carried_from",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+meeting_agenda_actions = Table(
+    "meeting_agenda_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("agenda_item_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_meeting_action_finding"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_meeting_action_finding",
+        ondelete="RESTRICT",
+    ),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("relation_kind", String(16), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint("relation_kind IN ('created','linked','carried')", name="relation_allowed"),
+    UniqueConstraint("tenant_id", "agenda_item_id", "task_id", name="uq_meeting_agenda_task"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_meeting_action_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        name="fk_meeting_action_meeting",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "agenda_item_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_agenda_items.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_agenda_items.id",
+        ],
+        name="fk_meeting_action_agenda",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "task_id"],
+        [f"{PROJECT_SCHEMA}.tasks.tenant_id", f"{PROJECT_SCHEMA}.tasks.id"],
+        name="fk_meeting_action_task",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_action_actor",
+        ondelete="RESTRICT",
+    ),
+    Index("ix_meeting_actions_project", "tenant_id", "project_id", "meeting_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+meeting_minutes_versions = Table(
+    "meeting_minutes_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("version_no", Integer, nullable=False),
+    Column("previous_version_id", Uuid),
+    Column("source_finding_id", Uuid),
+    Column("body", Text, nullable=False),
+    Column("unresolved_points", Text, nullable=False),
+    Column("citations", JSONB, nullable=False),
+    Column("document_digest", String(64), nullable=False),
+    Column("confirmed_by_user_id", Uuid, nullable=False),
+    Column("confirmed_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    CheckConstraint("version_no >= 1", name="version_positive"),
+    CheckConstraint(
+        "btrim(body) <> '' AND btrim(unresolved_points) <> '' AND btrim(reason) <> ''",
+        name="content_nonblank",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(citations) = 'array' AND jsonb_array_length(citations) BETWEEN 1 AND 100",
+        name="citations_array",
+    ),
+    CheckConstraint(
+        "document_digest ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="digests_sha256",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_minutes_tenant_id"),
+    UniqueConstraint("tenant_id", "meeting_id", "version_no", name="uq_minutes_meeting_version"),
+    UniqueConstraint("tenant_id", "confirmed_by_user_id", "request_id", name="uq_minutes_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        name="fk_minutes_meeting",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "confirmed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_minutes_confirmer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "previous_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_minutes_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_minutes_versions.id",
+        ],
+        name="fk_minutes_previous",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_minutes_source_finding"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_finding_id"],
+        [
+            f"{AI_SCHEMA}.findings.tenant_id",
+            f"{AI_SCHEMA}.findings.project_id",
+            f"{AI_SCHEMA}.findings.id",
+        ],
+        name="fk_minutes_finding",
+        ondelete="RESTRICT",
+    ),
+    Index("ix_minutes_project", "tenant_id", "project_id", "meeting_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+meeting_transcripts = Table(
+    "meeting_transcripts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("source", String(24), nullable=False, server_default=text("'manual_upload'")),
+    Column("language", String(16), nullable=False, server_default=text("'zh-CN'")),
+    Column("content_digest", String(64), nullable=False),
+    Column("original_content", Text),
+    Column("storage_key", String(512), nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("segment_count", Integer, nullable=False),
+    Column("speaker_labeled", Boolean, nullable=False, server_default=text("false")),
+    Column("uploaded_by_user_id", Uuid, nullable=False),
+    Column(
+        "uploaded_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("superseded_at", DateTime(timezone=True)),
+    CheckConstraint(
+        "source IN ('manual_upload', 'dingtalk_export', 'tencent_meeting_export')",
+        name="source_allowed",
+    ),
+    CheckConstraint("content_digest ~ '^[0-9a-f]{64}$'", name="content_digest_sha256"),
+    CheckConstraint("byte_size > 0", name="byte_size_positive"),
+    CheckConstraint(
+        "original_content IS NULL OR (octet_length(original_content) = byte_size "
+        "AND encode(sha256(convert_to(original_content, 'UTF8')), 'hex') = content_digest)",
+        name="original_matches_digest",
+    ),
+    CheckConstraint("segment_count >= 0", name="segment_count_non_negative"),
+    CheckConstraint("btrim(storage_key) <> ''", name="storage_key_nonblank"),
+    UniqueConstraint("tenant_id", "id", name="uq_meeting_transcripts_tenant_id_id"),
+    # Re-uploading identical bytes is a no-op, not a second transcript.
+    UniqueConstraint(
+        "tenant_id",
+        "meeting_id",
+        "content_digest",
+        name="uq_meeting_transcripts_tenant_meeting_digest",
+    ),
+    Index("ix_meeting_transcripts_tenant_meeting", "tenant_id", "meeting_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        name="fk_meeting_transcripts_tenant_meeting",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "uploaded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_transcripts_tenant_uploader",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+# Citation anchors for V2-5: a Minutes proposal must point at the exact spoken
+# segment it came from, so the segments are part of the V2-1 data contract.
+meeting_transcript_segments = Table(
+    "meeting_transcript_segments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("transcript_id", Uuid, nullable=False),
+    Column("sequence", Integer, nullable=False),
+    Column("speaker_label", String(128)),
+    Column("speaker_user_id", Uuid),
+    Column("started_offset_ms", Integer, nullable=False),
+    Column("ended_offset_ms", Integer),
+    Column("content", Text, nullable=False),
+    CheckConstraint("sequence >= 1", name="sequence_positive"),
+    CheckConstraint("started_offset_ms >= 0", name="started_offset_non_negative"),
+    CheckConstraint(
+        "ended_offset_ms IS NULL OR ended_offset_ms >= started_offset_ms",
+        name="offset_window_ordered",
+    ),
+    CheckConstraint("btrim(content) <> ''", name="content_nonblank"),
+    # A speaker may stay unidentified, but naming a PDOS user requires the raw
+    # label it was resolved from — otherwise attribution has no evidence.
+    CheckConstraint(
+        "speaker_user_id IS NULL OR speaker_label IS NOT NULL",
+        name="speaker_user_requires_label",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_meeting_transcript_segments_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "transcript_id",
+        "sequence",
+        name="uq_meeting_transcript_segments_tenant_sequence",
+    ),
+    Index(
+        "ix_meeting_transcript_segments_tenant_transcript",
+        "tenant_id",
+        "transcript_id",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "transcript_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_transcripts.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_transcripts.id",
+        ],
+        name="fk_meeting_transcript_segments_tenant_transcript",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "speaker_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_meeting_transcript_segments_tenant_speaker",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+# V2-7 (C8). A source is the standing permission to collect from somewhere:
+# who owns it, what licence it carries, what the material may be used for, and
+# how long it is kept. Snapshots inherit that answer rather than re-deciding it
+# per fetch.
+research_sources = Table(
+    "research_sources",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("name", String(256), nullable=False),
+    Column("source_type", String(24), nullable=False),
+    Column("base_url", String(1024)),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("license_note", Text),
+    Column("allowed_use", String(24), nullable=False),
+    Column("collection_frequency", String(16), nullable=False),
+    Column("retention_policy", String(16), nullable=False),
+    Column("trust_tier", String(16), nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'active'")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "source_type IN ('web', 'api', 'file', 'internal_system')",
+        name="source_type_allowed",
+    ),
+    CheckConstraint(
+        "allowed_use IN ('internal_analysis', 'internal_citation', 'redistribution')",
+        name="allowed_use_allowed",
+    ),
+    CheckConstraint(
+        "collection_frequency IN ('on_demand', 'daily', 'weekly', 'monthly', 'event_driven')",
+        name="collection_frequency_allowed",
+    ),
+    CheckConstraint(
+        "retention_policy IN ('standard', 'extended', 'minimal')",
+        name="retention_policy_allowed",
+    ),
+    CheckConstraint(
+        "trust_tier IN ('official', 'public', 'community', 'unknown')",
+        name="trust_tier_allowed",
+    ),
+    CheckConstraint("status IN ('active', 'disabled')", name="status_allowed"),
+    CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
+    # A web or api source without a base URL cannot be audited for licence
+    # scope later; file and internal_system sources legitimately have none.
+    CheckConstraint(
+        "source_type IN ('file', 'internal_system') OR base_url IS NOT NULL",
+        name="remote_source_requires_base_url",
+    ),
+    CheckConstraint("base_url IS NULL OR base_url ~ '^https?://'", name="base_url_is_http"),
+    UniqueConstraint("tenant_id", "id", name="uq_research_sources_tenant_id_id"),
+    UniqueConstraint("tenant_id", "name", name="uq_research_sources_tenant_name"),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_sources_tenant_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=EVIDENCE_SCHEMA,
+)
+
+# Immutable by construction: a database trigger (migration 0054) rejects any
+# UPDATE to the body columns. Correcting a snapshot means capturing a new one
+# and pointing `superseded_by_id` at it, so "快照不可静默覆盖" holds even
+# against a direct SQL write.
+evidence_contents = Table(
+    "evidence_contents",
+    metadata,
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        primary_key=True,
+    ),
+    Column("content_digest", String(64), primary_key=True),
+    Column("body", Text, nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column(
+        "stored_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "byte_size > 0 AND byte_size <= 2097152 AND octet_length(body)=byte_size", name="body_size"
+    ),
+    CheckConstraint(
+        "content_digest=encode(sha256(convert_to(body,'UTF8')),'hex')", name="body_digest"
+    ),
+    schema=EVIDENCE_SCHEMA,
+)
+
+evidence_snapshots = Table(
+    "evidence_snapshots",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("source_id", Uuid),
+    Column("url", String(2048)),
+    Column("captured_at", DateTime(timezone=True), nullable=False),
+    Column("captured_by_user_id", Uuid, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("content_ref", String(512), nullable=False),
+    Column("content_language", String(16), nullable=False, server_default=text("'zh-CN'")),
+    Column("source_version", String(128)),
+    Column("trust_tier", String(16), nullable=False),
+    Column("taint", String(24), nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("freshness_expires_at", DateTime(timezone=True)),
+    Column("superseded_by_id", Uuid),
+    Column("conflicts_with_id", Uuid),
+    Column("conflict_note", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "trust_tier IN ('official', 'public', 'community', 'unknown')",
+        name="trust_tier_allowed",
+    ),
+    # The taint label is the carrier for D25's "标注不拦截": external material
+    # is marked, not blocked, and the label travels with every citation.
+    CheckConstraint(
+        "taint IN ('untrusted_external', 'internal', 'verified')",
+        name="taint_allowed",
+    ),
+    CheckConstraint("content_digest ~ '^[0-9a-f]{64}$'", name="content_digest_sha256"),
+    CheckConstraint("btrim(content_ref) <> ''", name="content_ref_nonblank"),
+    CheckConstraint("byte_size > 0", name="byte_size_positive"),
+    CheckConstraint("url IS NULL OR url ~ '^https?://'", name="url_is_http"),
+    CheckConstraint(
+        "superseded_by_id IS NULL OR superseded_by_id <> id",
+        name="superseded_by_not_self",
+    ),
+    CheckConstraint(
+        "conflicts_with_id IS NULL OR conflicts_with_id <> id",
+        name="conflicts_with_not_self",
+    ),
+    # Recording a conflict without saying what it is leaves the next reader
+    # with a flag and no way to resolve it.
+    CheckConstraint(
+        "(conflicts_with_id IS NULL AND conflict_note IS NULL) OR "
+        "(conflicts_with_id IS NOT NULL AND btrim(conflict_note) <> '')",
+        name="conflict_pair_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_evidence_snapshots_tenant_id_id"),
+    # Same bytes from the same source version is the same observation. A second
+    # capture reuses the row rather than inflating the evidence count.
+    UniqueConstraint(
+        "tenant_id",
+        "source_id",
+        "content_digest",
+        "source_version",
+        name="uq_evidence_snapshots_tenant_source_digest",
+    ),
+    Index("ix_evidence_snapshots_tenant_captured", "tenant_id", "captured_at"),
+    Index("ix_evidence_snapshots_tenant_source", "tenant_id", "source_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.research_sources.tenant_id",
+            f"{EVIDENCE_SCHEMA}.research_sources.id",
+        ],
+        name="fk_evidence_snapshots_tenant_source",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "captured_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_evidence_snapshots_tenant_capturer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "superseded_by_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_evidence_snapshots_tenant_superseded_by",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "conflicts_with_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_evidence_snapshots_tenant_conflicts_with",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    schema=EVIDENCE_SCHEMA,
+)
+
+
+# V2-9 (D26). A debate is a bounded, replayable argument between seats whose
+# positions the *server* fixes before the first word is spoken. The seat
+# projection is the control: a model cannot argue from objects it was not
+# anchored to, which is what stops a debate from becoming free-form
+# speculation dressed up as multi-agent rigour.
+debate_sessions = Table(
+    "debate_sessions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    # Nullable: scope v3 (V5-8) allows non-project debates. Until then the
+    # service always sets it.
+    Column("project_id", Uuid),
+    Column("topic_entity", String(32), nullable=False),
+    Column("topic_entity_id", Uuid, nullable=False),
+    Column("question", Text, nullable=False),
+    Column("initiated_by", String(8), nullable=False),
+    Column("initiator_ref", String(64), nullable=False),
+    Column("initiated_by_user_id", Uuid),
+    Column("status", String(16), nullable=False, server_default=text("'convened'")),
+    Column("budget_tokens", Integer, nullable=False),
+    Column("spent_tokens", Integer, nullable=False, server_default=text("0")),
+    Column("round_count", Integer, nullable=False, server_default=text("0")),
+    Column("max_rounds", SmallInteger, nullable=False, server_default=text("4")),
+    Column("stop_reason", String(32)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "topic_entity IN ('project', 'engineering_change_request', 'gate', 'issue', "
+        "'customer_change_request', 'requirement', 'specification', "
+        "'product_definition', 'meeting', 'risk')",
+        name="topic_entity_allowed",
+    ),
+    CheckConstraint("initiated_by IN ('agent', 'user')", name="initiated_by_allowed"),
+    CheckConstraint(
+        "status IN ('preparing', 'convened', 'arguing', 'converged', 'budget_stopped', 'briefed', "
+        "'cancelled', 'completed', 'interrupted')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(question) <> ''", name="question_nonblank"),
+    CheckConstraint("budget_tokens > 0", name="budget_positive"),
+    CheckConstraint("spent_tokens >= 0", name="spent_non_negative"),
+    CheckConstraint("round_count >= 0", name="round_count_non_negative"),
+    CheckConstraint("max_rounds BETWEEN 1 AND 12", name="max_rounds_range"),
+    # A user-initiated debate names the person; an agent-initiated one does not
+    # borrow one, so the audit trail never implies a human asked for it.
+    CheckConstraint(
+        "(initiated_by = 'user' AND initiated_by_user_id IS NOT NULL) OR "
+        "(initiated_by = 'agent' AND initiated_by_user_id IS NULL)",
+        name="initiator_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_debate_sessions_tenant_id_id"),
+    Index("ix_debate_sessions_tenant_status", "tenant_id", "status"),
+    Index("ix_debate_sessions_tenant_topic", "tenant_id", "topic_entity", "topic_entity_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_debate_sessions_tenant_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "initiated_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_debate_sessions_tenant_initiator",
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+
+debate_seats = Table(
+    "debate_seats",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("session_id", Uuid, nullable=False),
+    Column("seat_key", String(32), nullable=False),
+    Column("agent_key", String(40), nullable=False),
+    # Server-frozen anchor list. Written once at convene; never updated.
+    Column("stance_projection", JSONB, nullable=False),
+    Column("persona_version", String(16), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "seat_key IN ('product_manager', 'project_manager', 'structure_engineer', "
+        "'hardware_engineer', 'dqe', 'supplier', 'id_designer', 'firmware_engineer', 'sqe', 'ie')",
+        name="seat_key_allowed",
+    ),
+    CheckConstraint(
+        "agent_key IN ('project_intelligence', 'knowledge_lite', "
+        "'engineering_intelligence', 'quality_intelligence', "
+        "'supplier_intelligence', 'executive_intelligence', "
+        "'product_management_intelligence')",
+        name="agent_key_allowed",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(stance_projection) = 'object'",
+        name="stance_projection_is_object",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_debate_seats_tenant_id_id"),
+    UniqueConstraint(
+        "tenant_id", "session_id", "seat_key", name="uq_debate_seats_tenant_session_seat"
+    ),
+    Index("ix_debate_seats_tenant_session", "tenant_id", "session_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.debate_sessions.tenant_id", f"{AI_SCHEMA}.debate_sessions.id"],
+        name="fk_debate_seats_tenant_session",
+        ondelete="CASCADE",
+    ),
+    schema=AI_SCHEMA,
+)
+
+# Full transcript, replayable turn by turn (UX7).
+debate_turns = Table(
+    "debate_turns",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("session_id", Uuid, nullable=False),
+    Column("round_number", SmallInteger, nullable=False),
+    Column("sequence", Integer, nullable=False),
+    Column("speaker_kind", String(16), nullable=False),
+    Column("seat_id", Uuid),
+    Column("author_user_id", Uuid),
+    Column("content", Text, nullable=False),
+    Column("citations", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("repetition_of_turn_id", Uuid),
+    Column("input_tokens", Integer, nullable=False, server_default=text("0")),
+    Column("output_tokens", Integer, nullable=False, server_default=text("0")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("speaker_kind IN ('moderator', 'seat', 'human')", name="speaker_kind_allowed"),
+    CheckConstraint("btrim(content) <> ''", name="content_nonblank"),
+    CheckConstraint("round_number >= 0", name="round_number_non_negative"),
+    CheckConstraint("sequence >= 1", name="sequence_positive"),
+    CheckConstraint("jsonb_typeof(citations) = 'array'", name="citations_is_array"),
+    CheckConstraint("input_tokens >= 0 AND output_tokens >= 0", name="tokens_non_negative"),
+    # Every turn is attributable: a seat turn names its seat, a human turn
+    # names the person. An unattributed argument cannot be weighed.
+    CheckConstraint(
+        "(speaker_kind = 'seat' AND seat_id IS NOT NULL AND author_user_id IS NULL) OR "
+        "(speaker_kind = 'human' AND author_user_id IS NOT NULL AND seat_id IS NULL) OR "
+        "(speaker_kind = 'moderator' AND seat_id IS NULL AND author_user_id IS NULL)",
+        name="speaker_attribution_consistent",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_debate_turns_tenant_id_id"),
+    UniqueConstraint("tenant_id", "session_id", "sequence", name="uq_debate_turns_tenant_sequence"),
+    Index("ix_debate_turns_tenant_session", "tenant_id", "session_id", "sequence"),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.debate_sessions.tenant_id", f"{AI_SCHEMA}.debate_sessions.id"],
+        name="fk_debate_turns_tenant_session",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "seat_id"],
+        [f"{AI_SCHEMA}.debate_seats.tenant_id", f"{AI_SCHEMA}.debate_seats.id"],
+        name="fk_debate_turns_tenant_seat",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "author_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_debate_turns_tenant_author",
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+
+debate_briefs = Table(
+    "debate_briefs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("session_id", Uuid, nullable=False),
+    Column("summary", Text, nullable=False),
+    Column("agreements", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("disagreements", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("recommended_action", Text, nullable=False),
+    Column("zone", String(16), nullable=False),
+    Column("status", String(24), nullable=False, server_default=text("'draft'")),
+    # A recommendation resting only on untrusted external material is flagged
+    # here rather than being quietly promoted (D25 辩论投毒 defence).
+    Column(
+        "rests_on_untrusted_only",
+        Boolean,
+        nullable=False,
+        server_default=text("false"),
+    ),
+    Column("validated_by_user_id", Uuid),
+    Column("validated_at", DateTime(timezone=True)),
+    Column("rejection_note", Text),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("zone IN ('confirm', 'hard_gate')", name="zone_allowed"),
+    CheckConstraint(
+        "status IN ('draft', 'human_validated', 'promoted', 'rejected')",
+        name="status_allowed",
+    ),
+    CheckConstraint("btrim(summary) <> ''", name="summary_nonblank"),
+    CheckConstraint("btrim(recommended_action) <> ''", name="recommended_action_nonblank"),
+    CheckConstraint("jsonb_typeof(agreements) = 'array'", name="agreements_is_array"),
+    CheckConstraint("jsonb_typeof(disagreements) = 'array'", name="disagreements_is_array"),
+    # Promotion is a human act: the validator is recorded or the brief stays a
+    # draft. D26's "一场人工比对合格即转正" lives here.
+    CheckConstraint(
+        "(status IN ('draft', 'rejected')) OR "
+        "(validated_by_user_id IS NOT NULL AND validated_at IS NOT NULL)",
+        name="promotion_requires_validator",
+    ),
+    CheckConstraint(
+        "status <> 'rejected' OR btrim(coalesce(rejection_note, '')) <> ''",
+        name="rejection_requires_note",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_debate_briefs_tenant_id_id"),
+    UniqueConstraint("tenant_id", "session_id", name="uq_debate_briefs_tenant_session"),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.debate_sessions.tenant_id", f"{AI_SCHEMA}.debate_sessions.id"],
+        name="fk_debate_briefs_tenant_session",
+        ondelete="CASCADE",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "validated_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_debate_briefs_tenant_validator",
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+budget_lineages = Table(
+    "budget_lineages",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("profile", JSONB, nullable=False),
+    Column("profile_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("absolute_deadline", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_budget_lineages_tenant_id"),
+    CheckConstraint("absolute_deadline > created_at", name="deadline_order"),
+    CheckConstraint(
+        "jsonb_typeof(profile) = 'object' AND length(profile_digest) = 64", name="profile_shape"
+    ),
+    schema=AI_SCHEMA,
+)
+
+budget_run_links = Table(
+    "budget_run_links",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("run_id", Uuid, primary_key=True),
+    Column("lineage_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id"],
+        [f"{AI_SCHEMA}.budget_lineages.tenant_id", f"{AI_SCHEMA}.budget_lineages.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "lineage_id", "run_id", name="uq_budget_run_links_lineage_run"),
+    schema=AI_SCHEMA,
+)
+
+agent_service_principals = Table(
+    "agent_service_principals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("subscription_id", Uuid, nullable=False),
+    Column("name", String(128), nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("updated_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_service_principal_scope"),
+    UniqueConstraint("tenant_id", "subscription_id", name="uq_service_principal_subscription"),
+    ForeignKeyConstraint(
+        ["tenant_id", "subscription_id"],
+        [f"{AI_SCHEMA}.agent_subscriptions.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("status IN ('active','paused') AND revision>0", name="state"),
+    schema=AI_SCHEMA,
+)
+agent_authorizations = Table(
+    "agent_authorizations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("lineage_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("principal_revision", Integer, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("issued_at", DateTime(timezone=True), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_agent_authorization_scope"),
+    UniqueConstraint("tenant_id", "run_id", name="uq_agent_authorization_run"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id", "run_id"],
+        [f"{AI_SCHEMA}.budget_run_links.{k}" for k in ("tenant_id", "lineage_id", "run_id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.agent_service_principals.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "expires_at>issued_at AND principal_revision>0 AND jsonb_typeof(body)='object'",
+        name="lifetime",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+application_tool_observations = Table(
+    "application_tool_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid, nullable=False),
+    Column("tool_intent_id", Uuid, nullable=False),
+    Column("metadata", JSONB, nullable=False),
+    Column("output_body", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_application_tool_observation_scope"),
+    UniqueConstraint("tool_intent_id", name="uq_application_tool_observation_intent"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "authorization_id"],
+        [f"{AI_SCHEMA}.application_authorizations.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "tool_intent_id"],
+        [f"{AI_SCHEMA}.agent_tool_intents.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tool_intent_id"],
+        [f"{AI_SCHEMA}.agent_tool_dispatches.intent_id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(metadata)='object' AND jsonb_typeof(output_body)='object'", name="shape"
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+application_context_observations = Table(
+    "application_context_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid, nullable=False),
+    Column("model_call_id", Uuid, nullable=False),
+    Column("metadata", JSONB, nullable=False),
+    Column("output_body", JSONB, nullable=False),
+    Column("context_body", JSONB, nullable=False),
+    Column("bundle", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_application_observation_scope"),
+    UniqueConstraint(
+        "tenant_id", "run_id", "model_call_id", name="uq_application_observation_call"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "authorization_id"],
+        [f"{AI_SCHEMA}.application_authorizations.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+Index(
+    "ix_application_chat_queue",
+    agent_runs.c.created_at,
+    agent_runs.c.id,
+    postgresql_where=text("agent_key='ai_chat' AND status='queued'"),
+)
+
+application_run_leases = Table(
+    "application_run_leases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid, nullable=False),
+    Column("owner_id", Uuid, nullable=False),
+    Column("generation", Integer, nullable=False, server_default=text("1")),
+    Column("previous_lease_id", Uuid),
+    Column("recovery_checkpoint_id", Uuid),
+    Column("discussion_resume_id", Uuid),
+    Column("issued_at", DateTime(timezone=True), nullable=False),
+    Column("renewed_at", DateTime(timezone=True), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("ended_at", DateTime(timezone=True)),
+    Column("stop_reason", String(64)),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_application_lease_scope"),
+    UniqueConstraint("tenant_id", "run_id", "generation", name="uq_application_lease_generation"),
+    Index(
+        "uq_application_lease_active",
+        "tenant_id",
+        "run_id",
+        unique=True,
+        postgresql_where=text("ended_at IS NULL"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "previous_lease_id"],
+        [f"{AI_SCHEMA}.application_run_leases.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_application_lease_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "recovery_checkpoint_id"],
+        [f"{AI_SCHEMA}.application_result_checkpoints.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_application_lease_checkpoint",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "discussion_resume_id"],
+        [f"{AI_SCHEMA}.debate_resume_requests.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_application_lease_discussion_resume",
+        ondelete="RESTRICT",
+        use_alter=True,
+    ),
+    CheckConstraint(
+        "generation>0 AND ((generation=1 AND previous_lease_id IS NULL "
+        "AND recovery_checkpoint_id IS NULL AND discussion_resume_id IS NULL) OR "
+        "(generation>1 AND previous_lease_id IS NOT NULL AND "
+        "((recovery_checkpoint_id IS NOT NULL AND discussion_resume_id IS NULL) OR "
+        "(recovery_checkpoint_id IS NULL AND discussion_resume_id IS NOT NULL))))",
+        name="generation",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "authorization_id"],
+        [f"{AI_SCHEMA}.application_authorizations.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "renewed_at>=issued_at AND expires_at>renewed_at AND "
+        "((ended_at IS NULL AND stop_reason IS NULL) OR "
+        "(ended_at IS NOT NULL AND ended_at>=issued_at AND stop_reason IS NOT NULL "
+        "AND btrim(stop_reason)<>''))",
+        name="lifecycle",
+    ),
+    schema=AI_SCHEMA,
+)
+
+application_context_manifests = Table(
+    "application_context_manifests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid, nullable=False),
+    Column("observation_id", Uuid, nullable=False),
+    Column("admission_id", Uuid, nullable=False),
+    Column("attempt_id", Uuid, nullable=False),
+    Column("revision_no", Integer, nullable=False),
+    Column("parent_revision_id", Uuid),
+    Column("owner_lease_id", Uuid),
+    Column("body", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_application_manifest_scope"),
+    UniqueConstraint("tenant_id", "run_id", "revision_no", name="uq_application_manifest_revision"),
+    UniqueConstraint("tenant_id", "run_id", "attempt_id", name="uq_application_manifest_attempt"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "owner_lease_id"],
+        [f"{AI_SCHEMA}.application_run_leases.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_application_manifest_owner_lease",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "authorization_id"],
+        [f"{AI_SCHEMA}.application_authorizations.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "observation_id"],
+        [
+            f"{AI_SCHEMA}.application_context_observations.{k}"
+            for k in ("tenant_id", "run_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "admission_id"],
+        [f"{AI_SCHEMA}.budget_journal.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "parent_revision_id"],
+        [f"{AI_SCHEMA}.application_context_manifests.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_no>0 AND (revision_no=1)=(parent_revision_id IS NULL)", name="revision"
+    ),
+    schema=AI_SCHEMA,
+)
+
+application_result_checkpoints = Table(
+    "application_result_checkpoints",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("model_call_id", Uuid, nullable=False),
+    Column("observation_id", Uuid, nullable=False),
+    Column("manifest_id", Uuid, nullable=False),
+    Column("invocation_id", Uuid, nullable=False),
+    Column("owner_lease_id", Uuid, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "model_call_id", name="uq_application_result_call"),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_application_result_scope"),
+    *[
+        ForeignKeyConstraint(
+            ["tenant_id", "run_id", local],
+            [f"{AI_SCHEMA}.{target}.{k}" for k in ("tenant_id", "run_id", "id")],
+            ondelete="RESTRICT",
+        )
+        for local, target in (
+            ("observation_id", "application_context_observations"),
+            ("manifest_id", "application_context_manifests"),
+            ("owner_lease_id", "application_run_leases"),
+        )
+    ],
+    ForeignKeyConstraint(
+        ["tenant_id", "invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(body->>'version'='application-result.v1' AND body->>'status'='succeeded' "
+        "AND jsonb_typeof(body->'output')='object' "
+        "AND jsonb_typeof(body->'removed_context_paths')='array' "
+        "AND jsonb_typeof(body->'structured_attempts')='number' "
+        "AND (body->>'structured_attempts')::integer BETWEEN 1 AND 3) IS TRUE",
+        name="result_body",
+    ),
+    schema=AI_SCHEMA,
+)
+
+application_authorizations = Table(
+    "application_authorizations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("lineage_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
+    Column("body", JSONB, nullable=False),
+    Column("pins", JSONB, nullable=False),
+    Column("issued_at", DateTime(timezone=True), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_application_authorization_scope"),
+    UniqueConstraint("tenant_id", "run_id", name="uq_application_authorization_run"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id", "run_id"],
+        [f"{AI_SCHEMA}.budget_run_links.{k}" for k in ("tenant_id", "lineage_id", "run_id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "expires_at>issued_at AND jsonb_typeof(body)='object' AND jsonb_typeof(pins)='object'",
+        name="lifetime",
+    ),
+    schema=AI_SCHEMA,
+)
+
+agent_tool_accounting_epochs = Table(
+    "agent_tool_accounting_epochs",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=False),
+    Column("activated_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint("id=1", name="singleton"),
+    schema=AI_SCHEMA,
+)
+
+agent_tool_intents = Table(
+    "agent_tool_intents",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("lineage_id", Uuid),
+    Column("call_key", String(128), nullable=False),
+    Column("tool_key", String(64), nullable=False),
+    Column("input_body", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_tool_intent_scope"),
+    UniqueConstraint("tenant_id", "run_id", "call_key", name="uq_tool_intent_call"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id", "run_id"],
+        [f"{AI_SCHEMA}.budget_run_links.{k}" for k in ("tenant_id", "lineage_id", "run_id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(call_key)<>'' AND btrim(tool_key)<>'' AND jsonb_typeof(input_body)='object'",
+        name="shape",
+    ),
+    Index("ix_tool_intent_lineage", "tenant_id", "lineage_id"),
+    schema=AI_SCHEMA,
+)
+agent_tool_dispatches = Table(
+    "agent_tool_dispatches",
+    metadata,
+    Column("intent_id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("lease_token", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "intent_id"],
+        [f"{AI_SCHEMA}.agent_tool_intents.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+
+agent_tool_observations = Table(
+    "agent_tool_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "authorization_id"],
+        [f"{AI_SCHEMA}.agent_authorizations.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_tool_observation_authorization",
+        ondelete="RESTRICT",
+    ),
+    Column("sequence", Integer, nullable=False),
+    Column("call_key", String(128), nullable=False),
+    Column("tool_key", String(64), nullable=False),
+    Column("input_body", JSONB, nullable=False),
+    Column("output_body", JSONB, nullable=False),
+    Column("metadata", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("tool_intent_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "tool_intent_id"],
+        [f"{AI_SCHEMA}.agent_tool_intents.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_observation_tool_intent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_tool_observation_scope"),
+    UniqueConstraint("tenant_id", "run_id", "sequence", name="uq_tool_observation_sequence"),
+    UniqueConstraint("tenant_id", "run_id", "call_key", name="uq_tool_observation_call"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "sequence>0 AND btrim(call_key)<>'' AND btrim(tool_key)<>'' "
+        "AND jsonb_typeof(input_body)='object' AND jsonb_typeof(output_body)='object' "
+        "AND jsonb_typeof(metadata)='object'",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+agent_context_receipts = Table(
+    "agent_context_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "authorization_id"],
+        [f"{AI_SCHEMA}.agent_authorizations.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_context_receipt_authorization",
+        ondelete="RESTRICT",
+    ),
+    Column("model_call_id", Uuid, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("body_sha256", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_context_receipt_scope"),
+    UniqueConstraint("tenant_id", "run_id", "model_call_id", name="uq_context_receipt_call"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(body)='object' AND length(body_sha256)=64", name="shape"),
+    schema=AI_SCHEMA,
+)
+agent_context_observations = Table(
+    "agent_context_observations",
+    metadata,
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("context_receipt_id", Uuid, primary_key=True),
+    Column("position", Integer, primary_key=True),
+    Column("observation_id", Uuid, nullable=False),
+    UniqueConstraint("context_receipt_id", "observation_id", name="uq_context_observation_once"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "context_receipt_id"],
+        [f"{AI_SCHEMA}.agent_context_receipts.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "observation_id"],
+        [f"{AI_SCHEMA}.agent_tool_observations.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("position>0", name="position"),
+    schema=AI_SCHEMA,
+)
+model_invocations.append_constraint(
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "context_receipt_id"],
+        [f"{AI_SCHEMA}.agent_context_receipts.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_model_context_receipt",
+        ondelete="RESTRICT",
+    )
+)
+
+agent_context_manifests = Table(
+    "agent_context_manifests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("authorization_id", Uuid, nullable=False),
+    Column("context_receipt_id", Uuid, nullable=False),
+    Column("admission_id", Uuid, nullable=False),
+    Column("attempt_id", Uuid, nullable=False),
+    Column("revision_no", Integer, nullable=False),
+    Column("parent_revision_id", Uuid),
+    Column("body", JSONB, nullable=False),
+    Column("pins", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_context_manifest_scope"),
+    UniqueConstraint("tenant_id", "run_id", "revision_no", name="uq_context_manifest_revision"),
+    UniqueConstraint("tenant_id", "run_id", "attempt_id", name="uq_context_manifest_attempt"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    *[
+        ForeignKeyConstraint(
+            ["tenant_id", "run_id", column],
+            [f"{AI_SCHEMA}.{table}.{k}" for k in ("tenant_id", "run_id", "id")],
+            ondelete="RESTRICT",
+        )
+        for column, table in [
+            ("authorization_id", "agent_authorizations"),
+            ("context_receipt_id", "agent_context_receipts"),
+            ("admission_id", "budget_journal"),
+            ("parent_revision_id", "agent_context_manifests"),
+        ]
+    ],
+    CheckConstraint(
+        "revision_no>0 AND (revision_no=1)=(parent_revision_id IS NULL)", name="revision"
+    ),
+    CheckConstraint("jsonb_typeof(body)='object' AND jsonb_typeof(pins)='object'", name="body"),
+    schema=AI_SCHEMA,
+)
+
+agent_result_checkpoints = Table(
+    "agent_result_checkpoints",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column(
+        "model_invocation_id",
+        Uuid,
+        nullable=False,
+    ),
+    Column("body", JSONB, nullable=False),
+    Column("body_sha256", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", name="uq_agent_checkpoint_run"),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_checkpoint_recovery_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "model_invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.{key}" for key in ("tenant_id", "run_id", "id")],
+        name="fk_checkpoint_trace_scope",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(body)='object' AND length(body_sha256)=64", name="body_shape"),
+    schema=AI_SCHEMA,
+)
+
+agent_loop_checkpoints = Table(
+    "agent_loop_checkpoints",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("next_step", Integer, nullable=False),
+    Column("model_invocation_id", Uuid, nullable=False),
+    Column("trace_ids", ARRAY(Uuid), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("body_sha256", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "next_step", name="uq_loop_checkpoint_step"),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_loop_checkpoint_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "model_invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.{key}" for key in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "next_step BETWEEN 1 AND 99 AND jsonb_typeof(body)='object' "
+        "AND length(body_sha256)=64 AND cardinality(trace_ids)>0",
+        name="body",
+    ),
+    schema=AI_SCHEMA,
+)
+
+agent_run_recoveries = Table(
+    "agent_run_recoveries",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column(
+        "checkpoint_id",
+        Uuid,
+    ),
+    Column("loop_checkpoint_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "loop_checkpoint_id"],
+        [f"{AI_SCHEMA}.agent_loop_checkpoints.{key}" for key in ("tenant_id", "run_id", "id")],
+        name="fk_recovery_loop_checkpoint",
+        ondelete="RESTRICT",
+    ),
+    Column("finding_id", Uuid),
+    Column("action", String(32), nullable=False),
+    Column("reason", String(64)),
+    Column("expired_lease_token", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", "expired_lease_token", name="uq_agent_recovery_lease"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "checkpoint_id"],
+        [f"{AI_SCHEMA}.agent_result_checkpoints.{key}" for key in ("tenant_id", "run_id", "id")],
+        name="fk_recovery_checkpoint_scope",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "run_id", "id")],
+        name="fk_recovery_finding_scope",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "action IN ('resume_queued','receipt_completed','stopped')", name="action_allowed"
+    ),
+    schema=AI_SCHEMA,
+)
+
+budget_activity_coverage = Table(
+    "budget_activity_coverage",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("lineage_id", Uuid, primary_key=True),
+    Column("started_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id"],
+        [f"{AI_SCHEMA}.budget_lineages.tenant_id", f"{AI_SCHEMA}.budget_lineages.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+
+budget_activity_spans = Table(
+    "budget_activity_spans",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("lineage_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("lease_token", Uuid),
+    Column("started_at", DateTime(timezone=True), nullable=False),
+    Column("stopped_at", DateTime(timezone=True)),
+    Column("lease_expires_at", DateTime(timezone=True)),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id", "run_id"],
+        [
+            f"{AI_SCHEMA}.budget_run_links.tenant_id",
+            f"{AI_SCHEMA}.budget_run_links.lineage_id",
+            f"{AI_SCHEMA}.budget_run_links.run_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "stopped_at IS NULL OR stopped_at >= started_at", name="activity_span_stop_order"
+    ),
+    Index(
+        "uq_activity_open_run",
+        "tenant_id",
+        "run_id",
+        unique=True,
+        postgresql_where=text("stopped_at IS NULL"),
+    ),
+    Index("ix_activity_lineage", "tenant_id", "lineage_id"),
+    schema=AI_SCHEMA,
+)
+
+budget_journal = Table(
+    "budget_journal",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("lineage_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("attempt_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("call_kind", String(16), nullable=False),
+    Column("input_tokens", BigInteger, nullable=False),
+    Column("output_tokens", BigInteger, nullable=False),
+    Column("policy_version", String(128), nullable=False),
+    Column("reservation_status", String(32), nullable=False),
+    Column("reserved_tokens", BigInteger, nullable=False),
+    Column("charged_tokens", BigInteger),
+    Column("held_tokens", BigInteger, nullable=False),
+    Column("price_status", String(16), nullable=False, server_default=text("'unknown'")),
+    Column("rate_card", JSONB(none_as_null=True)),
+    Column("reserved_cost_microusd", BigInteger),
+    Column("charged_cost_microusd", BigInteger),
+    Column("provider_request_id", Text),
+    Column("reconciliation_ref", Text),
+    Column("request_binding", JSONB(none_as_null=True)),
+    Column("usage_evidence", JSONB(none_as_null=True)),
+    Column("dispatched_at", DateTime(timezone=True)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id", "run_id"],
+        [
+            f"{AI_SCHEMA}.budget_run_links.tenant_id",
+            f"{AI_SCHEMA}.budget_run_links.lineage_id",
+            f"{AI_SCHEMA}.budget_run_links.run_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_budget_journal_scope"),
+    UniqueConstraint(
+        "tenant_id", "attempt_id", "revision", name="uq_budget_journal_attempt_revision"
+    ),
+    CheckConstraint("revision > 0 AND call_kind IN ('model', 'tool')", name="call_shape"),
+    CheckConstraint(
+        "(request_binding IS NULL OR jsonb_typeof(request_binding) = 'object') AND "
+        "(usage_evidence IS NULL OR (jsonb_typeof(usage_evidence) = 'object' "
+        "AND reservation_status = 'settled'))",
+        name="model_evidence_shape",
+    ),
+    CheckConstraint(
+        "input_tokens >= 0 AND output_tokens >= 0 AND reserved_tokens > 0 AND "
+        "reserved_tokens = input_tokens + output_tokens AND held_tokens >= 0 AND "
+        "(charged_tokens IS NULL OR charged_tokens >= 0)",
+        name="tokens_nonnegative",
+    ),
+    CheckConstraint(
+        "price_status = 'unknown' AND rate_card IS NULL AND reserved_cost_microusd IS NULL "
+        "AND charged_cost_microusd IS NULL",
+        name="unknown_price",
+    ),
+    CheckConstraint(
+        "(reservation_status IN ('reserved', 'unknown') AND held_tokens = reserved_tokens "
+        "AND charged_tokens IS NULL) OR (reservation_status = 'settled' AND held_tokens = 0 "
+        "AND charged_tokens IS NOT NULL AND dispatched_at IS NOT NULL AND "
+        "reconciliation_ref IS NOT NULL AND btrim(reconciliation_ref) <> '') OR "
+        "(reservation_status = 'cancelled_before_dispatch' AND held_tokens = 0 AND "
+        "charged_tokens IS NOT NULL AND charged_tokens = 0 AND dispatched_at IS NULL "
+        "AND provider_request_id IS NULL)",
+        name="lifecycle",
+    ),
+    CheckConstraint(
+        "reservation_status <> 'unknown' OR dispatched_at IS NOT NULL", name="unknown_dispatched"
+    ),
+    Index("ix_budget_journal_tenant_attempt_revision", "tenant_id", "attempt_id", "revision"),
+    schema=AI_SCHEMA,
+)
+
+
+legacy_usage_resolutions = Table(
+    "legacy_usage_resolutions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("invocation_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("reviewer_user_id", Uuid, nullable=False),
+    Column("evidence_ref", Text, nullable=False),
+    Column("evidence_digest", String(64), nullable=False),
+    Column("input_tokens", BigInteger, nullable=False),
+    Column("output_tokens", BigInteger, nullable=False),
+    Column("cache_read_tokens", BigInteger, nullable=False),
+    Column("cache_creation_tokens", BigInteger, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.tenant_id", f"{AI_SCHEMA}.model_invocations.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "invocation_id", "revision", name="uq_legacy_usage_resolution_revision"
+    ),
+    CheckConstraint(
+        "revision > 0 AND btrim(evidence_ref) <> '' AND length(evidence_digest) = 64",
+        name="evidence_required",
+    ),
+    CheckConstraint(
+        "input_tokens >= 0 AND output_tokens >= 0 AND cache_read_tokens >= 0 "
+        "AND cache_creation_tokens >= 0 "
+        "AND input_tokens >= cache_read_tokens + cache_creation_tokens",
+        name="normalized_usage",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+model_call_sessions = Table(
+    "model_call_sessions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("run_id", Uuid),
+    Column("project_id", Uuid),
+    Column("agent_key", String(64), nullable=False),
+    Column("execution_mode", String(16), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_model_call_sessions_tenant_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "execution_mode IN ('legacy', 'budgeted') AND btrim(agent_key) <> ''", name="mode_and_agent"
+    ),
+    schema=AI_SCHEMA,
+)
+model_invocations.append_constraint(
+    ForeignKeyConstraint(
+        ["tenant_id", "model_call_session_id"],
+        [f"{AI_SCHEMA}.model_call_sessions.tenant_id", f"{AI_SCHEMA}.model_call_sessions.id"],
+        name="fk_model_invocations_call_session",
+        ondelete="RESTRICT",
+    )
+)
+
+model_call_events = Table(
+    "model_call_events",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("session_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("state", String(16), nullable=False),
+    Column("invocation_id", Uuid),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.model_call_sessions.tenant_id", f"{AI_SCHEMA}.model_call_sessions.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.tenant_id", f"{AI_SCHEMA}.model_invocations.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "session_id", "revision", name="uq_model_call_events_revision"),
+    CheckConstraint(
+        "revision > 0 AND ((state = 'closed' AND invocation_id IS NOT NULL) OR "
+        "(state IN ('open', 'unknown') AND invocation_id IS NULL))",
+        name="lifecycle",
+    ),
+    schema=AI_SCHEMA,
+)
+
+model_call_mode_events = Table(
+    "model_call_mode_events",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("revision", Integer, nullable=False),
+    Column("mode", String(16), nullable=False),
+    Column("previous_mode", String(16), nullable=False),
+    Column("target_mode", String(16)),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("evidence_ref", Text, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "revision", name="uq_model_call_mode_revision"),
+    CheckConstraint(
+        "revision > 0 AND previous_mode IN ('compatibility', 'budgeted') "
+        "AND btrim(evidence_ref) <> '' AND ((mode = 'draining' AND target_mode IS NOT NULL "
+        "AND target_mode IN ('compatibility', 'budgeted') AND target_mode <> previous_mode) OR "
+        "(mode IN ('compatibility', 'budgeted') AND target_mode IS NULL))",
+        name="mode_transition",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+Index(
+    "ix_application_risk_queue",
+    agent_runs.c.created_at,
+    agent_runs.c.id,
+    postgresql_where=text(
+        "agent_key='project_intelligence' AND request_id IS NOT NULL AND status='queued'"
+    ),
+)
+
+Index(
+    "ix_application_test_plan_queue",
+    agent_runs.c.created_at,
+    agent_runs.c.id,
+    postgresql_where=text("context_version='test-plan-request-v1' AND status='queued'"),
+)
+
+application_import_inputs = Table(
+    "application_import_inputs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("plan_id", Uuid, nullable=False),
+    Column("filename", String(512), nullable=False),
+    Column("object_key", Text, nullable=False),
+    Column("content_sha256", String(64), nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("batch_id", Uuid),
+    Column("resolved_at", DateTime(timezone=True)),
+    Column("error_code", String(128)),
+    Column("released_at", DateTime(timezone=True)),
+    UniqueConstraint("tenant_id", "run_id", name="uq_application_import_input_run"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "plan_id"],
+        [f"{QUALITY_SCHEMA}.test_plans.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "batch_id"],
+        [f"{QUALITY_SCHEMA}.test_report_import_batches.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("byte_size BETWEEN 1 AND 20971520 AND length(content_sha256)=64", name="size"),
+    CheckConstraint(
+        "(resolved_at IS NULL AND batch_id IS NULL AND error_code IS NULL) OR "
+        "(resolved_at IS NOT NULL AND resolved_at>=created_at AND ((batch_id IS NOT NULL AND "
+        "error_code IS NULL) OR (batch_id IS NULL AND error_code IS NOT NULL)))",
+        name="resolution",
+    ),
+    schema=AI_SCHEMA,
+)
+Index(
+    "ix_application_import_input_pending",
+    application_import_inputs.c.created_at,
+    application_import_inputs.c.id,
+    postgresql_where=text("resolved_at IS NULL OR released_at IS NULL"),
+)
+
+application_cancellations = Table(
+    "application_cancellations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("lineage_id", Uuid),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "run_id", name="uq_application_cancel_run"),
+    UniqueConstraint("tenant_id", "lineage_id", name="uq_application_cancel_lineage"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "lineage_id"],
+        [f"{AI_SCHEMA}.budget_lineages.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    schema=AI_SCHEMA,
+)
+
+event_run_pauses = Table(
+    "event_run_pauses",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("honored_at", DateTime(timezone=True)),
+    Column("resolved_at", DateTime(timezone=True)),
+    Column("resolution", String(24)),
+    Column("resolved_by_user_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "resolved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+        name="fk_event_run_pauses_resolved_by_user_id_users",
+    ),
+    CheckConstraint(
+        "(honored_at IS NULL OR honored_at>=created_at) AND "
+        "((resolved_at IS NULL AND resolution IS NULL AND resolved_by_user_id IS NULL) OR "
+        "(resolved_at IS NOT NULL AND resolved_at>=created_at AND "
+        "((resolution='resumed' AND resolved_by_user_id IS NOT NULL) OR "
+        "(resolution='run_finished' AND resolved_by_user_id IS NULL))))",
+        name="resolution",
+    ),
+    Index(
+        "uq_event_run_pause_open",
+        "tenant_id",
+        "run_id",
+        unique=True,
+        postgresql_where=text("resolved_at IS NULL"),
+    ),
+    schema=AI_SCHEMA,
+)
+
+application_input_waits = Table(
+    "application_input_waits",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("checkpoint_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("resolved_at", DateTime(timezone=True)),
+    Column("resolution", String(32)),
+    Column("continuation_run_id", Uuid),
+    UniqueConstraint("tenant_id", "run_id", name="uq_application_input_wait_run"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "checkpoint_id"],
+        [
+            f"{AI_SCHEMA}.application_result_checkpoints.tenant_id",
+            f"{AI_SCHEMA}.application_result_checkpoints.run_id",
+            f"{AI_SCHEMA}.application_result_checkpoints.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "continuation_run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+        name="fk_application_input_waits_continuation_run_id_agent_runs",
+    ),
+    CheckConstraint(
+        "(jsonb_typeof(body)='object' AND jsonb_typeof(body->'questions')='array' AND "
+        "jsonb_array_length(body->'questions') BETWEEN 1 AND 20) IS TRUE",
+        name="body",
+    ),
+    CheckConstraint(
+        "((resolved_at IS NULL AND resolution IS NULL AND continuation_run_id IS NULL) OR "
+        "(resolved_at IS NOT NULL AND resolved_at>=created_at AND "
+        "((resolution='input_received' AND continuation_run_id IS NOT NULL) OR (resolution "
+        "IN ('finding_accepted','finding_rejected','finding_applied','expired','cancelled') AND "
+        "continuation_run_id IS NULL)))) IS TRUE",
+        name="resolution",
+    ),
+    CheckConstraint("expires_at>created_at", name="lifetime"),
+    schema=AI_SCHEMA,
+)
+Index(
+    "ix_application_input_wait_deadline",
+    application_input_waits.c.expires_at,
+    postgresql_where=text("resolved_at IS NULL"),
+)
+
+
+project_handoff_items = Table(
+    "project_handoff_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("item_key", String(32), nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("prepared_by_user_id", Uuid, nullable=False),
+    Column("status", String(16), nullable=False, server_default=text("'pending'")),
+    Column("note", Text, nullable=False),
+    Column("accepted_fingerprint", String(64)),
+    Column("responded_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        (
+            "item_key IN ('configuration','bom','manufacturing','test_cer"
+            "tification','training','residuals','quality_follow_up')"
+        ),
+        name="item_key_allowed",
+    ),
+    CheckConstraint("status IN ('pending','accepted','returned')", name="status_allowed"),
+    CheckConstraint("btrim(note) <> ''", name="note_nonblank"),
+    CheckConstraint(
+        "(status = 'accepted') = (accepted_fingerprint IS NOT NULL)", name="acceptance_consistent"
+    ),
+    CheckConstraint("(status = 'pending') = (responded_at IS NULL)", name="response_consistent"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_project_handoff_items_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_project_handoff_items_document",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_handoff_items_receiver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "prepared_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_handoff_items_preparer",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "item_key", name="uq_project_handoff_items_project_key"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+project_template_versions = Table(
+    "project_template_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("template_id", String(128), nullable=False),
+    Column("template_version", Integer, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("digest", String(64), nullable=False),
+    Column("source_version_id", Uuid),
+    Column("status", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("difference", json_type, nullable=False),
+    Column("proposed_by_user_id", Uuid, nullable=False),
+    Column("decided_by_user_id", Uuid),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("decided_at", DateTime(timezone=True)),
+    CheckConstraint("revision > 0 AND template_version > 0", name="versions_positive"),
+    CheckConstraint(
+        "status IN ('proposed','active','superseded','rejected')", name="status_allowed"
+    ),
+    CheckConstraint("btrim(reason) <> '' AND btrim(template_id) <> ''", name="text_nonblank"),
+    CheckConstraint(
+        "jsonb_typeof(snapshot) = 'object' AND jsonb_typeof(difference) = 'object'", name="objects"
+    ),
+    CheckConstraint("digest ~ '^[0-9a-f]{64}$'", name="digest_hex"),
+    CheckConstraint(
+        (
+            "(status = 'proposed' AND decided_at IS NULL AND decided_by_u"
+            "ser_id IS NULL) OR (status <> 'proposed' AND decided_at IS N"
+            "OT NULL AND decided_by_user_id IS NOT NULL)"
+        ),
+        name="decision_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_project_template_versions_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_template_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.project_template_versions.project_id",
+            f"{PROJECT_SCHEMA}.project_template_versions.id",
+        ],
+        name="fk_project_template_versions_source",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "proposed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_template_versions_proposer",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "decided_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_template_versions_decider",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "id", name="uq_project_template_versions_project_id"
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "revision", name="uq_project_template_versions_revision"
+    ),
+    Index(
+        "uq_project_template_versions_active",
+        "tenant_id",
+        "project_id",
+        unique=True,
+        postgresql_where=text("status = 'active'"),
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+market_spaces = Table(
+    "market_spaces",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("code", String(128), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("user_groups", json_type, nullable=False),
+    Column("regions", json_type, nullable=False),
+    Column("use_scenarios", json_type, nullable=False),
+    Column("research_questions", json_type, nullable=False),
+    Column("lifecycle", String(16), nullable=False, server_default=text("'draft'")),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("btrim(code) <> '' AND btrim(title) <> ''", name="text_nonblank"),
+    CheckConstraint("version > 0", name="version_positive"),
+    CheckConstraint("lifecycle IN ('draft','active','archived')", name="lifecycle_allowed"),
+    CheckConstraint(
+        (
+            "jsonb_typeof(user_groups)='array' AND jsonb_typeof(regions)="
+            "'array' AND jsonb_typeof(use_scenarios)='array' AND jsonb_ty"
+            "peof(research_questions)='array'"
+        ),
+        name="arrays",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_market_spaces_owner",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_market_spaces_tenant_id"),
+    UniqueConstraint("tenant_id", "code", name="uq_market_spaces_tenant_code"),
+    UniqueConstraint("tenant_id", "request_id", name="uq_market_spaces_request"),
+    schema=PRODUCT_SCHEMA,
+)
+
+market_space_members = Table(
+    "market_space_members",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("market_space_id", Uuid, primary_key=True),
+    Column("user_id", Uuid, primary_key=True),
+    Column("access", String(16), nullable=False),
+    Column("added_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("access IN ('viewer','contributor','manager')", name="access_allowed"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_market_space_members_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_market_space_members_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "added_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_market_space_members_actor",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+definition_requirement_packages = Table(
+    "definition_requirement_packages",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("release_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("state", String(32), nullable=False, server_default="pending_review"),
+    Column("proposal", JSONB, nullable=False),
+    Column("proposal_digest", String(64), nullable=False),
+    Column("accepted_by_user_id", Uuid),
+    Column("accepted_at", DateTime(timezone=True)),
+    Column("applied_at", DateTime(timezone=True)),
+    Column("result", JSONB),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "version>0 AND state IN ('pending_review','accepted','applied','rejected')",
+        name="package_state",
+    ),
+    CheckConstraint(
+        (
+            "state NOT IN ('accepted','applied') OR (accepted_by_user_id "
+            "IS NOT NULL AND accepted_at IS NOT NULL)"
+        ),
+        name="package_acceptance",
+    ),
+    CheckConstraint(
+        (
+            "(state='applied' AND applied_at IS NOT NULL AND result IS NO"
+            "T NULL) OR (state<>'applied' AND applied_at IS NULL AND resu"
+            "lt IS NULL)"
+        ),
+        name="package_result",
+    ),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "id", name="uq_definition_requirement_packages_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "owner_user_id",
+        "request_id",
+        name="uq_definition_requirement_packages_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_definition_requirement_packages_definition",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "release_id"],
+        [
+            f"{PRODUCT_SCHEMA}.definition_releases.tenant_id",
+            f"{PRODUCT_SCHEMA}.definition_releases.market_space_id",
+            f"{PRODUCT_SCHEMA}.definition_releases.id",
+        ],
+        name="fk_definition_requirement_packages_release",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_definition_requirement_packages_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_definition_requirement_packages_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "accepted_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_definition_requirement_packages_acceptor",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+definition_requirement_links = Table(
+    "definition_requirement_links",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("package_id", Uuid, nullable=False),
+    Column("item_key", String(128), nullable=False),
+    Column("candidate_key", String(128), nullable=False),
+    Column("requirement_id", Uuid, nullable=False),
+    Column("specification_snapshot", JSONB, nullable=False),
+    Column("requirement_snapshot", JSONB, nullable=False),
+    Column("rationale", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "definition_id", "item_key", name="uq_definition_requirement_links_item"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_definition_requirement_links_definition",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "package_id"],
+        [
+            f"{PRODUCT_SCHEMA}.definition_requirement_packages.tenant_id",
+            f"{PRODUCT_SCHEMA}.definition_requirement_packages.market_space_id",
+            f"{PRODUCT_SCHEMA}.definition_requirement_packages.id",
+        ],
+        name="fk_definition_requirement_links_package",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        name="fk_definition_requirement_links_requirement",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "btrim(item_key)<>'' AND btrim(candidate_key)<>'' AND btrim(rationale)<>''",
+        name="required_trace",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_definitions = Table(
+    "product_definitions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid, nullable=False),
+    Column("product_id", Uuid, nullable=False),
+    Column("strategy_id", Uuid, nullable=False),
+    Column("strategy_ref", JSONB, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("revision_number", Integer, nullable=False),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("title", Text, nullable=False),
+    Column("content", JSONB, nullable=False),
+    Column("state", String(32), nullable=False, server_default="draft"),
+    Column("review_round", Integer, nullable=False, server_default="0"),
+    Column("review_digest", String(64)),
+    Column("approval", JSONB),
+    Column("published_at", DateTime(timezone=True)),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "version>0 AND revision_number>0 AND review_round>=0 AND btrim(title)<>''",
+        name="required_definition",
+    ),
+    CheckConstraint(
+        "content->>'title'=title AND content->>'owner_user_id'=owner_user_id::text",
+        name="content_identity",
+    ),
+    CheckConstraint(
+        (
+            "(revision_number=1 AND series_id=id AND supersedes_id IS NUL"
+            "L) OR (revision_number>1 AND series_id<>id AND supersedes_id"
+            " IS NOT NULL)"
+        ),
+        name="revision_shape",
+    ),
+    CheckConstraint("state IN ('draft','in_review','published')", name="valid_state"),
+    CheckConstraint(
+        (
+            "(state='published' AND approval IS NOT NULL AND published_at"
+            " IS NOT NULL) OR (state<>'published' AND approval IS NULL AN"
+            "D published_at IS NULL)"
+        ),
+        name="publication_shape",
+    ),
+    CheckConstraint(
+        "state='draft' OR (review_round>0 AND review_digest IS NOT NULL)", name="review_required"
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_definitions_space_id"),
+    UniqueConstraint(
+        "tenant_id", "product_id", "revision_number", name="uq_product_definitions_revision"
+    ),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_product_definitions_successor"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_product_definitions_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_definitions_product",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_definitions_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "strategy_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.id",
+        ],
+        name="fk_product_definitions_strategy",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_product_definitions_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_product_definitions_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_definitions_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_definitions_creator",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+definition_reviews = Table(
+    "definition_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("review_round", Integer, nullable=False),
+    Column("review_digest", String(64), nullable=False),
+    Column("discipline", String(32), nullable=False),
+    Column("reviewer_user_id", Uuid, nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("sources", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        (
+            "review_round>0 AND discipline IN ('id','md','ee','fw','dqe')"
+            " AND outcome IN ('approved','changes_requested') AND btrim(r"
+            "eason)<>''"
+        ),
+        name="review_shape",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "definition_id",
+        "review_round",
+        "discipline",
+        name="uq_definition_reviews_slot",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_definition_reviews_definition",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_definition_reviews_user",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+definition_releases = Table(
+    "definition_releases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("previous_release_id", Uuid),
+    Column("sequence", Integer, nullable=False),
+    Column("action", String(32), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "sequence>0 AND action IN ('publish','withdraw') AND btrim(reason)<>''",
+        name="release_shape",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_definition_releases_scope"),
+    UniqueConstraint("tenant_id", "product_id", "sequence", name="uq_definition_releases_sequence"),
+    UniqueConstraint("tenant_id", "previous_release_id", name="uq_definition_releases_successor"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_definition_releases_definition",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_definition_releases_product",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "previous_release_id"],
+        [
+            f"{PRODUCT_SCHEMA}.definition_releases.tenant_id",
+            f"{PRODUCT_SCHEMA}.definition_releases.market_space_id",
+            f"{PRODUCT_SCHEMA}.definition_releases.id",
+        ],
+        name="fk_definition_releases_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_definition_releases_actor",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_strategies = Table(
+    "product_strategies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("opportunity_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("revision_number", Integer, nullable=False),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("title", Text, nullable=False),
+    Column("canvas", JSONB, nullable=False),
+    Column("route_comparisons", JSONB, nullable=False),
+    Column("cost_summary", JSONB, nullable=False),
+    Column("selected_solution_id", Uuid),
+    Column("professional_constraints", JSONB, nullable=False),
+    Column("unknowns", JSONB, nullable=False),
+    Column("decision_reason", Text, nullable=False),
+    Column("state", String(32), nullable=False, server_default="draft"),
+    Column("approval", JSONB),
+    Column("published_snapshot", JSONB),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "version>0 AND revision_number>0 AND btrim(title)<>'' AND btrim(decision_reason)<>''",
+        name="required_strategy",
+    ),
+    CheckConstraint(
+        (
+            "(revision_number=1 AND series_id=id AND supersedes_id IS NUL"
+            "L) OR (revision_number>1 AND series_id<>id AND supersedes_id"
+            " IS NOT NULL)"
+        ),
+        name="revision_shape",
+    ),
+    CheckConstraint("state IN ('draft','in_review','published')", name="valid_state"),
+    CheckConstraint(
+        (
+            "(state='published' AND approval IS NOT NULL AND published_sn"
+            "apshot IS NOT NULL AND selected_solution_id IS NOT NULL AND "
+            "jsonb_array_length(route_comparisons)>=3) OR (state<>'publis"
+            "hed' AND approval IS NULL AND published_snapshot IS NULL)"
+        ),
+        name="publication_shape",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_strategies_space_id"),
+    UniqueConstraint(
+        "tenant_id", "series_id", "revision_number", name="uq_product_strategies_revision"
+    ),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_product_strategies_successor"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_product_strategies_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_product_strategies_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_strategies_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_product_strategies_opportunity",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.id",
+        ],
+        name="fk_product_strategies_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.id",
+        ],
+        name="fk_product_strategies_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_strategies_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_strategies_creator",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+opportunity_requirements = Table(
+    "opportunity_requirements",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("opportunity_id", Uuid, nullable=False),
+    Column("requirement_id", Uuid, nullable=False),
+    Column("requirement_snapshot", JSONB, nullable=False),
+    Column("reference", JSONB, nullable=False),
+    Column("rationale", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "opportunity_id", "requirement_id", name="uq_opportunity_requirements_pair"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_opportunity_requirements_opportunity",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        name="fk_opportunity_requirements_requirement",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "btrim(rationale)<>'' AND jsonb_typeof(requirement_snapshot)="
+            "'object' AND jsonb_typeof(reference)='object'"
+        ),
+        name="required_link_basis",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+experiments = Table(
+    "experiments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("opportunity_id", Uuid, nullable=False),
+    Column("solution_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("dimension", String(32), nullable=False),
+    Column("hypothesis", Text, nullable=False),
+    Column("method", Text, nullable=False),
+    Column("sample_basis", Text, nullable=False),
+    Column("success_criterion", Text, nullable=False),
+    Column("falsification_criterion", Text, nullable=False),
+    Column("due_at", DateTime(timezone=True)),
+    Column("sources", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("state", String(32), nullable=False, server_default="draft"),
+    Column("approval_id", Uuid),
+    Column("started_at", DateTime(timezone=True)),
+    Column("result", String(32)),
+    Column("result_evidence", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("result_explanation", Text),
+    Column("concluded_at", DateTime(timezone=True)),
+    Column("cancellation_reason", Text),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND btrim(hypothesis)<>'' AND btrim(method)<>'' AN"
+            "D btrim(sample_basis)<>'' AND btrim(success_criterion)<>'' A"
+            "ND btrim(falsification_criterion)<>''"
+        ),
+        name="required_plan",
+    ),
+    CheckConstraint(
+        "dimension IN ('value','usability','viability','feasibility')", name="vuvf_dimension"
+    ),
+    CheckConstraint(
+        "state IN ('draft','approved','running','concluded','cancelled')", name="valid_state"
+    ),
+    CheckConstraint(
+        "state NOT IN ('approved','running','concluded') OR approval_id IS NOT NULL",
+        name="approval_required",
+    ),
+    CheckConstraint(
+        (
+            "(state='concluded' AND result IN ('supported','refuted','inc"
+            "onclusive') AND result IS NOT NULL AND concluded_at IS NOT N"
+            "ULL AND result_explanation IS NOT NULL AND btrim(result_expl"
+            "anation)<>'') OR (state<>'concluded' AND result IS NULL AND "
+            "concluded_at IS NULL AND result_explanation IS NULL AND resu"
+            "lt_evidence='[]'::jsonb)"
+        ),
+        name="conclusion_shape",
+    ),
+    CheckConstraint(
+        "result NOT IN ('supported','refuted') OR jsonb_array_length(result_evidence)>0",
+        name="decisive_result_evidence",
+    ),
+    CheckConstraint(
+        "state NOT IN ('running','concluded') OR started_at IS NOT NULL",
+        name="started_before_result",
+    ),
+    CheckConstraint(
+        (
+            "(state='cancelled' AND cancellation_reason IS NOT NULL AND b"
+            "trim(cancellation_reason)<>'') OR (state<>'cancelled' AND ca"
+            "ncellation_reason IS NULL)"
+        ),
+        name="cancellation_reason",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_experiments_space_id"),
+    UniqueConstraint("tenant_id", "id", name="uq_experiments_tenant_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_experiments_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_experiments_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_experiments_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_experiments_opportunity",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_experiments_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_experiments_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "id", "approval_id"],
+        [
+            f"{PRODUCT_SCHEMA}.experiment_approvals.tenant_id",
+            f"{PRODUCT_SCHEMA}.experiment_approvals.experiment_id",
+            f"{PRODUCT_SCHEMA}.experiment_approvals.id",
+        ],
+        name="fk_experiments_approval",
+        use_alter=True,
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+experiment_approvals = Table(
+    "experiment_approvals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("experiment_id", Uuid, nullable=False),
+    Column("experiment_version", Integer, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("plan_snapshot", JSONB, nullable=False),
+    Column("policy_version", String(128), nullable=False),
+    Column("approved_by_user_id", Uuid, nullable=False),
+    Column("approved_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "experiment_id", "id", name="uq_experiment_approvals_reference"),
+    UniqueConstraint("tenant_id", "experiment_id", name="uq_experiment_approvals_once"),
+    ForeignKeyConstraint(
+        ["tenant_id", "experiment_id"],
+        [f"{PRODUCT_SCHEMA}.experiments.tenant_id", f"{PRODUCT_SCHEMA}.experiments.id"],
+        name="fk_experiment_approvals_experiment",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_experiment_approvals_user",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "experiment_version>0 AND btrim(reason)<>'' AND policy_versio"
+            "n='human-experiment-approval-v1'"
+        ),
+        name="required_approval",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+opportunities = Table(
+    "opportunities",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("segment_id", Uuid, nullable=False),
+    Column("desired_outcome_id", Uuid, nullable=False),
+    Column("parent_opportunity_id", Uuid),
+    Column("title", Text, nullable=False),
+    Column("importance", Numeric(24, 8)),
+    Column("satisfaction", Numeric(24, 8)),
+    Column("importance_basis", JSONB, nullable=False),
+    Column("satisfaction_basis", JSONB, nullable=False),
+    Column("scoring_policy_version", String(128), nullable=False),
+    Column("opportunity_score", Numeric(48, 16)),
+    Column("solutions", JSONB, nullable=False),
+    Column("selected_solution_id", Uuid),
+    Column("state", String(32), nullable=False),
+    Column("revision_reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(title)<>'' AND btrim(revision_reason)<>''", name="required_content"
+    ),
+    CheckConstraint(
+        (
+            "(version=1 AND series_id=id AND supersedes_id IS NULL) OR (v"
+            "ersion>1 AND series_id<>id AND supersedes_id IS NOT NULL)"
+        ),
+        name="revision_shape",
+    ),
+    CheckConstraint(
+        "importance BETWEEN 0 AND 1 AND satisfaction BETWEEN 0 AND 1",
+        name="normalized_score_inputs",
+    ),
+    CheckConstraint(
+        (
+            "scoring_policy_version='importance-unmet-v1' AND opportunity"
+            "_score IS NOT DISTINCT FROM importance*(1-satisfaction)"
+        ),
+        name="reproducible_score",
+    ),
+    CheckConstraint(
+        "state IN ('exploring','evaluating','selected','deferred','closed')", name="valid_state"
+    ),
+    CheckConstraint(
+        (
+            "jsonb_typeof(solutions)='array' AND (selected_solution_id IS"
+            " NULL OR jsonb_array_length(solutions)>=3) AND (state<>'sele"
+            "cted' OR selected_solution_id IS NOT NULL)"
+        ),
+        name="selection_alternatives",
+    ),
+    CheckConstraint(
+        "parent_opportunity_id IS NULL OR parent_opportunity_id<>id", name="no_self_parent"
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_opportunities_space_id"),
+    UniqueConstraint("tenant_id", "series_id", "version", name="uq_opportunities_version"),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_opportunities_successor"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "owner_user_id",
+        "request_id",
+        name="uq_opportunities_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_opportunities_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_opportunities_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_opportunities_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_opportunities_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "parent_opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_opportunities_parent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "segment_id"],
+        [
+            f"{PRODUCT_SCHEMA}.market_segments.tenant_id",
+            f"{PRODUCT_SCHEMA}.market_segments.market_space_id",
+            f"{PRODUCT_SCHEMA}.market_segments.id",
+        ],
+        name="fk_opportunities_segment",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "desired_outcome_id"],
+        [
+            f"{PRODUCT_SCHEMA}.desired_outcomes.tenant_id",
+            f"{PRODUCT_SCHEMA}.desired_outcomes.market_space_id",
+            f"{PRODUCT_SCHEMA}.desired_outcomes.id",
+        ],
+        name="fk_opportunities_outcome",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_opportunities_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+desired_outcomes = Table(
+    "desired_outcomes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("statement", Text, nullable=False),
+    Column("metric_key", String(128), nullable=False),
+    Column("unit", String(64), nullable=False),
+    Column("baseline_value", Numeric(24, 8)),
+    Column("target_value", Numeric(24, 8)),
+    Column("measurement_method", Text, nullable=False),
+    Column("window", Text, nullable=False),
+    Column("sources", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND btrim(statement)<>'' AND btrim(metric_key)<>''"
+            " AND btrim(unit)<>'' AND btrim(measurement_method)<>'' AND b"
+            "trim(\"window\")<>''"
+        ),
+        name="measurable_outcome",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_desired_outcomes_space_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_desired_outcomes_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_desired_outcomes_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_desired_outcomes_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+market_segments = Table(
+    "market_segments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("target_users", json_type, nullable=False),
+    Column("job_to_be_done", json_type, nullable=False),
+    Column("customer_problems", json_type, nullable=False),
+    Column("use_environments", json_type, nullable=False),
+    Column("buying_criteria", json_type, nullable=False),
+    Column("unmet_needs", json_type, nullable=False),
+    Column("desired_outcome_id", Uuid, nullable=False),
+    Column("sizing_inputs", json_type, nullable=False),
+    Column("sizing_result", json_type, nullable=False),
+    Column("revision_reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(title)<>'' AND btrim(revision_reason)<>''", name="required_content"
+    ),
+    CheckConstraint(
+        (
+            "(version=1 AND series_id=id AND supersedes_id IS NULL) OR (v"
+            "ersion>1 AND series_id<>id AND supersedes_id IS NOT NULL)"
+        ),
+        name="revision_shape",
+    ),
+    CheckConstraint(
+        (
+            "jsonb_typeof(target_users)='array' AND jsonb_typeof(customer"
+            "_problems)='array' AND jsonb_typeof(use_environments)='array"
+            "' AND jsonb_typeof(buying_criteria)='array' AND jsonb_typeof"
+            "(unmet_needs)='array'"
+        ),
+        name="fact_arrays",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_market_segments_space_id"),
+    UniqueConstraint("tenant_id", "series_id", "version", name="uq_market_segments_version"),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_market_segments_successor"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "owner_user_id",
+        "request_id",
+        name="uq_market_segments_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_market_segments_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_market_segments_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.market_segments.tenant_id",
+            f"{PRODUCT_SCHEMA}.market_segments.market_space_id",
+            f"{PRODUCT_SCHEMA}.market_segments.id",
+        ],
+        name="fk_market_segments_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.market_segments.tenant_id",
+            f"{PRODUCT_SCHEMA}.market_segments.market_space_id",
+            f"{PRODUCT_SCHEMA}.market_segments.id",
+        ],
+        name="fk_market_segments_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "desired_outcome_id"],
+        [
+            f"{PRODUCT_SCHEMA}.desired_outcomes.tenant_id",
+            f"{PRODUCT_SCHEMA}.desired_outcomes.market_space_id",
+            f"{PRODUCT_SCHEMA}.desired_outcomes.id",
+        ],
+        name="fk_market_segments_outcome",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_market_segments_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+competitor_observations = Table(
+    "competitor_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("brand", String(256), nullable=False),
+    Column("model", String(256), nullable=False),
+    Column("variant", String(256), nullable=False),
+    Column("competitor_kind", String(16), nullable=False),
+    Column("region", String(128), nullable=False),
+    Column("channel", String(128), nullable=False),
+    Column("configuration", Text, nullable=False),
+    Column("lifecycle", String(16), nullable=False),
+    Column("observed_on", Date, nullable=False),
+    Column("identity_sources", json_type, nullable=False),
+    Column("metrics", json_type, nullable=False),
+    Column("price_quote", json_type),
+    Column("certifications", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("notes", Text, nullable=False),
+    Column("revision_reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND btrim(brand)<>'' AND btrim(model)<>'' AND btri"
+            "m(variant)<>'' AND btrim(configuration)<>''"
+        ),
+        name="required_identity",
+    ),
+    CheckConstraint(
+        (
+            "competitor_kind IN ('direct','indirect','emerging','substitu"
+            "te') AND lifecycle IN ('unknown','announced','available','di"
+            "scontinued')"
+        ),
+        name="classification_allowed",
+    ),
+    CheckConstraint(
+        (
+            "(version=1 AND series_id=id AND supersedes_id IS NULL) OR (v"
+            "ersion>1 AND series_id<>id AND supersedes_id IS NOT NULL)"
+        ),
+        name="revision_shape",
+    ),
+    CheckConstraint(
+        (
+            "jsonb_typeof(metrics)='array' AND jsonb_array_length(metrics"
+            ")>0 AND jsonb_typeof(certifications)='array'"
+        ),
+        name="arrays",
+    ),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "id", name="uq_competitor_observations_space_id"
+    ),
+    UniqueConstraint(
+        "tenant_id", "series_id", "version", name="uq_competitor_observations_version"
+    ),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_competitor_observations_successor"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "owner_user_id",
+        "request_id",
+        name="uq_competitor_observations_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_competitor_observations_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_competitor_observations_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.competitor_observations.tenant_id",
+            f"{PRODUCT_SCHEMA}.competitor_observations.market_space_id",
+            f"{PRODUCT_SCHEMA}.competitor_observations.id",
+        ],
+        name="fk_competitor_observations_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.competitor_observations.tenant_id",
+            f"{PRODUCT_SCHEMA}.competitor_observations.market_space_id",
+            f"{PRODUCT_SCHEMA}.competitor_observations.id",
+        ],
+        name="fk_competitor_observations_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_competitor_observations_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_subscriptions = Table(
+    "research_subscriptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("source_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("url", String(1024), nullable=False),
+    Column("hostname", String(253), nullable=False),
+    Column("frequency", String(16), nullable=False),
+    Column("freshness_days", Integer),
+    Column("status", String(16), nullable=False),
+    Column("next_due_at", DateTime(timezone=True)),
+    Column("lease_token", Uuid),
+    Column("lease_expires_at", DateTime(timezone=True)),
+    Column("consecutive_failures", Integer, nullable=False, server_default=text("0")),
+    Column("last_attempt_at", DateTime(timezone=True)),
+    Column("last_success_at", DateTime(timezone=True)),
+    Column("last_snapshot_id", Uuid),
+    Column("last_error_code", String(64)),
+    Column("last_error_message", Text),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "frequency IN ('daily','weekly','monthly') AND status IN ('active','paused','quarantined')",
+        name="configuration_allowed",
+    ),
+    CheckConstraint(
+        "version>0 AND consecutive_failures>=0 AND btrim(url)<>'' AND btrim(hostname)<>''",
+        name="required_content",
+    ),
+    CheckConstraint(
+        "freshness_days IS NULL OR freshness_days BETWEEN 1 AND 366", name="freshness_valid"
+    ),
+    CheckConstraint("(status='active')=(next_due_at IS NOT NULL)", name="schedule_state"),
+    CheckConstraint(
+        (
+            "(lease_token IS NULL)=(lease_expires_at IS NULL) AND (lease_"
+            "token IS NULL OR status='active')"
+        ),
+        name="lease_pair",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_research_subscriptions_tenant_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "owner_user_id",
+        "request_id",
+        name="uq_research_subscriptions_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_subscriptions_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_subscriptions_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_id"],
+        [f"{EVIDENCE_SCHEMA}.research_sources.tenant_id", f"{EVIDENCE_SCHEMA}.research_sources.id"],
+        name="fk_research_subscriptions_source",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "last_snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_research_subscriptions_snapshot",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_subscriptions_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=EVIDENCE_SCHEMA,
+)
+
+research_collection_runs = Table(
+    "research_collection_runs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("subscription_id", Uuid, nullable=False),
+    Column("subscription_version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("started_at", DateTime(timezone=True), nullable=False),
+    Column("finished_at", DateTime(timezone=True)),
+    Column("snapshot_id", Uuid),
+    Column("content_changed", Boolean),
+    Column("error_code", String(64)),
+    Column("error_message", Text),
+    UniqueConstraint("tenant_id", "id", name="uq_research_collection_run_scope"),
+    CheckConstraint(
+        (
+            "status IN ('running','completed','failed','cancelled','timed"
+            "_out') AND subscription_version>0"
+        ),
+        name="state_allowed",
+    ),
+    CheckConstraint("(status='running')=(finished_at IS NULL)", name="finish_state"),
+    CheckConstraint(
+        (
+            "(status='completed')=(snapshot_id IS NOT NULL) AND (status='"
+            "completed')=(content_changed IS NOT NULL)"
+        ),
+        name="result_consistent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "subscription_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.research_subscriptions.tenant_id",
+            f"{EVIDENCE_SCHEMA}.research_subscriptions.id",
+        ],
+        name="fk_research_collection_runs_subscription",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_research_collection_runs_snapshot",
+        ondelete="RESTRICT",
+    ),
+    Index(
+        "ix_research_collection_runs_running",
+        "tenant_id",
+        "subscription_id",
+        unique=True,
+        postgresql_where=text("status='running'"),
+    ),
+    schema=EVIDENCE_SCHEMA,
+)
+
+research_searches = Table(
+    "research_searches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("query", Text, nullable=False),
+    Column("language", String(16), nullable=False),
+    Column("time_range", String(8)),
+    Column("result_limit", Integer, nullable=False),
+    Column("provider_key", String(32), nullable=False),
+    Column("provider_protocol_version", String(64), nullable=False),
+    Column("provider_endpoint_digest", String(64)),
+    Column("response_digest", String(64)),
+    Column("status", String(24), nullable=False),
+    Column("hits", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("warnings", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("error_code", String(64)),
+    Column("error_message", Text),
+    Column("started_at", DateTime(timezone=True), nullable=False),
+    Column("finished_at", DateTime(timezone=True)),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    CheckConstraint(
+        (
+            "status IN ('running','completed','partial','no_results','una"
+            "vailable','not_configured','failed','denied')"
+        ),
+        name="status_allowed",
+    ),
+    CheckConstraint(
+        "btrim(query)<>'' AND result_limit BETWEEN 1 AND 10 AND version>0", name="required_content"
+    ),
+    CheckConstraint("jsonb_typeof(hits)='array' AND jsonb_typeof(warnings)='array'", name="arrays"),
+    CheckConstraint("(status='running')=(finished_at IS NULL)", name="finish_state"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "requested_by_user_id",
+        "request_id",
+        name="uq_research_searches_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_searches_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_searches_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_searches_requester",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_nodes = Table(
+    "product_nodes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid, nullable=False),
+    Column("parent_id", Uuid),
+    Column("level", String(16), nullable=False),
+    Column("code", String(128), nullable=False),
+    Column("name", Text, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("lifecycle", String(16), nullable=False, server_default=text("'proposed'")),
+    Column("regions", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("channels", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "level IN ('line','family','platform','series','model','variant')", name="level_allowed"
+    ),
+    CheckConstraint(
+        (
+            "(level='line' AND parent_id IS NULL AND product_line_id=id) "
+            "OR (level<>'line' AND parent_id IS NOT NULL AND parent_id<>i"
+            "d AND product_line_id<>id)"
+        ),
+        name="parent_shape",
+    ),
+    CheckConstraint(
+        "lifecycle IN ('proposed','developing','available','retired')", name="lifecycle_allowed"
+    ),
+    CheckConstraint("version>0 AND btrim(code)<>'' AND btrim(name)<>''", name="required_content"),
+    CheckConstraint(
+        "jsonb_typeof(regions)='array' AND jsonb_typeof(channels)='array'", name="arrays"
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_nodes_space_id"),
+    UniqueConstraint("tenant_id", "code", name="uq_product_nodes_code"),
+    UniqueConstraint("tenant_id", "market_space_id", "request_id", name="uq_product_nodes_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_product_nodes_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "parent_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_nodes_parent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_nodes_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_nodes_owner",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_line_members = Table(
+    "product_line_members",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid, primary_key=True),
+    Column("user_id", Uuid, primary_key=True),
+    Column("access", String(16), nullable=False),
+    Column("added_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("access IN ('viewer','contributor','manager')", name="access_allowed"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_line_members_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_line_members_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "added_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_line_members_actor",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_tasks = Table(
+    "research_tasks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("question", Text, nullable=False),
+    Column("user_groups", json_type, nullable=False),
+    Column("regions", json_type, nullable=False),
+    Column("time_scope", Text, nullable=False),
+    Column("method", Text, nullable=False),
+    Column("expected_decision", Text, nullable=False),
+    Column("stop_conditions", json_type, nullable=False),
+    Column("state", String(16), nullable=False, server_default=text("'draft'")),
+    Column("findings", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("unresolved", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("sources", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("conclusion", Text),
+    Column("completed_at", DateTime(timezone=True)),
+    Column("cancellation_reason", Text),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint("state IN ('draft','active','completed','cancelled')", name="state_allowed"),
+    CheckConstraint(
+        (
+            "version > 0 AND btrim(question)<>'' AND btrim(time_scope)<>'"
+            "' AND btrim(method)<>'' AND btrim(expected_decision)<>''"
+        ),
+        name="required_content",
+    ),
+    CheckConstraint(
+        (
+            "jsonb_typeof(user_groups)='array' AND jsonb_typeof(regions)="
+            "'array' AND jsonb_typeof(stop_conditions)='array' AND jsonb_"
+            "array_length(stop_conditions)>0 AND jsonb_typeof(findings)='"
+            "array' AND jsonb_typeof(unresolved)='array' AND jsonb_typeof"
+            "(sources)='array'"
+        ),
+        name="arrays",
+    ),
+    CheckConstraint(
+        (
+            "(state='completed' AND conclusion IS NOT NULL AND completed_"
+            "at IS NOT NULL AND (jsonb_array_length(findings)=0 OR jsonb_"
+            "array_length(sources)>0)) OR (state<>'completed' AND complet"
+            "ed_at IS NULL)"
+        ),
+        name="completion_consistent",
+    ),
+    CheckConstraint(
+        "state<>'cancelled' OR cancellation_reason IS NOT NULL", name="cancellation_reason"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_tasks_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_tasks_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_tasks_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_tasks_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_research_tasks_space_id"),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "request_id", name="uq_research_tasks_request"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+scoped_work_items = Table(
+    "scoped_work_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("owner_user_id", Uuid),
+    Column("receiver_user_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("action_type", String(64), nullable=False),
+    Column("title", String(512), nullable=False),
+    Column("expected_output", Text, nullable=False),
+    Column("completion_criteria", Text, nullable=False),
+    Column("acceptance_required", Boolean, nullable=False),
+    Column("due_at", DateTime(timezone=True)),
+    Column("state", String(24), nullable=False),
+    Column("evidence", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("result_note", Text),
+    Column("accepted_by_user_id", Uuid),
+    Column("accepted_at", DateTime(timezone=True)),
+    Column("cancellation_reason", Text),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "state IN ('pending_assignment','ready','in_progress','submitted','completed','cancelled')",
+        name="state_allowed",
+    ),
+    CheckConstraint(
+        (
+            "action_type IN ('evidence_collection','discipline_review','c"
+            "onstraint_review','experiment_preparation','handoff_preparat"
+            "ion')"
+        ),
+        name="action_type_allowed",
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND btrim(title)<>'' AND btrim(expected_output)<>'"
+            "' AND btrim(completion_criteria)<>''"
+        ),
+        name="required_content",
+    ),
+    CheckConstraint(
+        (
+            "state IN ('pending_assignment','cancelled') OR (owner_user_i"
+            "d IS NOT NULL AND (NOT acceptance_required OR receiver_user_"
+            "id IS NOT NULL))"
+        ),
+        name="assignment_consistent",
+    ),
+    CheckConstraint(
+        (
+            "jsonb_typeof(evidence)='array' AND (state<>'completed' OR (j"
+            "sonb_array_length(evidence)>0 AND (NOT acceptance_required O"
+            "R (accepted_by_user_id=receiver_user_id AND accepted_at IS N"
+            "OT NULL))))"
+        ),
+        name="completion_evidence",
+    ),
+    CheckConstraint("(accepted_by_user_id IS NULL)=(accepted_at IS NULL)", name="acceptance_pair"),
+    CheckConstraint(
+        "state<>'cancelled' OR cancellation_reason IS NOT NULL", name="cancellation_reason"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_scoped_work_items_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_scoped_work_items_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_scoped_work_items_owner",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_scoped_work_items_receiver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_scoped_work_items_creator",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "accepted_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_scoped_work_items_acceptor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_scoped_work_items_space_id"),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "request_id", name="uq_scoped_work_items_request"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+case_requirement_links = Table(
+    "case_requirement_links",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("case_id", Uuid, nullable=False),
+    Column("requirement_id", Uuid, nullable=False),
+    Column("previous_id", Uuid),
+    Column("sequence", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("requirement_snapshot", json_type, nullable=False),
+    Column("requirement_digest", String(64), nullable=False),
+    Column("rationale", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "case_id", "id", name="uq_case_requirement_links_scope"),
+    UniqueConstraint("tenant_id", "case_id", "sequence", name="uq_case_requirement_links_sequence"),
+    UniqueConstraint(
+        "tenant_id",
+        "case_id",
+        "actor_user_id",
+        "request_id",
+        name="uq_case_requirement_links_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id"],
+        [f"{PROJECT_SCHEMA}.development_cases.tenant_id", f"{PROJECT_SCHEMA}.development_cases.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id", "previous_id"],
+        [
+            f"{PROJECT_SCHEMA}.case_requirement_links.tenant_id",
+            f"{PROJECT_SCHEMA}.case_requirement_links.case_id",
+            f"{PROJECT_SCHEMA}.case_requirement_links.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "sequence>0 AND action IN ('attach','refresh','release') AND btrim(rationale)<>''",
+        name="valid_case_link_action",
+    ),
+    CheckConstraint(
+        (
+            "jsonb_typeof(requirement_snapshot)='object' AND requirement_"
+            "digest ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64"
+            "}$'"
+        ),
+        name="valid_case_link_snapshot",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+Index(
+    "ix_case_requirement_links_requirement",
+    case_requirement_links.c.tenant_id,
+    case_requirement_links.c.requirement_id,
+    case_requirement_links.c.case_id,
+)
+
+
+case_review_policies = Table(
+    "case_review_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("case_id", Uuid, nullable=False),
+    Column("review_kind", String(32), nullable=False),
+    Column("stage_code", String(128), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("chair_user_id", Uuid, nullable=False),
+    Column("reviewer_ids", json_type, nullable=False),
+    Column("four_eyes", Boolean, nullable=False),
+    Column("valid_days", Integer, nullable=False),
+    Column("authority_basis", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "case_id", "id", name="uq_case_review_policies_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "case_id",
+        "review_kind",
+        "stage_code",
+        "version",
+        name="uq_case_review_policies_version",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "case_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_case_review_policies_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id"],
+        [f"{PROJECT_SCHEMA}.development_cases.tenant_id", f"{PROJECT_SCHEMA}.development_cases.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "chair_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_case_review_policies_created_by_user_id_users",
+    ),
+    CheckConstraint(
+        (
+            "review_kind IN ('dcp','technical_review') AND version>0 AND "
+            "valid_days BETWEEN 1 AND 3660 AND jsonb_typeof(reviewer_ids)"
+            "='array' AND jsonb_array_length(reviewer_ids)>0 AND btrim(au"
+            "thority_basis)<>''"
+        ),
+        name="valid_case_review_policy",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+case_reviews = Table(
+    "case_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("case_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("review_kind", String(32), nullable=False),
+    Column("stage_code", String(128), nullable=False),
+    Column("round_no", Integer, nullable=False),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("state", String(32), nullable=False, server_default="draft"),
+    Column("title", Text, nullable=False),
+    Column("brief", json_type, nullable=False),
+    Column("basis", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("outcome", String(16)),
+    Column("conditions", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("rationale", Text),
+    Column("approval", json_type),
+    Column("expires_at", DateTime(timezone=True)),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "case_id", "id", name="uq_case_reviews_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "case_id",
+        "review_kind",
+        "stage_code",
+        "round_no",
+        name="uq_case_reviews_round",
+    ),
+    UniqueConstraint(
+        "tenant_id", "case_id", "created_by_user_id", "request_id", name="uq_case_reviews_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.case_review_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.case_review_policies.case_id",
+            f"{PROJECT_SCHEMA}.case_review_policies.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "review_kind IN ('dcp','technical_review') AND round_no>0 AND"
+            " version>0 AND state IN ('draft','in_review','finalized','wi"
+            "thdrawn')"
+        ),
+        name="valid_case_review_state",
+    ),
+    CheckConstraint(
+        (
+            "(state='finalized' AND outcome IN ('approved','conditional',"
+            "'hold','rejected') AND approval IS NOT NULL AND expires_at I"
+            "S NOT NULL AND rationale IS NOT NULL) OR (state<>'finalized'"
+            " AND outcome IS NULL AND approval IS NULL AND expires_at IS "
+            "NULL)"
+        ),
+        name="case_review_finalization",
+    ),
+    CheckConstraint(
+        "outcome IS DISTINCT FROM 'conditional' OR jsonb_array_length(conditions)>0",
+        name="case_review_conditions",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+case_review_signoffs = Table(
+    "case_review_signoffs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("case_id", Uuid, nullable=False),
+    Column("review_id", Uuid, nullable=False),
+    Column("reviewer_user_id", Uuid, nullable=False),
+    Column("outcome", String(16), nullable=False),
+    Column("rationale", Text, nullable=False),
+    Column("conditions", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "review_id", "reviewer_user_id", name="uq_case_review_signoffs_reviewer"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id", "review_id"],
+        [
+            f"{PROJECT_SCHEMA}.case_reviews.tenant_id",
+            f"{PROJECT_SCHEMA}.case_reviews.case_id",
+            f"{PROJECT_SCHEMA}.case_reviews.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "outcome IN ('approved','conditional','hold','rejected') AND "
+            "btrim(rationale)<>'' AND jsonb_typeof(conditions)='array'"
+        ),
+        name="valid_case_review_signoff",
+    ),
+    CheckConstraint(
+        "outcome<>'conditional' OR jsonb_array_length(conditions)>0",
+        name="case_review_signoff_conditions",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+initial_plan_candidates = Table(
+    "initial_plan_candidates",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid),
+    Column("product_line_id", Uuid),
+    Column("opportunity_id", Uuid),
+    Column("definition_id", Uuid),
+    Column("case_id", Uuid),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("template_selection", json_type, nullable=False),
+    Column("template_snapshot", json_type, nullable=False),
+    Column("source_snapshot", json_type, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("plan", json_type, nullable=False),
+    Column("stage_assignments", json_type, nullable=False),
+    Column("routing_snapshot", json_type, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint("jsonb_typeof(routing_snapshot)='object'", name="initial_plan_routing_object"),
+    Column("id_plan", json_type, nullable=False),
+    Column("revision_reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_initial_plan_candidates_scope"),
+    UniqueConstraint(
+        "tenant_id", "series_id", "version", name="uq_initial_plan_candidates_version"
+    ),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_initial_plan_candidates_successor"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_initial_plan_candidates_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "supersedes_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id"],
+        [f"{PROJECT_SCHEMA}.development_cases.tenant_id", f"{PROJECT_SCHEMA}.development_cases.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "num_nonnulls(opportunity_id,definition_id,case_id)=1 AND ((c"
+            "ase_id IS NOT NULL AND market_space_id IS NULL AND product_l"
+            "ine_id IS NULL) OR (case_id IS NULL AND market_space_id IS N"
+            "OT NULL)) AND version>0"
+        ),
+        name="initial_plan_source_scope",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+work_calendar_versions = Table(
+    "work_calendar_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("calendar_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("name", Text, nullable=False),
+    Column("definition", json_type, nullable=False),
+    Column("definition_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_work_calendar_versions_scope"),
+    UniqueConstraint(
+        "tenant_id", "calendar_id", "version", name="uq_work_calendar_versions_number"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_work_calendar_versions_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(name)<>'' AND definition_digest ~ '^[0-9a-f]{64}$'",
+        name="work_calendar_version_valid",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+initial_plan_scenarios = Table(
+    "initial_plan_scenarios",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("candidate_digest", String(64), nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_initial_plan_scenarios_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "candidate_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_initial_plan_scenarios_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "candidate_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+initial_plan_scenario_calendars = Table(
+    "initial_plan_scenario_calendars",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("scenario_id", Uuid, primary_key=True),
+    Column("calendar_version_id", Uuid, primary_key=True),
+    ForeignKeyConstraint(
+        ["tenant_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "calendar_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.work_calendar_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.work_calendar_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+plan_responsibility_responses = Table(
+    "plan_responsibility_responses",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("node_key", String(128), nullable=False),
+    Column("slot", String(16), nullable=False),
+    Column("sequence", Integer, nullable=False),
+    Column("previous_response_id", Uuid),
+    Column("outcome", String(32), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("candidate_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_plan_responsibility_responses_scope"),
+    UniqueConstraint(
+        "tenant_id", "candidate_id", "sequence", name="uq_plan_responsibility_responses_sequence"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "candidate_id",
+        "actor_user_id",
+        "request_id",
+        "node_key",
+        "slot",
+        name="uq_plan_responsibility_responses_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "candidate_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "previous_response_id"],
+        [
+            f"{PROJECT_SCHEMA}.plan_responsibility_responses.tenant_id",
+            f"{PROJECT_SCHEMA}.plan_responsibility_responses.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "sequence>0 AND slot IN ('owner','receiver') AND outcome IN ("
+            "'confirmed','changes_requested','withdrawn') AND btrim(reaso"
+            "n)<>''"
+        ),
+        name="plan_responsibility_valid_response",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+planning_resources = Table(
+    "planning_resources",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("name", String(256), nullable=False),
+    Column("kind", String(32), nullable=False),
+    Column("user_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_planning_resources_scope"),
+    UniqueConstraint("tenant_id", "user_id", name="uq_planning_resources_person"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_planning_resources_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_planning_resources_created_by_user_id_users",
+    ),
+    CheckConstraint(
+        (
+            "btrim(name)<>'' AND kind IN ('person','skill_group','laborat"
+            "ory','bench','equipment','mold','fixture','pilot_line') AND "
+            "((kind='person')=(user_id IS NOT NULL))"
+        ),
+        name="planning_resource_identity",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+resource_capacity_versions = Table(
+    "resource_capacity_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("resource_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("calendar_version_id", Uuid, nullable=False),
+    Column("window_start", DateTime(timezone=True), nullable=False),
+    Column("window_end", DateTime(timezone=True), nullable=False),
+    Column("parallel_units", Numeric(24, 8), nullable=False),
+    Column("capacity_contract", json_type, nullable=False),
+    Column("calendar_evidence", json_type, nullable=False),
+    Column("basis", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_resource_capacity_versions_scope"),
+    UniqueConstraint(
+        "tenant_id", "resource_id", "version", name="uq_resource_capacity_versions_number"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_resource_capacity_versions_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "resource_id"],
+        [
+            f"{PROJECT_SCHEMA}.planning_resources.tenant_id",
+            f"{PROJECT_SCHEMA}.planning_resources.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "calendar_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.work_calendar_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.work_calendar_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND window_end>window_start AND parallel_units>=0 "
+            "AND parallel_units<=1000 AND btrim(basis)<>''"
+        ),
+        name="resource_capacity_valid",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+plan_capacity_checks = Table(
+    "plan_capacity_checks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_plan_capacity_checks_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "scenario_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_plan_capacity_checks_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+plan_capacity_check_versions = Table(
+    "plan_capacity_check_versions",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("check_id", Uuid, primary_key=True),
+    Column("capacity_version_id", Uuid, primary_key=True),
+    ForeignKeyConstraint(
+        ["tenant_id", "check_id"],
+        [
+            f"{PROJECT_SCHEMA}.plan_capacity_checks.tenant_id",
+            f"{PROJECT_SCHEMA}.plan_capacity_checks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_nodes = Table(
+    "schedule_nodes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("task_id", Uuid),
+    Column("node_kind", String(24), nullable=False, server_default=text("'task'")),
+    Column("gate_id", Uuid),
+    Column("build_id", Uuid),
+    Column("test_run_id", Uuid),
+    Column("certification_id", Uuid),
+    Column("tooling_id", Uuid),
+    Column("title", Text),
+    Column("completion_criteria", Text),
+    Column("created_by_user_id", Uuid),
+    Column("request_id", Uuid),
+    Column("request_digest", String(64)),
+    Column("calendar_version_id", Uuid, nullable=False),
+    Column("contract", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_schedule_nodes_project"),
+    UniqueConstraint("tenant_id", "task_id", name="uq_schedule_nodes_task"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "calendar_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.work_calendar_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.work_calendar_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_schedule_node_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_schedule_node_creator",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(node_kind='task' AND task_id IS NOT NULL AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=1) "
+        "OR (node_kind='gate' AND gate_id IS NOT NULL AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=1) "
+        "OR (node_kind='build' AND build_id IS NOT NULL AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=1) "
+        "OR (node_kind='test_run' AND test_run_id IS NOT NULL AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=1) "
+        "OR (node_kind='certification' AND certification_id IS NOT NULL AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=1) "
+        "OR (node_kind='tooling' AND tooling_id IS NOT NULL AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=1) "
+        "OR (node_kind='milestone' AND "
+        "num_nonnulls(task_id,gate_id,build_id,test_run_id,certification_id,tooling_id)=0 "
+        "AND title IS NOT NULL AND length(trim(title))>0 AND completion_criteria IS NOT "
+        "NULL AND length(trim(completion_criteria))>0)",
+        name="schedule_node_typed_source",
+    ),
+    CheckConstraint(
+        (
+            "(created_by_user_id IS NULL AND request_id IS NULL AND reque"
+            "st_digest IS NULL) OR (created_by_user_id IS NOT NULL AND re"
+            "quest_id IS NOT NULL AND request_digest IS NOT NULL)"
+        ),
+        name="schedule_node_registration",
+    ),
+    UniqueConstraint("tenant_id", "gate_id", name="uq_schedule_node_gate_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [
+            f"{PROJECT_SCHEMA}.gates.tenant_id",
+            f"{PROJECT_SCHEMA}.gates.project_id",
+            f"{PROJECT_SCHEMA}.gates.id",
+        ],
+        name="fk_schedule_node_gate_id",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "build_id", name="uq_schedule_node_build_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "build_id"],
+        [
+            f"{PRODUCT_SCHEMA}.build_batches.tenant_id",
+            f"{PRODUCT_SCHEMA}.build_batches.project_id",
+            f"{PRODUCT_SCHEMA}.build_batches.id",
+        ],
+        name="fk_schedule_node_build_id",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "test_run_id", name="uq_schedule_node_test_run_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_run_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_runs.tenant_id",
+            f"{QUALITY_SCHEMA}.test_runs.project_id",
+            f"{QUALITY_SCHEMA}.test_runs.id",
+        ],
+        name="fk_schedule_node_test_run_id",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "tooling_id", name="uq_schedule_node_tooling_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "tooling_id"],
+        [
+            f"{SUPPLIER_SCHEMA}.tooling_rounds.tenant_id",
+            f"{SUPPLIER_SCHEMA}.tooling_rounds.project_id",
+            f"{SUPPLIER_SCHEMA}.tooling_rounds.id",
+        ],
+        name="fk_schedule_node_tooling_id",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "certification_id", name="uq_schedule_node_certification_id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "certification_id"],
+        [
+            f"{QUALITY_SCHEMA}.certifications.tenant_id",
+            f"{QUALITY_SCHEMA}.certifications.project_id",
+            f"{QUALITY_SCHEMA}.certifications.id",
+        ],
+        name="fk_schedule_node_certification_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_schedule_node_project",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+resource_capacity_intervals = Table(
+    "resource_capacity_intervals",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("capacity_version_id", Uuid, primary_key=True),
+    Column("start", DateTime(timezone=True), primary_key=True),
+    Column("end", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint('"end">start', name="capacity_interval_positive"),
+    schema=PROJECT_SCHEMA,
+)
+portfolio_escalations = Table(
+    "portfolio_escalations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_kind", String(64), nullable=False),
+    Column("source_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("recipient_user_id", Uuid, nullable=False),
+    Column("due_date", Date, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("requested_outcome", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_portfolio_escalation_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_portfolio_escalation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "recipient_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        name="fk_portfolio_escalation_recipient",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "created_by_user_id<>recipient_user_id AND btrim(reason)<>'' AND "
+        "btrim(requested_outcome)<>'' AND jsonb_typeof(snapshot)='object' AND "
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index("ix_portfolio_escalation_source", "tenant_id", "project_id", "source_kind", "source_id"),
+    Index("ix_portfolio_escalation_recipient", "tenant_id", "recipient_user_id", "created_at"),
+    schema=PROJECT_SCHEMA,
+)
+portfolio_escalation_replies = Table(
+    "portfolio_escalation_replies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("escalation_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("note", Text, nullable=False),
+    Column("evidence", Text),
+    Column("due_date", Date),
+    Column("source_digest", String(64)),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "escalation_id", "version", name="uq_portfolio_escalation_reply_version"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_portfolio_escalation_reply_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "escalation_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_escalations.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND action IN ('accept','update','return','close','withdraw') AND "
+        "btrim(note)<>'' AND request_digest ~ '^[a-f0-9]{64}$' AND (source_digest IS NULL"
+        " OR source_digest ~ '^[a-f0-9]{64}$') AND ((action IN ('accept','update') AND "
+        "due_date IS NOT NULL) OR (action NOT IN ('accept','update') AND due_date IS "
+        "NULL)) AND (action<>'close' OR (evidence IS NOT NULL AND btrim(evidence)<>''))",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+customer_report_packages = Table(
+    "customer_report_packages",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("customer_id", Uuid, nullable=False),
+    Column("audit_report_id", Uuid),
+    Column("draft", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_customer_report_package_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_customer_report_package_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "customer_id"],
+        [f"{CORE_SCHEMA}.customers.tenant_id", f"{CORE_SCHEMA}.customers.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(draft)='object' AND jsonb_typeof(snapshot)='object' AND "
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index("ix_customer_report_package_history", "tenant_id", "project_id", "id"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "audit_report_id"],
+        [f"{PROJECT_SCHEMA}.project_report_exports.{k}" for k in ("tenant_id", "project_id", "id")],
+        name="fk_customer_report_audit",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+customer_report_documents = Table(
+    "customer_report_documents",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("package_id", Uuid, nullable=False),
+    Column("source_document_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    UniqueConstraint("tenant_id", "package_id", "document_id", name="uq_customer_report_document"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "package_id"],
+        [
+            f"{PROJECT_SCHEMA}.customer_report_packages.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_document_id"],
+        [f"{PROJECT_SCHEMA}.documents.{k}" for k in ("tenant_id", "project_id", "id")],
+        name="fk_customer_report_document_source",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [f"{PROJECT_SCHEMA}.documents.{k}" for k in ("tenant_id", "project_id", "id")],
+        name="fk_customer_report_document_disclosed",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+customer_report_decisions = Table(
+    "customer_report_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("package_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_customer_report_decision_scope"),
+    UniqueConstraint(
+        "tenant_id", "package_id", "version", name="uq_customer_report_decision_version"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_customer_report_decision_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "package_id"],
+        [
+            f"{PROJECT_SCHEMA}.customer_report_packages.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND action IN ('approved','returned','withdrawn') AND "
+        "btrim(reason)<>'' AND source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ "
+        "'^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+customer_report_files = Table(
+    "customer_report_files",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("package_id", Uuid, nullable=False),
+    Column("decision_id", Uuid, nullable=False),
+    Column("format", String(8), nullable=False),
+    Column("filename", String(255), nullable=False),
+    Column("mime_type", String(128), nullable=False),
+    Column("content", LargeBinary, nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_customer_report_file_scope"),
+    UniqueConstraint(
+        "tenant_id", "package_id", "decision_id", "format", name="uq_customer_report_file_format"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "package_id"],
+        [
+            f"{PROJECT_SCHEMA}.customer_report_packages.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        name="fk_customer_report_file_package",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "decision_id"],
+        [
+            f"{PROJECT_SCHEMA}.customer_report_decisions.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        name="fk_customer_report_file_decision",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "((format IN ('docx','xlsx','pptx','pdf') AND byte_size BETWEEN 1 AND 12582912) "
+        "OR (format='zip' AND byte_size BETWEEN 1 AND 54525952)) AND btrim(filename)<>'' "
+        "AND octet_length(content)=byte_size AND content_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+project_report_exports = Table(
+    "project_report_exports",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("kind", String(16), nullable=False),
+    Column("scope", JSONB, nullable=False),
+    Column("ncr_id", Uuid),
+    Column("gate_id", Uuid),
+    Column("format", String(8), nullable=False),
+    Column("template_version", String(64), nullable=False),
+    Column("filename", String(255), nullable=False),
+    Column("mime_type", String(128), nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("content", LargeBinary, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("preview_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_project_report_export_request"
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_project_report_export_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [f"{QUALITY_SCHEMA}.nonconformance_reports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [f"{PROJECT_SCHEMA}.gates.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "format IN ('docx','xlsx','pptx','pdf') AND btrim(reason)<>'' AND "
+        "btrim(filename)<>'' AND ((kind='audit' AND "
+        "template_version IN ('internal-audit-evidence.v1','internal-audit-evidence.v2')) "
+        "OR (kind<>'audit' AND "
+        "template_version='internal-project-reports.v1') OR (kind='weekly' AND "
+        "template_version='internal-project-weekly.v2') OR (kind='8d' AND "
+        "template_version='internal-project-8d.v2') OR (kind='dfmea' AND "
+        "template_version='internal-project-dfmea.v2') OR (kind='gate' AND "
+        "template_version='internal-project-gate.v2')) AND "
+        "byte_size BETWEEN 1 AND 12582912 AND octet_length(content)=byte_size AND "
+        "jsonb_typeof(snapshot)='object' AND snapshot->>'audience'='internal' AND "
+        "jsonb_typeof(scope)='object' AND scope->>'kind'=kind AND ((kind='8d' AND ncr_id "
+        "IS NOT NULL AND gate_id IS NULL) OR (kind='gate' AND gate_id IS NOT NULL AND "
+        "ncr_id IS NULL) OR (kind IN ('dfmea','weekly','audit') AND ncr_id IS NULL AND "
+        "gate_id IS NULL)) AND "
+        "content_digest ~ '^[a-f0-9]{64}$' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "preview_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index(
+        "ix_project_report_export_history", "tenant_id", "project_id", "kind", "created_at", "id"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+research_measurement_workpacks = Table(
+    "research_measurement_workpacks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("subject_kind", String(24), nullable=False),
+    Column("subject_id", Uuid, nullable=False),
+    Column("subject_series_id", Uuid, nullable=False),
+    Column("research_task_id", Uuid),
+    Column("scoped_work_item_id", Uuid),
+    Column("opportunity_id", Uuid),
+    Column("strategy_id", Uuid),
+    Column("definition_id", Uuid),
+    Column("mode", String(24), nullable=False),
+    Column("creator_user_id", Uuid, nullable=False),
+    Column("deliverer_user_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_workpacks_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_workpacks_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "study_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.id",
+        ],
+        name="fk_research_pack_study",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "research_task_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_tasks.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_tasks.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_tasks.id",
+        ],
+        name="fk_research_pack_research_task",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scoped_work_item_id"],
+        [
+            f"{PROJECT_SCHEMA}.scoped_work_items.tenant_id",
+            f"{PROJECT_SCHEMA}.scoped_work_items.market_space_id",
+            f"{PROJECT_SCHEMA}.scoped_work_items.id",
+        ],
+        name="fk_research_pack_scoped_work_item",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_research_pack_opportunity",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "strategy_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.id",
+        ],
+        name="fk_research_pack_strategy",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_research_pack_definition",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "subject_kind IN "
+        "('research_task','scoped_work_item','opportunity','strategy','definition') AND n"
+        "um_nonnulls(research_task_id,scoped_work_item_id,opportunity_id,strategy_id,defi"
+        "nition_id)=1 AND ((subject_kind='research_task' AND subject_id=research_task_id)"
+        " OR (subject_kind='scoped_work_item' AND subject_id=scoped_work_item_id) OR "
+        "(subject_kind='opportunity' AND subject_id=opportunity_id) OR "
+        "(subject_kind='strategy' AND subject_id=strategy_id) OR "
+        "(subject_kind='definition' AND subject_id=definition_id)) IS TRUE",
+        name="actual_subject_fk",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "creator_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_pack_creator_user_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "deliverer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_pack_deliverer_user_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_pack_receiver_user_id",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "scope_key", "id", name="uq_research_pack_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "scope_key",
+        "study_id",
+        "id",
+        name="uq_research_pack_study_scope",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "study_id",
+        "subject_kind",
+        "subject_series_id",
+        "mode",
+        name="uq_research_pack_subject_mode",
+    ),
+    UniqueConstraint("tenant_id", "creator_user_id", "request_id", name="uq_research_pack_request"),
+    CheckConstraint(
+        "deliverer_user_id<>receiver_user_id AND mode IN ('baseline_without_ai','assisted')",
+        name="independent_roles",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(body)='object' AND jsonb_typeof(source_snapshot)='object' AND "
+        "body->>'full_roster_confirmed'='true' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="scope_shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_measurement_workpack_members = Table(
+    "research_measurement_workpack_members",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("user_id", Uuid, nullable=False),
+    Column("role_id", String(128), nullable=False),
+    Column("first_use", Boolean, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_workpack_members_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_workpack_members_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "workpack_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.id",
+        ],
+        name="fk_research_pack_member_pack",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_pack_member_user",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "scope_key",
+        "workpack_id",
+        "user_id",
+        name="uq_research_pack_member",
+    ),
+    CheckConstraint("btrim(role_id)<>''", name="role_nonblank"),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_measurement_deliveries = Table(
+    "research_measurement_deliveries",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("round", Integer, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("deliverer_consent_id", Uuid, nullable=False),
+    Column("receiver_consent_id", Uuid, nullable=False),
+    Column("subject_kind", String(24), nullable=False),
+    Column("subject_id", Uuid, nullable=False),
+    Column("subject_series_id", Uuid, nullable=False),
+    Column("research_task_id", Uuid),
+    Column("scoped_work_item_id", Uuid),
+    Column("opportunity_id", Uuid),
+    Column("strategy_id", Uuid),
+    Column("definition_id", Uuid),
+    Column("locator", Text, nullable=False),
+    Column("description", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_deliveries_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_deliveries_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "study_id", "workpack_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.study_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.id",
+        ],
+        name="fk_research_delivery_pack",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "research_task_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_tasks.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_tasks.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_tasks.id",
+        ],
+        name="fk_research_delivery_research_task",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scoped_work_item_id"],
+        [
+            f"{PROJECT_SCHEMA}.scoped_work_items.tenant_id",
+            f"{PROJECT_SCHEMA}.scoped_work_items.market_space_id",
+            f"{PROJECT_SCHEMA}.scoped_work_items.id",
+        ],
+        name="fk_research_delivery_scoped_work_item",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_research_delivery_opportunity",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "strategy_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.id",
+        ],
+        name="fk_research_delivery_strategy",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_research_delivery_definition",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "subject_kind IN "
+        "('research_task','scoped_work_item','opportunity','strategy','definition') AND n"
+        "um_nonnulls(research_task_id,scoped_work_item_id,opportunity_id,strategy_id,defi"
+        "nition_id)=1 AND ((subject_kind='research_task' AND subject_id=research_task_id)"
+        " OR (subject_kind='scoped_work_item' AND subject_id=scoped_work_item_id) OR "
+        "(subject_kind='opportunity' AND subject_id=opportunity_id) OR "
+        "(subject_kind='strategy' AND subject_id=strategy_id) OR "
+        "(subject_kind='definition' AND subject_id=definition_id)) IS TRUE",
+        name="actual_subject_fk",
+    ),
+    ForeignKeyConstraint(
+        [
+            "tenant_id",
+            "market_space_id",
+            "scope_key",
+            "study_id",
+            "actor_user_id",
+            "deliverer_consent_id",
+        ],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.study_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.participant_user_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.id",
+        ],
+        name="fk_research_delivery_sender_consent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        [
+            "tenant_id",
+            "market_space_id",
+            "scope_key",
+            "study_id",
+            "receiver_user_id",
+            "receiver_consent_id",
+        ],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.study_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.participant_user_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.id",
+        ],
+        name="fk_research_delivery_receiver_consent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "scope_key",
+        "study_id",
+        "workpack_id",
+        "id",
+        name="uq_research_delivery_scope",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "scope_key",
+        "workpack_id",
+        "round",
+        name="uq_research_delivery_round",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_research_delivery_request"
+    ),
+    CheckConstraint(
+        "round>0 AND actor_user_id<>receiver_user_id AND btrim(locator)<>'' AND "
+        "btrim(description)<>''",
+        name="round_content",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(source_snapshot)='object'",
+        name="source_digests",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_measurement_receptions = Table(
+    "research_measurement_receptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("delivery_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receiver_consent_id", Uuid, nullable=False),
+    Column("decision", String(16), nullable=False),
+    Column("criteria_checked", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_receptions_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_receptions_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "study_id", "workpack_id", "delivery_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_deliveries.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_deliveries.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_deliveries.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_deliveries.study_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_deliveries.workpack_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_deliveries.id",
+        ],
+        name="fk_research_reception_delivery",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        [
+            "tenant_id",
+            "market_space_id",
+            "scope_key",
+            "study_id",
+            "actor_user_id",
+            "receiver_consent_id",
+        ],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.study_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.participant_user_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.id",
+        ],
+        name="fk_research_reception_consent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "delivery_id", name="uq_research_reception_delivery"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_research_reception_request"
+    ),
+    CheckConstraint(
+        "decision IN ('accepted','returned') AND criteria_checked AND btrim(reason)<>''",
+        name="decision_content",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(source_snapshot)='object'",
+        name="source_digests",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_measurement_closures = Table(
+    "research_measurement_closures",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("outcome", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_closures_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_closures_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "workpack_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_workpacks.id",
+        ],
+        name="fk_research_closure_pack",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_closure_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "scope_key", "workpack_id", name="uq_research_closure_pack"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_research_closure_request"
+    ),
+    CheckConstraint(
+        "outcome IN ('failed','cancelled') AND btrim(reason)<>'' AND request_digest ~ "
+        "'^[a-f0-9]{64}$'",
+        name="closure_content",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+Index(
+    "ix_research_pack_scope_study",
+    research_measurement_workpacks.c.tenant_id,
+    research_measurement_workpacks.c.market_space_id,
+    research_measurement_workpacks.c.scope_key,
+    research_measurement_workpacks.c.study_id,
+    research_measurement_workpacks.c.id,
+)
+Index(
+    "ix_research_reception_pack",
+    research_measurement_receptions.c.tenant_id,
+    research_measurement_receptions.c.workpack_id,
+)
+
+
+research_measurement_studies = Table(
+    "research_measurement_studies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("creator_user_id", Uuid, nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("protocol", JSONB, nullable=False),
+    Column("protocol_digest", String(64), nullable=False),
+    Column("evidence_kind", String(32), nullable=False),
+    Column("window_start", DateTime(timezone=True), nullable=False),
+    Column("window_end", DateTime(timezone=True), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_studies_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_studies_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "creator_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_measurement_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "scope_key",
+        "id",
+        name="uq_research_measurement_study_scope",
+    ),
+    UniqueConstraint(
+        "tenant_id", "creator_user_id", "request_id", name="uq_research_measurement_study_request"
+    ),
+    CheckConstraint(
+        "window_end>window_start AND evidence_kind IN "
+        "('real_business','controlled_replay','synthetic')",
+        name="window_kind",
+    ),
+    CheckConstraint(
+        "evidence_kind<>'real_business' OR window_start>created_at", name="real_preregistered"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(protocol)='object' AND protocol->>'evidence_kind'=evidence_kind AND"
+        " protocol_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="protocol_digests",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_measurement_consents = Table(
+    "research_measurement_consents",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("participant_user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("activity_and_aggregate_use_confirmed", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_consents_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_consents_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "study_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.id",
+        ],
+        name="fk_research_measurement_consent_study",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "participant_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_measurement_consent_user",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "scope_key",
+        "study_id",
+        "participant_user_id",
+        "id",
+        name="uq_research_measurement_consent_scope",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "study_id",
+        "participant_user_id",
+        "version",
+        name="uq_research_measurement_consent_version",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "participant_user_id",
+        "request_id",
+        name="uq_research_measurement_consent_request",
+    ),
+    CheckConstraint(
+        "version>0 AND status IN ('consented','withdrawn') AND (status<>'consented' OR "
+        "activity_and_aggregate_use_confirmed)",
+        name="explicit_consent",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$'", name="reason_digest"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_measurement_samples = Table(
+    "research_measurement_samples",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("scope_key", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("participant_user_id", Uuid, nullable=False),
+    Column("consent_id", Uuid, nullable=False),
+    Column("subject_kind", String(24), nullable=False),
+    Column("subject_id", Uuid, nullable=False),
+    Column("subject_series_id", Uuid, nullable=False),
+    Column("research_task_id", Uuid),
+    Column("scoped_work_item_id", Uuid),
+    Column("opportunity_id", Uuid),
+    Column("strategy_id", Uuid),
+    Column("definition_id", Uuid),
+    Column("mode", String(24), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("initial_source_snapshot", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_measurement_samples_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_measurement_samples_line",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("scope_key=coalesce(product_line_id,market_space_id)", name="scope_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scope_key", "study_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_studies.id",
+        ],
+        name="fk_research_measurement_sample_study",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        [
+            "tenant_id",
+            "market_space_id",
+            "scope_key",
+            "study_id",
+            "participant_user_id",
+            "consent_id",
+        ],
+        [
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.scope_key",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.study_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.participant_user_id",
+            f"{PRODUCT_SCHEMA}.research_measurement_consents.id",
+        ],
+        name="fk_research_measurement_sample_consent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "participant_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_measurement_sample_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "research_task_id"],
+        [
+            f"{PRODUCT_SCHEMA}.research_tasks.tenant_id",
+            f"{PRODUCT_SCHEMA}.research_tasks.market_space_id",
+            f"{PRODUCT_SCHEMA}.research_tasks.id",
+        ],
+        name="fk_research_measurement_sample_research_task",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "scoped_work_item_id"],
+        [
+            f"{PROJECT_SCHEMA}.scoped_work_items.tenant_id",
+            f"{PROJECT_SCHEMA}.scoped_work_items.market_space_id",
+            f"{PROJECT_SCHEMA}.scoped_work_items.id",
+        ],
+        name="fk_research_measurement_sample_scoped_work_item",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [
+            f"{PRODUCT_SCHEMA}.opportunities.tenant_id",
+            f"{PRODUCT_SCHEMA}.opportunities.market_space_id",
+            f"{PRODUCT_SCHEMA}.opportunities.id",
+        ],
+        name="fk_research_measurement_sample_opportunity",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "strategy_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_strategies.id",
+        ],
+        name="fk_research_measurement_sample_strategy",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_research_measurement_sample_definition",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "sample_id", "version", name="uq_research_measurement_sample_version"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "study_id",
+        "participant_user_id",
+        "subject_kind",
+        "subject_series_id",
+        "mode",
+        "version",
+        name="uq_research_measurement_sample_subject_revision",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "participant_user_id",
+        "request_id",
+        name="uq_research_measurement_sample_request",
+    ),
+    CheckConstraint(
+        "subject_kind IN "
+        "('research_task','scoped_work_item','opportunity','strategy','definition') AND n"
+        "um_nonnulls(research_task_id,scoped_work_item_id,opportunity_id,strategy_id,defi"
+        "nition_id)=1 AND ((subject_kind='research_task' AND subject_id=research_task_id)"
+        " OR (subject_kind='scoped_work_item' AND subject_id=scoped_work_item_id) OR "
+        "(subject_kind='opportunity' AND subject_id=opportunity_id) OR "
+        "(subject_kind='strategy' AND subject_id=strategy_id) OR "
+        "(subject_kind='definition' AND subject_id=definition_id)) IS TRUE",
+        name="actual_subject_fk",
+    ),
+    CheckConstraint(
+        "version>0 AND mode IN ('baseline_without_ai','assisted')", name="version_mode"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(body)='object' AND jsonb_typeof(initial_source_snapshot)='object' "
+        "AND jsonb_typeof(source_snapshot)='object'",
+        name="source_objects",
+    ),
+    CheckConstraint(
+        "body->>'participant_user_id'=participant_user_id::text AND "
+        "body->>'sample_id'=sample_id::text AND body->>'study_id'=study_id::text AND "
+        "body->>'subject_kind'=subject_kind AND body->>'subject_id'=subject_id::text AND "
+        "body->>'subject_series_id'=subject_series_id::text AND body->>'mode'=mode",
+        name="body_identity",
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ "
+        "'^[a-f0-9]{64}$'",
+        name="reason_digests",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+Index(
+    "ix_research_measurement_study_scope",
+    research_measurement_studies.c.tenant_id,
+    research_measurement_studies.c.market_space_id,
+    research_measurement_studies.c.scope_key,
+    research_measurement_studies.c.id,
+)
+Index(
+    "ix_research_measurement_consent_current",
+    research_measurement_consents.c.tenant_id,
+    research_measurement_consents.c.study_id,
+    research_measurement_consents.c.participant_user_id,
+    research_measurement_consents.c.version,
+)
+Index(
+    "ix_research_measurement_sample_current",
+    research_measurement_samples.c.tenant_id,
+    research_measurement_samples.c.study_id,
+    research_measurement_samples.c.sample_id,
+    research_measurement_samples.c.version,
+)
+
+
+value_measurement_workpacks = Table(
+    "value_measurement_workpacks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("mode", String(24), nullable=False),
+    Column("creator_user_id", Uuid, nullable=False),
+    Column("deliverer_user_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_studies.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_studies.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_studies.id",
+        ],
+        name="fk_value_pack_study",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        name="fk_value_pack_task",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "creator_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_pack_creator_user_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "deliverer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_pack_deliverer_user_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_pack_receiver_user_id",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_value_pack_scope"),
+    UniqueConstraint("tenant_id", "project_id", "study_id", "id", name="uq_value_pack_study_scope"),
+    UniqueConstraint("tenant_id", "study_id", "task_id", "mode", name="uq_value_pack_task_mode"),
+    UniqueConstraint("tenant_id", "creator_user_id", "request_id", name="uq_value_pack_request"),
+    CheckConstraint(
+        "deliverer_user_id<>receiver_user_id AND mode IN ('baseline_without_ai','assisted')",
+        name="independent_roles",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(body)='object' AND jsonb_typeof(source_snapshot)='object' AND "
+        "body->>'full_roster_confirmed'='true'",
+        name="scope_shape",
+    ),
+    CheckConstraint("request_digest ~ '^[a-f0-9]{64}$'", name="request_digest"),
+    schema=PROJECT_SCHEMA,
+)
+
+value_measurement_workpack_members = Table(
+    "value_measurement_workpack_members",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("user_id", Uuid, nullable=False),
+    Column("role_id", String(128), nullable=False),
+    Column("first_use", Boolean, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "workpack_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.id",
+        ],
+        name="fk_value_pack_member_pack",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_pack_member_user",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "workpack_id", "user_id", name="uq_value_pack_member"
+    ),
+    CheckConstraint("btrim(role_id)<>''", name="role_nonblank"),
+    schema=PROJECT_SCHEMA,
+)
+
+value_measurement_deliveries = Table(
+    "value_measurement_deliveries",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("round", Integer, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("deliverer_consent_id", Uuid, nullable=False),
+    Column("receiver_consent_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("locator", Text, nullable=False),
+    Column("description", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id", "workpack_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.study_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.id",
+        ],
+        name="fk_value_delivery_pack",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_value_delivery_document",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id", "actor_user_id", "deliverer_consent_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_consents.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.study_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.participant_user_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.id",
+        ],
+        name="fk_value_delivery_sender_consent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id", "receiver_user_id", "receiver_consent_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_consents.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.study_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.participant_user_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.id",
+        ],
+        name="fk_value_delivery_receiver_consent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "workpack_id", "id", name="uq_value_delivery_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "workpack_id", "round", name="uq_value_delivery_round"
+    ),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_value_delivery_request"),
+    CheckConstraint(
+        "round>0 AND actor_user_id<>receiver_user_id AND btrim(locator)<>'' AND "
+        "btrim(description)<>''",
+        name="round_content",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(source_snapshot)='object'",
+        name="source_digests",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+value_measurement_receptions = Table(
+    "value_measurement_receptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("delivery_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receiver_consent_id", Uuid, nullable=False),
+    Column("decision", String(16), nullable=False),
+    Column("criteria_checked", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "workpack_id", "delivery_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_deliveries.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_deliveries.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_deliveries.workpack_id",
+            f"{PROJECT_SCHEMA}.value_measurement_deliveries.id",
+        ],
+        name="fk_value_reception_delivery",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id", "actor_user_id", "receiver_consent_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_consents.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.study_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.participant_user_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.id",
+        ],
+        name="fk_value_reception_consent",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "delivery_id", name="uq_value_reception_delivery"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_value_reception_request"),
+    CheckConstraint(
+        "decision IN ('accepted','returned') AND criteria_checked AND btrim(reason)<>''",
+        name="decision_content",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(source_snapshot)='object'",
+        name="source_digests",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+value_measurement_closures = Table(
+    "value_measurement_closures",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("workpack_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("outcome", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "workpack_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_workpacks.id",
+        ],
+        name="fk_value_closure_pack",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_closure_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "workpack_id", name="uq_value_closure_pack"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_value_closure_request"),
+    CheckConstraint(
+        "outcome IN ('failed','cancelled') AND btrim(reason)<>'' AND request_digest ~ "
+        "'^[a-f0-9]{64}$'",
+        name="closure_content",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+Index(
+    "ix_value_pack_project_study",
+    value_measurement_workpacks.c.tenant_id,
+    value_measurement_workpacks.c.project_id,
+    value_measurement_workpacks.c.study_id,
+    value_measurement_workpacks.c.id,
+)
+Index(
+    "ix_value_reception_pack",
+    value_measurement_receptions.c.tenant_id,
+    value_measurement_receptions.c.workpack_id,
+)
+
+value_measurement_studies = Table(
+    "value_measurement_studies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("creator_user_id", Uuid, nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("protocol", JSONB, nullable=False),
+    Column("protocol_digest", String(64), nullable=False),
+    Column("evidence_kind", String(32), nullable=False),
+    Column("window_start", DateTime(timezone=True), nullable=False),
+    Column("window_end", DateTime(timezone=True), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_value_study_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "creator_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_study_creator",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_value_study_scope"),
+    UniqueConstraint("tenant_id", "creator_user_id", "request_id", name="uq_value_study_request"),
+    CheckConstraint("window_end > window_start", name="window_order"),
+    CheckConstraint(
+        "evidence_kind IN ('real_business','controlled_replay','synthetic')", name="evidence_kind"
+    ),
+    CheckConstraint(
+        "evidence_kind <> 'real_business' OR window_start > created_at", name="real_preregistered"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(protocol)='object' AND protocol->>'evidence_kind'=evidence_kind",
+        name="protocol_object",
+    ),
+    CheckConstraint(
+        "protocol_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'", name="digests"
+    ),
+    Index("ix_value_study_project", "tenant_id", "project_id", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+value_measurement_consents = Table(
+    "value_measurement_consents",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("participant_user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("activity_and_aggregate_use_confirmed", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_studies.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_studies.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_studies.id",
+        ],
+        name="fk_value_consent_study",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "participant_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_consent_participant",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "study_id",
+        "participant_user_id",
+        "id",
+        name="uq_value_consent_scope",
+    ),
+    UniqueConstraint(
+        "tenant_id", "study_id", "participant_user_id", "version", name="uq_value_consent_version"
+    ),
+    UniqueConstraint(
+        "tenant_id", "participant_user_id", "request_id", name="uq_value_consent_request"
+    ),
+    CheckConstraint("version > 0 AND status IN ('consented','withdrawn')", name="version_status"),
+    CheckConstraint(
+        "status <> 'consented' OR activity_and_aggregate_use_confirmed", name="explicit_consent"
+    ),
+    CheckConstraint(
+        "btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$'", name="reason_digest"
+    ),
+    Index("ix_value_consent_current", "tenant_id", "study_id", "participant_user_id", "version"),
+    schema=PROJECT_SCHEMA,
+)
+
+value_measurement_samples = Table(
+    "value_measurement_samples",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("study_id", Uuid, nullable=False),
+    Column("sample_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("participant_user_id", Uuid, nullable=False),
+    Column("consent_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("evidence_document_id", Uuid),
+    Column("mode", String(24), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_studies.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_studies.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_studies.id",
+        ],
+        name="fk_value_sample_study",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "study_id", "participant_user_id", "consent_id"],
+        [
+            f"{PROJECT_SCHEMA}.value_measurement_consents.tenant_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.project_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.study_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.participant_user_id",
+            f"{PROJECT_SCHEMA}.value_measurement_consents.id",
+        ],
+        name="fk_value_sample_consent",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "participant_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_value_sample_participant",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        name="fk_value_sample_task",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_value_sample_document",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_value_sample_scope"),
+    UniqueConstraint("tenant_id", "sample_id", "version", name="uq_value_sample_version"),
+    UniqueConstraint(
+        "tenant_id",
+        "study_id",
+        "participant_user_id",
+        "task_id",
+        "mode",
+        "version",
+        name="uq_value_sample_task_revision",
+    ),
+    UniqueConstraint(
+        "tenant_id", "participant_user_id", "request_id", name="uq_value_sample_request"
+    ),
+    CheckConstraint(
+        "version > 0 AND mode IN ('baseline_without_ai','assisted')", name="version_mode"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(body)='object' AND jsonb_typeof(source_snapshot)='object'", name="objects"
+    ),
+    CheckConstraint(
+        "body->>'participant_user_id'=participant_user_id::text AND "
+        "body->>'sample_id'=sample_id::text AND body->>'study_id'=study_id::text AND "
+        "body->>'task_id'=task_id::text AND body->>'mode'=mode",
+        name="body_identity",
+    ),
+    CheckConstraint(
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "btrim(reason)<>''",
+        name="reason_digests",
+    ),
+    Index("ix_value_sample_current", "tenant_id", "study_id", "sample_id", "version"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+webhook_endpoints = Table(
+    "webhook_endpoints",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("label", String(128), nullable=False),
+    Column("url", String(2048), nullable=False),
+    Column("audience", String(16), nullable=False),
+    Column("customer_id", Uuid),
+    Column("topics", JSONB, nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column("principal_user_id", Uuid, nullable=False),
+    Column("principal_auth_version", Integer, nullable=False),
+    Column("key_nonce", LargeBinary, nullable=False),
+    Column("key_envelope", LargeBinary, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("auto_start_at", DateTime(timezone=True)),
+    Column("last_scanned_at", DateTime(timezone=True)),
+    Column("dispatch_error", String(64)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_webhook_endpoint_scope"),
+    UniqueConstraint(
+        "tenant_id", "principal_user_id", "request_id", name="uq_webhook_endpoint_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "customer_id"],
+        [f"{CORE_SCHEMA}.customers.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "principal_auth_version>0 AND btrim(label)<>'' AND btrim(purpose)<>'' AND url "
+        "LIKE 'https://%' AND expires_at>created_at AND octet_length(key_nonce)=12 AND "
+        "octet_length(key_envelope)=48 AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(topics)='array' AND jsonb_array_length(topics) BETWEEN 1 AND 3 AND "
+        "((audience='internal' AND customer_id IS NULL AND "
+        "topics='[\"work.updated\"]'::jsonb) OR (audience='customer' AND customer_id IS NOT"
+        ' NULL AND topics <@ \'["customer_report.ready","customer_file.ready","customer_re'
+        "port.withdrawn\"]'::jsonb))",
+        name="shape",
+    ),
+    Index("ix_webhook_scan_schedule", "last_scanned_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+webhook_controls = Table(
+    "webhook_controls",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("endpoint_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("receiver_contract_confirmed", Boolean, nullable=False),
+    Column("delivery_authorized", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "endpoint_id", "version", name="uq_webhook_control_version"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_webhook_control_request"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_webhook_control_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "endpoint_id"],
+        [f"{PROJECT_SCHEMA}.webhook_endpoints.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND status IN ('active','paused','revoked') AND (status<>'active' OR "
+        "(receiver_contract_confirmed AND delivery_authorized)) AND btrim(reason)<>'' AND"
+        " request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+webhook_deliveries = Table(
+    "webhook_deliveries",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("endpoint_id", Uuid, nullable=False),
+    Column("source_event_id", BigInteger, nullable=False),
+    Column("topic", String(64), nullable=False),
+    Column("payload", JSONB, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("status", String(32), nullable=False),
+    Column("attempt_count", Integer, nullable=False),
+    Column("attempt_limit", Integer, nullable=False),
+    Column("next_attempt_at", DateTime(timezone=True), nullable=False),
+    Column("lease_id", Uuid),
+    Column("lease_until", DateTime(timezone=True)),
+    Column("last_error", String(64)),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "endpoint_id", "source_event_id", name="uq_webhook_delivery_event"
+    ),
+    UniqueConstraint(
+        "tenant_id", "requested_by_user_id", "request_id", name="uq_webhook_delivery_request"
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_webhook_delivery_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "endpoint_id"],
+        [f"{PROJECT_SCHEMA}.webhook_endpoints.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_event_id"],
+        [f"{EVENT_SCHEMA}.events.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "status IN ('queued','sending','retry_wait','delivered','failed','cancelled','sou"
+        "rce_changed') AND attempt_count>=0 AND attempt_limit BETWEEN 1 AND 1000 AND "
+        "attempt_count<=attempt_limit AND btrim(reason)<>'' AND "
+        "jsonb_typeof(payload)='object' AND payload->>'protocol'='pdos.webhook.v1' AND "
+        "payload->>'delivery_id'=id::text AND payload_digest ~ '^[a-f0-9]{64}$' AND "
+        "basis_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "((status='sending' AND lease_id IS NOT NULL AND lease_until IS NOT NULL) OR "
+        "(status<>'sending' AND lease_id IS NULL AND lease_until IS NULL))",
+        name="shape",
+    ),
+    Index("ix_webhook_delivery_schedule", "status", "next_attempt_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+webhook_attempts = Table(
+    "webhook_attempts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("delivery_id", Uuid, nullable=False),
+    Column("control_id", Uuid, nullable=False),
+    Column("number", Integer, nullable=False),
+    Column("signed_timestamp", BigInteger, nullable=False),
+    Column("body_digest", String(64), nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("http_status", Integer),
+    Column("response_digest", String(64)),
+    Column("error_code", String(64)),
+    Column("started_at", DateTime(timezone=True), nullable=False),
+    Column("finished_at", DateTime(timezone=True)),
+    UniqueConstraint("tenant_id", "delivery_id", "number", name="uq_webhook_attempt_number"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "delivery_id"],
+        [f"{PROJECT_SCHEMA}.webhook_deliveries.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "control_id"],
+        [f"{PROJECT_SCHEMA}.webhook_controls.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "number>0 AND outcome IN "
+        "('started','delivered','retryable','failed','abandoned','unknown') AND "
+        "body_digest ~ '^[a-f0-9]{64}$' AND (response_digest IS NULL OR response_digest ~"
+        " '^[a-f0-9]{64}$') AND ((outcome='started' AND finished_at IS NULL) OR "
+        "(outcome<>'started' AND finished_at IS NOT NULL AND finished_at>=started_at))",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+webhook_delivery_actions = Table(
+    "webhook_delivery_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("delivery_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_webhook_action_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "delivery_id"],
+        [f"{PROJECT_SCHEMA}.webhook_deliveries.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "action IN ('retry','cancel') AND btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+webhook_scans = Table(
+    "webhook_scans",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("endpoint_id", Uuid, nullable=False),
+    Column("source_event_id", BigInteger, nullable=False),
+    Column("delivery_id", Uuid),
+    Column("result", String(32), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "endpoint_id", "source_event_id", name="uq_webhook_scan_event"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "endpoint_id"],
+        [f"{PROJECT_SCHEMA}.webhook_endpoints.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_event_id"],
+        [f"{EVENT_SCHEMA}.events.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "delivery_id"],
+        [f"{PROJECT_SCHEMA}.webhook_deliveries.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(result='queued' AND delivery_id IS NOT NULL) OR "
+        "(result='not_applicable_or_unavailable' AND delivery_id IS NULL)",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+open_api_credentials = Table(
+    "open_api_credentials",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("principal_user_id", Uuid, nullable=False),
+    Column("principal_auth_version", Integer, nullable=False),
+    Column("label", String(128), nullable=False),
+    Column("audience", String(16), nullable=False),
+    Column("customer_id", Uuid),
+    Column("scopes", JSONB, nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column("verifier", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_open_api_credential_scope"),
+    UniqueConstraint(
+        "tenant_id", "principal_user_id", "request_id", name="uq_open_api_credential_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "customer_id"],
+        [f"{CORE_SCHEMA}.customers.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "principal_auth_version>0 AND btrim(label)<>'' AND btrim(purpose)<>'' AND "
+        "expires_at>created_at AND expires_at<=created_at+interval '365 days' AND "
+        "verifier ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(scopes)='array' AND "
+        "((audience='internal' AND customer_id IS NULL AND scopes='[\"work.read\"]'::jsonb)"
+        " OR (audience='customer' AND customer_id IS NOT NULL AND scopes ? "
+        "'customer_reports.read' AND scopes <@ "
+        '\'["customer_reports.read","customer_receipts.write"]\'::jsonb))',
+        name="shape",
+    ),
+    Index("ix_open_api_credential_project", "tenant_id", "project_id", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+open_api_revocations = Table(
+    "open_api_revocations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("credential_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "credential_id", name="uq_open_api_revocation"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_open_api_revocation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "credential_id"],
+        [f"{PROJECT_SCHEMA}.open_api_credentials.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$'", name="shape"),
+    schema=PROJECT_SCHEMA,
+)
+
+open_api_calls = Table(
+    "open_api_calls",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("credential_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("operation", String(64), nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("status_code", Integer, nullable=False),
+    Column("response", JSONB, nullable=False),
+    Column("response_digest", String(64), nullable=False),
+    Column("resource_refs", JSONB, nullable=False),
+    Column("file_id", Uuid),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "credential_id", "request_id", name="uq_open_api_call_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "credential_id"],
+        [f"{PROJECT_SCHEMA}.open_api_credentials.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "file_id"],
+        [f"{PROJECT_SCHEMA}.customer_report_files.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "operation IN ('work.query','customer_reports.query','customer_reports.read','cus"
+        "tomer_files.read','customer_receipts.record') AND status_code IN (200,403,409) "
+        "AND jsonb_typeof(response)='object' AND jsonb_typeof(resource_refs)='array' AND "
+        "request_digest ~ '^[a-f0-9]{64}$' AND response_digest ~ '^[a-f0-9]{64}$' AND "
+        "((status_code=200 AND operation IN "
+        "('customer_files.read','customer_receipts.record') AND file_id IS NOT NULL) OR "
+        "((status_code<>200 OR operation NOT IN "
+        "('customer_files.read','customer_receipts.record')) AND file_id IS NULL))",
+        name="shape",
+    ),
+    Index("ix_open_api_call_window", "credential_id", "created_at"),
+    Index("ix_open_api_call_history", "tenant_id", "credential_id", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+audit_report_bundles = Table(
+    "audit_report_bundles",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("report_id", Uuid, nullable=False),
+    Column("filename", String(255), nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("content", LargeBinary, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("manifest", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_audit_bundle_request"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_audit_bundle_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "report_id"],
+        [f"{PROJECT_SCHEMA}.project_report_exports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "byte_size BETWEEN 1 AND 54525952 AND octet_length(content)=byte_size AND "
+        "btrim(reason)<>'' AND btrim(filename)<>'' AND "
+        "jsonb_typeof(manifest)='object' AND manifest->>'audience'='internal' AND "
+        "manifest->>'template_version'='internal-audit-bundle.v1' AND "
+        "content_digest ~ '^[a-f0-9]{64}$' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index(
+        "ix_audit_bundle_report_history", "tenant_id", "project_id", "report_id", "created_at", "id"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+project_report_sources = Table(
+    "project_report_sources",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("report_id", Uuid, nullable=False),
+    Column("kind", String(16), nullable=False),
+    Column("source_id", Uuid, nullable=False),
+    Column("gate_id", Uuid),
+    Column("ecn_id", Uuid),
+    Column("document_id", Uuid),
+    UniqueConstraint(
+        "tenant_id", "report_id", "kind", "source_id", name="uq_project_report_source"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "report_id"],
+        [f"{PROJECT_SCHEMA}.project_report_exports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "gate_id"],
+        [f"{PROJECT_SCHEMA}.gates.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecn_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_notices.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [f"{PROJECT_SCHEMA}.documents.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(kind='gate' AND gate_id IS NOT NULL AND gate_id=source_id AND ecn_id IS NULL "
+        "AND document_id IS NULL) OR (kind='ecn' AND ecn_id IS NOT NULL AND "
+        "ecn_id=source_id AND gate_id IS NULL AND document_id IS NULL) OR "
+        "(kind='document' AND document_id IS NOT NULL AND document_id=source_id AND "
+        "gate_id IS NULL AND ecn_id IS NULL)",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+project_report_withdrawals = Table(
+    "project_report_withdrawals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("report_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "report_id", name="uq_project_report_withdrawal"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_project_report_withdrawal_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "report_id"],
+        [f"{PROJECT_SCHEMA}.project_report_exports.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$'", name="shape"),
+    schema=PROJECT_SCHEMA,
+)
+
+definition_exports = Table(
+    "definition_exports",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("format", String(8), nullable=False),
+    Column("template_version", String(64), nullable=False),
+    Column("filename", String(255), nullable=False),
+    Column("mime_type", String(128), nullable=False),
+    Column("byte_size", Integer, nullable=False),
+    Column("content", LargeBinary, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("preview_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_definition_export_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "format IN ('docx','xlsx','pptx','pdf') AND btrim(reason)<>'' AND "
+        "btrim(filename)<>'' AND template_version='internal-definition.v1' AND "
+        "byte_size BETWEEN 1 AND 12582912 AND octet_length(content)=byte_size AND "
+        "jsonb_typeof(snapshot)='object' AND snapshot->>'audience'='internal' AND "
+        "content_digest ~ '^[a-f0-9]{64}$' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "preview_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index("ix_definition_export_history", "tenant_id", "market_space_id", "definition_id", "id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_result_followups = Table(
+    "product_result_followups",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("feedback_id", Uuid, nullable=False),
+    Column("revision_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("previous_id", Uuid),
+    Column("action", String(32), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("preview_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "feedback_id", "version", name="uq_product_result_followup_version"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_product_result_followup_request"
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_result_followup_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "previous_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_result_followups.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "feedback_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_result_feedback.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_result_followup_definition",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_result_followup_revision",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND ((version=1 AND previous_id IS NULL AND action<>'withdrawn') OR "
+        "(version>1 AND previous_id IS NOT NULL)) AND "
+        "action IN ('link_revision','no_change','needs_evidence','withdrawn') AND "
+        "((action='link_revision' AND revision_id IS NOT NULL) OR "
+        "(action<>'link_revision' AND revision_id IS NULL)) AND "
+        "jsonb_typeof(snapshot)='object' AND preview_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index("ix_product_result_followup_history", "tenant_id", "feedback_id", "version"),
+    Index(
+        "ix_product_result_followup_revision", "tenant_id", "market_space_id", "revision_id", "id"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_metric_calculations = Table(
+    "product_metric_calculations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("test_run_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("previous_id", Uuid),
+    Column("formula_version", String(64), nullable=False),
+    Column("configuration", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("result", JSONB, nullable=False),
+    Column("preview_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "definition_id",
+        "project_id",
+        "test_run_id",
+        "version",
+        name="uq_product_metric_calculation_version",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_product_metric_calculation_request"
+    ),
+    UniqueConstraint(
+        "tenant_id", "market_space_id", "id", name="uq_product_metric_calculation_scope"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "previous_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_metric_calculations.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_run_id"],
+        [f"{QUALITY_SCHEMA}.test_runs.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND ((version=1 AND previous_id IS NULL) OR (version>1 AND previous_id"
+        " IS NOT NULL)) AND "
+        "btrim(reason)<>'' AND btrim(formula_version)<>'' AND "
+        "jsonb_typeof(configuration)='object' AND "
+        "jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(result)='object' AND "
+        "source_digest ~ '^[a-f0-9]{64}$' AND "
+        "preview_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index(
+        "ix_product_metric_calculation_history",
+        "tenant_id",
+        "definition_id",
+        "project_id",
+        "test_run_id",
+        "version",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+retirement_feedback = Table(
+    "retirement_feedback",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_id", Uuid, nullable=False),
+    Column(
+        "retirement_audit_id",
+        BigInteger,
+        ForeignKey(f"{AUDIT_SCHEMA}.audit_log.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("target_id", Uuid, nullable=False),
+    Column("definition_id", Uuid),
+    Column("strategy_id", Uuid),
+    Column("opportunity_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("verdict", String(32), nullable=False),
+    Column("selected_fields", JSONB, nullable=False),
+    Column("finding", Text, nullable=False),
+    Column("follow_up", Text, nullable=False),
+    Column("limitations", Text, nullable=False),
+    Column("sources", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "retirement_audit_id",
+        "target_id",
+        "version",
+        name="uq_retirement_feedback_version",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_retirement_feedback_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_id"],
+        [f"{PRODUCT_SCHEMA}.product_nodes.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "strategy_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [f"{PRODUCT_SCHEMA}.opportunities.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND verdict IN "
+        "('adopt_for_followup','retain_assumption','needs_evidence','withdrawn') AND "
+        "btrim(finding)<>'' AND btrim(follow_up)<>'' AND btrim(limitations)<>'' AND "
+        "jsonb_typeof(selected_fields)='array' AND jsonb_array_length(selected_fields) "
+        "BETWEEN 1 AND 20 AND "
+        "jsonb_typeof(sources)='array' AND jsonb_array_length(sources)<=20 AND "
+        "jsonb_typeof(source_snapshot)='object' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$' AND "
+        "(version>1 OR verdict<>'withdrawn') AND ((definition_id IS NULL AND "
+        "target_id=product_id AND strategy_id IS NULL AND opportunity_id IS NULL) OR "
+        "(definition_id IS NOT NULL AND target_id=definition_id AND strategy_id IS NOT "
+        "NULL AND opportunity_id IS NOT NULL))",
+        name="shape",
+    ),
+    Index(
+        "ix_retirement_feedback_product",
+        "tenant_id",
+        "market_space_id",
+        "product_id",
+        "created_at",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_result_feedback = Table(
+    "product_result_feedback",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_kind", String(16), nullable=False),
+    Column("source_id", Uuid, nullable=False),
+    Column("test_run_id", Uuid),
+    Column("complaint_id", Uuid),
+    Column("ncr_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("verdict", String(32), nullable=False),
+    Column("selected_fields", JSONB, nullable=False),
+    Column("finding", Text, nullable=False),
+    Column("proposed_change", Text, nullable=False),
+    Column("limitations", Text, nullable=False),
+    Column("applicability_basis", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "definition_id",
+        "project_id",
+        "source_kind",
+        "source_id",
+        "version",
+        name="uq_product_result_feedback_version",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_product_result_feedback_request"
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_result_feedback_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_run_id"],
+        [f"{QUALITY_SCHEMA}.test_runs.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [f"{QUALITY_SCHEMA}.nonconformance_reports.{k}" for k in ("tenant_id", "project_id", "id")],
+        name="fk_product_result_feedback_ncr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "complaint_id"],
+        [f"{QUALITY_SCHEMA}.complaints.tenant_id", f"{QUALITY_SCHEMA}.complaints.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND verdict IN "
+        "('adopt_for_followup','reject_application','needs_evidence','withdrawn') AND "
+        "btrim(finding)<>'' AND btrim(proposed_change)<>'' AND btrim(limitations)<>'' AND"
+        " btrim(applicability_basis)<>'' AND "
+        "jsonb_typeof(selected_fields)='array' AND jsonb_array_length(selected_fields) "
+        "BETWEEN 1 AND 20 AND "
+        "jsonb_typeof(source_snapshot)='object' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$' AND "
+        "(version>1 OR verdict<>'withdrawn') AND ((source_kind='test_run' AND "
+        "test_run_id=source_id AND test_run_id IS NOT NULL AND complaint_id IS NULL AND "
+        "ncr_id IS NULL) OR "
+        "(source_kind='complaint' AND complaint_id=source_id AND complaint_id IS NOT NULL"
+        " AND test_run_id IS NULL AND ncr_id IS NULL) OR (source_kind='ncr' AND "
+        "ncr_id=source_id AND ncr_id IS NOT NULL AND complaint_id IS NULL AND test_run_id"
+        " IS NULL))",
+        name="shape",
+    ),
+    Index(
+        "ix_product_result_feedback_definition",
+        "tenant_id",
+        "market_space_id",
+        "definition_id",
+        "created_at",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+experiment_feedback = Table(
+    "experiment_feedback",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("experiment_id", Uuid, nullable=False),
+    Column("target_kind", String(16), nullable=False),
+    Column("target_id", Uuid, nullable=False),
+    Column("opportunity_id", Uuid),
+    Column("strategy_id", Uuid),
+    Column("definition_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("verdict", String(32), nullable=False),
+    Column("selected_fields", JSONB, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("proposed_change", Text, nullable=False),
+    Column("limitations", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "experiment_id",
+        "target_kind",
+        "target_id",
+        "version",
+        name="uq_experiment_feedback_version",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_experiment_feedback_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "experiment_id"],
+        [f"{PRODUCT_SCHEMA}.experiments.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "opportunity_id"],
+        [f"{PRODUCT_SCHEMA}.opportunities.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "strategy_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_strategies.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND verdict IN "
+        "('adopt_for_followup','reject_application','needs_evidence','withdrawn') AND "
+        "btrim(reason)<>'' AND btrim(proposed_change)<>'' AND btrim(limitations)<>'' AND "
+        "jsonb_typeof(selected_fields)='array' AND jsonb_array_length(selected_fields) "
+        "BETWEEN 1 AND 20 AND "
+        "jsonb_typeof(source_snapshot)='object' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$' AND "
+        "(version>1 OR verdict<>'withdrawn') AND ((target_kind='opportunity' AND "
+        "opportunity_id=target_id AND opportunity_id IS NOT NULL AND strategy_id IS NULL "
+        "AND definition_id IS NULL) OR "
+        "(target_kind='strategy' AND strategy_id=target_id AND strategy_id IS NOT NULL "
+        "AND opportunity_id IS NULL AND definition_id IS NULL) OR "
+        "(target_kind='definition' AND definition_id=target_id AND definition_id IS NOT "
+        "NULL AND opportunity_id IS NULL AND strategy_id IS NULL))",
+        name="shape",
+    ),
+    Index(
+        "ix_experiment_feedback_target",
+        "tenant_id",
+        "market_space_id",
+        "target_kind",
+        "target_id",
+        "created_at",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_matrix_outcomes = Table(
+    "product_matrix_outcomes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("disposition_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("state", String(24), nullable=False),
+    Column("checked_product_ids", JSONB, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("verification", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_matrix_outcome_scope"),
+    UniqueConstraint("tenant_id", "disposition_id", "version", name="uq_matrix_outcome_version"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_matrix_outcome_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "disposition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_dispositions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND state IN ('progress','verified','not_implemented','withdrawn') AND"
+        " btrim(reason)<>'' AND "
+        "jsonb_typeof(checked_product_ids)='array' AND "
+        "jsonb_array_length(checked_product_ids) BETWEEN 1 AND 8 AND "
+        "jsonb_typeof(verification)='object' AND jsonb_typeof(source_snapshot)='object' AND "
+        "source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND "
+        "(version>1 OR state<>'withdrawn')",
+        name="shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+product_matrix_outcome_versions = Table(
+    "product_matrix_outcome_versions",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("outcome_id", Uuid, primary_key=True),
+    Column("product_id", Uuid, primary_key=True),
+    Column("kind", String(16), primary_key=True),
+    Column("definition_release_id", Uuid),
+    Column("roadmap_revision_id", Uuid),
+    Column("snapshot", JSONB, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "outcome_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_outcomes.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_id"],
+        [f"{PRODUCT_SCHEMA}.product_nodes.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_release_id"],
+        [
+            f"{PRODUCT_SCHEMA}.definition_releases.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "roadmap_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_roadmap_revisions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(snapshot)='object' AND ((kind='definition' AND "
+        "definition_release_id IS NOT NULL AND roadmap_revision_id IS NULL) OR "
+        "(kind='roadmap' AND roadmap_revision_id IS NOT NULL AND definition_release_id IS NULL))",
+        name="shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_matrix_dispositions = Table(
+    "product_matrix_dispositions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("record_id", Uuid, nullable=False),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("topic", String(32), nullable=False),
+    Column("product_ids", JSONB, nullable=False),
+    Column("criterion_keys", JSONB, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("work_item_id", Uuid),
+    Column("work_snapshot", JSONB(none_as_null=True)),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_matrix_disposition_scope"),
+    UniqueConstraint("tenant_id", "series_id", "version", name="uq_matrix_disposition_version"),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_matrix_disposition_successor"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_matrix_disposition_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "record_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_records.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_dispositions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_matrix_disposition_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_dispositions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_matrix_disposition_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "work_item_id"],
+        [f"{PROJECT_SCHEMA}.scoped_work_items.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(title)<>'' AND btrim(reason)<>'' AND "
+        "topic IN ('coverage_gap','positioning_overlap','platform_reuse') AND "
+        "outcome IN ('investigate','retain','revise_definition','revise_roadmap','not_app"
+        "licable','withdrawn') AND "
+        "jsonb_typeof(product_ids)='array' AND jsonb_array_length(product_ids) BETWEEN 1 AND 8 AND "
+        "jsonb_typeof(criterion_keys)='array' AND jsonb_array_length(criterion_keys) "
+        "BETWEEN 1 AND 20 AND "
+        "jsonb_typeof(source_snapshot)='object' AND source_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$' AND ((work_item_id IS NULL AND work_snapshot "
+        "IS NULL) OR "
+        "(work_item_id IS NOT NULL AND jsonb_typeof(work_snapshot)='object')) AND "
+        "((version=1 AND series_id=id AND supersedes_id IS NULL AND outcome<>'withdrawn') OR "
+        "(version>1 AND series_id<>id AND supersedes_id IS NOT NULL))",
+        name="shape",
+    ),
+    Index(
+        "ix_matrix_dispositions_history",
+        "tenant_id",
+        "market_space_id",
+        "record_id",
+        "created_at",
+        "id",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_matrix_records = Table(
+    "product_matrix_records",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("segment_id", Uuid, nullable=False),
+    Column("series_id", Uuid, nullable=False),
+    Column("supersedes_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("formula_version", String(80), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_matrix_record_scope"),
+    UniqueConstraint("tenant_id", "series_id", "version", name="uq_matrix_record_version"),
+    UniqueConstraint("tenant_id", "supersedes_id", name="uq_matrix_record_successor"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_matrix_record_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "segment_id"],
+        [f"{PRODUCT_SCHEMA}.market_segments.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "series_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_records.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_matrix_record_series",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "supersedes_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_records.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_matrix_record_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(title)<>'' AND btrim(reason)<>'' AND jsonb_typeof(inputs)='object' "
+        "AND jsonb_typeof(result)='object' AND result_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$' "
+        "AND ((version=1 AND series_id=id AND supersedes_id IS NULL) OR (version>1 AND "
+        "series_id<>id AND supersedes_id IS NOT NULL))",
+        name="shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+Index(
+    "ix_matrix_records_history",
+    product_matrix_records.c.tenant_id,
+    product_matrix_records.c.market_space_id,
+    product_matrix_records.c.created_at,
+    product_matrix_records.c.id,
+)
+
+product_matrix_record_products = Table(
+    "product_matrix_record_products",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("record_id", Uuid, primary_key=True),
+    Column("product_id", Uuid, primary_key=True),
+    Column("definition_id", Uuid, nullable=False),
+    Column("release_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "record_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_matrix_records.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_id"],
+        [f"{PRODUCT_SCHEMA}.product_nodes.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "release_id"],
+        [
+            f"{PRODUCT_SCHEMA}.definition_releases.{k}"
+            for k in ("tenant_id", "market_space_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_roadmap_revisions = Table(
+    "product_roadmap_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid, nullable=False),
+    Column("product_id", Uuid, nullable=False),
+    Column("definition_id", Uuid, nullable=False),
+    Column("release_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("state", String(20), nullable=False),
+    Column("body", json_type, nullable=False),
+    Column("source_snapshot", json_type, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "product_id", "version", name="uq_product_roadmap_version"),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_roadmap_scope"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_product_roadmap_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_id"],
+        [f"{PRODUCT_SCHEMA}.product_nodes.{key}" for key in ("tenant_id", "market_space_id", "id")],
+        name="fk_product_roadmap_product",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [f"{PRODUCT_SCHEMA}.product_nodes.{key}" for key in ("tenant_id", "market_space_id", "id")],
+        name="fk_product_roadmap_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.{key}"
+            for key in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_product_roadmap_definition",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "release_id"],
+        [
+            f"{PRODUCT_SCHEMA}.definition_releases.{key}"
+            for key in ("tenant_id", "market_space_id", "id")
+        ],
+        name="fk_product_roadmap_release",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        name="fk_product_roadmap_actor",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND state IN ('published','withdrawn') AND btrim(reason)<>'' "
+        "AND jsonb_typeof(body)='object' AND jsonb_typeof(source_snapshot)='object' "
+        "AND source_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+schedule_milestone_designations = Table(
+    "schedule_milestone_designations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("is_key", Boolean, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "node_id", "version", name="uq_milestone_designation_version"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_milestone_designation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [f"{PROJECT_SCHEMA}.schedule_nodes.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "baseline_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_nodes.{k}"
+            for k in ("tenant_id", "record_id", "node_id")
+        ],
+        name="fk_milestone_designation_baseline_node",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [f"{PROJECT_SCHEMA}.schedule_time_records.{k}" for k in ("tenant_id", "project_id", "id")],
+        name="fk_milestone_designation_baseline_scope",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND length(btrim(reason))>0 AND jsonb_typeof(snapshot)='object' "
+        "AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_health_policies = Table(
+    "portfolio_health_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("body", json_type, nullable=False),
+    Column("formula_version", String(80), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_health_policy_scope"),
+    UniqueConstraint("tenant_id", "version", name="uq_portfolio_health_policy_version"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_portfolio_health_policy_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND jsonb_typeof(body)='object' AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND formula_version='health.v1'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_execution_applications = Table(
+    "portfolio_execution_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("preparation_id", Uuid, nullable=False),
+    Column("selection_id", Uuid, nullable=False),
+    Column("plan", json_type, nullable=False),
+    Column("plan_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("transaction_id", BigInteger, nullable=False, server_default=text("txid_current()")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_application_scope"),
+    UniqueConstraint("tenant_id", "preparation_id", name="uq_portfolio_application_preparation"),
+    UniqueConstraint("tenant_id", "selection_id", name="uq_portfolio_application_selection"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_portfolio_application_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "preparation_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_execution_preparations.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "selection_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_selections.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(plan)='object' AND plan_digest ~ '^[a-f0-9]{64}$' "
+        "AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+portfolio_execution_applied_projects = Table(
+    "portfolio_execution_applied_projects",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("application_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, primary_key=True),
+    Column("preparation_id", Uuid, nullable=False),
+    Column("baseline_application_id", Uuid, nullable=False),
+    Column("receipt", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "application_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_execution_applications.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "preparation_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.portfolio_execution_projects.{k}"
+            for k in ("tenant_id", "preparation_id", "project_id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_application_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_applications.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+portfolio_execution_applied_reservations = Table(
+    "portfolio_execution_applied_reservations",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("application_id", Uuid, primary_key=True),
+    Column("key", String(128), primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("reservation_id", Uuid, nullable=False),
+    Column(
+        "reservation_receipt_id",
+        Uuid,
+        ForeignKey(f"{PROJECT_SCHEMA}.resource_reservation_receipts.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("disposition", String(24), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "application_id", "reservation_id", name="uq_portfolio_applied_reservation"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "application_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.portfolio_execution_applied_projects.{k}"
+            for k in ("tenant_id", "application_id", "project_id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "reservation_id"],
+        [f"{PROJECT_SCHEMA}.resource_reservations.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "disposition IN ('created','confirmed_existing','preserved') "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_execution_preparations = Table(
+    "portfolio_execution_preparations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("selection_id", Uuid, nullable=False),
+    Column("selection_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_execution_preparation_id"),
+    UniqueConstraint("tenant_id", "selection_id", name="uq_portfolio_execution_selection"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_portfolio_execution_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "selection_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_selections.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(receipt)='object' AND selection_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_execution_projects = Table(
+    "portfolio_execution_projects",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("preparation_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, primary_key=True),
+    Column("selection_id", Uuid, nullable=False),
+    Column("schedule_id", Uuid, nullable=False),
+    Column("resource_preparation_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("capacity_check_id", Uuid, nullable=False),
+    Column("change_id", Uuid, nullable=False),
+    Column("change_digest", String(64), nullable=False),
+    Column("receipt", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "scenario_id", name="uq_portfolio_execution_scenario"),
+    UniqueConstraint("tenant_id", "change_id", name="uq_portfolio_execution_change"),
+    ForeignKeyConstraint(
+        ["tenant_id", "preparation_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_execution_preparations.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "selection_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.portfolio_selection_projects.{k}"
+            for k in ("tenant_id", "selection_id", "project_id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "schedule_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_resource_schedules.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "resource_preparation_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_resource_schedule_preparations.{k}"
+            for k in ("tenant_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "capacity_check_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_scenario_capacity_checks.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "change_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_requests.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(receipt)='object' AND change_digest ~ '^[a-f0-9]{64}$'", name="shape"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+portfolio_selections = Table(
+    "portfolio_selections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("comparison_id", Uuid, nullable=False),
+    Column("alternative_key", String(128), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_selection_id"),
+    UniqueConstraint(
+        "tenant_id", "comparison_id", "alternative_key", name="uq_portfolio_selection_choice"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_portfolio_selection_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "comparison_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_comparisons.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(inputs)='object' AND jsonb_typeof(snapshot)='object' AND "
+        "payload_digest ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index("ix_portfolio_selection_history", "tenant_id", "created_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_selection_projects = Table(
+    "portfolio_selection_projects",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("selection_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, primary_key=True),
+    Column("policy_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "selection_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_selections.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_policies.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [f"{PROJECT_SCHEMA}.schedule_time_records.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="shape"),
+    Index("ix_portfolio_selection_project", "tenant_id", "project_id", "selection_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_selection_decisions = Table(
+    "portfolio_selection_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("selection_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_selection_decision_id"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_portfolio_selection_decision_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "selection_id"],
+        [f"{PROJECT_SCHEMA}.portfolio_selections.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "selection_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.portfolio_selection_projects.{k}"
+            for k in ("tenant_id", "selection_id", "project_id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "((action='withdraw' AND project_id IS NULL) OR (action IN ('approve','reject') "
+        "AND project_id IS NOT NULL)) AND payload_digest ~ '^[a-f0-9]{64}$' AND "
+        "request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index(
+        "uq_portfolio_selection_project_decision",
+        "tenant_id",
+        "selection_id",
+        "project_id",
+        unique=True,
+        postgresql_where=text("project_id IS NOT NULL"),
+    ),
+    Index(
+        "uq_portfolio_selection_withdrawal",
+        "tenant_id",
+        "selection_id",
+        unique=True,
+        postgresql_where=text("action='withdraw'"),
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+portfolio_scoring_policies = Table(
+    "portfolio_scoring_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("formula_version", String(64), nullable=False),
+    Column("body", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_policy_id"),
+    UniqueConstraint("tenant_id", "version", name="uq_portfolio_policy_version"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_portfolio_policy_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND jsonb_typeof(body)='object' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_comparisons = Table(
+    "portfolio_comparisons",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_portfolio_comparison_id"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_portfolio_comparison_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.portfolio_scoring_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.portfolio_scoring_policies.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(inputs)='object' AND jsonb_typeof(snapshot)='object' AND "
+        "payload_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    Index("ix_portfolio_comparison_history", "tenant_id", "created_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+portfolio_comparison_sources = Table(
+    "portfolio_comparison_sources",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("comparison_id", Uuid, primary_key=True),
+    Column("alternative_key", String(128), primary_key=True),
+    Column("project_id", Uuid, primary_key=True),
+    Column("schedule_id", Uuid, nullable=False),
+    Column("cost_rollup_id", Uuid),
+    Column("evidence_id", Uuid),
+    Column("calendar_version_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "comparison_id"],
+        [
+            f"{PROJECT_SCHEMA}.portfolio_comparisons.tenant_id",
+            f"{PROJECT_SCHEMA}.portfolio_comparisons.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "schedule_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_resource_schedules.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "cost_rollup_id"],
+        [f"{COST_SCHEMA}.cost_rollups.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "evidence_id"],
+        [f"{PROJECT_SCHEMA}.documents.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "calendar_version_id"],
+        [f"{PROJECT_SCHEMA}.work_calendar_versions.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_reallocations = Table(
+    "resource_reallocations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_resource_reallocation_id"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_resource_reallocation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(inputs)='object' AND jsonb_typeof(snapshot)='object' AND "
+        "payload_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_reallocation_projects = Table(
+    "resource_reallocation_projects",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("allocation_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, primary_key=True),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("body", json_type, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "allocation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reallocations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reallocations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(body)='object'", name="shape"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_reallocation_items = Table(
+    "resource_reallocation_items",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("allocation_id", Uuid, primary_key=True),
+    Column("reservation_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("capacity_version_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "allocation_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reallocation_projects.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reallocation_projects.allocation_id",
+            f"{PROJECT_SCHEMA}.resource_reallocation_projects.project_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reservation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reservations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_priority_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_priority_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_reallocation_decisions = Table(
+    "resource_reallocation_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("allocation_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "allocation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reallocations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reallocations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "allocation_id", "project_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reallocation_projects.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reallocation_projects.allocation_id",
+            f"{PROJECT_SCHEMA}.resource_reallocation_projects.project_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_reallocation_decision_request"
+    ),
+    CheckConstraint(
+        "(action='withdraw' AND project_id IS NULL) OR (action IN ('approve','reject') "
+        "AND project_id IS NOT NULL)",
+        name="shape",
+    ),
+    Index(
+        "uq_reallocation_project_decision",
+        "tenant_id",
+        "allocation_id",
+        "project_id",
+        unique=True,
+        postgresql_where=text("project_id IS NOT NULL"),
+    ),
+    Index(
+        "uq_reallocation_withdrawal",
+        "tenant_id",
+        "allocation_id",
+        unique=True,
+        postgresql_where=text("action='withdraw'"),
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_reallocation_applications = Table(
+    "resource_reallocation_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("allocation_id", Uuid, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "allocation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reallocations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reallocations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "allocation_id", name="uq_reallocation_application"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_reallocation_application_request"
+    ),
+    CheckConstraint("jsonb_typeof(receipt)='object'", name="shape"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_priority_versions = Table(
+    "resource_priority_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("resource_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("valid_from", DateTime(timezone=True), nullable=False),
+    Column("valid_until", DateTime(timezone=True), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "id", name="uq_resource_priority_scope"),
+    UniqueConstraint("tenant_id", "resource_id", "version", name="uq_resource_priority_version"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_resource_priority_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "resource_id"],
+        [f"{PROJECT_SCHEMA}.planning_resources.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND status IN ('active','suspended') AND valid_until>valid_from "
+        "AND jsonb_typeof(body)='object' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+resource_priority_bindings = Table(
+    "resource_priority_bindings",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("reservation_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("rank", Integer, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "reservation_id"],
+        [f"{PROJECT_SCHEMA}.resource_reservations.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{PROJECT_SCHEMA}.resource_priority_versions.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("rank BETWEEN 1 AND 1000", name="shape"),
+    schema=PROJECT_SCHEMA,
+)
+
+resource_reservations = Table(
+    "resource_reservations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("resource_id", Uuid, nullable=False),
+    Column("capacity_version_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("window_start", DateTime(timezone=True), nullable=False),
+    Column("window_end", DateTime(timezone=True), nullable=False),
+    Column("parallel_units", Numeric(24, 8), nullable=False),
+    Column("occupancy_policy", String(24), nullable=False),
+    Column("basis", Text, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("state", String(16), nullable=False),
+    Column("contract", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_resource_reservations_scope"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_resource_reservations_project"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "resource_id"],
+        [
+            f"{PROJECT_SCHEMA}.planning_resources.tenant_id",
+            f"{PROJECT_SCHEMA}.planning_resources.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_resource_reservations_created_by_user_id_users",
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND window_end>window_start AND parallel_units>0 A"
+            "ND parallel_units<=1000 AND state IN ('proposed','reserved',"
+            "'released','cancelled') AND occupancy_policy IN ('working_on"
+            "ly','through_waiting') AND btrim(basis)<>''"
+        ),
+        name="resource_reservation_valid",
+    ),
+    Index("ix_resource_reservations_active", "tenant_id", "resource_id", "state"),
+    schema=PROJECT_SCHEMA,
+)
+resource_reservation_intervals = Table(
+    "resource_reservation_intervals",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("reservation_id", Uuid, primary_key=True),
+    Column("start", DateTime(timezone=True), primary_key=True),
+    Column("end", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "reservation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reservations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint('"end">start', name="reservation_interval_positive"),
+    schema=PROJECT_SCHEMA,
+)
+resource_reservation_receipts = Table(
+    "resource_reservation_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("reservation_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "actor_user_id",
+        "request_id",
+        name="uq_resource_reservation_receipt_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "reservation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reservations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.project_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+legacy_resource_reconciliations = Table(
+    "legacy_resource_reconciliations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("legacy_resource_id", Uuid, nullable=False),
+    Column("sequence", Integer, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("source_snapshot", json_type, nullable=False),
+    Column("resource_id", Uuid),
+    Column("calendar_version_id", Uuid),
+    Column("window_start", DateTime(timezone=True)),
+    Column("window_end", DateTime(timezone=True)),
+    Column("parallel_units", Numeric(24, 8)),
+    Column("occupancy_policy", String(24)),
+    Column("disposition", String(24), nullable=False),
+    Column("basis", Text, nullable=False),
+    Column("calendar_evidence", json_type),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_legacy_resource_reconciliations_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "legacy_resource_id",
+        "sequence",
+        name="uq_legacy_resource_reconciliations_number",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "actor_user_id",
+        "request_id",
+        name="uq_legacy_resource_reconciliations_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "legacy_resource_id"],
+        [
+            f"{PROJECT_SCHEMA}.resources.tenant_id",
+            f"{PROJECT_SCHEMA}.resources.project_id",
+            f"{PROJECT_SCHEMA}.resources.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "resource_id"],
+        [
+            f"{PROJECT_SCHEMA}.planning_resources.tenant_id",
+            f"{PROJECT_SCHEMA}.planning_resources.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "calendar_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.work_calendar_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.work_calendar_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "sequence>0 AND btrim(basis)<>'' AND ((disposition='mapped' A"
+            "ND resource_id IS NOT NULL AND calendar_version_id IS NOT NU"
+            "LL AND window_start IS NOT NULL AND window_end IS NOT NULL A"
+            "ND window_end>window_start AND parallel_units IS NOT NULL AN"
+            "D occupancy_policy IS NOT NULL AND parallel_units>0 AND para"
+            "llel_units<=1000 AND occupancy_policy IN ('working_only','th"
+            "rough_waiting') AND calendar_evidence IS NOT NULL) OR (dispo"
+            "sition='retained_released' AND resource_id IS NULL AND calen"
+            "dar_version_id IS NULL AND window_start IS NULL AND window_e"
+            "nd IS NULL AND parallel_units IS NULL AND occupancy_policy I"
+            "S NULL))"
+        ),
+        name="legacy_resource_reconciliation_valid",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+legacy_resource_intervals = Table(
+    "legacy_resource_intervals",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("reconciliation_id", Uuid, primary_key=True),
+    Column("start", DateTime(timezone=True), primary_key=True),
+    Column("end", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "reconciliation_id"],
+        [
+            f"{PROJECT_SCHEMA}.legacy_resource_reconciliations.tenant_id",
+            f"{PROJECT_SCHEMA}.legacy_resource_reconciliations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint('"end">start', name="legacy_resource_interval_positive"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+initial_plan_reviews = Table(
+    "initial_plan_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("capacity_check_id", Uuid, nullable=False),
+    Column("round_no", Integer, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("state", String(24), nullable=False),
+    Column("reviewer_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("preparation_reason", Text, nullable=False),
+    Column("outcome_reason", Text),
+    Column("approval", json_type),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_initial_plan_reviews_scope"),
+    UniqueConstraint("tenant_id", "candidate_id", "round_no", name="uq_initial_plan_reviews_round"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_initial_plan_reviews_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "candidate_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_check_id"],
+        [
+            f"{PROJECT_SCHEMA}.plan_capacity_checks.tenant_id",
+            f"{PROJECT_SCHEMA}.plan_capacity_checks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_initial_plan_reviews_reviewer_user_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_initial_plan_reviews_created_by_user_id",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "round_no>0 AND version>0 AND state IN ('pending_review','acc"
+            "epted','rejected','withdrawn') AND btrim(preparation_reason)"
+            "<>'' AND (state='pending_review' OR (outcome_reason IS NOT N"
+            "ULL AND btrim(outcome_reason)<>'')) AND (state<>'accepted' O"
+            "R (approval IS NOT NULL AND approval<>'null'::jsonb))"
+        ),
+        name="initial_plan_review_state",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+initial_plan_review_receipts = Table(
+    "initial_plan_review_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("review_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_initial_plan_review_receipts_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "review_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_reviews.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_reviews.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+case_project_conversions = Table(
+    "case_project_conversions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("case_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("audit_row_id", BigInteger, nullable=False),
+    Column("contract", json_type, nullable=False),
+    Column(
+        "recorded_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_case_project_conversions_scope"),
+    UniqueConstraint("tenant_id", "project_id", name="uq_case_project_conversions_project"),
+    UniqueConstraint("tenant_id", "case_id", name="uq_case_project_conversions_case"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "case_id"],
+        [f"{PROJECT_SCHEMA}.development_cases.tenant_id", f"{PROJECT_SCHEMA}.development_cases.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+project_execution_policies = Table(
+    "project_execution_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("four_eyes", Boolean, nullable=False),
+    Column("authority_basis", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_project_execution_policies_scope"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "version", name="uq_project_execution_policies_version"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_project_execution_policies_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_execution_policies_approver_user_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_project_execution_policies_created_by_user_id",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND btrim(authority_basis)<>''", name="project_execution_policy_valid"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+project_execution_requests = Table(
+    "project_execution_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversion_id", Uuid, nullable=False),
+    Column("plan_review_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("round_no", Integer, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("state", String(24), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("plan_digest", String(64), nullable=False),
+    Column("request_reason", Text, nullable=False),
+    Column("outcome_reason", Text),
+    Column("approval", json_type),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_project_execution_requests_scope"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "round_no", name="uq_project_execution_requests_round"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_project_execution_requests_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "conversion_id"],
+        [
+            f"{PROJECT_SCHEMA}.case_project_conversions.tenant_id",
+            f"{PROJECT_SCHEMA}.case_project_conversions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "plan_review_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_reviews.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_reviews.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_execution_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.project_execution_policies.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "round_no>0 AND version>0 AND state IN ('pending_approval','a"
+            "pproved','rejected','withdrawn') AND btrim(request_reason)<>"
+            "'' AND (state='pending_approval' OR (outcome_reason IS NOT N"
+            "ULL AND btrim(outcome_reason)<>'')) AND (state<>'approved' O"
+            "R (approval IS NOT NULL AND approval<>'null'::jsonb))"
+        ),
+        name="project_execution_request_valid",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+project_execution_receipts = Table(
+    "project_execution_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("execution_request_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_project_execution_receipts_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "execution_request_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_execution_requests.tenant_id",
+            f"{PROJECT_SCHEMA}.project_execution_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+schedule_time_records = Table(
+    "schedule_time_records",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("time_kind", String(16), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("execution_request_id", Uuid),
+    Column("contract", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_schedule_time_records_project"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "time_kind", "version", name="uq_schedule_time_records_version"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "execution_request_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_execution_requests.tenant_id",
+            f"{PROJECT_SCHEMA}.project_execution_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND time_kind IN ('baseline','forecast','commitment','actual')",
+        name="time_record_kind",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+schedule_time_nodes = Table(
+    "schedule_time_nodes",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("record_id", Uuid, primary_key=True),
+    Column("node_id", Uuid, primary_key=True),
+    Column("start", DateTime(timezone=True)),
+    Column("end", DateTime(timezone=True)),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint('"start" IS NULL OR "end" IS NULL OR "end">="start"', name="time_node_order"),
+    schema=PROJECT_SCHEMA,
+)
+schedule_plan_dependencies = Table(
+    "schedule_plan_dependencies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("predecessor_node_id", Uuid, nullable=False),
+    Column("successor_node_id", Uuid, nullable=False),
+    Column("relation", String(2), nullable=False),
+    Column("lag", Numeric(24, 8), nullable=False),
+    Column("lag_unit", String(24), nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "baseline_id",
+        "predecessor_node_id",
+        "successor_node_id",
+        "relation",
+        name="uq_schedule_plan_dependency_edge",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "predecessor_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_schedule_plan_dependency_predecessor",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "successor_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_schedule_plan_dependency_successor",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "predecessor_node_id<>successor_node_id AND relation IN ('fs'"
+            ",'ss','ff','sf') AND lag_unit IN ('working_hours','calendar_"
+            "days')"
+        ),
+        name="schedule_plan_dependency_valid",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+initial_plan_applications = Table(
+    "initial_plan_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("execution_request_id", Uuid, nullable=False),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("operation_receipt_id", Uuid, nullable=False),
+    Column("contract", json_type, nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "id", name="uq_initial_plan_applications_project_id"
+    ),
+    UniqueConstraint("tenant_id", "project_id", name="uq_initial_plan_applications_project"),
+    UniqueConstraint(
+        "tenant_id", "execution_request_id", name="uq_initial_plan_applications_execution"
+    ),
+    UniqueConstraint(
+        "tenant_id", "operation_receipt_id", name="uq_initial_plan_applications_receipt"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_initial_plan_applications_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "execution_request_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_execution_requests.tenant_id",
+            f"{PROJECT_SCHEMA}.project_execution_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "candidate_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_candidates.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+task_plan_bindings = Table(
+    "task_plan_bindings",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("application_id", Uuid, primary_key=True),
+    Column("node_key", String(128), primary_key=True),
+    Column("task_id", Uuid, nullable=False),
+    Column("schedule_node_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("discipline", String(128), nullable=False),
+    Column("completion_criteria", Text, nullable=False),
+    Column("node_snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "task_id", name="uq_task_plan_bindings_task"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "application_id"],
+        [
+            f"{PROJECT_SCHEMA}.initial_plan_applications.tenant_id",
+            f"{PROJECT_SCHEMA}.initial_plan_applications.project_id",
+            f"{PROJECT_SCHEMA}.initial_plan_applications.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "schedule_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+scheduled_task_observations = Table(
+    "scheduled_task_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("point", String(8), nullable=False),
+    Column("observed_at", DateTime(timezone=True), nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("audit_row_id", BigInteger, nullable=False),
+    UniqueConstraint("tenant_id", "node_id", "point", name="uq_scheduled_task_observations_point"),
+    UniqueConstraint("tenant_id", "event_row_id", name="uq_scheduled_task_observations_event"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("point IN ('start','finish')", name="scheduled_task_observation_point"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_forecast_runs = Table(
+    "schedule_forecast_runs",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("record_id", Uuid, primary_key=True),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_schedule_forecast_runs_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_schedule_forecast_runs_record",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_schedule_forecast_runs_baseline",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "(created_by_user_id IS NULL AND COALESCE(inputs->>'trigger',"
+            "'')='propagation') OR (created_by_user_id IS NOT NULL AND CO"
+            "ALESCE(inputs->>'trigger','human') IN ('human','automatic'))"
+        ),
+        name="forecast_run_actor",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+Index(
+    "uq_schedule_forecast_service_request",
+    schedule_forecast_runs.c.tenant_id,
+    schedule_forecast_runs.c.request_id,
+    unique=True,
+    postgresql_where=schedule_forecast_runs.c.created_by_user_id.is_(None),
+)
+schedule_forecast_errors = Table(
+    "schedule_forecast_errors",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("forecast_record_id", Uuid, primary_key=True),
+    Column("node_id", Uuid, primary_key=True),
+    Column("point", String(8), primary_key=True),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("predicted_at", DateTime(timezone=True), nullable=False),
+    Column("observed_at", DateTime(timezone=True), nullable=False),
+    Column("error_seconds", Numeric(24, 6), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "forecast_record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "node_id", "point"],
+        [
+            f"{PROJECT_SCHEMA}.scheduled_task_observations.tenant_id",
+            f"{PROJECT_SCHEMA}.scheduled_task_observations.node_id",
+            f"{PROJECT_SCHEMA}.scheduled_task_observations.point",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("point IN ('start','finish')", name="forecast_error_point"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+baseline_change_applications = Table(
+    "baseline_change_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("change_id", Uuid, nullable=False),
+    Column("decision_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("previous_baseline_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_baseline_application_scope"),
+    UniqueConstraint("tenant_id", "change_id", name="uq_baseline_application_change"),
+    UniqueConstraint("tenant_id", "baseline_id", name="uq_baseline_application_version"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_baseline_application_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "change_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_requests.tenant_id",
+            f"{PROJECT_SCHEMA}.baseline_change_requests.project_id",
+            f"{PROJECT_SCHEMA}.baseline_change_requests.id",
+        ],
+        name="fk_baseline_application_change",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "decision_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_decisions.tenant_id",
+            f"{PROJECT_SCHEMA}.baseline_change_decisions.project_id",
+            f"{PROJECT_SCHEMA}.baseline_change_decisions.id",
+        ],
+        name="fk_baseline_application_decision",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_baseline_application_new",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_baseline_application_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.project_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.id",
+        ],
+        name="fk_baseline_application_scenario",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_baseline_application_actor",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "baseline_id<>previous_baseline_id AND jsonb_typeof(receipt)='object'",
+        name="baseline_application_receipt",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+baseline_change_policies = Table(
+    "baseline_change_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("authority_basis", Text, nullable=False),
+    Column("four_eyes", Boolean, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_baseline_change_policies_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_baseline_change_policies_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_baseline_change_policies_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "version", name="uq_baseline_policy_version"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        name="fk_baseline_policy_project",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_baseline_policy_approver",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+baseline_change_requests = Table(
+    "baseline_change_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("capacity_check_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("base_baseline_id", Uuid, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_baseline_change_requests_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_baseline_change_requests_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_baseline_change_requests_actor",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.project_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "capacity_check_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_scenario_capacity_checks.tenant_id",
+            f"{PROJECT_SCHEMA}.project_scenario_capacity_checks.project_id",
+            f"{PROJECT_SCHEMA}.project_scenario_capacity_checks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.baseline_change_policies.project_id",
+            f"{PROJECT_SCHEMA}.baseline_change_policies.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "base_baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+baseline_change_decisions = Table(
+    "baseline_change_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("change_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("approved_payload_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_baseline_change_decisions_scope"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_baseline_change_decisions_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_baseline_change_decisions_actor",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "change_id", name="uq_baseline_change_decision"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "change_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_requests.tenant_id",
+            f"{PROJECT_SCHEMA}.baseline_change_requests.project_id",
+            f"{PROJECT_SCHEMA}.baseline_change_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "action IN ('approve','reject','withdraw') AND length(trim(reason))>0",
+        name="baseline_decision_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+project_resource_schedule_preparations = Table(
+    "project_resource_schedule_preparations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("schedule_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_resource_preparation_id"),
+    UniqueConstraint("tenant_id", "schedule_id", name="uq_resource_preparation_source"),
+    UniqueConstraint("tenant_id", "scenario_id", name="uq_resource_preparation_scenario"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_resource_preparation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "schedule_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_resource_schedules.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(receipt)='object' AND request_digest ~ '^[a-f0-9]{64}$'", name="shape"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+project_resource_schedules = Table(
+    "project_resource_schedules",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("scenario_basis_digest", String(64), nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_project_resource_schedule_id"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_project_resource_schedule_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_project_resource_schedule_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.project_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(inputs)='object' AND jsonb_typeof(result)='object'",
+        name="project_resource_schedule_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+project_resource_schedule_versions = Table(
+    "project_resource_schedule_versions",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("schedule_id", Uuid, primary_key=True),
+    Column("capacity_version_id", Uuid, primary_key=True),
+    Column("policy_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_priority_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_priority_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "schedule_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_resource_schedules.tenant_id",
+            f"{PROJECT_SCHEMA}.project_resource_schedules.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+project_scenario_capacity_checks = Table(
+    "project_scenario_capacity_checks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("scenario_basis_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_project_scenario_capacity_check_id"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "id", name="uq_project_scenario_capacity_check_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_project_scenario_capacity_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.project_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(inputs)='object' AND jsonb_typeof(result)='object'",
+        name="project_scenario_capacity_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+project_scenario_capacity_versions = Table(
+    "project_scenario_capacity_versions",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("check_id", Uuid, primary_key=True),
+    Column("capacity_version_id", Uuid, primary_key=True),
+    ForeignKeyConstraint(
+        ["tenant_id", "check_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_scenario_capacity_checks.tenant_id",
+            f"{PROJECT_SCHEMA}.project_scenario_capacity_checks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+project_schedule_scenarios = Table(
+    "project_schedule_scenarios",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("title", Text, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("plan", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_project_schedule_scenario_scope"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_project_schedule_scenario_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "length(trim(title))>0 AND length(trim(reason))>0 AND jsonb_t"
+            "ypeof(inputs)='object' AND jsonb_typeof(snapshot)='object' A"
+            "ND jsonb_typeof(plan)='object' AND jsonb_typeof(result)='obj"
+            "ect'"
+        ),
+        name="project_schedule_scenario_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+project_schedule_scenario_nodes = Table(
+    "project_schedule_scenario_nodes",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("scenario_id", Uuid, primary_key=True),
+    Column("node_id", Uuid, primary_key=True),
+    Column("node_key", String(128), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "scenario_id", "node_key", name="uq_project_schedule_scenario_node_key"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scenario_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.tenant_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.project_id",
+            f"{PROJECT_SCHEMA}.project_schedule_scenarios.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_source_observations = Table(
+    "schedule_source_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("node_kind", String(24), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("source_status", String(32), nullable=False),
+    Column("started_at", DateTime(timezone=True)),
+    Column("finished_at", DateTime(timezone=True)),
+    Column("successful", Boolean),
+    Column("note", Text),
+    Column("event_row_id", BigInteger),
+    Column("audit_row_id", BigInteger, nullable=False),
+    Column("observed_at", DateTime(timezone=True), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_schedule_source_observation_scope"),
+    UniqueConstraint(
+        "tenant_id", "node_id", "version", name="uq_schedule_source_observation_version"
+    ),
+    UniqueConstraint(
+        "tenant_id", "node_id", "audit_row_id", name="uq_schedule_source_observation_audit"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND node_kind IN "
+        "('build','test_run','gate','certification','tooling','milestone') AND "
+        "(started_at IS NULL OR finished_at IS NULL OR finished_at>=started_at)",
+        name="schedule_source_observation_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+id_design_variants = Table(
+    "id_design_variants",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("title", String(512), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_variants_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_variants_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_revisions = Table(
+    "id_design_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("variant_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("previous_revision_id", Uuid),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("brief", Text, nullable=False),
+    Column("envelope", Text),
+    Column("cmf", Text),
+    Column("layout", Text),
+    Column("interfaces", Text),
+    Column("document_id", Uuid),
+    Column("external_file_reference_id", Uuid),
+    Column("artifact_snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    UniqueConstraint("tenant_id", "variant_id", "version", name="uq_id_design_revision_version"),
+    CheckConstraint(
+        "version>0 AND (document_id IS NULL OR external_file_reference_id IS NULL)",
+        name="id_design_revision_shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_revisions_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_revisions_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "variant_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_variants.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.id",
+        ],
+        name="fk_id_design_revision_variant",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.id",
+        ],
+        name="fk_id_design_revision_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_id_design_revisions_owner_user_id_users",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_id_design_document",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "external_file_reference_id"],
+        [
+            f"{PROJECT_SCHEMA}.external_file_references.tenant_id",
+            f"{PROJECT_SCHEMA}.external_file_references.project_id",
+            f"{PROJECT_SCHEMA}.external_file_references.id",
+        ],
+        name="fk_id_design_external_file",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_feedback = Table(
+    "id_design_feedback",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("revision_id", Uuid, nullable=False),
+    Column("source_kind", String(16), nullable=False),
+    Column("source_reference", Text, nullable=False),
+    Column("reported_at", DateTime(timezone=True)),
+    Column("topic", String(24), nullable=False),
+    Column("content", Text, nullable=False),
+    CheckConstraint(
+        (
+            "source_kind IN ('customer','internal') AND topic IN ('appear"
+            "ance','ergonomics','cmf','interface','cost','other')"
+        ),
+        name="id_design_feedback_kind",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_feedback_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_feedback_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.id",
+        ],
+        name="fk_id_design_feedback_revision",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_feedback_decisions = Table(
+    "id_design_feedback_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("feedback_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("action", String(24), nullable=False),
+    Column("resolution_revision_id", Uuid),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "feedback_id", "version", name="uq_id_design_feedback_decision_version"
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND action IN ('planned','needs_decision','rejecte"
+            "d','addressed') AND ((action='addressed' AND resolution_revi"
+            "sion_id IS NOT NULL) OR (action<>'addressed' AND resolution_"
+            "revision_id IS NULL))"
+        ),
+        name="id_design_feedback_decision_kind",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_feedback_decisions_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_feedback_decisions_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "feedback_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_feedback.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_feedback.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_feedback.id",
+        ],
+        name="fk_id_design_decision_feedback",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "resolution_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.id",
+        ],
+        name="fk_id_design_decision_revision",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_freeze_requests = Table(
+    "id_design_freeze_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("confirmation_document_id", Uuid, nullable=False),
+    Column("revision_id", Uuid, nullable=False),
+    Column("previous_request_id", Uuid),
+    UniqueConstraint(
+        "tenant_id", "project_id", "previous_request_id", name="uq_id_freeze_request_successor"
+    ),
+    CheckConstraint(
+        "previous_request_id IS NULL OR previous_request_id<>id", name="id_freeze_request_not_self"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_request_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.id",
+        ],
+        name="fk_id_freeze_request_previous",
+        ondelete="RESTRICT",
+    ),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("product_user_id", Uuid, nullable=False),
+    Column("me_user_id", Uuid, nullable=False),
+    Column("hw_user_id", Uuid, nullable=False),
+    Column("authority_basis", Text, nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_freeze_requests_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_freeze_requests_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.id",
+        ],
+        name="fk_id_freeze_request_revision",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "product_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_id_freeze_product_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "me_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_id_freeze_me_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "hw_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_id_freeze_hw_user",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "confirmation_document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_id_freeze_confirmation_document",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_freeze_decisions = Table(
+    "id_design_freeze_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("freeze_request_id", Uuid, nullable=False),
+    Column("slot", String(16), nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("approved_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "freeze_request_id", "slot", name="uq_id_freeze_decision_slot"),
+    CheckConstraint(
+        "slot IN ('product','me','hw') AND action IN ('approve','reject')",
+        name="id_freeze_decision_shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_freeze_decisions_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_freeze_decisions_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_request_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.id",
+        ],
+        name="fk_id_freeze_decision_request",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_freezes = Table(
+    "id_design_freezes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("freeze_request_id", Uuid, nullable=False),
+    Column("variant_id", Uuid, nullable=False),
+    Column("revision_id", Uuid, nullable=False),
+    Column("approved_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "freeze_request_id", name="uq_id_freeze_application"),
+    UniqueConstraint("tenant_id", "variant_id", name="uq_id_freeze_variant"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_freezes_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_freezes_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_request_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freeze_requests.id",
+        ],
+        name="fk_id_freeze_application_request",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "variant_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_variants.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.id",
+        ],
+        name="fk_id_freeze_variant",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.id",
+        ],
+        name="fk_id_freeze_revision",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_change_candidates = Table(
+    "id_design_change_candidates",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("freeze_id", Uuid, nullable=False),
+    Column("feedback_id", Uuid, nullable=False),
+    Column("status", String(24), nullable=False, server_default="pending_review"),
+    UniqueConstraint("tenant_id", "feedback_id", name="uq_id_design_change_feedback"),
+    CheckConstraint("status='pending_review'", name="id_design_change_initial_status"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_change_candidates_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_change_candidates_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freezes.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.id",
+        ],
+        name="fk_id_change_freeze",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "feedback_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_feedback.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_feedback.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_feedback.id",
+        ],
+        name="fk_id_change_feedback",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_handoffs = Table(
+    "id_design_handoffs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("freeze_id", Uuid, nullable=False),
+    Column("target_node_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("previous_handoff_id", Uuid),
+    Column("version", Integer, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "freeze_id", "target_node_id", "version", name="uq_id_handoff_version"
+    ),
+    UniqueConstraint("tenant_id", "previous_handoff_id", name="uq_id_handoff_previous"),
+    CheckConstraint(
+        (
+            "version>0 AND ((version=1)=(previous_handoff_id IS NULL)) AN"
+            "D receiver_user_id<>created_by_user_id"
+        ),
+        name="id_handoff_shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_handoffs_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_handoffs_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freezes.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.id",
+        ],
+        name="fk_id_handoff_freeze",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_handoff_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_handoffs.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_handoffs.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_handoffs.id",
+        ],
+        name="fk_id_handoff_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "target_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_id_handoff_target_node",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_id_handoff_receiver",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_handoff_items = Table(
+    "id_design_handoff_items",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("handoff_id", Uuid, nullable=False),
+    Column("item_key", String(64), nullable=False),
+    Column("title", Text, nullable=False),
+    Column("criteria", Text, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("artifact_snapshot", json_type, nullable=False),
+    Column("residuals", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "handoff_id", "item_key", name="uq_id_handoff_item_key"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_handoff_items_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_handoff_items_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "handoff_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_handoffs.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_handoffs.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_handoffs.id",
+        ],
+        name="fk_id_handoff_item_package",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [
+            f"{PROJECT_SCHEMA}.documents.tenant_id",
+            f"{PROJECT_SCHEMA}.documents.project_id",
+            f"{PROJECT_SCHEMA}.documents.id",
+        ],
+        name="fk_id_handoff_item_document",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_handoff_responses = Table(
+    "id_design_handoff_responses",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("item_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("accepted_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "item_id", name="uq_id_handoff_item_response"),
+    CheckConstraint("action IN ('accept','return')", name="id_handoff_response_action"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_handoff_responses_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_handoff_responses_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "item_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_handoff_items.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_handoff_items.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_handoff_items.id",
+        ],
+        name="fk_id_handoff_response_item",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_change_decisions = Table(
+    "id_design_change_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("candidate_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("ecr_id", Uuid),
+    Column("snapshot", json_type, nullable=False),
+    Column("candidate_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "candidate_id", name="uq_id_change_candidate_decision"),
+    CheckConstraint(
+        "action IN ('reject','route_ecr') AND ((action='route_ecr')=(ecr_id IS NOT NULL))",
+        name="id_change_decision_shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_change_decisions_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_change_decisions_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "candidate_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_change_candidates.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_change_candidates.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_change_candidates.id",
+        ],
+        name="fk_id_change_decision_candidate",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        name="fk_id_change_decision_ecr",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_change_branches = Table(
+    "id_design_change_branches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("source_freeze_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("variant_id", Uuid, nullable=False),
+    Column("initial_revision_id", Uuid, nullable=False),
+    Column("approval_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "source_freeze_id", "ecr_id", name="uq_id_branch_source_ecr"),
+    UniqueConstraint("tenant_id", "variant_id", name="uq_id_branch_variant"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_change_branches_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_change_branches_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_freeze_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freezes.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.id",
+        ],
+        name="fk_id_branch_source_freeze",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        name="fk_id_branch_ecr",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "variant_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_variants.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.id",
+        ],
+        name="fk_id_branch_variant",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "initial_revision_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_revisions.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_revisions.id",
+        ],
+        name="fk_id_branch_initial_revision",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_activations = Table(
+    "id_design_activations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("branch_id", Uuid, nullable=False),
+    Column("old_freeze_id", Uuid, nullable=False),
+    Column("new_freeze_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("basis_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "old_freeze_id", name="uq_id_activation_old_freeze"),
+    UniqueConstraint("tenant_id", "new_freeze_id", name="uq_id_activation_new_freeze"),
+    CheckConstraint("old_freeze_id<>new_freeze_id", name="id_activation_distinct_versions"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_id_design_activations_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_id_design_activations_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "branch_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_change_branches.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_change_branches.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_change_branches.id",
+        ],
+        name="fk_id_activation_branch",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "old_freeze_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freezes.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.id",
+        ],
+        name="fk_id_activation_old",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "new_freeze_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freezes.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.id",
+        ],
+        name="fk_id_activation_new",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_reacceptance_requirements = Table(
+    "id_design_reacceptance_requirements",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("activation_id", Uuid, nullable=False),
+    Column("freeze_id", Uuid, nullable=False),
+    Column("target_node_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "freeze_id", "target_node_id", name="uq_id_reacceptance_target"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "id", name="uq_id_design_reacceptance_requirements_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_reacceptance_requirements_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "activation_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_activations.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_activations.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_activations.id",
+        ],
+        name="fk_id_reacceptance_activation",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "freeze_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_freezes.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_freezes.id",
+        ],
+        name="fk_id_reacceptance_freeze",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "target_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_id_reacceptance_target",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+id_design_checkpoint_bindings = Table(
+    "id_design_checkpoint_bindings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("node_id", Uuid, nullable=False),
+    Column("variant_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("previous_binding_id", Uuid),
+    Column("snapshot", json_type, nullable=False),
+    Column("target_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    UniqueConstraint("tenant_id", "node_id", "version", name="uq_id_checkpoint_version"),
+    CheckConstraint(
+        "version>0 AND ((version=1)=(previous_binding_id IS NULL))",
+        name="id_checkpoint_binding_shape",
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "id", name="uq_id_design_checkpoint_bindings_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_id_design_checkpoint_bindings_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "variant_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_variants.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_variants.id",
+        ],
+        name="fk_id_checkpoint_variant",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_binding_id"],
+        [
+            f"{PRODUCT_SCHEMA}.id_design_checkpoint_bindings.tenant_id",
+            f"{PRODUCT_SCHEMA}.id_design_checkpoint_bindings.project_id",
+            f"{PRODUCT_SCHEMA}.id_design_checkpoint_bindings.id",
+        ],
+        name="fk_id_checkpoint_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_id_checkpoint_node",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+cross_project_schedule_proposals = Table(
+    "cross_project_schedule_proposals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("predecessor_project_id", Uuid, nullable=False),
+    Column("successor_project_id", Uuid, nullable=False),
+    Column("predecessor_node_id", Uuid, nullable=False),
+    Column("successor_node_id", Uuid, nullable=False),
+    Column("predecessor_baseline_id", Uuid, nullable=False),
+    Column("successor_baseline_id", Uuid, nullable=False),
+    Column("predecessor_policy_id", Uuid, nullable=False),
+    Column("successor_policy_id", Uuid, nullable=False),
+    Column("operation", String(16), nullable=False, server_default=text("'add'")),
+    Column("target_application_id", Uuid),
+    Column("destination_application_id", Uuid),
+    Column("relation", String(2), nullable=False),
+    Column("lag", Numeric(24, 8), nullable=False),
+    Column("lag_unit", String(24), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_cross_schedule_proposal_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_cross_schedule_proposal_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "predecessor_project_id", "predecessor_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_cross_predecessor_node",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "predecessor_project_id", "predecessor_baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_cross_predecessor_baseline",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "predecessor_project_id", "predecessor_policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.baseline_change_policies.project_id",
+            f"{PROJECT_SCHEMA}.baseline_change_policies.id",
+        ],
+        name="fk_cross_predecessor_policy",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "successor_project_id", "successor_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_cross_successor_node",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "successor_project_id", "successor_baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        name="fk_cross_successor_baseline",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "successor_project_id", "successor_policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.baseline_change_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.baseline_change_policies.project_id",
+            f"{PROJECT_SCHEMA}.baseline_change_policies.id",
+        ],
+        name="fk_cross_successor_policy",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "predecessor_project_id<>successor_project_id AND relation IN"
+            " ('fs','ss','ff','sf') AND lag_unit IN ('working_hours','cal"
+            "endar_days')"
+        ),
+        name="cross_schedule_relation",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "target_application_id"],
+        [
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.tenant_id",
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.id",
+        ],
+        name="fk_cross_schedule_removal_target",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "((operation='add' AND target_application_id IS NULL) OR (ope"
+            "ration IN ('remove','replace') AND target_application_id IS "
+            "NOT NULL)) AND (operation='replace' OR destination_applicati"
+            "on_id IS NULL)"
+        ),
+        name="cross_schedule_proposal_operation",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "destination_application_id"],
+        [
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.tenant_id",
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.id",
+        ],
+        name="fk_cross_schedule_proposal_destination",
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+cross_project_schedule_applications = Table(
+    "cross_project_schedule_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("proposal_id", Uuid, nullable=False),
+    Column("predecessor_project_id", Uuid, nullable=False),
+    Column("successor_project_id", Uuid, nullable=False),
+    Column("predecessor_node_id", Uuid, nullable=False),
+    Column("successor_node_id", Uuid, nullable=False),
+    Column("operation", String(16), nullable=False, server_default=text("'add'")),
+    Column("relation", String(2), nullable=False),
+    Column("replaces_application_id", Uuid),
+    Column("displaces_application_id", Uuid),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("approved_payload_digest", String(64), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_cross_schedule_application_scope"),
+    UniqueConstraint("tenant_id", "proposal_id", name="uq_cross_schedule_application_proposal"),
+    UniqueConstraint(
+        "tenant_id", "replaces_application_id", name="uq_cross_schedule_application_replacement"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_cross_schedule_application_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "proposal_id"],
+        [
+            f"{PROJECT_SCHEMA}.cross_project_schedule_proposals.tenant_id",
+            f"{PROJECT_SCHEMA}.cross_project_schedule_proposals.id",
+        ],
+        name="fk_cross_schedule_application_proposal",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "replaces_application_id"],
+        [
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.tenant_id",
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.id",
+        ],
+        name="fk_cross_schedule_application_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "predecessor_project_id", "predecessor_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_cross_schedule_application_predecessor",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "successor_project_id", "successor_node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_cross_schedule_application_successor",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "predecessor_project_id<>successor_project_id AND relation IN"
+            " ('fs','ss','ff','sf') AND length(btrim(reason))>0"
+        ),
+        name="cross_schedule_application_valid",
+    ),
+    CheckConstraint(
+        (
+            "operation IN ('add','remove','replace') AND (operation='add'"
+            " OR replaces_application_id IS NOT NULL) AND (operation='rep"
+            "lace' OR displaces_application_id IS NULL)"
+        ),
+        name="cross_schedule_application_operation",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "displaces_application_id"],
+        [
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.tenant_id",
+            f"{PROJECT_SCHEMA}.cross_project_schedule_applications.id",
+        ],
+        name="fk_cross_schedule_application_destination",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "displaces_application_id", name="uq_cross_schedule_displacement"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+cross_project_schedule_decisions = Table(
+    "cross_project_schedule_decisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("proposal_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("approved_payload_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "proposal_id", "project_id", name="uq_cross_schedule_side_decision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_cross_schedule_decision_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "proposal_id"],
+        [
+            f"{PROJECT_SCHEMA}.cross_project_schedule_proposals.tenant_id",
+            f"{PROJECT_SCHEMA}.cross_project_schedule_proposals.id",
+        ],
+        name="fk_cross_schedule_decision_proposal",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "action IN ('approve','reject','withdraw') AND length(btrim(reason))>0",
+        name="cross_schedule_decision_action",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_source_corrections = Table(
+    "schedule_source_corrections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("observation_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("original_snapshot", json_type, nullable=False),
+    Column("previous_snapshot", json_type, nullable=False),
+    Column("started_at", DateTime(timezone=True)),
+    Column("finished_at", DateTime(timezone=True)),
+    Column("reason", Text, nullable=False),
+    Column("evidence", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("audit_row_id", BigInteger, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_source_correction_scope"),
+    UniqueConstraint("tenant_id", "node_id", "version", name="uq_source_correction_version"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_source_correction_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        name="fk_source_correction_node",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "observation_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_source_observations.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_source_observations.project_id",
+            f"{PROJECT_SCHEMA}.schedule_source_observations.id",
+        ],
+        name="fk_source_correction_observation",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "version>0 AND length(btrim(reason))>0 AND length(btrim(evide"
+            "nce))>0 AND (started_at IS NULL OR finished_at IS NULL OR fi"
+            "nished_at>=started_at)"
+        ),
+        name="source_correction_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+certification_execution_actions = Table(
+    "certification_execution_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("certification_id", Uuid, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("evidence", Text, nullable=False),
+    Column("before_snapshot", json_type, nullable=False),
+    Column("after_snapshot", json_type, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("audit_row_id", BigInteger, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_certification_action_scope"),
+    UniqueConstraint(
+        "tenant_id", "certification_id", "action", name="uq_certification_action_once"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_certification_action_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "certification_id"],
+        [
+            f"{QUALITY_SCHEMA}.certifications.tenant_id",
+            f"{QUALITY_SCHEMA}.certifications.project_id",
+            f"{QUALITY_SCHEMA}.certifications.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_certification_action_source",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "action IN ('start','complete') AND length(btrim(evidence))>0",
+        name="certification_action_kind",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_source_forecast_errors = Table(
+    "schedule_source_forecast_errors",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("observation_id", Uuid, primary_key=True),
+    Column("forecast_record_id", Uuid, primary_key=True),
+    Column("point", String(8), primary_key=True),
+    Column("node_id", Uuid, nullable=False),
+    Column("predicted_at", DateTime(timezone=True), nullable=False),
+    Column("observed_at", DateTime(timezone=True), nullable=False),
+    Column("error_seconds", Numeric(24, 6), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "observation_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_source_observations.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_source_observations.project_id",
+            f"{PROJECT_SCHEMA}.schedule_source_observations.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_source_error_observation",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "forecast_record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_source_error_forecast",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_source_error_node",
+    ),
+    CheckConstraint("point IN ('start','finish')", name="source_forecast_error_point"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_milestone_completions = Table(
+    "schedule_milestone_completions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("completion_criteria", Text, nullable=False),
+    Column("evidence", Text, nullable=False),
+    Column("completed_at", DateTime(timezone=True), nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("audit_row_id", BigInteger, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_milestone_completion_scope"),
+    UniqueConstraint("tenant_id", "node_id", name="uq_milestone_completion_node"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_milestone_completion_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_nodes.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.project_id",
+            f"{PROJECT_SCHEMA}.schedule_nodes.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_milestone_completion_node",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_milestone_completion_baseline",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "length(btrim(evidence))>0 AND length(btrim(completion_criteria))>0",
+        name="milestone_completion_evidence",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_actual_corrections = Table(
+    "schedule_actual_corrections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("point", String(8), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("previous_correction_id", Uuid),
+    Column("previous_observed_at", DateTime(timezone=True), nullable=False),
+    Column("observed_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("evidence", Text, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("audit_row_id", BigInteger, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=text("now()")),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_actual_correction_scope"),
+    UniqueConstraint(
+        "tenant_id", "node_id", "point", "version", name="uq_actual_correction_version"
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_actual_correction_request"
+    ),
+    UniqueConstraint("tenant_id", "event_row_id", name="uq_actual_correction_event"),
+    ForeignKeyConstraint(
+        ["tenant_id", "node_id", "point"],
+        [
+            f"{PROJECT_SCHEMA}.scheduled_task_observations.tenant_id",
+            f"{PROJECT_SCHEMA}.scheduled_task_observations.node_id",
+            f"{PROJECT_SCHEMA}.scheduled_task_observations.point",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_correction_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_actual_corrections.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_actual_corrections.project_id",
+            f"{PROJECT_SCHEMA}.schedule_actual_corrections.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "audit_row_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        (
+            "version > 0 AND point IN ('start','finish') AND observed_at "
+            "<= created_at AND observed_at <> previous_observed_at AND le"
+            "ngth(trim(reason)) > 0 AND length(trim(evidence)) > 0"
+        ),
+        name="actual_correction_values",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+schedule_forecast_error_corrections = Table(
+    "schedule_forecast_error_corrections",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("correction_id", Uuid, primary_key=True),
+    Column("forecast_record_id", Uuid, primary_key=True),
+    Column("predicted_at", DateTime(timezone=True), nullable=False),
+    Column("error_seconds", Numeric(24, 6), nullable=False),
+    Column("eligible", Boolean, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "correction_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_actual_corrections.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_actual_corrections.project_id",
+            f"{PROJECT_SCHEMA}.schedule_actual_corrections.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "forecast_record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+forecast_capacity_checks = Table(
+    "forecast_capacity_checks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("forecast_record_id", Uuid, nullable=False),
+    Column("inputs", json_type, nullable=False),
+    Column("result", json_type, nullable=False),
+    Column("result_digest", String(64), nullable=False),
+    Column("forecast_basis_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_forecast_capacity_checks_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_forecast_capacity_checks_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "forecast_record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_forecast_runs.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_forecast_runs.record_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "forecast_record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+forecast_capacity_check_versions = Table(
+    "forecast_capacity_check_versions",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("check_id", Uuid, primary_key=True),
+    Column("capacity_version_id", Uuid, primary_key=True),
+    ForeignKeyConstraint(
+        ["tenant_id", "check_id"],
+        [
+            f"{PROJECT_SCHEMA}.forecast_capacity_checks.tenant_id",
+            f"{PROJECT_SCHEMA}.forecast_capacity_checks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_version_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_capacity_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+schedule_commitment_policies = Table(
+    "schedule_commitment_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("approver_user_id", Uuid, nullable=False),
+    Column("authority_basis", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_schedule_commitment_policies_scope"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "version", name="uq_schedule_commitment_policies_version"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_schedule_commitment_policies_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_schedule_commitment_policy_approver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_schedule_commitment_policy_creator",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("version>0 AND btrim(authority_basis)<>''", name="commitment_policy_valid"),
+    schema=PROJECT_SCHEMA,
+)
+schedule_commitment_confirmations = Table(
+    "schedule_commitment_confirmations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("record_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("forecast_record_id", Uuid, nullable=False),
+    Column("capacity_check_id", Uuid, nullable=False),
+    Column("scope_label", Text, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("payload_digest", String(64), nullable=False),
+    Column("approved_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "record_id", name="uq_schedule_commitment_confirmations_record"),
+    UniqueConstraint(
+        "tenant_id",
+        "approved_by_user_id",
+        "request_id",
+        name="uq_schedule_commitment_confirmations_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_time_records.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.project_id",
+            f"{PROJECT_SCHEMA}.schedule_time_records.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_commitment_policies.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_commitment_policies.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "forecast_record_id"],
+        [
+            f"{PROJECT_SCHEMA}.schedule_forecast_runs.tenant_id",
+            f"{PROJECT_SCHEMA}.schedule_forecast_runs.record_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "capacity_check_id"],
+        [
+            f"{PROJECT_SCHEMA}.forecast_capacity_checks.tenant_id",
+            f"{PROJECT_SCHEMA}.forecast_capacity_checks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "approved_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+resource_reservation_replacements = Table(
+    "resource_reservation_replacements",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("previous_reservation_id", Uuid, nullable=False),
+    Column("replacement_reservation_id", Uuid, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "previous_reservation_id", name="uq_resource_reservation_replacements_previous"
+    ),
+    UniqueConstraint(
+        "tenant_id", "replacement_reservation_id", name="uq_resource_reservation_replacements_next"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "actor_user_id",
+        "request_id",
+        name="uq_resource_reservation_replacements_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_reservation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reservations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.project_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.id",
+        ],
+        name="fk_resource_reservation_replacements_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "replacement_reservation_id"],
+        [
+            f"{PROJECT_SCHEMA}.resource_reservations.tenant_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.project_id",
+            f"{PROJECT_SCHEMA}.resource_reservations.id",
+        ],
+        name="fk_resource_reservation_replacements_next",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "previous_reservation_id<>replacement_reservation_id AND btrim(reason)<>''",
+        name="reservation_replacement_valid",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+conversations = Table(
+    "conversations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("title", String(256), nullable=False),
+    Column("context_version", Integer, nullable=False),
+    Column("next_sequence", Integer, nullable=False),
+    Column("archived_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_conversation_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("context_version=1 AND next_sequence>0", name="version_sequence"),
+    Index(
+        "ix_conversation_owner_project",
+        "tenant_id",
+        "created_by_user_id",
+        "project_id",
+        "updated_at",
+    ),
+    schema=AI_SCHEMA,
+)
+
+conversation_messages = Table(
+    "conversation_messages",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("author_user_id", Uuid, nullable=False),
+    Column("sequence", Integer, nullable=False),
+    Column("context_version", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("body", Text, nullable=False),
+    Column("action", String(32), nullable=False),
+    Column(
+        "object_focus", JSON(none_as_null=True).with_variant(JSONB(none_as_null=True), "postgresql")
+    ),
+    CheckConstraint(
+        "object_focus IS NULL OR (action IN ('note','project_query') "
+        "AND jsonb_typeof(object_focus)='object' "
+        "AND object_focus ?& ARRAY['kind','id','digest','fields'] "
+        "AND object_focus->>'kind' IN ('task','issue','risk','capa','gate') "
+        "AND jsonb_typeof(object_focus->'fields')='array' "
+        "AND object_focus->>'digest' ~ '^[a-f0-9]{64}$') IS TRUE",
+        name="object_focus",
+    ),
+    Column("meeting_planning_brief_id", Uuid),
+    Column("ncr_id", Uuid),
+    Column("quality_selections", JSONB(none_as_null=True)),
+    Column("ecr_id", Uuid),
+    Column("impact_depth", Integer),
+    Column("allow_discussion", Boolean, nullable=False, server_default=text("false")),
+    Column("include_supplier_notices", Boolean, nullable=False, server_default=text("false")),
+    Column("transcript_id", Uuid),
+    Column("expected_digest", String(64)),
+    Column("expected_minutes_version", Integer),
+    Column("dispatch_input", Text, nullable=False),
+    Column("operation_request_id", String(128), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "conversation_id", "id", name="uq_conversation_message_scope"
+    ),
+    UniqueConstraint("tenant_id", "conversation_id", "sequence", name="uq_conversation_sequence"),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_conversation_message_request"
+    ),
+    UniqueConstraint("tenant_id", "operation_request_id", name="uq_conversation_operation_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id"],
+        [f"{AI_SCHEMA}.conversations.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "author_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "transcript_id"],
+        [f"{PROJECT_SCHEMA}.meeting_transcripts.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "context_version=1 AND sequence>0 AND length(btrim(body)) BETWEEN 1 AND 2000 "
+        "AND length(dispatch_input)<=20000",
+        name="content_bound",
+    ),
+    CheckConstraint(
+        "action IN ('note','project_query','meeting_reading','minutes',"
+        "'actions','decisions','business','change_work_package',"
+        "'quality_work_package','meeting_planning')",
+        name="action_allowed",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="request_digest"),
+    CheckConstraint(
+        "(action IN ('note','project_query') AND transcript_id IS NULL "
+        "AND expected_digest IS NULL AND expected_minutes_version IS NULL) "
+        "OR (action NOT IN ('note','project_query','change_work_package',"
+        "'quality_work_package','meeting_planning') "
+        "AND transcript_id IS NOT NULL "
+        "AND expected_digest IS NOT NULL AND expected_digest ~ '^[0-9a-f]{64}$' "
+        "AND ((action='minutes' AND expected_minutes_version IS NOT NULL "
+        "AND expected_minutes_version>=0) "
+        "OR (action<>'minutes' AND expected_minutes_version IS NULL)))"
+        " OR (action IN ('change_work_package','quality_work_package','meeting_planning') "
+        "AND transcript_id IS NULL "
+        "AND expected_minutes_version IS NULL AND expected_digest IS NOT NULL "
+        "AND expected_digest ~ '^[0-9a-f]{64}$')",
+        name="action_source",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        name="fk_conversation_message_ecr",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "((action='change_work_package' AND ecr_id IS NOT NULL AND impact_depth BETWEEN 1 AND 5) "
+        "OR (action<>'change_work_package' AND ecr_id IS NULL AND impact_depth IS NULL)) IS TRUE",
+        name="change_source",
+    ),
+    CheckConstraint(
+        "NOT allow_discussion OR action='change_work_package'", name="discussion_source"
+    ),
+    CheckConstraint(
+        "NOT include_supplier_notices OR action='change_work_package'",
+        name="notice_source",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ncr_id"],
+        [
+            f"{QUALITY_SCHEMA}.nonconformance_reports.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        name="fk_conversation_message_ncr",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "((action='quality_work_package' AND ncr_id IS NOT NULL "
+        "AND quality_selections IS NOT NULL AND jsonb_typeof(quality_selections)='array' "
+        "AND jsonb_array_length(quality_selections)<=50) OR (action<>'quality_work_package' "
+        "AND ncr_id IS NULL AND quality_selections IS NULL)) IS TRUE",
+        name="quality_source",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "meeting_planning_brief_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_planning_briefs.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        name="fk_conversation_meeting_planning_brief",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "((action='meeting_planning' AND meeting_planning_brief_id IS NOT NULL) "
+        "OR (action<>'meeting_planning' AND meeting_planning_brief_id IS NULL)) IS TRUE",
+        name="meeting_planning_source",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+conversation_attachments = Table(
+    "conversation_attachments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("uploaded_by_user_id", Uuid, nullable=False),
+    Column("filename", String(512), nullable=False),
+    Column("media_type", String(128), nullable=False),
+    Column("classification", String(32), nullable=False),
+    Column("size_bytes", BigInteger, nullable=False),
+    Column("sha256", String(64), nullable=False),
+    Column("object_key", String(1024), nullable=False),
+    Column("parser_version", String(64), nullable=False),
+    Column("status", String(32), nullable=False),
+    Column("error_code", String(64)),
+    Column("extraction_metadata", JSONB, nullable=False, server_default=text("'{}'::jsonb")),
+    CheckConstraint(
+        "jsonb_typeof(extraction_metadata)='object'", name="extraction_metadata_object"
+    ),
+    Column("fragments", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("revoked_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "conversation_id", "id", name="uq_conversation_attachment_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_conversation_attachment_request"
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "conversation_id",
+        "sha256",
+        "classification",
+        "parser_version",
+        name="uq_conversation_attachment_content",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id"],
+        [
+            f"{AI_SCHEMA}.conversations.tenant_id",
+            f"{AI_SCHEMA}.conversations.project_id",
+            f"{AI_SCHEMA}.conversations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "uploaded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "size_bytes BETWEEN 1 AND 20971520 AND sha256 ~ '^[0-9a-f]{64}$'", name="content_identity"
+    ),
+    CheckConstraint(
+        "classification IN ('internal','confidential','restricted')", name="classification"
+    ),
+    CheckConstraint(
+        "status IN ('awaiting_upload','uploaded','extracted','ocr_required','failed')",
+        name="status",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(fragments)='array' "
+        "AND ((status='extracted' AND jsonb_array_length(fragments)>0) "
+        "OR (status<>'extracted' AND fragments='[]'::jsonb))",
+        name="extraction",
+    ),
+    Index("ix_conversation_attachment_created", "tenant_id", "conversation_id", "created_at"),
+    schema=AI_SCHEMA,
+)
+
+
+intake_ai_briefs = Table(
+    "intake_ai_briefs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("message_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("previous_brief_id", Uuid),
+    Column("root_brief_id", Uuid, nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("source_version", String(64), nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "message_id", "id", name="uq_intake_ai_brief_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "message_id", "revision", name="uq_intake_ai_brief_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_intake_ai_brief_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id", "message_id"],
+        [
+            f"{AI_SCHEMA}.conversation_messages.tenant_id",
+            f"{AI_SCHEMA}.conversation_messages.project_id",
+            f"{AI_SCHEMA}.conversation_messages.conversation_id",
+            f"{AI_SCHEMA}.conversation_messages.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    *[
+        ForeignKeyConstraint(
+            ["tenant_id", "conversation_id", "message_id", column],
+            [
+                f"{AI_SCHEMA}.intake_ai_briefs.tenant_id",
+                f"{AI_SCHEMA}.intake_ai_briefs.conversation_id",
+                f"{AI_SCHEMA}.intake_ai_briefs.message_id",
+                f"{AI_SCHEMA}.intake_ai_briefs.id",
+            ],
+            name=f"fk_intake_ai_{column}",
+            ondelete="RESTRICT",
+        )
+        for column in ("previous_brief_id", "root_brief_id")
+    ],
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND source_version='intake-source-v1' "
+        "AND source_digest ~ '^[0-9a-f]{64}$' AND request_digest ~ '^[0-9a-f]{64}$' "
+        "AND length(btrim(purpose)) BETWEEN 1 AND 2000",
+        name="identity",
+    ),
+    CheckConstraint(
+        "(jsonb_typeof(source_snapshot)='object' "
+        "AND jsonb_typeof(source_snapshot->'sources')='object' "
+        "AND jsonb_typeof(source_snapshot->'fragments')='array' "
+        "AND jsonb_array_length(source_snapshot->'fragments') BETWEEN 1 AND 200 "
+        "AND (source_snapshot->>'characters')::int BETWEEN 1 AND 180000) IS TRUE",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+conversation_email_parts = Table(
+    "conversation_email_parts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("parent_attachment_id", Uuid, nullable=False),
+    Column("attachment_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("parent_sha256", String(64), nullable=False),
+    Column("part_path", String(128), nullable=False),
+    Column("parser_version", String(64), nullable=False),
+    Column("part_snapshot", JSONB, nullable=False),
+    Column("permission_basis", Text, nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_conversation_email_part_request"
+    ),
+    *[
+        ForeignKeyConstraint(
+            ["tenant_id", "project_id", "conversation_id", column],
+            [
+                f"{AI_SCHEMA}.conversation_attachments.tenant_id",
+                f"{AI_SCHEMA}.conversation_attachments.project_id",
+                f"{AI_SCHEMA}.conversation_attachments.conversation_id",
+                f"{AI_SCHEMA}.conversation_attachments.id",
+            ],
+            ondelete="RESTRICT",
+            name=f"fk_email_part_{column}",
+        )
+        for column in ("parent_attachment_id", "attachment_id")
+    ],
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "parent_attachment_id<>attachment_id AND "
+        "request_digest ~ '^[0-9a-f]{64}$' AND parent_sha256 ~ '^[0-9a-f]{64}$' "
+        r"AND part_path ~ '^1(\.[1-9][0-9]*)*$' "
+        "AND parser_version='email-attachments.v1'",
+        name="identity",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(part_snapshot)='object' AND "
+        "length(btrim(permission_basis)) BETWEEN 1 AND 2000 "
+        "AND length(btrim(purpose)) BETWEEN 1 AND 2000",
+        name="shape",
+    ),
+    Index("ix_email_part_parent", "tenant_id", "conversation_id", "parent_attachment_id", "id"),
+    Index("ix_email_part_child", "tenant_id", "conversation_id", "attachment_id", "id"),
+    schema=AI_SCHEMA,
+)
+
+
+conversation_attachment_requests = Table(
+    "conversation_attachment_requests",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, primary_key=True),
+    Column("request_id", Uuid, primary_key=True),
+    Column("attachment_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_attachments.tenant_id",
+            f"{AI_SCHEMA}.conversation_attachments.project_id",
+            f"{AI_SCHEMA}.conversation_attachments.conversation_id",
+            f"{AI_SCHEMA}.conversation_attachments.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest"),
+    schema=AI_SCHEMA,
+)
+
+conversation_message_attachments = Table(
+    "conversation_message_attachments",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("message_id", Uuid, primary_key=True),
+    Column("attachment_id", Uuid, primary_key=True),
+    Column("ordinal", Integer, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "message_id", "ordinal", name="uq_conversation_message_attachment_order"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id", "message_id"],
+        [
+            f"{AI_SCHEMA}.conversation_messages.tenant_id",
+            f"{AI_SCHEMA}.conversation_messages.project_id",
+            f"{AI_SCHEMA}.conversation_messages.conversation_id",
+            f"{AI_SCHEMA}.conversation_messages.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_attachments.tenant_id",
+            f"{AI_SCHEMA}.conversation_attachments.project_id",
+            f"{AI_SCHEMA}.conversation_attachments.conversation_id",
+            f"{AI_SCHEMA}.conversation_attachments.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("ordinal BETWEEN 1 AND 6", name="ordinal"),
+    schema=AI_SCHEMA,
+)
+
+
+decision_intake_previews = Table(
+    "decision_intake_previews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("message_id", Uuid, nullable=False),
+    Column("attachment_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("parser_version", String(64), nullable=False),
+    Column("permission_basis", Text, nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column("mapping", JSONB, nullable=False),
+    Column("rows", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_decision_intake_preview_tenant"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_decision_intake_preview_project"),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_decision_intake_preview_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id", "message_id"],
+        [
+            f"{AI_SCHEMA}.conversation_messages.{key}"
+            for key in ("tenant_id", "project_id", "conversation_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "message_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_message_attachments.{key}"
+            for key in ("tenant_id", "message_id", "attachment_id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest_valid"),
+    CheckConstraint(
+        "jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(mapping)='object' "
+        "AND jsonb_typeof(rows)='array' AND jsonb_array_length(rows) BETWEEN 1 AND 200",
+        name="preview_shape",
+    ),
+    CheckConstraint(
+        "btrim(permission_basis)<>'' AND btrim(purpose)<>'' "
+        "AND parser_version IN ('decision-list-extracted-v1', 'decision-pdf-extracted-v1', "
+        "'decision-email-extracted-v1', 'decision-ai-cited-v1')",
+        name="purpose_and_parser",
+    ),
+    Index("ix_decision_intake_message", "tenant_id", "conversation_id", "message_id", "created_at"),
+    schema=AI_SCHEMA,
+)
+
+
+issue_intake_previews = Table(
+    "issue_intake_previews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("message_id", Uuid, nullable=False),
+    Column("attachment_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("parser_version", String(64), nullable=False),
+    Column("permission_basis", Text, nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column("mapping", JSONB, nullable=False),
+    Column("rows", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_issue_intake_preview_tenant"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_issue_intake_preview_project"),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_issue_intake_preview_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id", "message_id"],
+        [
+            f"{AI_SCHEMA}.conversation_messages.{key}"
+            for key in ("tenant_id", "project_id", "conversation_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "message_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_message_attachments.{key}"
+            for key in ("tenant_id", "message_id", "attachment_id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest_valid"),
+    CheckConstraint(
+        "jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(mapping)='object' "
+        "AND jsonb_typeof(rows)='array' AND jsonb_array_length(rows) BETWEEN 1 AND 200",
+        name="preview_shape",
+    ),
+    CheckConstraint(
+        "btrim(permission_basis)<>'' AND btrim(purpose)<>'' "
+        "AND parser_version IN ('issue-list-extracted-v1', 'issue-pdf-extracted-v1', "
+        "'issue-email-extracted-v1', 'issue-ai-cited-v1')",
+        name="purpose_and_parser",
+    ),
+    Index("ix_issue_intake_message", "tenant_id", "conversation_id", "message_id", "created_at"),
+    schema=AI_SCHEMA,
+)
+
+
+Index(
+    "ix_issue_intake_ai_finding",
+    issue_intake_previews.c.tenant_id,
+    issue_intake_previews.c.mapping["finding_id"].astext,
+    postgresql_where=issue_intake_previews.c.parser_version == "issue-ai-cited-v1",
+)
+Index(
+    "ix_decision_intake_ai_finding",
+    decision_intake_previews.c.tenant_id,
+    decision_intake_previews.c.mapping["finding_id"].astext,
+    postgresql_where=decision_intake_previews.c.parser_version == "decision-ai-cited-v1",
+)
+
+
+decision_intake_batches = Table(
+    "decision_intake_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("preview_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("results", JSONB, nullable=False),
+    Column("review_note", Text, nullable=False),
+    CheckConstraint("btrim(review_note)<>''", name="review_note"),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "preview_id", "request_id", name="uq_decision_intake_batch_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "preview_id"],
+        [
+            f"{AI_SCHEMA}.decision_intake_previews.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest"),
+    CheckConstraint(
+        "jsonb_typeof(results)='array' AND jsonb_array_length(results) BETWEEN 1 AND 200",
+        name="results",
+    ),
+    schema=AI_SCHEMA,
+)
+
+decision_intake_rows = Table(
+    "decision_intake_rows",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("preview_id", Uuid, nullable=False),
+    Column("decision_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("source_sha256", String(64), nullable=False),
+    Column("locator", Text, nullable=False),
+    Column("input_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("created_snapshot", JSONB, nullable=False),
+    Column("review_note", Text, nullable=False),
+    Column("link_kind", String(16), nullable=False, server_default=text("'created'")),
+    Column("reuse_reason", Text),
+    Column("related_issue_id", Uuid),
+    Column("issue_snapshot", JSONB(none_as_null=True)),
+    Column("issue_reason", Text),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "related_issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_intake_related_issue",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(link_kind='created' AND reuse_reason IS NULL) OR "
+        "(link_kind='linked' AND reuse_reason IS NOT NULL AND btrim(reuse_reason)<>'')",
+        name="link_kind",
+    ),
+    CheckConstraint(
+        "(related_issue_id IS NULL AND issue_snapshot IS NULL AND issue_reason IS NULL) OR "
+        "(related_issue_id IS NOT NULL AND issue_snapshot IS NOT NULL "
+        "AND jsonb_typeof(issue_snapshot)='object' AND issue_reason IS NOT NULL "
+        "AND btrim(issue_reason)<>'')",
+        name="related_issue",
+    ),
+    Index("ix_decision_intake_related_issue", "tenant_id", "project_id", "related_issue_id"),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_decision_intake_row_project"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "source_sha256",
+        "locator",
+        name="uq_decision_intake_original_row",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "preview_id"],
+        [
+            f"{AI_SCHEMA}.decision_intake_previews.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [f"{PROJECT_SCHEMA}.documents.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_sha256 ~ '^[0-9a-f]{64}$' AND input_digest ~ '^[0-9a-f]{64}$'", name="digests"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(created_snapshot)='object'",
+        name="snapshots",
+    ),
+    CheckConstraint("btrim(locator)<>''", name="locator"),
+    CheckConstraint("btrim(review_note)<>''", name="review_note"),
+    Index("ix_decision_intake_decision", "tenant_id", "project_id", "decision_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+issue_intake_batches = Table(
+    "issue_intake_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("preview_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("results", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "preview_id", "request_id", name="uq_issue_intake_batch_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "preview_id"],
+        [f"{AI_SCHEMA}.issue_intake_previews.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest"),
+    CheckConstraint(
+        "jsonb_typeof(results)='array' AND jsonb_array_length(results) BETWEEN 1 AND 200",
+        name="results",
+    ),
+    schema=AI_SCHEMA,
+)
+
+issue_intake_rows = Table(
+    "issue_intake_rows",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("preview_id", Uuid, nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("document_id", Uuid, nullable=False),
+    Column("source_sha256", String(64), nullable=False),
+    Column("locator", Text, nullable=False),
+    Column("input_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("created_snapshot", JSONB, nullable=False),
+    Column("link_kind", String(16), nullable=False, server_default=text("'created'")),
+    Column("reuse_reason", Text),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_issue_intake_row_project"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "source_sha256", "locator", name="uq_issue_intake_original_row"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "preview_id"],
+        [f"{AI_SCHEMA}.issue_intake_previews.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "document_id"],
+        [f"{PROJECT_SCHEMA}.documents.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_sha256 ~ '^[0-9a-f]{64}$' AND input_digest ~ '^[0-9a-f]{64}$'", name="digests"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(created_snapshot)='object'",
+        name="snapshots",
+    ),
+    CheckConstraint("btrim(locator)<>''", name="locator"),
+    CheckConstraint(
+        "(link_kind='created' AND reuse_reason IS NULL) OR "
+        "(link_kind='linked' AND btrim(reuse_reason)<>'' AND reuse_reason IS NOT NULL)",
+        name="link_kind",
+    ),
+    Index("ix_issue_intake_issue", "tenant_id", "project_id", "issue_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+decision_intake_amendments = Table(
+    "decision_intake_amendments",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_row_id", Uuid, nullable=False),
+    Column("source_revision", Integer, nullable=False),
+    Column("previous_decision_id", Uuid, nullable=False),
+    Column("replacement_decision_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("impact_note", Text, nullable=False),
+    Column("changes", JSONB, nullable=False),
+    Column("before_snapshot", JSONB, nullable=False),
+    Column("after_snapshot", JSONB, nullable=False),
+    Column("evidence", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "source_row_id", "request_id", name="uq_decision_amendment_request"
+    ),
+    UniqueConstraint(
+        "tenant_id", "replacement_decision_id", name="uq_decision_amendment_replacement"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_row_id"],
+        [
+            f"{PROJECT_SCHEMA}.decision_intake_rows.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_row_id", "source_revision"],
+        [
+            f"{PROJECT_SCHEMA}.decision_intake_corrections.{key}"
+            for key in ("tenant_id", "source_row_id", "revision")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_amendment_previous",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "replacement_decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_amendment_replacement",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_revision>0 AND previous_decision_id<>replacement_decision_id", name="replacement"
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>'' AND btrim(impact_note)<>''",
+        name="reason",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(changes)='object' AND changes<>'{}'::jsonb "
+        "AND jsonb_typeof(before_snapshot)='object' AND jsonb_typeof(after_snapshot)='object'",
+        name="snapshots",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(evidence)='array' AND jsonb_array_length(evidence) BETWEEN 1 AND 10",
+        name="evidence",
+    ),
+    Index("ix_decision_amendment_history", "tenant_id", "source_row_id", "source_revision"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+decision_intake_corrections = Table(
+    "decision_intake_corrections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_row_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("previous_decision_id", Uuid),
+    Column("previous_issue_id", Uuid),
+    Column("target_decision_id", Uuid),
+    Column("target_issue_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("impact_note", Text, nullable=False),
+    Column("before_snapshot", JSONB, nullable=False),
+    Column("after_snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "source_row_id", "revision", name="uq_decision_intake_correction_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "source_row_id", "request_id", name="uq_decision_intake_correction_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_row_id"],
+        [
+            f"{PROJECT_SCHEMA}.decision_intake_rows.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_correction_previous_issue_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "target_issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_correction_target_issue_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_correction_previous_decision_id",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "target_decision_id"],
+        [f"{PROJECT_SCHEMA}.decisions.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_decision_correction_target_decision_id",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("revision>0 AND request_digest ~ '^[0-9a-f]{64}$'", name="revision_digest"),
+    CheckConstraint("btrim(reason)<>'' AND btrim(impact_note)<>''", name="reason"),
+    CheckConstraint(
+        "jsonb_typeof(before_snapshot)='object' AND jsonb_typeof(after_snapshot)='object'",
+        name="snapshots",
+    ),
+    CheckConstraint(
+        "(action='withdraw' AND target_decision_id IS NULL AND target_issue_id IS NULL "
+        "AND previous_decision_id IS NOT NULL) OR "
+        "(action='reassign' AND target_decision_id IS NOT NULL AND "
+        "(target_decision_id IS DISTINCT FROM previous_decision_id "
+        "OR target_issue_id IS DISTINCT FROM previous_issue_id))",
+        name="action",
+    ),
+    Index("ix_decision_intake_correction_target", "tenant_id", "project_id", "target_issue_id"),
+    Index("ix_decision_correction_decision", "tenant_id", "project_id", "target_decision_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+issue_intake_corrections = Table(
+    "issue_intake_corrections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_row_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("previous_issue_id", Uuid),
+    Column("target_issue_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("impact_note", Text, nullable=False),
+    Column("before_snapshot", JSONB, nullable=False),
+    Column("after_snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "source_row_id", "revision", name="uq_issue_intake_correction_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "source_row_id", "request_id", name="uq_issue_intake_correction_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_row_id"],
+        [f"{PROJECT_SCHEMA}.issue_intake_rows.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "previous_issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "target_issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        name="fk_issue_intake_correction_target",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("revision>0 AND request_digest ~ '^[0-9a-f]{64}$'", name="revision_digest"),
+    CheckConstraint("btrim(reason)<>'' AND btrim(impact_note)<>''", name="reason"),
+    CheckConstraint(
+        "jsonb_typeof(before_snapshot)='object' AND jsonb_typeof(after_snapshot)='object'",
+        name="snapshots",
+    ),
+    CheckConstraint(
+        "(action='withdraw' AND target_issue_id IS NULL AND previous_issue_id IS NOT NULL) OR "
+        "(action='reassign' AND target_issue_id IS NOT NULL "
+        "AND target_issue_id IS DISTINCT FROM previous_issue_id)",
+        name="action",
+    ),
+    Index("ix_issue_intake_correction_target", "tenant_id", "project_id", "target_issue_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+issue_intake_correction_batches = Table(
+    "issue_intake_correction_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("results", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "request_id", name="uq_issue_correction_batch_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>''", name="request"),
+    CheckConstraint(
+        "jsonb_typeof(results)='array' AND jsonb_array_length(results) BETWEEN 1 AND 50",
+        name="results",
+    ),
+    Index("ix_issue_correction_batch_history", "tenant_id", "project_id", "created_at", "id"),
+    Index("ix_issue_correction_batch_sources", "results", postgresql_using="gin"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+issue_intake_compensation_batches = Table(
+    "issue_intake_compensation_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("request_snapshot", JSONB, nullable=False),
+    Column("results", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_issue_compensation_batch_project"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "request_id", name="uq_issue_compensation_batch_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND jsonb_typeof(request_snapshot)='object'",
+        name="request",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(results)='array' AND jsonb_array_length(results) BETWEEN 1 AND 50",
+        name="results",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+issue_intake_compensations = Table(
+    "issue_intake_compensations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("batch_id", Uuid, nullable=False),
+    Column("source_row_id", Uuid, nullable=False),
+    Column("source_revision", Integer, nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("assignment_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_issue_compensation_project"),
+    UniqueConstraint(
+        "tenant_id",
+        "source_row_id",
+        "source_revision",
+        "issue_id",
+        name="uq_issue_compensation_scope",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "batch_id"],
+        [
+            f"{PROJECT_SCHEMA}.issue_intake_compensation_batches.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+        deferrable=True,
+        initially="DEFERRED",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "source_row_id"],
+        [f"{PROJECT_SCHEMA}.issue_intake_rows.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_row_id", "source_revision"],
+        [
+            f"{PROJECT_SCHEMA}.issue_intake_corrections.{key}"
+            for key in ("tenant_id", "source_row_id", "revision")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [f"{PROJECT_SCHEMA}.tasks.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_revision>0 AND assignment_digest ~ '^[0-9a-f]{64}$'", name="version_digest"
+    ),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="snapshot"),
+    Index("ix_issue_compensation_task", "tenant_id", "project_id", "task_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+issue_intake_compensation_results = Table(
+    "issue_intake_compensation_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("binding_id", Uuid, nullable=False),
+    Column("source_row_id", Uuid, nullable=False),
+    Column("source_revision", Integer, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("summary", Text, nullable=False),
+    Column("criteria_response", Text, nullable=False),
+    Column("remaining", Text, nullable=False),
+    Column("before_snapshot", JSONB, nullable=False),
+    Column("after_snapshot", JSONB, nullable=False),
+    Column("context_snapshot", JSONB, nullable=False),
+    Column("evidence_snapshot", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "binding_id", "revision", name="uq_issue_compensation_result_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "binding_id", "request_id", name="uq_issue_compensation_result_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "binding_id"],
+        [
+            f"{PROJECT_SCHEMA}.issue_intake_compensations.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_row_id", "source_revision"],
+        [
+            f"{PROJECT_SCHEMA}.issue_intake_corrections.{key}"
+            for key in ("tenant_id", "source_row_id", "revision")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND source_revision>0 AND request_digest ~ '^[0-9a-f]{64}$'",
+        name="version_digest",
+    ),
+    CheckConstraint(
+        "outcome IN ('recorded','issue_corrected','no_change_needed','needs_follow_up')",
+        name="outcome",
+    ),
+    CheckConstraint(
+        "btrim(summary)<>'' AND btrim(criteria_response)<>'' AND btrim(remaining)<>''", name="notes"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(before_snapshot)='object' AND jsonb_typeof(after_snapshot)='object' "
+        "AND jsonb_typeof(context_snapshot)='object' AND jsonb_typeof(evidence_snapshot)='array'",
+        name="snapshots",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+conversation_report_imports = Table(
+    "conversation_report_imports",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("conversation_id", Uuid, nullable=False),
+    Column("message_id", Uuid, nullable=False),
+    Column("attachment_id", Uuid, nullable=False),
+    Column("plan_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_sha256", String(64), nullable=False),
+    Column("mapping_request_id", String(128), nullable=False),
+    Column("run_id", Uuid),
+    Column("batch_id", Uuid),
+    Column("reused_existing", Boolean),
+    Column("error_code", String(64)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "request_id", name="uq_conversation_import_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "message_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_message_attachments.tenant_id",
+            f"{AI_SCHEMA}.conversation_message_attachments.message_id",
+            f"{AI_SCHEMA}.conversation_message_attachments.attachment_id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "conversation_id"],
+        [
+            f"{AI_SCHEMA}.conversations.tenant_id",
+            f"{AI_SCHEMA}.conversations.project_id",
+            f"{AI_SCHEMA}.conversations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "plan_id"],
+        [f"{QUALITY_SCHEMA}.test_plans.tenant_id", f"{QUALITY_SCHEMA}.test_plans.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "batch_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_report_import_batches.tenant_id",
+            f"{QUALITY_SCHEMA}.test_report_import_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$' AND source_sha256 ~ '^[0-9a-f]{64}$'", name="digests"
+    ),
+    Index(
+        "ix_conversation_import_message", "tenant_id", "conversation_id", "message_id", "created_at"
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+test_execution_preparations = Table(
+    "test_execution_preparations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("test_case_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("revision_number", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "project_id", "test_case_id", "id", name="uq_test_preparation_case_scope"
+    ),
+    UniqueConstraint(
+        "tenant_id", "test_case_id", "revision_number", name="uq_test_preparation_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_test_preparation_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_case_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_cases.tenant_id",
+            f"{QUALITY_SCHEMA}.test_cases.project_id",
+            f"{QUALITY_SCHEMA}.test_cases.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number > 0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="test_preparation_shape",
+    ),
+    Index("ix_test_preparation_task", "tenant_id", "project_id", "task_id"),
+    schema=QUALITY_SCHEMA,
+)
+test_runs.append_column(Column("test_preparation_id", Uuid))
+test_runs.append_constraint(
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_case_id", "test_preparation_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_execution_preparations.tenant_id",
+            f"{QUALITY_SCHEMA}.test_execution_preparations.project_id",
+            f"{QUALITY_SCHEMA}.test_execution_preparations.test_case_id",
+            f"{QUALITY_SCHEMA}.test_execution_preparations.id",
+        ],
+        name="fk_test_runs_execution_preparation",
+        ondelete="RESTRICT",
+    )
+)
+
+
+fw_releases.append_constraint(
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_fw_release_project_scope")
+)
+firmware_work_packages = Table(
+    "firmware_work_packages",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("fw_release_id", Uuid, nullable=False),
+    Column("revision_number", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "fw_release_id", "revision_number", name="uq_firmware_package_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_firmware_package_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "fw_release_id"],
+        [
+            f"{PRODUCT_SCHEMA}.fw_releases.tenant_id",
+            f"{PRODUCT_SCHEMA}.fw_releases.project_id",
+            f"{PRODUCT_SCHEMA}.fw_releases.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number > 0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(snapshot)='object' "
+        "AND jsonb_typeof(snapshot->'sources')='array'",
+        name="firmware_package_shape",
+    ),
+    Index("ix_firmware_package_project", "tenant_id", "project_id", "created_at", "id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+firmware_work_packages.append_constraint(
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_firmware_package_project_scope")
+)
+firmware_package_tasks = Table(
+    "firmware_package_tasks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("package_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "package_id", "task_id", name="uq_firmware_package_task"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_firmware_task_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "package_id"],
+        [
+            f"{PRODUCT_SCHEMA}.firmware_work_packages.tenant_id",
+            f"{PRODUCT_SCHEMA}.firmware_work_packages.project_id",
+            f"{PRODUCT_SCHEMA}.firmware_work_packages.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(snapshot)='object'",
+        name="firmware_task_shape",
+    ),
+    Index("ix_firmware_package_task_scope", "tenant_id", "project_id", "task_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+firmware_package_tasks.append_constraint(
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_firmware_task_binding_scope")
+)
+firmware_task_results = Table(
+    "firmware_task_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("binding_id", Uuid, nullable=False),
+    Column("revision_number", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint(
+        "tenant_id", "binding_id", "revision_number", name="uq_firmware_task_result_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_firmware_task_result_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "binding_id"],
+        [
+            f"{PRODUCT_SCHEMA}.firmware_package_tasks.tenant_id",
+            f"{PRODUCT_SCHEMA}.firmware_package_tasks.project_id",
+            f"{PRODUCT_SCHEMA}.firmware_package_tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number > 0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="firmware_result_shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+engineering_review_packages = Table(
+    "engineering_review_packages",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("root_id", Uuid, nullable=False),
+    Column("parent_id", Uuid),
+    Column("revision_number", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_engineering_review_scope"),
+    UniqueConstraint(
+        "tenant_id", "root_id", "revision_number", name="uq_engineering_review_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_engineering_review_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "root_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.id",
+        ],
+        name="fk_engineering_review_root",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "parent_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.id",
+        ],
+        name="fk_engineering_review_parent",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number > 0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="engineering_review_shape",
+    ),
+    Index("ix_engineering_review_project", "tenant_id", "project_id", "created_at", "id"),
+    schema=PRODUCT_SCHEMA,
+)
+engineering_review_tasks = Table(
+    "engineering_review_tasks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("package_id", Uuid, nullable=False),
+    Column("line_key", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    UniqueConstraint("tenant_id", "package_id", "line_key", name="uq_engineering_review_task_line"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "package_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_review_packages.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Index("ix_engineering_review_task", "tenant_id", "project_id", "task_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+professional_change_routes = Table(
+    "professional_change_routes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("source_kind", String(32), nullable=False),
+    Column("source_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "source_kind", "source_id", name="uq_professional_change_source"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_professional_change_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "source_kind IN ('engineering_review','firmware_package','cost_alternative') "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(snapshot)='object' "
+        "AND btrim(reason)<>''",
+        name="professional_change_shape",
+    ),
+    Index("ix_professional_change_ecr", "tenant_id", "project_id", "ecr_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+change_impact_scope_versions = Table(
+    "change_impact_scope_versions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("revision_number", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "ecr_id",
+        "revision_number",
+        name="uq_change_impact_scope_revision",
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_change_impact_scope_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number > 0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND btrim(reason)<>'' AND jsonb_typeof(snapshot)='object'",
+        name="change_impact_scope_shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+change_execution_batches = Table(
+    "change_execution_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column(
+        "scope_version_id",
+        Uuid,
+        ForeignKey(f"{PRODUCT_SCHEMA}.change_impact_scope_versions.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_change_execution_batch_scope"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_change_execution_batch_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.tenant_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.project_id",
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND btrim(reason)<>'' "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="change_execution_batch_shape",
+    ),
+    Index("ix_change_execution_batch_ecr", "tenant_id", "project_id", "ecr_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+change_execution_tasks = Table(
+    "change_execution_tasks",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column(
+        "scope_version_id",
+        Uuid,
+        ForeignKey(f"{PRODUCT_SCHEMA}.change_impact_scope_versions.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("batch_id", Uuid, nullable=False),
+    Column("item_key", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "scope_version_id", "item_key", name="uq_change_execution_scope_item"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "batch_id"],
+        [
+            f"{PRODUCT_SCHEMA}.change_execution_batches.tenant_id",
+            f"{PRODUCT_SCHEMA}.change_execution_batches.project_id",
+            f"{PRODUCT_SCHEMA}.change_execution_batches.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(snapshot)='object'", name="change_execution_task_shape"),
+    Index("ix_change_execution_task_ecr", "tenant_id", "project_id", "ecr_id"),
+    Index("ix_change_execution_task_origin", "tenant_id", "project_id", "task_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+change_execution_results = Table(
+    "change_execution_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column(
+        "binding_id",
+        Uuid,
+        ForeignKey(f"{PRODUCT_SCHEMA}.change_execution_tasks.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("revision_number", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("reviewer_user_id", Uuid),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "binding_id", "revision_number", name="uq_change_execution_result_revision"
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_change_execution_result_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_change_execution_result_reviewer",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision_number>0 AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND outcome IN ('recorded','needs_follow_up','ready_for_confirmation') "
+        "AND jsonb_typeof(snapshot)='object'",
+        name="change_execution_result_shape",
+    ),
+    CheckConstraint(
+        "outcome<>'ready_for_confirmation' OR (reviewer_user_id IS NOT NULL "
+        "AND reviewer_user_id<>created_by_user_id)",
+        name="change_execution_result_reviewer",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+change_execution_confirmations = Table(
+    "change_execution_confirmations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column(
+        "result_id",
+        Uuid,
+        ForeignKey(f"{PRODUCT_SCHEMA}.change_execution_results.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("outcome", String(16), nullable=False),
+    Column("note", Text, nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "result_id", name="uq_change_execution_result_confirmation"),
+    UniqueConstraint(
+        "tenant_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_change_execution_confirmation_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND outcome IN ('verified','returned') "
+        "AND btrim(note)<>'' AND jsonb_typeof(snapshot)='object'",
+        name="change_execution_confirmation_shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+change_execution_followups = Table(
+    "change_execution_followups",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column(
+        "binding_id",
+        Uuid,
+        ForeignKey(f"{PRODUCT_SCHEMA}.change_execution_tasks.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column(
+        "source_result_id",
+        Uuid,
+        ForeignKey(f"{PRODUCT_SCHEMA}.change_execution_results.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("task_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "binding_id", "task_id", name="uq_change_followup_task"),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_change_followup_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(snapshot)='object'",
+        name="change_followup_shape",
+    ),
+    Index("ix_change_followup_binding", "tenant_id", "project_id", "binding_id"),
+    Index("ix_change_followup_task", "tenant_id", "project_id", "task_id"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+debate_run_bindings = Table(
+    "debate_run_bindings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("session_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid),
+    Column("parent_run_id", Uuid),
+    Column("origin_run_id", Uuid),
+    Column("origin_checkpoint_id", Uuid),
+    Column(
+        "topic_kind",
+        String(32),
+        nullable=False,
+        server_default=text("'engineering_change_request'"),
+    ),
+    Column("source", JSONB, nullable=False),
+    Column("config", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "run_id", name="uq_debate_binding_run"),
+    UniqueConstraint("tenant_id", "session_id", name="uq_debate_binding_session"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.debate_sessions.tenant_id", f"{AI_SCHEMA}.debate_sessions.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(topic_kind='engineering_change_request' AND ecr_id IS NOT NULL) OR "
+        "(topic_kind='project' AND ecr_id IS NULL)",
+        name="topic_scope",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "parent_run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        name="fk_debate_binding_parent",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("parent_run_id IS NULL OR parent_run_id <> run_id", name="parent_not_self"),
+    UniqueConstraint("tenant_id", "origin_run_id", "origin_checkpoint_id", name="uq_debate_origin"),
+    ForeignKeyConstraint(
+        ["tenant_id", "origin_run_id", "origin_checkpoint_id"],
+        [f"{AI_SCHEMA}.application_result_checkpoints.{k}" for k in ("tenant_id", "run_id", "id")],
+        name="fk_debate_origin_checkpoint",
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(origin_run_id IS NULL AND origin_checkpoint_id IS NULL) OR "
+        "(origin_run_id IS NOT NULL AND origin_checkpoint_id IS NOT NULL "
+        "AND origin_run_id<>run_id AND parent_run_id IS NULL)",
+        name="origin_shape",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(source)='object' AND jsonb_typeof(config)='object'", name="shape"
+    ),
+    schema=AI_SCHEMA,
+)
+
+debate_research_inputs = Table(
+    "debate_research_inputs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("session_id", Uuid, nullable=False),
+    Column("snapshot_id", Uuid, nullable=False),
+    Column("turn_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request", JSONB, nullable=False),
+    Column("reference", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "run_id", "actor_user_id", "request_id", name="uq_discussion_research_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.debate_sessions.tenant_id", f"{AI_SCHEMA}.debate_sessions.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "turn_id"],
+        [f"{AI_SCHEMA}.debate_turns.tenant_id", f"{AI_SCHEMA}.debate_turns.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(request)='object' AND jsonb_typeof(reference)='object'", name="shape"
+    ),
+    schema=AI_SCHEMA,
+)
+
+debate_initiations = Table(
+    "debate_initiations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("session_id", Uuid, nullable=False),
+    Column("checkpoint_id", Uuid, nullable=False),
+    Column("output", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "run_id", name="uq_debate_initiation_run"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "session_id"],
+        [f"{AI_SCHEMA}.debate_sessions.tenant_id", f"{AI_SCHEMA}.debate_sessions.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "checkpoint_id"],
+        [
+            f"{AI_SCHEMA}.application_result_checkpoints.tenant_id",
+            f"{AI_SCHEMA}.application_result_checkpoints.run_id",
+            f"{AI_SCHEMA}.application_result_checkpoints.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(output)='object' AND output->>'action' "
+        "IN ('convene','not_needed','insufficient_evidence')",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+debate_turn_receipts = Table(
+    "debate_turn_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("session_id", Uuid, nullable=False),
+    Column("seat_id", Uuid, nullable=False),
+    Column("round_number", Integer, nullable=False),
+    Column("turn_id", Uuid, nullable=False),
+    Column("checkpoint_id", Uuid, nullable=False),
+    Column("output", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "session_id", "seat_id", "round_number", name="uq_debate_turn_receipt_step"
+    ),
+    UniqueConstraint("turn_id", name="uq_debate_turn_receipt_turn"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "checkpoint_id"],
+        [f"{AI_SCHEMA}.application_result_checkpoints.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "seat_id"],
+        [f"{AI_SCHEMA}.debate_seats.tenant_id", f"{AI_SCHEMA}.debate_seats.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "turn_id"],
+        [f"{AI_SCHEMA}.debate_turns.tenant_id", f"{AI_SCHEMA}.debate_turns.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("round_number BETWEEN 1 AND 3 AND jsonb_typeof(output)='object'", name="shape"),
+    schema=AI_SCHEMA,
+)
+
+debate_resume_requests = Table(
+    "debate_resume_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("previous_lease_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "run_id", "id", name="uq_debate_resume_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id", "previous_lease_id"],
+        [f"{AI_SCHEMA}.application_run_leases.{k}" for k in ("tenant_id", "run_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(body)='object' AND jsonb_typeof(body->'remaining_calls')='array'",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+debate_brief_reviews = Table(
+    "debate_brief_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("brief_digest", String(64), nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "created_by_user_id", "request_id", name="uq_debate_brief_review_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(snapshot)='object' AND jsonb_typeof(body)='object' AND "
+        "body->>'outcome' IN ('validated','rejected') AND "
+        "brief_digest ~ '^[a-f0-9]{64}$' AND source_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+change_discussion_inputs = Table(
+    "change_discussion_inputs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("origin_run_id", Uuid, nullable=False),
+    Column("discussion_run_id", Uuid, nullable=False),
+    Column("brief_digest", String(64), nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "run_id", name="uq_change_discussion_input_run"),
+    UniqueConstraint("tenant_id", "origin_run_id", name="uq_change_discussion_input_origin"),
+    UniqueConstraint("tenant_id", "discussion_run_id", name="uq_change_discussion_input_source"),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        name="fk_change_discussion_input_run",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "origin_run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        name="fk_change_discussion_input_origin",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "discussion_run_id"],
+        [f"{AI_SCHEMA}.debate_run_bindings.tenant_id", f"{AI_SCHEMA}.debate_run_bindings.run_id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "run_id<>origin_run_id AND run_id<>discussion_run_id AND "
+        "origin_run_id<>discussion_run_id AND brief_digest ~ '^[a-f0-9]{64}$' AND "
+        "jsonb_typeof(body)='object' AND body->>'complete'='true'",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+change_quiet_origins = Table(
+    "change_quiet_origins",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("policy_id", Uuid),
+    Column("checked_at", DateTime(timezone=True), nullable=False),
+    Column("requirements", json_type, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "ecr_id", name="uq_quiet_origin_ecr"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "policy_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_policies.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(requirements)='array'", name="shape"),
+    schema=PRODUCT_SCHEMA,
+)
+
+change_quiet_adoptions = Table(
+    "change_quiet_adoptions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("old_policy_id", Uuid, nullable=False),
+    Column("new_policy_id", Uuid, nullable=False),
+    Column("new_policy_version", Integer, nullable=False),
+    Column("window_key", String(8), nullable=False),
+    Column("old_window", json_type, nullable=False),
+    Column("new_window", json_type, nullable=False),
+    Column("analysis_snapshot", json_type),
+    Column("body", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "ecr_id",
+        "old_policy_id",
+        "window_key",
+        name="uq_quiet_adoption_source",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_quiet_adoption_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "old_policy_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_policies.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+        name="fk_quiet_adoption_old_policy",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "new_policy_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_policies.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+        name="fk_quiet_adoption_new_policy",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "window_key IN ('pvt','mp') AND old_policy_id<>new_policy_id "
+        "AND new_policy_version>0 AND jsonb_typeof(body)='object' "
+        "AND jsonb_typeof(old_window)='object' AND jsonb_typeof(new_window)='object'",
+        name="shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+change_quiet_policies = Table(
+    "change_quiet_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("body", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_change_quiet_policies_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_change_quiet_policies_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("version", Integer, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "version", name="uq_change_quiet_policy_version"),
+    CheckConstraint("version>0 AND jsonb_typeof(body)='object'", name="shape"),
+    schema=PRODUCT_SCHEMA,
+)
+
+change_quiet_requests = Table(
+    "change_quiet_requests",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("body", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_change_quiet_requests_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_change_quiet_requests_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("ecr_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("window_key", String(8), nullable=False),
+    Column("window", json_type, nullable=False),
+    Column("analysis_snapshot", json_type, nullable=False),
+    Column("analysis_digest", String(64), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ecr_id"],
+        [
+            f"{PRODUCT_SCHEMA}.engineering_change_requests.{k}"
+            for k in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "policy_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_policies.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "ecr_id",
+        "analysis_digest",
+        "policy_id",
+        "window_key",
+        name="uq_change_quiet_request_analysis",
+    ),
+    CheckConstraint(
+        "window_key IN ('pvt','mp') AND analysis_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(analysis_snapshot)='object'",
+        name="shape",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+change_quiet_votes = Table(
+    "change_quiet_votes",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("body", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_change_quiet_votes_scope"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_change_quiet_votes_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("exception_id", Uuid, nullable=False),
+    Column("step", Integer, nullable=False),
+    Column("chain_revision", Integer, nullable=False, server_default=text("0")),
+    Column("outcome", String(12), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "exception_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_requests.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "exception_id", "chain_revision", "step", name="uq_change_quiet_vote_step"
+    ),
+    CheckConstraint(
+        "chain_revision>=0 AND step>0 AND outcome IN ('approved','rejected')", name="shape"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+change_quiet_policy_anchors = Table(
+    "change_quiet_policy_anchors",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("window_key", String(8), nullable=False),
+    Column("baseline_id", Uuid, nullable=False),
+    Column("node_id", Uuid, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "project_id", "policy_id", "window_key", name="uq_quiet_policy_anchor"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "policy_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_policies.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "baseline_id"],
+        [f"{PROJECT_SCHEMA}.schedule_time_records.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "node_id"],
+        [f"{PROJECT_SCHEMA}.schedule_nodes.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "window_key IN ('pvt','mp') AND source_digest ~ '^[a-f0-9]{64}$'", name="shape"
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+change_quiet_replacements = Table(
+    "change_quiet_replacements",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("exception_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("body", json_type, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "exception_id", "revision", name="uq_quiet_replacement_revision"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "created_by_user_id",
+        "request_id",
+        name="uq_quiet_replacement_request",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "exception_id"],
+        [f"{PRODUCT_SCHEMA}.change_quiet_requests.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{k}" for k in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("revision>0 AND jsonb_typeof(body)='object'", name="shape"),
+    schema=PRODUCT_SCHEMA,
+)
+
+
+field_captures = Table(
+    "field_captures",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("original_text", Text, nullable=False),
+    Column("filename", String(512)),
+    Column("media_type", String(128)),
+    Column("size_bytes", BigInteger),
+    Column("sha256", String(64)),
+    Column("object_key", String(1024)),
+    Column("request_digest", String(64), nullable=False),
+    Column("uploaded_at", DateTime(timezone=True)),
+    Column("issue_id", Uuid),
+    Column("test_run_id", Uuid),
+    Column("review", JSONB),
+    Column("submitted_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [
+            f"{PROJECT_SCHEMA}.issues.tenant_id",
+            f"{PROJECT_SCHEMA}.issues.project_id",
+            f"{PROJECT_SCHEMA}.issues.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_field_capture_scope"),
+    UniqueConstraint("tenant_id", "issue_id", name="uq_field_capture_issue"),
+    UniqueConstraint("tenant_id", "test_run_id", name="uq_field_capture_test"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "test_run_id"],
+        [
+            f"{QUALITY_SCHEMA}.test_runs.tenant_id",
+            f"{QUALITY_SCHEMA}.test_runs.project_id",
+            f"{QUALITY_SCHEMA}.test_runs.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "length(original_text)<=20000 AND (length(btrim(original_text))>0 OR filename IS NOT NULL)",
+        name="input",
+    ),
+    CheckConstraint(
+        "(filename IS NULL AND media_type IS NULL AND size_bytes IS NULL AND sha256 IS NULL "
+        "AND object_key IS NULL AND uploaded_at IS NULL) OR (filename IS NOT NULL AND "
+        "media_type IS NOT NULL AND size_bytes IS NOT NULL AND size_bytes BETWEEN 1 AND "
+        "12582912 AND sha256 IS NOT NULL AND sha256 ~ '^[a-f0-9]{64}$' AND object_key IS "
+        "NOT NULL)",
+        name="file",
+    ),
+    CheckConstraint(
+        "(issue_id IS NULL AND test_run_id IS NULL AND review IS NULL AND submitted_at IS NULL) OR "
+        "(num_nonnulls(issue_id,test_run_id)=1 AND review IS NOT NULL AND "
+        "jsonb_typeof(review)='object' AND submitted_at IS NOT NULL AND "
+        "(filename IS NULL OR uploaded_at IS NOT NULL))",
+        name="review",
+    ),
+    Index("ix_field_capture_owner", "tenant_id", "project_id", "created_by_user_id", "created_at"),
+    schema=QUALITY_SCHEMA,
+)
+
+
+field_capture_drafts = Table(
+    "field_capture_drafts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("capture_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("body", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "capture_id", "version", name="uq_field_capture_draft_version"),
+    UniqueConstraint(
+        "tenant_id", "capture_id", "request_id", name="uq_field_capture_draft_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "capture_id"],
+        [
+            f"{QUALITY_SCHEMA}.field_captures.tenant_id",
+            f"{QUALITY_SCHEMA}.field_captures.project_id",
+            f"{QUALITY_SCHEMA}.field_captures.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND jsonb_typeof(body)='object' AND body->>'kind' IN ('issue','test')",
+        name="body",
+    ),
+    schema=QUALITY_SCHEMA,
+)
+
+
+field_capture_recognitions = Table(
+    "field_capture_recognitions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("capture_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column("kind", String(16), nullable=False),
+    Column("language", String(16), nullable=False),
+    Column("source_sha256", String(64), nullable=False),
+    Column("profile", JSONB, nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("result", JSONB),
+    Column("error_code", String(64)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("started_at", DateTime(timezone=True)),
+    Column("completed_at", DateTime(timezone=True)),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "capture_id"],
+        [
+            f"{QUALITY_SCHEMA}.field_captures.tenant_id",
+            f"{QUALITY_SCHEMA}.field_captures.project_id",
+            f"{QUALITY_SCHEMA}.field_captures.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "kind IN ('ocr','speech') AND language IN ('zh','en','auto') AND "
+        "jsonb_typeof(profile)='object' AND source_sha256 ~ '^[a-f0-9]{64}$'",
+        name="input",
+    ),
+    CheckConstraint(
+        "(status IN ('queued','running') AND completed_at IS NULL AND result IS NULL "
+        "AND error_code IS NULL) OR (status='succeeded' AND completed_at IS NOT NULL "
+        "AND result IS NOT NULL AND jsonb_typeof(result)='object' AND error_code IS NULL) "
+        "OR (status IN ('failed','cancelled') AND completed_at IS NOT NULL "
+        "AND result IS NULL AND error_code IS NOT NULL)",
+        name="state",
+    ),
+    Index(
+        "ix_capture_recognition_active",
+        "tenant_id",
+        "capture_id",
+        unique=True,
+        postgresql_where=text("status IN ('queued','running')"),
+    ),
+    Index("ix_capture_recognition_queue", "status", "created_at"),
+    schema=QUALITY_SCHEMA,
+)
+
+
+process_template_briefs = Table(
+    "process_template_briefs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("template_id", String(128), nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("base_template_id", String(128), nullable=False),
+    Column("base_version", Integer, nullable=False),
+    Column("base_digest", String(64), nullable=False),
+    Column("base_release_id", Uuid),
+    Column("previous_brief_id", Uuid),
+    Column("instruction", Text, nullable=False),
+    Column("acceptance_criteria", Text, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "template_id", "id", name="uq_process_brief_scope"),
+    UniqueConstraint("tenant_id", "request_id", name="uq_process_brief_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "template_id", "previous_brief_id"],
+        [
+            f"{CORE_SCHEMA}.process_template_briefs.{key}"
+            for key in ("tenant_id", "template_id", "id")
+        ],
+        ondelete="RESTRICT",
+        name="fk_process_brief_parent",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "template_id", "base_release_id"],
+        [
+            f"{CORE_SCHEMA}.process_template_releases.{key}"
+            for key in ("tenant_id", "template_id", "id")
+        ],
+        ondelete="RESTRICT",
+        name="fk_process_brief_release",
+    ),
+    CheckConstraint(
+        "base_version>0 AND template_id ~ '^org-[a-z0-9-]+$' "
+        "AND length(btrim(instruction)) BETWEEN 1 AND 16000 "
+        "AND length(btrim(acceptance_criteria)) BETWEEN 1 AND 8000 "
+        "AND jsonb_typeof(source_snapshot)='object' AND source_digest ~ '^[a-f0-9]{64}$' "
+        "AND id IS DISTINCT FROM previous_brief_id",
+        name="input",
+    ),
+    Index("ix_process_brief_recent", "tenant_id", "created_at", "id"),
+    schema=CORE_SCHEMA,
+)
+
+process_template_revisions = Table(
+    "process_template_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("template_id", String(128), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("base_template_id", String(128), nullable=False),
+    Column("base_version", Integer, nullable=False),
+    Column("base_digest", String(64), nullable=False),
+    Column("base_release_id", Uuid),
+    Column("base_snapshot", JSONB, nullable=False),
+    Column("snapshot", JSONB, nullable=False),
+    Column("digest", String(64), nullable=False),
+    Column("configuration", JSONB, nullable=False),
+    Column("difference", JSONB, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "template_id", "version", name="uq_process_template_version"),
+    UniqueConstraint("tenant_id", "request_id", name="uq_process_template_request"),
+    UniqueConstraint("tenant_id", "template_id", "id", name="uq_process_template_scope"),
+    Column("source_brief_id", Uuid),
+    Column("source_finding_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+        name="fk_process_revision_finding",
+    ),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_process_revision_finding"),
+    ForeignKeyConstraint(
+        ["tenant_id", "template_id", "source_brief_id"],
+        [
+            f"{CORE_SCHEMA}.process_template_briefs.{key}"
+            for key in ("tenant_id", "template_id", "id")
+        ],
+        ondelete="RESTRICT",
+        name="fk_process_revision_brief",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version>0 AND base_version>0 AND template_id ~ '^org-[a-z0-9-]+$' AND "
+        "length(btrim(reason))>0 AND jsonb_typeof(snapshot)='object' AND "
+        "jsonb_typeof(base_snapshot)='object' AND jsonb_typeof(configuration)='object'",
+        name="input",
+    ),
+    schema=CORE_SCHEMA,
+)
+
+process_template_releases = Table(
+    "process_template_releases",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("template_id", String(128), nullable=False),
+    Column("revision_id", Uuid, nullable=False),
+    Column("sequence", Integer, nullable=False),
+    Column("previous_release_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("preview", JSONB, nullable=False),
+    Column("preview_digest", String(64), nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "template_id", "sequence", name="uq_process_release_sequence"),
+    UniqueConstraint("tenant_id", "request_id", name="uq_process_release_request"),
+    UniqueConstraint("tenant_id", "template_id", "id", name="uq_process_release_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "template_id", "revision_id"],
+        [
+            f"{CORE_SCHEMA}.process_template_revisions.tenant_id",
+            f"{CORE_SCHEMA}.process_template_revisions.template_id",
+            f"{CORE_SCHEMA}.process_template_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "template_id", "previous_release_id"],
+        [
+            f"{CORE_SCHEMA}.process_template_releases.tenant_id",
+            f"{CORE_SCHEMA}.process_template_releases.template_id",
+            f"{CORE_SCHEMA}.process_template_releases.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "sequence>0 AND action IN ('publish','rollback') AND length(btrim(reason))>0 "
+        "AND jsonb_typeof(preview)='object'",
+        name="input",
+    ),
+    schema=CORE_SCHEMA,
+)
+
+
+project_intake_proposals = Table(
+    "project_intake_proposals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_project_intake_proposals_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("revision", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("purpose", Text, nullable=False),
+    Column("draft", JSONB, nullable=False),
+    Column("sources", JSONB, nullable=False),
+    Column("project_snapshot", JSONB, nullable=False),
+    Column("gaps", JSONB, nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "revision", name="uq_project_intake_revision"),
+    UniqueConstraint("tenant_id", "project_id", "request_id", name="uq_project_intake_request"),
+    CheckConstraint(
+        "revision>0 AND btrim(purpose)<>'' AND request_digest ~ '^[0-9a-f]{64}$'", name="identity"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(draft)='object' AND jsonb_typeof(sources)='array' "
+        "AND jsonb_array_length(sources)<=30 AND jsonb_typeof(project_snapshot)='object' "
+        "AND jsonb_typeof(gaps)='object'",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+project_intake_work = Table(
+    "project_intake_work",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_project_intake_work_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("proposal_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "proposal_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_intake_proposals.tenant_id",
+            f"{PROJECT_SCHEMA}.project_intake_proposals.project_id",
+            f"{PROJECT_SCHEMA}.project_intake_proposals.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Column("work_key", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("input_digest", String(64), nullable=False),
+    Column("work_snapshot", JSONB, nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("task_snapshot", JSONB, nullable=False),
+    Column("link_kind", String(16), nullable=False),
+    UniqueConstraint("tenant_id", "project_id", "work_key", name="uq_project_intake_work_key"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "input_digest ~ '^[0-9a-f]{64}$' AND link_kind IN ('created','linked')", name="identity"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(work_snapshot)='object' AND jsonb_typeof(source_snapshot)='array' "
+        "AND jsonb_typeof(task_snapshot)='object'",
+        name="shape",
+    ),
+    Index("ix_project_intake_task", "tenant_id", "project_id", "task_id"),
+    schema=PROJECT_SCHEMA,
+)
+
+project_intake_applications = Table(
+    "project_intake_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_project_intake_applications_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    Column("proposal_id", Uuid, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "proposal_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_intake_proposals.tenant_id",
+            f"{PROJECT_SCHEMA}.project_intake_proposals.project_id",
+            f"{PROJECT_SCHEMA}.project_intake_proposals.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("results", JSONB, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "project_id", "request_id", name="uq_project_intake_apply_request"
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>''", name="identity"),
+    CheckConstraint(
+        "jsonb_typeof(results)='array' AND jsonb_array_length(results) BETWEEN 1 AND 50",
+        name="shape",
+    ),
+    Index(
+        "ix_project_intake_apply_history", "tenant_id", "project_id", "proposal_id", "created_at"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+intake_ai_observation_applications = Table(
+    "intake_ai_observation_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("proposal_number", Integer, nullable=False),
+    Column("proposal_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_snapshot", JSONB, nullable=False),
+    Column("observation_keys", JSONB, nullable=False),
+    Column("review_note", Text, nullable=False),
+    UniqueConstraint(
+        "tenant_id", "finding_id", "proposal_number", name="uq_intake_ai_observation_number"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.{key}" for key in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "proposal_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_intake_proposals.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "proposal_number BETWEEN 1 AND 30 AND request_digest ~ '^[0-9a-f]{64}$' "
+        "AND btrim(review_note)<>''",
+        name="identity",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(observation_keys)='array' "
+        "AND jsonb_array_length(observation_keys) BETWEEN 1 AND 7",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+
+project_intake_work_results = Table(
+    "project_intake_work_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("binding_id", Uuid, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column("revision", Integer, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("outcome", String(32), nullable=False),
+    Column("summary", Text, nullable=False),
+    Column("criteria_response", Text, nullable=False),
+    Column("remaining", Text, nullable=False),
+    Column("context_snapshot", JSONB, nullable=False),
+    Column("evidence_snapshot", JSONB, nullable=False),
+    Column("business_reviews", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    CheckConstraint(
+        "jsonb_typeof(business_reviews)='array' AND jsonb_array_length(business_reviews)<=50",
+        name="business_reviews",
+    ),
+    UniqueConstraint("tenant_id", "binding_id", "revision", name="uq_intake_work_result_revision"),
+    UniqueConstraint("tenant_id", "binding_id", "request_id", name="uq_intake_work_result_request"),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "binding_id"],
+        [
+            f"{PROJECT_SCHEMA}.project_intake_work.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND request_digest ~ '^[0-9a-f]{64}$' AND btrim(summary)<>'' "
+        "AND btrim(criteria_response)<>'' AND btrim(remaining)<>''",
+        name="identity",
+    ),
+    CheckConstraint(
+        "outcome IN ('progress','addressed','no_change_needed','follow_up')", name="outcome"
+    ),
+    CheckConstraint(
+        "jsonb_typeof(context_snapshot)='object' AND jsonb_typeof(evidence_snapshot)='array' "
+        "AND jsonb_array_length(evidence_snapshot)<=10 AND "
+        "(outcome IN ('progress','follow_up') OR jsonb_array_length(evidence_snapshot)>0)",
+        name="shape",
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+decision_intake_correction_batches = Table(
+    "decision_intake_correction_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("import_batch_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("results", JSONB, nullable=False),
+    Column("created_by_user_id", Uuid, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "request_id", name="uq_decision_correction_batch_request"
+    ),
+    ForeignKeyConstraint(
+        ["import_batch_id"], [f"{AI_SCHEMA}.decision_intake_batches.id"], ondelete="RESTRICT"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_user_id"],
+        [f"{CORE_SCHEMA}.users.{key}" for key in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("request_digest ~ '^[0-9a-f]{64}$' AND btrim(reason)<>''", name="request"),
+    CheckConstraint(
+        "jsonb_typeof(results)='array' AND jsonb_array_length(results) BETWEEN 1 AND 50",
+        name="results",
+    ),
+    Index(
+        "ix_decision_correction_batch_history", "tenant_id", "project_id", "import_batch_id", "id"
+    ),
+    schema=PROJECT_SCHEMA,
+)
+
+
+reminder_preferences = Table(
+    "reminder_preferences",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("user_id", Uuid, primary_key=True),
+    Column("version", Integer, primary_key=True),
+    Column("daily_cap", Integer),
+    Column("quiet_hours", String(11)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "version > 0 AND (daily_cap IS NULL OR daily_cap BETWEEN 0 AND 1000)", name="values"
+    ),
+    CheckConstraint(
+        "quiet_hours IS NULL OR quiet_hours ~ "
+        "'^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$'",
+        name="quiet",
+    ),
+    schema=EVENT_SCHEMA,
+)
+
+reminder_delivery_reservations = Table(
+    "reminder_delivery_reservations",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("outbox_id", Uuid, primary_key=True),
+    Column("local_day", Date, primary_key=True),
+    Column("user_id", Uuid, nullable=False),
+    Column("policy", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "outbox_id"],
+        [f"{EVENT_SCHEMA}.integration_outbox.tenant_id", f"{EVENT_SCHEMA}.integration_outbox.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("jsonb_typeof(policy)='object'", name="policy"),
+    Index("ix_reminder_delivery_daily", "tenant_id", "user_id", "local_day"),
+    schema=EVENT_SCHEMA,
+)
+
+
+finding_batches = Table(
+    "finding_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("finding_type", String(64), nullable=False),
+    Column("request", json_type, nullable=False),
+    Column("results", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_finding_batch_request"),
+    CheckConstraint(
+        "action IN ('accepted','rejected','applied','review_undone') AND request_digest ~"
+        " '^[0-9a-f]{64}$'",
+        name="request",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(request)='object' AND jsonb_typeof(results)='array' AND "
+        "jsonb_array_length(results) BETWEEN 1 AND 20",
+        name="results",
+    ),
+    Index("ix_finding_batch_history", "tenant_id", "actor_user_id", "created_at", "id"),
+    schema=AI_SCHEMA,
+)
+
+
+risk_candidate_batches = Table(
+    "risk_candidate_batches",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("request", json_type, nullable=False),
+    Column("results", json_type, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_risk_candidate_batch_request"
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[0-9a-f]{64}$'",
+        name="request",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(request)='object' AND jsonb_typeof(results)='array' AND "
+        "jsonb_array_length(results) BETWEEN 1 AND 200",
+        name="results",
+    ),
+    Index("ix_risk_candidate_batch_history", "tenant_id", "actor_user_id", "created_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+risk_followup_results = Table(
+    "risk_followup_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("risk_id", Uuid, nullable=False),
+    Column("task_id", Uuid, nullable=False),
+    Column("origin_audit_id", BigInteger, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("submission_id", Uuid),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("receiver_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("basis", JSONB, nullable=False),
+    Column("payload", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_risk_followup_result_scope"),
+    UniqueConstraint("tenant_id", "task_id", "revision", name="uq_risk_followup_result_revision"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_risk_followup_result_request"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "risk_id"],
+        [f"{PROJECT_SCHEMA}.risks.{v}" for v in ("tenant_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "task_id"],
+        [f"{PROJECT_SCHEMA}.tasks.{v}" for v in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "origin_audit_id"],
+        [f"{AUDIT_SCHEMA}.audit_log.tenant_id", f"{AUDIT_SCHEMA}.audit_log.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_risk_followup_result_actor",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "receiver_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_risk_followup_result_receiver",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "submission_id"],
+        [f"{PROJECT_SCHEMA}.risk_followup_results.{v}" for v in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint("revision>0 AND request_digest ~ '^[0-9a-f]{64}$'", name="revision_digest"),
+    CheckConstraint(
+        "(action='submitted' AND submission_id IS NULL AND "
+        "actor_user_id<>receiver_user_id) OR (action IN ('accepted','returned') AND "
+        "submission_id IS NOT NULL AND actor_user_id=receiver_user_id)",
+        name="action",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(basis)='object' AND jsonb_typeof(payload)='object'", name="snapshots"
+    ),
+    Index("ix_risk_followup_receiver", "tenant_id", "receiver_user_id", "created_at", "id"),
+    schema=PROJECT_SCHEMA,
+)
+
+
+# These indexes were installed by 0334/0336 and are part of the canonical model.
+Index(
+    "ix_resource_schedule_history",
+    project_resource_schedules.c.tenant_id,
+    project_resource_schedules.c.project_id,
+    project_resource_schedules.c.scenario_id,
+    project_resource_schedules.c.created_at.desc(),
+    project_resource_schedules.c.id.desc(),
+)
+Index(
+    "ix_reallocation_history",
+    resource_reallocations.c.tenant_id,
+    resource_reallocations.c.created_at.desc(),
+    resource_reallocations.c.id.desc(),
+)
+
+# PostgreSQL already stores SQLAlchemy's deterministic shortened identifiers.
+# Alembic's check-constraint comparator compares the raw metadata name, so pin
+# long check names to that same physical identifier. Generated DDL is unchanged.
+_postgresql_dialect = create_mock_engine(
+    "postgresql+psycopg://", lambda *_args, **_kwargs: None
+).dialect
+for _table in metadata.tables.values():
+    for _constraint in _table.constraints:
+        if (
+            isinstance(_constraint, CheckConstraint)
+            and isinstance(_constraint.name, str)
+            and len(_constraint.name) > _postgresql_dialect.max_identifier_length
+        ):
+            _constraint.name = conv(
+                _postgresql_dialect.identifier_preparer.truncate_and_render_constraint_name(
+                    _constraint.name, _alembic_quote=False
+                )
+            )
+
+
 @dataclass(frozen=True)
 class Tables:
+    research_measurement_workpacks: Table
+    research_measurement_workpack_members: Table
+    research_measurement_deliveries: Table
+    research_measurement_receptions: Table
+    research_measurement_closures: Table
+    research_measurement_studies: Table
+    research_measurement_consents: Table
+    research_measurement_samples: Table
+    value_measurement_workpacks: Table
+    value_measurement_workpack_members: Table
+    value_measurement_deliveries: Table
+    value_measurement_receptions: Table
+    value_measurement_closures: Table
+    value_measurement_studies: Table
+    value_measurement_consents: Table
+    value_measurement_samples: Table
+    risk_followup_results: Table
+    risk_candidate_batches: Table
+    finding_batches: Table
+    reminder_preferences: Table
+    reminder_delivery_reservations: Table
+    decision_intake_correction_batches: Table
+    intake_ai_observation_applications: Table
+    intake_ai_briefs: Table
+    conversation_email_parts: Table
+    project_intake_proposals: Table
+    project_intake_work_results: Table
+    project_intake_work: Table
+    project_intake_applications: Table
+    process_template_briefs: Table
+    process_template_revisions: Table
+    process_template_releases: Table
+    field_capture_recognitions: Table
+    field_capture_drafts: Table
+    field_captures: Table
+    change_quiet_policy_anchors: Table
+    change_quiet_replacements: Table
+    change_quiet_origins: Table
+    change_quiet_adoptions: Table
+    change_quiet_policies: Table
+    change_quiet_requests: Table
+    change_quiet_votes: Table
+    change_execution_followups: Table
+    change_execution_results: Table
+    change_execution_confirmations: Table
+    change_execution_batches: Table
+    change_execution_tasks: Table
+    change_impact_scope_versions: Table
+    professional_change_routes: Table
+    engineering_review_packages: Table
+    engineering_review_tasks: Table
+    firmware_task_results: Table
+    firmware_package_tasks: Table
+    firmware_work_packages: Table
+    planning_resources: Table
+    resource_capacity_versions: Table
+    plan_capacity_checks: Table
+    plan_capacity_check_versions: Table
+    schedule_nodes: Table
+    resource_capacity_intervals: Table
+    portfolio_escalations: Table
+    portfolio_escalation_replies: Table
+    schedule_milestone_designations: Table
+    portfolio_health_policies: Table
+    portfolio_execution_applications: Table
+    portfolio_execution_applied_projects: Table
+    portfolio_execution_applied_reservations: Table
+    portfolio_execution_preparations: Table
+    portfolio_execution_projects: Table
+    portfolio_selections: Table
+    portfolio_selection_projects: Table
+    portfolio_selection_decisions: Table
+    portfolio_scoring_policies: Table
+    portfolio_comparisons: Table
+    portfolio_comparison_sources: Table
+    resource_reallocations: Table
+    resource_reallocation_projects: Table
+    resource_reallocation_items: Table
+    resource_reallocation_decisions: Table
+    resource_reallocation_applications: Table
+    resource_priority_versions: Table
+    resource_priority_bindings: Table
+    resource_reservations: Table
+    resource_reservation_intervals: Table
+    resource_reservation_receipts: Table
+    legacy_resource_reconciliations: Table
+    legacy_resource_intervals: Table
+    initial_plan_reviews: Table
+    initial_plan_review_receipts: Table
+    schedule_time_records: Table
+    schedule_time_nodes: Table
+    schedule_plan_dependencies: Table
+    initial_plan_applications: Table
+    resource_reservation_replacements: Table
+    schedule_commitment_policies: Table
+    schedule_commitment_confirmations: Table
+    forecast_capacity_checks: Table
+    forecast_capacity_check_versions: Table
+    schedule_forecast_runs: Table
+    schedule_forecast_errors: Table
+    baseline_change_applications: Table
+    baseline_change_policies: Table
+    baseline_change_requests: Table
+    baseline_change_decisions: Table
+    project_resource_schedule_preparations: Table
+    project_resource_schedules: Table
+    project_resource_schedule_versions: Table
+    project_scenario_capacity_checks: Table
+    project_scenario_capacity_versions: Table
+    project_schedule_scenarios: Table
+    project_schedule_scenario_nodes: Table
+    id_design_variants: Table
+    id_design_revisions: Table
+    id_design_feedback: Table
+    id_design_feedback_decisions: Table
+    id_design_freeze_requests: Table
+    id_design_freeze_decisions: Table
+    id_design_freezes: Table
+    id_design_change_candidates: Table
+    id_design_handoffs: Table
+    id_design_handoff_items: Table
+    id_design_handoff_responses: Table
+    id_design_change_decisions: Table
+    id_design_change_branches: Table
+    id_design_activations: Table
+    id_design_reacceptance_requirements: Table
+    id_design_checkpoint_bindings: Table
+    cross_project_schedule_proposals: Table
+    cross_project_schedule_applications: Table
+    cross_project_schedule_decisions: Table
+    schedule_source_corrections: Table
+    certification_execution_actions: Table
+    schedule_source_forecast_errors: Table
+    schedule_milestone_completions: Table
+    schedule_source_observations: Table
+    schedule_actual_corrections: Table
+    schedule_forecast_error_corrections: Table
+    scheduled_task_observations: Table
+    task_plan_bindings: Table
+    case_project_conversions: Table
+    project_execution_policies: Table
+    project_execution_requests: Table
+    project_execution_receipts: Table
     tenants: Table
     users: Table
+    departments: Table
+    user_delegations: Table
     customers: Table
     suppliers: Table
     requirements: Table
     crm_requirement_intakes: Table
     development_cases: Table
+    plan_responsibility_responses: Table
+    initial_plan_scenario_calendars: Table
+    initial_plan_scenarios: Table
+    work_calendar_versions: Table
+    initial_plan_candidates: Table
+    case_review_signoffs: Table
+    case_reviews: Table
+    case_review_policies: Table
+    case_requirement_links: Table
+    definition_requirement_packages: Table
+    definition_requirement_links: Table
+    product_definitions: Table
+    definition_reviews: Table
+    customer_report_documents: Table
+    customer_report_packages: Table
+    customer_report_decisions: Table
+    customer_report_files: Table
+    webhook_endpoints: Table
+    webhook_controls: Table
+    webhook_deliveries: Table
+    webhook_attempts: Table
+    webhook_delivery_actions: Table
+    webhook_scans: Table
+    open_api_credentials: Table
+    open_api_revocations: Table
+    open_api_calls: Table
+    audit_report_bundles: Table
+    project_report_sources: Table
+    project_report_withdrawals: Table
+    project_report_exports: Table
+    definition_exports: Table
+    product_result_followups: Table
+    product_metric_calculations: Table
+    retirement_feedback: Table
+    product_result_feedback: Table
+    experiment_feedback: Table
+    product_matrix_outcomes: Table
+    product_matrix_outcome_versions: Table
+    product_matrix_dispositions: Table
+    product_matrix_records: Table
+    product_matrix_record_products: Table
+    product_roadmap_revisions: Table
+    definition_releases: Table
+    product_strategies: Table
+    opportunity_requirements: Table
+    experiments: Table
+    experiment_approvals: Table
+    opportunities: Table
+    desired_outcomes: Table
+    market_segments: Table
+    competitor_observations: Table
+    research_subscriptions: Table
+    research_collection_runs: Table
+    research_searches: Table
+    product_nodes: Table
+    product_line_members: Table
+    market_spaces: Table
+    market_space_members: Table
+    research_tasks: Table
+    scoped_work_items: Table
+    project_template_versions: Table
+    project_handoff_items: Table
     projects: Table
     project_members: Table
     costs: Table
@@ -5573,22 +28233,98 @@ class Tables:
     erp_bom_references: Table
     cost_bom_items: Table
     build_batches: Table
+    build_material_revisions: Table
+    supply_import_batches: Table
+    supply_snapshots: Table
+    material_movements: Table
+    tooling_rounds: Table
+    tooling_round_revisions: Table
+    change_compliance_reviews: Table
+    supplier_compliance_records: Table
+    cost_definition_feedback: Table
+    cost_definition_dispositions: Table
+    cost_alternatives: Table
+    cost_gap_cases: Table
+    cost_gap_observations: Table
+    cost_import_batches: Table
+    cost_import_rows: Table
+    cost_backtests: Table
+    cost_freeze_requests: Table
+    cost_freeze_decisions: Table
+    cost_freezes: Table
+    cost_rollups: Table
+    cost_inputs: Table
+    supplier_engineering_records: Table
+    material_movement_corrections: Table
+    material_movement_reconciliations: Table
+    supply_share_grants: Table
+    supply_share_actions: Table
+    material_supplier_attributions: Table
+    material_admission_policies: Table
+    material_admission_waivers: Table
+    material_admission_decisions: Table
+    material_admission_receipts: Table
+    material_schedule_bindings: Table
+    material_exceptions: Table
+    material_exception_reviews: Table
+    material_allocation_batches: Table
+    material_supply_allocations: Table
+    material_allocation_releases: Table
     samples: Table
+    fw_releases: Table
+    test_execution_preparations: Table
+    sample_configuration_revisions: Table
+    sample_build_configurations: Table
     sample_signoffs: Table
     sample_signoff_samples: Table
     test_plans: Table
     test_cases: Table
+    test_runs: Table
+    import_mapping_versions: Table
+    test_import_sample_resolutions: Table
+    test_report_import_batches: Table
     test_case_samples: Table
     test_reports: Table
     certifications: Table
     certification_expiry_alerts: Table
     complaints: Table
     nonconformance_reports: Table
+    fmea_revision_candidates: Table
+    fmea_candidate_dispositions: Table
+    supplier_notice_scans: Table
+    supplier_notice_dispatches: Table
+    supplier_notice_applications: Table
+    supplier_notice_reviews: Table
+    supplier_notice_candidates: Table
+    supplier_notice_watches: Table
+    supplier_notice_watch_revisions: Table
+    cost_discussion_inputs: Table
+    cost_reduction_applications: Table
+    cost_reduction_items: Table
+    supplier_recovery_applications: Table
+    supplier_recovery_reviews: Table
+    supplier_recovery_results: Table
+    supplier_recovery_items: Table
+    quality_work_package_applications: Table
+    quality_work_package_items: Table
+    quality_operation_receipts: Table
+    quality_issue_links: Table
+    quality_issue_link_retractions: Table
+    fmea_entries: Table
+    fmea_versions: Table
+    fmea_publications: Table
     root_cause_analyses: Table
     capa_actions: Table
     effectiveness_reviews: Table
     memories: Table
     memory_embeddings: Table
+    knowledge_pushes: Table
+    task_takeover_packets: Table
+    knowledge_reuse_jobs: Table
+    knowledge_push_feedback: Table
+    knowledge_corrections: Table
+    knowledge_candidate_jobs: Table
+    customer_change_requests: Table
     engineering_change_requests: Table
     ecr_affected_boms: Table
     engineering_change_notices: Table
@@ -5613,6 +28349,37 @@ class Tables:
     agent_subscriptions: Table
     agent_runs: Table
     finding_quality_controls: Table
+    budget_lineages: Table
+    budget_activity_coverage: Table
+    agent_tool_accounting_epochs: Table
+    agent_tool_intents: Table
+    agent_tool_dispatches: Table
+    agent_tool_observations: Table
+    agent_context_receipts: Table
+    agent_service_principals: Table
+    application_tool_observations: Table
+    application_context_observations: Table
+    application_context_manifests: Table
+    application_result_checkpoints: Table
+    application_import_inputs: Table
+    application_cancellations: Table
+    event_run_pauses: Table
+    application_input_waits: Table
+    application_run_leases: Table
+    application_authorizations: Table
+    agent_authorizations: Table
+    agent_context_manifests: Table
+    agent_context_observations: Table
+    agent_result_checkpoints: Table
+    agent_loop_checkpoints: Table
+    agent_run_recoveries: Table
+    budget_activity_spans: Table
+    budget_run_links: Table
+    budget_journal: Table
+    legacy_usage_resolutions: Table
+    model_call_sessions: Table
+    model_call_events: Table
+    model_call_mode_events: Table
     model_invocations: Table
     findings: Table
     finding_actions: Table
@@ -5622,8 +28389,55 @@ class Tables:
     dingtalk_project_channels: Table
     integration_outbox: Table
     integration_receipts: Table
+    reminders: Table
     dingtalk_approval_instances: Table
     dingtalk_interactive_cards: Table
+    debate_resume_requests: Table
+    change_discussion_inputs: Table
+    debate_brief_reviews: Table
+    debate_run_bindings: Table
+    debate_turn_receipts: Table
+    debate_initiations: Table
+    debate_research_inputs: Table
+    debate_sessions: Table
+    debate_seats: Table
+    debate_turns: Table
+    debate_briefs: Table
+    research_sources: Table
+    evidence_contents: Table
+    evidence_snapshots: Table
+    meetings: Table
+    tencent_meeting_bindings: Table
+    meeting_planning_briefs: Table
+    meeting_notification_batches: Table
+    meeting_conference_requests: Table
+    meeting_generation_policies: Table
+    meeting_recurrences: Table
+    meeting_participants: Table
+    meeting_agenda_items: Table
+    meeting_agenda_actions: Table
+    meeting_transcripts: Table
+    conversation_attachment_requests: Table
+    issue_intake_batches: Table
+    issue_intake_correction_batches: Table
+    issue_intake_compensation_batches: Table
+    issue_intake_compensation_results: Table
+    issue_intake_compensations: Table
+    issue_intake_corrections: Table
+    issue_intake_rows: Table
+    decision_intake_amendments: Table
+    decision_intake_corrections: Table
+    decision_intake_rows: Table
+    decision_intake_batches: Table
+    decision_intake_previews: Table
+    issue_intake_previews: Table
+    conversation_report_imports: Table
+    conversation_attachments: Table
+    conversation_message_attachments: Table
+    conversations: Table
+    conversation_messages: Table
+    meeting_minutes_versions: Table
+    meeting_transcript_segments: Table
     events: Table
     audit_log: Table
     migration_runs: Table
@@ -5631,13 +28445,220 @@ class Tables:
 
 
 tables = Tables(
+    research_measurement_workpacks=research_measurement_workpacks,
+    research_measurement_workpack_members=research_measurement_workpack_members,
+    research_measurement_deliveries=research_measurement_deliveries,
+    research_measurement_receptions=research_measurement_receptions,
+    research_measurement_closures=research_measurement_closures,
+    research_measurement_studies=research_measurement_studies,
+    research_measurement_consents=research_measurement_consents,
+    research_measurement_samples=research_measurement_samples,
+    value_measurement_workpacks=value_measurement_workpacks,
+    value_measurement_workpack_members=value_measurement_workpack_members,
+    value_measurement_deliveries=value_measurement_deliveries,
+    value_measurement_receptions=value_measurement_receptions,
+    value_measurement_closures=value_measurement_closures,
+    value_measurement_studies=value_measurement_studies,
+    value_measurement_consents=value_measurement_consents,
+    value_measurement_samples=value_measurement_samples,
+    risk_followup_results=risk_followup_results,
+    risk_candidate_batches=risk_candidate_batches,
+    finding_batches=finding_batches,
+    reminder_preferences=reminder_preferences,
+    reminder_delivery_reservations=reminder_delivery_reservations,
+    decision_intake_correction_batches=decision_intake_correction_batches,
+    intake_ai_observation_applications=intake_ai_observation_applications,
+    intake_ai_briefs=intake_ai_briefs,
+    conversation_email_parts=conversation_email_parts,
+    project_intake_proposals=project_intake_proposals,
+    project_intake_work_results=project_intake_work_results,
+    project_intake_work=project_intake_work,
+    project_intake_applications=project_intake_applications,
+    process_template_briefs=process_template_briefs,
+    process_template_revisions=process_template_revisions,
+    process_template_releases=process_template_releases,
+    field_capture_recognitions=field_capture_recognitions,
+    field_capture_drafts=field_capture_drafts,
+    field_captures=field_captures,
+    change_quiet_policy_anchors=change_quiet_policy_anchors,
+    change_quiet_replacements=change_quiet_replacements,
+    change_quiet_origins=change_quiet_origins,
+    change_quiet_adoptions=change_quiet_adoptions,
+    change_quiet_policies=change_quiet_policies,
+    change_quiet_requests=change_quiet_requests,
+    change_quiet_votes=change_quiet_votes,
+    change_execution_followups=change_execution_followups,
+    change_execution_results=change_execution_results,
+    change_execution_confirmations=change_execution_confirmations,
+    change_execution_batches=change_execution_batches,
+    change_execution_tasks=change_execution_tasks,
+    change_impact_scope_versions=change_impact_scope_versions,
+    professional_change_routes=professional_change_routes,
+    engineering_review_packages=engineering_review_packages,
+    engineering_review_tasks=engineering_review_tasks,
+    firmware_task_results=firmware_task_results,
+    firmware_package_tasks=firmware_package_tasks,
+    firmware_work_packages=firmware_work_packages,
+    planning_resources=planning_resources,
+    resource_capacity_versions=resource_capacity_versions,
+    plan_capacity_checks=plan_capacity_checks,
+    plan_capacity_check_versions=plan_capacity_check_versions,
+    schedule_nodes=schedule_nodes,
+    resource_capacity_intervals=resource_capacity_intervals,
+    portfolio_escalations=portfolio_escalations,
+    portfolio_escalation_replies=portfolio_escalation_replies,
+    schedule_milestone_designations=schedule_milestone_designations,
+    portfolio_health_policies=portfolio_health_policies,
+    portfolio_execution_applications=portfolio_execution_applications,
+    portfolio_execution_applied_projects=portfolio_execution_applied_projects,
+    portfolio_execution_applied_reservations=portfolio_execution_applied_reservations,
+    portfolio_execution_preparations=portfolio_execution_preparations,
+    portfolio_execution_projects=portfolio_execution_projects,
+    portfolio_selections=portfolio_selections,
+    portfolio_selection_projects=portfolio_selection_projects,
+    portfolio_selection_decisions=portfolio_selection_decisions,
+    portfolio_scoring_policies=portfolio_scoring_policies,
+    portfolio_comparisons=portfolio_comparisons,
+    portfolio_comparison_sources=portfolio_comparison_sources,
+    resource_reallocations=resource_reallocations,
+    resource_reallocation_projects=resource_reallocation_projects,
+    resource_reallocation_items=resource_reallocation_items,
+    resource_reallocation_decisions=resource_reallocation_decisions,
+    resource_reallocation_applications=resource_reallocation_applications,
+    resource_priority_versions=resource_priority_versions,
+    resource_priority_bindings=resource_priority_bindings,
+    resource_reservations=resource_reservations,
+    resource_reservation_intervals=resource_reservation_intervals,
+    resource_reservation_receipts=resource_reservation_receipts,
+    legacy_resource_reconciliations=legacy_resource_reconciliations,
+    legacy_resource_intervals=legacy_resource_intervals,
+    initial_plan_reviews=initial_plan_reviews,
+    initial_plan_review_receipts=initial_plan_review_receipts,
+    schedule_time_records=schedule_time_records,
+    schedule_time_nodes=schedule_time_nodes,
+    schedule_plan_dependencies=schedule_plan_dependencies,
+    initial_plan_applications=initial_plan_applications,
+    resource_reservation_replacements=resource_reservation_replacements,
+    schedule_commitment_policies=schedule_commitment_policies,
+    schedule_commitment_confirmations=schedule_commitment_confirmations,
+    forecast_capacity_checks=forecast_capacity_checks,
+    forecast_capacity_check_versions=forecast_capacity_check_versions,
+    schedule_forecast_runs=schedule_forecast_runs,
+    schedule_forecast_errors=schedule_forecast_errors,
+    baseline_change_applications=baseline_change_applications,
+    baseline_change_policies=baseline_change_policies,
+    baseline_change_requests=baseline_change_requests,
+    baseline_change_decisions=baseline_change_decisions,
+    project_resource_schedule_preparations=project_resource_schedule_preparations,
+    project_resource_schedules=project_resource_schedules,
+    project_resource_schedule_versions=project_resource_schedule_versions,
+    project_scenario_capacity_checks=project_scenario_capacity_checks,
+    project_scenario_capacity_versions=project_scenario_capacity_versions,
+    project_schedule_scenarios=project_schedule_scenarios,
+    project_schedule_scenario_nodes=project_schedule_scenario_nodes,
+    id_design_variants=id_design_variants,
+    id_design_revisions=id_design_revisions,
+    id_design_feedback=id_design_feedback,
+    id_design_feedback_decisions=id_design_feedback_decisions,
+    id_design_freeze_requests=id_design_freeze_requests,
+    id_design_freeze_decisions=id_design_freeze_decisions,
+    id_design_freezes=id_design_freezes,
+    id_design_change_candidates=id_design_change_candidates,
+    id_design_handoffs=id_design_handoffs,
+    id_design_handoff_items=id_design_handoff_items,
+    id_design_handoff_responses=id_design_handoff_responses,
+    id_design_change_decisions=id_design_change_decisions,
+    id_design_change_branches=id_design_change_branches,
+    id_design_activations=id_design_activations,
+    id_design_reacceptance_requirements=id_design_reacceptance_requirements,
+    id_design_checkpoint_bindings=id_design_checkpoint_bindings,
+    cross_project_schedule_proposals=cross_project_schedule_proposals,
+    cross_project_schedule_applications=cross_project_schedule_applications,
+    cross_project_schedule_decisions=cross_project_schedule_decisions,
+    schedule_source_corrections=schedule_source_corrections,
+    certification_execution_actions=certification_execution_actions,
+    schedule_source_forecast_errors=schedule_source_forecast_errors,
+    schedule_milestone_completions=schedule_milestone_completions,
+    schedule_source_observations=schedule_source_observations,
+    schedule_actual_corrections=schedule_actual_corrections,
+    schedule_forecast_error_corrections=schedule_forecast_error_corrections,
+    scheduled_task_observations=scheduled_task_observations,
+    task_plan_bindings=task_plan_bindings,
+    case_project_conversions=case_project_conversions,
+    project_execution_policies=project_execution_policies,
+    project_execution_requests=project_execution_requests,
+    project_execution_receipts=project_execution_receipts,
     tenants=tenants,
     users=users,
+    departments=departments,
+    user_delegations=user_delegations,
     customers=customers,
     suppliers=suppliers,
     requirements=requirements,
     crm_requirement_intakes=crm_requirement_intakes,
     development_cases=development_cases,
+    plan_responsibility_responses=plan_responsibility_responses,
+    initial_plan_scenario_calendars=initial_plan_scenario_calendars,
+    initial_plan_scenarios=initial_plan_scenarios,
+    work_calendar_versions=work_calendar_versions,
+    initial_plan_candidates=initial_plan_candidates,
+    case_review_signoffs=case_review_signoffs,
+    case_reviews=case_reviews,
+    case_review_policies=case_review_policies,
+    case_requirement_links=case_requirement_links,
+    definition_requirement_packages=definition_requirement_packages,
+    definition_requirement_links=definition_requirement_links,
+    product_definitions=product_definitions,
+    definition_reviews=definition_reviews,
+    customer_report_documents=customer_report_documents,
+    customer_report_packages=customer_report_packages,
+    customer_report_decisions=customer_report_decisions,
+    customer_report_files=customer_report_files,
+    webhook_endpoints=webhook_endpoints,
+    webhook_controls=webhook_controls,
+    webhook_deliveries=webhook_deliveries,
+    webhook_attempts=webhook_attempts,
+    webhook_delivery_actions=webhook_delivery_actions,
+    webhook_scans=webhook_scans,
+    open_api_credentials=open_api_credentials,
+    open_api_revocations=open_api_revocations,
+    open_api_calls=open_api_calls,
+    audit_report_bundles=audit_report_bundles,
+    project_report_sources=project_report_sources,
+    project_report_withdrawals=project_report_withdrawals,
+    project_report_exports=project_report_exports,
+    definition_exports=definition_exports,
+    product_result_followups=product_result_followups,
+    product_metric_calculations=product_metric_calculations,
+    retirement_feedback=retirement_feedback,
+    product_result_feedback=product_result_feedback,
+    experiment_feedback=experiment_feedback,
+    product_matrix_outcomes=product_matrix_outcomes,
+    product_matrix_outcome_versions=product_matrix_outcome_versions,
+    product_matrix_dispositions=product_matrix_dispositions,
+    product_matrix_records=product_matrix_records,
+    product_matrix_record_products=product_matrix_record_products,
+    product_roadmap_revisions=product_roadmap_revisions,
+    definition_releases=definition_releases,
+    product_strategies=product_strategies,
+    opportunity_requirements=opportunity_requirements,
+    experiments=experiments,
+    experiment_approvals=experiment_approvals,
+    opportunities=opportunities,
+    desired_outcomes=desired_outcomes,
+    market_segments=market_segments,
+    competitor_observations=competitor_observations,
+    research_subscriptions=research_subscriptions,
+    research_collection_runs=research_collection_runs,
+    research_searches=research_searches,
+    product_nodes=product_nodes,
+    product_line_members=product_line_members,
+    market_spaces=market_spaces,
+    market_space_members=market_space_members,
+    research_tasks=research_tasks,
+    scoped_work_items=scoped_work_items,
+    project_template_versions=project_template_versions,
+    project_handoff_items=project_handoff_items,
     projects=projects,
     project_members=project_members,
     costs=costs,
@@ -5651,22 +28672,98 @@ tables = Tables(
     erp_bom_references=erp_bom_references,
     cost_bom_items=cost_bom_items,
     build_batches=build_batches,
+    build_material_revisions=build_material_revisions,
+    supply_import_batches=supply_import_batches,
+    supply_snapshots=supply_snapshots,
+    material_movements=material_movements,
+    tooling_rounds=tooling_rounds,
+    tooling_round_revisions=tooling_round_revisions,
+    change_compliance_reviews=change_compliance_reviews,
+    supplier_compliance_records=supplier_compliance_records,
+    cost_definition_feedback=cost_definition_feedback,
+    cost_definition_dispositions=cost_definition_dispositions,
+    cost_alternatives=cost_alternatives,
+    cost_gap_cases=cost_gap_cases,
+    cost_gap_observations=cost_gap_observations,
+    cost_import_batches=cost_import_batches,
+    cost_import_rows=cost_import_rows,
+    cost_backtests=cost_backtests,
+    cost_freeze_requests=cost_freeze_requests,
+    cost_freeze_decisions=cost_freeze_decisions,
+    cost_freezes=cost_freezes,
+    cost_rollups=cost_rollups,
+    cost_inputs=cost_inputs,
+    supplier_engineering_records=supplier_engineering_records,
+    material_movement_corrections=material_movement_corrections,
+    material_movement_reconciliations=material_movement_reconciliations,
+    supply_share_grants=supply_share_grants,
+    supply_share_actions=supply_share_actions,
+    material_supplier_attributions=material_supplier_attributions,
+    material_admission_policies=material_admission_policies,
+    material_admission_waivers=material_admission_waivers,
+    material_admission_decisions=material_admission_decisions,
+    material_admission_receipts=material_admission_receipts,
+    material_schedule_bindings=material_schedule_bindings,
+    material_exceptions=material_exceptions,
+    material_exception_reviews=material_exception_reviews,
+    material_allocation_batches=material_allocation_batches,
+    material_supply_allocations=material_supply_allocations,
+    material_allocation_releases=material_allocation_releases,
     samples=samples,
+    fw_releases=fw_releases,
+    test_execution_preparations=test_execution_preparations,
+    sample_configuration_revisions=sample_configuration_revisions,
+    sample_build_configurations=sample_build_configurations,
     sample_signoffs=sample_signoffs,
     sample_signoff_samples=sample_signoff_samples,
     test_plans=test_plans,
     test_cases=test_cases,
+    test_runs=test_runs,
+    import_mapping_versions=import_mapping_versions,
+    test_import_sample_resolutions=test_import_sample_resolutions,
+    test_report_import_batches=test_report_import_batches,
     test_case_samples=test_case_samples,
     test_reports=test_reports,
     certifications=certifications,
     certification_expiry_alerts=certification_expiry_alerts,
     complaints=complaints,
     nonconformance_reports=nonconformance_reports,
+    fmea_revision_candidates=fmea_revision_candidates,
+    fmea_candidate_dispositions=fmea_candidate_dispositions,
+    supplier_notice_scans=supplier_notice_scans,
+    supplier_notice_dispatches=supplier_notice_dispatches,
+    supplier_notice_applications=supplier_notice_applications,
+    supplier_notice_reviews=supplier_notice_reviews,
+    supplier_notice_candidates=supplier_notice_candidates,
+    supplier_notice_watches=supplier_notice_watches,
+    supplier_notice_watch_revisions=supplier_notice_watch_revisions,
+    cost_discussion_inputs=cost_discussion_inputs,
+    cost_reduction_applications=cost_reduction_applications,
+    cost_reduction_items=cost_reduction_items,
+    supplier_recovery_applications=supplier_recovery_applications,
+    supplier_recovery_reviews=supplier_recovery_reviews,
+    supplier_recovery_results=supplier_recovery_results,
+    supplier_recovery_items=supplier_recovery_items,
+    quality_work_package_applications=quality_work_package_applications,
+    quality_work_package_items=quality_work_package_items,
+    quality_operation_receipts=quality_operation_receipts,
+    quality_issue_links=quality_issue_links,
+    quality_issue_link_retractions=quality_issue_link_retractions,
+    fmea_entries=fmea_entries,
+    fmea_versions=fmea_versions,
+    fmea_publications=fmea_publications,
     root_cause_analyses=root_cause_analyses,
     capa_actions=capa_actions,
     effectiveness_reviews=effectiveness_reviews,
     memories=memories,
     memory_embeddings=memory_embeddings,
+    knowledge_pushes=knowledge_pushes,
+    task_takeover_packets=task_takeover_packets,
+    knowledge_reuse_jobs=knowledge_reuse_jobs,
+    knowledge_push_feedback=knowledge_push_feedback,
+    knowledge_corrections=knowledge_corrections,
+    knowledge_candidate_jobs=knowledge_candidate_jobs,
+    customer_change_requests=customer_change_requests,
     engineering_change_requests=engineering_change_requests,
     ecr_affected_boms=ecr_affected_boms,
     engineering_change_notices=engineering_change_notices,
@@ -5691,6 +28788,37 @@ tables = Tables(
     agent_subscriptions=agent_subscriptions,
     agent_runs=agent_runs,
     finding_quality_controls=finding_quality_controls,
+    budget_lineages=budget_lineages,
+    budget_activity_coverage=budget_activity_coverage,
+    agent_tool_accounting_epochs=agent_tool_accounting_epochs,
+    agent_tool_intents=agent_tool_intents,
+    agent_tool_dispatches=agent_tool_dispatches,
+    agent_tool_observations=agent_tool_observations,
+    agent_context_receipts=agent_context_receipts,
+    agent_service_principals=agent_service_principals,
+    application_tool_observations=application_tool_observations,
+    application_context_observations=application_context_observations,
+    application_context_manifests=application_context_manifests,
+    application_result_checkpoints=application_result_checkpoints,
+    application_import_inputs=application_import_inputs,
+    application_cancellations=application_cancellations,
+    event_run_pauses=event_run_pauses,
+    application_input_waits=application_input_waits,
+    application_run_leases=application_run_leases,
+    application_authorizations=application_authorizations,
+    agent_authorizations=agent_authorizations,
+    agent_context_manifests=agent_context_manifests,
+    agent_context_observations=agent_context_observations,
+    agent_result_checkpoints=agent_result_checkpoints,
+    agent_loop_checkpoints=agent_loop_checkpoints,
+    agent_run_recoveries=agent_run_recoveries,
+    budget_activity_spans=budget_activity_spans,
+    budget_run_links=budget_run_links,
+    budget_journal=budget_journal,
+    legacy_usage_resolutions=legacy_usage_resolutions,
+    model_call_sessions=model_call_sessions,
+    model_call_events=model_call_events,
+    model_call_mode_events=model_call_mode_events,
     model_invocations=model_invocations,
     findings=findings,
     finding_actions=finding_actions,
@@ -5699,9 +28827,56 @@ tables = Tables(
     dingtalk_oauth_states=dingtalk_oauth_states,
     dingtalk_project_channels=dingtalk_project_channels,
     integration_outbox=integration_outbox,
+    reminders=reminders,
     integration_receipts=integration_receipts,
     dingtalk_approval_instances=dingtalk_approval_instances,
     dingtalk_interactive_cards=dingtalk_interactive_cards,
+    debate_resume_requests=debate_resume_requests,
+    change_discussion_inputs=change_discussion_inputs,
+    debate_brief_reviews=debate_brief_reviews,
+    debate_run_bindings=debate_run_bindings,
+    debate_turn_receipts=debate_turn_receipts,
+    debate_initiations=debate_initiations,
+    debate_research_inputs=debate_research_inputs,
+    debate_sessions=debate_sessions,
+    debate_seats=debate_seats,
+    debate_turns=debate_turns,
+    debate_briefs=debate_briefs,
+    research_sources=research_sources,
+    evidence_contents=evidence_contents,
+    evidence_snapshots=evidence_snapshots,
+    meetings=meetings,
+    tencent_meeting_bindings=tencent_meeting_bindings,
+    meeting_planning_briefs=meeting_planning_briefs,
+    meeting_notification_batches=meeting_notification_batches,
+    meeting_conference_requests=meeting_conference_requests,
+    meeting_generation_policies=meeting_generation_policies,
+    meeting_recurrences=meeting_recurrences,
+    meeting_participants=meeting_participants,
+    meeting_agenda_items=meeting_agenda_items,
+    meeting_agenda_actions=meeting_agenda_actions,
+    meeting_transcripts=meeting_transcripts,
+    conversation_attachment_requests=conversation_attachment_requests,
+    issue_intake_batches=issue_intake_batches,
+    issue_intake_correction_batches=issue_intake_correction_batches,
+    issue_intake_compensation_batches=issue_intake_compensation_batches,
+    issue_intake_compensation_results=issue_intake_compensation_results,
+    issue_intake_compensations=issue_intake_compensations,
+    issue_intake_corrections=issue_intake_corrections,
+    issue_intake_rows=issue_intake_rows,
+    decision_intake_amendments=decision_intake_amendments,
+    decision_intake_corrections=decision_intake_corrections,
+    decision_intake_rows=decision_intake_rows,
+    decision_intake_batches=decision_intake_batches,
+    decision_intake_previews=decision_intake_previews,
+    issue_intake_previews=issue_intake_previews,
+    conversation_report_imports=conversation_report_imports,
+    conversation_attachments=conversation_attachments,
+    conversation_message_attachments=conversation_message_attachments,
+    conversations=conversations,
+    conversation_messages=conversation_messages,
+    meeting_minutes_versions=meeting_minutes_versions,
+    meeting_transcript_segments=meeting_transcript_segments,
     events=events,
     audit_log=audit_log,
     migration_runs=migration_runs,

@@ -10,6 +10,9 @@ AI_SCHEMA = "cehub_ai"
 MEMORY_SCHEMA = "cehub_memory"
 EVENT_SCHEMA = "cehub_event"
 AUDIT_SCHEMA = "cehub_audit"
+# V2-7 (C8): evidence and research sources serve every agent seat, so the
+# namespace is added ahead of the Phase 5 product-management connectors.
+EVIDENCE_SCHEMA = "cehub_evidence"
 
 SCHEMAS = (
     CORE_SCHEMA,
@@ -22,4 +25,5 @@ SCHEMAS = (
     MEMORY_SCHEMA,
     EVENT_SCHEMA,
     AUDIT_SCHEMA,
+    EVIDENCE_SCHEMA,
 )

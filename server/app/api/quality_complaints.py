@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from datetime import UTC, date, datetime
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import Engine
 
@@ -15,6 +15,7 @@ from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, Role
 from app.db.engine import get_engine
+from app.domain import quality_responsibilities
 from app.domain.complaints import (
     ComplaintDraft,
     ComplaintInvalidTransitionError,
@@ -33,6 +34,7 @@ from app.domain.nonconformance import (
     NcrRecord,
     NonconformanceService,
 )
+from app.domain.product_workspace import ProductWorkError
 
 router = APIRouter(prefix="/api/projects/{project_id}/quality", tags=["quality"])
 
@@ -46,6 +48,7 @@ class ComplaintResponse(BaseModel):
     reported_by_user_id: UUID
     owner_user_id: UUID
     closed_by_user_id: UUID | None
+    closed_by_name: str | None = None
     code: str
     title: str
     description: str
@@ -470,3 +473,53 @@ def list_complaint_ncrs(
         )
     except Exception as error:
         raise complaint_error(error) from error
+
+
+@router.get("/responsibilities/{kind}/{record_id}")
+def quality_responsibility_get(
+    project_id: UUID,
+    kind: quality_responsibilities.Kind,
+    record_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before_id: Annotated[int | None, Query(gt=0)] = None,
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return quality_responsibilities.read(
+            engine, context, project_id, kind, record_id, before_id
+        )
+    except ProductWorkError as exc:
+        raise HTTPException(
+            409, detail={"code": "QUALITY_RESPONSIBILITY_CONFLICT", "message": str(exc)}
+        ) from exc
+    except PermissionError as exc:
+        raise HTTPException(
+            403,
+            detail={"code": "QUALITY_RESPONSIBILITY_DENIED", "message": "无此项质量记录的读取权限"},
+        ) from exc
+
+
+@router.post("/responsibilities/{kind}/{record_id}")
+def quality_responsibility_change(
+    project_id: UUID,
+    kind: quality_responsibilities.Kind,
+    record_id: UUID,
+    body: quality_responsibilities.Reassign,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return quality_responsibilities.reassign(engine, context, project_id, kind, record_id, body)
+    except ProductWorkError as exc:
+        raise HTTPException(
+            409, detail={"code": "QUALITY_RESPONSIBILITY_CONFLICT", "message": str(exc)}
+        ) from exc
+    except PermissionError as exc:
+        raise HTTPException(
+            403,
+            detail={"code": "QUALITY_RESPONSIBILITY_DENIED", "message": "无此项质量责任的调整权限"},
+        ) from exc

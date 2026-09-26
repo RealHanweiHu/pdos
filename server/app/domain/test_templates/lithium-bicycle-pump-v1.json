@@ -1,0 +1,408 @@
+{
+  "id": "lithium-bicycle-pump",
+  "version": 1,
+  "product_type": "锂电自行车泵",
+  "name": "锂电自行车泵测试基线",
+  "sources": [
+    {
+      "file": "1整机测试报告(1).xlsx",
+      "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0"
+    },
+    {
+      "file": "2可靠性测试报告(1).xlsx",
+      "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964"
+    }
+  ],
+  "items": [
+    {
+      "key": "whole_unit-01",
+      "title": "按键逻辑",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、根据产品规格书，测试按键软件逻辑；\n2、记录测试数据；",
+      "acceptance_criteria": "参照产品规格书",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "按键逻辑"
+      }
+    },
+    {
+      "key": "whole_unit-02",
+      "title": "手电筒功能",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、测试手电筒按键功能；\n2、测试手电筒功能逻辑；\n3、记录测试数据。",
+      "acceptance_criteria": "参照产品规格书",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "手电筒功能"
+      }
+    },
+    {
+      "key": "whole_unit-03",
+      "title": "校准功能",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、开机状态；\n2、无压力源状态，启动校准模式",
+      "acceptance_criteria": "1、校准后的显示产品的信息，参照规格书；\n2、压力值为100±2PSI；\n3、校准显示电压值与实测电压值相差≤0.2V；\n4、打气模式、单位模式逻辑，参照规格书。\n5. 使用數字傳感器此步驟跳過，不必測試。",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "校准功能"
+      }
+    },
+    {
+      "key": "whole_unit-04",
+      "title": "自动关机功能",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机开机后，不按任意按键，静置至样机关机；\n2、记录静置至关机时间；",
+      "acceptance_criteria": "90sec.±5sec，样机自动关机",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "自动关机功能"
+      }
+    },
+    {
+      "key": "whole_unit-05",
+      "title": "数据记忆功能",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、校准气压值；\n2、任意更改样机模式、气压值，关机后重启样机，观察样机模式及预设气压值与关机前是否一致。",
+      "acceptance_criteria": "1、关机重启后，样机模式及预设值与关机前一致",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "数据记忆功能"
+      }
+    },
+    {
+      "key": "whole_unit-06",
+      "title": "空气流量",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态，连接空气流量器；\n2、正常启动马达；\n3，待流量计稳定，记录测试数据；",
+      "acceptance_criteria": "参照规格书",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "空气流量"
+      }
+    },
+    {
+      "key": "whole_unit-07",
+      "title": "气压精度",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态；\n2、设置相应的气压值，给各类轮胎、球类打气；\n3、重启样机，观察样机气压显示",
+      "acceptance_criteria": "1、轮胎类：预设值±2psi；\n2、球类：预设值±1psi。",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "气压精度"
+      }
+    },
+    {
+      "key": "whole_unit-08",
+      "title": "高压测试",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态，设置样机为自定义模式，最高气压值；\n2、给气瓶打气，打气中途任意气压值，暂停2s后，再启动，直至样机低电量关机；(最少停2次)(90%的氣壓設定值區間)\n3、若带有DC车充功能产品，需连接直流电源，14V电压供电，按步骤2测试；",
+      "acceptance_criteria": "1、任意气压值暂停，可正常再次启动马达，样机不可经常性出现样机停机和马达堵转现象；(1秒內可啟動)",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "高压测试"
+      }
+    },
+    {
+      "key": "whole_unit-09",
+      "title": "充电协议及参数",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机低电量状态；\n2、连接好样机及充电设备；\n3、调节USB测试仪，记录样机充电协议及充电参数",
+      "acceptance_criteria": "参照产品规格书及充电IC数据手册",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "充电协议及参数"
+      }
+    },
+    {
+      "key": "whole_unit-10",
+      "title": "充电功率",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机低电量状态，直流电源模拟充电电源，连接充电设备；\n2、电池正极与主板之间串联一个电流表；\n3、调节直流电源±5%电压标准充电电压充电电压(如：4.75V/5.0V/5.25V、8.75V/9.0V/9.25V、11.75V/12.0V/12.25V、19.8V/20.0V/20.2V)，记录power测试仪充电电流、充电功率，电池电流、电池电压。",
+      "acceptance_criteria": "参照产品规格书及充电IC数据手册",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "充电功率"
+      }
+    },
+    {
+      "key": "whole_unit-11",
+      "title": "充电时长及温升",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机低电关机后；\n2、温度传感器贴于样机充电IC.充电电感表面；\n3、5min记录一次充电IC、充电电感温度、充电电压、充电电流数据。",
+      "acceptance_criteria": "1、充电时长，参照产品规格书；\n2、充电IC、电感，温度<80℃；",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "充电时长及温升"
+      }
+    },
+    {
+      "key": "whole_unit-12",
+      "title": "静态功耗",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态；\n2、在电池正极线与主板之间串联电流表；\n3、样机开机，记录开机电流值；\n4、等待90sec.样机关机后，记录关机电流值;手動關機，记录关机电流值",
+      "acceptance_criteria": "1、开机电流值<100mA；\n2、关机电流值<100uA。",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "静态功耗"
+      }
+    },
+    {
+      "key": "whole_unit-13",
+      "title": "(自行车泵)工作温升",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态；\n2、温度传感器贴于样机压力传感器、机芯、电池、气管接口处；\n3、给公路自行车轮胎(700*25C，0-120psi)，打至没电；\n4、记录一共可以打多少轮轮胎，每台轮胎时间，每轮轮胎结束时的温度；",
+      "acceptance_criteria": "1、压力传感器<90℃；\n2、电机、电池温度<80℃；\n3、气管接口温度<100℃。",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "(自行车泵)工作温升"
+      }
+    },
+    {
+      "key": "whole_unit-14",
+      "title": "工作功率",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态；\n2、示波器测量电机两端电流、万用表测量电机正极电流；\n3、测量0气压(不接气瓶)、20psi、36psi、60psi、80psi、100psi、120psi、150psi时的电压、电流，并计算功率。",
+      "acceptance_criteria": "参照规格书",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "工作功率"
+      }
+    },
+    {
+      "key": "whole_unit-15",
+      "title": "压力传感器异常报错",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、拆开产品外壳，拔掉压力传感器端子，断开传感器与主板的连接；\n2、观察样机状态，查看样机提示信息，记录提示信息；\n3，压力传感器端子拔出状态，报错提示结束，恢复正常显示后，启动马达，查看样机状态。",
+      "acceptance_criteria": "1、样机报错提示：E3，\n2、再次启动马达时，马达停止转动。",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "压力传感器异常报错"
+      }
+    },
+    {
+      "key": "whole_unit-16",
+      "title": "漏气提示报错",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机空载打气，记录样机状态；\n2，记录时间，样机测试时间。",
+      "acceptance_criteria": "1、测试时间：1-5min；\n2、提示信息：E08，闪烁频率均匀，闪烁10次。",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "漏气提示报错"
+      }
+    },
+    {
+      "key": "whole_unit-17",
+      "title": "工作噪音",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机给轮胎打气工作状态\n2、距离样机1m处，测试样机工作噪音。",
+      "acceptance_criteria": "1m，≤85dB",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "工作噪音"
+      }
+    },
+    {
+      "key": "whole_unit-18",
+      "title": "整机续航测试",
+      "category": "whole_unit",
+      "required": true,
+      "method": "1、样机满电状态；\n2、给公路自行车轮胎(700*25C，0-120psi)进行充气测试，直至样机没电关机；\n3、记录实测打气状态下，每一格电量流失的时间；",
+      "acceptance_criteria": "参照规格书",
+      "source": {
+        "file": "1整机测试报告(1).xlsx",
+        "sha256": "73e37d39d29de48ec8b0c967e902b952836092713f6eefb5f8e90a10de5e05a0",
+        "sheet": "整机续航测试"
+      }
+    },
+    {
+      "key": "reliability-01",
+      "title": "裸机跌落测试",
+      "category": "reliability",
+      "required": true,
+      "method": "对裸机6个不同面朝下，落在水泥地板上，各一次，检查产品功能有无不良，外观有无严重破损。",
+      "acceptance_criteria": "1、跌落高度：1米；\n2、跌落之后，样机基本功能正常，摇晃样机无异响；\n3、测试途中外壳出现裂缝，如若可徒手安装回去即为合格；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "裸机跌落测试"
+      }
+    },
+    {
+      "key": "reliability-02",
+      "title": "ESD静电测试",
+      "category": "reliability",
+      "required": true,
+      "method": "1、整机正常使用状态；\n2、分别在马达工作时、开机待机时、充电、外壳缝隙接触放电+/-4KV 10 次，\n空气放电+/-8KV 10 次，每次放电时间间隔1s。",
+      "acceptance_criteria": "设备在测试后，样机不能出现永久性损坏或功能异常；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "ESD静电测试"
+      }
+    },
+    {
+      "key": "reliability-03",
+      "title": "按键寿命测试",
+      "category": "reliability",
+      "required": true,
+      "method": "用按键测试仪对产品每个按键测试1000次；",
+      "acceptance_criteria": "1、按键功能正常，无卡键、连动（误触发相邻按键）；\n2、外观无磨损、丝印符號清晰；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "按键寿命测试"
+      }
+    },
+    {
+      "key": "reliability-04",
+      "title": "裸机插拔测试",
+      "category": "reliability",
+      "required": true,
+      "method": "对裸机充放电接口以20次/分钟的频率进行插拔测试2000次，测试后导通合格则测试OK。",
+      "acceptance_criteria": "1、测试后插头/接口有正常磨损，但不允许有物理损坏\n2、插拔后设备能正常工作，无接触不良或电气性能下降；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "裸机插拔测试"
+      }
+    },
+    {
+      "key": "reliability-05",
+      "title": "高温存储测试",
+      "category": "reliability",
+      "required": true,
+      "method": "1、高温：60±2℃；存储24小时；\n2、将检查合格的样品不包装放入恒温恒湿箱内，设置恒温恒湿箱参数：60℃/24h，启动恒温恒湿箱；\n3、试验结束后取出样品，在常温下恢复2小时后进行样品外观结构功能检查，并记录检查结果，输出测试报告。",
+      "acceptance_criteria": "1、电气性能：电阻、电容、绝缘阻抗是否变化。\n2、机械性能：材料是否开裂、变形、密封失效。\n3、功能测试：高温存储后是否能正常工作；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "高温存储测试"
+      }
+    },
+    {
+      "key": "reliability-06",
+      "title": "低温存储测试",
+      "category": "reliability",
+      "required": true,
+      "method": "1、低温：-10℃；存储24小时；\n2、将检查合格的样品不包装放入恒温恒湿箱内，设置恒温恒湿箱参数：-10℃/24h，启动恒温恒湿箱；\n3、试验结束后取出样品，在常温下恢复2小时后进行样品外观结构功能检查，并记录检查结果，输出测试报告。",
+      "acceptance_criteria": "1、电气性能：电阻、电容、绝缘阻抗是否变化。\n2、机械性能：材料是否开裂、变形、密封失效。\n3、功能测试：低温存储后是否能正常工作；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "低温存储测试"
+      }
+    },
+    {
+      "key": "reliability-07",
+      "title": "高温高湿存储测试",
+      "category": "reliability",
+      "required": true,
+      "method": "1、温度：60℃±2℃；湿度：95%； 存储24小时；\n2、将检查合格的样品不包装放入恒温恒湿箱内，设置恒温恒湿箱参数：60℃/24h，启动恒温恒湿箱；\n3、试验结束后取出样品，在常温下恢复2小时后进行样品外观结构功能检查，并记录检查结果，输出测试报告。",
+      "acceptance_criteria": "1、电气性能：电阻、电容、绝缘阻抗是否变化。\n2、机械性能：材料是否开裂、变形、密封失效。\n3、功能测试：高温高湿存储后是否能正常工作；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "高温高湿存储测试"
+      }
+    },
+    {
+      "key": "reliability-08",
+      "title": "高低温循环存储测试",
+      "category": "reliability",
+      "required": true,
+      "method": "1、高低温循环测试程式设置：\n①、步骤1，60℃/3h，使温度升温至60℃；\n②、步骤2，60℃/3h，使高低温箱保持温度60℃ 3h；\n③、步骤3，-10℃/3h，使温度下降至-10℃；\n④、步骤4，-10℃/3h，使高低温箱保持温度-10℃ 3h；\n⑤、步骤1、2、3、4为一个循环，重复2个循环。\n2、将检查合格的样品不包装放入恒温恒湿箱内，启动恒温恒湿箱；\n3、试验结束后取出样品，在常温下恢复2小时后进行样品外观结构功能检查，并记录检查结果，输出测试报告。",
+      "acceptance_criteria": "1、电气性能：电阻、电容、绝缘阻抗是否变化。\n2、机械性能：材料是否开裂、变形、密封失效。\n3、功能测试：高低温循环后是否能正常工作；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "高低温循环存储测试"
+      }
+    },
+    {
+      "key": "reliability-09",
+      "title": "高温工作测试",
+      "category": "reliability",
+      "required": true,
+      "method": "1、高低温循环测试程式设置：50℃；\n2、将检查合格、满电的样品，放入恒温恒湿箱，待恒温恒湿箱温度上升至：50℃，继续让样机保持在该温度1小时；\n3、公路自行车轮胎（0-120psi)，进行充气测试，记录打气时间；",
+      "acceptance_criteria": "1、电气性能：电阻、电容、绝缘阻抗是否变化。\n2、机械性能：材料是否开裂、变形、密封失效。\n3、功能测试：高温环境下是否能正常工作；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "高温工作测试"
+      }
+    },
+    {
+      "key": "reliability-10",
+      "title": "低温工作测试(聚合物电池)",
+      "category": "reliability",
+      "required": true,
+      "method": "1、高低温循环测试程式设置：-10℃；\n2、将检查合格、满电的样品，放入恒温恒湿箱，待恒温恒湿箱温度上升至：-10℃，继续让样机保持在该温度1小时；\n3、公路自行车轮胎（0-120psi)，进行充气测试，记录打气时间；",
+      "acceptance_criteria": "1、电气性能：电阻、电容、绝缘阻抗是否变化。\n2、机械性能：材料是否开裂、变形、密封失效。\n3、功能测试：低温环境下是否能正常工作；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "低温工作测试(聚合物电池)"
+      }
+    },
+    {
+      "key": "reliability-11",
+      "title": "氣管可靠度測試",
+      "category": "reliability",
+      "required": true,
+      "method": "1、高温：150±2℃；存储24小时；\n2、将检查合格的样品放入恒温恒湿箱内，设置恒温恒湿箱参数：150℃/24h，启动恒温恒湿箱；\n3、试验结束后取出样品，进行样品外观结构功能检查，任何卯接处不可以松脱或可旋转的情况，并记录检查结果，输出测试报告。",
+      "acceptance_criteria": "1、任何卯接处不可以松脱或可旋转的情况。\n2、外观不可龟裂或溶解、沾黏。\n3、密封性能不可以丧失；",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "氣管可靠度測試"
+      }
+    },
+    {
+      "key": "reliability-12",
+      "title": "出氣嘴使用功能測試",
+      "category": "reliability",
+      "required": true,
+      "method": "1、美嘴 / 法嘴 / 英嘴 / 德嘴等等，任何接嘴都须一一验证。\n2、任何规格气嘴接入相同规格的轮胎，实际打气至最高气压值。\n3、循环测试20遍。",
+      "acceptance_criteria": "1、打气过程不可松脱。\n2、需人力可操作范围。\n3、不可发现阻塞、充不了轮胎的情况。",
+      "source": {
+        "file": "2可靠性测试报告(1).xlsx",
+        "sha256": "ad953e407cc13ec6a0cd932387995fbe700693c2ce8b224d53785098657ae964",
+        "sheet": "出氣嘴使用功能測試"
+      }
+    }
+  ]
+}

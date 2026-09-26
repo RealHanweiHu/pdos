@@ -4,18 +4,20 @@ from __future__ import annotations
 
 import hashlib
 import re
-from contextlib import suppress
-from dataclasses import dataclass
+from contextlib import nullcontext, suppress
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from io import BytesIO
 from pathlib import PurePath
+from typing import Any
 from uuid import UUID, uuid4
 from zipfile import BadZipFile, ZipFile
 
 from openpyxl import load_workbook
+from openpyxl.utils.cell import get_column_letter
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
-from sqlalchemy import Engine, select
+from sqlalchemy import Connection, Engine, select
 
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
@@ -28,6 +30,7 @@ MAX_PDF_PAGES = 500
 MAX_FRAGMENT_CHARACTERS = 20_000
 SUPPORTED_MEDIA_TYPES = {
     ".pdf": "application/pdf",
+    ".eml": "message/rfc822",
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 }
 
@@ -71,6 +74,7 @@ class DocumentRecord:
     extraction_status: str
     fragments: tuple[ExtractedFragment, ...]
     created_at: datetime
+    extraction_metadata: dict[str, Any] = field(default_factory=dict)
 
 
 def _safe_filename(filename: str) -> str:
@@ -144,7 +148,9 @@ def _cell_text(value: object) -> str:
     return re.sub(r"[\t\r\n]+", " ", str(value)).strip()
 
 
-def _extract_xlsx(content: bytes) -> tuple[ExtractedFragment, ...]:
+def _extract_xlsx(
+    content: bytes, *, include_coordinates: bool = False
+) -> tuple[ExtractedFragment, ...]:
     _validate_xlsx_archive(content)
     try:
         workbook = load_workbook(BytesIO(content), read_only=True, data_only=False)
@@ -159,7 +165,14 @@ def _extract_xlsx(content: bytes) -> tuple[ExtractedFragment, ...]:
             batch_end: int | None = None
             batch_characters = 0
             for row_number, values in enumerate(sheet.iter_rows(values_only=True), start=1):
-                row_text = "\t".join(_cell_text(value) for value in values).rstrip()
+                row_text = "\t".join(
+                    f"{get_column_letter(column_number)}{row_number}={_cell_text(value)}"
+                    if include_coordinates and value is not None
+                    else ""
+                    if include_coordinates
+                    else _cell_text(value)
+                    for column_number, value in enumerate(values, 1)
+                ).rstrip()
                 if not row_text:
                     continue
                 if rows and batch_characters + len(row_text) + 1 > MAX_FRAGMENT_CHARACTERS:
@@ -190,7 +203,18 @@ def _extract_xlsx(content: bytes) -> tuple[ExtractedFragment, ...]:
     return tuple(fragments)
 
 
-def extract_document(*, filename: str, content: bytes) -> tuple[str, tuple[ExtractedFragment, ...]]:
+def extract_document(
+    *, filename: str, content: bytes, include_coordinates: bool = False
+) -> tuple[str, tuple[ExtractedFragment, ...]]:
+    media, fragments, _ = extract_document_details(
+        filename=filename, content=content, include_coordinates=include_coordinates
+    )
+    return media, fragments
+
+
+def extract_document_details(
+    *, filename: str, content: bytes, include_coordinates: bool = False
+) -> tuple[str, tuple[ExtractedFragment, ...], dict[str, Any]]:
     safe_name = _safe_filename(filename)
     if not content:
         raise DocumentExtractionError("document is empty")
@@ -199,12 +223,17 @@ def extract_document(*, filename: str, content: bytes) -> tuple[str, tuple[Extra
     suffix = PurePath(safe_name).suffix.lower()
     media_type = SUPPORTED_MEDIA_TYPES.get(suffix)
     if media_type is None:
-        raise UnsupportedDocumentTypeError("only PDF and XLSX are supported")
+        raise UnsupportedDocumentTypeError("only PDF, XLSX and EML are supported")
     if suffix == ".pdf":
         if not content.startswith(b"%PDF-"):
             raise DocumentExtractionError("file content is not a PDF")
-        return media_type, _extract_pdf(content)
-    return media_type, _extract_xlsx(content)
+        return media_type, _extract_pdf(content), {}
+    if suffix == ".eml":
+        from app.domain.email_documents import extract_email
+
+        fragments, details = extract_email(content)
+        return media_type, fragments, details
+    return media_type, _extract_xlsx(content, include_coordinates=include_coordinates), {}
 
 
 class DocumentService:
@@ -222,16 +251,34 @@ class DocumentService:
         classification: str,
         content: bytes,
         now: datetime | None = None,
+        connection: Connection | None = None,
+        include_coordinates: bool = False,
     ) -> DocumentRecord:
         safe_name = _safe_filename(filename)
-        media_type, fragments = extract_document(filename=safe_name, content=content)
+        from app.domain.drawing_files import original_drawing_type
+
+        if not content:
+            raise DocumentExtractionError("document is empty")
+        if len(content) > MAX_DOCUMENT_BYTES:
+            raise DocumentTooLargeError("document exceeds the 20 MiB v0 limit")
+        fragments: tuple[ExtractedFragment, ...]
+        extraction_metadata: dict[str, Any] = {}
+        drawing_media = original_drawing_type(safe_name, content)
+        if drawing_media:
+            media_type, fragments = drawing_media, ()
+        else:
+            media_type, fragments, extraction_metadata = extract_document_details(
+                filename=safe_name, content=content, include_coordinates=include_coordinates
+            )
         created_at = (now or datetime.now(UTC)).astimezone(UTC)
         document_id = uuid4()
         digest = hashlib.sha256(content).hexdigest()
         object_key = (
             f"tenants/{tenant_id}/projects/{project_id}/documents/{document_id}/{safe_name}"
         )
-        extraction_status = "extracted" if fragments else "ocr_required"
+        extraction_status = (
+            "preview_only" if drawing_media else "extracted" if fragments else "ocr_required"
+        )
         if self._object_store is None:
             raise DocumentExtractionError("document object store is unavailable")
         self._object_store.put(
@@ -241,7 +288,9 @@ class DocumentService:
             sha256=digest,
         )
         try:
-            with self._engine.begin() as connection:
+            with (
+                nullcontext(connection) if connection is not None else self._engine.begin()
+            ) as connection:
                 connection.execute(
                     tables.documents.insert(),
                     {
@@ -256,6 +305,7 @@ class DocumentService:
                         "size_bytes": len(content),
                         "sha256": digest,
                         "extraction_status": extraction_status,
+                        "extraction_metadata": extraction_metadata,
                         "fragment_count": len(fragments),
                         "created_at": created_at,
                     },
@@ -321,6 +371,7 @@ class DocumentService:
             size_bytes=len(content),
             sha256=digest,
             extraction_status=extraction_status,
+            extraction_metadata=extraction_metadata,
             fragments=fragments,
             created_at=created_at,
         )
@@ -336,7 +387,13 @@ class DocumentService:
             if project is None:
                 return ()
             rows = connection.execute(
-                select(tables.documents)
+                select(
+                    *[
+                        column
+                        for column in tables.documents.c
+                        if column.name != "extraction_metadata"
+                    ]
+                )
                 .where(
                     tables.documents.c.tenant_id == tenant_id,
                     tables.documents.c.project_id == project_id,

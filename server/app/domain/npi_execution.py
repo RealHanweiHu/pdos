@@ -13,6 +13,13 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth.roles import Role
 from app.db.schema import tables
+from app.domain.test_templates import (
+    TemplateError,
+    TemplateSelection,
+    instantiate_cases,
+    plan_coverage,
+    project_template_snapshot,
+)
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 NPI_PHASES = frozenset({"evt", "dvt", "pvt"})
@@ -240,6 +247,21 @@ class NpiExecutionService:
                     test_case_samples[relation_row.test_case_id].append(relation_row.sample_id)
             for test_case in test_cases:
                 test_case["sample_ids"] = test_case_samples[test_case["id"]]
+            plans = self._list(
+                connection, tables.test_plans, tenant_id=tenant_id, project_id=project_id
+            )
+            item_order = {
+                (plan["id"], item["key"]): index
+                for plan in plans
+                for index, item in enumerate((plan["template_snapshot"] or {}).get("items", []))
+            }
+            plan_order = {plan["id"]: index for index, plan in enumerate(plans)}
+            test_cases.sort(
+                key=lambda case: (
+                    plan_order[case["plan_id"]],
+                    item_order.get((case["plan_id"], case["template_item_key"]), 10_000),
+                )
+            )
             return {
                 "builds": self._list(
                     connection, tables.build_batches, tenant_id=tenant_id, project_id=project_id
@@ -248,9 +270,15 @@ class NpiExecutionService:
                     connection, tables.samples, tenant_id=tenant_id, project_id=project_id
                 ),
                 "sample_signoffs": signoffs,
-                "test_plans": self._list(
-                    connection, tables.test_plans, tenant_id=tenant_id, project_id=project_id
-                ),
+                "test_plans": [
+                    {
+                        **plan,
+                        "coverage": plan_coverage(
+                            connection, tenant_id=tenant_id, project_id=project_id, plan=plan
+                        ),
+                    }
+                    for plan in plans
+                ],
                 "test_cases": test_cases,
                 "test_reports": self._list(
                     connection, tables.test_reports, tenant_id=tenant_id, project_id=project_id
@@ -266,6 +294,24 @@ class NpiExecutionService:
                 ),
             }
 
+    def build_options(self, *, tenant_id: UUID, project_id: UUID) -> dict[str, Any]:
+        with self._engine.connect() as connection:
+            project = self._project(connection, tenant_id=tenant_id, project_id=project_id)
+            stages = (
+                connection.execute(
+                    select(tables.stages.c.id, tables.stages.c.code, tables.stages.c.name)
+                    .where(
+                        tables.stages.c.tenant_id == tenant_id,
+                        tables.stages.c.workflow_id == project["workflow_id"],
+                        tables.stages.c.code.in_(["evt", "dvt", "pvt"]),
+                    )
+                    .order_by(tables.stages.c.code, tables.stages.c.id)
+                )
+                .mappings()
+                .all()
+            )
+            return {"stages": [_plain(row) for row in stages]}
+
     def create_build(
         self,
         *,
@@ -277,7 +323,22 @@ class NpiExecutionService:
         code: str,
         planned_quantity: int,
         notes: str | None,
+        purpose: str = "engineering_build",
     ) -> dict[str, Any]:
+        if (
+            not code.strip()
+            or len(code.strip()) > 64
+            or purpose
+            not in {
+                "engineering_build",
+                "certification_sample",
+                "customer_sample",
+                "reliability_test",
+                "production_trial",
+            }
+        ):
+            raise NpiConflictError
+        code = code.strip()
         record_id = uuid4()
         try:
             with self._engine.begin() as connection:
@@ -302,6 +363,7 @@ class NpiExecutionService:
                             stage_id=stage_id,
                             created_by_user_id=actor_user_id,
                             phase=phase,
+                            purpose=purpose,
                             code=code,
                             planned_quantity=planned_quantity,
                             notes=notes,
@@ -366,6 +428,10 @@ class NpiExecutionService:
                 ).scalar_one()
                 if completed_quantity != sample_count:
                     raise NpiTransitionError
+            if before_row["status"] == "planned" and status in {"in_progress", "completed"}:
+                from app.domain.material_admission import enforce
+
+                enforce(connection, tenant_id, project_id, actor_user_id, "build", build_id)
             now = datetime.now(UTC)
             values: dict[str, Any] = {
                 "status": status,
@@ -376,6 +442,18 @@ class NpiExecutionService:
                 values["started_at"] = before_row["started_at"] or now
             if status == "completed":
                 values["completed_at"] = now
+            from app.domain.schedule_execution import guard_source_action
+
+            guard_source_action(
+                connection,
+                tenant_id,
+                project_id,
+                build_id,
+                "build",
+                "npi.build.updated",
+                _snapshot({**dict(before_row), **values}),
+                now,
+            )
             row = (
                 connection.execute(
                     tables.build_batches.update()
@@ -415,83 +493,115 @@ class NpiExecutionService:
         prototype_bom_id: UUID | None,
         notes: str | None,
     ) -> dict[str, Any]:
-        record_id = uuid4()
         try:
             with self._engine.begin() as connection:
-                self._project(connection, tenant_id=tenant_id, project_id=project_id, lock=True)
-                build = self._row(
-                    connection,
-                    tables.build_batches,
-                    tenant_id=tenant_id,
-                    project_id=project_id,
-                    record_id=build_id,
-                    lock=True,
-                )
-                if build["status"] not in {"planned", "in_progress"}:
-                    raise NpiTransitionError
-                sample_count = connection.execute(
-                    select(func.count())
-                    .select_from(tables.samples)
-                    .where(
-                        tables.samples.c.tenant_id == tenant_id,
-                        tables.samples.c.project_id == project_id,
-                        tables.samples.c.build_batch_id == build_id,
-                    )
-                ).scalar_one()
-                if sample_count >= build["planned_quantity"]:
-                    raise NpiConflictError
-                if parent_sample_id is not None:
-                    self._row(
-                        connection,
-                        tables.samples,
-                        tenant_id=tenant_id,
-                        project_id=project_id,
-                        record_id=parent_sample_id,
-                    )
-                if prototype_bom_id is not None:
-                    bom = self._row(
-                        connection,
-                        tables.development_boms,
-                        tenant_id=tenant_id,
-                        project_id=project_id,
-                        record_id=prototype_bom_id,
-                    )
-                    if bom["bom_type"] != "prototype":
-                        raise NpiScopeError
-                row = (
-                    connection.execute(
-                        tables.samples.insert()
-                        .values(
-                            id=record_id,
-                            tenant_id=tenant_id,
-                            project_id=project_id,
-                            build_batch_id=build_id,
-                            parent_sample_id=parent_sample_id,
-                            prototype_bom_id=prototype_bom_id,
-                            created_by_user_id=actor_user_id,
-                            serial_number=serial_number,
-                            notes=notes,
-                        )
-                        .returning(tables.samples)
-                    )
-                    .mappings()
-                    .one()
-                )
-                record = _plain(row)
-                self._record_change(
+                return self.create_sample_in_connection(
                     connection,
                     tenant_id=tenant_id,
                     project_id=project_id,
                     actor_user_id=actor_user_id,
-                    record_id=record_id,
-                    record_type="sample",
-                    action="created",
-                    before=None,
-                    after=_snapshot(record),
+                    build_id=build_id,
+                    serial_number=serial_number,
+                    parent_sample_id=parent_sample_id,
+                    prototype_bom_id=prototype_bom_id,
+                    notes=notes,
                 )
-                return record
         except IntegrityError as error:
             raise NpiConflictError from error
+
+    def create_sample_in_connection(
+        self,
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        actor_user_id: UUID,
+        build_id: UUID,
+        serial_number: str,
+        parent_sample_id: UUID | None,
+        prototype_bom_id: UUID | None,
+        notes: str | None,
+        built_at: datetime | None = None,
+        built_at_precision: str = "unknown",
+    ) -> dict[str, Any]:
+        record_id = uuid4()
+        self._project(connection, tenant_id=tenant_id, project_id=project_id, lock=True)
+        build = self._row(
+            connection,
+            tables.build_batches,
+            tenant_id=tenant_id,
+            project_id=project_id,
+            record_id=build_id,
+            lock=True,
+        )
+        if build["status"] not in {"planned", "in_progress"}:
+            raise NpiTransitionError
+        sample_count = connection.execute(
+            select(func.count())
+            .select_from(tables.samples)
+            .where(
+                tables.samples.c.tenant_id == tenant_id,
+                tables.samples.c.project_id == project_id,
+                tables.samples.c.build_batch_id == build_id,
+            )
+        ).scalar_one()
+        if sample_count >= build["planned_quantity"]:
+            raise NpiConflictError
+        if parent_sample_id is not None:
+            self._row(
+                connection,
+                tables.samples,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                record_id=parent_sample_id,
+            )
+        if prototype_bom_id is not None:
+            bom = self._row(
+                connection,
+                tables.development_boms,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                record_id=prototype_bom_id,
+            )
+            if bom["bom_type"] != "prototype":
+                raise NpiScopeError
+        row = (
+            connection.execute(
+                tables.samples.insert()
+                .values(
+                    id=record_id,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    build_batch_id=build_id,
+                    parent_sample_id=parent_sample_id,
+                    prototype_bom_id=prototype_bom_id,
+                    created_by_user_id=actor_user_id,
+                    serial_number=serial_number,
+                    notes=notes,
+                    **(
+                        {"built_at": built_at, "built_at_precision": built_at_precision}
+                        if built_at is not None
+                        else {}
+                    ),
+                )
+                .returning(tables.samples)
+            )
+            .mappings()
+            .one()
+        )
+        record = _plain(row)
+        self._record_change(
+            connection,
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=actor_user_id,
+            record_id=record_id,
+            record_type="sample",
+            action="created",
+            before=None,
+            after=_snapshot(record),
+        )
+        return record
 
     def create_signoff(
         self,
@@ -655,11 +765,23 @@ class NpiExecutionService:
         scope: str | None,
         sample_size: int,
         status: str,
+        template: TemplateSelection | None = None,
     ) -> dict[str, Any]:
         record_id = uuid4()
         with self._engine.begin() as connection:
             project = self._project(
                 connection, tenant_id=tenant_id, project_id=project_id, lock=True
+            )
+            baseline = (
+                project_template_snapshot(
+                    connection,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    selection=template,
+                    actor_user_id=actor_user_id,
+                )
+                if template
+                else None
             )
             self._phase_stage(
                 connection,
@@ -683,6 +805,7 @@ class NpiExecutionService:
                         scope=scope,
                         sample_size=sample_size,
                         status=status,
+                        template_snapshot=baseline,
                     )
                     .returning(tables.test_plans)
                 )
@@ -690,6 +813,15 @@ class NpiExecutionService:
                 .one()
             )
             record = _plain(row)
+            if baseline is not None:
+                instantiate_cases(
+                    connection,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    plan_id=record_id,
+                    actor_user_id=actor_user_id,
+                    snapshot=baseline,
+                )
             self._record_change(
                 connection,
                 tenant_id=tenant_id,
@@ -702,6 +834,71 @@ class NpiExecutionService:
                 after=_snapshot(record),
             )
             return record
+
+    def bind_test_template(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        actor_user_id: UUID,
+        plan_id: UUID,
+        selection: TemplateSelection,
+    ) -> dict[str, Any]:
+        with self._engine.begin() as connection:
+            self._project(connection, tenant_id=tenant_id, project_id=project_id, lock=True)
+            baseline = project_template_snapshot(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                selection=selection,
+                actor_user_id=actor_user_id,
+            )
+            plan = self._row(
+                connection,
+                tables.test_plans,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                record_id=plan_id,
+                lock=True,
+            )
+            exists = connection.execute(
+                select(tables.test_cases.c.id)
+                .where(
+                    tables.test_cases.c.tenant_id == tenant_id,
+                    tables.test_cases.c.plan_id == plan_id,
+                )
+                .limit(1)
+            ).first()
+            if plan["template_snapshot"] is not None or exists or plan["status"] == "completed":
+                raise TemplateError("仅空白计划可绑定模板；换版请创建新计划，保留原计划和结果")
+            connection.execute(
+                tables.test_plans.update()
+                .where(
+                    tables.test_plans.c.tenant_id == tenant_id,
+                    tables.test_plans.c.id == plan_id,
+                )
+                .values(template_snapshot=baseline, updated_at=datetime.now(UTC))
+            )
+            instantiate_cases(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                plan_id=plan_id,
+                actor_user_id=actor_user_id,
+                snapshot=baseline,
+            )
+            self._record_change(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                actor_user_id=actor_user_id,
+                record_id=plan_id,
+                record_type="test_plan",
+                action="template_bound",
+                before=_snapshot(dict(plan)),
+                after=_snapshot({**dict(plan), "template_snapshot": baseline}),
+            )
+            return {"plan_id": plan_id, "template_snapshot": baseline}
 
     def create_test_case(
         self,

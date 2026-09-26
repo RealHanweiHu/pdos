@@ -10,6 +10,7 @@ import httpx2
 
 APP_TOKEN_URL = "https://api.dingtalk.com/v1.0/oauth2/accessToken"
 GROUP_MESSAGE_URL = "https://api.dingtalk.com/v1.0/robot/groupMessages/send"
+OTO_MESSAGE_URL = "https://api.dingtalk.com/v1.0/robot/oToMessages/batchSend"
 APPROVAL_URL = "https://api.dingtalk.com/v1.0/workflow/processInstances"
 CARD_CREATE_URL = "https://api.dingtalk.com/v1.0/card/instances/createAndDeliver"
 CARD_UPDATE_URL = "https://api.dingtalk.com/v1.0/card/instances"
@@ -120,6 +121,31 @@ class DingTalkDeliveryClient:
             payload={
                 "robotCode": robot_code,
                 "openConversationId": open_conversation_id,
+                "msgKey": "sampleMarkdown",
+                "msgParam": '{"title":'
+                + _json_string(title)
+                + ',"text":'
+                + _json_string(text)
+                + "}",
+            },
+            reference_keys=("processQueryKey", "messageId", "taskId"),
+        )
+
+    def send_oto_markdown(
+        self,
+        *,
+        token: str,
+        robot_code: str,
+        staff_id: str,
+        title: str,
+        text: str,
+    ) -> DeliveryResult:
+        return self._create(
+            OTO_MESSAGE_URL,
+            token=token,
+            payload={
+                "robotCode": robot_code,
+                "userIds": [staff_id],
                 "msgKey": "sampleMarkdown",
                 "msgParam": '{"title":'
                 + _json_string(title)

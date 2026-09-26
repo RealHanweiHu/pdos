@@ -22,7 +22,44 @@ class ContextProjection:
 
 
 PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
+    "loop": {"step": None, "step_limit": None},
+    "tool_observations": (
+        {
+            "tool": None,
+            "status": None,
+            "shown_count": None,
+            "total_count": None,
+            "truncated": None,
+            "continuation": None,
+            "error_code": None,
+            "request": {
+                "name": None,
+                "query": None,
+                "after_id": None,
+                "offset": None,
+                "limit": None,
+            },
+        },
+    ),
     "question": None,
+    "test_plan": {
+        "product_type": None,
+        "previous_proposal": None,
+        "items": (
+            {
+                "key": None,
+                "title": None,
+                "category": None,
+                "method": None,
+                "acceptance_criteria": None,
+                "required": None,
+                "applicable": None,
+                "exclusion_reason": None,
+                "applicability": None,
+                "evidence_requirements": None,
+            },
+        ),
+    },
     "project": {
         "id": None,
         "code": None,

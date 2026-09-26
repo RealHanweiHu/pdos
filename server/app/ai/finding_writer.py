@@ -9,6 +9,8 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import Engine, text
 
+from app.ai.capability_contract import UnknownCapabilityError, capability_for_finding
+from app.ai.rollout_guard import require_live_finding
 from app.ai.run_store import AgentRunStore, ClaimedAgentRun
 from app.ai.runtime_contract import FrozenRunContext, agents_for_event
 from app.domain.findings import FINDING_PREFLIGHT_VERSION, FindingPayload
@@ -45,29 +47,19 @@ def preflight_assessment(
         return None
     if assessment.candidate_type is None or assessment.proposed_payload is None:
         raise FindingPreflightError("Finding candidate is incomplete")
-    allowed_types = {
-        "project_intelligence": {
-            "risk_suggestion",
-            "blocker_alert",
-            "gate_readiness_anomaly",
-        },
-        "knowledge_lite": {"knowledge_draft"},
-        "engineering_intelligence": {
-            "bom_impact_suggestion",
-            "change_impact_suggestion",
-        },
-        "quality_intelligence": {"quality_cluster_alert", "capa_suggestion"},
-        "supplier_intelligence": {"supplier_delay_risk"},
-        "executive_intelligence": {"executive_portfolio_brief"},
-    }
-    if assessment.candidate_type not in allowed_types[context.agent_key.value]:
-        raise FindingPreflightError("Finding type is outside the Agent contract")
+    try:
+        capability_for_finding(context.agent_key, assessment.candidate_type)
+    except UnknownCapabilityError as error:
+        raise FindingPreflightError(
+            "Finding type is outside the Agent capability contract"
+        ) from error
     if any(
         context.agent_key not in agents_for_event(event.event_type)
         for event in context.trigger_events
     ):
         raise FindingPreflightError("Finding evidence is outside the Agent event subscription")
     evidence = tuple(dict.fromkeys(assessment.evidence_event_ids))
+    require_live_finding(context.agent_key.value, assessment.candidate_type)
     run_evidence = {event.id for event in context.trigger_events}
     if not evidence or not set(evidence).issubset(run_evidence):
         raise FindingPreflightError("Finding evidence is outside the frozen run context")
@@ -111,6 +103,7 @@ class RestrictedAgentFindingWriter:
         candidate: FindingCandidate,
         created_at: datetime,
     ) -> UUID:
+        require_live_finding(context.agent_key.value, candidate.finding_type)
         if claim.lease_token is None:
             raise RuntimeError("restricted Finding creation requires a run lease")
         finding_id = uuid4()

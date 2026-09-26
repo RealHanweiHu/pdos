@@ -13,12 +13,17 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
+from app.ai.agent_budget import RestrictedBudgetLedger
+from app.ai.budget_adoption import agent_budget_configuration
+from app.ai.egress import ProviderEgressPolicy
 from app.ai.embeddings import EmbeddingError, configured_embedding_gateway
 from app.ai.executor import AgentExecutor, GatewayAgentModelInvoker
 from app.ai.finding_writer import RestrictedAgentFindingWriter
-from app.ai.gateway import ProviderRateCard, StructuredModelGateway
+from app.ai.gateway import StructuredModelGateway
 from app.ai.golden_suite import load_golden_suite
-from app.ai.model_catalog import ModelCatalog, ProviderName
+from app.ai.loop_policy import configured_loop_binding
+from app.ai.model_budget import ModelBudgetController
+from app.ai.model_catalog import ModelCatalog
 from app.ai.provider_adapters import configured_provider_adapters
 from app.ai.qualifications import load_golden_qualifications
 from app.ai.run_store import RestrictedAgentRunStore
@@ -68,6 +73,10 @@ def configured_agent_runtime(
     environment: Mapping[str, str] | None = None,
 ) -> Iterator[AgentRuntime]:
     values = os.environ if environment is None else environment
+    budget_configuration = agent_budget_configuration(values)
+    loop_binding = configured_loop_binding(values)
+    if loop_binding is not None and budget_configuration is None:
+        raise RuntimeConfigurationError("bounded tool loop requires budgeted Agent execution")
     database_url = required_database_url(values, key="PDOS_AGENT_DATABASE_URL")
     engine = create_engine(psycopg_database_url(database_url), pool_pre_ping=True)
     catalog = ModelCatalog.from_environment(values)
@@ -91,7 +100,6 @@ def configured_agent_runtime(
         default_daily_token_budget=default_budget,
         run_store=run_store,
     )
-    rate_cards = {provider: ProviderRateCard(0, 0) for provider in ProviderName}
     try:
         with ExitStack() as stack:
             client = stack.enter_context(httpx2.Client(follow_redirects=False, trust_env=False))
@@ -101,14 +109,28 @@ def configured_agent_runtime(
                 if error.code != "EMBEDDING_NOT_CONFIGURED":
                     raise
                 embedding_gateway = None
+            budget_controller = (
+                ModelBudgetController.from_publication(
+                    RestrictedBudgetLedger(engine, run_store),
+                    profile=budget_configuration.profile,
+                    path=budget_configuration.meter_path,
+                    expected_sha256=budget_configuration.meter_sha256,
+                    qualifications=qualifications,
+                    client=client,
+                    egress_policy=ProviderEgressPolicy.from_catalog(catalog),
+                )
+                if budget_configuration is not None
+                else None
+            )
             gateway = StructuredModelGateway(
                 engine,
                 catalog=catalog,
                 qualifications=qualifications,
                 governance=governance,
                 adapters=configured_provider_adapters(catalog, client),
-                rate_cards=rate_cards,
+                rate_cards={},
                 run_store=run_store,
+                budget_controller=budget_controller,
             )
             yield AgentRuntime(
                 engine=engine,
@@ -121,6 +143,10 @@ def configured_agent_runtime(
                         run_store=run_store,
                     ),
                     embedding_gateway=embedding_gateway,
+                    loop_binding=loop_binding,
+                    loop_step_limit=budget_configuration.profile.model_call_limit
+                    if budget_configuration is not None
+                    else 0,
                 ),
             )
     finally:

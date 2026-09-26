@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from datetime import datetime
 from decimal import Decimal
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -17,6 +18,8 @@ from app.api.work_items import authorize_project
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.engine import get_engine
+from app.domain.engineering_review_packages import ReviewDraft
+from app.domain.engineering_review_packages import SourceKind as EngineeringSourceKind
 from app.domain.product_engineering import (
     BomItemCostDraft,
     BomItemCostRecord,
@@ -33,11 +36,141 @@ from app.domain.product_engineering import (
     SpecificationDraft,
     SpecificationRecord,
 )
+from app.domain.spec_coverage import CoverageItem, SpecCoverageService
+from app.domain.specification_responsibility import Reassign as SpecificationOwnerReassign
 
 router = APIRouter(
     prefix="/api/projects/{project_id}/product-engineering",
     tags=["product-engineering"],
 )
+
+
+@router.get("/specifications/{specification_id}/owner-transfer")
+def specification_owner_read(
+    project_id: UUID,
+    specification_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before_id: int | None = None,
+) -> dict[str, Any]:
+    from app.domain.product_workspace import ProductWorkAccessError, ProductWorkError
+    from app.domain.specification_responsibility import read
+
+    no_store(response)
+    try:
+        return read(engine, context, project_id, specification_id, before_id)
+    except ProductWorkAccessError as error:
+        raise HTTPException(403, detail={"message": str(error)}) from error
+    except ProductWorkError as error:
+        raise HTTPException(409, detail={"message": str(error)}) from error
+
+
+@router.post("/specifications/{specification_id}/owner-transfer")
+def specification_owner_transfer(
+    project_id: UUID,
+    specification_id: UUID,
+    body: SpecificationOwnerReassign,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.domain.product_workspace import ProductWorkAccessError, ProductWorkError
+    from app.domain.specification_responsibility import transfer
+
+    no_store(response)
+    try:
+        return transfer(engine, context, project_id, specification_id, body)
+    except ProductWorkAccessError as error:
+        raise HTTPException(403, detail={"message": str(error)}) from error
+    except (ProductWorkError, IntegrityError) as error:
+        message = (
+            str(error)
+            if isinstance(error, ProductWorkError)
+            else "规格版本已变化，请重新核对后办理"
+        )
+        raise HTTPException(409, detail={"message": message}) from error
+
+
+@router.get("/review-packages/options")
+def review_package_options(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.domain.engineering_review_packages import options
+
+    no_store(response)
+    return options(engine, context=context, project_id=project_id)
+
+
+@router.get("/review-packages/sources")
+def review_package_sources(
+    project_id: UUID,
+    kind: EngineeringSourceKind,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    after_id: UUID | None = None,
+) -> dict[str, Any]:
+    from app.domain.engineering_review_packages import sources
+
+    no_store(response)
+    return sources(engine, context=context, project_id=project_id, kind=kind, after_id=after_id)
+
+
+@router.get("/review-packages")
+def review_package_history(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before_id: UUID | None = None,
+) -> dict[str, Any]:
+    from app.domain.engineering_review_packages import EngineeringReviewError, history
+
+    no_store(response)
+    try:
+        return history(engine, context=context, project_id=project_id, before_id=before_id)
+    except EngineeringReviewError as error:
+        raise HTTPException(409, detail={"message": str(error)}) from error
+
+
+@router.get("/review-packages/{package_id}")
+def review_package_read(
+    project_id: UUID,
+    package_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.domain.engineering_review_packages import EngineeringReviewError, read
+
+    no_store(response)
+    try:
+        return read(engine, context=context, project_id=project_id, package_id=package_id)
+    except EngineeringReviewError as error:
+        raise HTTPException(409, detail={"message": str(error)}) from error
+
+
+@router.post("/review-packages")
+def review_package_save(
+    project_id: UUID,
+    body: ReviewDraft,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.domain.engineering_review_packages import save
+
+    no_store(response)
+    try:
+        return save(engine, context=context, project_id=project_id, draft=body)
+    except (ValueError, LookupError) as error:
+        raise HTTPException(
+            409, detail={"message": str(error) or "评审来源或任务安排已变化，请重新核对"}
+        ) from error
 
 
 class SpecificationCreateRequest(BaseModel):
@@ -46,6 +179,11 @@ class SpecificationCreateRequest(BaseModel):
     code: str = Field(min_length=1, max_length=64)
     title: str = Field(min_length=1, max_length=512)
     version: int = Field(default=1, ge=1)
+    requirement_id: UUID | None = None
+    owner_user_id: UUID | None = None
+    verification_method: str | None = Field(default=None, max_length=20_000)
+    acceptance_criteria: str | None = Field(default=None, max_length=20_000)
+    criticality: str = Field(default="standard", pattern=r"^(standard|key)$")
     content: dict[str, object] = Field(default_factory=dict)
 
     @field_validator("code", "title", mode="before")
@@ -63,6 +201,11 @@ class SpecificationResponse(BaseModel):
     code: str
     title: str
     version: int
+    requirement_id: UUID | None
+    owner_user_id: UUID | None
+    verification_method: str | None
+    acceptance_criteria: str | None
+    criticality: str
     content: dict[str, object]
     created_at: datetime
     updated_at: datetime
@@ -377,6 +520,11 @@ def create_specification(
                 code=body.code,
                 title=body.title,
                 version=body.version,
+                requirement_id=body.requirement_id,
+                owner_user_id=body.owner_user_id,
+                verification_method=body.verification_method,
+                acceptance_criteria=body.acceptance_criteria,
+                criticality=body.criticality,
                 content=body.content,
             ),
         )
@@ -569,3 +717,51 @@ def add_erp_reference(
     ) as error:
         raise product_error(error) from error
     return erp_reference_response(record)
+
+
+class CoverageItemResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    id: UUID
+    code: str
+    title: str
+
+
+class SpecCoverageResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    requirements_without_spec: list[CoverageItemResponse]
+    key_specs_unverified: list[CoverageItemResponse]
+    failed_verification: list[CoverageItemResponse]
+    retest_needed: list[CoverageItemResponse]
+
+
+@router.get("/spec-coverage", response_model=SpecCoverageResponse)
+def spec_coverage(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> SpecCoverageResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.PRODUCT_ENGINEERING_VIEW,
+    )
+    coverage = SpecCoverageService(engine).compute(
+        tenant_id=context.tenant.id, project_id=project_id
+    )
+
+    def bucket(items: Sequence[CoverageItem]) -> list[CoverageItemResponse]:
+        return [
+            CoverageItemResponse(id=item.id, code=item.code, title=item.title) for item in items
+        ]
+
+    return SpecCoverageResponse(
+        requirements_without_spec=bucket(coverage.requirements_without_spec),
+        key_specs_unverified=bucket(coverage.key_specs_unverified),
+        failed_verification=bucket(coverage.failed_verification),
+        retest_needed=bucket(coverage.retest_needed),
+    )

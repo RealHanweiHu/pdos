@@ -3,18 +3,24 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from contextlib import suppress
 from pathlib import Path
-from typing import Literal, Self
+from typing import Any, Literal, Self
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from sqlalchemy import Connection, Engine, RowMapping, desc, select
 
 from app.ai.application_gateway import ApplicationModelGateway
+from app.ai.call_identity import ModelCallSlot, model_call_id
+from app.ai.chat_runs import ChatRunStore
 from app.ai.embeddings import EmbeddingError, EmbeddingGateway
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
+from app.auth.errors import ObjectPermissionDeniedError
+from app.auth.project_access import ProjectAccessService, SqlProjectAccessRepository
+from app.auth.repository import AuthContext, AuthRepository
+from app.auth.roles import Action, is_allowed
 from app.db.schema import tables
 from app.domain.memories import MemoryService
 
@@ -66,8 +72,8 @@ class ChatEvidence(BaseModel):
     excerpt: str
 
 
-@dataclass(frozen=True)
-class ChatResult:
+class ChatResult(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
     status: Literal["answered", "insufficient_evidence", "unavailable"]
     answer: str | None
     citations: tuple[ChatEvidence, ...]
@@ -99,7 +105,30 @@ class ChatEvidenceRepository:
         tenant_id: UUID,
         project_id: UUID,
         question: str,
+        actor_user_id: UUID | None = None,
+        attachment_ids: tuple[UUID, ...] = (),
+        object_focus: dict[str, Any] | None = None,
     ) -> tuple[ChatEvidence, ...]:
+        if object_focus is not None:
+            from app.domain.conversation_focus import current
+
+            if actor_user_id is None or attachment_ids:
+                raise ObjectPermissionDeniedError
+            with self._engine.connect() as connection:
+                value = current(connection, tenant_id, project_id, actor_user_id, object_focus)
+            import json
+
+            return (
+                ChatEvidence(
+                    reference_id=f"work-card:{value['kind']}:{value['id']}:{value['digest']}",
+                    entity=value["kind"],
+                    entity_id=value["id"],
+                    label=value["title"],
+                    href=value["href"],
+                    excerpt="本次选定对象的当前字段；长字段只显示片段，未提供关联原件全文或其他对象，不据此认定全范围已完成。\n"
+                    + json.dumps(value["fields"], ensure_ascii=False),
+                ),
+            )
         with self._engine.connect() as connection:
             project = (
                 connection.execute(
@@ -152,7 +181,74 @@ class ChatEvidenceRepository:
                     question=question,
                 )
             )
+        from app.domain.conversation_attachments import attachment_evidence
+
+        evidence.extend(
+            attachment_evidence(
+                self._engine,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                actor_user_id=actor_user_id,
+                attachment_ids=attachment_ids,
+                question=question,
+            )
+        )
         return tuple(evidence)
+
+    def still_current(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        question: str,
+        actor_user_id: UUID | None = None,
+        attachment_ids: tuple[UUID, ...] = (),
+        object_focus: dict[str, Any] | None = None,
+        evidence: tuple[ChatEvidence, ...],
+    ) -> bool:
+        # Revalidate frozen source excerpts without running embedding/model search again.
+        try:
+            current = {
+                item.reference_id: item
+                for item in ChatEvidenceRepository(self._engine).collect(
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    question=question,
+                    actor_user_id=actor_user_id,
+                    attachment_ids=attachment_ids,
+                    object_focus=object_focus,
+                )
+            }
+        except (ValueError, PermissionError):
+            if object_focus is not None:
+                return False
+            raise
+        memory_ids = [UUID(item.entity_id) for item in evidence if item.entity == "memory"]
+        if memory_ids:
+            with self._engine.connect() as connection:
+                rows = connection.execute(
+                    select(tables.memories).where(
+                        tables.memories.c.tenant_id == tenant_id,
+                        tables.memories.c.project_id == project_id,
+                        tables.memories.c.status == "verified",
+                        tables.memories.c.id.in_(memory_ids),
+                    )
+                ).mappings()
+                for row in rows:
+                    item = ChatEvidence(
+                        reference_id=f"memory:{row['id']}",
+                        entity="memory",
+                        entity_id=str(row["id"]),
+                        label=row["title"],
+                        href=f"/knowledge?project={project_id}&memory={row['id']}",
+                        excerpt=_excerpt(
+                            row["content"],
+                            row["applicability"],
+                            "tags=" + ", ".join(row["tags"]) if row["tags"] else None,
+                        ),
+                    )
+                    current[item.reference_id] = item
+        return all(current.get(item.reference_id) == item for item in evidence)
 
     def _memory_evidence(
         self,
@@ -371,28 +467,151 @@ class ChatService:
         self._gateway = gateway
         self._embedding_gateway = embedding_gateway
 
-    def answer(self, *, tenant_id: UUID, project_id: UUID, question: str) -> ChatResult:
+    def _authorize(self, context: AuthContext, project_id: UUID) -> None:
+        authorize_chat(self._engine, context, project_id)
+
+    def answer(
+        self,
+        *,
+        context: AuthContext,
+        project_id: UUID,
+        question: str,
+        request_id: str,
+        attachment_ids: tuple[UUID, ...] = (),
+        object_focus: dict[str, Any] | None = None,
+    ) -> ChatResult:
+        self._authorize(context, project_id)
+        tenant_id = context.tenant.id
+        store = ChatRunStore(self._engine, gateway=self._gateway)
+        row, created = store.start(
+            tenant_id=tenant_id,
+            project_id=project_id,
+            actor_user_id=context.user.id,
+            auth_version=context.user.auth_version,
+            request_id=request_id,
+            question=question,
+            attachment_ids=attachment_ids,
+            object_focus=object_focus,
+        )
+        run_id = row["id"]
+        repository = ChatEvidenceRepository(self._engine, embedding_gateway=self._embedding_gateway)
+        if not created:
+            return self.read_result(context=context, row=row)
         try:
-            evidence = ChatEvidenceRepository(
-                self._engine,
-                embedding_gateway=self._embedding_gateway,
-            ).collect(
-                tenant_id=tenant_id,
-                project_id=project_id,
-                question=question,
-            )
-        except EmbeddingError as error:
-            return ChatResult(
-                status="unavailable",
-                answer=None,
-                citations=(),
-                error_code=error.code,
-            )
+            try:
+                from app.ai.application_recovery import is_recovery, original_observation
+
+                if is_recovery(self._gateway, tenant_id, run_id):
+                    with self._engine.connect() as connection:
+                        saved = original_observation(connection, row)
+                    evidence = tuple(
+                        ChatEvidence.model_validate(item) for item in saved["output_body"]
+                    )
+                else:
+                    evidence = repository.collect(
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        question=question,
+                        actor_user_id=context.user.id,
+                        attachment_ids=attachment_ids,
+                        object_focus=object_focus,
+                    )
+            except EmbeddingError as error:
+                result = ChatResult(
+                    status="unavailable", answer=None, citations=(), error_code=error.code
+                )
+            else:
+                store.save_evidence(
+                    tenant_id=tenant_id,
+                    run_id=run_id,
+                    evidence=[item.model_dump(mode="json") for item in evidence],
+                )
+                self._authorize(context, project_id)
+                if repository.still_current(
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    question=question,
+                    evidence=evidence,
+                    actor_user_id=context.user.id,
+                    attachment_ids=attachment_ids,
+                    object_focus=object_focus,
+                ):
+                    result = self._generate(
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        question=question,
+                        run_id=run_id,
+                        evidence=evidence,
+                    )
+                    self._authorize(context, project_id)
+                    if result.status == "answered" and not repository.still_current(
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        question=question,
+                        evidence=evidence,
+                        actor_user_id=context.user.id,
+                        attachment_ids=attachment_ids,
+                        object_focus=object_focus,
+                    ):
+                        result = ChatResult(
+                            status="unavailable",
+                            answer=None,
+                            citations=(),
+                            error_code="CHAT_EVIDENCE_CHANGED",
+                        )
+                else:
+                    result = ChatResult(
+                        status="unavailable",
+                        answer=None,
+                        citations=(),
+                        error_code="CHAT_EVIDENCE_CHANGED",
+                    )
+            store.finish(tenant_id=tenant_id, run_id=run_id, result=result.model_dump(mode="json"))
+            return result
+        except Exception:
+            # Failure never mints another request or permits re-dispatch on replay.
+            with suppress(Exception):
+                store.finish(
+                    tenant_id=tenant_id,
+                    run_id=run_id,
+                    result={
+                        "status": "unavailable",
+                        "answer": None,
+                        "citations": [],
+                        "error_code": "CHAT_REQUEST_FAILED",
+                    },
+                )
+            raise
+
+    def read_result(self, *, context: AuthContext, row: RowMapping) -> ChatResult:
+        return read_chat_result(self._engine, context=context, row=row)
+
+    def _generate(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        question: str,
+        run_id: UUID,
+        evidence: tuple[ChatEvidence, ...],
+    ) -> ChatResult:
+        from app.ai.application_context import record_chat_context
+
+        record_chat_context(
+            self._engine,
+            tenant_id=tenant_id,
+            project_id=project_id,
+            run_id=run_id,
+            model_call_id=model_call_id(run_id, ModelCallSlot.CHAT_ANSWER),
+            question=question,
+            evidence=evidence,
+        )
         result = self._gateway.invoke_structured(
             GatewayInvocation(
                 tenant_id=tenant_id,
                 project_id=project_id,
-                run_id=None,
+                run_id=run_id,
+                model_call_id=model_call_id(run_id, ModelCallSlot.CHAT_ANSWER),
                 agent_key=CHAT_PROMPT.agent_key,
                 agent_tier=AgentTier.DEFAULT,
                 prompt_version=CHAT_PROMPT.version,
@@ -434,3 +653,67 @@ class ChatService:
             answer="\n".join(claim.text.strip() for claim in result.output.claims),
             citations=tuple(by_id[citation_id] for citation_id in requested_ids),
         )
+
+
+def authorize_chat(engine: Engine, context: AuthContext, project_id: UUID) -> None:
+    current = AuthRepository(engine).find_user_context(context.user.id)
+    if (
+        current is None
+        or current.tenant.id != context.tenant.id
+        or current.tenant.status != "active"
+        or not current.user.is_active
+        or current.user.auth_version != context.user.auth_version
+        or not is_allowed(current.user.role, Action.AI_CHAT_USE)
+    ):
+        raise ObjectPermissionDeniedError
+    ProjectAccessService(SqlProjectAccessRepository(engine)).authorize(
+        context=current, project_id=project_id, action=Action.PROJECT_VIEW
+    )
+
+
+def read_chat_result(engine: Engine, *, context: AuthContext, row: RowMapping) -> ChatResult:
+    """Revalidate saved output without constructing or invoking any model gateway."""
+    tenant_id, project_id = row["tenant_id"], row["project_id"]
+    if tenant_id != context.tenant.id or row["requested_by_user_id"] != context.user.id:
+        raise ObjectPermissionDeniedError
+    question = row["run_context"]["chat_question"]
+    repository = ChatEvidenceRepository(engine)
+    result = ChatResult.model_validate(
+        row["run_context"].get("chat_result")
+        or {
+            "status": "unavailable",
+            "answer": None,
+            "citations": [],
+            "error_code": row["error_code"] or "CHAT_REQUEST_INCOMPLETE",
+        }
+    )
+    evidence = tuple(
+        ChatEvidence.model_validate(item) for item in row["run_context"].get("chat_evidence", [])
+    )
+    authorize_chat(engine, context, project_id)
+    try:
+        current = (
+            repository.still_current(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                question=question,
+                evidence=evidence,
+                object_focus=row["run_context"].get("chat_object_focus"),
+                actor_user_id=context.user.id,
+                attachment_ids=tuple(
+                    UUID(a) for a in row["run_context"].get("chat_attachment_ids", [])
+                ),
+            )
+            if result.status == "answered"
+            else True
+        )
+    except (ValueError, PermissionError):
+        current = False
+    if not current:
+        return ChatResult(
+            status="unavailable",
+            answer=None,
+            citations=(),
+            error_code="CHAT_EVIDENCE_CHANGED",
+        )
+    return result

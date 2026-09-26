@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import UTC, date, datetime
 from types import MappingProxyType
-from typing import Any, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 from uuid import UUID, uuid4
 
 from sqlalchemy import Connection, Engine, func, or_, select
@@ -16,6 +18,9 @@ from sqlalchemy.exc import IntegrityError
 from app.auth.roles import Role
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
+
+if TYPE_CHECKING:
+    from app.domain.gate_assignments import GateAssignmentRequest
 
 GateSlot = Literal["product", "engineering", "quality"]
 GateRequirement = Literal["required", "conditional", "not_applicable"]
@@ -184,8 +189,32 @@ class GateNotReadyError(ValueError):
         super().__init__("Gate readiness blockers remain")
 
 
+class GateRouteBlockedError(ValueError):
+    def __init__(self, slots: list[GateSlot]) -> None:
+        self.slots = slots
+        super().__init__("前置专业签核尚未完成")
+
+
 class GateConflictError(ValueError):
     """Raised when an idempotent governance key already exists."""
+
+
+class GateBasisChangedError(ValueError):
+    """The displayed round or readiness changed before signing."""
+
+
+class GateConditionsRequiredError(ValueError):
+    """Raised when a conditional pass carries no conditions, or a plain one does."""
+
+
+@dataclass(frozen=True)
+class GateCondition:
+    """One string attached to a conditional pass, with a name on it."""
+
+    title: str
+    owner_user_id: UUID
+    due_date: date
+    closure_evidence: str
 
 
 @dataclass(frozen=True)
@@ -223,6 +252,8 @@ class GateRoundRecord:
     supersede_reason: str | None
     completed_at: datetime | None
     signoffs: tuple[GateSignoffRecord, ...]
+    routing_snapshot: dict[str, Any] = field(default_factory=dict)
+    routing_blockers: dict[GateSlot, list[GateSlot]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -231,6 +262,7 @@ class GateReadinessRecord:
     blocker_keys: tuple[str, ...]
     blockers: tuple[dict[str, str], ...]
     evaluated_at: datetime
+    material_digest: str | None = None
 
 
 @dataclass(frozen=True)
@@ -269,6 +301,27 @@ class GateRecord:
     readiness: GateReadinessRecord
     additions: tuple[GateAdditionRecord, ...]
     grandfather_exemptions: tuple[GateGrandfatherRecord, ...]
+    named_signer_policy: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def signing_basis(self) -> str:
+        current = self.round
+        value = {
+            "id": str(self.id),
+            "status": self.status,
+            "is_current": self.is_current,
+            "round_id": str(current.id) if current else None,
+            "round_status": current.status if current else None,
+            "requirements": dict(current.requirements) if current else {},
+            "routing": current.routing_snapshot if current else {},
+            "signoffs": [asdict(item) for item in current.signoffs] if current else [],
+            "blockers": sorted(self.readiness.blocker_keys),
+        }
+        if self.readiness.material_digest is not None:
+            value["material_digest"] = self.readiness.material_digest
+        return hashlib.sha256(
+            json.dumps(value, sort_keys=True, default=str, ensure_ascii=False).encode()
+        ).hexdigest()
 
 
 def _requirements(value: object) -> dict[GateSlot, GateRequirement]:
@@ -324,10 +377,13 @@ def _audit_only(
         values["before_snapshot"] = before_snapshot
     if after_snapshot is not None:
         values["after_snapshot"] = after_snapshot
-    connection.execute(
-        tables.audit_log.insert(),
-        values,
-    )
+    audit_id = connection.execute(
+        tables.audit_log.insert().values(**values).returning(tables.audit_log.c.id)
+    ).scalar_one()
+    if action in {"gate.round.open", "gate.conditional", "gate.hold", "gate.rejected"}:
+        from app.domain.schedule_source_actuals import observe_audit
+
+        observe_audit(connection, tenant_id, project_id, audit_id)
 
 
 class GateService:
@@ -395,6 +451,7 @@ class GateService:
             connection.execute(
                 select(
                     tables.projects.c.id,
+                    tables.projects.c.workflow_id,
                     tables.projects.c.current_stage_id,
                     tables.projects.c.status,
                 )
@@ -530,6 +587,8 @@ class GateService:
             tables.risks.c.project_id == project_id,
             tables.risks.c.status != "closed",
             tables.risks.c.likelihood * tables.risks.c.impact >= 16,
+            tables.risks.c.draft_state == "confirmed",
+            tables.risks.c.dismissed_at.is_(None),
         )
         if for_update:
             task_statement = task_statement.with_for_update()
@@ -572,6 +631,34 @@ class GateService:
             )
         ).scalar_one_or_none()
         if stage_code in {"evt", "dvt", "pvt"}:
+            from app.domain.test_templates import project_test_scope_status
+
+            phase_plans = list(
+                connection.execute(
+                    select(tables.test_plans).where(
+                        tables.test_plans.c.tenant_id == tenant_id,
+                        tables.test_plans.c.project_id == project_id,
+                        tables.test_plans.c.phase == stage_code,
+                    )
+                ).mappings()
+            )
+            replaced_plans = {
+                plan["parent_plan_id"] for plan in phase_plans if plan["parent_plan_id"]
+            }
+            for plan in phase_plans:
+                if plan["id"] in replaced_plans:
+                    continue
+                scope = project_test_scope_status(
+                    connection, tenant_id=tenant_id, project_id=project_id, plan=plan
+                )
+                if scope["scope_status"] == "changed":
+                    blockers.append(
+                        {
+                            "key": f"test_scope:{plan['id']}",
+                            "kind": "test_scope",
+                            "label": f"{plan['title']}：{scope['scope_message']}",
+                        }
+                    )
             build_statement = select(
                 tables.build_batches.c.id,
                 tables.build_batches.c.code,
@@ -671,6 +758,9 @@ class GateService:
                     }
                 )
             if stage_code == "pvt":
+                from app.domain.recertification_lineage import retired_certification_ids
+
+                retired_certificates = retired_certification_ids(connection, tenant_id, project_id)
                 certification_statement = select(
                     tables.certifications.c.id,
                     tables.certifications.c.certificate_type,
@@ -681,6 +771,7 @@ class GateService:
                     tables.certifications.c.tenant_id == tenant_id,
                     tables.certifications.c.project_id == project_id,
                     tables.certifications.c.is_required.is_(True),
+                    tables.certifications.c.id.not_in(retired_certificates),
                 )
                 if for_update:
                     certification_statement = certification_statement.with_for_update()
@@ -715,6 +806,7 @@ class GateService:
         signoff_rows: tuple[RowMapping, ...],
         for_update: bool = False,
         evaluated_at: datetime | None = None,
+        gate_id: UUID | None = None,
     ) -> GateReadinessRecord:
         statuses = {
             cast(GateSlot, row["slot"]): cast(GateSignoffStatus, row["status"])
@@ -738,7 +830,30 @@ class GateService:
                 for_update=for_update,
             )
         )
+        from app.domain.case_reviews import project_review_blockers
+
+        blockers.extend(
+            project_review_blockers(connection, tenant_id, project_id, stage_id, lock=for_update)
+        )
+        material_digest = None
+        if gate_id is not None:
+            from app.domain.material_admission import check_admission
+            from app.domain.product_workspace import digest
+
+            material = check_admission(
+                connection, tenant_id, project_id, "gate", gate_id, lock=for_update
+            )
+            if material["policy"] is not None:
+                material_digest = digest(
+                    {
+                        "source": material["source_digest"],
+                        "waiver": material["waiver"]["decision_id"] if material["waiver"] else None,
+                    }
+                )
+                if not material["allowed"]:
+                    blockers.extend(material["blockers"])
         return GateReadinessRecord(
+            material_digest=material_digest,
             ready=not blockers,
             blocker_keys=tuple(blocker["key"] for blocker in blockers),
             blockers=tuple(blockers),
@@ -752,6 +867,11 @@ class GateService:
             "blocker_keys": list(readiness.blocker_keys),
             "blockers": list(readiness.blockers),
             "evaluated_at": readiness.evaluated_at.isoformat(),
+            **(
+                {"material_digest": readiness.material_digest}
+                if readiness.material_digest is not None
+                else {}
+            ),
         }
 
     @staticmethod
@@ -775,6 +895,9 @@ class GateService:
             blocker_keys=tuple(str(key) for key in raw_blocker_keys),
             blockers=blockers,
             evaluated_at=datetime.fromisoformat(evaluated),
+            material_digest=str(value["material_digest"])
+            if value.get("material_digest") is not None
+            else None,
         )
 
     @classmethod
@@ -803,7 +926,24 @@ class GateService:
                 gate_id=gate_id,
                 round_id=round_row["id"],
             )
+            from app.domain.process_template_approval_routes import signing_blockers
+
+            routing = dict(round_row["routing_snapshot"])
+            statuses = {
+                cast(GateSlot, item["slot"]): cast(GateSignoffStatus, item["status"])
+                for item in signoff_rows
+            }
             round_record = GateRoundRecord(
+                routing_snapshot=routing,
+                routing_blockers={
+                    slot: signing_blockers(
+                        routing.get("dependencies", {}),
+                        _requirements(round_row["requirements"]),
+                        statuses,
+                        slot,
+                    )
+                    for slot in _requirements(round_row["requirements"])
+                },
                 id=round_row["id"],
                 round_number=round_row["round_number"],
                 status=round_row["status"],
@@ -827,6 +967,7 @@ class GateService:
         elif round_record is not None and round_record.status == "open":
             readiness = cls._readiness(
                 connection,
+                gate_id=gate_id,
                 tenant_id=tenant_id,
                 project_id=project_id,
                 stage_id=row["stage_id"],
@@ -873,7 +1014,12 @@ class GateService:
             )
             .order_by(tables.gate_grandfather_exemptions.c.created_at)
         ).mappings()
+        from app.domain.process_template_named_signers import creation_policy
+
         return GateRecord(
+            named_signer_policy=creation_policy(
+                connection, tenant_id, project_id, row["stage_code"]
+            ),
             id=gate_id,
             project_id=project_id,
             stage=GateStageRecord(
@@ -934,6 +1080,7 @@ class GateService:
         project_id: UUID,
         gate_id: UUID,
         actor_user_id: UUID,
+        assignment: GateAssignmentRequest | None = None,
     ) -> GateRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
@@ -957,7 +1104,41 @@ class GateService:
                 open_only=True,
                 for_update=True,
             )
-            if existing is not None:
+            if assignment is not None:
+                from app.domain.gate_assignments import GateAssignmentError
+
+                rounds = tables.gate_signoff_rounds
+                replay = (
+                    connection.execute(
+                        select(rounds).where(
+                            rounds.c.tenant_id == tenant_id,
+                            rounds.c.project_id == project_id,
+                            rounds.c.gate_id == gate_id,
+                            rounds.c.routing_snapshot["assignment"]["request_id"].as_string()
+                            == str(assignment.request_id),
+                        )
+                    )
+                    .mappings()
+                    .one_or_none()
+                )
+                if replay is not None:
+                    saved = replay["routing_snapshot"]["assignment"]
+                    if (
+                        saved["request_digest"] != assignment.signature()
+                        or replay["opened_by_user_id"] != actor_user_id
+                    ):
+                        raise GateAssignmentError("原分派请求已使用，请核对历史并重新发起")
+                    if existing is None or existing["id"] != replay["id"]:
+                        raise GateAssignmentError(
+                            "原请求已完成，但该轮已结束或被替代，请回看轮次历史"
+                        )
+                    return self._record_from_row(connection, tenant_id=tenant_id, row=gate)
+                displayed = self._record_from_row(connection, tenant_id=tenant_id, row=gate)
+                if displayed.signing_basis != assignment.expected_basis:
+                    raise GateBasisChangedError
+                if assignment.replace_round_id != (existing["id"] if existing else None):
+                    raise GateAssignmentError("当前轮次已变化，请刷新后重新核对分派")
+            elif existing is not None:
                 return self._record_from_row(connection, tenant_id=tenant_id, row=gate)
             latest_number = connection.execute(
                 select(func.coalesce(func.max(tables.gate_signoff_rounds.c.round_number), 0)).where(
@@ -982,6 +1163,52 @@ class GateService:
                 stage_id=gate["stage_id"],
                 for_update=True,
             )
+            from app.domain.schedule_execution import guard_source_action
+
+            guard_source_action(
+                connection,
+                tenant_id,
+                project_id,
+                gate_id,
+                "gate",
+                "gate.round.open",
+                {"status": "reviewing"},
+                occurred_at,
+            )
+            from app.domain.gate_assignments import GateAssignmentError
+            from app.domain.process_template_approval_routes import creation_snapshot
+            from app.domain.process_template_named_signers import creation_policy
+
+            required_policy = creation_policy(connection, tenant_id, project_id, gate["stage_code"])
+            if required_policy and assignment is None:
+                raise GateAssignmentError("项目创建版要求具名签核，请先安排实际签核人员再开启轮次")
+            routing = creation_snapshot(connection, tenant_id, project_id, gate["stage_code"])
+            if assignment is not None:
+                from app.domain.gate_assignments import resolve
+
+                routing["assignment"] = resolve(
+                    connection,
+                    tenant_id,
+                    project_id,
+                    assignment,
+                    requirements,
+                    required_policy,
+                )
+                if existing is not None:
+                    connection.execute(
+                        tables.gate_signoff_rounds.update()
+                        .where(
+                            tables.gate_signoff_rounds.c.tenant_id == tenant_id,
+                            tables.gate_signoff_rounds.c.id == existing["id"],
+                        )
+                        .values(
+                            status="superseded",
+                            superseded_by_user_id=actor_user_id,
+                            superseded_at=occurred_at,
+                            supersede_reason=assignment.reason.strip(),
+                            updated_at=occurred_at,
+                        )
+                    )
             round_id = uuid4()
             connection.execute(
                 tables.gate_signoff_rounds.insert(),
@@ -994,6 +1221,7 @@ class GateService:
                     "status": "open",
                     "policy_version": policy_version,
                     "requirements": requirements,
+                    "routing_snapshot": routing,
                     "risk_snapshot": {"blockers": risk_blockers},
                     "opened_by_user_id": actor_user_id,
                     "opened_at": occurred_at,
@@ -1048,6 +1276,7 @@ class GateService:
                     "round_id": str(round_id),
                     "round_number": latest_number + 1,
                     "policy_version": policy_version,
+                    "routing_snapshot": routing,
                 },
                 occurred_at=occurred_at,
             )
@@ -1071,6 +1300,7 @@ class GateService:
         slot: GateSlot,
         status: GateSignoffStatus,
         note: str | None,
+        expected_basis: str | None = None,
     ) -> GateRecord:
         if not may_sign_gate_slot(actor_role, slot):
             raise GateSigningDeniedError
@@ -1098,6 +1328,20 @@ class GateService:
             )
             if round_row is None or round_row["id"] != round_id:
                 raise GateRoundNotOpenError
+            from app.domain.gate_assignments import require_assignee
+
+            require_assignee(
+                connection,
+                tenant_id,
+                project_id,
+                dict(round_row["routing_snapshot"]),
+                slot,
+                actor_user_id,
+            )
+            if expected_basis is not None:
+                signing_record = self._record_from_row(connection, tenant_id=tenant_id, row=gate)
+                if signing_record.signing_basis != expected_basis:
+                    raise GateBasisChangedError
             signoff = (
                 connection.execute(
                     select(tables.gate_signoffs)
@@ -1117,6 +1361,68 @@ class GateService:
                 raise GateRoundNotOpenError
             if status == "conditional" and signoff["requirement"] != "conditional":
                 raise GateInvalidStateError
+            from app.domain.process_template_approval_routes import downstream, signing_blockers
+
+            dependencies = round_row["routing_snapshot"].get("dependencies", {})
+            all_signoffs = self._signoff_rows(
+                connection,
+                tenant_id=tenant_id,
+                project_id=project_id,
+                gate_id=gate_id,
+                round_id=round_id,
+            )
+            statuses = {
+                cast(GateSlot, item["slot"]): cast(GateSignoffStatus, item["status"])
+                for item in all_signoffs
+            }
+            blockers = signing_blockers(
+                dependencies, _requirements(round_row["requirements"]), statuses, slot
+            )
+            if status in {"approved", "conditional"} and blockers:
+                raise GateRouteBlockedError(blockers)
+            affected = (
+                downstream(dependencies, slot)
+                if (
+                    signoff["status"],
+                    signoff["signed_by_user_id"],
+                    signoff["signer_role"],
+                    signoff["note"],
+                )
+                != (status, actor_user_id, actor_role.value, note)
+                else []
+            )
+            reset_signatures = []
+            for prior in all_signoffs:
+                if prior["slot"] not in affected or prior["status"] in {
+                    "pending",
+                    "not_applicable",
+                }:
+                    continue
+                reset_signatures.append(
+                    {
+                        "slot": prior["slot"],
+                        "status": prior["status"],
+                        "signed_by_user_id": str(prior["signed_by_user_id"]),
+                        "signed_at": prior["signed_at"].isoformat() if prior["signed_at"] else None,
+                        "signer_role": prior["signer_role"],
+                        "note": prior["note"],
+                    }
+                )
+                connection.execute(
+                    tables.gate_signoffs.update()
+                    .where(
+                        tables.gate_signoffs.c.tenant_id == tenant_id,
+                        tables.gate_signoffs.c.id == prior["id"],
+                    )
+                    .values(
+                        status="pending",
+                        signed_by_user_id=None,
+                        signer_role=None,
+                        signed_at=None,
+                        note=None,
+                        updated_at=occurred_at,
+                    )
+                )
             before = {
                 "round_id": str(round_id),
                 "slot": slot,
@@ -1156,7 +1462,11 @@ class GateService:
                 action="gate.signoff.update",
                 before_snapshot=before,
                 after_snapshot=after,
-                context={"governance_override": actor_role in {Role.OWNER, Role.ADMIN}},
+                context={
+                    "governance_override": actor_role in {Role.OWNER, Role.ADMIN},
+                    "routing_snapshot": dict(round_row["routing_snapshot"]),
+                    "downstream_signatures_reset": reset_signatures,
+                },
                 occurred_at=occurred_at,
             )
             current = self._gate_row(
@@ -1291,9 +1601,18 @@ class GateService:
         project_id: UUID,
         gate_id: UUID,
         actor_user_id: UUID,
-        status: Literal["approved", "rejected"],
+        status: Literal["approved", "conditional", "hold", "rejected"],
         rationale: str,
+        conditions: tuple[GateCondition, ...] = (),
     ) -> GateRecord:
+        """Record the review outcome.
+
+        Four outcomes, because "approved with strings attached" is what actually
+        happens at a gate and calling it approved loses the strings. A
+        conditional pass must name each condition's owner, due date, and the
+        evidence that will close it; those become tracked gate actions rather
+        than a sentence in a rationale nobody revisits.
+        """
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
             project = self._lock_project(connection, tenant_id=tenant_id, project_id=project_id)
@@ -1328,6 +1647,7 @@ class GateService:
             )
             readiness = self._readiness(
                 connection,
+                gate_id=gate_id,
                 tenant_id=tenant_id,
                 project_id=project_id,
                 stage_id=gate["stage_id"],
@@ -1336,9 +1656,60 @@ class GateService:
                 for_update=True,
                 evaluated_at=occurred_at,
             )
-            if status == "approved" and not readiness.ready:
+            # A conditional pass still needs the *evidence* to be in place; what
+            # it defers is remaining work, not the proof already required.
+            if status in {"approved", "conditional"} and not readiness.ready:
                 raise GateNotReadyError(readiness.blocker_keys)
+            if status == "conditional" and not conditions:
+                raise GateConditionsRequiredError
+            if status != "conditional" and conditions:
+                raise GateConditionsRequiredError
+            if status == "approved":
+                from app.domain.schedule_execution import guard_source_action
+
+                guard_source_action(
+                    connection,
+                    tenant_id,
+                    project_id,
+                    gate_id,
+                    "gate",
+                    "gate.approve",
+                    {"status": "approved", "decided_at": occurred_at.isoformat()},
+                    occurred_at,
+                )
+            from app.domain.gate_assignments import GateAssignmentError
+            from app.domain.tasks import TaskScopeError, TaskService
+
+            for condition in conditions:
+                try:
+                    TaskService._validate_member(
+                        connection,
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        user_id=condition.owner_user_id,
+                    )
+                except TaskScopeError as error:
+                    raise GateAssignmentError(
+                        "条件负责人须为当前项目可办理任务的有效成员"
+                    ) from error
             readiness_snapshot = self._readiness_dict(readiness)
+            if status in {"approved", "conditional"}:
+                from app.domain.material_admission import MaterialAdmissionBlocked, enforce
+
+                try:
+                    receipt = enforce(
+                        connection, tenant_id, project_id, actor_user_id, "gate", gate_id
+                    )
+                except MaterialAdmissionBlocked as error:
+                    raise GateNotReadyError(
+                        tuple(item["key"] for item in error.check["blockers"])
+                    ) from error
+                if receipt is not None:
+                    readiness_snapshot["material_admission"] = {
+                        "receipt_id": receipt["id"],
+                        "policy_id": receipt["policy_id"],
+                        "source_digest": receipt["source_digest"],
+                    }
             decision_id = uuid4()
             connection.execute(
                 tables.decisions.insert(),
@@ -1378,6 +1749,35 @@ class GateService:
                     updated_at=occurred_at,
                 )
             )
+            condition_task_ids: list[UUID] = []
+            for condition in conditions:
+                task_id = uuid4()
+                connection.execute(
+                    tables.tasks.insert(),
+                    {
+                        "id": task_id,
+                        "tenant_id": tenant_id,
+                        "project_id": project_id,
+                        # tasks pairs stage with workflow; the gate's stage is
+                        # meaningless to the CHECK without its workflow.
+                        "workflow_id": project["workflow_id"],
+                        "stage_id": gate["stage_id"],
+                        "assignee_user_id": condition.owner_user_id,
+                        "created_by_user_id": actor_user_id,
+                        "title": condition.title,
+                        "kind": "gate_action",
+                        "source_entity": "gate",
+                        "source_entity_id": gate_id,
+                        "expected_output": condition.closure_evidence,
+                        "status": "todo",
+                        "priority": "high",
+                        "due_date": condition.due_date,
+                        "created_at": occurred_at,
+                        "updated_at": occurred_at,
+                    },
+                )
+                condition_task_ids.append(task_id)
+
             after = dict(_gate_snapshot(gate, status=status))
             after["decided_at"] = occurred_at.isoformat()
             after["decided_by_user_id"] = str(actor_user_id)
@@ -1414,12 +1814,25 @@ class GateService:
                     project_id=project_id,
                     actor_user_id=actor_user_id,
                     gate_id=gate_id,
-                    action="gate.reject",
+                    action=f"gate.{status}",
                     before_snapshot=_gate_snapshot(gate),
                     after_snapshot=after,
                     context={
                         "decision_id": str(decision_id),
                         "round_id": str(round_row["id"]),
+                        "condition_task_ids": [str(item) for item in condition_task_ids],
+                        "conditions": [
+                            {
+                                "task_id": str(task_id),
+                                "title": condition.title,
+                                "owner_user_id": str(condition.owner_user_id),
+                                "due_date": condition.due_date.isoformat(),
+                                "closure_evidence": condition.closure_evidence,
+                            }
+                            for task_id, condition in zip(
+                                condition_task_ids, conditions, strict=True
+                            )
+                        ],
                     },
                     occurred_at=occurred_at,
                 )

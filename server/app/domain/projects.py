@@ -7,12 +7,21 @@ from datetime import UTC, date, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import Connection, Engine, select
+from sqlalchemy import Connection, Engine, select, text
 from sqlalchemy.engine import RowMapping
 from sqlalchemy.exc import IntegrityError
 
 from app.auth.roles import Role
 from app.db.schema import tables
+from app.domain.case_requirements import require_case_requirements_ready
+from app.domain.project_completion import ProjectCompletionNotReadyError, readiness
+from app.domain.project_templates import (
+    ProjectCreationTemplate,
+    adopt_at_creation,
+    catalog,
+    compile_selection,
+    workflow_from_snapshot,
+)
 from app.domain.workflow_templates import NPD_WORKFLOW_TEMPLATE, WorkflowTemplate
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
@@ -191,12 +200,14 @@ def _record_from_row(
     *,
     tenant_id: UUID,
     row: RowMapping,
+    stages: tuple[StageRecord, ...] | None = None,
 ) -> ProjectRecord:
-    stages = _stages_for_workflow(
-        connection,
-        tenant_id=tenant_id,
-        workflow_id=row["workflow_id"],
-    )
+    if stages is None:
+        stages = _stages_for_workflow(
+            connection,
+            tenant_id=tenant_id,
+            workflow_id=row["workflow_id"],
+        )
     current_stage = next(
         (stage for stage in stages if stage.id == row["current_stage_id"]),
         None,
@@ -316,9 +327,31 @@ class ProjectService:
             tables.projects.c.id.desc(),
         )
         with self._engine.connect() as connection:
+            rows = connection.execute(statement).mappings().all()
+            if not rows:
+                return []
+            workflow_ids = {row["workflow_id"] for row in rows}
+            stages_by_workflow: dict[UUID, list[StageRecord]] = {
+                workflow_id: [] for workflow_id in workflow_ids
+            }
+            stage_rows = connection.execute(
+                select(tables.stages)
+                .where(
+                    tables.stages.c.tenant_id == tenant_id,
+                    tables.stages.c.workflow_id.in_(workflow_ids),
+                )
+                .order_by(tables.stages.c.sequence, tables.stages.c.id)
+            ).mappings()
+            for stage_row in stage_rows:
+                stages_by_workflow[stage_row["workflow_id"]].append(_stage_from_row(stage_row))
             return [
-                _record_from_row(connection, tenant_id=tenant_id, row=row)
-                for row in connection.execute(statement).mappings()
+                _record_from_row(
+                    connection,
+                    tenant_id=tenant_id,
+                    row=row,
+                    stages=tuple(stages_by_workflow[row["workflow_id"]]),
+                )
+                for row in rows
             ]
 
     def create(
@@ -329,14 +362,27 @@ class ProjectService:
         actor_role: Role,
         draft: ProjectDraft,
         template: WorkflowTemplate = NPD_WORKFLOW_TEMPLATE,
+        product_template: ProjectCreationTemplate | None = None,
     ) -> ProjectRecord:
         _validate_dates(draft.start_date, draft.target_date)
         project_id = uuid4()
         workflow_id = uuid4()
-        stage_ids = tuple(uuid4() for _ in template.stages)
         occurred_at = datetime.now(UTC)
         try:
             with self._engine.begin() as connection:
+                product_snapshot = None
+                if product_template is not None:
+                    # Serialize with organization publication/rollback; no in-flight migration.
+                    connection.execute(
+                        text("SELECT pg_advisory_xact_lock(hashtextextended(:key, 0))"),
+                        {"key": f"process-template:{tenant_id}:{product_template.template_id}"},
+                    )
+                    product_snapshot = compile_selection(
+                        product_template,
+                        templates=catalog(connection=connection, tenant_id=tenant_id),
+                    )
+                    template = workflow_from_snapshot(product_snapshot)
+                stage_ids = tuple(uuid4() for _ in template.stages)
                 case = (
                     connection.execute(
                         select(tables.development_cases)
@@ -361,6 +407,10 @@ class ProjectService:
                     raise ProjectAlreadyExistsError
                 if case["status"] != "approved":
                     raise ProjectCaseNotApprovedError
+                from app.domain.case_reviews import require_case_reviews_ready
+
+                require_case_reviews_ready(connection, tenant_id, case)
+                require_case_requirements_ready(connection, tenant_id, case)
 
                 customer_id = connection.execute(
                     select(tables.requirements.c.customer_id).where(
@@ -374,7 +424,11 @@ class ProjectService:
                         "id": workflow_id,
                         "tenant_id": tenant_id,
                         "code": f"{template.code}-{project_id}",
-                        "name": f"{template.name} · {draft.code}",
+                        "name": (
+                            template.name
+                            if product_snapshot is not None
+                            else f"{template.name} · {draft.code}"
+                        ),
                         "description": template.description,
                         "version": template.version,
                         "is_active": True,
@@ -500,6 +554,18 @@ class ProjectService:
                         context={"project_id": str(project_id)},
                     ),
                 )
+                from app.domain.project_execution import ensure_conversion
+
+                if product_template is not None and product_snapshot is not None:
+                    adopt_at_creation(
+                        connection,
+                        tenant_id=tenant_id,
+                        project_id=project_id,
+                        actor_user_id=actor_user_id,
+                        selection=product_template,
+                        snapshot=product_snapshot,
+                    )
+                ensure_conversion(connection, tenant_id, project_id)
                 return project
         except IntegrityError as error:
             constraint = str(error.orig)
@@ -604,6 +670,13 @@ class ProjectService:
                 raise ProjectNotFoundError
             if to_status not in PROJECT_TRANSITIONS[current_status]:
                 raise ProjectInvalidTransitionError
+            from app.domain.project_execution import guard_execution_transition
+
+            guard_execution_transition(connection, tenant_id, project_id, to_status, current_status)
+            if to_status == "completed":
+                completion = readiness(connection, tenant_id=tenant_id, project_id=project_id)
+                if not completion["ready"]:
+                    raise ProjectCompletionNotReadyError(completion["blockers"])
             before = self._get_record(connection, tenant_id=tenant_id, project_id=project_id)
             connection.execute(
                 tables.projects.update()

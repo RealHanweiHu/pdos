@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from contextlib import nullcontext
+from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from typing import Any
 from uuid import UUID, uuid4
@@ -11,6 +12,8 @@ from sqlalchemy import Connection, Engine, select
 from sqlalchemy.engine import RowMapping
 
 from app.db.schema import tables
+from app.domain.process_template_fields import TemplateFieldConflictError
+from app.domain.process_template_risk_fields import project_fields, validate_values
 from app.domain.project_write_lock import lock_project_write_scope
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
@@ -27,8 +30,16 @@ class RiskInvalidTransitionError(ValueError):
     """Raised when a Risk status edge is outside the frozen graph."""
 
 
+class RiskVersionConflictError(ValueError):
+    """The Risk changed after the user read its work card."""
+
+
 class RiskTerminalError(ValueError):
     """Raised when a closed Risk is edited."""
+
+
+class RiskNotConfirmedError(ValueError):
+    """Raised when a draft or cleared risk candidate is edited before confirmation."""
 
 
 @dataclass(frozen=True)
@@ -44,10 +55,17 @@ class RiskRecord:
     score: int
     mitigation_plan: str | None
     contingency_plan: str | None
+    draft_state: str
+    origin_key: str | None
+    rule_key: str | None
+    source_entity: str | None
+    source_entity_id: UUID | None
     target_date: date | None
     closed_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    source_finding_id: UUID | None = None
+    template_fields: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -65,6 +83,7 @@ class RiskDraft:
 @dataclass(frozen=True)
 class RiskUpdate:
     changes: dict[str, object]
+    expected_updated_at: datetime | None = None
 
 
 RISK_TRANSITIONS = {
@@ -87,10 +106,17 @@ def _risk_statement() -> Any:
         tables.risks.c.impact,
         tables.risks.c.mitigation_plan,
         tables.risks.c.contingency_plan,
+        tables.risks.c.draft_state,
+        tables.risks.c.origin_key,
+        tables.risks.c.rule_key,
+        tables.risks.c.source_entity,
+        tables.risks.c.source_entity_id,
         tables.risks.c.target_date,
         tables.risks.c.closed_at,
         tables.risks.c.created_at,
         tables.risks.c.updated_at,
+        tables.risks.c.source_finding_id,
+        tables.risks.c.template_fields,
     )
 
 
@@ -109,16 +135,27 @@ def _record_from_row(row: RowMapping) -> RiskRecord:
         score=likelihood * impact,
         mitigation_plan=row["mitigation_plan"],
         contingency_plan=row["contingency_plan"],
+        draft_state=row["draft_state"],
+        origin_key=row["origin_key"],
+        rule_key=row["rule_key"],
+        source_entity=row["source_entity"],
+        source_entity_id=row["source_entity_id"],
         target_date=row["target_date"],
         closed_at=row["closed_at"],
         created_at=row["created_at"],
         updated_at=row["updated_at"],
+        source_finding_id=row["source_finding_id"],
+        template_fields=dict(row["template_fields"]),
     )
 
 
 def _risk_snapshot(record: RiskRecord) -> dict[str, object]:
     return {
         "project_id": str(record.project_id),
+        **({"template_fields": record.template_fields} if record.template_fields else {}),
+        **(
+            {"source_finding_id": str(record.source_finding_id)} if record.source_finding_id else {}
+        ),
         "owner_user_id": (str(record.owner_user_id) if record.owner_user_id is not None else None),
         "title": record.title,
         "description": record.description,
@@ -128,6 +165,9 @@ def _risk_snapshot(record: RiskRecord) -> dict[str, object]:
         "score": record.score,
         "mitigation_plan": record.mitigation_plan,
         "contingency_plan": record.contingency_plan,
+        "draft_state": record.draft_state,
+        "origin_key": record.origin_key,
+        "rule_key": record.rule_key,
         "target_date": record.target_date.isoformat() if record.target_date is not None else None,
         "closed_at": record.closed_at.isoformat() if record.closed_at is not None else None,
     }
@@ -223,6 +263,7 @@ class RiskService:
                     .where(
                         tables.risks.c.tenant_id == tenant_id,
                         tables.risks.c.project_id == project_id,
+                        tables.risks.c.draft_state == "confirmed",
                     )
                     .order_by(tables.risks.c.updated_at.desc(), tables.risks.c.id.desc())
                 ).mappings()
@@ -235,10 +276,15 @@ class RiskService:
         actor_user_id: UUID,
         project_id: UUID,
         draft: RiskDraft,
+        connection: Connection | None = None,
+        source_finding_id: UUID | None = None,
+        now: datetime | None = None,
     ) -> RiskRecord:
         risk_id = uuid4()
-        occurred_at = datetime.now(UTC)
-        with self._engine.begin() as connection:
+        occurred_at = now or datetime.now(UTC)
+        with (
+            nullcontext(connection) if connection is not None else self._engine.begin()
+        ) as connection:
             if not lock_project_write_scope(connection, tenant_id=tenant_id, project_id=project_id):
                 raise RiskNotFoundError
             self._project_exists(connection, tenant_id=tenant_id, project_id=project_id)
@@ -256,6 +302,7 @@ class RiskService:
                     "project_id": project_id,
                     "owner_user_id": draft.owner_user_id,
                     "title": draft.title,
+                    "source_finding_id": source_finding_id,
                     "description": draft.description,
                     "status": "open",
                     "likelihood": draft.likelihood,
@@ -304,9 +351,23 @@ class RiskService:
             before = self._get_record(
                 connection, tenant_id=tenant_id, project_id=project_id, risk_id=risk_id
             )
+            if (
+                patch.expected_updated_at is not None
+                and patch.expected_updated_at != before.updated_at
+            ):
+                raise RiskVersionConflictError
+            if before.draft_state != "confirmed":
+                raise RiskNotConfirmedError
             if before.status == "closed":
                 raise RiskTerminalError
             changes = dict(patch.changes)
+            fields, field_source = project_fields(connection, tenant_id, project_id)
+            if "template_fields" in changes:
+                if patch.expected_updated_at is None:
+                    raise TemplateFieldConflictError("风险已被修改，请重新读取后核对补充字段")
+                changes["template_fields"] = validate_values(
+                    fields, changes["template_fields"], before.status
+                )
             if "owner_user_id" in changes:
                 owner_id = changes["owner_user_id"]
                 if owner_id is not None and not isinstance(owner_id, UUID):
@@ -349,6 +410,9 @@ class RiskService:
                 ),
                 AuditDraft(
                     action="risk.update",
+                    context={"template_field_source": field_source}
+                    if "template_fields" in changes
+                    else {},
                     before_snapshot=_risk_snapshot(before),
                     after_snapshot=_risk_snapshot(after),
                 ),
@@ -363,6 +427,7 @@ class RiskService:
         project_id: UUID,
         risk_id: UUID,
         to_status: str,
+        expected_updated_at: datetime | None = None,
     ) -> RiskRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
@@ -371,8 +436,14 @@ class RiskService:
             before = self._get_record(
                 connection, tenant_id=tenant_id, project_id=project_id, risk_id=risk_id
             )
+            if expected_updated_at is not None and expected_updated_at != before.updated_at:
+                raise RiskVersionConflictError
+            if before.draft_state != "confirmed":
+                raise RiskNotConfirmedError
             if to_status not in RISK_TRANSITIONS[before.status]:
                 raise RiskInvalidTransitionError
+            fields, _ = project_fields(connection, tenant_id, project_id)
+            validate_values(fields, before.template_fields, to_status)
             connection.execute(
                 tables.risks.update()
                 .where(
