@@ -14,7 +14,14 @@ from app.db.schema import tables
 from app.domain.formal_schedule import current_plan
 from app.domain.material_allocations import MaterialAllocationError, read_material_state
 from app.domain.material_coverage import CoverageSelection, calculate
-from app.domain.material_exceptions import _assessment, _authorize, _lock_sources, _review, _row
+from app.domain.material_exceptions import (
+    _assessment,
+    _authorize,
+    _lock_sources,
+    _review,
+    _row,
+    quantity_text,
+)
 from app.domain.npi_execution import NpiExecutionService
 from app.domain.product_workspace import _plain, digest
 from app.domain.resource_reservations import _project
@@ -190,13 +197,24 @@ def meeting_summary(
         return {}
     current = observations(c, tenant_id, project_id, entries)
     bindings = {row["exception_id"]: row for row in latest_bindings(c, tenant_id, project_id)}
+    builds = tables.build_batches
+    codes = {
+        row.id: row.code
+        for row in c.execute(
+            select(builds.c.id, builds.c.code).where(
+                builds.c.tenant_id == tenant_id,
+                builds.c.id.in_({entry["build_id"] for entry in entries}),
+            )
+        )
+    }
     result = {}
     for entry in entries:
         value = current[entry["id"]]
         material = value["material"]
         binding = bindings.get(entry["id"])
         summary = [
-            f"物料异常 {entry['id']}；批次 {entry['build_id']}。",
+            f"物料异常：{entry['material_reference'] or '物料引用待补'}；"
+            f"批次 {codes.get(entry['build_id'], entry['build_id'])}。",
             f"最近具名核对 v{value['latest_review']['version']}："
             f"{value['latest_review']['reason']}",
             "当前供给依据与最近核对一致。"
@@ -204,12 +222,11 @@ def meeting_summary(
             else "供给或需求来源已变化，须回到原异常重新核对。",
         ]
         if material:
-            gap = material["observed_on_hand_gap"]
             summary.append(
-                f"需求 {material['required']} {material['unit']}；"
-                f"已分配合格现货 {material['allocated_on_hand']}，"
-                f"领用时合格净领料 {material.get('qualified_issued', '0')}；"
-                f"已登记范围现货缺口 {gap if gap is not None else '未知'}。"
+                f"需求 {quantity_text(material['required'])} {material['unit']}；"
+                f"已分配合格现货 {quantity_text(material['allocated_on_hand'])}，"
+                f"领用时合格净领料 {quantity_text(material.get('qualified_issued', '0'))}；"
+                f"已登记范围现货缺口 {quantity_text(material['observed_on_hand_gap'])}。"
             )
         else:
             summary.append("当前固定需求已不含该物料，须核对范围修订及原问题处理。")

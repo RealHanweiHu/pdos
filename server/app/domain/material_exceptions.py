@@ -41,6 +41,14 @@ class ExceptionReview(Contract):
     reason: Text
 
 
+def quantity_text(value: Any) -> str:
+    """Readable quantity for generated prose: "2.000000" -> "2", "0E-8" -> "0"."""
+    if value is None:
+        return "未知"
+    amount = Decimal(str(value))
+    return "0" if amount == 0 else format(amount.normalize(), "f")
+
+
 def _authorize(
     c: Connection, context: AuthContext, project_id: UUID, *, write: bool = False
 ) -> None:
@@ -380,11 +388,11 @@ class MaterialExceptionService:
             identity = uuid4()
             gap = material["observed_on_hand_gap"]
             notes = (
-                f"{command.reason}\n\n物料异常：{identity}\n批次：{build_id}"
+                f"{command.reason}\n\n物料异常：{identity}\n批次：{coverage['build']['code']}"
                 f"\n固定需求版本：{coverage['revision_id']}"
                 f"\n物料：{material['material_reference'] or '引用待补'}；"
-                f"需求 {material['required']} {material['unit']}"
-                f"\n已登记范围现货缺口：{gap if gap is not None else '未知'}"
+                f"需求 {quantity_text(material['required'])} {material['unit']}"
+                f"\n已登记范围现货缺口：{quantity_text(gap)}"
                 "\n具名核对与供给出处可从本问题的物料异常来源入口回查。"
                 "供给恢复不自动关闭问题。"
             )
