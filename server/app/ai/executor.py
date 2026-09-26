@@ -24,6 +24,7 @@ from app.ai.embeddings import EmbeddingGateway
 from app.ai.finding_writer import (
     AgentFindingWriter,
     FindingOutputNarrowedError,
+    FindingPreflightError,
     preflight_assessment,
 )
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
@@ -1096,6 +1097,9 @@ class AgentExecutor:
     def _error_code(error: Exception) -> str:
         if isinstance(error, (AgentCheckpointError, AgentObservationError)):
             return error.code
+        if isinstance(error, FindingPreflightError):
+            # A model output rejected by the Finding contract is not a tool-input fault.
+            return "FINDING_PREFLIGHT_REJECTED"
         if isinstance(error, ValidationError):
             return "RUN_CONTEXT_INVALID"
         if isinstance(error, PermissionError):
