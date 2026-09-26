@@ -29,3 +29,8 @@ htmlcov/
 # 本地验证产物
 output/
 .playwright-cli/
+
+# 本地工具产物
+graphify-out/
+.pnpm-store/
+.video_agent/
