@@ -1,7 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
+
+import { useFirstScreenSample } from "@/components/diagnostics/use-first-screen-sample";
 
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import {
@@ -29,7 +31,9 @@ import {
   requestNcrDetail,
   requestNcrs,
   triageComplaint,
+  transitionComplaint,
 } from "@/components/quality/quality-api";
+import type { ComplaintTransition } from "@/components/quality/complaint-lifecycle";
 import type {
   Complaint,
   ComplaintCreateInput,
@@ -62,6 +66,7 @@ import type {
 import { ProjectWorkspaceError, ProjectWorkspaceLoading } from "./project-workspace-state";
 import {
   ProjectWorkspaceView,
+  resolveTab,
   type ProjectWorkspaceTab,
   type WorkItemLoadState,
 } from "./project-workspace-view";
@@ -71,32 +76,37 @@ import { useProjectActions } from "./use-project-actions";
 type LoadState = "loading" | "ready" | "error" | "redirecting";
 const workItemRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
 const productEngineeringEditRoles = ["owner", "admin", "project_manager", "engineer"];
-const deepLinkTabs = new Set<ProjectWorkspaceTab>([
-  "overview",
-  "timeline",
-  "tasks",
-  "issues",
-  "risks",
-  "product-engineering",
-  "gates",
-  "documents",
-  "quality",
-  "ai-chat",
-]);
-
 function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
 }
 
-function replaceProjectLocation(projectId: string, tab: ProjectWorkspaceTab) {
+function pushProjectLocation(projectId: string, tab: ProjectWorkspaceTab) {
   const params = new URLSearchParams();
   params.set("project", projectId);
   params.set("tab", tab);
-  window.history.replaceState({}, "", `/projects?${params.toString()}`);
+  const target = `/projects?${params.toString()}`;
+  if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== target) {
+    window.history.pushState(null, "", target);
+  }
+  return `${window.location.search}${window.location.hash}`;
+}
+
+async function qualityLanding(projectId: string, ncrId: string | null) {
+  const [items, detail] = await Promise.all([
+    requestComplaints(projectId),
+    ncrId ? requestNcrDetail(projectId, ncrId) : Promise.resolve(null),
+  ]);
+  const selected = detail ? items.find(item => item.id === detail.ncr.complaint_id) ?? null : null;
+  if (detail && !selected) throw new Error("原 NCR 质量来源不可用，请重新读取原记录");
+  return { items, detail, selected };
 }
 
 export function ProjectWorkspace() {
   const { replace } = useRouter();
+  const search = useSearchParams().toString();
+  const handledLocation = useRef<string | null>(null);
+  const [navigationRevision, setNavigationRevision] = useState(0);
+  const [navigationError, setNavigationError] = useState<string | null>(null);
   const actions = useProjectActions({ replace });
   const { setProjects, setSelectedProjectId } = actions;
   const [loadState, setLoadState] = useState<LoadState>("loading");
@@ -110,6 +120,9 @@ export function ProjectWorkspace() {
   const [workItemStatus, setWorkItemStatus] = useState<string | null>(null);
   const [activities, setActivities] = useState<ProjectActivity[]>([]);
   const [activityError, setActivityError] = useState(false);
+  const [activityLoading, setActivityLoading] = useState(false);
+  const [activityLoaded, setActivityLoaded] = useState(false);
+  const activityRequestSequence = useRef(0);
   const [productEngineeringState, setProductEngineeringState] = useState<WorkItemLoadState>("idle");
   const [productEngineering, setProductEngineering] = useState<ProductEngineeringRegister | null>(null);
   const [productEngineeringBusy, setProductEngineeringBusy] = useState(false);
@@ -150,98 +163,12 @@ export function ProjectWorkspace() {
         setIdentity(loaded.identity);
         setProjects(loaded.projects);
         setLoadState("ready");
-        const deepLinkedId = new URLSearchParams(window.location.search).get("project");
-        const deepLinkedTab = new URLSearchParams(window.location.search).get("tab") as ProjectWorkspaceTab | null;
-        const deepLinkedEvent = Number(new URLSearchParams(window.location.search).get("event_id"));
-        const deepLinkedEntity = new URLSearchParams(window.location.search).get("entity_id");
-        const deepLinkedProject = loaded.projects.find((project) => project.id === deepLinkedId);
-        if (deepLinkedProject) {
-          setSelectedProjectId(deepLinkedProject.id);
-          if (deepLinkedTab && deepLinkTabs.has(deepLinkedTab)) setActiveTab(deepLinkedTab);
-          setHighlightedEventId(Number.isSafeInteger(deepLinkedEvent) && deepLinkedEvent > 0 ? deepLinkedEvent : null);
-          setHighlightedEntityId(deepLinkedEntity);
-          requestProjectActivity(deepLinkedProject.id).then(
-            (items) => { if (active) { setActivities(items); setActivityError(false); } },
-            () => { if (active) { setActivities([]); setActivityError(true); } },
-          );
-          if (workItemRoles.includes(loaded.identity.user.role)) {
-            const sequence = requestSequence.current + 1;
-            requestSequence.current = sequence;
-            setWorkItemState("loading");
-            requestProjectWorkItems(deepLinkedProject.id).then(
-              (items) => {
-                if (!active || requestSequence.current !== sequence) return;
-                setWorkItems(items);
-                setWorkItemState("ready");
-              },
-              () => {
-                if (active && requestSequence.current === sequence) setWorkItemState("error");
-              },
-            );
-          }
-          if (
-            deepLinkedTab === "product-engineering" &&
-            workItemRoles.includes(loaded.identity.user.role)
-          ) {
-            const sequence = productRequestSequence.current + 1;
-            productRequestSequence.current = sequence;
-            setProductEngineeringState("loading");
-            requestProductEngineering(deepLinkedProject.id).then(
-              (register) => {
-                if (!active || productRequestSequence.current !== sequence) return;
-                setProductEngineering(register);
-                setProductEngineeringState("ready");
-              },
-              () => {
-                if (active && productRequestSequence.current === sequence) {
-                  setProductEngineeringState("error");
-                }
-              },
-            );
-          }
-          if (deepLinkedTab === "gates" && workItemRoles.includes(loaded.identity.user.role)) {
-            const sequence = gateRequestSequence.current + 1;
-            gateRequestSequence.current = sequence;
-            setGateState("loading");
-            requestProjectGates(deepLinkedProject.id).then(
-              (items) => { if (active && gateRequestSequence.current === sequence) { setGates(items); setGateState("ready"); } },
-              () => { if (active && gateRequestSequence.current === sequence) setGateState("error"); },
-            );
-          }
-          if (deepLinkedTab === "documents" && workItemRoles.includes(loaded.identity.user.role)) {
-            const sequence = documentRequestSequence.current + 1;
-            documentRequestSequence.current = sequence;
-            setDocumentState("loading");
-            requestProjectDocuments(deepLinkedProject.id).then(
-              (items) => { if (active && documentRequestSequence.current === sequence) { setDocuments(items); setDocumentState("ready"); } },
-              () => { if (active && documentRequestSequence.current === sequence) setDocumentState("error"); },
-            );
-          }
-          if (deepLinkedTab === "quality" && workItemRoles.includes(loaded.identity.user.role)) {
-            const sequence = qualityRequestSequence.current + 1;
-            qualityRequestSequence.current = sequence;
-            setQualityState("loading");
-            requestComplaints(deepLinkedProject.id).then(
-              (items) => {
-                if (active && qualityRequestSequence.current === sequence) {
-                  setComplaints(items);
-                  setQualityState("ready");
-                }
-              },
-              () => {
-                if (active && qualityRequestSequence.current === sequence) {
-                  setQualityState("error");
-                }
-              },
-            );
-          }
-        }
       },
       () => {
         if (active) setLoadState("error");
       },
     );
-    return () => { active = false; };
+    return () => { active = false; activityRequestSequence.current += 1; };
   }, [replace, setProjects, setSelectedProjectId]);
 
   const canViewWorkItems = identity !== null && workItemRoles.includes(identity.user.role);
@@ -320,7 +247,7 @@ export function ProjectWorkspace() {
     setGateError(null);
     try {
       replaceGate(
-        await signProjectGateRound(gate.project_id, gate.id, gate.round.id, slot),
+        await signProjectGateRound(gate.project_id, gate.id, gate.round.id, slot, { status: "approved", note: null, expected_basis: gate.signing_basis }),
       );
     } catch (error) {
       setGateError(messageFrom(error));
@@ -354,21 +281,29 @@ export function ProjectWorkspace() {
     setQualityDetail(null);
     setQualityError(null);
     try {
-      const items = await requestComplaints(projectId);
+      const params = new URLSearchParams(window.location.search);
+      const { items, detail, selected } = await qualityLanding(projectId, params.get("project") === projectId ? params.get("ncr") : null);
       if (qualityRequestSequence.current !== sequence) return;
       setComplaints(items);
+      setSelectedComplaint(selected);
+      setQualityDetail(detail);
       setQualityState("ready");
     } catch {
       if (qualityRequestSequence.current === sequence) setQualityState("error");
     }
   }
 
-  function selectProject(project: Project) {
-    actions.selectProject(project);
-    setActiveTab("overview");
-    replaceProjectLocation(project.id, "overview");
+  function resetDomainData() {
+    requestSequence.current += 1;
+    setWorkItems(null);
+    setWorkItemState("idle");
     setWorkItemError(null);
     setWorkItemStatus(null);
+    activityRequestSequence.current += 1;
+    setActivities([]);
+    setActivityError(false);
+    setActivityLoading(false);
+    setActivityLoaded(false);
     productRequestSequence.current += 1;
     setProductEngineering(null);
     setProductEngineeringState("idle");
@@ -390,16 +325,32 @@ export function ProjectWorkspace() {
     setQualityError(null);
     setHighlightedEventId(null);
     setHighlightedEntityId(null);
-    requestProjectActivity(project.id).then(
-      (items) => { setActivities(items); setActivityError(false); },
-      () => { setActivities([]); setActivityError(true); },
-    );
-    if (canViewWorkItems) {
-      void loadWorkItems(project.id);
-    } else {
-      requestSequence.current += 1;
-      setWorkItems(null);
-      setWorkItemState("idle");
+  }
+
+  function selectProject(project: Project) {
+    if (actions.selectedProject?.id === project.id) return;
+    setNavigationError(null);
+    handledLocation.current = pushProjectLocation(project.id, "overview");
+    actions.selectProject(project);
+    resetDomainData();
+    setActiveTab("overview");
+    loadTabData("overview", project.id, true);
+  }
+
+  async function loadActivity(projectId: string) {
+    const sequence = ++activityRequestSequence.current;
+    setActivities([]);
+    setActivityError(false);
+    setActivityLoading(true);
+    setActivityLoaded(false);
+    try {
+      const items = await requestProjectActivity(projectId);
+      if (activityRequestSequence.current !== sequence) return;
+      setActivities(items);
+    } catch {
+      if (activityRequestSequence.current === sequence) setActivityError(true);
+    } finally {
+      if (activityRequestSequence.current === sequence) { setActivityLoading(false); setActivityLoaded(true); }
     }
   }
 
@@ -493,9 +444,13 @@ export function ProjectWorkspace() {
     }
   }
 
-  async function moveIssue(issue: ProjectIssue, toStatus: IssueStatus) {
+  async function moveIssue(
+    issue: ProjectIssue,
+    toStatus: IssueStatus,
+    extra: { comment?: string; closure_evidence_ref?: string } = {},
+  ) {
     return mutateWorkItem(
-      () => transitionIssue(issue.project_id, issue.id, toStatus),
+      () => transitionIssue(issue.project_id, issue.id, toStatus, extra),
       (items, updated) => ({ ...items, issues: items.issues.map((item) => item.id === issue.id ? updated as ProjectIssue : item) }),
       "问题状态已更新",
     );
@@ -509,27 +464,88 @@ export function ProjectWorkspace() {
     );
   }
 
-  function changeTab(tab: ProjectWorkspaceTab) {
-    setActiveTab(tab);
-    if (actions.selectedProject) replaceProjectLocation(actions.selectedProject.id, tab);
-    if (
-      tab === "product-engineering" &&
-      canViewProductEngineering &&
-      actions.selectedProject &&
-      productEngineeringState === "idle"
-    ) {
-      void loadProductEngineering(actions.selectedProject.id);
+  /** Each domain loads its own data the first time it is opened. */
+  function loadTabData(tab: ProjectWorkspaceTab, projectId: string, force = false) {
+    if (["overview", "work-items"].includes(tab) && canViewWorkItems && (force || workItemState === "idle")) {
+      void loadWorkItems(projectId);
     }
-    if (tab === "gates" && canViewWorkItems && actions.selectedProject && gateState === "idle") {
-      void loadGates(actions.selectedProject.id);
+    if (tab === "overview" && canViewWorkItems && (force || (!activityLoading && !activityLoaded))) {
+      void loadActivity(projectId);
     }
-    if (tab === "documents" && canViewWorkItems && actions.selectedProject && documentState === "idle") {
-      void loadDocuments(actions.selectedProject.id);
+    if (tab === "engineering" && canViewProductEngineering && (force || productEngineeringState === "idle")) {
+      void loadProductEngineering(projectId);
     }
-    if (tab === "quality" && canViewWorkItems && actions.selectedProject && qualityState === "idle") {
-      void loadQuality(actions.selectedProject.id);
+    if (tab === "gates" && canViewWorkItems && (force || gateState === "idle")) {
+      void loadGates(projectId);
+    }
+    if (tab === "documents" && canViewWorkItems && (force || documentState === "idle")) {
+      void loadDocuments(projectId);
+    }
+    if (tab === "quality" && canViewWorkItems && (force || qualityState === "idle")) {
+      void loadQuality(projectId);
     }
   }
+
+  function changeTab(tab: ProjectWorkspaceTab) {
+    if (tab === activeTab) return;
+    setActiveTab(tab);
+    setHighlightedEventId(null);
+    setHighlightedEntityId(null);
+    if (actions.selectedProject) {
+      handledLocation.current = pushProjectLocation(actions.selectedProject.id, tab);
+      loadTabData(tab, actions.selectedProject.id);
+    }
+  }
+
+  // Router links, browser history and hash links share the same restoration path.
+  // Local tab clicks already loaded their domain and are recorded before pushState.
+  const restoreLocation = useEffectEvent(() => {
+    if (loadState !== "ready" || !identity) return;
+    const location = `${window.location.search}${window.location.hash}`;
+    if (handledLocation.current === location) return;
+    const restoring = handledLocation.current !== null;
+    handledLocation.current = location;
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get("project");
+    const project = projectId
+      ? actions.projects.find(item => item.id === projectId)
+      : params.has("tab") ? actions.selectedProject : null;
+    resetDomainData();
+    if (restoring) setNavigationRevision(value => value + 1);
+    setNavigationError(projectId && !project ? "原链接的项目不存在或当前无权读取，请选择可访问的项目。" : null);
+    if (!project) {
+      setSelectedProjectId(null);
+      setActiveTab("overview");
+      return;
+    }
+    if (!projectId) {
+      params.set("project", project.id);
+      window.history.replaceState(null, "", `/projects?${params.toString()}${window.location.hash}`);
+      handledLocation.current = `${window.location.search}${window.location.hash}`;
+    }
+    actions.selectProject(project);
+    const tab = canViewWorkItems
+      ? resolveTab(params.get("tab"), params, window.location.hash) ?? "overview"
+      : "overview";
+    setActiveTab(tab);
+    const eventId = Number(params.get("event_id"));
+    setHighlightedEventId(Number.isSafeInteger(eventId) && eventId > 0 ? eventId : null);
+    setHighlightedEntityId(params.get("entity_id"));
+    loadTabData(tab, project.id, true);
+  });
+
+  // Synchronize the external router location and invalidate in-flight domain reads.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { restoreLocation(); }, [loadState, search]);
+  useEffect(() => {
+    const restore = () => restoreLocation();
+    window.addEventListener("popstate", restore);
+    window.addEventListener("hashchange", restore);
+    return () => {
+      window.removeEventListener("popstate", restore);
+      window.removeEventListener("hashchange", restore);
+    };
+  }, []);
 
   async function addComplaint(input: ComplaintCreateInput) {
     if (!actions.selectedProject) return false;
@@ -551,16 +567,20 @@ export function ProjectWorkspace() {
 
   async function selectComplaint(complaint: Complaint) {
     if (!actions.selectedProject) return;
+    const projectId = actions.selectedProject.id;
+    const sequence = ++qualityRequestSequence.current;
     setSelectedComplaint(complaint);
     setQualityDetail(null);
     setQualityError(null);
     try {
-      const ncrs = await requestNcrs(actions.selectedProject.id, complaint.id);
+      const ncrs = await requestNcrs(projectId, complaint.id);
+      if (qualityRequestSequence.current !== sequence) return;
       if (ncrs.length) {
-        setQualityDetail(await requestNcrDetail(actions.selectedProject.id, ncrs[0]!.id));
+        const detail = await requestNcrDetail(projectId, ncrs[0]!.id);
+        if (qualityRequestSequence.current === sequence) setQualityDetail(detail);
       }
     } catch (error) {
-      setQualityError(messageFrom(error));
+      if (qualityRequestSequence.current === sequence) setQualityError(messageFrom(error));
     }
   }
 
@@ -578,6 +598,25 @@ export function ProjectWorkspace() {
       return true;
     } catch (error) {
       setQualityError(messageFrom(error));
+      return false;
+    } finally {
+      setQualityBusy(false);
+    }
+  }
+
+  async function transitionSelected(complaint: Complaint, input: ComplaintTransition) {
+    if (!actions.selectedProject) return false;
+    const sequence = qualityRequestSequence.current;
+    setQualityBusy(true);
+    setQualityError(null);
+    try {
+      const updated = await transitionComplaint(complaint.project_id, complaint.id, input);
+      if (qualityRequestSequence.current !== sequence) return true;
+      setComplaints(current => current?.map(item => item.id === updated.id ? updated : item) ?? null);
+      setSelectedComplaint(current => current?.id === updated.id ? updated : current);
+      return true;
+    } catch (error) {
+      if (qualityRequestSequence.current === sequence) setQualityError(messageFrom(error));
       return false;
     } finally {
       setQualityBusy(false);
@@ -640,6 +679,12 @@ export function ProjectWorkspace() {
     }
   }
 
+  useFirstScreenSample("project", loadState === "ready" && activeTab === "overview"
+    && actions.selectedProject !== null && workItemState === "ready" && activityLoaded && !activityError ? "ready"
+    : loadState === "error" || workItemState === "error" || activityError || navigationError !== null ? "error" : "loading",
+    { projects: actions.projects.length, tasks: workItems?.tasks.length ?? 0,
+      issues: workItems?.issues.length ?? 0, risks: workItems?.risks.length ?? 0, activities: activities.length });
+
   if (loadState === "redirecting") return null;
   if (loadState === "loading") return <ProjectWorkspaceLoading />;
   if (loadState === "error" || identity === null) {
@@ -649,14 +694,17 @@ export function ProjectWorkspace() {
   const canEditProductEngineering = productEngineeringEditRoles.includes(identity.user.role);
   return (
     <ProjectWorkspaceView
+      key={navigationRevision}
       activeTab={activeTab}
       activities={activities}
       activityError={activityError}
+      activityLoading={activityLoading}
+      onRetryActivity={() => { if (actions.selectedProject) void loadActivity(actions.selectedProject.id); }}
       canEdit={canEdit}
       canViewWorkItems={canViewWorkItems}
       highlightedEntityId={highlightedEntityId}
       highlightedEventId={highlightedEventId}
-      errorMessage={actions.errorMessage}
+      errorMessage={navigationError ?? actions.errorMessage}
       identity={identity}
       loggingOut={loggingOut}
       onCreateIssue={addIssue}
@@ -711,6 +759,7 @@ export function ProjectWorkspace() {
         busy: qualityBusy,
         canCreate: workItemRoles.includes(identity.user.role),
         canManage: ["owner", "admin", "quality"].includes(identity.user.role),
+        canClose: identity.user.role === "quality",
         complaints,
         detail: qualityDetail,
         error: qualityError,
@@ -721,6 +770,7 @@ export function ProjectWorkspace() {
         },
         onSelect: (complaint) => void selectComplaint(complaint),
         onTriage: triageSelected,
+        onTransition: transitionSelected,
         selectedComplaint,
       }}
       saving={actions.saving}

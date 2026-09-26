@@ -39,11 +39,19 @@ function isNcr(value: unknown): value is Ncr {
 }
 
 async function body(response: Response): Promise<unknown> {
-  const parsed = (await response.json()) as unknown;
+  const parsed: unknown = await response.json().catch(() => null);
   if (!response.ok) {
     const detail = isRecord(parsed) && isRecord(parsed.detail) ? parsed.detail : null;
+    const messages: Record<string, string> = {
+      COMPLAINT_NCR_GATE_NOT_READY: "关联的不符合项尚未全部关闭，请先完成整改和独立有效性验证。",
+      QUALITY_INVALID_TRANSITION: "记录状态已变化或尚未满足条件，请重新读取后办理。",
+      COMPLAINT_RESOLUTION_INVALID: "请填写解决结论；正式关闭时沿用已保存的结论。",
+      CAPA_QUALITY_ROLE_REQUIRED: "正式关闭须由品质人员本人办理。",
+    };
     throw new Error(
-      detail && typeof detail.message === "string" ? detail.message : "质量记录操作失败",
+      detail && typeof detail.code === "string" && messages[detail.code]
+        ? messages[detail.code]
+        : detail && typeof detail.message === "string" ? detail.message : "质量记录暂不可用，请刷新核对当前状态后重试。",
     );
   }
   return parsed;
@@ -77,6 +85,17 @@ export async function createComplaint(projectId: string, input: ComplaintCreateI
     }),
   );
   if (!isComplaint(parsed)) throw new Error("Complaint 响应无效");
+  return parsed;
+}
+
+export async function transitionComplaint(projectId: string, complaintId: string, input: {
+  to_status: "investigating" | "resolved" | "closed";
+  resolution_summary?: string;
+}) {
+  const parsed = await body(await qualityFetch(projectId, `complaints/${encodeURIComponent(complaintId)}/transitions`, {
+    method: "POST", body: JSON.stringify(input),
+  }));
+  if (!isComplaint(parsed)) throw new Error("质量反馈响应无效，请刷新核对当前状态。");
   return parsed;
 }
 

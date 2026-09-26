@@ -1,4 +1,9 @@
+"use client";
+
+import { useEffect } from "react";
 import { DatabaseIcon, LinkSimpleIcon } from "@phosphor-icons/react/ssr";
+
+import { ContextKnowledge } from "@/components/knowledge/context-knowledge";
 
 import { DevelopmentBomForm } from "./development-bom-form";
 import { ProductEngineeringError, ProductEngineeringLoading } from "./product-engineering-state";
@@ -45,6 +50,13 @@ export function ProductEngineeringPanel({
   register: ProductEngineeringRegister | null;
   status: string | null;
 }) {
+  useEffect(() => {
+    if (loadState !== "ready" || !register) return;
+    const anchor = window.location.hash.slice(1);
+    if (register.specifications.some(item => anchor === `spec-${item.id}`) || register.boms.some(item => anchor === `bom-${item.id}`)) {
+      document.getElementById(anchor)?.scrollIntoView({ block: "center" });
+    }
+  }, [loadState, register]);
   if (loadState === "idle" || loadState === "loading") return <ProductEngineeringLoading />;
   if (loadState === "error" || register === null) {
     return <ProductEngineeringError onRetry={onRetry} />;
@@ -81,7 +93,7 @@ export function ProductEngineeringPanel({
           ) : (
             <ul className="divide-y" role="list">
               {register.specifications.map((item) => (
-                <li className="px-4 py-3" key={item.id}>
+                <li id={`spec-${item.id}`} className="px-4 py-3" key={item.id}>
                   <div className="flex min-w-0 items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{item.title}</p>
@@ -89,6 +101,8 @@ export function ProductEngineeringPanel({
                     </div>
                     <span className="shrink-0 rounded-full border bg-muted px-2 py-1 font-mono text-[11px] text-muted-foreground">v{item.version}</span>
                   </div>
+                  <a className="mt-2 block text-xs text-primary underline" href={`/projects?project=${item.project_id}&tab=overview&specification_owner_id=${item.id}`}>规格责任、原内容与版本接续</a>
+                  <ContextKnowledge projectId={item.project_id} contextKind="part_selection" entityId={item.id} />
                 </li>
               ))}
             </ul>
@@ -109,7 +123,7 @@ export function ProductEngineeringPanel({
           ) : (
             <ul className="divide-y" role="list">
               {register.boms.map((item) => (
-                <li className="px-4 py-3" key={item.id}>
+                <li id={`bom-${item.id}`} className="px-4 py-3" key={item.id}>
                   <div className="flex min-w-0 items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{item.name}</p>

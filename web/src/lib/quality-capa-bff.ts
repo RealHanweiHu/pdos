@@ -18,6 +18,22 @@ function isUuid(value: string | undefined): value is string {
 }
 
 function allowedPath(method: "GET" | "POST", segments: string[]) {
+  if (segments[0] === "responsibilities") return segments.length === 3 && ["complaint", "ncr", "capa", "certification"].includes(segments[1]) && isUuid(segments[2]);
+  if (segments[0] === "issue-links") {
+    return method === "GET"
+      ? segments.length === 1 || segments.length === 2 && segments[1] === "options"
+      : segments.length === 1 || segments.length === 2 && segments[1] === "escalate" || segments.length === 3 && isUuid(segments[1]) && segments[2] === "retract";
+  }
+  if (segments[0] === "fmea" && segments[1] === "candidates") {
+    return method === "GET"
+      ? segments.length === 2 || segments.length === 3 && isUuid(segments[2])
+      : segments.length === 3 && segments[2] === "capture" || segments.length === 4 && isUuid(segments[2]) && ["refresh", "disposition"].includes(segments[3]);
+  }
+  if (segments[0] === "fmea") {
+    return method === "GET"
+      ? segments.length === 1 || segments.length === 2 && (["sources", "coverage"].includes(segments[1]) || isUuid(segments[1]))
+      : segments.length === 2 && segments[1] === "versions" || segments.length === 3 && isUuid(segments[1]) && segments[2] === "publish";
+  }
   if (method === "GET") {
     return (
       (segments.length === 1 && segments[0] === "complaints") ||
@@ -30,7 +46,7 @@ function allowedPath(method: "GET" | "POST", segments: string[]) {
       (segments.length === 3 &&
         segments[0] === "ncrs" &&
         isUuid(segments[1]) &&
-        segments[2] === "detail")
+        ["detail", "workspace", "evidence", "work-packages", "preparation-runs"].includes(segments[2]))
     );
   }
   return (
@@ -42,7 +58,7 @@ function allowedPath(method: "GET" | "POST", segments: string[]) {
     (segments.length === 3 &&
       segments[0] === "ncrs" &&
       isUuid(segments[1]) &&
-      ["transitions", "root-causes", "actions", "effectiveness-reviews", "preventive-not-applicable"].includes(
+      ["transitions", "root-causes", "actions", "effectiveness-reviews", "preventive-not-applicable", "operations", "preparation-context", "preparation-runs"].includes(
         segments[2] ?? "",
       )) ||
     (segments.length === 5 &&
@@ -74,9 +90,17 @@ export async function forwardQuality(
   try {
     const body = method === "POST" ? await readBoundedJson(request) : undefined;
     const suffix = qualityPath.map(encodeURIComponent).join("/");
+    const query = new URLSearchParams();
+    if (method === "GET" && ["fmea", "issue-links", "ncrs", "responsibilities"].includes(qualityPath[0])) {
+      const incoming = new URL(request.url).searchParams;
+      for (const key of ["kind", "offset", "before_version", "before_id", "issue_id", "ncr_id"]) {
+        const value = incoming.get(key);
+        if (value !== null) query.set(key, value);
+      }
+    }
     return forwardJson(
       await pdosApiFetch(
-        `/api/projects/${encodeURIComponent(projectId)}/quality/${suffix}`,
+        `/api/projects/${encodeURIComponent(projectId)}/quality/${suffix}${query.size ? `?${query}` : ""}`,
         {
           method,
           headers: {

@@ -1,0 +1,40 @@
+"use client";
+import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { FmeaSourceValue, field, kinds, label, obj, request, rows, text, type Row } from "./fmea-sources";
+
+const states: Record<string,string> = { pending: "待专业核对", stale: "原资料已变化", covered: "当前发布已有相应处置", draft_created: "已转入修订，发布状态见原条目", not_applicable: "人员判定不适用" };
+const reasons: Record<string,string> = { uncovered_issue: "问题尚未关联当前发布版本", source_changed: "原关联来源已变化", quality_inputs_unlinked: "关联质量进展尚未在发布版本中逐项处置", covered: "当前发布已有相应处置" };
+export function FmeaCandidates({ projectId, disabled, refreshKey, onStart, onOpen }: {
+  projectId: string; disabled: boolean; refreshKey: number;
+  onStart: (candidate: Row, useSelected: boolean) => Promise<void>;
+  onOpen: (entry: string) => Promise<void>;
+}) {
+  const [data, setData] = useState<Row | null>(null), [selected, setSelected] = useState<Row | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState("");
+  const [reason, setReason] = useState(""), [declining, setDeclining] = useState(false), [scan, setScan] = useState<Row | null>(null);
+  const attempt = useRef<{ signature: string; id: string } | null>(null);
+  const loadedKey = useRef(-1);
+  async function act(fn: () => Promise<void>) { setBusy(true); setError(""); try { await fn(); } catch(e) { setError(e instanceof Error ? e.message : "候选办理失败"); } finally { setBusy(false); } }
+  async function load(more = false) { const value = await request(projectId, `/candidates?offset=${more ? data?.next_offset ?? 0 : 0}`); setData(old => more && old ? { ...value, items: [...rows(old.items), ...rows(value.items)] } : value); loadedKey.current = refreshKey; }
+  async function choose(id: string) { setSelected(await request(projectId, `/candidates/${id}`)); setDeclining(false); setReason(""); attempt.current = null; }
+  const locked = busy || disabled, snapshot = obj(selected?.snapshot), current = obj(selected?.current), disposition = obj(selected?.disposition), issue = obj(snapshot.issue);
+  return <details className="space-y-3 rounded-md border p-3" onToggle={e => { if(e.currentTarget.open && !locked && (!data || loadedKey.current !== refreshKey)) void act(async () => { setSelected(null); await load(); }); }}>
+    <summary className="cursor-pointer font-medium">自动发现的 FMEA 修订候选</summary>
+    <p className="text-xs text-muted-foreground">按实际问题、显式质量关联和发布版本发现待核对项。记录当时原值；专业结论、评分和发布由人员办理。历史资料可补查，已有相同输入会复用原候选。</p>
+    {error && <p role="alert" className="text-destructive">{error}</p>}
+    <div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={locked} onClick={() => void act(async () => { setSelected(null); await load(); })}>刷新候选</Button>{data?.can_edit === true && <Button size="sm" variant="outline" disabled={locked} onClick={() => void act(async () => { const result = await request(projectId, "/candidates/capture", { after_issue_id: null }); setScan(result); await load(); })}>补查已有问题</Button>}{scan?.next_after_issue_id != null && <Button size="sm" variant="outline" disabled={locked} onClick={() => void act(async () => { setScan(await request(projectId, "/candidates/capture", { after_issue_id: scan.next_after_issue_id })); await load(); })}>继续补查下一批问题</Button>}</div>
+    {scan && <p role="status" className="text-xs">本批核对 {text(scan.examined)} 项问题，保留 / 复用 {Array.isArray(scan.candidate_ids) ? scan.candidate_ids.length : 0} 项候选；{scan.next_after_issue_id ? "尚有后续问题" : "已读到本轮末尾"}。</p>}
+    {data && !rows(data.items).length && <p className="text-sm">暂无已记录候选；可补查已有问题。</p>}
+    <div className="space-y-2">{rows(data?.items).map(c => { const i = obj(obj(c.snapshot).issue); return <div key={text(c.id)} className="rounded-md border p-2"><Button variant="link" size="sm" disabled={locked} onClick={() => void act(() => choose(text(c.id)))}>{text(i.code)} · {text(i.title)}</Button><p className="text-xs">{states[text(c.status)]} · {text(c.created_at)}</p></div>; })}</div>
+    {data?.next_offset != null && <Button size="sm" variant="outline" disabled={locked} onClick={() => void act(() => load(true))}>更早候选</Button>}
+    {selected && <section className="space-y-3 rounded-md border p-3"><h5 className="font-medium">{text(issue.code)} · {text(issue.title)}</h5><p className="text-sm">{states[text(selected.status)]} · {reasons[text(snapshot.reason)]}</p><a className="text-sm text-primary underline" href={`/projects?project=${projectId}&tab=work-items&entity_id=${issue.id}#issue-${issue.id}`}>查看原问题和质量办理</a>
+      <details open><summary className="cursor-pointer text-sm">发现时原值与明确关联</summary>{rows(snapshot.sources).map(s => <details key={`${s.kind}:${s.id}`} className="my-2 rounded-md border p-2"><summary className="cursor-pointer text-sm">{kinds[text(s.kind)]} · {label(obj(s.value))}</summary><FmeaSourceValue value={obj(s.value)}/></details>)}{rows(snapshot.links).map(r => <p key={text(r.id)} className="text-xs">质量关联依据：{text(r.reason)}</p>)}</details>
+      {selected.status === "stale" && <details><summary className="cursor-pointer text-sm">对照当前原记录与发布状态</summary>{rows(current.sources).map(s => <details key={`${s.kind}:${s.id}`} className="my-2 rounded-md border p-2"><summary className="cursor-pointer text-sm">{kinds[text(s.kind)]} · {label(obj(s.value))}</summary><FmeaSourceValue value={obj(s.value)}/></details>)}<p className="text-xs">当前：{reasons[text(current.reason)]}</p></details>}
+      {rows(current.publications).map(p => <div key={text(p.publication_id)} className="text-xs"><Button size="sm" variant="link" disabled={locked} onClick={() => void act(() => onOpen(text(p.entry_id)))}>当前发布 {text(p.title)} · v{text(p.version)}</Button><p>{Array.isArray(p.source_gaps) && p.source_gaps.length ? "引用资料已有变化，须重核" : "原引用资料仍为当前值"}</p>{rows(p.excluded_sources).map(r => <p key={`${r.kind}:${r.id}`}>原专业不适用依据：{text(r.reason)}</p>)}</div>)}
+      {data?.can_edit === true && selected.status === "stale" && <Button size="sm" disabled={locked} onClick={() => void act(async () => { const result = await request(projectId, `/candidates/${selected.id}/refresh`, {}); setSelected(obj(result.candidate)); await load(); })}>按当前资料重新整理候选</Button>}
+      {data?.can_edit === true && selected.status === "pending" && <div className="flex flex-wrap gap-2"><Button size="sm" disabled={locked} onClick={() => void act(() => onStart(selected, false))}>核对并建立新失效模式</Button><Button size="sm" variant="outline" disabled={locked} onClick={() => void act(() => onStart(selected, true))}>核对并修订上方已选条目</Button><Button size="sm" variant="outline" disabled={locked} onClick={() => { setDeclining(true); setReason(""); }}>记录不适用理由</Button></div>}
+      {declining && selected.status === "pending" && <form className="space-y-2" onSubmit={e => { e.preventDefault(); void act(async () => { const body = { action: "not_applicable", expected_digest: selected.input_digest, reason: reason.trim() }; const signature = JSON.stringify({ id: selected.id, ...body }); if(attempt.current?.signature !== signature) attempt.current = { signature, id: crypto.randomUUID() }; await request(projectId, `/candidates/${selected.id}/disposition`, { ...body, request_id: attempt.current.id }); await choose(text(selected.id)); await load(); }); }}><label className="block text-sm">本次范围不适用的专业理由与依据<textarea required maxLength={4000} className={field} value={reason} disabled={locked} onChange={e => setReason(e.target.value)}/></label><p className="text-xs">仅处置此版候选；保留未覆盖事实，后续新资料会重新形成待核对项。</p><Button size="sm" disabled={locked || !reason.trim()}>保存具名处置</Button></form>}
+      {!!disposition.id && <div className="space-y-2 text-sm"><p>处置人：{text(obj(selected.people)[text(disposition.created_by_user_id)])} · {text(disposition.created_at)}</p><p className="whitespace-pre-wrap">{text(disposition.reason)}</p>{rows(disposition.excluded_sources).map(r => <p key={`${r.kind}:${r.id}`}>{kinds[text(r.kind)]} 不适用理由：{text(r.reason)}</p>)}{!!disposition.entry_id && <Button size="sm" variant="outline" disabled={locked} onClick={() => void act(() => onOpen(text(disposition.entry_id)))}>查看已转入的修订与发布状态</Button>}</div>}
+    </section>}
+  </details>;
+}

@@ -1,3 +1,6 @@
+import { RequirementCaseLinks } from "@/components/cases/case-requirements";
+import { RequirementDefinitionSources } from "@/components/product-work/requirement-definition-sources";
+import { RequirementOpportunityLinks } from "@/components/product-work/requirement-links";
 import { ClipboardTextIcon } from "@phosphor-icons/react";
 
 import { cn } from "@/lib/utils";
@@ -102,7 +105,7 @@ export function RequirementList({
       </div>
       <ul className="divide-y rounded-lg border bg-card md:rounded-t-none md:border-t-0" role="list">
         {requirements.map((requirement) => (
-          <li key={requirement.id}>
+          <li key={requirement.id} id={`requirement-${requirement.id}`}>
             {canEdit ? (
               <button
                 aria-label={`打开需求 ${requirement.code}`}
@@ -121,6 +124,9 @@ export function RequirementList({
                 <RequirementRow requirement={requirement} />
               </div>
             )}
+            <RequirementOpportunityLinks requirementId={requirement.id} />
+            <RequirementDefinitionSources requirementId={requirement.id} />
+            <RequirementCaseLinks requirementId={requirement.id} />
           </li>
         ))}
       </ul>

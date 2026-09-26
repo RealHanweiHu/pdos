@@ -55,7 +55,7 @@ export function CapaTimeline({ detail }: { detail: NcrDetail }) {
           items={detail.root_causes.map((record) => ({
             id: record.id,
             title: `v${record.version} · ${record.method}`,
-            meta: record.status,
+            meta: ({ draft: "待审核", approved: "已批准", superseded: "已被修订替代" })[record.status],
             body: record.root_cause,
           }))}
           title="根因版本"
@@ -65,7 +65,7 @@ export function CapaTimeline({ detail }: { detail: NcrDetail }) {
           items={detail.actions.map((record) => ({
             id: record.id,
             title: record.action_type === "corrective" ? "纠正措施" : "预防措施",
-            meta: `${record.status} · ${record.due_date}`,
+            meta: `${({ planned: "待执行", in_progress: "执行中", completed: "已完成" })[record.status]} · ${record.due_date}`,
             body: record.description,
           }))}
           title="措施"
@@ -75,7 +75,7 @@ export function CapaTimeline({ detail }: { detail: NcrDetail }) {
           items={detail.effectiveness_reviews.map((record) => ({
             id: record.id,
             title: `复核 #${record.review_number}`,
-            meta: record.result,
+            meta: record.result === "effective" ? "有效" : "无效，需补充措施",
             body: record.actual_result,
           }))}
           title="有效性历史"
@@ -105,7 +105,7 @@ function HistoryColumn({
                 <span className="font-medium text-foreground">{item.title}</span>
                 <span className="text-muted-foreground">{item.meta}</span>
               </div>
-              <p className="mt-1 line-clamp-3 text-xs text-muted-foreground">{item.body}</p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-xs text-muted-foreground">{item.body}</p>
             </li>
           ))}
         </ul>

@@ -1,3 +1,6 @@
+import { InitialPlans } from "./initial-plans";
+import { CaseReviews } from "./case-reviews";
+import { CaseRequirements } from "./case-requirements";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
@@ -58,9 +61,9 @@ export function CaseWorkspaceView({
       </div>
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_384px]">
         <CaseList canEdit={canEdit} cases={cases} onSelect={onSelect} selectedId={selectedCase?.id ?? null} />
-        {selectedCase && canEdit ? (
-          <section aria-label="编辑开发案例" className="rounded-lg border bg-card p-4">
-            {!terminal ? (
+        {selectedCase ? (
+          <section aria-label="开发案例详情" className="rounded-lg border bg-card p-4">
+            {canEdit && !terminal ? (
               <CaseForm
                 busy={saving}
                 developmentCase={selectedCase}
@@ -74,12 +77,15 @@ export function CaseWorkspaceView({
                 <p className="mt-1 text-sm text-muted-foreground">{selectedCase.title}</p>
               </div>
             )}
-            <CaseStatusActions
+            <CaseRequirements key={selectedCase.id} caseId={selectedCase.id} caseUpdatedAt={selectedCase.updated_at} caseStatus={selectedCase.status} />
+            <InitialPlans key={`plan-${selectedCase.id}`} source={{ kind: "development_case", id: selectedCase.id }} />
+            <CaseReviews key={`reviews-${selectedCase.id}`} caseId={selectedCase.id} updatedAt={selectedCase.updated_at} />
+            {canEdit && <CaseStatusActions
               busy={saving}
               developmentCase={selectedCase}
               onCreateProject={(values) => onCreateProject(selectedCase, values)}
               onTransition={(toStatus) => onTransition(selectedCase, toStatus)}
-            />
+            />}
           </section>
         ) : null}
       </div>

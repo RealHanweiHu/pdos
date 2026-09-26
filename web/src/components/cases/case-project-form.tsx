@@ -4,6 +4,8 @@ import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
+import { CaseProjectTemplatePicker, type CreationTemplate } from "./case-project-template-picker";
+
 import type { DevelopmentCase } from "./case-types";
 
 export type CaseProjectValues = {
@@ -12,6 +14,7 @@ export type CaseProjectValues = {
   description: string | null;
   start_date: string | null;
   target_date: string | null;
+  product_template?: CreationTemplate;
 };
 
 export type CaseProjectResult = { ok: true } | { ok: false; message: string };
@@ -28,6 +31,7 @@ export function CaseProjectForm({
   developmentCase: DevelopmentCase;
   onSubmit: (values: CaseProjectValues) => Promise<CaseProjectResult>;
 }) {
+  const [productTemplate, setProductTemplate] = useState<CreationTemplate | null>(null);
   const [error, setError] = useState<string | null>(null);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,6 +46,7 @@ export function CaseProjectForm({
       description: description || null,
       start_date: startDate || null,
       target_date: targetDate || null,
+      ...(productTemplate ? { product_template: productTemplate } : {}),
     });
     if (!result.ok) setError(result.message);
   }
@@ -50,7 +55,7 @@ export function CaseProjectForm({
       <div>
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-primary">Project action</p>
         <h3 className="mt-1 text-sm font-semibold">从已批准 Case 创建项目</h3>
-        <p className="mt-1 text-xs text-muted-foreground">将原子生成独占 NPD Workflow 与七个阶段。</p>
+        <p className="mt-1 text-xs text-muted-foreground">创建项目、专属阶段及审批入口，并保存所选产品流程版本。</p>
       </div>
       {error ? <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{error}</p> : null}
       <label className="block text-xs font-medium" htmlFor="case-project-code">项目编号<input className={controlClass} disabled={busy} id="case-project-code" maxLength={64} name="code" required /></label>
@@ -60,6 +65,7 @@ export function CaseProjectForm({
         <label className="text-xs font-medium" htmlFor="case-project-start">开始日期<input className={controlClass} disabled={busy} id="case-project-start" name="start_date" type="date" /></label>
         <label className="text-xs font-medium" htmlFor="case-project-target">目标日期<input className={controlClass} disabled={busy} id="case-project-target" name="target_date" type="date" /></label>
       </div>
+      <CaseProjectTemplatePicker busy={busy} value={productTemplate} onChange={setProductTemplate} />
       <Button className="h-11 w-full sm:h-8" disabled={busy} type="submit">{busy ? "正在创建…" : "创建项目"}</Button>
     </form>
   );

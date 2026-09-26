@@ -1,7 +1,17 @@
 "use client";
+import { RiskTemplateFields } from "./risk-template-fields";
+import { RiskBusinessReferences } from "./risk-business-references";
+import { DecisionSourceRows } from "./decision-intake-source";
+import { MaterialExceptions } from "./material-exceptions";
+import { IssueIntakeSource } from "./issue-intake-source";
+import { CostGaps } from "./cost-gaps";
+import { SupplierNoticeLinks } from "./supplier-notice-links";
+import { IssueTemplateFields } from "./issue-template-fields";
+import { IssueQualityLinks } from "@/components/quality/issue-quality-links";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 
+import { TaskPreparation } from "@/components/my-work/task-preparation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +46,7 @@ const taskStatusLabels: Record<TaskStatus, string> = {
   blocked: "已阻塞",
   done: "已完成",
   skipped: "已跳过",
+  pending_approval: "待批准",
 };
 
 const readinessLabels: Record<ProjectTask["readiness"], string> = {
@@ -101,19 +112,22 @@ function EmptyRow({ children }: { children: React.ReactNode }) {
 
 export function TaskPanel({
   busy,
+  focusedTaskId = null,
   onCreate,
   onTransition,
   stages,
   tasks,
 }: {
   busy: boolean;
+  focusedTaskId?: string | null;
   onCreate: (input: TaskCreateInput) => Promise<boolean>;
   onTransition: (task: ProjectTask, input: TaskTransitionInput) => Promise<boolean>;
   stages: ProjectStage[];
   tasks: ProjectTask[];
 }) {
   const [blockedReason, setBlockedReason] = useState<Record<string, string>>({});
-  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [completionEvidence, setCompletionEvidence] = useState<Record<string,string>>({});
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(focusedTaskId);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -192,7 +206,7 @@ export function TaskPanel({
             const expanded = expandedTaskId === task.id;
             const stageName = stages.find((stage) => stage.id === task.stage_id)?.name ?? "未指定";
             const dependencies = task.dependency_task_ids.map(
-              (dependencyId) => tasks.find((item) => item.id === dependencyId)?.title ?? dependencyId,
+              (dependencyId) => `${tasks.find((item) => item.id === dependencyId)?.title ?? dependencyId}${task.baseline_dependency_task_ids?.includes(dependencyId) ? "（当前基线）" : "（手工）"}`,
             );
             return (
               <li key={task.id}>
@@ -228,9 +242,12 @@ export function TaskPanel({
                       <div><p className="text-muted-foreground">负责人</p><p className="mt-1 font-medium">{task.assignee_user_id ? "已分配" : "未分配"}</p></div>
                       <div><p className="text-muted-foreground">前置任务</p><p className="mt-1 font-medium">{dependencies.length ? dependencies.join("、") : "无"}</p></div>
                     </div>
+                    <TaskPreparation projectId={task.project_id} taskId={task.id} />
+                    {task.expected_output && <p className="mt-2 whitespace-pre-wrap text-sm">完成要求：{task.expected_output}</p>}
+                    {task.status === "in_progress" && <label className="mt-3 block text-sm">完成依据或记录位置（按任务要求填写）<textarea className="mt-1 w-full rounded-md border bg-background p-2" maxLength={2000} disabled={busy} value={completionEvidence[task.id] ?? task.completion_evidence_ref ?? ""} onChange={e => setCompletionEvidence(old => ({ ...old, [task.id]: e.target.value }))}/></label>}
                     <div className="mt-4 flex flex-wrap gap-2 border-t pt-4">
                       {canStart ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "in_progress" })}>开始任务</Button> : null}
-                      {task.status === "in_progress" ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "done" })}>完成任务</Button> : null}
+                      {task.status === "in_progress" ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "done", completion_evidence_ref: (completionEvidence[task.id] ?? task.completion_evidence_ref ?? "").trim() || null })}>完成任务</Button> : null}
                       {task.status === "blocked" ? (
                         <>
                           <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(task, { to_status: "todo" })} variant="outline">解除阻塞</Button>
@@ -275,19 +292,50 @@ export function TaskPanel({
   );
 }
 
-const nextIssueAction: Partial<Record<IssueStatus, { label: string; to: IssueStatus }>> = {
+const forwardIssueAction: Partial<Record<IssueStatus, { label: string; to: IssueStatus }>> = {
   open: { label: "进入分析", to: "analysis" },
   analysis: { label: "进入行动", to: "action" },
   action: { label: "提交验证", to: "verification" },
-  verification: { label: "关闭问题", to: "closed" },
 };
 
-export function IssuePanel({ busy, issues, onCreate, onTransition }: {
+const issueTypeLabels: Record<string, string> = {
+  engineering: "工程",
+  quality: "质量",
+  supplier: "供应商",
+  test_failure: "测试失败",
+  certification: "认证",
+};
+
+export function IssuePanel({ busy, issues, onCreate, onTransition, focusedIssueId = null }: {
   busy: boolean;
   issues: ProjectIssue[];
+  focusedIssueId?: string | null;
   onCreate: (input: IssueCreateInput) => Promise<boolean>;
-  onTransition: (issue: ProjectIssue, toStatus: IssueStatus) => Promise<boolean>;
+  onTransition: (
+    issue: ProjectIssue,
+    toStatus: IssueStatus,
+    extra?: { comment?: string; closure_evidence_ref?: string },
+  ) => Promise<boolean>;
 }) {
+  const [closingId, setClosingId] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const [evidence, setEvidence] = useState("");
+  const [rejectReason, setRejectReason] = useState("");
+  const focused = useRef<string | null>(null);
+  useEffect(() => {
+    if (focusedIssueId && focused.current !== focusedIssueId && issues.some(i => i.id === focusedIssueId)) {
+      document.getElementById(`issue-${focusedIssueId}`)?.scrollIntoView({ block: "start" });
+      focused.current = focusedIssueId;
+    }
+  }, [focusedIssueId, issues]);
+
+  function resetInline() {
+    setClosingId(null);
+    setRejectingId(null);
+    setEvidence("");
+    setRejectReason("");
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -298,9 +346,10 @@ export function IssuePanel({ busy, issues, onCreate, onTransition }: {
     });
     if (created) form.reset();
   }
+
   return (
     <section aria-label="项目问题" className="overflow-hidden rounded-lg border bg-card">
-      <PanelHeader count={issues.length} description="问题严格按 Open → Analysis → Action → Verification → Closed 推进。" title="问题" />
+      <PanelHeader count={issues.length} description="Open 可暂存；进入分析需完整分派；高/严重问题由验证人凭证据关闭。" title="问题" />
       <form className="grid gap-3 border-b bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
         <label className="min-w-0 text-xs font-medium" htmlFor="issue-title">问题标题<input className={`${controlClass} mt-1`} disabled={busy} id="issue-title" maxLength={512} name="title" required /></label>
         <label className="text-xs font-medium" htmlFor="issue-severity">严重度<select className={`${controlClass} mt-1`} defaultValue="medium" disabled={busy} id="issue-severity" name="severity"><PriorityOptions /></select></label>
@@ -309,14 +358,109 @@ export function IssuePanel({ busy, issues, onCreate, onTransition }: {
       {issues.length === 0 ? <EmptyRow>还没有问题。</EmptyRow> : (
         <ul className="divide-y" role="list">
           {issues.map((issue) => {
-            const action = nextIssueAction[issue.status];
+            const forward = forwardIssueAction[issue.status];
+            const needsEvidence = issue.severity === "high" || issue.severity === "critical";
             return (
-              <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center" key={issue.id}>
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium">{issue.title}</p>
-                  <div className="mt-2 flex flex-wrap gap-1.5"><Badge tone={issue.status === "closed" ? "ok" : "pending"}>{issueStatusLabels[issue.status]}</Badge><Badge tone={issue.severity === "critical" ? "bad" : "neutral"}>{priorityLabels[issue.severity]}</Badge></div>
+              <li className="flex flex-col gap-3 p-4 scroll-mt-6" id={`issue-${issue.id}`} key={issue.id}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium">{issue.title}</p>{issue.source_field_capture_id && <a className="block text-xs text-primary underline" href={`/capture?project=${issue.project_id}&capture=${issue.source_field_capture_id}`}>查看现场原件与人工核对记录</a>}{issue.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${issue.source_finding_id}`}>查看会议建议与人审回执</a>}
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <Badge tone={issue.status === "closed" ? "ok" : "pending"}>{issueStatusLabels[issue.status]}</Badge>
+                      <Badge tone={issue.severity === "critical" ? "bad" : "neutral"}>{priorityLabels[issue.severity]}</Badge>
+                      <Badge tone="neutral">{issueTypeLabels[issue.issue_type] ?? issue.issue_type}</Badge>
+                      {issue.reopen_count > 0 ? <Badge tone="bad">重开 ×{issue.reopen_count}</Badge> : null}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {forward ? (
+                      <Button className="h-11 sm:h-8" disabled={busy} onClick={() => { resetInline(); void onTransition(issue, forward.to); }}>{forward.label}</Button>
+                    ) : null}
+                    {issue.status === "verification" ? (
+                      <>
+                        <Button
+                          className="h-11 sm:h-8"
+                          disabled={busy}
+                          onClick={() => {
+                            if (needsEvidence) {
+                              setRejectingId(null);
+                              setClosingId(issue.id);
+                            } else {
+                              resetInline();
+                              void onTransition(issue, "closed");
+                            }
+                          }}
+                        >
+                          验证通过并关闭
+                        </Button>
+                        <Button className="h-11 sm:h-8" disabled={busy} onClick={() => { setClosingId(null); setRejectingId(issue.id); }} variant="destructive">退回行动</Button>
+                      </>
+                    ) : null}
+                    {issue.status === "closed" ? (
+                      <Button className="h-11 sm:h-8" disabled={busy} onClick={() => { resetInline(); void onTransition(issue, "action"); }} variant="outline">重开问题</Button>
+                    ) : null}
+                  </div>
                 </div>
-                {action ? <Button className="h-11 sm:h-8" disabled={busy} onClick={() => void onTransition(issue, action.to)}>{action.label}</Button> : null}
+                {closingId === issue.id ? (
+                  <form
+                    className="grid gap-2 rounded-lg border border-success/30 bg-success/5 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+                    onSubmit={async (event) => {
+                      event.preventDefault();
+                      if (await onTransition(issue, "closed", { closure_evidence_ref: evidence.trim() })) resetInline();
+                    }}
+                  >
+                    <label className="min-w-0 text-xs font-medium">
+                      关闭证据（高/严重问题必填）
+                      <input
+                        aria-label={`关闭证据 ${issue.title}`}
+                        className={`${controlClass} mt-1`}
+                        disabled={busy}
+                        maxLength={2_000}
+                        onChange={(event) => setEvidence(event.target.value)}
+                        placeholder="测试报告编号、验证记录链接等"
+                        required
+                        value={evidence}
+                      />
+                    </label>
+                    <div className="flex gap-1.5">
+                      <Button className="h-11" disabled={busy || !evidence.trim()} type="submit">确认关闭</Button>
+                      <Button className="h-11" disabled={busy} onClick={resetInline} type="button" variant="outline">取消</Button>
+                    </div>
+                  </form>
+                ) : null}
+                {rejectingId === issue.id ? (
+                  <form
+                    className="grid gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+                    onSubmit={async (event) => {
+                      event.preventDefault();
+                      if (await onTransition(issue, "action", { comment: rejectReason.trim() })) resetInline();
+                    }}
+                  >
+                    <label className="min-w-0 text-xs font-medium">
+                      退回原因（必填）
+                      <input
+                        aria-label={`退回原因 ${issue.title}`}
+                        className={`${controlClass} mt-1`}
+                        disabled={busy}
+                        maxLength={2_000}
+                        onChange={(event) => setRejectReason(event.target.value)}
+                        placeholder="说明验证未通过的原因"
+                        required
+                        value={rejectReason}
+                      />
+                    </label>
+                    <div className="flex gap-1.5">
+                      <Button className="h-11" disabled={busy || !rejectReason.trim()} type="submit" variant="destructive">确认退回</Button>
+                      <Button className="h-11" disabled={busy} onClick={resetInline} type="button" variant="outline">取消</Button>
+                    </div>
+                  </form>
+                ) : null}
+                <IssueIntakeSource projectId={issue.project_id} issueId={issue.id}/>
+                <MaterialExceptions projectId={issue.project_id} issueId={issue.id}/>
+                <DecisionSourceRows projectId={issue.project_id} issueId={issue.id}/>
+                <SupplierNoticeLinks projectId={issue.project_id} targetKind="issue" targetId={issue.id}/><CostGaps projectId={issue.project_id} issueId={issue.id}/>
+                <IssueTemplateFields projectId={issue.project_id} issueId={issue.id} currentStatus={issue.status} currentVersion={issue.updated_at}/>
+                <IssueQualityLinks key={`quality:${issue.id}`} projectId={issue.project_id} issueId={issue.id}/>
               </li>
             );
           })}
@@ -365,7 +509,9 @@ export function RiskPanel({ busy, onCreate, onTransition, risks }: {
           {risks.map((risk) => (
             <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center" key={risk.id}>
               <div className="min-w-0 flex-1">
-                <p className="font-medium">{risk.title}</p>
+                <RiskTemplateFields projectId={risk.project_id} riskId={risk.id} currentStatus={risk.status} currentVersion={risk.updated_at}/>
+                <RiskBusinessReferences projectId={risk.project_id} riskId={risk.id} />
+                <p className="font-medium">{risk.title}</p>{risk.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${risk.source_finding_id}`}>查看会议建议与人审回执</a>}
                 <div className="mt-2 flex flex-wrap gap-1.5"><Badge tone={risk.status === "closed" ? "ok" : risk.score >= 15 ? "bad" : "pending"}>{riskStatusLabels[risk.status]}</Badge><Badge tone={risk.score >= 15 ? "bad" : "neutral"}>暴露 {risk.score}</Badge><Badge>{risk.likelihood} × {risk.impact}</Badge></div>
               </div>
               <div className="flex flex-wrap gap-2">{riskActions(risk.status).map((action) => <Button className="h-11 sm:h-8" disabled={busy} key={action.to} onClick={() => void onTransition(risk, action.to)} variant={action.variant}>{action.label}</Button>)}</div>

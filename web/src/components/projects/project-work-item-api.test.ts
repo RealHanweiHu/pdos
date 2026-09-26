@@ -39,6 +39,11 @@ const task = {
   dependency_task_ids: [],
   unresolved_dependency_ids: [],
   readiness: "ready",
+  kind: "task",
+  source_entity: null,
+  source_entity_id: null,
+  expected_output: null,
+  completion_evidence_ref: null,
   ...timestamps,
 };
 
@@ -48,6 +53,11 @@ const issue = {
   stage_id: null,
   owner_user_id: null,
   reported_by_user_id: "user-1",
+  verifier_user_id: null,
+  issue_type: "engineering",
+  closure_criteria: null,
+  closure_evidence_ref: null,
+  reopen_count: 0,
   title: "Thermal drift",
   description: null,
   status: "open",
@@ -127,6 +137,27 @@ describe("project work-item API", () => {
       JSON.stringify({ to_status: "analysis" }),
       JSON.stringify({ to_status: "mitigating" }),
     ]);
+    vi.unstubAllGlobals();
+  });
+
+  it("parses pending_approval tasks and skips rows with unknown enum values", async () => {
+    const approvalTask = { ...task, id: "task-2", status: "pending_approval", readiness: "waiting_approval" };
+    const futureTask = { ...task, id: "task-3", status: "some_future_status" };
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const fetchMock = vi.fn<typeof fetch>(async (input) => {
+      const path = String(input);
+      if (path.endsWith("/tasks")) return jsonResponse({ items: [task, approvalTask, futureTask] });
+      if (path.endsWith("/issues")) return jsonResponse({ items: [issue] });
+      if (path.endsWith("/risks")) return jsonResponse({ items: [risk] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const workItems = await requestProjectWorkItems("project-1");
+    expect(workItems.tasks.map((item) => item.id)).toEqual(["task-1", "task-2"]);
+    expect(workItems.tasks[1]?.status).toBe("pending_approval");
+    expect(warn).toHaveBeenCalledOnce();
+    warn.mockRestore();
     vi.unstubAllGlobals();
   });
 

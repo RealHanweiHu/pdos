@@ -39,7 +39,7 @@ export async function POST(request: Request, context: MemoryRouteContext) {
   if (!headers) return sessionError(401, "INVALID_ACCESS_TOKEN", "Authentication required");
   try {
     const { projectId } = await context.params;
-    const payload = await readBoundedJson(request);
+    const payload = await readBoundedJson(request, 131_072);
     return forwardJson(
       await pdosApiFetch(`/api/projects/${encodeURIComponent(projectId)}/memories`, {
         method: "POST",

@@ -58,9 +58,7 @@ export async function readProject(response: Response): Promise<Project> {
   return body;
 }
 
-export async function requestProjects(): Promise<LoadedProjects | null> {
-  const identity = await requestIdentity();
-  if (identity === null) return null;
+export async function requestProjectList(): Promise<Project[] | null> {
   const response = await fetch("/api/projects", {
     cache: "no-store",
     credentials: "same-origin",
@@ -71,5 +69,12 @@ export async function requestProjects(): Promise<LoadedProjects | null> {
   if (!isRecord(body) || !Array.isArray(body.items) || !body.items.every(isProject)) {
     throw new Error("invalid Project list response");
   }
-  return { identity, projects: body.items };
+  return body.items;
+}
+
+export async function requestProjects(): Promise<LoadedProjects | null> {
+  const identity = await requestIdentity();
+  if (identity === null) return null;
+  const projects = await requestProjectList();
+  return projects === null ? null : { identity, projects };
 }

@@ -13,7 +13,9 @@ export async function POST(request: Request, context: FindingRouteContext) {
   const token = await currentSessionToken();
   if (!token) return sessionError(401, "INVALID_ACCESS_TOKEN", "Authentication required");
   try {
-    const payload = await readBoundedJson(request);
+    // Versioned reviews carry frozen baselines, transcript quotes and edited diffs.
+    // Other endpoints retain their smaller default limit.
+    const payload = await readBoundedJson(request, 1024 * 1024);
     const { findingId } = await context.params;
     return forwardJson(
       await pdosApiFetch(`/api/ai/findings/${encodeURIComponent(findingId)}/review`, {

@@ -7,6 +7,11 @@ export type ProductSpecification = {
   code: string;
   title: string;
   version: number;
+  requirement_id: string | null;
+  owner_user_id: string | null;
+  verification_method: string | null;
+  acceptance_criteria: string | null;
+  criticality: "standard" | "key";
   content: Record<string, unknown>;
   created_at: string;
   updated_at: string;

@@ -35,14 +35,30 @@ export async function pdosApiFetch(path: string, init?: RequestInit, timeoutMs =
   });
 }
 
-export async function readBoundedJson(request: Request): Promise<Record<string, unknown>> {
+export async function readBoundedJson(request: Request, maxBytes = MAX_REQUEST_BYTES): Promise<Record<string, unknown>> {
   const contentType = request.headers.get("content-type")?.split(";", 1)[0];
   if (contentType !== "application/json") {
     throw new InvalidRequestBodyError("JSON request required");
   }
-  const bodyText = await request.text();
-  if (new TextEncoder().encode(bodyText).byteLength > MAX_REQUEST_BYTES) {
-    throw new InvalidRequestBodyError("Request body too large");
+  if (!request.body) throw new InvalidRequestBodyError("JSON body required");
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder();
+  let bodyText = "";
+  let size = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > maxBytes) {
+        await reader.cancel();
+        throw new InvalidRequestBodyError("Request body too large");
+      }
+      bodyText += decoder.decode(value, { stream: true });
+    }
+    bodyText += decoder.decode();
+  } finally {
+    reader.releaseLock();
   }
   let body: unknown;
   try {

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const payload = await readBoundedJson(request);
     return forwardJson(
       await pdosApiFetch(
-        "/api/ai/chat",
+        process.env.PDOS_AI_CHAT_ASYNC === "true" ? "/api/ai/chat/requests" : "/api/ai/chat",
         {
           method: "POST",
           headers: {

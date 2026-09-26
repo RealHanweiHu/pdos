@@ -1,0 +1,58 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { isRecord } from "@/components/workspace-api";
+import { SampleConfigurationEditor } from "./sample-configuration-editor";
+import { SampleConfigurationSnapshot } from "./sample-configuration-snapshot";
+import type { NpiSample } from "./project-npi-types";
+
+type Row = Record<string, unknown>;
+type Selection = { kind: "current" | "revision" | "test_run"; id: string; label: string };
+const label = (v: unknown) => v === null || v === undefined ? "未知" : String(v);
+function object(v: unknown): Row { if (!isRecord(v)) throw new Error("配置资料不完整"); return v; }
+function list(v: unknown): Row[] { if (!Array.isArray(v)) throw new Error("配置清单不完整"); return v.map(object); }
+function parse(value: unknown) { const r = object(value); return { targets: list(r.targets), fields: list(r.fields).map(f => ({ field: label(f.field), label: label(f.label), status: label(f.status), differing: f.differing === true, unknown_columns: Array.isArray(f.unknown_columns) ? f.unknown_columns.map(Number) : [], cells: list(f.cells) })), suppliers: list(r.supplier_rows).map(f => ({ field: label(f.field), label: label(f.label), status: label(f.status), differing: f.differing === true, unknown_columns: Array.isArray(f.unknown_columns) ? f.unknown_columns.map(Number) : [], cells: list(f.cells) })), notice: label(r.notice), missing: Array.isArray(r.missing_configuration_columns) ? r.missing_configuration_columns.map(Number) : [] }; }
+type Comparison = ReturnType<typeof parse>;
+async function request(path: string, body?: object): Promise<unknown> {
+  const response = await fetch(path, { method: body ? "POST" : "GET", cache: "no-store", headers: body ? { "Content-Type": "application/json" } : undefined, body: body ? JSON.stringify(body) : undefined });
+  const data: unknown = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(isRecord(data) && isRecord(data.detail) && typeof data.detail.message === "string" ? data.detail.message : "配置资料当前不可用，请刷新重试");
+  return data;
+}
+function value(v: unknown): string {
+  if (v === null || v === undefined || v === "" || (isRecord(v) && !Object.keys(v).length)) return "未知";
+  if (isRecord(v)) { if ("id" in v && "code" in v) return `${label(v.code)} · 版本${label(v.version)}`; return Object.entries(v).map(([k, item]) => `${k}：${value(item)}`).join("；"); }
+  if (Array.isArray(v)) return v.map(value).join("；");
+  return String(v);
+}
+const states: Record<string, string> = { different: "已知值不同", incomplete: "资料不全", same: "所选值相同", passed: "通过", failed: "失败", aborted: "终止", in_progress: "进行中" };
+function ComparisonTable({ result }: { result: Comparison }) {
+  function table(rows: Comparison["fields"]) { return <div className="overflow-x-auto"><table className="w-full min-w-[600px] text-left text-xs"><thead><tr><th scope="col" className="p-2">比较项</th>{result.targets.map((t, i) => <th scope="col" className="min-w-44 p-2" key={i}>{label(t.label)}{t.kind === "current" && <p className="font-normal text-muted-foreground">本次读取的当前值</p>}{isRecord(t.test_run) && <p className="font-normal">{states[label(t.test_run.status)] ?? label(t.test_run.status)}{t.test_run.draft_state === "draft" ? " · 草稿" : " · 已确认"}</p>}</th>)}</tr></thead><tbody>{rows.map(row => <tr key={label(row.field)} className={`border-t ${row.differing ? "bg-primary/5" : ""}`}><th scope="row" className="p-2 align-top font-medium">{label(row.label)}<p className="mt-1 font-normal text-muted-foreground">{states[label(row.status)] ?? label(row.status)}{row.differing && Array.isArray(row.unknown_columns) && row.unknown_columns.length > 0 ? "，另有未知项" : ""}</p></th>{row.cells.map((cell, i) => <td key={i} className="whitespace-pre-wrap break-words p-2 align-top">{cell.known === true ? value(cell.value) : <><p>未知</p><p className="text-muted-foreground">{label(cell.reason)}</p>{cell.raw_value !== null && cell.raw_value !== undefined && <p>原值：{value(cell.raw_value)}</p>}</>}</td>)}</tr>)}</tbody></table></div>; }
+  return <div className="space-y-3"><p className="text-xs text-muted-foreground">{result.notice}</p>{result.missing.length > 0 && <p className="text-xs">缺少配置记录：{result.missing.map(i => label(result.targets[i]?.label)).join("；")}</p>}{table(result.fields)}{result.suppliers.length > 0 && <details><summary className="cursor-pointer text-xs font-medium">按关键件核对供应商缺项和差异</summary>{table(result.suppliers)}</details>}
+    <div className="grid gap-3 text-xs sm:grid-cols-2">{result.targets.map((target, i) => <div key={i} className="space-y-1 rounded-md border p-2"><p className="font-medium">{label(target.label)}</p>{isRecord(target.sample) && <p>实际批次：{label(target.sample.build_code)} · {label(target.sample.build_phase).toUpperCase()}</p>}{isRecord(target.revision) ? <><p>版本登记人：{label(target.revision.created_by_name)} · {label(target.revision.created_at)}</p><p>{target.revision.source === "report_extract" ? "来自当次报告原值" : "来自当时记录的样机配置"}</p></> : target.kind === "current" && isRecord(target.current) ? <p>当前配置：{target.current.draft_state === "draft" ? "草稿" : "已确认"} · 最近更新 {label(target.current.updated_at)}</p> : <p>当次配置未绑定，保留未知。</p>}{typeof target.source_document_href === "string" && <a className="block text-primary underline" href={target.source_document_href}>查看原报告证据</a>}{typeof target.test_run_href === "string" && <a className="block text-primary underline" href={target.test_run_href}>查看实际测试记录</a>}</div>)}</div>
+  </div>;
+}
+export function TestRunConfigurationComparison({ projectId, runId, sampleId }: { projectId: string; runId: string; sampleId: string }) {
+  const [result, setResult] = useState<Comparison | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState<string | null>(null);
+  async function compare() { setBusy(true); setError(null); try { setResult(parse(await request(`/api/projects/${projectId}/npi/sample-configurations/compare-versions`, { selections: [{ kind: "test_run", id: runId }, { kind: "current", id: sampleId }] }))); } catch (e) { setError(e instanceof Error ? e.message : "比较未完成"); } finally { setBusy(false); } }
+  return <details className="rounded-md border p-2" onToggle={e => { if (e.currentTarget.open && !result && !busy) void compare(); }}><summary className="cursor-pointer text-xs">比较当次配置与当前配置</summary><div className="mt-3 space-y-3"><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void compare()}>刷新对比</Button>{result && <ComparisonTable result={result} />}{error && <p role="alert" className="text-xs text-destructive">{error}</p>}</div></details>;
+}
+export function ProjectConfigurationComparison({ projectId, samples, canEdit = false }: { projectId: string; samples: NpiSample[]; canEdit?: boolean }) {
+  const [editing, setEditing] = useState(false);
+  const [sampleId, setSampleId] = useState(""), [history, setHistory] = useState<Row | null>(null), [revisions, setRevisions] = useState<Row[]>([]);
+  const [selected, setSelected] = useState<Selection[]>([]), [result, setResult] = useState<Comparison | null>(null);
+  const [busy, setBusy] = useState(false), [error, setError] = useState<string | null>(null);
+  const base = `/api/projects/${projectId}/npi`;
+  async function act(work: () => Promise<void>) { setBusy(true); setError(null); try { await work(); } catch (e) { setError(e instanceof Error ? e.message : "配置读取未完成"); } finally { setBusy(false); } }
+  async function load(before?: number) { const next = object(await request(`${base}/samples/${sampleId}/configuration-history${before ? `?before_number=${before}` : ""}`)); setHistory(next); const page = list(next.revisions); setRevisions(before ? previous => [...previous, ...page.filter(r => !previous.some(p => p.id === r.id))] : page); }
+  function add(selection: Selection) { if (!selected.some(s => s.kind === selection.kind && s.id === selection.id) && selected.length < 10) { setSelected([...selected, selection]); setResult(null); } }
+  const serial = samples.find(s => s.id === sampleId)?.serial_number ?? "样机";
+  return <details className="rounded-lg border bg-card p-4"><summary className="cursor-pointer text-sm font-semibold">样机配置历史与六项比较</summary><div className="mt-4 space-y-4"><p className="text-xs text-muted-foreground">可选择不同样机的当前配置或历史版本，也可对照同一样机的多个版本。读取历史不会生成版本或改变测试记录。</p>
+    <div className="flex flex-wrap items-end gap-2"><label className="min-w-52 flex-1 text-xs">样机<select className="mt-1 w-full rounded-md border bg-background p-2" value={sampleId} disabled={busy || editing} onChange={e => { setSampleId(e.target.value); setHistory(null); setRevisions([]); }}><option value="">请选择样机</option>{samples.map(s => <option key={s.id} value={s.id}>{s.serial_number}</option>)}</select></label><Button type="button" size="sm" variant="outline" disabled={busy || editing || !sampleId} onClick={() => void act(() => load())}>读取配置历史</Button><Button type="button" size="sm" variant="outline" disabled={busy || !sampleId || selected.length >= 10 || selected.some(s => s.kind === "current" && s.id === sampleId)} onClick={() => add({ kind: "current", id: sampleId, label: `${serial} · 当前配置` })}>加入当前配置</Button></div>
+    {canEdit && sampleId && <SampleConfigurationEditor key={sampleId} projectId={projectId} sampleId={sampleId} disabled={busy} onDirtyChange={setEditing} onSaved={() => act(async () => { setEditing(false); setResult(null); await load(); })} />}
+    {history && <div className="space-y-3 text-xs"><p>{label(history.unknown_test_run_count)} 条测试未绑定当次配置，历史保持未知。版本使用数量包含草稿和历史记录。</p>{isRecord(history.current) && <p>当前配置{history.current.draft_state === "draft" ? "草稿" : "已确认"} · {history.current.current_revision_id ? "已关联版本" : "尚未形成不可变版本"}</p>}{!revisions.length && <p>尚无已保存的配置版本。</p>}{revisions.map(revision => <article key={String(revision.id)} className="rounded-md border p-3"><div className="flex flex-wrap items-center justify-between gap-2"><p>版本 {label(revision.revision_number)} · {label(revision.created_by_name)} · 登记 {label(revision.created_at)} · 关联测试 {label(revision.test_run_count)} 条</p><Button type="button" size="sm" variant="outline" disabled={busy || selected.length >= 10 || selected.some(s => s.kind === "revision" && s.id === revision.id)} onClick={() => add({ kind: "revision", id: String(revision.id), label: `${serial} · 版本${label(revision.revision_number)}` })}>加入比较</Button></div><details className="mt-2"><summary className="cursor-pointer">展开保存的配置</summary><SampleConfigurationSnapshot revision={revision} /></details></article>)}{typeof history.next_before === "number" && <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void act(() => load(Number(history.next_before)))}>读取更早版本</Button>}</div>}
+    {selected.length > 0 && <div className="space-y-3 rounded-md border p-3"><p className="text-xs font-medium">已选 {selected.length}/10 项</p><ul className="flex flex-wrap gap-2">{selected.map(s => <li key={`${s.kind}:${s.id}`} className="flex items-center gap-2 rounded-md border p-2 text-xs">{s.label}<button type="button" disabled={busy} className="text-primary underline" onClick={() => { setSelected(selected.filter(i => i !== s)); setResult(null); }}>移除</button></li>)}</ul><Button type="button" size="sm" disabled={busy || selected.length < 2} onClick={() => void act(async () => { setResult(parse(await request(`${base}/sample-configurations/compare-versions`, { selections: selected.map(({ kind, id }) => ({ kind, id })) }))); })}>比较所选配置</Button></div>}
+    {result && <ComparisonTable result={result} />}{error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+  </div></details>;
+}

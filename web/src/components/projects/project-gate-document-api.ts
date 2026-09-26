@@ -2,7 +2,11 @@ import type { ProjectDocument, ProjectGate } from "./project-gate-document-types
 import { isRecord } from "@/components/workspace-api";
 
 async function json(response: Response) {
-  if (!response.ok) throw new Error("项目数据暂不可用");
+  if (!response.ok) {
+    const body: unknown = await response.json().catch(() => null);
+    const detail = isRecord(body) ? body.detail : null;
+    throw new Error(isRecord(detail) && typeof detail.message === "string" ? detail.message : "项目数据暂不可用");
+  }
   return response.json() as Promise<unknown>;
 }
 
@@ -24,7 +28,7 @@ function isDocument(value: unknown): value is ProjectDocument {
     typeof value.project_id === "string" && typeof value.filename === "string" &&
     typeof value.media_type === "string" && typeof value.classification === "string" &&
     typeof value.size_bytes === "number" && typeof value.sha256 === "string" &&
-    (value.extraction_status === "extracted" || value.extraction_status === "ocr_required") &&
+    (value.extraction_status === "extracted" || value.extraction_status === "ocr_required" || value.extraction_status === "preview_only") &&
     typeof value.created_at === "string";
 }
 
@@ -60,6 +64,7 @@ export async function signProjectGateRound(
   gateId: string,
   roundId: string,
   slot: "product" | "engineering" | "quality",
+  input: { status: "approved" | "conditional" | "rejected"; note: string | null; expected_basis?: string } = { status: "approved", note: null },
 ): Promise<ProjectGate> {
   const body = await json(
     await fetch(
@@ -68,7 +73,7 @@ export async function signProjectGateRound(
         method: "PUT",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "approved", note: null }),
+        body: JSON.stringify(input),
       },
     ),
   );

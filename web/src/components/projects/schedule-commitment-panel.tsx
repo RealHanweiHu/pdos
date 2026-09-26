@@ -1,0 +1,60 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { caseLinkRequest } from "@/components/cases/case-requirements";
+import { EvidenceView } from "@/components/cases/plan-reviews";
+
+type Kind = "baseline" | "forecast" | "commitment" | "actual";
+type Time = { version: number; start: string | null; end: string | null };
+type Node = { eligible_for_commitment: boolean; node_id: string; node_key: string; title: string; status: string; times: Partial<Record<Kind, Time>> };
+type Policy = { id: string; version: number; approver_user_id: string; authority_basis: string };
+type Confirmation = { id: string; record_id: string; version: number; approved_by_user_id: string; scope_label: string; reason: string; created_at: string; contract: { node_times: { node_id: string; window: { start: string | null; end: string | null } }[] }; snapshot: unknown };
+type State = { policy: Policy | null; policies: Policy[]; people: { id: string; display_name: string }[]; items: Confirmation[]; has_more: boolean; latest_commitment_version: number; current_user_id: string; can_configure: boolean; can_confirm: boolean; forecast: { id: string; version: number; basis_is_current: boolean } | null; basis_digest: string | null; capacity_checks: { id: string; created_at: string; status: string }[]; nodes: Node[] };
+type Deadline = { selected: boolean; start: string; end: string };
+const field = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
+const names: Record<Kind, string> = { baseline: "批准基线", forecast: "最新预测", commitment: "最新人工承诺", actual: "实际记录" };
+const when = (value: string | null | undefined) => value ? new Date(value).toLocaleString() : "未记录";
+function localValue(value: string | null | undefined) { if (!value) return ""; const date = new Date(value); return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
+
+export function ScheduleCommitmentPanel({ projectId }: { projectId: string }) {
+  const search = useSearchParams();
+  const requested = search.get("project") === projectId ? search.get("commitment_node") : null;
+  const focusedNode = requested && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(requested) ? requested.toLowerCase() : null;
+  return <CommitmentPanel key={`${projectId}:${focusedNode ?? "all"}`} projectId={projectId} focusedNode={focusedNode}/>;
+}
+
+function CommitmentPanel({ projectId, focusedNode }: { projectId: string; focusedNode: string | null }) {
+  const [open, setOpen] = useState(!!focusedNode); const [data, setData] = useState<State | null>(null); const [busy, setBusy] = useState(!!focusedNode); const [error, setError] = useState<string | null>(null); const [notice, setNotice] = useState<string | null>(null);
+  const [approver, setApprover] = useState(""); const [authority, setAuthority] = useState(""); const [check, setCheck] = useState(""); const [scope, setScope] = useState(""); const [reason, setReason] = useState(""); const [read, setRead] = useState(false); const [deadlines, setDeadlines] = useState<Record<string, Deadline>>({}); const ids = useRef(new Map<string, string>()); const path = `projects/${projectId}/execution/commitments`;
+  useEffect(() => {
+    if (!focusedNode) return;
+    let active = true;
+    void caseLinkRequest<State>(path).then(value => { if (active) setData(value); })
+      .catch(failure => { if (active) setError(failure instanceof Error ? failure.message : "原承诺暂不可用"); })
+      .finally(() => { if (active) setBusy(false); });
+    return () => { active = false; };
+  }, [focusedNode, path]);
+  useEffect(() => { if (focusedNode && data) document.getElementById(`commitment-node-${focusedNode}`)?.scrollIntoView({block:"center"}); }, [focusedNode, data]);
+  async function load() { const value = await caseLinkRequest<State>(path); setData(value); setRead(false); setDeadlines((previous) => Object.fromEntries(Object.entries(previous).flatMap(([id, deadline]) => { const node = value.nodes.find((item) => item.node_id === id && item.eligible_for_commitment); return node ? [[id, { ...deadline, start: node.times.actual?.start ? "" : deadline.start }]] : []; }))); setCheck((previous) => value.capacity_checks.some((item) => item.id === previous) ? previous : ""); }
+  async function refresh() { setBusy(true); setError(null); try { await load(); } catch (failure) { setError(failure instanceof Error ? failure.message : "承诺记录暂不可用"); } finally { setBusy(false); } }
+  async function send(endpoint: string, body: object) { setBusy(true); setError(null); setNotice(null); const key = JSON.stringify({ endpoint, body }); let id = ids.current.get(key); if (!id) { id = crypto.randomUUID(); ids.current.set(key, id); } try { await caseLinkRequest(endpoint, { ...body, request_id: id }); await load(); setNotice("记录已保存，历史版本保留。"); } catch (failure) { setError(failure instanceof Error ? failure.message : "承诺办理未完成"); } finally { setBusy(false); } }
+  function update(id: string, patch: Partial<Deadline>) { setDeadlines({ ...deadlines, [id]: { ...(deadlines[id] ?? { selected: false, start: "", end: "" }), ...patch } }); setRead(false); }
+  const person = (id: string) => data?.people.find((item) => item.id === id)?.display_name ?? `原批准人 ${id.slice(0, 8)}`;
+  return <section id="schedule-commitments" className="space-y-3 rounded-lg border bg-card p-4"><div className="flex items-center justify-between gap-2"><h3 className="font-semibold">四时间对照与独立承诺</h3><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => { setOpen(!open); if (!open) void refresh(); }}>{open ? "收起" : "查看时间与确认承诺"}</Button></div>{open && <div className="space-y-4">
+    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}{notice && <p role="status" className="text-sm">{notice}</p>}
+    <p className="text-xs text-muted-foreground">承诺按具体节点单独确认最晚开始、完成期限。每个节点保留自己的最新承诺；未选节点沿用原承诺。确认会按当前时间复算预测并检查资源覆盖。</p>
+    <div className="overflow-x-auto"><table className="w-full text-left text-xs"><thead><tr><th className="p-2">节点</th>{(Object.keys(names) as Kind[]).map((kind) => <th key={kind} className="p-2">{names[kind]}</th>)}</tr></thead><tbody>{data?.nodes.map((node) => <tr key={node.node_id} id={`commitment-node-${node.node_id}`} className="border-t align-top"><td className="p-2">{node.node_key} · {node.title}</td>{(Object.keys(names) as Kind[]).map((kind) => <td key={kind} className="p-2">{node.times[kind] ? <><p>v{node.times[kind]!.version}</p><p>{kind === "commitment" ? "最晚开始" : "开始"}：{when(node.times[kind]!.start)}</p><p>{kind === "commitment" ? "最晚完成" : "完成"}：{when(node.times[kind]!.end)}</p></> : "未记录"}</td>)}</tr>)}</tbody></table></div>
+    {data?.policy && <p className="text-sm">承诺政策 v{data.policy.version} · 具名批准人：{person(data.policy.approver_user_id)} · {data.policy.authority_basis}</p>}
+    {data?.can_configure && <details><summary className="cursor-pointer text-sm">配置承诺授权</summary><form className="mt-3 space-y-2" onSubmit={(event) => { event.preventDefault(); void send(`${path}/policies`, { expected_version: data.policy?.version ?? 0, approver_user_id: approver, authority_basis: authority }); }}><label className="block text-sm">具名承诺批准人<select className={field} required value={approver} onChange={(event) => setApprover(event.target.value)}><option value="">选择项目参与人</option>{data.people.map((item) => <option key={item.id} value={item.id}>{item.display_name}</option>)}</select></label><label className="block text-sm">授权依据<textarea className={field} required maxLength={2048} value={authority} onChange={(event) => setAuthority(event.target.value)} /></label><Button type="submit" size="sm" disabled={busy}>发布承诺政策</Button></form></details>}
+    {data?.can_confirm && data.forecast && <form className="space-y-3 rounded-md border p-3" onSubmit={(event) => { event.preventDefault(); if (!data.policy || !data.forecast) return; void send(path, { policy_id: data.policy.id, forecast_record_id: data.forecast.id, capacity_check_id: check, expected_basis_digest: data.basis_digest, expected_commitment_version: data.latest_commitment_version, node_times: Object.entries(deadlines).filter(([, value]) => value.selected).map(([node_id, value]) => ({ node_id, window: { start: value.start ? new Date(value.start).toISOString() : null, end: new Date(value.end).toISOString() } })), scope_label: scope, reason }); }}>
+      <p className="text-sm font-medium">独立确认承诺 v{data.latest_commitment_version + 1} · 参考预测 v{data.forecast.version}</p>{!data.forecast.basis_is_current && <p className="text-xs text-destructive">预测依据已变化，请先重算。</p>}
+      <label className="block text-sm">参考容量检查<select className={field} required value={check} onChange={(event) => { setCheck(event.target.value); setRead(false); }}><option value="">选择本轮预测的容量检查</option>{data.capacity_checks.map((item) => <option key={item.id} value={item.id}>{when(item.created_at)} · {item.status === "capacity_clear" ? "未发现容量冲突" : "含缺项或冲突，确认时按所选节点核对"}</option>)}</select></label>
+      {data.nodes.filter((node) => node.eligible_for_commitment).map((node) => { const value = deadlines[node.node_id] ?? { selected: false, start: "", end: "" }; return <fieldset key={node.node_id} className="space-y-2 rounded-md border p-2"><label className="flex gap-2 text-sm"><input type="checkbox" checked={value.selected} onChange={(event) => update(node.node_id, { selected: event.target.checked })} />{node.node_key} · {node.title}</label>{value.selected && <><div className="grid gap-2 sm:grid-cols-2">{!node.times.actual?.start && <label className="text-xs">承诺最晚开始（可选，本地时间）<input className={field} type="datetime-local" value={value.start} onChange={(event) => update(node.node_id, { start: event.target.value })} /></label>}<label className="text-xs">承诺最晚完成（本地时间）<input className={field} required type="datetime-local" value={value.end} onChange={(event) => update(node.node_id, { end: event.target.value })} /></label></div><Button type="button" size="sm" variant="ghost" onClick={() => update(node.node_id, { start: "", end: localValue(node.times.forecast?.end) })}>填入预测完成时间供核对</Button></>}</fieldset>; })}
+      <label className="block text-sm">承诺范围 / 接收对象<textarea className={field} required maxLength={2048} value={scope} onChange={(event) => { setScope(event.target.value); setRead(false); }} /></label><label className="block text-sm">确认或修改原因<textarea className={field} required maxLength={2048} value={reason} onChange={(event) => { setReason(event.target.value); setRead(false); }} /></label><label className="flex gap-2 text-sm"><input type="checkbox" checked={read} onChange={(event) => setRead(event.target.checked)} />我已核对所选节点、期限和资源依据，按本项目授权确认这次承诺</label><Button type="submit" size="sm" disabled={busy || !read || !data.forecast.basis_is_current || !Object.values(deadlines).some((value) => value.selected)}>确认独立承诺</Button>
+    </form>}
+    {data?.items.map((item) => <details key={item.id} className="rounded-md border p-3"><summary className="cursor-pointer text-sm">承诺 v{item.version} · {item.scope_label} · {person(item.approved_by_user_id)} · {when(item.created_at)}</summary><p className="my-2 text-xs">{item.reason}</p>{item.contract.node_times.map((node) => <p key={node.node_id} className="my-1 text-xs">{data.nodes.find((entry) => entry.node_id === node.node_id)?.node_key} · 最晚开始 {when(node.window.start)} · 最晚完成 {when(node.window.end)}</p>)}<details><summary className="cursor-pointer text-xs">固定确认依据与当时复算</summary><div className="text-xs"><EvidenceView value={item.snapshot} /></div></details></details>)}
+    {!!data?.policies.length && <details><summary className="cursor-pointer text-xs">授权历史</summary>{data.policies.map((policy) => <p key={policy.id} className="my-2 text-xs">v{policy.version} · {person(policy.approver_user_id)} · {policy.authority_basis}</p>)}</details>}{data?.has_more && <p className="text-xs">显示最近 50 次确认。</p>}<Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => void refresh()}>刷新四时间与承诺</Button>
+  </div>}</section>;
+}

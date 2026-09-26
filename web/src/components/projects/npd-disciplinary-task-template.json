@@ -1,0 +1,34 @@
+{
+  "id": "npd-four-disciplines-v1",
+  "version": 1,
+  "name": "ID、结构、硬件、嵌入式任务依赖基线",
+  "initiation_checks": [
+    "ID 来源与范围：全新设计、沿用修改或客户提供；明确外观、尺寸、操作体验和 CMF 要求",
+    "具名负责人、内外部设计资源、产品/客户确认人及预算",
+    "开始日期、预计工期、方案评审轮次、客户反馈等待和修改缓冲分别估算",
+    "方向确认、外观样确认与 ID 冻结的目标日期，以及超期影响和处理人",
+    "结构、硬件、嵌入式可并行开展的预研，以及必须等 ID/接口冻结的工作"
+  ],
+  "tasks": [
+    {"code":"REQ","stage":"concept","owner":"pm","discipline":"项目/产品","title":"确认需求与产品边界","depends_on":[],"output":"需求版本、产品类型、场景与范围；作为四专业共同输入","receiver":"ID、结构、硬件、嵌入式负责人"},
+    {"code":"ID-PLAN","stage":"concept","owner":"id","discipline":"ID","title":"确认 ID 专项计划","depends_on":["REQ"],"output":"ID 来源、范围、负责人、预算、周期、评审轮次、等待/缓冲、冻结日期；项目/产品确认记录","receiver":"项目/产品负责人及各专业负责人"},
+    {"code":"ID-CONCEPT","stage":"planning","owner":"id","discipline":"ID","title":"评审 ID 方向与候选方案","depends_on":["ID-PLAN"],"output":"外观方向、候选方案、初步包络和操作布局、产品/客户反馈","receiver":"结构、硬件与产品负责人"},
+    {"code":"ARCH","stage":"planning","owner":"pm","discipline":"四专业协同","title":"确认系统架构与规格","depends_on":["REQ"],"output":"规格、功能分配、主要器件/空间/功耗约束与待验证假设","receiver":"结构、硬件、嵌入式负责人"},
+    {"code":"MD-PRE","stage":"planning","owner":"md","discipline":"结构","title":"结构布局与可制造性预研","depends_on":["ARCH"],"output":"泵体/电池布局、装配与散热约束；未冻结假设明确标注","receiver":"ID 与硬件负责人"},
+    {"code":"EE-PRE","stage":"planning","owner":"engineer","discipline":"硬件","title":"电路方案与关键器件预研","depends_on":["ARCH"],"output":"主控、电源、传感器选型、尺寸与功耗约束","receiver":"结构与嵌入式负责人"},
+    {"code":"FW-PRE","stage":"planning","owner":"fw","discipline":"嵌入式","title":"控制逻辑与软件架构预研","depends_on":["ARCH"],"output":"状态机、控制算法、开发板验证方案与硬件接口需求","receiver":"硬件与品质负责人"},
+    {"code":"INTERFACE","stage":"planning","owner":"pm","discipline":"四专业协同","title":"共同确认接口与空间约束","depends_on":["ID-CONCEPT","MD-PRE","EE-PRE","FW-PRE"],"output":"包络、显示/按键、PCB/电池/泵位置、接口/PIN/协议约束版本与四方确认","receiver":"ID、结构、硬件、嵌入式负责人"},
+    {"code":"ID-FREEZE","stage":"design","owner":"id","discipline":"ID","title":"确认外观样并冻结 ID","depends_on":["ID-CONCEPT","INTERFACE"],"output":"外观样/图档、曲面与尺寸、CMF、操作布局版本；产品/客户确认及结构/硬件可行性评审","receiver":"结构与硬件负责人"},
+    {"code":"MD-ENVELOPE","stage":"design","owner":"md","discipline":"结构","title":"发布结构空间与板框基线","depends_on":["ID-FREEZE","INTERFACE"],"output":"关键尺寸、板框、安装孔、连接器位置及禁布区的已确认版本","receiver":"硬件负责人及结构详细设计"},
+    {"code":"MD-DETAIL","stage":"design","owner":"md","discipline":"结构","title":"完成结构详细设计与装配评审","depends_on":["MD-ENVELOPE"],"output":"3D/2D、材料与公差、装配/散热/DFM 结论和结构 BOM","receiver":"硬件、样机制作与品质负责人"},
+    {"code":"EE-PCB","stage":"design","owner":"engineer","discipline":"硬件","title":"完成原理图、PCB 与样板检查","depends_on":["EE-PRE","MD-ENVELOPE","INTERFACE"],"output":"原理图/PCB/BOM、硬件版本、样板及上电检查记录","receiver":"嵌入式与样机制作负责人"},
+    {"code":"FW-BASE","stage":"design","owner":"fw","discipline":"嵌入式","title":"完成固件基础功能开发","depends_on":["FW-PRE","INTERFACE"],"output":"可在开发板验证的控制逻辑、驱动接口、固件版本与自测记录","receiver":"硬件负责人及板级联调"},
+    {"code":"FW-BRINGUP","stage":"design","owner":"fw","discipline":"嵌入式","title":"完成硬件与固件板级联调","depends_on":["EE-PCB","FW-BASE"],"output":"目标板固件、驱动/通信/控制验证记录与兼容版本组合","receiver":"结构、品质与整机集成负责人"},
+    {"code":"DESIGN-REVIEW","stage":"design","owner":"pm","discipline":"四专业协同","title":"评审整机设计与 EVT 输入","depends_on":["ID-FREEZE","MD-DETAIL","EE-PCB","FW-BRINGUP"],"output":"ID/结构/硬件/固件兼容版本清单、设计评审结论与 EVT 制作输入","receiver":"样机制作与品质负责人"},
+    {"code":"EVT-BUILD","stage":"evt","owner":"md","discipline":"结构/整机集成","title":"制作 EVT 整机样机","depends_on":["DESIGN-REVIEW"],"output":"试制批次、样机编号及四专业版本对应关系","receiver":"品质与各专业负责人"},
+    {"code":"EVT-VERIFY","stage":"evt","owner":"quality","discipline":"品质/四专业协同","title":"完成 EVT 验证与整改复测","depends_on":["EVT-BUILD"],"output":"功能报告、问题分工、受影响专业/版本、独立复测与关闭记录","receiver":"DVT 设计验证负责人"},
+    {"code":"DVT-VERIFY","stage":"dvt","owner":"quality","discipline":"品质/四专业协同","title":"完成 DVT 验证及定型评审","depends_on":["EVT-VERIFY"],"output":"定型配置、整机/可靠性/适用认证证据、差异处置与定型结论","receiver":"试产准备负责人"},
+    {"code":"PVT-VERIFY","stage":"pvt","owner":"receiver","discipline":"制造/品质/研发","title":"完成试产验证与准备交接","depends_on":["DVT-VERIFY"],"output":"试产记录、冻结 BOM、工艺与检验引用、交接准备清单；正式 ERP 交接仍需 PVT Gate 批准","receiver":"转产接收方"},
+    {"code":"MP-HANDOVER","stage":"mp","owner":"receiver","discipline":"项目/接收方","title":"确认稳定观察、责任接收与结项清单","depends_on":["PVT-VERIFY"],"output":"稳定观察记录、遗留项接收、最终版本索引、移交和结项确认","receiver":"项目负责人及维护团队"}
+  ]
+}

@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Exact third-party distributions copied by prepare-drawing-assets.mjs.
+    "public/vendor/drawings/**",
   ]),
 ]);
 

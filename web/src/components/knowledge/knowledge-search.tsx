@@ -20,6 +20,12 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
 
+import { SourcePicker, type SourceSelection } from "./source-picker";
+import { MemorySources } from "./memory-sources";
+import { CorrectionForm, KnowledgeCorrections } from "./knowledge-corrections";
+import { KnowledgeLearning } from "./knowledge-learning";
+import { KNOWLEDGE_KINDS, KnowledgeKindSelect, knowledgeKindLabel, type KnowledgeKind } from "./knowledge-kind";
+
 import {
   createMemory,
   editMemory,
@@ -83,12 +89,17 @@ function StatusBadge({ memory }: { memory: MemoryRecord }) {
 
 export function KnowledgeSearch() {
   const { replace } = useRouter();
+  const [editingDigest, setEditingDigest] = useState<string | null>(null);
+  const [replaceDraftSources, setReplaceDraftSources] = useState(false);
+  const [sourceSelections, setSourceSelections] = useState<SourceSelection[]>([]);
+  const [correctionRevision, setCorrectionRevision] = useState(0);
   const [state, setState] = useState<LoadState>("loading");
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectId, setProjectId] = useState("");
   const [memories, setMemories] = useState<MemoryRecord[]>([]);
   const [query, setQuery] = useState("");
+  const [knowledgeKind, setKnowledgeKind] = useState<KnowledgeKind | "unclassified" | null>(null);
   const [results, setResults] = useState<KnowledgeSearchItem[] | null>(null);
   const [searching, setSearching] = useState(false);
   const [busyMemoryId, setBusyMemoryId] = useState<string | null>(null);
@@ -166,7 +177,7 @@ export function KnowledgeSearch() {
     setError(null);
     setStatus(null);
     try {
-      setResults(await searchKnowledge(projectId, query));
+      setResults(await searchKnowledge(projectId, query, knowledgeKind));
     } catch (searchError) {
       setResults(null);
       setError(messageFrom(searchError));
@@ -176,6 +187,9 @@ export function KnowledgeSearch() {
   }
 
   function beginCreate() {
+    setEditingDigest(null);
+    setReplaceDraftSources(false);
+    setSourceSelections([]);
     setEditingId(null);
     setDraft(emptyDraft);
     setShowEditor(true);
@@ -183,12 +197,16 @@ export function KnowledgeSearch() {
   }
 
   function beginEdit(memory: MemoryRecord) {
+    setEditingDigest(memory.review_digest ?? null);
+    setReplaceDraftSources(false);
+    setSourceSelections([]);
     setEditingId(memory.id);
     setDraft({
       title: memory.title,
       content: memory.content,
       applicability: memory.applicability,
       tags: memory.tags,
+      knowledge_kind: memory.knowledge_kind ?? null,
     });
     setShowEditor(true);
     setError(null);
@@ -202,8 +220,8 @@ export function KnowledgeSearch() {
     setStatus(null);
     try {
       const saved = editingId
-        ? await editMemory(projectId, editingId, draft)
-        : await createMemory(projectId, draft);
+        ? await editMemory(projectId, editingId, { ...draft, expected_review_digest: editingDigest ?? "", source_selections: replaceDraftSources ? sourceSelections : null })
+        : await createMemory(projectId, { ...draft, source_selections: sourceSelections });
       setMemories((current) =>
         editingId
           ? current.map((memory) => (memory.id === saved.id ? saved : memory))
@@ -225,7 +243,7 @@ export function KnowledgeSearch() {
     setError(null);
     setStatus(null);
     try {
-      const updated = await transitionMemory(projectId, memory.id, action);
+      const updated = await transitionMemory(projectId, memory.id, action, memory.review_digest);
       setMemories((current) =>
         current.map((item) => (item.id === updated.id ? updated : item)),
       );
@@ -342,6 +360,7 @@ export function KnowledgeSearch() {
                   value={query}
                 />
               </div>
+              <label className="text-xs">分类<select className="mt-1 block h-8 rounded-lg border bg-background px-2 text-sm" disabled={searching} value={knowledgeKind ?? ""} onChange={event => { setKnowledgeKind((event.target.value || null) as KnowledgeKind | "unclassified" | null); setResults(null); }}><option value="">全部分类</option>{Object.entries(KNOWLEDGE_KINDS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}<option value="unclassified">历史未分类</option></select></label>
               <Button className="h-11" disabled={searching || !query.trim()} type="submit">
                 {searching ? "正在检索…" : "搜索已验证 Memory"}
               </Button>
@@ -370,6 +389,7 @@ export function KnowledgeSearch() {
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-mono text-[10px] text-muted-foreground">#{index + 1}</span>
                         <StatusBadge memory={item.memory} />
+                        <span className="text-xs">{knowledgeKindLabel(item.memory.knowledge_kind)}</span>
                         <span className="text-[10px] text-muted-foreground">相似度 {(item.similarity * 100).toFixed(1)}%</span>
                       </div>
                       <h3 className="mt-2 font-semibold">{item.memory.title}</h3>
@@ -400,7 +420,7 @@ export function KnowledgeSearch() {
               ) : (
                 <ol className="max-h-[680px] divide-y overflow-y-auto">
                   {memories.map((memory) => {
-                    const ownDraft = memory.created_by_user_id === identity.user.id;
+                    const ownDraft = memory.created_by_user_id === identity.user.id || memory.last_edited_by_user_id === identity.user.id;
                     return (
                       <li
                         className={cn("px-4 py-4", selectedMemoryId === memory.id && "bg-primary/5 shadow-[inset_2px_0_0_var(--primary)]")}
@@ -411,16 +431,20 @@ export function KnowledgeSearch() {
                           <span className="text-[10px] text-muted-foreground">{sourceLabel(memory)}</span>
                         </div>
                         <h3 className="mt-2 text-sm font-semibold">{memory.title}</h3>
+                        <p className="mt-1 text-xs text-muted-foreground">{knowledgeKindLabel(memory.knowledge_kind)}{!memory.knowledge_kind && memory.status === "verified" ? " · 保留原审核历史，可通过修正补齐" : ""}</p>
+                        <MemorySources key={`${memory.id}:${memory.updated_at}`} projectId={memory.project_id} memoryId={memory.id} />
+                        {memory.status === "draft" && !memory.knowledge_kind && <p className="text-xs text-muted-foreground">请先编辑草稿确认分类，再由另一位有权限的成员审核。</p>}
+                        {memory.status === "verified" && <CorrectionForm key={`${memory.id}:${memory.content_sha256}`} memory={memory} onSubmitted={() => setCorrectionRevision(value => value + 1)} />}
                         <p className="mt-1 line-clamp-3 text-xs leading-5 text-muted-foreground">{memory.content}</p>
                         <p className="mt-2 font-mono text-[10px] text-muted-foreground">更新 {formatTime(memory.updated_at)}</p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {memory.status === "draft" ? (
-                            <Button className="h-9" disabled={busyMemoryId !== null} onClick={() => beginEdit(memory)} size="sm" variant="outline">
+                            <Button className="h-9" disabled={busyMemoryId !== null || !memory.review_digest} onClick={() => beginEdit(memory)} size="sm" variant="outline">
                               <PencilSimpleIcon aria-hidden="true" />编辑
                             </Button>
                           ) : null}
                           {memory.status === "draft" && canVerify && !ownDraft ? (
-                            <Button className="h-9" disabled={busyMemoryId !== null} onClick={() => void transition(memory, "verify")} size="sm">
+                            <Button className="h-9" disabled={busyMemoryId !== null || !memory.review_digest || !memory.knowledge_kind} onClick={() => void transition(memory, "verify")} size="sm">
                               <ShieldCheckIcon aria-hidden="true" />{busyMemoryId === memory.id ? "验证中…" : "验证"}
                             </Button>
                           ) : null}
@@ -446,6 +470,14 @@ export function KnowledgeSearch() {
             </aside>
           </div>
 
+          <KnowledgeLearning key={projectId} projectId={projectId} onChanged={() => {
+            requestMemories(projectId).then(setMemories).catch(error => setError(messageFrom(error)));
+          }} />
+          <KnowledgeCorrections key={`${projectId}:${correctionRevision}`} projectId={projectId} canReview={canVerify} userId={identity.user.id} onChanged={() => {
+            setResults(null);
+            requestMemories(projectId).then(setMemories).catch(error => setError(messageFrom(error)));
+          }} />
+
           {showEditor ? (
             <form className="mt-5 rounded-lg border bg-card p-4 sm:p-5" onSubmit={saveDraft}>
               <div className="flex items-start justify-between gap-3">
@@ -456,6 +488,7 @@ export function KnowledgeSearch() {
                 </div>
                 <Button className="h-9" onClick={() => setShowEditor(false)} size="sm" type="button" variant="ghost">取消</Button>
               </div>
+              <div className="mt-4"><KnowledgeKindSelect value={draft.knowledge_kind} onChange={knowledge_kind => setDraft({ ...draft, knowledge_kind })} /></div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="grid gap-1.5 text-xs font-medium">标题
                   <input className="h-11 rounded-lg border bg-background px-3 text-sm font-normal" maxLength={512} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} required value={draft.title} />
@@ -470,7 +503,10 @@ export function KnowledgeSearch() {
                   <textarea className="min-h-20 rounded-lg border bg-background px-3 py-2 text-sm font-normal" maxLength={5_000} onChange={(event) => setDraft((current) => ({ ...current, applicability: event.target.value || null }))} value={draft.applicability ?? ""} />
                 </label>
               </div>
-              <Button className="mt-4 h-11" disabled={busyMemoryId !== null} type="submit">
+              {editingId && <label className="mt-3 flex items-center gap-2 text-xs"><input type="checkbox" checked={replaceDraftSources} onChange={event => setReplaceDraftSources(event.target.checked)} />修订草稿的文档、规格或快照依据（原始业务出处继续保留）</label>}
+              {(!editingId || replaceDraftSources) && <SourcePicker key={projectId} projectId={projectId} value={sourceSelections} onChange={setSourceSelections} />}
+              {editingId && !editingDigest && <p className="mt-2 text-xs text-destructive">缺少当前审核版本，请刷新后重新编辑。</p>}
+              <Button className="mt-4 h-11" disabled={busyMemoryId !== null || Boolean(editingId && (!editingDigest || (replaceDraftSources && !sourceSelections.length)))} type="submit">
                 <CheckCircleIcon aria-hidden="true" />{busyMemoryId ? "正在保存…" : "保存未验证草稿"}
               </Button>
             </form>

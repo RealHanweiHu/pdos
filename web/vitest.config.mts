@@ -13,5 +13,9 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
+    // The repo lives on an iCloud-synced volume; module imports can stall for
+    // seconds under sync load, so interaction tests need more headroom than
+    // the 5s default to avoid environment-only flakes.
+    testTimeout: 20_000,
   },
 });

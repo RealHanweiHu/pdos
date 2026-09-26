@@ -10,28 +10,16 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { requestProjects } from "@/components/projects/project-api";
 import { projectStatusLabels } from "@/components/projects/project-list";
-import { requestProjectRisks } from "@/components/projects/project-work-item-api";
-import type { ProjectRisk } from "@/components/projects/project-work-item-types";
 import type { Project } from "@/components/projects/project-types";
 import { cn } from "@/lib/utils";
 import { requestAiBrief } from "@/components/ai/ai-api";
 import { AiBriefCard, type AiBriefLoadState } from "@/components/ai/ai-brief-card";
 import type { AiBrief } from "@/components/ai/ai-types";
+import { requestDashboardRisks, type DashboardRisks } from "./dashboard-api";
 
 type DashboardState = "loading" | "ready" | "error" | "redirecting";
 type RiskState = "loading" | "ready" | "error" | "restricted";
-type RankedRisk = ProjectRisk & { project: Project };
 const riskRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
-
-async function requestRankedRisks(visibleProjects: Project[]) {
-  const collections = await Promise.all(
-    visibleProjects.map(async (project) => ({ project, risks: await requestProjectRisks(project.id) })),
-  );
-  return collections
-    .flatMap(({ project, risks: projectRisks }) => projectRisks.map((risk) => ({ ...risk, project })))
-    .filter((risk) => risk.status !== "closed")
-    .sort((left, right) => right.score - left.score || right.updated_at.localeCompare(left.updated_at));
-}
 
 function scoreTone(score: number) {
   if (score >= 15) return "border-destructive/25 bg-destructive/10 text-destructive";
@@ -44,7 +32,7 @@ export function Dashboard() {
   const [state, setState] = useState<DashboardState>("loading");
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [risks, setRisks] = useState<RankedRisk[]>([]);
+  const [riskSnapshot, setRiskSnapshot] = useState<DashboardRisks | null>(null);
   const [riskState, setRiskState] = useState<RiskState>("loading");
   const [brief, setBrief] = useState<AiBrief | null>(null);
   const [briefState, setBriefState] = useState<AiBriefLoadState>("loading");
@@ -59,29 +47,34 @@ export function Dashboard() {
         replace("/login");
         return;
       }
+      if (["engineer", "quality"].includes(loaded.identity.user.role)) {
+        setState("redirecting");
+        replace("/my-work");
+        return;
+      }
       setIdentity(loaded.identity);
       setProjects(loaded.projects);
       setState("ready");
       if (!riskRoles.includes(loaded.identity.user.role)) {
-        setRisks([]);
+        setRiskSnapshot(null);
         setRiskState("restricted");
         setBrief(null);
         setBriefState("restricted");
         return;
       }
-      await Promise.all([loadRisks(loaded.projects), loadBrief()]);
+      await Promise.all([loadRisks(), loadBrief()]);
     } catch {
       setState("error");
     }
   }
 
-  async function loadRisks(visibleProjects: Project[]) {
+  async function loadRisks() {
     setRiskState("loading");
     try {
-      setRisks(await requestRankedRisks(visibleProjects));
+      setRiskSnapshot(await requestDashboardRisks());
       setRiskState("ready");
     } catch {
-      setRisks([]);
+      setRiskSnapshot(null);
       setRiskState("error");
     }
   }
@@ -107,25 +100,30 @@ export function Dashboard() {
           replace("/login");
           return;
         }
+        if (["engineer", "quality"].includes(loaded.identity.user.role)) {
+          setState("redirecting");
+          replace("/my-work");
+          return;
+        }
         setIdentity(loaded.identity);
         setProjects(loaded.projects);
         setState("ready");
         if (!riskRoles.includes(loaded.identity.user.role)) {
-          setRisks([]);
+          setRiskSnapshot(null);
           setRiskState("restricted");
           setBrief(null);
           setBriefState("restricted");
           return;
         }
-        requestRankedRisks(loaded.projects).then(
-          (rankedRisks) => {
+        requestDashboardRisks().then(
+          (snapshot) => {
             if (!active) return;
-            setRisks(rankedRisks);
+            setRiskSnapshot(snapshot);
             setRiskState("ready");
           },
           () => {
             if (!active) return;
-            setRisks([]);
+            setRiskSnapshot(null);
             setRiskState("error");
           },
         );
@@ -171,8 +169,8 @@ export function Dashboard() {
     );
   }
 
-  const risksByProject = new Map<string, RankedRisk[]>();
-  for (const risk of risks) risksByProject.set(risk.project_id, [...(risksByProject.get(risk.project_id) ?? []), risk]);
+  const risks = riskSnapshot?.items ?? [];
+  const risksByProject = new Map(riskSnapshot?.projects.map((summary) => [summary.project_id, summary]) ?? []);
 
   return (
     <WorkspaceShell active="dashboard" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
@@ -200,8 +198,8 @@ export function Dashboard() {
           ) : (
             <div className="grid sm:grid-cols-2">
               {projects.map((project) => {
-                const projectRisks = risksByProject.get(project.id) ?? [];
-                const maxRisk = projectRisks.reduce((maximum, risk) => Math.max(maximum, risk.score), 0);
+                const riskSummary = risksByProject.get(project.id);
+                const maxRisk = riskSummary?.max_score ?? 0;
                 const progress = Math.round((project.current_stage.sequence / project.workflow.stages.length) * 100);
                 return (
                   <Link
@@ -215,7 +213,7 @@ export function Dashboard() {
                         aria-hidden="true"
                         className={cn(
                           "size-2 shrink-0 rounded-full",
-                          riskState !== "ready" ? "bg-muted-foreground/35" : maxRisk >= 15 ? "bg-destructive" : maxRisk > 0 ? "bg-pending" : "bg-success",
+                          riskState !== "ready" || !riskSummary ? "bg-muted-foreground/35" : maxRisk >= 15 ? "bg-destructive" : maxRisk > 0 ? "bg-pending" : "bg-success",
                         )}
                       />
                       <span className="truncate font-semibold">{project.name}</span>
@@ -228,7 +226,7 @@ export function Dashboard() {
                     <div className="mt-4 h-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-primary" style={{ width: `${progress}%` }} /></div>
                     <div className="mt-1.5 flex justify-between gap-3 text-[11px] text-muted-foreground">
                       <span>阶段进度 {progress}%</span>
-                      <span>{riskState === "ready" ? `开放风险 ${projectRisks.length}` : "风险待确认"}</span>
+                      <span>{riskState === "ready" && riskSummary ? `开放风险 ${riskSummary.open_risk_count}` : "风险待确认"}</span>
                     </div>
                   </Link>
                 );
@@ -240,7 +238,7 @@ export function Dashboard() {
         <section aria-label="跨项目风险" className="min-w-0 overflow-hidden rounded-lg border bg-card">
           <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
             <h2 className="font-semibold">跨项目风险</h2>
-            {riskState === "ready" ? <span className="font-mono text-[11px] text-muted-foreground">Top {Math.min(risks.length, 8)}</span> : null}
+            {riskState === "ready" ? <span className="font-mono text-[11px] text-muted-foreground">Top {risks.length} · 共 {riskSnapshot?.total ?? 0} 项</span> : null}
           </div>
           {riskState === "loading" ? <p className="px-4 py-10 text-center text-sm text-muted-foreground">正在汇总风险…</p> : null}
           {riskState === "restricted" ? <p className="px-4 py-10 text-center text-sm text-muted-foreground">外部成员不具备工程风险视图权限。</p> : null}
@@ -248,15 +246,15 @@ export function Dashboard() {
             <div className="px-4 py-8 text-center" role="alert">
               <p className="font-medium text-destructive">风险聚合暂不可用</p>
               <p className="mt-1 text-xs text-muted-foreground">失败状态不会被展示为零风险。</p>
-              <Button className="mt-4 h-11" onClick={() => void loadRisks(projects)} variant="outline">重新汇总</Button>
+              <Button className="mt-4 h-11" onClick={() => void loadRisks()} variant="outline">重新汇总</Button>
             </div>
           ) : null}
           {riskState === "ready" && risks.length === 0 ? <p className="px-4 py-10 text-center text-sm text-muted-foreground">当前没有开放风险。</p> : null}
           {riskState === "ready" && risks.length > 0 ? (
             <ol className="divide-y">
-              {risks.slice(0, 8).map((risk, index) => (
+              {risks.map((risk, index) => (
                 <li data-testid="dashboard-risk" key={risk.id}>
-                  <Link className="flex min-h-16 min-w-0 items-center gap-3 px-4 py-3 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25" href={`/projects?project=${encodeURIComponent(risk.project_id)}`}>
+                  <Link className="flex min-h-16 min-w-0 items-center gap-3 px-4 py-3 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25" href={`/projects?project=${encodeURIComponent(risk.project_id)}&tab=work-items`}>
                     <span className="w-4 shrink-0 font-mono text-[11px] text-muted-foreground">{index + 1}</span>
                     <span className={cn("shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold", scoreTone(risk.score))}>{risk.score}</span>
                     <span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{risk.title}</span><span className="mt-0.5 block truncate font-mono text-[10px] text-muted-foreground">{risk.project.code}</span></span>

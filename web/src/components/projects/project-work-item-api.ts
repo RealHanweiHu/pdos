@@ -14,9 +14,11 @@ import type {
 } from "./project-work-item-types";
 
 const priorities = ["low", "medium", "high", "critical"] as const;
-const taskStatuses = ["todo", "in_progress", "blocked", "done", "skipped"] as const;
+const taskStatuses = ["todo", "in_progress", "blocked", "done", "skipped", "pending_approval"] as const;
+const taskKinds = ["task", "meeting_action", "issue_action", "gate_action", "change_action", "risk_action"] as const;
 const readinessValues = ["ready", "waiting", "blocked", "complete", "waiting_approval"] as const;
 const issueStatuses = ["open", "analysis", "action", "verification", "closed"] as const;
+const issueTypes = ["engineering", "quality", "supplier", "test_failure", "certification"] as const;
 const riskStatuses = ["open", "mitigating", "watching", "closed"] as const;
 
 function isNullableString(value: unknown): value is string | null {
@@ -45,6 +47,11 @@ export function isProjectTask(value: unknown): value is ProjectTask {
     isNullableString(value.parent_task_id) &&
     isNullableString(value.assignee_user_id) &&
     taskStatuses.includes(value.status as (typeof taskStatuses)[number]) &&
+    taskKinds.includes(value.kind as (typeof taskKinds)[number]) &&
+    isNullableString(value.source_entity) &&
+    isNullableString(value.source_entity_id) &&
+    isNullableString(value.expected_output) &&
+    isNullableString(value.completion_evidence_ref) &&
     isNullableString(value.blocked_reason) &&
     priorities.includes(value.priority as (typeof priorities)[number]) &&
     isNullableString(value.start_date) &&
@@ -61,11 +68,16 @@ export function isProjectIssue(value: unknown): value is ProjectIssue {
   return (
     isNullableString(value.stage_id) &&
     isNullableString(value.owner_user_id) &&
+    isNullableString(value.verifier_user_id) &&
     typeof value.reported_by_user_id === "string" &&
+    issueTypes.includes(value.issue_type as (typeof issueTypes)[number]) &&
     issueStatuses.includes(value.status as (typeof issueStatuses)[number]) &&
     priorities.includes(value.severity as (typeof priorities)[number]) &&
     isNullableString(value.root_cause) &&
     isNullableString(value.resolution) &&
+    isNullableString(value.closure_criteria) &&
+    isNullableString(value.closure_evidence_ref) &&
+    typeof value.reopen_count === "number" &&
     isNullableString(value.target_date) &&
     isNullableString(value.closed_at)
   );
@@ -84,6 +96,28 @@ export function isProjectRisk(value: unknown): value is ProjectRisk {
     isNullableString(value.target_date) &&
     isNullableString(value.closed_at)
   );
+}
+
+/**
+ * An item that is a well-formed work item except for an enum value this build
+ * does not know (newer backend). Lists skip such rows instead of failing the
+ * whole page; structural breakage still throws.
+ */
+function hasUnknownEnum(value: unknown): boolean {
+  if (!isRecord(value) || !isCommonWorkItem(value)) return false;
+  const knownStatus =
+    typeof value.status === "string" &&
+    ([...taskStatuses, ...issueStatuses, ...riskStatuses] as string[]).includes(value.status);
+  const knownReadiness =
+    !("readiness" in value) ||
+    (typeof value.readiness === "string" && (readinessValues as readonly string[]).includes(value.readiness));
+  const knownKind =
+    !("kind" in value) ||
+    (typeof value.kind === "string" && (taskKinds as readonly string[]).includes(value.kind));
+  const knownIssueType =
+    !("issue_type" in value) ||
+    (typeof value.issue_type === "string" && (issueTypes as readonly string[]).includes(value.issue_type));
+  return !knownStatus || !knownReadiness || !knownIssueType || !knownKind;
 }
 
 async function errorMessage(response: Response): Promise<string> {
@@ -108,10 +142,20 @@ async function readItem<T>(response: Response, guard: (value: unknown) => value 
 async function readList<T>(response: Response, guard: (value: unknown) => value is T, label: string) {
   if (!response.ok) throw new Error(await errorMessage(response));
   const body = await responseBody(response);
-  if (!isRecord(body) || !Array.isArray(body.items) || !body.items.every(guard)) {
+  if (!isRecord(body) || !Array.isArray(body.items)) {
     throw new Error(`invalid ${label} list response`);
   }
-  return body.items;
+  const items: T[] = [];
+  for (const item of body.items) {
+    if (guard(item)) {
+      items.push(item);
+    } else if (hasUnknownEnum(item)) {
+      console.warn(`[work-item-api] skipped ${label} with unknown enum value`);
+    } else {
+      throw new Error(`invalid ${label} list response`);
+    }
+  }
+  return items;
 }
 
 function collectionUrl(projectId: string, collection: "tasks" | "issues" | "risks") {
@@ -169,9 +213,22 @@ export async function transitionTask(projectId: string, taskId: string, input: T
   return readItem(await fetch(transitionUrl(projectId, "tasks", taskId), mutation(input)), isProjectTask, "Task");
 }
 
-export async function transitionIssue(projectId: string, issueId: string, toStatus: IssueStatus) {
+export type IssueTransitionExtra = {
+  comment?: string;
+  closure_evidence_ref?: string;
+};
+
+export async function transitionIssue(
+  projectId: string,
+  issueId: string,
+  toStatus: IssueStatus,
+  extra: IssueTransitionExtra = {},
+) {
   return readItem(
-    await fetch(transitionUrl(projectId, "issues", issueId), mutation({ to_status: toStatus })),
+    await fetch(
+      transitionUrl(projectId, "issues", issueId),
+      mutation({ to_status: toStatus, ...extra }),
+    ),
     isProjectIssue,
     "Issue",
   );

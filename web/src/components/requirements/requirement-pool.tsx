@@ -50,6 +50,8 @@ export function RequirementPool() {
     };
   }, [replace, setRequirements]);
 
+  useEffect(() => { if (loadState !== "ready") return; const target = window.location.hash.slice(1); if (/^requirement-[0-9a-f-]{36}$/i.test(target)) document.getElementById(target)?.scrollIntoView({ block: "start" }); }, [loadState]);
+
   async function retryLoad() {
     try {
       const loaded = await requestPool();

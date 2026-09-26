@@ -94,8 +94,7 @@ export function CaseList({
       </div>
       <ul className="divide-y rounded-lg border bg-card md:rounded-t-none md:border-t-0" role="list">
         {cases.map((developmentCase) => (
-          <li key={developmentCase.id}>
-            {canEdit ? (
+          <li key={developmentCase.id} id={`case-${developmentCase.id}`}>
               <button
                 aria-label={`打开开发案例 ${developmentCase.code}`}
                 className={cn(
@@ -108,11 +107,7 @@ export function CaseList({
               >
                 <CaseRow developmentCase={developmentCase} />
               </button>
-            ) : (
-              <div className={grid}>
-                <CaseRow developmentCase={developmentCase} />
-              </div>
-            )}
+
           </li>
         ))}
       </ul>

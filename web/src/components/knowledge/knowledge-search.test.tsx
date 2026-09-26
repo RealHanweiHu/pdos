@@ -69,6 +69,8 @@ function memory(overrides: Record<string, unknown> = {}) {
     tags: ["DVT", "connector"],
     source_refs: [],
     content_sha256: "a".repeat(64),
+    review_digest: "b".repeat(64),
+    knowledge_kind: "failure_case",
     status: "draft",
     verified_at: null,
     archived_at: null,
@@ -138,6 +140,7 @@ describe("KnowledgeSearch", () => {
     expect(results).not.toHaveTextContent("草稿");
     await user.click(screen.getByRole("button", { name: "验证" }));
     expect(await screen.findByRole("status")).toHaveTextContent("四眼验证");
+    expect(fetchMock).toHaveBeenCalledWith("/api/projects/project-1/memories/memory-1/verify", expect.objectContaining({ method: "POST", body: JSON.stringify({ expected_review_digest: draft.review_digest }) }));
   });
 
   it("prevents the draft creator from presenting a self-verify action", async () => {
@@ -155,6 +158,7 @@ describe("KnowledgeSearch", () => {
 
     expect(await screen.findByText("需另一位成员验证")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "验证" })).not.toBeInTheDocument();
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith("/api/projects/project-1/memories", expect.any(Object)));
+    expect(fetchMock.mock.calls.filter(([, init]) => init?.method === "POST")).toHaveLength(0);
   });
 });

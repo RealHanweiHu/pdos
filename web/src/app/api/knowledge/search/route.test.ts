@@ -50,6 +50,7 @@ describe("Knowledge and Memory BFF", () => {
       .mockResolvedValueOnce(Response.json({ items: [] }))
       .mockResolvedValueOnce(Response.json({ status: "verified" }));
     const memoryContext = { params: Promise.resolve({ projectId: "project/1" }) };
+    const review = { expected_review_digest: "a".repeat(64) };
     const list = await GET_MEMORIES(
       new Request("http://localhost/api/projects/project%2F1/memories?status=verified&secret=no"),
       memoryContext,
@@ -57,6 +58,8 @@ describe("Knowledge and Memory BFF", () => {
     const action = await POST_MEMORY_ACTION(
       new Request("http://localhost/api/projects/project%2F1/memories/memory%2F1/verify", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(review),
       }),
       {
         params: Promise.resolve({
@@ -75,9 +78,12 @@ describe("Knowledge and Memory BFF", () => {
     expect(String(fetchMock.mock.calls[1]?.[0])).toBe(
       "http://127.0.0.1:8000/api/projects/project%2F1/memories/memory%2F1/verify",
     );
+    expect(fetchMock.mock.calls[1]?.[1]).toEqual(
+      expect.objectContaining({ method: "POST", body: JSON.stringify(review) }),
+    );
   });
 
-  it("fails closed without a session or for an unknown action", async () => {
+  it("fails closed without a session, review body, or known action", async () => {
     getCookie.mockReturnValue(undefined);
     expect(
       (
@@ -91,6 +97,14 @@ describe("Knowledge and Memory BFF", () => {
       ).status,
     ).toBe(401);
     getCookie.mockReturnValue({ value: "signed.jwt.value" });
+    const missingReview = await POST_MEMORY_ACTION(
+      new Request("http://localhost/api/projects/project-1/memories/memory-1/verify", { method: "POST" }),
+      { params: Promise.resolve({ projectId: "project-1", memoryId: "memory-1", action: "verify" }) },
+    );
+    expect(missingReview.status).toBe(400);
+    expect(await missingReview.json()).toEqual(
+      expect.objectContaining({ detail: expect.objectContaining({ code: "MEMORY_REVIEW_REQUIRED" }) }),
+    );
     expect(
       (
         await POST_MEMORY_ACTION(new Request("http://localhost"), {

@@ -1,3 +1,5 @@
+import type { KnowledgeKind } from "./knowledge-kind";
+
 export const MEMORY_STATUSES = ["draft", "verified", "archived"] as const;
 
 export type MemoryStatus = (typeof MEMORY_STATUSES)[number];
@@ -14,8 +16,11 @@ export type MemoryRecord = {
   content: string;
   applicability: string | null;
   tags: string[];
+  knowledge_kind?: KnowledgeKind | null;
   source_refs: Record<string, unknown>[];
   content_sha256: string;
+  review_digest?: string;
+  last_edited_by_user_id?: string | null;
   status: MemoryStatus;
   verified_at: string | null;
   archived_at: string | null;
@@ -28,6 +33,7 @@ export type MemoryDraftInput = {
   content: string;
   applicability: string | null;
   tags: string[];
+  knowledge_kind?: KnowledgeKind | null;
 };
 
 export type KnowledgeSearchItem = {

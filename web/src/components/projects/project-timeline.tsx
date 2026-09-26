@@ -1,6 +1,7 @@
 import { CheckIcon } from "@phosphor-icons/react/ssr";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 import type { Project } from "./project-types";
 import type { ProjectActivity } from "./project-activity";
@@ -12,18 +13,22 @@ function formatTimestamp(value: string) {
 export function ProjectTimeline({
   activities,
   activityError,
+  loading,
+  onRetry,
   highlightedEntityId,
   highlightedEventId,
   project,
 }: {
   activities: ProjectActivity[];
   activityError: boolean;
+  loading: boolean;
+  onRetry: () => void;
   highlightedEntityId: string | null;
   highlightedEventId: number | null;
   project: Project;
 }) {
   return (
-    <section aria-label="项目阶段 Timeline" className="rounded-lg border bg-card p-4">
+    <section aria-label="项目阶段 Timeline" className="rounded-lg border bg-card p-4" data-state={loading ? "loading" : activityError ? "error" : "ready"}>
       <div className="flex items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-primary">Workflow v{project.workflow.version}</p>
@@ -50,7 +55,9 @@ export function ProjectTimeline({
       <div className="mt-5 border-t pt-4">
         <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">近期项目活动</h3><span className="font-mono text-[10px] text-muted-foreground">最新 {activities.length} 条</span></div>
         {activityError ? <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/8 px-3 py-3 text-sm text-destructive" role="alert">项目活动暂不可用；证据不会被显示为不存在。</p> : null}
-        {!activityError && activities.length === 0 ? <p className="mt-3 rounded-lg border border-dashed px-3 py-8 text-center text-sm text-muted-foreground">还没有项目活动。</p> : null}
+        {activityError ? <Button className="mt-2" onClick={onRetry} variant="outline">重新加载项目活动</Button> : null}
+        {loading ? <p className="mt-3 text-sm text-muted-foreground" aria-busy="true">正在加载项目活动…</p> : null}
+        {!loading && !activityError && activities.length === 0 ? <p className="mt-3 rounded-lg border border-dashed px-3 py-8 text-center text-sm text-muted-foreground">还没有项目活动。</p> : null}
         {!activityError && activities.length > 0 ? (
           <ol className="mt-3 divide-y overflow-hidden rounded-lg border" role="list">
             {activities.map((activity) => {

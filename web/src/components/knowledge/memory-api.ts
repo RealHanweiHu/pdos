@@ -1,3 +1,5 @@
+import { parseKnowledgeKind, type KnowledgeKind } from "./knowledge-kind";
+import type { SourceSelection } from "./source-picker";
 import { isSafePdosHref } from "@/components/ai/ai-api";
 import { isRecord, responseBody } from "@/components/workspace-api";
 
@@ -13,7 +15,7 @@ function isNullableString(value: unknown): value is string | null {
   return typeof value === "string" || value === null;
 }
 
-function parseMemory(value: unknown): MemoryRecord {
+export function parseMemory(value: unknown): MemoryRecord {
   if (
     !isRecord(value) ||
     ![
@@ -35,6 +37,8 @@ function parseMemory(value: unknown): MemoryRecord {
       "verified_at",
       "archived_at",
     ].every((key) => isNullableString(value[key])) ||
+    (value.review_digest !== undefined && (typeof value.review_digest !== "string" || !/^[0-9a-f]{64}$/.test(value.review_digest))) ||
+    (value.last_edited_by_user_id !== undefined && !isNullableString(value.last_edited_by_user_id)) ||
     !MEMORY_STATUSES.includes(value.status as MemoryStatus) ||
     !Array.isArray(value.tags) ||
     !value.tags.every((tag) => typeof tag === "string") ||
@@ -43,7 +47,7 @@ function parseMemory(value: unknown): MemoryRecord {
   ) {
     throw new Error("invalid Memory response");
   }
-  return value as MemoryRecord;
+  return { ...value, knowledge_kind: parseKnowledgeKind(value.knowledge_kind) } as MemoryRecord;
 }
 
 async function requireOk(response: Response, fallback: string): Promise<unknown> {
@@ -69,7 +73,7 @@ export async function requestMemories(projectId: string): Promise<MemoryRecord[]
 
 export async function createMemory(
   projectId: string,
-  input: MemoryDraftInput,
+  input: MemoryDraftInput & { source_selections?: SourceSelection[] },
 ): Promise<MemoryRecord> {
   return mutateMemory(`/api/projects/${encodeURIComponent(projectId)}/memories`, "POST", input);
 }
@@ -77,7 +81,7 @@ export async function createMemory(
 export async function editMemory(
   projectId: string,
   memoryId: string,
-  input: MemoryDraftInput,
+  input: MemoryDraftInput & { expected_review_digest: string; source_selections?: SourceSelection[] | null },
 ): Promise<MemoryRecord> {
   return mutateMemory(
     `/api/projects/${encodeURIComponent(projectId)}/memories/${encodeURIComponent(memoryId)}`,
@@ -90,17 +94,20 @@ export async function transitionMemory(
   projectId: string,
   memoryId: string,
   action: "verify" | "archive" | "reembed",
+  reviewDigest?: string,
 ): Promise<MemoryRecord> {
+  if (action === "verify" && !reviewDigest) throw new Error("请刷新获取当前审核版本");
   return mutateMemory(
     `/api/projects/${encodeURIComponent(projectId)}/memories/${encodeURIComponent(memoryId)}/${action}`,
     "POST",
+    action === "verify" ? { expected_review_digest: reviewDigest } : undefined,
   );
 }
 
 async function mutateMemory(
   path: string,
   method: "POST" | "PATCH",
-  input?: MemoryDraftInput,
+  input?: object,
 ) {
   const body = await requireOk(
     await fetch(path, {
@@ -118,6 +125,7 @@ async function mutateMemory(
 export async function searchKnowledge(
   projectId: string,
   query: string,
+  knowledgeKind: KnowledgeKind | "unclassified" | null = null,
 ): Promise<KnowledgeSearchItem[]> {
   const body = await requireOk(
     await fetch("/api/knowledge/search", {
@@ -125,7 +133,7 @@ export async function searchKnowledge(
       cache: "no-store",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ project_id: projectId, query, limit: 10 }),
+      body: JSON.stringify({ project_id: projectId, query, limit: 10, knowledge_kind: knowledgeKind }),
     }),
     "语义检索暂不可用",
   );

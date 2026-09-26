@@ -47,6 +47,16 @@ export function CaseWorkspace() {
     return () => { active = false; };
   }, [replace]);
 
+  useEffect(() => {
+    const selectLinkedCase = () => {
+      const id = window.location.hash.match(/^#case-([0-9a-f-]{36})$/i)?.[1];
+      if (id && cases.some((item) => item.id === id)) setSelectedId(id);
+    };
+    selectLinkedCase();
+    window.addEventListener("hashchange", selectLinkedCase);
+    return () => window.removeEventListener("hashchange", selectLinkedCase);
+  }, [cases]);
+
   async function retryLoad() {
     try {
       const loaded = await requestCases();
@@ -138,7 +148,8 @@ export function CaseWorkspace() {
         return;
       }
       if (!response.ok) {
-        setErrorMessage("状态未更新，请检查当前状态或关联 Project。");
+        const failure = await response.json().catch(() => null);
+        setErrorMessage(failure?.detail?.message ?? "状态未更新，请检查当前状态或关联 Project。");
         return;
       }
       const updated = await readCase(response);

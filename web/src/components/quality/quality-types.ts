@@ -8,6 +8,7 @@ export type Complaint = {
   reported_by_user_id: string;
   owner_user_id: string;
   closed_by_user_id: string | null;
+  closed_by_name?: string | null;
   code: string;
   title: string;
   description: string;

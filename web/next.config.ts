@@ -7,7 +7,9 @@ const securityHeaders = [
   },
   {
     key: "Permissions-Policy",
-    value: "camera=(), geolocation=(), microphone=()",
+    // Same-origin recorder still requires the user's explicit browser microphone grant.
+    // Keep this on the document so client-side navigation to /capture also works.
+    value: "camera=(), geolocation=(), microphone=(self)",
   },
   {
     key: "Referrer-Policy",

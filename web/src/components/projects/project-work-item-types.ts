@@ -1,7 +1,15 @@
 export type WorkItemPriority = "low" | "medium" | "high" | "critical";
 
-export type TaskStatus = "todo" | "in_progress" | "blocked" | "done" | "skipped";
+export type TaskStatus = "todo" | "in_progress" | "blocked" | "done" | "skipped" | "pending_approval";
 export type TaskReadiness = "ready" | "waiting" | "blocked" | "complete" | "waiting_approval";
+
+export type TaskKind =
+  | "task"
+  | "meeting_action"
+  | "issue_action"
+  | "gate_action"
+  | "change_action"
+  | "risk_action";
 
 export type ProjectTask = {
   id: string;
@@ -11,6 +19,11 @@ export type ProjectTask = {
   assignee_user_id: string | null;
   title: string;
   description: string | null;
+  kind: TaskKind;
+  source_entity: string | null;
+  source_entity_id: string | null;
+  expected_output: string | null;
+  completion_evidence_ref: string | null;
   status: TaskStatus;
   blocked_reason: string | null;
   priority: WorkItemPriority;
@@ -18,6 +31,7 @@ export type ProjectTask = {
   due_date: string | null;
   completed_at: string | null;
   dependency_task_ids: string[];
+  baseline_dependency_task_ids?: string[];
   unresolved_dependency_ids: string[];
   readiness: TaskReadiness;
   created_at: string;
@@ -26,18 +40,27 @@ export type ProjectTask = {
 
 export type IssueStatus = "open" | "analysis" | "action" | "verification" | "closed";
 
+export type IssueType = "engineering" | "quality" | "supplier" | "test_failure" | "certification";
+
 export type ProjectIssue = {
+  source_field_capture_id?: string | null;
+  source_finding_id?: string | null;
   id: string;
   project_id: string;
   stage_id: string | null;
   owner_user_id: string | null;
+  verifier_user_id: string | null;
   reported_by_user_id: string;
   title: string;
   description: string | null;
+  issue_type: IssueType;
   status: IssueStatus;
   severity: WorkItemPriority;
   root_cause: string | null;
   resolution: string | null;
+  closure_criteria: string | null;
+  closure_evidence_ref: string | null;
+  reopen_count: number;
   target_date: string | null;
   closed_at: string | null;
   created_at: string;
@@ -47,6 +70,7 @@ export type ProjectIssue = {
 export type RiskStatus = "open" | "mitigating" | "watching" | "closed";
 
 export type ProjectRisk = {
+  source_finding_id?: string | null;
   id: string;
   project_id: string;
   owner_user_id: string | null;
@@ -92,6 +116,8 @@ export type RiskCreateInput = {
 };
 
 export type TaskTransitionInput = {
+  expected_updated_at?: string;
+  completion_evidence_ref?: string | null;
   to_status: TaskStatus;
   blocked_reason?: string;
 };

@@ -16,6 +16,11 @@ type ForwardWorkItemOptions<T extends { projectId: string }> = {
   method: WorkItemMethod;
   itemParam?: keyof T;
   transition?: boolean;
+  preparation?: boolean;
+  workCard?: boolean;
+  templateFields?: boolean;
+  intakeSources?: boolean;
+  decisionIntakeSources?: boolean;
 };
 
 export async function forwardProjectWorkItem<T extends { projectId: string }>({
@@ -25,6 +30,11 @@ export async function forwardProjectWorkItem<T extends { projectId: string }>({
   method,
   itemParam,
   transition = false,
+  preparation = false,
+  workCard = false,
+  templateFields = false,
+  intakeSources = false,
+  decisionIntakeSources = false,
 }: ForwardWorkItemOptions<T>) {
   const token = await currentSessionToken();
   if (!token) return sessionError(401, "INVALID_ACCESS_TOKEN", "Authentication required");
@@ -37,9 +47,16 @@ export async function forwardProjectWorkItem<T extends { projectId: string }>({
       params.projectId,
       collection,
       ...(itemParam ? [params[itemParam]] : []),
+      ...(workCard && method === "GET" ? ["work-card"] : []),
       ...(transition ? ["transitions"] : []),
+      ...(decisionIntakeSources && collection === "issues" && method === "GET" ? ["decision-intake-sources"] : []),
+      ...(intakeSources && collection === "issues" && method === "GET" ? ["intake-sources"] : []),
+      ...(templateFields && ["issues", "tasks", "risks"].includes(collection) ? ["template-fields"] : []),
+      ...(preparation && collection === "tasks" && method === "GET" ? ["preparation"] : []),
     ];
-    const path = `/${segments.map((segment) => encodeURIComponent(String(segment))).join("/")}`;
+    const query = new URLSearchParams();
+    if (decisionIntakeSources && method === "GET") for (const key of ["before_created_at", "before_id"]) { const value = new URL(request.url).searchParams.get(key); if (value) query.set(key, value); }
+    const path = `/${segments.map((segment) => encodeURIComponent(String(segment))).join("/")}${query.size ? `?${query}` : ""}`;
     const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
     const init: RequestInit = { headers };
     if (method !== "GET") {

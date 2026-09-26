@@ -66,6 +66,8 @@ describe("CaseWorkspace", () => {
       const path = String(input);
       if (path === "/api/session/me") return jsonResponse(identity);
       if (path === "/api/development-cases") return jsonResponse({ items: [] });
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
 
@@ -91,6 +93,8 @@ describe("CaseWorkspace", () => {
       if (path === "/api/development-cases/case-1" && init?.method === "PATCH") {
         return jsonResponse(updated);
       }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
 
@@ -132,6 +136,8 @@ describe("CaseWorkspace", () => {
       ) {
         return jsonResponse(evaluating);
       }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
 
@@ -162,6 +168,8 @@ describe("CaseWorkspace", () => {
       if (path.endsWith("/transitions")) {
         return jsonResponse({ detail: { code: "CASE_INVALID_TRANSITION" } }, 409);
       }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
 
@@ -184,15 +192,16 @@ describe("CaseWorkspace", () => {
       if (path === "/api/development-cases") {
         return jsonResponse({ items: [developmentCase] });
       }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
 
     render(<CaseWorkspace />);
 
     expect(await screen.findByText("Seal leakage development case")).toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "打开开发案例 CASE-001" }),
-    ).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "打开开发案例 CASE-001" }));
+    expect(screen.queryByRole("button", { name: "保存更改" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "进入评估" })).not.toBeInTheDocument();
   });
 
@@ -208,6 +217,8 @@ describe("CaseWorkspace", () => {
       if (path === "/api/projects" && init?.method === "POST") {
         return jsonResponse({ id: "project-1" }, 201);
       }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
 
@@ -251,6 +262,8 @@ describe("CaseWorkspace", () => {
       if (path === "/api/development-cases") {
         return unavailable ? jsonResponse({}, 503) : jsonResponse({ items: [] });
       }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
       throw new Error(`unexpected request: ${path}`);
     });
     render(<CaseWorkspace />);

@@ -1,0 +1,55 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import type { RequirementSnapshot } from "@/components/product-work/requirement-links";
+
+type Snapshot = RequirementSnapshot;
+type Link = { requirement_id: string; primary: boolean; snapshot: Snapshot; current: Snapshot; current_digest: string; has_changed: boolean; pinned: boolean; rationale: string; linked_at: string | null };
+type Detail = { case_id: string; case_digest: string; sequence: number; can_edit: boolean; items: Link[] };
+type Choice = { snapshot: Snapshot; payload_digest: string };
+type History = { items: { id: string; sequence: number; action: string; requirement_snapshot: Snapshot; rationale: string; actor_user_id: string; created_at: string }[]; has_more: boolean };
+const statuses: Record<string, string> = { draft: "草稿", proposed: "待评估", approved: "已批准", rejected: "已拒绝", converted: "已转案例" };
+const tiers: Record<string, string> = { customer: "客户需求", market: "市场需求", product: "产品需求" };
+const actions: Record<string, string> = { attach: "纳入需求", refresh: "更新引用", release: "解除关联" };
+const field = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
+export async function caseLinkRequest<T>(path: string, body?: unknown): Promise<T> {
+  const response = await fetch(`/api/${path}`, { credentials: "same-origin", cache: "no-store", ...(body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {}) });
+  const value = await response.json().catch(() => {
+    throw new Error("服务暂未返回有效结果，当前操作结果尚未确认，请刷新核对后再继续。");
+  });
+  if (!response.ok) throw new Error(value?.detail?.message ?? "需求关联暂不可用，请稍后重试");
+  return value;
+}
+function SnapshotView({ value }: { value: Snapshot }) {
+  return <div className="space-y-1 text-sm"><p>{tiers[value.tier] ?? value.tier} · {statuses[value.status] ?? value.status}{value.parent_requirement_id && <> · <a className="underline" href={`/requirements#requirement-${value.parent_requirement_id}`}>查看父需求</a></>}</p><p className="whitespace-pre-wrap">{value.description || "暂无需求描述"}</p><ul className="list-inside list-disc">{value.acceptance_criteria.map((criterion, index) => <li key={index}>{criterion}</li>)}</ul></div>;
+}
+type CaseRequirementsProps = { caseId: string; caseUpdatedAt: string; caseStatus: string };
+export function CaseRequirements(props: CaseRequirementsProps) {
+  return <CaseRequirementsContent key={`${props.caseId}:${props.caseUpdatedAt}:${props.caseStatus}`} caseId={props.caseId} />;
+}
+function CaseRequirementsContent({ caseId }: { caseId: string }) {
+  const base = `development-cases/${caseId}`;
+  const [data, setData] = useState<Detail | null>(null); const [error, setError] = useState<string | null>(null); const [busy, setBusy] = useState(false); const [query, setQuery] = useState(""); const [options, setOptions] = useState<Choice[] | null>(null); const [more, setMore] = useState(false); const [history, setHistory] = useState<History | null>(null);
+  const [selection, setSelection] = useState<{ action: "attach" | "refresh" | "release"; choice: Choice } | null>(null); const [reason, setReason] = useState(""); const [message, setMessage] = useState<string | null>(null); const stable = useRef({ body: "", id: "" });
+  useEffect(() => { let live = true; void caseLinkRequest<Detail>(`${base}/requirement-links`).then((value) => { if (live) setData(value); }).catch((failure) => { if (live) setError(failure.message); }); return () => { live = false; }; }, [base]);
+  const reload = async () => { setBusy(true); setError(null); setSelection(null); try { setData(await caseLinkRequest<Detail>(`${base}/requirement-links`)); } catch (failure) { setError(failure instanceof Error ? failure.message : "刷新失败"); } finally { setBusy(false); } };
+  const select = (action: "attach" | "refresh" | "release", choice: Choice) => { setSelection({ action, choice }); setReason(""); setMessage(null); setError(null); };
+  const save = async () => {
+    if (!selection || !data) return;
+    const body = { expected_sequence: data.sequence, case_digest: data.case_digest, requirement_id: selection.choice.snapshot.id, requirement_digest: selection.choice.payload_digest, action: selection.action, rationale: reason };
+    const serialized = JSON.stringify(body); if (stable.current.body !== serialized) stable.current = { body: serialized, id: crypto.randomUUID() };
+    setBusy(true); setError(null);
+    try { setData(await caseLinkRequest<Detail>(`${base}/requirement-links`, { ...body, request_id: stable.current.id })); setSelection(null); setHistory(null); setMessage(`${actions[selection.action]}已记录`); } catch (failure) { setError(failure instanceof Error ? failure.message : "保存失败"); } finally { setBusy(false); }
+  };
+  return <section aria-label="案例需求范围" className="mt-5 space-y-3 border-t pt-4"><h3 className="font-semibold">需求范围与来源</h3><p className="text-xs text-muted-foreground">主需求沿用原转化关系。补充关联保留当时内容和修改历史，需求本身的层级及状态由需求流程管理。</p>{message && <p role="status" className="text-sm">{message}</p>}{error && <p role="alert" className="text-sm text-destructive">{error}</p>}{!data && !error && <p className="text-sm">正在读取需求范围…</p>}{data?.items.map((link) => <article key={link.requirement_id} className="space-y-2 rounded-md border p-3"><h4 className="text-sm font-medium"><a className="underline" href={`/requirements#requirement-${link.requirement_id}`}>{link.snapshot.code} · {link.snapshot.title}</a> · {link.primary ? "主需求" : "补充需求"}</h4><p className="text-xs">{link.pinned ? `引用于 ${new Date(link.linked_at!).toLocaleString()}` : "原主关联：当前内容，未固定补充引用快照"}</p><SnapshotView value={link.snapshot} /><p className="text-xs">关联依据：{link.rationale}</p>{link.has_changed && <details className="rounded-md bg-muted p-2 text-sm"><summary className="cursor-pointer">需求后续有修改，查看当前内容（{statuses[link.current.status] ?? link.current.status}）</summary><SnapshotView value={link.current} /></details>}{data.can_edit && <div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={busy} onClick={() => select("refresh", { snapshot: link.current, payload_digest: link.current_digest })}>{link.pinned ? "更新引用到当前内容" : "固定当前引用"}</Button>{!link.primary && <Button size="sm" variant="ghost" disabled={busy} onClick={() => select("release", { snapshot: link.current, payload_digest: link.current_digest })}>解除关联</Button>}</div>}</article>)}
+    {data && data.items.some((link) => link.has_changed || !["approved", "converted"].includes(link.current.status)) && <p className="text-sm text-pending">需求范围仍有待批准或待重新审阅项；新增关联不会自动批准需求。</p>}
+    {data?.can_edit && <div className="space-y-2"><form onSubmit={(event) => { event.preventDefault(); setBusy(true); setError(null); void caseLinkRequest<{ items: Choice[]; has_more: boolean }>(`${base}/requirement-options?q=${encodeURIComponent(query)}`).then((value) => { setOptions(value.items); setMore(value.has_more); }).catch((failure) => setError(failure.message)).finally(() => setBusy(false)); }} className="flex items-end gap-2"><label className="min-w-0 flex-1 text-sm">查找补充需求<input maxLength={120} className={field} value={query} onChange={(event) => setQuery(event.target.value)} /></label><Button type="submit" size="sm" variant="outline" disabled={busy}>查找</Button></form>{options?.map((choice) => <div key={choice.snapshot.id} className="flex items-center justify-between gap-2 rounded-md bg-muted p-2 text-sm"><span>{choice.snapshot.code} · {choice.snapshot.title} · {statuses[choice.snapshot.status]}</span><Button size="sm" variant="ghost" disabled={busy || choice.snapshot.status === "rejected" || data.items.some((link) => link.requirement_id === choice.snapshot.id)} onClick={() => select("attach", choice)}>选择</Button></div>)}{options?.length === 0 && <p className="text-sm">没有匹配的需求。</p>}{more && <p className="text-xs">显示前100条，请缩小查询范围。</p>}</div>}
+    {selection && data?.can_edit && <form className="space-y-3 rounded-md border p-3" onSubmit={(event) => { event.preventDefault(); void save(); }}><h4 className="text-sm font-medium">{actions[selection.action]}：{selection.choice.snapshot.code} · {selection.choice.snapshot.title}</h4><SnapshotView value={selection.choice.snapshot} /><label className="block text-sm">{selection.action === "release" ? "解除原因" : "纳入或更新引用的依据"}<textarea required maxLength={2048} className={field} value={reason} onChange={(event) => setReason(event.target.value)} /></label><div className="flex gap-2"><Button size="sm" disabled={busy || !reason.trim()} type="submit">确认{actions[selection.action]}</Button><Button size="sm" variant="ghost" disabled={busy} type="button" onClick={() => setSelection(null)}>取消</Button></div></form>}
+    {data && !data.can_edit && <p className="text-xs text-muted-foreground">当前案例状态或权限不允许调整需求范围。</p>}<div className="flex gap-2"><Button size="sm" variant="ghost" disabled={busy} onClick={() => void reload()}>刷新范围</Button><Button size="sm" variant="ghost" disabled={busy} onClick={() => { if (history) { setHistory(null); return; } setBusy(true); setError(null); void caseLinkRequest<History>(`${base}/requirement-link-history`).then(setHistory).catch((failure) => setError(failure.message)).finally(() => setBusy(false)); }}>{history ? "收起历史" : "关联历史"}</Button></div>{history?.items.map((entry) => <details key={entry.id} className="rounded-md border p-2 text-sm"><summary className="cursor-pointer">{entry.sequence} · {actions[entry.action]} · {entry.requirement_snapshot.code} · {new Date(entry.created_at).toLocaleString()}</summary><p>{entry.rationale}</p><SnapshotView value={entry.requirement_snapshot} /></details>)}{history?.items.length === 0 && <p className="text-xs">暂无补充关联变更记录；原主需求转化历史仍保留。</p>}{history?.has_more && <p className="text-xs">显示最近200次关联变更。</p>}</section>;
+}
+
+export function RequirementCaseLinks({ requirementId }: { requirementId: string }) {
+  const [open, setOpen] = useState(false); const [busy, setBusy] = useState(false); const [error, setError] = useState<string | null>(null); const [data, setData] = useState<{ items: { id: string; code: string; title: string; status: string; primary: boolean }[]; has_more: boolean } | null>(null);
+  return <section className="px-3 pb-2"><Button size="sm" variant="ghost" disabled={busy} onClick={() => { setOpen(!open); if (!open) { setBusy(true); setError(null); void caseLinkRequest<NonNullable<typeof data>>(`requirements/${requirementId}/case-links`).then(setData).catch((failure) => setError(failure.message)).finally(() => setBusy(false)); } }}>{open ? "收起开发案例" : "查看关联开发案例"}</Button>{open && <div className="space-y-2 p-2 text-sm">{error && <p role="alert" className="text-destructive">{error}</p>}{data?.items.map((item) => <p key={item.id}><a className="underline" href={`/cases#case-${item.id}`}>{item.code} · {item.title}</a> · {item.primary ? "主需求" : "补充需求"} · {({ draft: "草稿", evaluating: "评估中", approved: "已批准", rejected: "已拒绝", converted: "已转项目" } as Record<string, string>)[item.status]}</p>)}{data?.items.length === 0 && <p>暂无关联案例。</p>}{data?.has_more && <p className="text-xs">显示最近200个案例。</p>}</div>}</section>;
+}

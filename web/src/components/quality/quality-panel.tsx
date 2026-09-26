@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { CaretRightIcon, WarningIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-import { CapaTimeline } from "./capa-timeline";
+import { QualityResponsibility } from "./quality-responsibility";
+import { NcrWorkspace } from "./ncr-workspace";
 import { ComplaintForm } from "./complaint-form";
+import { ComplaintLifecycle, type ComplaintTransition } from "./complaint-lifecycle";
 import { TriageForm } from "./triage-form";
 import type {
   Complaint,
@@ -25,6 +28,7 @@ export function QualityPanel({
   busy,
   canCreate,
   canManage,
+  canClose = false,
   complaints,
   detail,
   error,
@@ -34,11 +38,13 @@ export function QualityPanel({
   onRetry,
   onSelect,
   onTriage,
+  onTransition,
   selectedComplaint,
 }: {
   busy: boolean;
   canCreate: boolean;
   canManage: boolean;
+  canClose?: boolean;
   complaints: Complaint[] | null;
   detail: NcrDetail | null;
   error: string | null;
@@ -48,8 +54,10 @@ export function QualityPanel({
   onRetry: () => void;
   onSelect: (complaint: Complaint) => void;
   onTriage: (complaint: Complaint, input: NcrCreateInput) => Promise<boolean>;
+  onTransition?: (complaint: Complaint, input: ComplaintTransition) => Promise<boolean>;
   selectedComplaint: Complaint | null;
 }) {
+  const [ownerLocked, setOwnerLocked] = useState(false);
   if (loadState === "loading" || loadState === "idle") {
     return (
       <div aria-busy="true" aria-label="正在加载质量记录" className="space-y-3">
@@ -104,6 +112,7 @@ export function QualityPanel({
                     "flex min-h-11 w-full items-start gap-3 rounded-lg border bg-card p-3 text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/20",
                     selectedComplaint?.id === complaint.id && "border-primary/50 bg-primary/5",
                   )}
+                  disabled={ownerLocked}
                   onClick={() => onSelect(complaint)}
                   type="button"
                 >
@@ -138,9 +147,11 @@ export function QualityPanel({
                   <Meta label="发生时间" value={new Date(selectedComplaint.occurred_at).toLocaleString("zh-CN")} />
                   <Meta label="影响范围" value={selectedComplaint.affected_scope ?? "未填写"} />
                 </dl>
+                <QualityResponsibility key={selectedComplaint.id} projectId={selectedComplaint.project_id} kind="complaint" recordId={selectedComplaint.id} disabled={busy} onLock={setOwnerLocked} onChanged={onRetry}/>
+                {onTransition && <ComplaintLifecycle key={selectedComplaint.id} complaint={selectedComplaint} busy={busy || ownerLocked} canManage={canManage} canClose={canClose} onSubmit={input => onTransition(selectedComplaint, input)}/>}
                 {selectedComplaint.status === "open" && canManage ? (
                   <TriageForm
-                    busy={busy}
+                    busy={busy || ownerLocked}
                     complaint={selectedComplaint}
                     onSubmit={(input) => onTriage(selectedComplaint, input)}
                   />
@@ -151,7 +162,7 @@ export function QualityPanel({
                 选择一条 Complaint 查看质量链路。
               </p>
             )}
-            {detail ? <div className="mt-4"><CapaTimeline detail={detail} /></div> : null}
+            {detail ? <div className="mt-4"><NcrWorkspace key={detail.ncr.id} projectId={detail.ncr.project_id} ncrId={detail.ncr.id}/></div> : null}
           </div>
         </div>
       )}

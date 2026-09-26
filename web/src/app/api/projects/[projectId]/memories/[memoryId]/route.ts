@@ -16,7 +16,7 @@ export async function PATCH(request: Request, context: MemoryRouteContext) {
   if (!token) return sessionError(401, "INVALID_ACCESS_TOKEN", "Authentication required");
   try {
     const { projectId, memoryId } = await context.params;
-    const payload = await readBoundedJson(request);
+    const payload = await readBoundedJson(request, 131_072);
     return forwardJson(
       await pdosApiFetch(
         `/api/projects/${encodeURIComponent(projectId)}/memories/${encodeURIComponent(memoryId)}`,

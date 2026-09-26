@@ -54,6 +54,11 @@ export function isProductSpecification(value: unknown): value is ProductSpecific
     typeof value.code === "string" &&
     typeof value.title === "string" &&
     Number.isInteger(value.version) &&
+    isNullableString(value.requirement_id) &&
+    isNullableString(value.owner_user_id) &&
+    isNullableString(value.verification_method) &&
+    isNullableString(value.acceptance_criteria) &&
+    (value.criticality === "standard" || value.criticality === "key") &&
     isRecord(value.content)
   );
 }

@@ -1,5 +1,14 @@
 "use client";
 
+import { QualityWorkPackageProposalView } from "./quality-work-package-proposal";
+import { ChangeWorkPackageProposalView } from "./change-work-package-proposal";
+
+import { MeetingBusinessProposalView, meetingBusinessTypes } from "./meeting-business-proposal";
+
+import { MeetingDecisionProposalView } from "./meeting-decision-proposal";
+
+import { MeetingActionProposalView } from "./meeting-action-proposal";
+
 import {
   ArrowSquareOutIcon,
   CheckCircleIcon,
@@ -9,7 +18,7 @@ import {
   XCircleIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import type { Project } from "@/components/projects/project-types";
 import { Button } from "@/components/ui/button";
@@ -17,26 +26,23 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
 
-import type { AiFinding, FindingType } from "./ai-types";
+import { TestPlanProposalView } from "./test-plan-proposal";
+import { MeetingMinutesProposalView } from "./meeting-minutes-proposal";
+import { SupplierRecoveryProposalView, SupplierRecoveryAppliedTasks } from "./supplier-recovery-proposal";
+import { fieldLabels, proposalReady, PayloadEditor } from "./finding-proposal";
+import { FINDING_TYPE_LABELS, type AiFinding, type FindingType } from "./ai-types";
 
 export type FindingFilter = "all" | FindingType;
 
-const typeLabels: Record<FindingType, string> = {
-  risk_suggestion: "风险建议",
-  blocker_alert: "阻塞预警",
-  gate_readiness_anomaly: "Gate 异常",
-  knowledge_draft: "知识草稿",
-  bom_impact_suggestion: "BOM 影响建议",
-  change_impact_suggestion: "变更影响建议",
-  quality_cluster_alert: "质量聚类预警",
-  capa_suggestion: "CAPA 建议",
-};
+const typeLabels = FINDING_TYPE_LABELS;
 
 const agentLabels: Record<string, string> = {
   project_intelligence: "Project Intelligence",
   knowledge_lite: "Knowledge Lite",
   engineering_intelligence: "Engineering Intelligence",
   quality_intelligence: "Quality Intelligence",
+  supplier_intelligence: "Supplier Intelligence",
+  executive_intelligence: "Executive Intelligence",
 };
 
 const statusLabels = {
@@ -44,32 +50,20 @@ const statusLabels = {
   accepted: "待应用",
   rejected: "已拒绝",
   applied: "已应用",
+  archived: "已归档",
 } as const;
-
-const fieldLabels: Record<string, string> = {
-  title: "标题",
-  description: "描述",
-  likelihood: "发生概率",
-  impact: "影响程度",
-  mitigation_plan: "缓解计划",
-  contingency_plan: "应急计划",
-  target_date: "目标日期",
-  draft_text: "知识草稿",
-  applicability: "适用范围",
-};
 
 const rejectionReasons = ["不准确", "重复", "不相关", "证据不足"] as const;
 
-function projectLabel(finding: AiFinding, projects: Project[]) {
-  const project = projects.find((item) => item.id === finding.project_id);
+function projectLabel(finding: AiFinding, projects: Map<string, Project>) {
+  const project = projects.get(finding.project_id);
   return project ? `${project.code} · ${project.name}` : finding.project_id;
 }
 
+const timestampFormatter = new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" });
+
 function formatTimestamp(value: string) {
-  return new Intl.DateTimeFormat("zh-CN", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return timestampFormatter.format(new Date(value));
 }
 
 function formatValue(value: unknown) {
@@ -92,6 +86,7 @@ function StatusBadge({ finding }: { finding: AiFinding }) {
         finding.status === "accepted" && "border-success/30 bg-success/10 text-success",
         finding.status === "rejected" && "border-destructive/30 bg-destructive/10 text-destructive",
         finding.status === "applied" && "border-applied/30 bg-applied/10 text-applied",
+        finding.status === "archived" && "border-muted-foreground/30 bg-muted text-muted-foreground",
       )}
     >
       {statusLabels[finding.status]}
@@ -99,64 +94,10 @@ function StatusBadge({ finding }: { finding: AiFinding }) {
   );
 }
 
-function PayloadEditor({
-  finding,
-  onChange,
-  payload,
-}: {
-  finding: AiFinding;
-  onChange: (payload: Record<string, unknown>) => void;
-  payload: Record<string, unknown>;
-}) {
-  const fields = finding.finding_type === "knowledge_draft"
-    ? ["title", "draft_text", "applicability"]
-    : [
-        "title",
-        "description",
-        "likelihood",
-        "impact",
-        "mitigation_plan",
-        "contingency_plan",
-        "target_date",
-      ];
-  return (
-    <div className="grid gap-3 border-t bg-muted/20 p-4 sm:grid-cols-2">
-      {fields.map((field) => {
-        const numeric = field === "likelihood" || field === "impact";
-        const multiline = ["description", "mitigation_plan", "contingency_plan", "draft_text", "applicability"].includes(field);
-        return (
-          <label className={cn("grid gap-1.5 text-xs font-medium", multiline && "sm:col-span-2")} key={field}>
-            {fieldLabels[field] ?? field}
-            {multiline ? (
-              <textarea
-                className="min-h-24 rounded-lg border bg-background px-3 py-2 text-sm font-normal"
-                onChange={(event) => onChange({ ...payload, [field]: event.target.value || null })}
-                value={typeof payload[field] === "string" ? payload[field] : ""}
-              />
-            ) : (
-              <input
-                className="h-11 rounded-lg border bg-background px-3 text-sm font-normal"
-                max={numeric ? 5 : undefined}
-                min={numeric ? 1 : undefined}
-                onChange={(event) => onChange({
-                  ...payload,
-                  [field]: numeric ? Number(event.target.value) : event.target.value || null,
-                })}
-                required={field === "title" || numeric}
-                type={numeric ? "number" : field === "target_date" ? "date" : "text"}
-                value={typeof payload[field] === "string" || typeof payload[field] === "number" ? String(payload[field]) : ""}
-              />
-            )}
-          </label>
-        );
-      })}
-    </div>
-  );
-}
-
 export function AiReviewInboxView({
   busy,
   error,
+  extraSections,
   filter,
   findings,
   identity,
@@ -174,6 +115,7 @@ export function AiReviewInboxView({
 }: {
   busy: boolean;
   error: string | null;
+  extraSections?: ReactNode;
   filter: FindingFilter;
   findings: AiFinding[];
   identity: WorkspaceIdentity;
@@ -194,12 +136,15 @@ export function AiReviewInboxView({
   const [confirmingApply, setConfirmingApply] = useState(false);
   const [editedPayload, setEditedPayload] = useState<Record<string, unknown>>({});
   const [rejectionReason, setRejectionReason] = useState("");
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const projectsById = useMemo(() => new Map(projects.map((project) => [project.id, project])), [projects]);
 
   function resetInteraction() {
     setEditing(false);
     setRejecting(false);
     setConfirmingApply(false);
     setRejectionReason("");
+    setSummaryExpanded(false);
   }
 
   function selectFinding(findingId: string) {
@@ -229,15 +174,15 @@ export function AiReviewInboxView({
           onSelect(findings[next].id);
         }
       }
-      if (selected?.status === "pending_review" && event.key.toLowerCase() === "a") void onAccept(selected);
-      if (selected?.status === "pending_review" && event.key.toLowerCase() === "e") {
+      if (selected?.status === "pending_review" && !selected.superseded_by && event.key.toLowerCase() === "a" && proposalReady(selected, selected.proposed_payload)) void onAccept(selected);
+      if (selected?.status === "pending_review" && !selected.superseded_by && event.key.toLowerCase() === "e") {
         setRejecting(false);
         setConfirmingApply(false);
         setRejectionReason("");
         setEditedPayload({ ...selected.proposed_payload });
         setEditing(true);
       }
-      if (selected?.status === "pending_review" && event.key.toLowerCase() === "r") {
+      if (selected?.status === "pending_review" && !selected.superseded_by && event.key.toLowerCase() === "r") {
         setEditing(false);
         setConfirmingApply(false);
         setRejectionReason("");
@@ -261,7 +206,7 @@ export function AiReviewInboxView({
       <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-4">
         <div>
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Engineer Workspace</p>
-          <h1 className="mt-1 text-lg font-semibold">AI Review 收件箱</h1>
+          <h1 className="mt-1 text-lg font-semibold" data-testid="ai-review-ready">AI Review 收件箱</h1>
           <p className="mt-1 text-sm text-muted-foreground">每条建议由人独立裁决；接受后仍需再次确认才写入业务对象。</p>
         </div>
         <dl className="flex overflow-hidden rounded-lg border bg-card text-center">
@@ -274,12 +219,12 @@ export function AiReviewInboxView({
       {status ? <p className="mt-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success" role="status">{status}</p> : null}
       {error ? <p className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{error}</p> : null}
 
-      <div className="mt-5 flex flex-wrap gap-2" aria-label="Finding 类型筛选">
+      <div className="mt-5 flex flex-nowrap gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible" aria-label="Finding 类型筛选" role="group">
         {filters.map((item) => (
           <button
             aria-pressed={filter === item.key}
             className={cn(
-              "min-h-11 rounded-full border px-3 text-xs font-medium transition-colors sm:min-h-8",
+              "min-h-11 shrink-0 whitespace-nowrap rounded-full border px-3 text-xs font-medium transition-colors sm:min-h-8",
               filter === item.key ? "border-primary bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:bg-muted",
             )}
             key={item.key}
@@ -305,8 +250,8 @@ export function AiReviewInboxView({
           ) : null}
         </section>
       ) : (
-        <div className="mt-5 min-h-[620px] overflow-hidden rounded-lg border bg-card lg:grid lg:grid-cols-[288px_minmax(0,1fr)]">
-          <aside aria-label="Finding 队列" className="max-h-[340px] overflow-y-auto border-b lg:max-h-[700px] lg:border-b-0 lg:border-r">
+        <div className="mt-5 flex min-h-[620px] flex-col overflow-hidden rounded-lg border bg-card lg:grid lg:grid-cols-[288px_minmax(0,1fr)]">
+          <aside aria-label="Finding 队列" className="order-last max-h-[340px] overflow-y-auto border-t lg:order-none lg:max-h-[700px] lg:border-t-0 lg:border-r">
             <ol role="list">
               {findings.map((finding) => (
                 <li className="border-b last:border-b-0" key={finding.id}>
@@ -324,8 +269,8 @@ export function AiReviewInboxView({
                       <StatusBadge finding={finding} />
                     </div>
                     <p className="mt-2 line-clamp-2 text-sm font-medium">{finding.title}</p>
-                    <p className="mt-1 truncate text-[11px] text-muted-foreground">{projectLabel(finding, projects)}</p>
-                    <p className="mt-1 font-mono text-[10px] text-muted-foreground">置信 {(finding.confidence_basis_points / 10_000).toFixed(2)} · {formatTimestamp(finding.created_at)}</p>
+                    <p className="mt-1 truncate text-[11px] text-muted-foreground">{projectLabel(finding, projectsById)}</p>
+                    <p className="mt-1 font-mono text-[10px] text-muted-foreground">{["supplier_recovery", "capa_work_package", "change_work_package", "test_plan_change", "meeting_minutes", "meeting_action", "meeting_decision", ...meetingBusinessTypes].includes(finding.finding_type) ? "待人工核对" : `置信 ${(finding.confidence_basis_points / 10_000).toFixed(2)}`} · {formatTimestamp(finding.created_at)}</p>
                   </button>
                 </li>
               ))}
@@ -333,19 +278,22 @@ export function AiReviewInboxView({
           </aside>
 
           {selected ? (
-            <article aria-label="Finding 详情" className="min-w-0 overflow-y-auto lg:max-h-[700px]">
+            <article aria-label="Finding 详情" className="order-first max-h-[70svh] min-w-0 overflow-y-auto lg:order-none lg:max-h-[min(700px,calc(100svh-20rem))]">
               <header className="border-b px-4 py-4 sm:px-5">
                 <div className="flex flex-wrap items-center gap-2"><StatusBadge finding={selected} /><span className="text-[11px] text-muted-foreground">{typeLabels[selected.finding_type]}</span></div>
                 <h2 className="mt-2 text-base font-semibold">{selected.title}</h2>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">{selected.summary}</p>
+                <p className={cn("mt-1 text-sm leading-6 text-muted-foreground", !summaryExpanded && "line-clamp-3")} id="finding-summary">{selected.summary}</p>
+                {selected.summary.length > 180 ? <button aria-controls="finding-summary" aria-expanded={summaryExpanded} className="mt-1 min-h-8 text-xs font-medium text-primary" onClick={() => setSummaryExpanded((current) => !current)} type="button">{summaryExpanded ? "收起说明" : "展开完整说明"}</button> : null}
                 <details className="mt-3 text-xs text-muted-foreground">
                   <summary className="min-h-11 cursor-pointer py-3 font-medium sm:min-h-0 sm:py-0">展开触发链</summary>
                   <p className="mt-2 break-all font-mono text-[10px]">events {selected.evidence_event_ids.map((id) => `#${id}`).join(", ") || "none"} → {selected.agent_key} → run {selected.run_id}</p>
                 </details>
               </header>
 
+              {selected.superseded_by ? <p className="p-4 text-pending">此建议已有新修订。<Link className="underline" href={`/ai-review?finding=${selected.superseded_by}`} onClick={() => onSelect(selected.superseded_by!)}>查看最新建议</Link></p> : null}
               <section aria-labelledby="finding-diff-title">
                 <h3 className="border-b px-4 py-3 font-semibold sm:px-5" id="finding-diff-title">建议内容 · 逐字段对比</h3>
+                {selected.finding_type === "supplier_recovery" ? (!editing && !confirmingApply ? <SupplierRecoveryProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : selected.finding_type === "capa_work_package" ? (!editing && !confirmingApply ? <QualityWorkPackageProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : selected.finding_type === "change_work_package" ? (!editing && !confirmingApply ? <ChangeWorkPackageProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : meetingBusinessTypes.includes(selected.finding_type) ? (!editing && !confirmingApply ? <MeetingBusinessProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : selected.finding_type === "meeting_decision" ? (!editing && !confirmingApply ? <MeetingDecisionProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : selected.finding_type === "meeting_action" ? (!editing && !confirmingApply ? <MeetingActionProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : selected.finding_type === "meeting_minutes" ? (!editing && !confirmingApply ? <MeetingMinutesProposalView projectId={selected.project_id} payload={payloadFor(selected)} /> : null) : selected.finding_type === "test_plan_change" ? (!editing && !confirmingApply ? <TestPlanProposalView payload={payloadFor(selected)} /> : null) : <>
                 <div className="hidden grid-cols-[140px_minmax(0,1fr)_minmax(0,1fr)] border-b bg-muted/30 px-4 py-2 text-[11px] text-muted-foreground sm:grid sm:px-5"><span>字段</span><span>业务现状</span><span>AI 建议</span></div>
                 <dl>
                   {Object.entries(payloadFor(selected)).map(([field, value]) => (
@@ -356,12 +304,13 @@ export function AiReviewInboxView({
                     </div>
                   ))}
                 </dl>
+                </>}
                 {editing ? <PayloadEditor finding={selected} onChange={setEditedPayload} payload={editedPayload} /> : null}
               </section>
 
               <section aria-labelledby="finding-evidence-title" className="border-t">
-                <h3 className="border-b px-4 py-3 font-semibold sm:px-5" id="finding-evidence-title">证据引用（{selected.evidence.length}）</h3>
-                {selected.evidence.length === 0 ? <p className="px-4 py-4 text-sm text-destructive sm:px-5">无引用，不能据此直接应用。</p> : (
+                <h3 className="border-b px-4 py-3 font-semibold sm:px-5" id="finding-evidence-title">{["supplier_recovery", "change_work_package", "capa_work_package"].includes(selected.finding_type) ? "原字段引用" : `证据引用（${selected.evidence.length}）`}</h3>
+                {["supplier_recovery", "change_work_package", "capa_work_package"].includes(selected.finding_type) ? <p className="px-4 py-4 text-sm sm:px-5">本候选逐条保留上方业务资料的原字段、实际摘录及固定版本。请同时核对覆盖限制与未知影响。</p> : ["meeting_minutes", "meeting_action", "meeting_decision", ...meetingBusinessTypes].includes(selected.finding_type) ? <p className="px-4 py-4 text-sm sm:px-5">本候选使用上方的转写片段原句，不以事件编号替代转写证据。</p> : selected.evidence.length === 0 ? <p className="px-4 py-4 text-sm text-destructive sm:px-5">无引用，不能据此直接应用。</p> : (
                   <ol className="divide-y">
                     {selected.evidence.map((evidence, index) => (
                       <li className="flex min-w-0 items-center gap-3 px-4 py-3 sm:px-5" key={evidence.event_row_id}>
@@ -389,25 +338,27 @@ export function AiReviewInboxView({
                 <section className="border-t border-applied/30 bg-applied/5 p-4 sm:p-5" aria-label="最终写入预览">
                   <h3 className="font-semibold text-applied">最终写入预览</h3>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    {selected.finding_type === "knowledge_draft"
+                    {selected.finding_type === "supplier_recovery" ? "将按人工核对内容逐项创建具名恢复任务，保留原资料与沟通草稿。实际到货、替代验证、拆借授权与工装可用证据继续在原业务办理。" : selected.finding_type === "capa_work_package" ? "将按已接受内容建立具名调查待办或待执行 CAPA 措施。服务端重新核对原质量状态、责任资格与日期；不会批准根因、完成整改或关闭 NCR。" : selected.finding_type === "change_work_package" ? "将按逐项人工结论生成变更范围新版本，保留原有其他条目和关系。应用前复核当前来源和范围；后续分析、批准及任务安排仍在原变更办理。" : meetingBusinessTypes.includes(selected.finding_type) ? "将按已接受内容创建对应的问题、风险或变更申请，并保存转写及人审来源；后续分析、处置、审批和关闭仍沿原业务办理。" : selected.finding_type === "meeting_decision" ? "仅指定批准人本人可应用：将记录已接受的决策结论与原文依据，保留待跟进要求，不直接完成基线、定义发布或其他业务执行。" : selected.finding_type === "meeting_action" ? "将按已接受的负责人、日期和完成标准创建实际会议行动任务，并回链所选议题；后续沿任务执行和会议复查办理。" : selected.finding_type === "meeting_minutes" ? "将创建已接受的正式纪要新版本，保留原版与来源；服务端重新核对当前版本、转写、说话人及纪要确认权限。此操作不创建或批准决定和行动。" : selected.finding_type === "test_plan_change" ? "将创建测试计划新修订，所有用例从待测开始。旧计划、报告与结果保留。"
+                      : selected.finding_type === "knowledge_draft"
                       ? "将按下方已接受载荷创建未验证 Memory 草稿；它不会进入检索，仍须由另一位成员验证。"
                       : "将按下方已接受载荷创建项目 Risk。提交时服务端会重新检查身份、项目状态、run、invocation 与证据真值。"}
                   </p>
-                  <pre className="mt-3 max-h-52 overflow-auto rounded-lg border bg-background p-3 text-xs leading-5">{JSON.stringify(selected.accepted_payload, null, 2)}</pre>
+                  {selected.finding_type === "supplier_recovery" ? <SupplierRecoveryProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : selected.finding_type === "capa_work_package" ? <QualityWorkPackageProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : selected.finding_type === "change_work_package" ? <ChangeWorkPackageProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : meetingBusinessTypes.includes(selected.finding_type) ? <MeetingBusinessProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : selected.finding_type === "meeting_decision" ? <MeetingDecisionProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : selected.finding_type === "meeting_action" ? <MeetingActionProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : selected.finding_type === "meeting_minutes" ? <MeetingMinutesProposalView projectId={selected.project_id} payload={selected.accepted_payload ?? {}} /> : selected.finding_type === "test_plan_change" ? <TestPlanProposalView payload={selected.accepted_payload ?? {}} /> : <pre className="mt-3 max-h-52 overflow-auto rounded-lg border bg-background p-3 text-xs leading-5">{JSON.stringify(selected.accepted_payload, null, 2)}</pre>}
                 </section>
               ) : null}
 
+              {selected.finding_type === "supplier_recovery" && selected.status === "applied" && <SupplierRecoveryAppliedTasks key={selected.id} projectId={selected.project_id} findingId={selected.id}/>}
               <footer className="sticky bottom-0 flex flex-wrap items-center gap-2 border-t bg-card/95 px-4 py-3 backdrop-blur sm:px-5">
-                {selected.status === "pending_review" && !editing && !rejecting ? (
+                {selected.status === "pending_review" && !selected.superseded_by && !editing && !rejecting ? (
                   <>
-                    <Button className="h-11" disabled={busy} onClick={() => void onAccept(selected)}><CheckCircleIcon aria-hidden="true" />接受建议 <kbd className="ml-1 text-[10px] opacity-70">A</kbd></Button>
+                    <Button className="h-11" disabled={busy || !proposalReady(selected, selected.proposed_payload)} onClick={() => void onAccept(selected)}><CheckCircleIcon aria-hidden="true" />接受建议 <kbd className="ml-1 text-[10px] opacity-70">A</kbd></Button>
                     <Button className="h-11" disabled={busy} onClick={() => startEditing(selected)} variant="outline"><PencilSimpleIcon aria-hidden="true" />修改后接受 <kbd className="ml-1 text-[10px] opacity-70">E</kbd></Button>
                     <Button className="h-11" disabled={busy} onClick={() => { resetInteraction(); setRejecting(true); }} variant="destructive"><XCircleIcon aria-hidden="true" />拒绝 <kbd className="ml-1 text-[10px] opacity-70">R</kbd></Button>
                   </>
                 ) : null}
                 {selected.status === "pending_review" && editing ? (
                   <>
-                    <Button className="h-11" disabled={busy} onClick={async () => { if (await onEditAccept(selected, editedPayload)) setEditing(false); }}>确认修改并接受</Button>
+                    <Button className="h-11" disabled={busy || !proposalReady(selected, editedPayload)} onClick={async () => { if (await onEditAccept(selected, editedPayload)) setEditing(false); }}>确认修改并接受</Button>
                     <Button className="h-11" disabled={busy} onClick={() => setEditing(false)} variant="outline">取消</Button>
                   </>
                 ) : null}
@@ -417,21 +368,29 @@ export function AiReviewInboxView({
                     <Button className="h-11" disabled={busy} onClick={() => setRejecting(false)} variant="outline">取消</Button>
                   </>
                 ) : null}
-                {selected.status === "accepted" && !confirmingApply ? <Button className="h-11" disabled={busy} onClick={() => setConfirmingApply(true)}>{selected.finding_type === "knowledge_draft" ? "创建 Memory 草稿" : "应用到业务对象"}</Button> : null}
+                {selected.status === "accepted" && !selected.superseded_by && !confirmingApply ? <Button className="h-11" disabled={busy} onClick={() => setConfirmingApply(true)}>{selected.finding_type === "knowledge_draft" ? "创建 Memory 草稿" : "应用到业务对象"}</Button> : null}
                 {selected.status === "accepted" && confirmingApply ? (
                   <>
                     <Button className="h-11" disabled={busy} onClick={() => { setConfirmingApply(false); onApply(selected); }}>确认应用</Button>
                     <Button className="h-11" disabled={busy} onClick={() => setConfirmingApply(false)} variant="outline">取消</Button>
                   </>
                 ) : null}
+                {selected.status === "applied" && selected.applied_entity_type === "quality_work_package" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=quality&ncr=${String(selected.accepted_payload?.ncr_id ?? "")}`}>查看实际品质任务、措施与后续观察要求</Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type === "change_impact_scope" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=engineering&ecr=${String(selected.accepted_payload?.ecr_id ?? "")}`}>查看实际变更范围与后续办理</Link> : null}
                 {selected.status === "applied" && selected.applied_entity_type === "memory" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/knowledge?project=${selected.project_id}&memory=${selected.applied_entity_id}`}>查看 Memory 草稿 <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
-                {selected.status === "applied" && selected.applied_entity_type !== "memory" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=risks`}>查看已应用 Risk <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type === "risk" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=work-items`}>查看已应用 Risk <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
+                {selected.status === "applied" && meetingBusinessTypes.includes(selected.finding_type) ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={selected.finding_type === "meeting_change" ? `/projects?project=${selected.project_id}&tab=engineering&ecr=${selected.applied_entity_id}` : `/projects?project=${selected.project_id}&tab=work-items&entity_id=${selected.applied_entity_id}`}>打开实际业务记录</Link> : null}
+                {selected.status === "applied" && selected.finding_type === "meeting_decision" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=decisions`}>查看正式决策及执行跟进</Link> : null}
+                {selected.status === "applied" && selected.finding_type === "meeting_action" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=work-items&entity_id=${selected.applied_entity_id}`}>打开实际会议行动任务</Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type === "meeting_minutes" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=decisions&meeting=${String(selected.accepted_payload?.meeting_id ?? "")}`}>查看正式纪要版本</Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type === "test_plan" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=quality`}>查看测试计划新修订</Link> : null}
                 <span className="ml-auto hidden items-center gap-1 text-[10px] text-muted-foreground xl:inline-flex"><SparkleIcon aria-hidden="true" />j/k 切换条目</span>
               </footer>
             </article>
           ) : null}
         </div>
       )}
+      {extraSections ?? null}
     </WorkspaceShell>
   );
 }

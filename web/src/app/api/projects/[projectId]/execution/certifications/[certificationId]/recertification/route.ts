@@ -1,0 +1,5 @@
+import { executionForward } from "@/lib/project-execution-bff";
+export async function POST(request: Request, context: { params: Promise<{ projectId: string; certificationId: string }> }) {
+  const { projectId, certificationId } = await context.params;
+  return executionForward(request, projectId, "recertification", certificationId);
+}

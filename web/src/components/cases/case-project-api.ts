@@ -20,7 +20,8 @@ export async function requestProjectCreation(
       return { ok: false, unauthorized: true, message: "登录已失效，正在返回登录页。" };
     }
     if (!response.ok) {
-      return { ok: false, message: "项目未创建，请检查 Case 状态或项目编号。" };
+      const failure = await response.json().catch(() => null);
+      return { ok: false, message: failure?.detail?.message ?? "项目未创建，请检查 Case 状态或项目编号。" };
     }
     const body = await responseBody(response);
     if (body === null || typeof body !== "object" || !("id" in body) || typeof body.id !== "string") {
