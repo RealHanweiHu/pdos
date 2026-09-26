@@ -29,3 +29,7 @@ services:
   dingtalk:
     extra_hosts:
       - host.docker.internal:host-gateway
+
+  reminders:
+    extra_hosts:
+      - host.docker.internal:host-gateway

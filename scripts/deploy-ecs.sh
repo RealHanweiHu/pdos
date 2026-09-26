@@ -206,13 +206,13 @@ verify_release() {
   local log_file
   log_file="$(mktemp)"
   chmod 600 "$log_file"
-  if ! compose_config logs --since 10m --no-color api dispatcher executor dingtalk web \
+  if ! compose_config logs --since 10m --no-color api dispatcher executor dingtalk reminders web \
       >"$log_file" 2>&1; then
     rm -f "$log_file"
     echo "Release verification failed while reading bounded service logs" >&2
     return 1
   fi
-  if grep -Eiq 'Traceback|fatal|panic|permission denied|connection refused' "$log_file"; then
+  if grep -Eiq 'Traceback|fatal|panic|permission denied|connection refused|reminder_project_failed|reminder_cycle_failed' "$log_file"; then
     rm -f "$log_file"
     echo "Release verification found a fatal pattern in bounded service logs" >&2
     return 1
@@ -227,7 +227,7 @@ deploy_release() {
   compose_config run --rm --no-deps migrate
   compose_config run --rm --no-deps api \
     python -m scripts.apply_agent_runtime_security
-  compose_config up -d --no-build --wait --no-deps api dispatcher executor dingtalk
+  compose_config up -d --no-build --wait --no-deps api dispatcher executor dingtalk reminders
   compose_config up -d --no-build --wait --no-deps web
   verify_release
 }
@@ -237,6 +237,14 @@ status_release() {
   release_identity
   compose_config config --quiet
   verify_release
+}
+
+reminder_scheduler_image_supported() {
+  local revision="$1"
+  # The probe has no environment credentials, network, or writable filesystem.
+  docker run --rm --network none --read-only --cap-drop ALL \
+    --security-opt no-new-privileges:true --entrypoint python "pdos-api:${revision}" \
+    -c "from pathlib import Path; raise SystemExit(0 if Path('/app/server/scripts/run_reminder_scheduler.py').is_file() else 1)"
 }
 
 rollback_release() {
@@ -249,8 +257,15 @@ rollback_release() {
   fi
   require_confirmation PDOS_ROLLBACK_CONFIRM "rollback:${rollback_tag}"
   verify_image_revisions "$rollback_tag" true
-  PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
-    up -d --no-deps --no-build --wait api dispatcher executor dingtalk
+  if reminder_scheduler_image_supported "$rollback_tag"; then
+    PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
+      up -d --no-deps --no-build --wait api dispatcher executor dingtalk reminders
+  else
+    compose_config stop reminders
+    echo "Reminder scheduler stopped: unavailable in the rollback image"
+    PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
+      up -d --no-deps --no-build --wait api dispatcher executor dingtalk
+  fi
   PDOS_COMPOSE_IMAGE_TAG_OVERRIDE="$rollback_tag" compose_config \
     up -d --no-deps --no-build --wait web
   verify_release

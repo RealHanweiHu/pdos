@@ -44,6 +44,10 @@ services:
       JWT_ISSUER: "${JWT_ISSUER:-pdos-api}"
       JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
       PDOS_AI_DAILY_TOKEN_BUDGET: "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
+      PDOS_APPLICATION_MODEL_BUDGET_MODE: "${PDOS_APPLICATION_MODEL_BUDGET_MODE:-legacy}"
+      PDOS_APPLICATION_MODEL_BUDGET_PROFILE: "${PDOS_APPLICATION_MODEL_BUDGET_PROFILE:-}"
+      PDOS_APPLICATION_MODEL_METER_PATH: "${PDOS_APPLICATION_MODEL_METER_PATH:-}"
+      PDOS_APPLICATION_MODEL_METER_SHA256: "${PDOS_APPLICATION_MODEL_METER_SHA256:-}"
       PDOS_LLM_PROVIDER: "${PDOS_LLM_PROVIDER:-minimax}"
       PDOS_LLM_BASE_URL: "${PDOS_LLM_BASE_URL:-https://api.minimaxi.com/v1}"
       PDOS_LLM_API_KEY: "${PDOS_LLM_API_KEY:-}"
@@ -77,6 +81,8 @@ services:
       PDOS_DINGTALK_CARD_CALLBACK_SECRET: "${PDOS_DINGTALK_CARD_CALLBACK_SECRET:-}"
       PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
       PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+      PDOS_REMINDER_QUIET_HOURS: "${PDOS_REMINDER_QUIET_HOURS:-21:00-08:00}"
+      PDOS_REMINDER_DAILY_DM_CAP: "${PDOS_REMINDER_DAILY_DM_CAP:-50}"
       S3_ENDPOINT: "${S3_ENDPOINT:?S3_ENDPOINT must be set}"
       S3_REGION: "${S3_REGION:?S3_REGION must be set}"
       S3_BUCKET: "${S3_BUCKET:?S3_BUCKET must be set}"
@@ -104,6 +110,10 @@ services:
         condition: service_completed_successfully
     environment:
       PDOS_WORKER_DATABASE_URL: "${PDOS_WORKER_DATABASE_URL:?PDOS_WORKER_DATABASE_URL must be set}"
+      PDOS_AGENT_MODEL_BUDGET_MODE: "${PDOS_AGENT_MODEL_BUDGET_MODE:-legacy}"
+      PDOS_AGENT_MODEL_BUDGET_PROFILE: "${PDOS_AGENT_MODEL_BUDGET_PROFILE:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_PATH: "${PDOS_AGENT_LOOP_QUALIFICATION_PATH:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_SHA256: "${PDOS_AGENT_LOOP_QUALIFICATION_SHA256:-}"
       PDOS_AGENT_DEBOUNCE_MINUTES: "${PDOS_AGENT_DEBOUNCE_MINUTES:-15}"
       PDOS_DISPATCHER_POLL_SECONDS: "${PDOS_DISPATCHER_POLL_SECONDS:-2}"
     healthcheck:
@@ -125,6 +135,12 @@ services:
         condition: service_completed_successfully
     environment:
       PDOS_AGENT_DATABASE_URL: "${PDOS_AGENT_DATABASE_URL:?PDOS_AGENT_DATABASE_URL must be set}"
+      PDOS_AGENT_MODEL_BUDGET_MODE: "${PDOS_AGENT_MODEL_BUDGET_MODE:-legacy}"
+      PDOS_AGENT_MODEL_BUDGET_PROFILE: "${PDOS_AGENT_MODEL_BUDGET_PROFILE:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_PATH: "${PDOS_AGENT_LOOP_QUALIFICATION_PATH:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_SHA256: "${PDOS_AGENT_LOOP_QUALIFICATION_SHA256:-}"
+      PDOS_AGENT_MODEL_METER_PATH: "${PDOS_AGENT_MODEL_METER_PATH:-}"
+      PDOS_AGENT_MODEL_METER_SHA256: "${PDOS_AGENT_MODEL_METER_SHA256:-}"
       PDOS_EXECUTOR_POLL_SECONDS: "${PDOS_EXECUTOR_POLL_SECONDS:-2}"
       PDOS_AI_DAILY_TOKEN_BUDGET: "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
       PDOS_LLM_PROVIDER: "${PDOS_LLM_PROVIDER:-minimax}"
@@ -189,6 +205,50 @@ services:
       start_period: 5s
     read_only: true
     restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  reminders:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_reminder_scheduler"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+      PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+      PDOS_REMINDER_SCAN_SECONDS: "${PDOS_REMINDER_SCAN_SECONDS:-60}"
+      PDOS_REMINDER_QUIET_HOURS: "${PDOS_REMINDER_QUIET_HOURS:-21:00-08:00}"
+      PDOS_REMINDER_DAILY_DM_CAP: "${PDOS_REMINDER_DAILY_DM_CAP:-50}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_reminder_scheduler' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    tmpfs:
+      - /tmp
+
+  schedule-propagation:
+    <<: [*api-image, *service-hardening]
+    profiles: ["schedule-propagation"]
+    command: ["python", "-m", "scripts.run_schedule_propagation"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_SCHEDULE_PROPAGATION_ENABLED: "${PDOS_SCHEDULE_PROPAGATION_ENABLED:-false}"
+      PDOS_SCHEDULE_PROPAGATION_SCAN_SECONDS: "${PDOS_SCHEDULE_PROPAGATION_SCAN_SECONDS:-60}"
+    read_only: true
+    restart: "no"
+    stop_grace_period: 30s
     tmpfs:
       - /tmp
 

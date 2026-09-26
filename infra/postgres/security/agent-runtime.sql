@@ -44,7 +44,13 @@ GRANT UPDATE (
     paused_reason,
     updated_at
 ) ON cehub_ai.agent_subscriptions TO pdos_worker;
-GRANT SELECT, INSERT ON cehub_ai.agent_runs TO pdos_worker;
+GRANT SELECT ON cehub_ai.agent_runs TO pdos_worker;
+GRANT INSERT (
+    id, tenant_id, project_id, subscription_id, agent_key, status,
+    window_started_at, window_ended_at, first_event_row_id, last_event_row_id,
+    event_count, event_row_ids, context_version, run_context, started_at, completed_at,
+    error_code, created_at, updated_at
+) ON cehub_ai.agent_runs TO pdos_worker;
 GRANT UPDATE (
     status,
     last_event_row_id,
@@ -52,6 +58,178 @@ GRANT UPDATE (
     event_row_ids,
     updated_at
 ) ON cehub_ai.agent_runs TO pdos_worker;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_lease_is_current(
+ wanted_run uuid,wanted_token uuid
+) RETURNS boolean LANGUAGE sql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+ SELECT cehub_ai.agent_base_lease_is_current(wanted_run,wanted_token)
+    AND cehub_ai.event_authorization_is_current(wanted_run);
+$body$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_lease_is_current(uuid,uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.renew_agent_run_lease(
+    wanted_run uuid, wanted_token uuid
+) RETURNS timestamptz LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = pg_catalog
+AS $function$
+DECLARE scoped_run cehub_ai.agent_runs%ROWTYPE; renewed_at timestamptz; expires_at timestamptz;
+BEGIN
+    SELECT * INTO scoped_run FROM cehub_ai.agent_runs WHERE id = wanted_run FOR UPDATE;
+    -- Recheck after waiting for the row lock; an expired token cannot renew itself.
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(wanted_run, wanted_token) THEN
+        RAISE EXCEPTION 'Agent run lease is invalid or expired' USING ERRCODE = '42501';
+    END IF;
+    renewed_at := clock_timestamp();
+    expires_at := least(renewed_at + interval '60 seconds', scoped_run.dispatch_deadline);
+    UPDATE cehub_ai.agent_runs SET run_context = run_context || jsonb_build_object(
+        '_lease_expires_at', expires_at, '_lease_renewed_at', renewed_at
+    ) WHERE id = wanted_run;
+    RETURN expires_at;
+END
+$function$;
+REVOKE ALL ON FUNCTION cehub_ai.renew_agent_run_lease(uuid, uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_base_lease_is_current(
+    wanted_run uuid, wanted_token uuid
+) RETURNS boolean LANGUAGE sql VOLATILE SECURITY DEFINER SET search_path = pg_catalog
+AS $function$
+    SELECT EXISTS (
+        SELECT 1 FROM cehub_ai.agent_runs AS run
+        WHERE run.id = wanted_run AND run.status = 'running'
+          AND run.run_context->>'_lease_token' = wanted_token::text
+          AND nullif(run.run_context->>'_lease_expires_at', '')::timestamptz > clock_timestamp()
+          AND (run.dispatch_deadline IS NULL OR run.dispatch_deadline > clock_timestamp())
+    )
+$function$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_base_lease_is_current(uuid, uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.event_authorization_history_missing(wanted_run uuid)
+RETURNS boolean LANGUAGE sql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+ SELECT EXISTS(SELECT 1 FROM cehub_ai.budget_run_links WHERE run_id=wanted_run)
+ AND NOT EXISTS(SELECT 1 FROM cehub_ai.agent_authorizations WHERE run_id=wanted_run)
+ AND (EXISTS(SELECT 1 FROM cehub_ai.agent_tool_intents WHERE run_id=wanted_run)
+   OR EXISTS(SELECT 1 FROM cehub_ai.agent_tool_observations WHERE run_id=wanted_run)
+   OR EXISTS(SELECT 1 FROM cehub_ai.model_invocations WHERE run_id=wanted_run)
+   OR EXISTS(SELECT 1 FROM cehub_ai.agent_result_checkpoints WHERE run_id=wanted_run)
+   OR EXISTS(SELECT 1 FROM cehub_ai.agent_run_recoveries WHERE run_id=wanted_run));
+$body$;
+REVOKE ALL ON FUNCTION cehub_ai.event_authorization_history_missing(uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.event_authorization_is_current(wanted_run uuid)
+RETURNS boolean LANGUAGE sql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+ SELECT NOT EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b WHERE b.run_id=wanted_run)
+  OR EXISTS(SELECT 1 FROM cehub_ai.agent_authorizations a
+    JOIN cehub_ai.agent_runs r ON r.tenant_id=a.tenant_id AND r.id=a.run_id
+    JOIN cehub_ai.agent_service_principals p ON p.tenant_id=a.tenant_id AND p.id=a.principal_id
+    JOIN cehub_ai.agent_subscriptions s ON s.tenant_id=p.tenant_id AND s.id=p.subscription_id
+    WHERE a.run_id=wanted_run AND a.expires_at>clock_timestamp()
+      AND p.revision=a.principal_revision AND p.status='active' AND s.status='active'
+      AND r.subscription_id=s.id AND r.agent_key=s.agent_key
+      AND a.body#>>'{scope,ref_id}'=r.project_id::text);
+$body$;
+REVOKE ALL ON FUNCTION cehub_ai.event_authorization_is_current(uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.issue_event_authorization(wanted_run uuid,wanted_token uuid)
+RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE;s cehub_ai.agent_subscriptions%ROWTYPE;
+ p cehub_ai.agent_service_principals%ROWTYPE;lid uuid;deadline timestamptz;
+ auth_id uuid:=gen_random_uuid();stamp timestamptz:=clock_timestamp();body jsonb;
+ actor uuid; actor_count bigint; project_source jsonb; subscription_source jsonb;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs WHERE id=wanted_run FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_base_lease_is_current(r.id,wanted_token) THEN
+  RAISE EXCEPTION 'Agent authorization lease is invalid' USING ERRCODE='42501';
+ END IF;
+ SELECT l.id,least(l.absolute_deadline,r.dispatch_deadline) INTO lid,deadline
+  FROM cehub_ai.budget_lineages l JOIN cehub_ai.budget_run_links b
+   ON b.tenant_id=l.tenant_id AND b.lineage_id=l.id WHERE b.run_id=r.id AND b.tenant_id=r.tenant_id;
+ IF lid IS NULL THEN RETURN; END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.agent_authorizations
+   WHERE run_id=r.id AND tenant_id=r.tenant_id) THEN
+  IF NOT cehub_ai.event_authorization_is_current(r.id) THEN
+   RAISE EXCEPTION 'Agent authorization lease is no longer valid' USING ERRCODE='42501';
+  END IF;
+  RETURN;
+ END IF;
+ IF cehub_ai.event_authorization_history_missing(r.id) THEN
+  RAISE EXCEPTION 'Agent authorization lease history is unavailable' USING ERRCODE='42501';
+ END IF;
+ SELECT * INTO s FROM cehub_ai.agent_subscriptions
+  WHERE tenant_id=r.tenant_id AND id=r.subscription_id FOR SHARE;
+ stamp:=clock_timestamp();
+ IF NOT FOUND OR s.status<>'active' OR s.agent_key<>r.agent_key OR deadline<=stamp THEN
+  RAISE EXCEPTION 'Agent authorization lease policy is invalid' USING ERRCODE='42501';
+ END IF;
+ INSERT INTO cehub_ai.agent_service_principals
+  VALUES(s.id,s.tenant_id,s.id,'event-agent:' || s.agent_key,'active',1,stamp,stamp)
+  ON CONFLICT(tenant_id,subscription_id) DO NOTHING;
+ SELECT * INTO p FROM cehub_ai.agent_service_principals
+  WHERE tenant_id=s.tenant_id AND subscription_id=s.id;
+ SELECT count(DISTINCT a.actor_user_id),(array_agg(DISTINCT a.actor_user_id)
+   FILTER(WHERE a.actor_user_id IS NOT NULL))[1] INTO actor_count,actor
+  FROM cehub_audit.audit_log a JOIN cehub_event.events e
+   ON e.tenant_id=a.tenant_id AND e.event_id=a.event_id
+  WHERE e.id=r.last_event_row_id AND e.tenant_id=r.tenant_id AND a.project_id=r.project_id;
+ IF actor_count<>1 THEN actor:=NULL; END IF;
+ project_source:=jsonb_build_object('tenant_id',r.tenant_id,'project_id',r.project_id,
+  'kind','project','ref_id',r.project_id,'as_of',stamp,'digest',
+  encode(sha256(convert_to(jsonb_build_object('tenant_id',r.tenant_id,'id',r.project_id)::text,
+    'UTF8')),'hex'));
+ subscription_source:=jsonb_build_object('tenant_id',r.tenant_id,'kind','agent_subscription',
+  'ref_id',s.id,'as_of',stamp,'digest',encode(sha256(convert_to(jsonb_build_object(
+    'id',s.id,'tenant_id',s.tenant_id,'agent_key',s.agent_key,'principal_revision',p.revision)::text,
+    'UTF8')),'hex'));
+ body:=jsonb_build_object('schema_version',1,'id',auth_id,'tenant_id',r.tenant_id,
+  'scope',jsonb_build_object('kind','project','ref_id',r.project_id),'version',1,
+  'owner_user_id',NULL,'sources',jsonb_build_array(project_source,subscription_source),
+  'run_id',r.id,'lineage_id',lid,'principal_kind','service','principal_id',p.id,
+  'trigger_actor_user_id',actor,'delegation_id',NULL,'policy_version','event-service-project.v1',
+  'purpose','event_assessment','issued_at',stamp,'expires_at',deadline,
+  'capability_version',r.agent_key || '.event.v1','toolset_version','internal-read-tools.v1');
+ INSERT INTO cehub_ai.agent_authorizations VALUES(auth_id,r.tenant_id,r.id,lid,p.id,p.revision,
+  body,stamp,deadline);
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.issue_event_authorization(uuid,uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.read_agent_authorization()
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE rid uuid:=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;body jsonb;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ IF NOT cehub_ai.agent_lease_is_current(rid,token) THEN
+  RAISE EXCEPTION 'Agent authorization lease is invalid' USING ERRCODE='42501';
+ END IF;
+ SELECT a.body INTO body FROM cehub_ai.agent_authorizations a WHERE run_id=rid;
+ RETURN body;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.read_agent_authorization() FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.attach_event_authorization()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE aid uuid;
+BEGIN
+ SELECT id INTO aid FROM cehub_ai.agent_authorizations
+  WHERE tenant_id=NEW.tenant_id AND run_id=NEW.run_id;
+ IF NOT cehub_ai.event_authorization_is_current(NEW.run_id)
+   OR NEW.authorization_id IS NOT NULL AND NEW.authorization_id IS DISTINCT FROM aid THEN
+  RAISE EXCEPTION 'Agent receipt authorization lease is invalid' USING ERRCODE='42501';
+ END IF;
+ NEW.authorization_id:=aid;
+ RETURN NEW;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.attach_event_authorization() FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_authorized_project_allows(
+ wanted_tenant uuid,wanted_project uuid
+) RETURNS boolean LANGUAGE sql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+ SELECT EXISTS(SELECT 1 FROM cehub_ai.agent_runs r
+  WHERE r.id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid
+   AND r.tenant_id=wanted_tenant
+  AND cehub_ai.agent_lease_is_current(r.id,
+    nullif(current_setting('pdos.agent_lease_token',true),'')::uuid)
+  AND (NOT EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b WHERE b.run_id=r.id)
+       OR r.project_id=wanted_project));
+$body$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_authorized_project_allows(uuid,uuid) FROM PUBLIC;
 
 CREATE OR REPLACE FUNCTION cehub_ai.agent_scope_allows(
     row_tenant_id uuid,
@@ -71,6 +249,8 @@ AS $function$
           AND run.run_context->>'_lease_token' =
               nullif(current_setting('pdos.agent_lease_token', true), '')
           AND run.status = 'running'
+          AND cehub_ai.agent_lease_is_current(run.id,
+              nullif(current_setting('pdos.agent_lease_token', true), '')::uuid)
           AND run.tenant_id = row_tenant_id
           AND run.project_id = row_project_id
     )
@@ -93,6 +273,8 @@ AS $function$
           AND run.run_context->>'_lease_token' =
               nullif(current_setting('pdos.agent_lease_token', true), '')
           AND run.status = 'running'
+          AND cehub_ai.agent_lease_is_current(run.id,
+              nullif(current_setting('pdos.agent_lease_token', true), '')::uuid)
           AND run.tenant_id = row_tenant_id
     )
 $function$;
@@ -115,6 +297,8 @@ AS $function$
           AND run.run_context->>'_lease_token' =
               nullif(current_setting('pdos.agent_lease_token', true), '')
           AND run.status = 'running'
+          AND cehub_ai.agent_lease_is_current(run.id,
+              nullif(current_setting('pdos.agent_lease_token', true), '')::uuid)
           AND run.tenant_id = row_tenant_id
           AND run.agent_key = required_agent_key
     )
@@ -140,6 +324,8 @@ AS $function$
           AND run.run_context->>'_lease_token' =
               nullif(current_setting('pdos.agent_lease_token', true), '')
           AND run.status = 'running'
+          AND cehub_ai.agent_lease_is_current(run.id,
+              nullif(current_setting('pdos.agent_lease_token', true), '')::uuid)
           AND run.tenant_id = row_tenant_id
           AND run.project_id = row_project_id
           AND run.id = row_run_id
@@ -173,10 +359,16 @@ DECLARE
     claimed_run cehub_ai.agent_runs%ROWTYPE;
     generated_lease uuid := gen_random_uuid();
 BEGIN
+    PERFORM cehub_ai.expire_queued_dispatch_runs(1000);
     SELECT * INTO claimed_run
     FROM cehub_ai.agent_runs AS candidate
-    WHERE candidate.status = 'queued'
-    ORDER BY candidate.created_at, candidate.id
+    WHERE candidate.status = 'queued' AND candidate.request_id IS NULL
+      AND candidate.subscription_id IS NOT NULL
+      AND NOT EXISTS(SELECT 1 FROM cehub_ai.event_run_pauses p
+       WHERE p.run_id=candidate.id AND p.resolved_at IS NULL)
+      AND (candidate.dispatch_deadline IS NULL OR candidate.dispatch_deadline > clock_timestamp())
+    ORDER BY CASE candidate.dispatch_policy WHEN 'milestone.v1' THEN 0 ELSE 1 END,
+      candidate.dispatch_deadline NULLS LAST, candidate.created_at, candidate.id
     LIMIT 1
     FOR UPDATE SKIP LOCKED;
 
@@ -184,18 +376,21 @@ BEGIN
         RETURN;
     END IF;
 
+    claimed_at := clock_timestamp();
     UPDATE cehub_ai.agent_runs AS target
     SET status = 'running',
         started_at = claimed_at,
-        run_context = jsonb_set(
-            target.run_context,
-            '{_lease_token}',
-            to_jsonb(generated_lease::text),
-            true
+        run_context = target.run_context || jsonb_build_object(
+            '_lease_token', generated_lease::text,
+            '_lease_expires_at',
+            least(claimed_at + interval '60 seconds', claimed_run.dispatch_deadline),
+            '_lease_renewed_at', claimed_at
         ),
         updated_at = claimed_at
     WHERE target.id = claimed_run.id
     RETURNING * INTO claimed_run;
+
+    PERFORM cehub_ai.issue_event_authorization(claimed_run.id,generated_lease);
 
     RETURN QUERY SELECT
         claimed_run.id,
@@ -230,9 +425,10 @@ BEGIN
     FROM cehub_ai.agent_runs AS run
     WHERE run.id = bound_run_id
       AND run.status = 'running'
-      AND run.run_context->>'_lease_token' = bound_lease_token::text;
+      AND run.run_context->>'_lease_token' = bound_lease_token::text
+      AND cehub_ai.agent_lease_is_current(run.id, bound_lease_token);
 
-    IF NOT FOUND THEN
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token) THEN
         RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE = '42501';
     END IF;
 
@@ -395,7 +591,10 @@ JOIN cehub_memory.memory_embeddings AS embedding
  AND embedding.memory_id = memory.id
  AND embedding.content_sha256 = memory.content_sha256
 WHERE cehub_ai.agent_scope_allows(memory.tenant_id, memory.project_id)
-  AND memory.status = 'verified';
+  AND memory.status = 'verified'
+  AND EXISTS (SELECT 1 FROM cehub_memory.memory_source_assessments a
+   WHERE a.tenant_id=memory.tenant_id AND a.memory_id=memory.id
+    AND a.state IN ('current','manual'));
 
 CREATE OR REPLACE VIEW cehub_ai.agent_engineering_evidence_projection
 WITH (security_barrier = true)
@@ -536,6 +735,7 @@ WHERE cehub_ai.agent_tenant_agent_scope_allows(
         event.tenant_id,
         'supplier_intelligence'
     )
+  AND cehub_ai.agent_authorized_project_allows(event.tenant_id,event.project_id)
   AND event.event_type = 'SUPPLIER_DELAY_REPORTED';
 
 CREATE OR REPLACE VIEW cehub_ai.agent_portfolio_projection
@@ -583,6 +783,7 @@ WHERE cehub_ai.agent_tenant_agent_scope_allows(
         project.tenant_id,
         'executive_intelligence'
     )
+  AND cehub_ai.agent_authorized_project_allows(project.tenant_id,project.id)
   AND project.status IN ('approved', 'active', 'on_hold');
 
 CREATE OR REPLACE VIEW cehub_ai.agent_model_settings_projection
@@ -636,9 +837,10 @@ BEGIN
     WHERE run.id = bound_run_id
       AND run.status = 'running'
       AND run.run_context->>'_lease_token' = bound_lease_token::text
+      AND cehub_ai.agent_lease_is_current(run.id, bound_lease_token)
     FOR UPDATE;
 
-    IF NOT FOUND
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token)
        OR jsonb_typeof(frozen_context) <> 'object'
        OR frozen_context->>'run_id' <> scoped_run.id::text
        OR frozen_context->>'tenant_id' <> scoped_run.tenant_id::text
@@ -651,7 +853,9 @@ BEGIN
     UPDATE cehub_ai.agent_runs AS target
     SET context_version = 'run-context-v2',
         run_context = frozen_context || jsonb_build_object(
-            '_lease_token', bound_lease_token::text
+            '_lease_token', bound_lease_token::text,
+            '_lease_expires_at', scoped_run.run_context->'_lease_expires_at',
+            '_lease_renewed_at', scoped_run.run_context->'_lease_renewed_at'
         ),
         updated_at = persisted_at
     WHERE target.id = scoped_run.id;
@@ -684,8 +888,9 @@ BEGIN
     WHERE run.id = bound_run_id
       AND run.status = 'running'
       AND run.run_context->>'_lease_token' = bound_lease_token::text
+      AND cehub_ai.agent_lease_is_current(run.id, bound_lease_token)
     FOR UPDATE;
-    IF NOT FOUND THEN
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token) THEN
         RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE = '42501';
     END IF;
 
@@ -728,8 +933,9 @@ BEGIN
     WHERE run.id = bound_run_id
       AND run.status = 'running'
       AND run.run_context->>'_lease_token' = bound_lease_token::text
+      AND cehub_ai.agent_lease_is_current(run.id, bound_lease_token)
     FOR UPDATE;
-    IF NOT FOUND THEN
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token) THEN
         RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE = '42501';
     END IF;
 
@@ -739,6 +945,9 @@ BEGIN
     FOR UPDATE;
     next_failure_count := subscription.consecutive_failure_count + 1;
 
+    IF NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token) THEN
+        RAISE EXCEPTION 'Agent run lease expired during failure handling' USING ERRCODE = '42501';
+    END IF;
     UPDATE cehub_ai.agent_runs AS target
     SET status = 'failed',
         completed_at = fail_agent_run.failed_at,
@@ -795,8 +1004,9 @@ BEGIN
     WHERE run.id = bound_run_id
       AND run.status = 'running'
       AND run.run_context->>'_lease_token' = bound_lease_token::text
+      AND cehub_ai.agent_lease_is_current(run.id, bound_lease_token)
     FOR UPDATE;
-    IF NOT FOUND THEN
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token) THEN
         RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE = '42501';
     END IF;
 
@@ -871,6 +1081,10 @@ BEGIN
             USING ERRCODE = '42501';
     END IF;
 
+    IF NOT cehub_ai.agent_lease_is_current(bound_run_id, bound_lease_token) THEN
+        RAISE EXCEPTION 'Agent run lease expired before Finding publication'
+            USING ERRCODE = '42501';
+    END IF;
     INSERT INTO cehub_ai.findings (
         id,
         tenant_id,
@@ -1043,6 +1257,7 @@ GRANT EXECUTE ON FUNCTION cehub_ai.agent_invocation_scope_allows(
     uuid, uuid, uuid, varchar
 ) TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.claim_agent_run(timestamptz) TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.renew_agent_run_lease(uuid, uuid) TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.bind_agent_scope(uuid, uuid) TO pdos_agent;
 GRANT EXECUTE ON FUNCTION cehub_ai.persist_agent_run_context(
     uuid, uuid, jsonb, timestamptz
@@ -1081,5 +1296,1082 @@ REVOKE ALL ON FUNCTION cehub_ai.create_agent_finding(
     uuid, uuid, uuid, uuid, varchar, varchar, varchar, text, jsonb, jsonb,
     smallint, varchar, timestamptz
 ) FROM PUBLIC;
+
+-- Run-lease scoped legacy admission; no policy or tenant arguments from the Agent.
+CREATE OR REPLACE FUNCTION cehub_ai.agent_open_model_call()
+RETURNS TABLE(session_id uuid, error_code text)
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = pg_catalog AS $function$
+DECLARE active_run cehub_ai.agent_runs%ROWTYPE;
+BEGIN
+    SELECT * INTO active_run FROM cehub_ai.agent_runs
+      WHERE id = nullif(current_setting('pdos.agent_run_id', true), '')::uuid;
+    IF NOT FOUND OR NOT cehub_ai.agent_invocation_scope_allows(
+        active_run.tenant_id, active_run.project_id, active_run.id, active_run.agent_key
+    ) THEN RAISE EXCEPTION 'Agent model call scope invalid' USING ERRCODE = '42501'; END IF;
+    RETURN QUERY SELECT * FROM cehub_ai.open_model_call(active_run.tenant_id,
+        active_run.id, active_run.project_id, active_run.agent_key::text, 'legacy'::text);
+END
+$function$;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_finish_model_call(wanted_session uuid, trace_id uuid)
+RETURNS void LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = pg_catalog AS $function$
+DECLARE call cehub_ai.model_call_sessions%ROWTYPE;
+BEGIN
+    SELECT * INTO call FROM cehub_ai.model_call_sessions WHERE id = wanted_session;
+    IF NOT FOUND OR NOT cehub_ai.agent_invocation_scope_allows(
+        call.tenant_id, call.project_id, call.run_id, call.agent_key
+    ) THEN RAISE EXCEPTION 'Agent model call scope invalid' USING ERRCODE = '42501'; END IF;
+    PERFORM cehub_ai.finish_model_call(call.tenant_id, wanted_session, trace_id);
+END
+$function$;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_mark_model_call_unknown(wanted_session uuid)
+RETURNS void LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = pg_catalog AS $function$
+DECLARE call cehub_ai.model_call_sessions%ROWTYPE;
+BEGIN
+    SELECT * INTO call FROM cehub_ai.model_call_sessions WHERE id = wanted_session;
+    IF NOT FOUND OR NOT cehub_ai.agent_invocation_scope_allows(
+        call.tenant_id, call.project_id, call.run_id, call.agent_key
+    ) THEN RAISE EXCEPTION 'Agent model call scope invalid' USING ERRCODE = '42501'; END IF;
+    PERFORM cehub_ai.mark_model_call_unknown(call.tenant_id, wanted_session);
+END
+$function$;
+
+REVOKE ALL ON FUNCTION cehub_ai.agent_open_model_call() FROM PUBLIC;
+REVOKE ALL ON FUNCTION cehub_ai.agent_finish_model_call(uuid, uuid) FROM PUBLIC;
+REVOKE ALL ON FUNCTION cehub_ai.agent_mark_model_call_unknown(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_open_model_call() TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_finish_model_call(uuid, uuid) TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_mark_model_call_unknown(uuid) TO pdos_agent;
+
+
+-- Only advances model attempts already reserved by a trusted service. No policy,
+-- amount, tenant or run arguments; the lease is the authorization boundary.
+CREATE OR REPLACE FUNCTION cehub_ai.agent_transition_model_budget(
+    wanted_attempt uuid, wanted_action text, evidence_body text
+) RETURNS jsonb
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = pg_catalog AS $function$
+DECLARE active_run cehub_ai.agent_runs%ROWTYPE;
+BEGIN
+    SELECT * INTO active_run FROM cehub_ai.agent_runs
+      WHERE id = nullif(current_setting('pdos.agent_run_id', true), '')::uuid;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Agent budget scope invalid' USING ERRCODE = '42501';
+    END IF;
+    PERFORM pg_advisory_xact_lock(hashtextextended('pdos-budget:' || active_run.tenant_id::text, 0));
+    SELECT * INTO active_run FROM cehub_ai.agent_runs WHERE id = active_run.id FOR SHARE;
+    IF NOT cehub_ai.agent_invocation_scope_allows(
+        active_run.tenant_id, active_run.project_id, active_run.id, active_run.agent_key
+    ) THEN RAISE EXCEPTION 'Agent budget scope invalid' USING ERRCODE = '42501'; END IF;
+    RETURN cehub_ai.transition_bound_model_budget(active_run.tenant_id,
+        active_run.id, wanted_attempt, wanted_action, evidence_body);
+END
+$function$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_transition_model_budget(uuid, text, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_transition_model_budget(uuid, text, text) TO pdos_agent;
+
+-- A lease can read only its service-frozen lineage; it cannot create/change one.
+CREATE OR REPLACE FUNCTION cehub_ai.agent_budget_profile()
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+SET search_path = pg_catalog AS $function$
+DECLARE active_run cehub_ai.agent_runs%ROWTYPE; lineage cehub_ai.budget_lineages%ROWTYPE;
+BEGIN
+    SELECT * INTO active_run FROM cehub_ai.agent_runs
+      WHERE id = nullif(current_setting('pdos.agent_run_id', true), '')::uuid;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Agent budget scope invalid' USING ERRCODE = '42501';
+    END IF;
+    PERFORM pg_advisory_xact_lock(hashtextextended('pdos-budget:' || active_run.tenant_id::text, 0));
+    SELECT * INTO active_run FROM cehub_ai.agent_runs WHERE id = active_run.id FOR SHARE;
+    IF NOT cehub_ai.agent_invocation_scope_allows(
+        active_run.tenant_id, active_run.project_id, active_run.id, active_run.agent_key
+    ) THEN RAISE EXCEPTION 'Agent budget scope invalid' USING ERRCODE = '42501'; END IF;
+    SELECT l.* INTO lineage FROM cehub_ai.budget_lineages l
+      JOIN cehub_ai.budget_run_links r ON r.tenant_id = l.tenant_id AND r.lineage_id = l.id
+      WHERE r.tenant_id = active_run.tenant_id AND r.run_id = active_run.id;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'BUDGET_RUN_UNBOUND' USING ERRCODE = '22023';
+    END IF;
+    RETURN jsonb_build_object('tenant_id',active_run.tenant_id,'run_id',active_run.id,
+        'project_id',active_run.project_id,'agent_key',active_run.agent_key,
+        'lineage_id',lineage.id,'profile',lineage.profile,'profile_digest',lineage.profile_digest);
+END
+$function$;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_reserve_model_budget(
+    wanted_attempt uuid, measured_input bigint, binding jsonb
+) RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+SET search_path = pg_catalog AS $function$
+DECLARE bound jsonb; setting cehub_ai.tenant_model_settings%ROWTYPE;
+BEGIN
+    bound := cehub_ai.agent_budget_profile();
+    SELECT * INTO setting FROM cehub_ai.tenant_model_settings
+      WHERE tenant_id = (bound->>'tenant_id')::uuid FOR SHARE;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'BUDGET_TENANT_POLICY_REQUIRED' USING ERRCODE = '22023';
+    END IF;
+    IF binding IS NULL OR jsonb_typeof(binding->'output_limit') IS DISTINCT FROM 'number'
+       OR (binding->>'output_limit') !~ '^[1-9][0-9]{0,17}$' THEN
+        RAISE EXCEPTION 'BUDGET_REQUEST_BINDING_INVALID' USING ERRCODE = '22023';
+    END IF;
+    IF binding->>'provider' IS DISTINCT FROM setting.provider
+       OR binding->>'model' IS DISTINCT FROM setting.model THEN
+        RAISE EXCEPTION 'BUDGET_MODEL_SELECTION_CHANGED' USING ERRCODE = '22023';
+    END IF;
+    RETURN cehub_ai.reserve_run_budget((bound->>'tenant_id')::uuid,(bound->>'run_id')::uuid,
+        wanted_attempt,'model',measured_input,(binding->>'output_limit')::bigint,
+        setting.daily_token_budget,binding);
+END
+$function$;
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_open_budgeted_model_call()
+RETURNS TABLE(session_id uuid,error_code text) LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+SET search_path = pg_catalog AS $function$
+DECLARE bound jsonb;
+BEGIN
+    bound := cehub_ai.agent_budget_profile();
+    IF NOT EXISTS (SELECT 1 FROM cehub_ai.tenant_model_settings
+        WHERE tenant_id = (bound->>'tenant_id')::uuid) THEN
+        RETURN QUERY SELECT NULL::uuid,'BUDGET_TENANT_POLICY_REQUIRED'::text; RETURN;
+    END IF;
+    RETURN QUERY SELECT * FROM cehub_ai.open_model_call((bound->>'tenant_id')::uuid,
+        (bound->>'run_id')::uuid,(bound->>'project_id')::uuid,bound->>'agent_key','budgeted');
+EXCEPTION WHEN invalid_parameter_value THEN
+    RETURN QUERY SELECT NULL::uuid,SQLERRM;
+END
+$function$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_budget_profile() FROM PUBLIC;
+REVOKE ALL ON FUNCTION cehub_ai.agent_reserve_model_budget(uuid,bigint,jsonb) FROM PUBLIC;
+REVOKE ALL ON FUNCTION cehub_ai.agent_open_budgeted_model_call() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_budget_profile() TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_reserve_model_budget(uuid,bigint,jsonb) TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_open_budgeted_model_call() TO pdos_agent;
+
+
+-- 0072: lease-scoped active execution budget check.
+CREATE OR REPLACE FUNCTION cehub_ai.agent_check_active_budget()
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE scoped_run cehub_ai.agent_runs%ROWTYPE;
+BEGIN
+    SELECT * INTO scoped_run FROM cehub_ai.agent_runs
+      WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+    IF NOT FOUND OR NOT cehub_ai.agent_scope_allows(scoped_run.tenant_id,scoped_run.project_id) THEN
+        RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE='42501';
+    END IF;
+    PERFORM cehub_ai.check_run_active_budget(scoped_run.tenant_id,scoped_run.id);
+    RETURN '{}'::jsonb;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_check_active_budget() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION cehub_ai.agent_check_active_budget() TO pdos_agent;
+
+-- 0073: completed result checkpoints and database-only recovery.
+CREATE OR REPLACE FUNCTION cehub_ai.save_agent_result_checkpoint(
+    wanted_run uuid,wanted_token uuid,body_text text
+) RETURNS uuid LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; payload jsonb; invocation uuid;
+    previous cehub_ai.agent_result_checkpoints%ROWTYPE; new_id uuid := gen_random_uuid();
+BEGIN
+    SELECT * INTO r FROM cehub_ai.agent_runs WHERE id=wanted_run FOR UPDATE;
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(wanted_run,wanted_token) THEN
+        RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE='42501';
+    END IF;
+    IF body_text IS NULL OR octet_length(body_text)>262144 THEN
+        RAISE EXCEPTION 'AGENT_CHECKPOINT_INVALID' USING ERRCODE='22023';
+    END IF;
+    payload := body_text::jsonb;
+    IF jsonb_typeof(payload) IS DISTINCT FROM 'object'
+       OR payload->>'version' IS DISTINCT FROM 'agent-result.v1'
+       OR payload#>>'{context,run_id}' IS DISTINCT FROM r.id::text
+       OR payload#>>'{context,tenant_id}' IS DISTINCT FROM r.tenant_id::text
+       OR payload#>>'{context,project_id}' IS DISTINCT FROM r.project_id::text
+       OR payload#>>'{context,agent_key}' IS DISTINCT FROM r.agent_key
+       OR payload->>'runtime_digest' IS NULL
+       OR payload->>'runtime_digest' !~ '^[a-f0-9]{64}$'
+       OR (payload#>>'{result,status}' IN ('succeeded','degraded')) IS NOT TRUE THEN
+        RAISE EXCEPTION 'AGENT_CHECKPOINT_INVALID' USING ERRCODE='22023';
+    END IF;
+    invocation := (payload#>>'{result,invocation_id}')::uuid;
+    IF invocation IS NULL OR NOT EXISTS(SELECT 1 FROM cehub_ai.model_invocations
+       WHERE id=invocation AND tenant_id=r.tenant_id AND run_id=r.id
+         AND project_id=r.project_id AND agent_key=r.agent_key
+         AND (payload#>>'{result,status}' <> 'succeeded' OR status='succeeded')) THEN
+        RAISE EXCEPTION 'AGENT_CHECKPOINT_TRACE_INVALID' USING ERRCODE='22023';
+    END IF;
+    SELECT * INTO previous FROM cehub_ai.agent_result_checkpoints
+      WHERE tenant_id=r.tenant_id AND run_id=r.id;
+    IF FOUND THEN
+        IF previous.body IS DISTINCT FROM payload THEN
+            RAISE EXCEPTION 'AGENT_CHECKPOINT_CONFLICT' USING ERRCODE='22023';
+        END IF;
+        RETURN previous.id;
+    END IF;
+    IF NOT cehub_ai.agent_lease_is_current(wanted_run,wanted_token) THEN
+        RAISE EXCEPTION 'Agent run lease expired before checkpoint' USING ERRCODE='42501';
+    END IF;
+    INSERT INTO cehub_ai.agent_result_checkpoints VALUES(new_id,r.tenant_id,r.id,invocation,payload,
+        encode(sha256(convert_to(payload::text,'UTF8')),'hex'),clock_timestamp());
+    RETURN new_id;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.save_agent_result_checkpoint(uuid,uuid,text) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.load_agent_result_checkpoint(
+    wanted_run uuid,wanted_token uuid
+) RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; checkpoint cehub_ai.agent_result_checkpoints%ROWTYPE;
+BEGIN
+    SELECT * INTO r FROM cehub_ai.agent_runs WHERE id=wanted_run;
+    IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(wanted_run,wanted_token) THEN
+        RAISE EXCEPTION 'Agent run lease is invalid' USING ERRCODE='42501';
+    END IF;
+    IF r.run_context->>'_resume_checkpoint_id' IS NULL THEN RETURN NULL; END IF;
+    IF NOT EXISTS(SELECT 1 FROM cehub_ai.agent_subscriptions
+        WHERE id=r.subscription_id AND tenant_id=r.tenant_id AND status='active') THEN
+        RAISE EXCEPTION 'AGENT_RECOVERY_SUBSCRIPTION_PAUSED' USING ERRCODE='22023';
+    END IF;
+    IF EXISTS(SELECT 1 FROM cehub_ai.budget_run_links
+              WHERE tenant_id=r.tenant_id AND run_id=r.id) THEN
+        PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+    END IF;
+    SELECT * INTO checkpoint FROM cehub_ai.agent_result_checkpoints
+      WHERE tenant_id=r.tenant_id AND run_id=r.id
+        AND id=(r.run_context->>'_resume_checkpoint_id')::uuid;
+    IF NOT FOUND OR checkpoint.body_sha256 IS DISTINCT FROM
+        encode(sha256(convert_to(checkpoint.body::text,'UTF8')),'hex') THEN
+        RAISE EXCEPTION 'AGENT_CHECKPOINT_MISSING_OR_CORRUPT' USING ERRCODE='22023';
+    END IF;
+    RETURN checkpoint.body;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.load_agent_result_checkpoint(uuid,uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.recover_expired_agent_runs(batch_limit integer)
+RETURNS TABLE(run_id uuid,action text,reason text)
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; checkpoint cehub_ai.agent_result_checkpoints%ROWTYPE;
+    step_cp cehub_ai.agent_loop_checkpoints%ROWTYPE; receipt uuid; result_action text; stop_reason text; attempts bigint; attempt_limit integer;
+    expired_token uuid; observed_at timestamptz;
+BEGIN
+    IF batch_limit IS NULL OR batch_limit<1 OR batch_limit>1000 THEN
+        RAISE EXCEPTION 'invalid recovery batch size' USING ERRCODE='22023';
+    END IF;
+    FOR r IN SELECT * FROM cehub_ai.agent_runs
+      WHERE status='running' AND subscription_id IS NOT NULL AND request_id IS NULL
+        AND (nullif(run_context->>'_lease_expires_at','')::timestamptz <= clock_timestamp()
+             OR NOT cehub_ai.event_authorization_is_current(id))
+        AND nullif(run_context->>'_lease_token','') IS NOT NULL
+      ORDER BY updated_at,id LIMIT batch_limit FOR UPDATE SKIP LOCKED LOOP
+        observed_at := clock_timestamp();
+        expired_token := (r.run_context->>'_lease_token')::uuid;
+        IF cehub_ai.agent_lease_is_current(r.id,expired_token) THEN CONTINUE; END IF;
+        SELECT * INTO checkpoint FROM cehub_ai.agent_result_checkpoints c
+          WHERE c.tenant_id=r.tenant_id AND c.run_id=r.id;
+        SELECT * INTO step_cp FROM cehub_ai.agent_loop_checkpoints c
+          WHERE c.tenant_id=r.tenant_id AND c.run_id=r.id ORDER BY next_step DESC LIMIT 1;
+        SELECT f.id INTO receipt FROM cehub_ai.findings f
+          WHERE f.tenant_id=r.tenant_id AND f.run_id=r.id ORDER BY f.created_at,f.id LIMIT 1;
+        result_action := 'stopped'; stop_reason := NULL;
+        IF receipt IS NOT NULL THEN
+            result_action := 'receipt_completed';
+        ELSIF NOT cehub_ai.event_authorization_is_current(r.id)
+          AND (r.dispatch_deadline IS NULL OR r.dispatch_deadline>clock_timestamp())
+          AND NOT EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b
+            JOIN cehub_ai.budget_lineages l ON l.tenant_id=b.tenant_id AND l.id=b.lineage_id
+            WHERE b.run_id=r.id AND l.absolute_deadline<=clock_timestamp()) THEN
+            stop_reason := 'AGENT_AUTHORIZATION_CHANGED';
+        ELSIF EXISTS(SELECT 1 FROM (
+            SELECT DISTINCT ON(e.session_id) e.state FROM cehub_ai.model_call_events e
+            JOIN cehub_ai.model_call_sessions s ON s.id=e.session_id
+            WHERE s.tenant_id=r.tenant_id AND s.run_id=r.id
+            ORDER BY e.session_id,e.revision DESC) latest WHERE state IN ('open','unknown'))
+          OR EXISTS(SELECT 1 FROM (
+            SELECT DISTINCT ON(j.attempt_id) j.held_tokens FROM cehub_ai.budget_journal j
+            WHERE j.tenant_id=r.tenant_id AND j.run_id=r.id
+            ORDER BY j.attempt_id,j.revision DESC) latest WHERE held_tokens>0) THEN
+            stop_reason := 'AGENT_RECOVERY_RECEIPT_UNKNOWN';
+        ELSIF EXISTS(SELECT 1 FROM cehub_ai.agent_tool_dispatches d
+            WHERE d.tenant_id=r.tenant_id AND d.run_id=r.id
+              AND NOT EXISTS(SELECT 1 FROM cehub_ai.agent_tool_observations o
+                WHERE o.tenant_id=d.tenant_id AND o.run_id=d.run_id
+                  AND o.tool_intent_id=d.intent_id)) THEN
+            stop_reason := 'AGENT_TOOL_RECEIPT_UNKNOWN';
+        ELSIF r.dispatch_deadline <= clock_timestamp() THEN
+            stop_reason := 'AGENT_TRIGGER_DEADLINE_EXCEEDED';
+        ELSIF EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b
+            JOIN cehub_ai.budget_lineages l ON l.tenant_id=b.tenant_id AND l.id=b.lineage_id
+            WHERE b.run_id=r.id AND l.absolute_deadline<=clock_timestamp()) THEN
+            stop_reason := 'BUDGET_LINEAGE_EXPIRED';
+        ELSIF checkpoint.id IS NULL AND step_cp.id IS NOT NULL AND EXISTS(
+            SELECT 1 FROM cehub_ai.model_invocations m WHERE m.tenant_id=r.tenant_id
+             AND m.run_id=r.id AND NOT m.id=ANY(step_cp.trace_ids)) THEN
+            stop_reason := 'AGENT_LOOP_CHECKPOINT_INCOMPLETE';
+        ELSIF checkpoint.id IS NULL AND step_cp.id IS NULL THEN
+            IF EXISTS(SELECT 1 FROM cehub_ai.agent_tool_intents i
+                WHERE i.tenant_id=r.tenant_id AND i.run_id=r.id
+                  AND NOT EXISTS(SELECT 1 FROM cehub_ai.agent_tool_dispatches d
+                    WHERE d.intent_id=i.id)) THEN
+                stop_reason := 'AGENT_TOOL_NOT_DISPATCHED';
+            ELSE
+                stop_reason := 'AGENT_CHECKPOINT_MISSING';
+            END IF;
+        ELSIF NOT EXISTS(SELECT 1 FROM cehub_ai.agent_subscriptions
+            WHERE id=r.subscription_id AND tenant_id=r.tenant_id AND status='active') THEN
+            stop_reason := 'AGENT_RECOVERY_SUBSCRIPTION_PAUSED';
+        ELSE
+            SELECT count(*) INTO attempts FROM cehub_ai.agent_run_recoveries h
+              WHERE h.tenant_id=r.tenant_id AND h.run_id=r.id AND h.action='resume_queued';
+            SELECT (l.profile->>'transient_attempt_limit')::integer INTO attempt_limit
+              FROM cehub_ai.budget_lineages l JOIN cehub_ai.budget_run_links b
+                ON b.tenant_id=l.tenant_id AND b.lineage_id=l.id
+              WHERE b.tenant_id=r.tenant_id AND b.run_id=r.id;
+            IF attempts >= coalesce(attempt_limit,2)-1 THEN
+                stop_reason := 'AGENT_RECOVERY_ATTEMPT_LIMIT';
+            ELSE
+                IF attempt_limit IS NOT NULL THEN
+                    BEGIN
+                        PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+                    EXCEPTION WHEN invalid_parameter_value THEN
+                        GET STACKED DIAGNOSTICS stop_reason = MESSAGE_TEXT;
+                    END;
+                END IF;
+                IF stop_reason IS NULL THEN result_action := 'resume_queued'; END IF;
+            END IF;
+        END IF;
+        INSERT INTO cehub_ai.agent_run_recoveries
+        (id,tenant_id,run_id,checkpoint_id,finding_id,action,reason,expired_lease_token,created_at,
+         loop_checkpoint_id) VALUES(gen_random_uuid(),r.tenant_id,r.id,
+            checkpoint.id,receipt,result_action,stop_reason,expired_token,observed_at,step_cp.id);
+        IF result_action='resume_queued' THEN
+            UPDATE cehub_ai.agent_runs SET status='queued',started_at=NULL,completed_at=NULL,
+              error_code=NULL,updated_at=observed_at,
+              run_context=(run_context - '_lease_token' - '_lease_expires_at' - '_lease_renewed_at')
+                || jsonb_build_object('_resume_checkpoint_id',checkpoint.id,'_resume_loop_checkpoint_id',CASE WHEN checkpoint.id IS NULL THEN step_cp.id ELSE NULL END)
+              WHERE id=r.id;
+        ELSE
+            UPDATE cehub_ai.agent_runs SET
+              status=CASE WHEN result_action='receipt_completed' THEN 'succeeded' ELSE 'failed' END,
+              error_code=stop_reason,completed_at=observed_at,updated_at=observed_at WHERE id=r.id;
+        END IF;
+        RETURN QUERY SELECT r.id,result_action,stop_reason;
+    END LOOP;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.recover_expired_agent_runs(integer) FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION cehub_ai.save_agent_result_checkpoint(uuid,uuid,text),
+    cehub_ai.load_agent_result_checkpoint(uuid,uuid) TO pdos_agent;
+GRANT EXECUTE ON FUNCTION cehub_ai.recover_expired_agent_runs(integer) TO pdos_worker;
+
+CREATE OR REPLACE FUNCTION cehub_ai.expire_queued_dispatch_runs(batch_limit integer)
+RETURNS integer LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE count_expired integer;
+BEGIN
+ IF batch_limit IS NULL OR batch_limit<1 OR batch_limit>1000 THEN
+  RAISE EXCEPTION 'invalid expiry batch size' USING ERRCODE='22023';
+ END IF;
+ WITH due AS (SELECT r.id,CASE
+    WHEN r.dispatch_deadline<=clock_timestamp() THEN 'AGENT_TRIGGER_DEADLINE_EXCEEDED'
+    WHEN EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b JOIN cehub_ai.budget_lineages l
+      ON l.tenant_id=b.tenant_id AND l.id=b.lineage_id WHERE b.run_id=r.id
+       AND l.absolute_deadline<=clock_timestamp()) THEN 'BUDGET_LINEAGE_EXPIRED'
+    ELSE 'AGENT_AUTHORIZATION_CHANGED' END AS reason
+   FROM cehub_ai.agent_runs r WHERE r.status IN ('debouncing','queued')
+    AND r.request_id IS NULL AND r.subscription_id IS NOT NULL AND (
+     cehub_ai.event_authorization_history_missing(r.id) OR
+     r.dispatch_deadline<=clock_timestamp()
+     OR EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b JOIN cehub_ai.budget_lineages l
+       ON l.tenant_id=b.tenant_id AND l.id=b.lineage_id WHERE b.run_id=r.id
+        AND (l.absolute_deadline<=clock_timestamp() OR NOT EXISTS(
+          SELECT 1 FROM cehub_ai.agent_subscriptions s WHERE s.id=r.subscription_id
+           AND s.tenant_id=r.tenant_id AND s.status='active')))
+     OR EXISTS(SELECT 1 FROM cehub_ai.agent_authorizations a WHERE a.run_id=r.id
+       AND NOT cehub_ai.event_authorization_is_current(r.id)))
+   ORDER BY r.dispatch_deadline,r.id LIMIT batch_limit FOR UPDATE OF r SKIP LOCKED)
+ UPDATE cehub_ai.agent_runs r SET status='failed',error_code=due.reason,
+   completed_at=clock_timestamp(),updated_at=clock_timestamp() FROM due WHERE due.id=r.id;
+ GET DIAGNOSTICS count_expired=ROW_COUNT;
+ RETURN count_expired;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.expire_queued_dispatch_runs(integer) FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION cehub_ai.expire_queued_dispatch_runs(integer) TO pdos_worker;
+
+GRANT INSERT(dispatch_key,dispatch_policy,dispatch_deadline) ON cehub_ai.agent_runs TO pdos_worker;
+
+CREATE OR REPLACE FUNCTION cehub_ai.append_agent_tool_observation(
+ wanted_key varchar,wanted_tool varchar,input_text text,output_text text,metadata_text text
+) RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; old cehub_ai.agent_tool_observations%ROWTYPE;
+ args jsonb; result jsonb; meta jsonb; observation_id uuid:=gen_random_uuid();
+ next_sequence integer;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent observation lease is invalid' USING ERRCODE='42501';
+ END IF;
+ IF wanted_key IS NULL OR length(wanted_key) NOT BETWEEN 1 AND 128
+  OR input_text IS NULL OR output_text IS NULL OR metadata_text IS NULL
+  OR octet_length(input_text)+octet_length(output_text)+octet_length(metadata_text)>262144 THEN
+  RAISE EXCEPTION 'AGENT_OBSERVATION_INVALID' USING ERRCODE='22023';
+ END IF;
+ IF (wanted_tool IN ('get_project_context','get_recent_events','search_memory') OR
+  wanted_tool='get_engineering_evidence' AND r.agent_key='engineering_intelligence' OR
+  wanted_tool='get_quality_evidence' AND r.agent_key='quality_intelligence' OR
+  wanted_tool='get_supplier_delay_evidence' AND r.agent_key='supplier_intelligence' OR
+  wanted_tool='get_portfolio_brief' AND r.agent_key='executive_intelligence') IS NOT TRUE THEN
+  RAISE EXCEPTION 'AGENT_OBSERVATION_TOOL_INVALID' USING ERRCODE='22023';
+ END IF;
+ args:=input_text::jsonb; result:=output_text::jsonb; meta:=metadata_text::jsonb;
+ IF jsonb_typeof(args) IS DISTINCT FROM 'object' OR jsonb_typeof(result) IS DISTINCT FROM 'object'
+  OR jsonb_typeof(meta) IS DISTINCT FROM 'object'
+  OR args->>'project_id' IS DISTINCT FROM r.project_id::text
+  OR meta->>'tenant_id' IS DISTINCT FROM r.tenant_id::text
+  OR meta->>'run_id' IS DISTINCT FROM r.id::text
+  OR jsonb_typeof(meta->'sources') IS DISTINCT FROM 'array'
+  OR (meta->>'status' IN ('completed','partial','unavailable','failed','cancelled')) IS NOT TRUE
+  OR meta->>'input_digest' !~ '^[a-f0-9]{64}$' OR meta->>'input_digest' IS NULL
+  OR meta->>'output_digest' !~ '^[a-f0-9]{64}$' OR meta->>'output_digest' IS NULL THEN
+  RAISE EXCEPTION 'AGENT_OBSERVATION_INVALID' USING ERRCODE='22023';
+ END IF;
+ IF EXISTS(SELECT 1 FROM jsonb_array_elements(meta->'sources') s
+   WHERE s->>'tenant_id' IS DISTINCT FROM r.tenant_id::text) THEN
+  RAISE EXCEPTION 'AGENT_OBSERVATION_SOURCE_SCOPE' USING ERRCODE='22023';
+ END IF;
+ meta:=meta || jsonb_build_object(
+  'input_digest',encode(sha256(convert_to(args::text,'UTF8')),'hex'),
+  'output_digest',encode(sha256(convert_to(result::text,'UTF8')),'hex'));
+ SELECT * INTO old FROM cehub_ai.agent_tool_observations
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND call_key=wanted_key;
+ IF FOUND THEN
+  IF old.tool_key IS DISTINCT FROM wanted_tool OR old.input_body IS DISTINCT FROM args
+   OR old.output_body IS DISTINCT FROM result OR
+   (old.metadata - 'id' - 'sequence' - 'observed_at' - 'as_of' - 'sources') IS DISTINCT FROM
+   (meta - 'id' - 'sequence' - 'observed_at' - 'as_of' - 'sources') OR
+   (SELECT jsonb_agg(s - 'as_of') FROM jsonb_array_elements(old.metadata->'sources') s)
+   IS DISTINCT FROM
+   (SELECT jsonb_agg(s - 'as_of') FROM jsonb_array_elements(meta->'sources') s) THEN
+   RAISE EXCEPTION 'AGENT_OBSERVATION_CONFLICT' USING ERRCODE='22023';
+  END IF;
+  RETURN old.metadata;
+ END IF;
+ SELECT coalesce(max(sequence),0)+1 INTO next_sequence FROM cehub_ai.agent_tool_observations
+  WHERE tenant_id=r.tenant_id AND run_id=r.id;
+ meta:=meta || jsonb_build_object('id',observation_id,'sequence',next_sequence,
+                                 'observed_at',clock_timestamp());
+ IF NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent observation lease expired' USING ERRCODE='42501';
+ END IF;
+ INSERT INTO cehub_ai.agent_tool_observations VALUES(observation_id,r.tenant_id,r.id,
+  next_sequence,wanted_key,wanted_tool,args,result,meta,clock_timestamp());
+ RETURN meta;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.append_agent_tool_observation(varchar,varchar,text,text,text)
+ FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.freeze_agent_context_receipt(
+ wanted_call uuid,body_text text,observation_ids uuid[]
+) RETURNS uuid LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; previous cehub_ai.agent_context_receipts%ROWTYPE;
+ payload jsonb; receipt_id uuid:=gen_random_uuid(); previous_ids uuid[]; actual_ids uuid[];
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent context receipt lease is invalid' USING ERRCODE='42501';
+ END IF;
+ IF wanted_call IS NULL OR body_text IS NULL OR octet_length(body_text)>262144
+  OR observation_ids IS NULL OR coalesce(cardinality(observation_ids),0) NOT BETWEEN 1 AND 1000 THEN
+  RAISE EXCEPTION 'AGENT_CONTEXT_RECEIPT_INVALID' USING ERRCODE='22023';
+ END IF;
+ payload:=body_text::jsonb;
+ IF payload#>>'{context,project,id}' IS DISTINCT FROM r.project_id::text THEN
+  RAISE EXCEPTION 'AGENT_CONTEXT_RECEIPT_SCOPE' USING ERRCODE='22023';
+ END IF;
+ SELECT array_agg(id ORDER BY sequence) INTO actual_ids FROM cehub_ai.agent_tool_observations
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND id=ANY(observation_ids);
+ IF actual_ids IS DISTINCT FROM observation_ids THEN
+  RAISE EXCEPTION 'AGENT_CONTEXT_OBSERVATIONS_INVALID' USING ERRCODE='22023';
+ END IF;
+ SELECT * INTO previous FROM cehub_ai.agent_context_receipts
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND model_call_id=wanted_call;
+ IF FOUND THEN
+  SELECT array_agg(observation_id ORDER BY position) INTO previous_ids
+   FROM cehub_ai.agent_context_observations WHERE context_receipt_id=previous.id;
+  IF previous.body IS DISTINCT FROM payload OR previous_ids IS DISTINCT FROM observation_ids THEN
+   RAISE EXCEPTION 'AGENT_CONTEXT_RECEIPT_CONFLICT' USING ERRCODE='22023';
+  END IF;
+  RETURN previous.id;
+ END IF;
+ IF NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent context receipt lease expired' USING ERRCODE='42501';
+ END IF;
+ INSERT INTO cehub_ai.agent_context_receipts VALUES(receipt_id,r.tenant_id,r.id,wanted_call,payload,
+  encode(sha256(convert_to(payload::text,'UTF8')),'hex'),clock_timestamp());
+ INSERT INTO cehub_ai.agent_context_observations
+  SELECT r.tenant_id,r.id,receipt_id,value,ordinality
+    FROM unnest(observation_ids) WITH ORDINALITY AS ids(value,ordinality);
+ RETURN receipt_id;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.freeze_agent_context_receipt(uuid,text,uuid[]) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.verify_agent_context_receipt(
+ wanted_receipt uuid,wanted_call uuid,body_text text
+) RETURNS void LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; receipt cehub_ai.agent_context_receipts%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent context receipt lease is invalid' USING ERRCODE='42501';
+ END IF;
+ SELECT * INTO receipt FROM cehub_ai.agent_context_receipts
+  WHERE id=wanted_receipt AND tenant_id=r.tenant_id AND run_id=r.id AND model_call_id=wanted_call;
+ IF NOT FOUND OR receipt.body IS DISTINCT FROM body_text::jsonb
+  OR receipt.body_sha256 IS DISTINCT FROM
+  encode(sha256(convert_to(receipt.body::text,'UTF8')),'hex') THEN
+  RAISE EXCEPTION 'AGENT_CONTEXT_RECEIPT_MISMATCH' USING ERRCODE='22023';
+ END IF;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.verify_agent_context_receipt(uuid,uuid,text) FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION
+ cehub_ai.append_agent_tool_observation(varchar,varchar,text,text,text),
+ cehub_ai.freeze_agent_context_receipt(uuid,text,uuid[]),
+ cehub_ai.verify_agent_context_receipt(uuid,uuid,text) TO pdos_agent;
+
+
+-- Durable pre-handler tool intent and single dispatch.
+CREATE OR REPLACE FUNCTION cehub_ai.tool_intent_call_count(
+ wanted_tenant uuid,wanted_lineage uuid
+) RETURNS bigint LANGUAGE plpgsql STABLE SET search_path=pg_catalog AS $body$
+DECLARE cutoff timestamptz;
+BEGIN
+ SELECT activated_at INTO cutoff FROM cehub_ai.agent_tool_accounting_epochs WHERE id=1;
+ IF cutoff IS NULL OR EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b
+   JOIN cehub_ai.agent_runs r ON r.tenant_id=b.tenant_id AND r.id=b.run_id
+   WHERE b.tenant_id=wanted_tenant AND b.lineage_id=wanted_lineage AND r.started_at<cutoff)
+  OR EXISTS(SELECT 1 FROM cehub_ai.budget_activity_spans
+    WHERE tenant_id=wanted_tenant AND lineage_id=wanted_lineage AND started_at<cutoff)
+  OR EXISTS(SELECT 1 FROM cehub_ai.agent_tool_observations o
+    JOIN cehub_ai.budget_run_links b ON b.tenant_id=o.tenant_id AND b.run_id=o.run_id
+    WHERE b.tenant_id=wanted_tenant AND b.lineage_id=wanted_lineage AND o.created_at<cutoff) THEN
+  RAISE EXCEPTION 'BUDGET_TOOL_HISTORY_UNAVAILABLE' USING ERRCODE='22023';
+ END IF;
+ RETURN (SELECT count(*) FROM cehub_ai.agent_tool_intents i
+   JOIN cehub_ai.budget_run_links b ON b.tenant_id=i.tenant_id AND b.run_id=i.run_id
+   WHERE b.tenant_id=wanted_tenant AND b.lineage_id=wanted_lineage)
+  + (SELECT count(*) FROM cehub_ai.agent_tool_observations o
+     JOIN cehub_ai.budget_run_links b ON b.tenant_id=o.tenant_id AND b.run_id=o.run_id
+     WHERE b.tenant_id=wanted_tenant AND b.lineage_id=wanted_lineage
+       AND o.tool_intent_id IS NULL);
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.tool_intent_call_count(uuid,uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.prepare_agent_tool_call(
+ wanted_call uuid,wanted_key varchar,wanted_tool varchar,input_text text
+) RETURNS uuid LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; old cehub_ai.agent_tool_intents%ROWTYPE;
+ lineage cehub_ai.budget_lineages%ROWTYPE; args jsonb; used bigint; allowance bigint;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent tool lease is invalid' USING ERRCODE='42501';
+ END IF;
+ -- Same order as model admission: tenant budget lock, then the run row.
+ PERFORM pg_advisory_xact_lock(hashtextextended('pdos-budget:' || r.tenant_id::text,0));
+ PERFORM 1 FROM cehub_ai.agent_runs WHERE id=r.id FOR UPDATE;
+ IF NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent tool lease expired' USING ERRCODE='42501';
+ END IF;
+ IF wanted_call IS NULL OR wanted_key IS NULL OR length(wanted_key) NOT BETWEEN 1 AND 128
+  OR btrim(wanted_key)='' OR input_text IS NULL OR octet_length(input_text)>65536 THEN
+  RAISE EXCEPTION 'AGENT_TOOL_INTENT_INVALID' USING ERRCODE='22023';
+ END IF;
+ IF (wanted_tool IN ('get_project_context','get_recent_events','search_memory') OR
+  wanted_tool='get_engineering_evidence' AND r.agent_key='engineering_intelligence' OR
+  wanted_tool='get_quality_evidence' AND r.agent_key='quality_intelligence' OR
+  wanted_tool='get_supplier_delay_evidence' AND r.agent_key='supplier_intelligence' OR
+  wanted_tool='get_portfolio_brief' AND r.agent_key='executive_intelligence') IS NOT TRUE THEN
+  RAISE EXCEPTION 'AGENT_TOOL_INTENT_TOOL_INVALID' USING ERRCODE='22023';
+ END IF;
+ args:=input_text::jsonb;
+ IF jsonb_typeof(args) IS DISTINCT FROM 'object'
+   OR args->>'project_id' IS DISTINCT FROM r.project_id::text THEN
+  RAISE EXCEPTION 'AGENT_TOOL_INTENT_SCOPE' USING ERRCODE='22023';
+ END IF;
+ SELECT * INTO old FROM cehub_ai.agent_tool_intents
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND call_key=wanted_key;
+ IF FOUND THEN
+  IF old.id IS DISTINCT FROM wanted_call OR old.tool_key IS DISTINCT FROM wanted_tool
+    OR old.input_body IS DISTINCT FROM args THEN
+   RAISE EXCEPTION 'AGENT_TOOL_INTENT_CONFLICT' USING ERRCODE='22023';
+  END IF;
+  RETURN old.id;
+ END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.agent_tool_observations
+    WHERE tenant_id=r.tenant_id AND run_id=r.id AND call_key=wanted_key) THEN
+  RAISE EXCEPTION 'AGENT_TOOL_HISTORICAL_CALL' USING ERRCODE='22023';
+ END IF;
+ SELECT l.* INTO lineage FROM cehub_ai.budget_lineages l
+  JOIN cehub_ai.budget_run_links b ON b.tenant_id=l.tenant_id AND b.lineage_id=l.id
+  WHERE b.tenant_id=r.tenant_id AND b.run_id=r.id;
+ IF lineage.id IS NOT NULL THEN
+  PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+  allowance:=(lineage.profile->>'tool_call_limit')::bigint;
+  IF allowance IS NULL OR allowance<1 THEN
+   RAISE EXCEPTION 'BUDGET_TOOL_PROFILE_INVALID' USING ERRCODE='22023';
+  END IF;
+  SELECT count(*) INTO used FROM (
+   SELECT DISTINCT ON(attempt_id) reservation_status FROM cehub_ai.budget_journal
+    WHERE tenant_id=r.tenant_id AND lineage_id=lineage.id AND call_kind='tool'
+    ORDER BY attempt_id,revision DESC) latest WHERE reservation_status<>'cancelled_before_dispatch';
+  used:=used+cehub_ai.tool_intent_call_count(r.tenant_id,lineage.id);
+  IF used>=allowance THEN
+   RAISE EXCEPTION 'BUDGET_TOOL_CALL_COUNT_EXHAUSTED' USING ERRCODE='22023';
+  END IF;
+ END IF;
+ IF NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent tool lease expired' USING ERRCODE='42501';
+ END IF;
+ INSERT INTO cehub_ai.agent_tool_intents VALUES(wanted_call,r.tenant_id,r.id,lineage.id,
+   wanted_key,wanted_tool,args,clock_timestamp());
+ RETURN wanted_call;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.prepare_agent_tool_call(uuid,varchar,varchar,text) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.dispatch_agent_tool_call(wanted_call uuid)
+RETURNS void LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; intent cehub_ai.agent_tool_intents%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent tool dispatch lease is invalid' USING ERRCODE='42501';
+ END IF;
+ SELECT * INTO intent FROM cehub_ai.agent_tool_intents
+  WHERE id=wanted_call AND tenant_id=r.tenant_id AND run_id=r.id;
+ IF NOT FOUND THEN
+  RAISE EXCEPTION 'AGENT_TOOL_INTENT_MISSING' USING ERRCODE='22023';
+ END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.agent_tool_dispatches WHERE intent_id=wanted_call) THEN
+  RAISE EXCEPTION 'AGENT_TOOL_ALREADY_DISPATCHED' USING ERRCODE='22023';
+ END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.budget_run_links b
+    WHERE b.tenant_id=r.tenant_id AND b.run_id=r.id) THEN
+  PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+  PERFORM cehub_ai.tool_intent_call_count(r.tenant_id,b.lineage_id)
+    FROM cehub_ai.budget_run_links b WHERE b.tenant_id=r.tenant_id AND b.run_id=r.id;
+ END IF;
+ IF NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent tool dispatch lease expired' USING ERRCODE='42501';
+ END IF;
+ INSERT INTO cehub_ai.agent_tool_dispatches VALUES(wanted_call,r.tenant_id,r.id,token,
+   clock_timestamp());
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.dispatch_agent_tool_call(uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.require_tool_dispatch_receipt()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE intent cehub_ai.agent_tool_intents%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT i.* INTO intent FROM cehub_ai.agent_tool_intents i
+  JOIN cehub_ai.agent_tool_dispatches d ON d.intent_id=i.id
+  WHERE i.tenant_id=NEW.tenant_id AND i.run_id=NEW.run_id AND i.call_key=NEW.call_key
+    AND d.lease_token=token;
+ IF NOT FOUND OR intent.tool_key IS DISTINCT FROM NEW.tool_key
+    OR intent.input_body IS DISTINCT FROM NEW.input_body
+    OR NEW.metadata->>'tool_call_id' IS DISTINCT FROM intent.id::text THEN
+  RAISE EXCEPTION 'AGENT_TOOL_DISPATCH_RECEIPT_MISMATCH' USING ERRCODE='22023';
+ END IF;
+ NEW.tool_intent_id:=intent.id;
+ RETURN NEW;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.require_tool_dispatch_receipt() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION cehub_ai.prepare_agent_tool_call(uuid,varchar,varchar,text),
+ cehub_ai.dispatch_agent_tool_call(uuid) TO pdos_agent;
+
+CREATE OR REPLACE FUNCTION cehub_ai.read_agent_loop_binding()
+RETURNS jsonb LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent loop binding lease is invalid' USING ERRCODE='42501';
+ END IF;
+ RETURN r.loop_binding;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.read_agent_loop_binding() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION cehub_ai.read_agent_loop_binding() TO pdos_agent;
+
+GRANT EXECUTE ON FUNCTION cehub_ai.read_agent_authorization(),
+ cehub_ai.agent_authorized_project_allows(uuid,uuid) TO pdos_agent;
+
+
+CREATE OR REPLACE FUNCTION cehub_ai.agent_manifest_sources_are_current(
+ wanted_tenant uuid,wanted_run uuid,wanted_receipt uuid
+) RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE pid uuid;
+BEGIN
+ SELECT project_id INTO pid FROM cehub_ai.agent_runs
+  WHERE tenant_id=wanted_tenant AND id=wanted_run;
+ IF NOT FOUND OR NOT cehub_ai.event_authorization_is_current(wanted_run) THEN RETURN false; END IF;
+ RETURN NOT EXISTS(SELECT 1 FROM cehub_ai.agent_context_observations link
+  JOIN cehub_ai.agent_tool_observations o ON o.id=link.observation_id
+   AND o.tenant_id=link.tenant_id AND o.run_id=link.run_id,
+   LATERAL jsonb_array_elements(coalesce(o.output_body->'items','[]'::jsonb)) item
+  WHERE link.tenant_id=wanted_tenant AND link.run_id=wanted_run
+   AND link.context_receipt_id=wanted_receipt AND o.tool_key='search_memory' AND NOT EXISTS(
+    SELECT 1 FROM cehub_memory.memories memory JOIN cehub_memory.memory_embeddings embedding
+     ON embedding.tenant_id=memory.tenant_id AND embedding.project_id=memory.project_id
+      AND embedding.memory_id=memory.id AND embedding.content_sha256=memory.content_sha256
+     WHERE memory.tenant_id=wanted_tenant AND memory.project_id=pid AND memory.status='verified'
+      AND memory.id::text=item->>'memory_id' AND memory.content_sha256=item->>'content_sha256'));
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.agent_manifest_sources_are_current(uuid,uuid,uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.verify_agent_context_sources(wanted_receipt uuid)
+RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent context source lease is invalid' USING ERRCODE='42501';
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM cehub_ai.agent_context_receipts
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND id=wanted_receipt) THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_RECEIPT_INVALID' USING ERRCODE='22023';
+ END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.agent_authorizations WHERE run_id=r.id)
+  AND NOT cehub_ai.agent_manifest_sources_are_current(r.tenant_id,r.id,wanted_receipt) THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_SOURCE_ACCESS_CHANGED' USING ERRCODE='22023';
+ END IF;
+ RETURN true;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.verify_agent_context_sources(uuid) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.verify_agent_manifest_sources()
+RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent manifest source lease is invalid' USING ERRCODE='42501';
+ END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.agent_context_manifests m
+  WHERE m.tenant_id=r.tenant_id AND m.run_id=r.id
+   AND EXISTS(SELECT 1 FROM cehub_ai.budget_journal j
+    WHERE j.tenant_id=m.tenant_id AND j.run_id=m.run_id AND j.attempt_id=m.attempt_id
+     AND j.dispatched_at IS NOT NULL)
+   AND NOT cehub_ai.agent_manifest_sources_are_current(r.tenant_id,r.id,m.context_receipt_id)) THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_SOURCE_ACCESS_CHANGED' USING ERRCODE='22023';
+ END IF;
+ RETURN true;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.verify_agent_manifest_sources() FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.bind_agent_runtime_bundle(body_text text)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; supplied jsonb;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent bundle lease is invalid' USING ERRCODE='42501';
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM cehub_ai.agent_authorizations WHERE run_id=r.id) THEN
+  RETURN NULL;
+ END IF;
+ IF body_text IS NULL OR octet_length(body_text)>524288 THEN
+  RAISE EXCEPTION 'AGENT_BUNDLE_INVALID' USING ERRCODE='22023';
+ END IF;
+ supplied:=body_text::jsonb;
+ IF supplied->>'version' IS DISTINCT FROM 'event-runtime-bundle.v1'
+  OR supplied#>>'{compiled,agent_key}' IS DISTINCT FROM r.agent_key
+  OR (supplied->>'release_bundle_version' ~ '^sha256:[a-f0-9]{64}$') IS NOT TRUE
+  OR (supplied->>'capability_version' ~ '^sha256:[a-f0-9]{64}$') IS NOT TRUE
+  OR (supplied->>'toolset_version' ~ '^sha256:[a-f0-9]{64}$') IS NOT TRUE
+  OR (supplied->>'projection_version' ~ '^sha256:[a-f0-9]{64}$') IS NOT TRUE
+  OR (supplied->>'policy_version' ~ '^sha256:[a-f0-9]{64}$') IS NOT TRUE THEN
+  RAISE EXCEPTION 'AGENT_BUNDLE_INVALID' USING ERRCODE='22023';
+ END IF;
+ IF r.execution_bundle IS NOT NULL THEN
+  IF r.execution_bundle IS DISTINCT FROM supplied THEN
+   RAISE EXCEPTION 'AGENT_BUNDLE_VERSION_CHANGED' USING ERRCODE='22023';
+  END IF;
+  RETURN r.execution_bundle;
+ END IF;
+ IF EXISTS(SELECT 1 FROM cehub_ai.agent_tool_intents WHERE run_id=r.id)
+  OR EXISTS(SELECT 1 FROM cehub_ai.model_invocations WHERE run_id=r.id)
+  OR EXISTS(SELECT 1 FROM cehub_ai.agent_result_checkpoints WHERE run_id=r.id) THEN
+  RAISE EXCEPTION 'AGENT_BUNDLE_HISTORY_UNAVAILABLE' USING ERRCODE='22023';
+ END IF;
+ UPDATE cehub_ai.agent_runs SET execution_bundle=supplied WHERE id=r.id;
+ RETURN supplied;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.bind_agent_runtime_bundle(text) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION cehub_ai.freeze_agent_context_manifest(
+ wanted_receipt uuid,wanted_attempt uuid,pins_text text
+) RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE;receipt cehub_ai.agent_context_receipts%ROWTYPE;
+ admission cehub_ai.budget_journal%ROWTYPE;previous cehub_ai.agent_context_manifests%ROWTYPE;
+ first_manifest cehub_ai.agent_context_manifests%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+ aid uuid;mid uuid:=gen_random_uuid();stamp timestamptz:=clock_timestamp();n integer;
+ pins jsonb;body jsonb;observations jsonb;sources jsonb;missing jsonb;omissions jsonb;
+ has_partial boolean;watermark bigint;model_version text;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent manifest lease is invalid' USING ERRCODE='42501';
+ END IF;
+ SELECT id INTO aid FROM cehub_ai.agent_authorizations WHERE run_id=r.id AND tenant_id=r.tenant_id;
+ IF aid IS NULL THEN RETURN NULL; END IF;
+ IF r.execution_bundle IS NULL THEN
+  RAISE EXCEPTION 'AGENT_BUNDLE_REQUIRED' USING ERRCODE='22023';
+ END IF;
+ SELECT * INTO receipt FROM cehub_ai.agent_context_receipts
+  WHERE id=wanted_receipt AND tenant_id=r.tenant_id AND run_id=r.id AND authorization_id=aid;
+ IF NOT FOUND THEN RAISE EXCEPTION 'AGENT_MANIFEST_RECEIPT_INVALID' USING ERRCODE='22023'; END IF;
+ SELECT * INTO admission FROM cehub_ai.budget_journal
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND attempt_id=wanted_attempt
+  ORDER BY revision DESC LIMIT 1;
+ IF NOT FOUND OR admission.call_kind<>'model' OR admission.reservation_status<>'reserved'
+  OR admission.dispatched_at IS NOT NULL OR admission.output_tokens<=0
+  OR admission.request_binding->>'model_call_id' IS DISTINCT FROM receipt.model_call_id::text THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_ADMISSION_INVALID' USING ERRCODE='22023';
+ END IF;
+ IF pins_text IS NULL OR octet_length(pins_text)>65536 THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_PINS_INVALID' USING ERRCODE='22023';
+ END IF;
+ pins:=pins_text::jsonb;
+ IF pins#>>'{qualification,status}' IS DISTINCT FROM 'passed'
+  OR pins#>>'{qualification,provider}' IS DISTINCT FROM admission.request_binding->>'provider'
+  OR pins#>>'{qualification,model}' IS DISTINCT FROM admission.request_binding->>'model'
+  OR jsonb_typeof(pins->'removed_paths') IS DISTINCT FROM 'array' THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_PINS_INVALID' USING ERRCODE='22023';
+ END IF;
+ model_version:='sha256:' || encode(sha256(convert_to(jsonb_build_object(
+  'qualification',pins->'qualification','meter_ref',admission.request_binding->'qualification_ref',
+  'meter_version',admission.request_binding->'meter_version',
+  'loop_qualification',r.loop_binding)::text,'UTF8')),'hex');
+ IF NOT cehub_ai.agent_manifest_sources_are_current(r.tenant_id,r.id,receipt.id) THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_SOURCE_ACCESS_CHANGED' USING ERRCODE='22023';
+ END IF;
+ SELECT * INTO previous FROM cehub_ai.agent_context_manifests
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND attempt_id=wanted_attempt;
+ IF FOUND THEN
+  IF previous.context_receipt_id<>wanted_receipt OR previous.pins IS DISTINCT FROM pins THEN
+   RAISE EXCEPTION 'AGENT_MANIFEST_CONFLICT' USING ERRCODE='22023';
+  END IF;
+  RETURN previous.body;
+ END IF;
+ SELECT * INTO first_manifest FROM cehub_ai.agent_context_manifests
+  WHERE tenant_id=r.tenant_id AND run_id=r.id ORDER BY revision_no LIMIT 1;
+ IF FOUND AND (first_manifest.body->>'model_qualification_version'<>model_version
+  OR first_manifest.body->>'prompt_version' IS DISTINCT FROM receipt.body->>'prompt_version'
+  OR first_manifest.body->>'output_schema_version' IS DISTINCT FROM
+     'sha256:' || (receipt.body->>'output_schema_sha256')) THEN
+  RAISE EXCEPTION 'AGENT_MANIFEST_VERSION_CHANGED' USING ERRCODE='22023';
+ END IF;
+ SELECT * INTO previous FROM cehub_ai.agent_context_manifests
+  WHERE tenant_id=r.tenant_id AND run_id=r.id ORDER BY revision_no DESC LIMIT 1;
+ n:=coalesce(previous.revision_no,0)+1;
+ SELECT coalesce(jsonb_agg(o.id ORDER BY link.position),'[]'::jsonb),
+  coalesce(jsonb_agg(o.tool_key || ':' || (o.metadata->>'status') || ':' || o.sequence)
+   FILTER(WHERE o.metadata->>'status' IN ('failed','unavailable','cancelled')),'[]'::jsonb),
+  coalesce(bool_or(o.metadata->>'status'='partial'),false)
+ INTO observations,missing,has_partial
+ FROM cehub_ai.agent_context_observations link JOIN cehub_ai.agent_tool_observations o
+  ON o.tenant_id=link.tenant_id AND o.run_id=link.run_id AND o.id=link.observation_id
+ WHERE link.tenant_id=r.tenant_id AND link.run_id=r.id AND link.context_receipt_id=receipt.id;
+ SELECT coalesce(jsonb_agg(s ORDER BY s::text),'[]'::jsonb) INTO sources FROM (
+  SELECT DISTINCT s FROM cehub_ai.agent_context_observations link
+  JOIN cehub_ai.agent_tool_observations o ON o.id=link.observation_id
+   AND o.tenant_id=link.tenant_id AND o.run_id=link.run_id,
+   LATERAL jsonb_array_elements(o.metadata->'sources') s
+  WHERE link.tenant_id=r.tenant_id AND link.run_id=r.id
+   AND link.context_receipt_id=receipt.id) selected;
+ SELECT greatest(r.last_event_row_id,coalesce(max((s->>'ref_id')::bigint),0)) INTO watermark
+  FROM jsonb_array_elements(sources) s WHERE s->>'kind'='event';
+ SELECT coalesce(jsonb_agg('projection_removed:' || value),'[]'::jsonb) INTO omissions
+  FROM jsonb_array_elements_text(pins->'removed_paths');
+ SELECT omissions || coalesce(jsonb_agg('tool_omitted:' || o.tool_key || ':' || o.sequence
+  || ' shown=' || (o.metadata->>'shown_count') || ' total='
+  || coalesce(o.metadata->>'total_count','unknown')),'[]'::jsonb) INTO omissions
+ FROM cehub_ai.agent_context_observations link JOIN cehub_ai.agent_tool_observations o
+  ON o.id=link.observation_id AND o.tenant_id=link.tenant_id AND o.run_id=link.run_id
+ WHERE link.tenant_id=r.tenant_id AND link.run_id=r.id AND link.context_receipt_id=receipt.id
+  AND o.metadata->>'status' IN ('partial','unavailable','failed','cancelled');
+ stamp:=clock_timestamp();
+ body:=jsonb_build_object('id',mid,'tenant_id',r.tenant_id,'run_id',r.id,'authorization_id',aid,
+  'revision_no',n,'parent_revision_id',previous.id,'goal_revision',1,
+  'release_bundle_version',r.execution_bundle->'release_bundle_version',
+  'capability_version',r.execution_bundle->'capability_version',
+  'prompt_version',receipt.body->'prompt_version','skill_versions','[]'::jsonb,
+  'toolset_version',r.execution_bundle->'toolset_version',
+  'projection_version',r.execution_bundle->'projection_version',
+  'model_qualification_version',model_version,
+  'output_schema_version','sha256:' || (receipt.body->>'output_schema_sha256'),
+  'policy_version',r.execution_bundle->'policy_version','observation_ids',observations,
+  'event_watermark',watermark,'selected_sources',sources,'omission_reasons',omissions,
+  'estimated_input_tokens',admission.input_tokens,'reserved_output_tokens',admission.output_tokens,
+  'completeness',CASE WHEN jsonb_array_length(missing)>0 THEN 'context_incomplete'
+   WHEN has_partial THEN 'partial' ELSE 'complete' END,'missing',missing,'built_at',stamp);
+ body:=body || jsonb_build_object('digest',encode(sha256(convert_to(body::text,'UTF8')),'hex'));
+ IF NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent manifest lease expired' USING ERRCODE='42501';
+ END IF;
+ INSERT INTO cehub_ai.agent_context_manifests VALUES(mid,r.tenant_id,r.id,aid,receipt.id,
+  admission.id,wanted_attempt,n,previous.id,body,pins,stamp);
+ RETURN body;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.freeze_agent_context_manifest(uuid,uuid,text) FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION cehub_ai.bind_agent_runtime_bundle(text),
+ cehub_ai.freeze_agent_context_manifest(uuid,uuid,text),
+ cehub_ai.verify_agent_manifest_sources(),
+ cehub_ai.verify_agent_context_sources(uuid) TO pdos_agent;
+
+-- Application Owner expiry is deterministic; no model or business write privilege.
+GRANT EXECUTE ON FUNCTION cehub_ai.expire_application_runs(integer) TO pdos_worker;
+
+
+CREATE OR REPLACE FUNCTION cehub_ai.save_agent_loop_checkpoint(body_text text) RETURNS uuid
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; payload jsonb; step integer; invocation uuid;
+ old cehub_ai.agent_loop_checkpoints%ROWTYPE; cid uuid:=gen_random_uuid(); traces uuid[];
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent loop checkpoint lease is invalid' USING ERRCODE='42501'; END IF;
+ IF r.loop_binding IS NULL OR body_text IS NULL OR octet_length(body_text)>262144 THEN
+  RAISE EXCEPTION 'AGENT_LOOP_CHECKPOINT_INVALID' USING ERRCODE='22023'; END IF;
+ payload:=body_text::jsonb; step:=(payload->>'next_step')::integer;
+ invocation:=(payload->>'model_invocation_id')::uuid;
+ IF payload->>'version' IS DISTINCT FROM 'agent-loop-checkpoint.v1'
+  OR payload#>>'{context,run_id}' IS DISTINCT FROM r.id::text
+  OR payload#>>'{context,tenant_id}' IS DISTINCT FROM r.tenant_id::text
+  OR payload#>>'{context,project_id}' IS DISTINCT FROM r.project_id::text
+  OR payload#>>'{context,agent_key}' IS DISTINCT FROM r.agent_key
+  OR (step BETWEEN 1 AND 99) IS NOT TRUE
+  OR (payload->>'runtime_digest' ~ '^[a-f0-9]{64}$') IS NOT TRUE
+  OR NOT EXISTS(SELECT 1 FROM cehub_ai.model_invocations m WHERE m.id=invocation
+    AND m.tenant_id=r.tenant_id AND m.run_id=r.id AND m.status='succeeded') THEN
+  RAISE EXCEPTION 'AGENT_LOOP_CHECKPOINT_INVALID' USING ERRCODE='22023'; END IF;
+ PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+ PERFORM cehub_ai.verify_agent_manifest_sources();
+ IF EXISTS(SELECT 1 FROM (
+  SELECT DISTINCT ON(e.session_id) e.state FROM cehub_ai.model_call_events e
+   JOIN cehub_ai.model_call_sessions s ON s.id=e.session_id
+   WHERE s.tenant_id=r.tenant_id AND s.run_id=r.id ORDER BY e.session_id,e.revision DESC
+  ) latest WHERE state IN ('open','unknown')) OR EXISTS(SELECT 1 FROM (
+  SELECT DISTINCT ON(j.attempt_id) j.held_tokens FROM cehub_ai.budget_journal j
+   WHERE j.tenant_id=r.tenant_id AND j.run_id=r.id ORDER BY j.attempt_id,j.revision DESC
+  ) latest WHERE held_tokens>0) OR EXISTS(SELECT 1 FROM cehub_ai.agent_tool_dispatches d
+   WHERE d.tenant_id=r.tenant_id AND d.run_id=r.id AND NOT EXISTS(
+    SELECT 1 FROM cehub_ai.agent_tool_observations o WHERE o.tenant_id=d.tenant_id
+     AND o.run_id=d.run_id AND o.tool_intent_id=d.intent_id)) THEN
+  RAISE EXCEPTION 'AGENT_LOOP_CHECKPOINT_RECEIPT_UNKNOWN' USING ERRCODE='22023'; END IF;
+ SELECT * INTO old FROM cehub_ai.agent_loop_checkpoints
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND next_step=step;
+ IF FOUND THEN
+  IF old.body IS DISTINCT FROM payload THEN
+   RAISE EXCEPTION 'AGENT_LOOP_CHECKPOINT_CONFLICT' USING ERRCODE='22023'; END IF;
+  RETURN old.id;
+ END IF;
+ IF step<>(SELECT coalesce(max(next_step),0)+1 FROM cehub_ai.agent_loop_checkpoints
+   WHERE tenant_id=r.tenant_id AND run_id=r.id) THEN
+  RAISE EXCEPTION 'AGENT_LOOP_CHECKPOINT_SEQUENCE' USING ERRCODE='22023'; END IF;
+ SELECT array_agg(id ORDER BY id) INTO traces FROM cehub_ai.model_invocations
+  WHERE tenant_id=r.tenant_id AND run_id=r.id;
+ INSERT INTO cehub_ai.agent_loop_checkpoints VALUES(cid,r.tenant_id,r.id,step,invocation,traces,
+  payload,encode(sha256(convert_to(payload::text,'UTF8')),'hex'),clock_timestamp());
+ RETURN cid;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.save_agent_loop_checkpoint(text) FROM PUBLIC;
+CREATE OR REPLACE FUNCTION cehub_ai.load_agent_loop_checkpoint() RETURNS jsonb
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE; cp cehub_ai.agent_loop_checkpoints%ROWTYPE;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent loop checkpoint lease is invalid' USING ERRCODE='42501'; END IF;
+ IF r.run_context->>'_resume_loop_checkpoint_id' IS NULL THEN RETURN NULL; END IF;
+ PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+ SELECT * INTO cp FROM cehub_ai.agent_loop_checkpoints WHERE tenant_id=r.tenant_id AND run_id=r.id
+  AND id=(r.run_context->>'_resume_loop_checkpoint_id')::uuid;
+ IF NOT FOUND OR cp.body_sha256 IS DISTINCT FROM
+  encode(sha256(convert_to(cp.body::text,'UTF8')),'hex') OR EXISTS(
+   SELECT 1 FROM cehub_ai.model_invocations m WHERE m.tenant_id=r.tenant_id AND m.run_id=r.id
+    AND NOT m.id=ANY(cp.trace_ids)) THEN
+  RAISE EXCEPTION 'AGENT_LOOP_CHECKPOINT_INCOMPLETE' USING ERRCODE='22023'; END IF;
+ RETURN cp.body;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.load_agent_loop_checkpoint() FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION cehub_ai.save_agent_loop_checkpoint(text),
+ cehub_ai.load_agent_loop_checkpoint() TO pdos_agent;
+
+
+CREATE OR REPLACE FUNCTION cehub_ai.honor_event_pause() RETURNS boolean
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path=pg_catalog AS $body$
+DECLARE r cehub_ai.agent_runs%ROWTYPE;p cehub_ai.event_run_pauses%ROWTYPE;
+ cp uuid;step_cp cehub_ai.agent_loop_checkpoints%ROWTYPE;stamp timestamptz;
+ token uuid:=nullif(current_setting('pdos.agent_lease_token',true),'')::uuid;
+BEGIN
+ SELECT * INTO r FROM cehub_ai.agent_runs
+  WHERE id=nullif(current_setting('pdos.agent_run_id',true),'')::uuid FOR UPDATE;
+ IF NOT FOUND OR NOT cehub_ai.agent_lease_is_current(r.id,token) THEN
+  RAISE EXCEPTION 'Agent pause lease is invalid' USING ERRCODE='42501'; END IF;
+ SELECT * INTO p FROM cehub_ai.event_run_pauses WHERE tenant_id=r.tenant_id
+  AND run_id=r.id AND resolved_at IS NULL FOR UPDATE;
+ IF NOT FOUND THEN RETURN false; END IF;
+ IF EXISTS(SELECT 1 FROM (SELECT DISTINCT ON(attempt_id) held_tokens
+  FROM cehub_ai.budget_journal WHERE tenant_id=r.tenant_id AND run_id=r.id
+  ORDER BY attempt_id,revision DESC) j WHERE held_tokens>0) OR EXISTS(
+   SELECT 1 FROM cehub_ai.agent_tool_dispatches d WHERE d.run_id=r.id AND NOT EXISTS(
+    SELECT 1 FROM cehub_ai.agent_tool_observations o WHERE o.tool_intent_id=d.intent_id)) THEN
+  RETURN false; END IF;
+ SELECT id INTO cp FROM cehub_ai.agent_result_checkpoints
+  WHERE tenant_id=r.tenant_id AND run_id=r.id;
+ SELECT * INTO step_cp FROM cehub_ai.agent_loop_checkpoints WHERE tenant_id=r.tenant_id
+  AND run_id=r.id ORDER BY next_step DESC LIMIT 1;
+ IF cp IS NULL AND step_cp.id IS NOT NULL AND EXISTS(SELECT 1 FROM cehub_ai.model_invocations
+  WHERE tenant_id=r.tenant_id AND run_id=r.id AND NOT id=ANY(step_cp.trace_ids)) THEN
+  RETURN false; END IF;
+ IF cp IS NULL AND step_cp.id IS NULL AND (EXISTS(SELECT 1 FROM cehub_ai.model_invocations
+  WHERE tenant_id=r.tenant_id AND run_id=r.id) OR EXISTS(
+   SELECT 1 FROM cehub_ai.agent_tool_dispatches
+   WHERE tenant_id=r.tenant_id AND run_id=r.id)) THEN RETURN false; END IF;
+ PERFORM cehub_ai.check_run_active_budget(r.tenant_id,r.id);
+ stamp:=clock_timestamp();
+ UPDATE cehub_ai.event_run_pauses SET honored_at=stamp WHERE id=p.id;
+ UPDATE cehub_ai.agent_runs SET status='queued',started_at=NULL,completed_at=NULL,
+  run_context=(run_context-'_lease_token'-'_lease_expires_at'-'_lease_renewed_at')
+   ||jsonb_build_object('_resume_checkpoint_id',cp,'_resume_loop_checkpoint_id',
+     CASE WHEN cp IS NULL THEN step_cp.id ELSE NULL END),updated_at=stamp WHERE id=r.id;
+ RETURN true;
+END $body$;
+REVOKE ALL ON FUNCTION cehub_ai.honor_event_pause() FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION cehub_ai.honor_event_pause() TO pdos_agent;
 
 COMMIT;
