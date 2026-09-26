@@ -7,6 +7,10 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(window.location.search),
 }));
 
+vi.mock("./build-materials", () => ({
+  BuildMaterials: ({ canEdit }: { canEdit: boolean }) => <p>{`build-materials-edit:${canEdit}`}</p>,
+}));
+
 const projectId = "88888888-8888-4888-8888-888888888888";
 const buildId = "99999999-9999-4999-8999-999999999999";
 const sampleId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
@@ -122,6 +126,18 @@ describe("ProjectNpiPanel", () => {
     expect(screen.queryByRole("button", { name: "判定通过" })).toBeNull();
     // Reading is still possible.
     expect(screen.getByRole("button", { name: "展开样机" })).toBeTruthy();
+  });
+
+  it("gives build materials the product-engineering edit right, not project edit", async () => {
+    fetchMock.mockImplementation(async () => Response.json(snapshot()));
+
+    // An engineer: no project edit, but may freeze demand, allocate and register movements.
+    render(<ProjectNpiPanel canEdit={false} canEditMaterials projectId={projectId} />);
+    await screen.findByText("BB-EVT-1");
+    fireEvent.click(screen.getByRole("button", { name: "展开样机" }));
+
+    expect(await screen.findByText("build-materials-edit:true")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "开始试制" })).toBeNull();
   });
 
   it("surfaces a backend refusal instead of failing silently", async () => {

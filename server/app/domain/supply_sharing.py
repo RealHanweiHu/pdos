@@ -377,11 +377,23 @@ class SupplySharingService:
                         "can_revoke": can_manage,
                     }
                 )
+            from app.domain.input_wait_responsibilities import people
+
+            named = [
+                identity
+                for item in items
+                for identity in (
+                    item["created_by_user_id"],
+                    item["recipient_user_id"],
+                    *(action["created_by_user_id"] for action in item["actions"]),
+                )
+            ]
             return {
                 "items": items,
                 "has_more": len(rows) > 50,
                 "project_id": str(project_id),
                 "actor_id": str(context.user.id),
+                "people": people(c, context.tenant.id, named),
             }
 
     def decide(

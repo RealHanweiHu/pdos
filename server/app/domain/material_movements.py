@@ -436,8 +436,14 @@ class MaterialMovementService:
                     ).scalar_one()
                     value["disposable_quantity"] = str(row["quantity"] - disposed)
                 issues.append(value)
+            from app.domain.input_wait_responsibilities import people
+
+            named = [row["created_by_user_id"] for row in issues] + [
+                row["correction"]["created_by_user_id"] for row in issues if row["correction"]
+            ]
             return {
                 "items": issues,
+                "people": people(c, context.tenant.id, named),
                 "has_more": len(rows) > 100,
                 "allocations": _active(
                     c, context.tenant.id, project_id=project_id, build_id=build_id
@@ -729,14 +735,22 @@ class MaterialReconciliationService:
                 can_manage = True
             except KnowledgeAccessError:
                 can_manage = False
+            from app.domain.input_wait_responsibilities import people
+
             d = tables.documents
+            items = [
+                reconciliation_preview(c, context, project, identity, source_id)
+                for identity in ids[:20]
+            ]
             return {
                 "source": source,
                 "current": observed["current"],
-                "items": [
-                    reconciliation_preview(c, context, project, identity, source_id)
-                    for identity in ids[:20]
-                ],
+                "items": items,
+                "people": people(
+                    c,
+                    context.tenant.id,
+                    [item["latest"]["created_by_user_id"] for item in items if item["latest"]],
+                ),
                 "next_cursor": str(ids[19]) if len(ids) > 20 else None,
                 "can_manage": can_manage,
                 "documents": [

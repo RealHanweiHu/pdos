@@ -40,6 +40,8 @@ type Props = {
   projectId: string;
   canEdit: boolean;
   canRecordTests?: boolean;
+  /** Build material demand, allocation and movements follow product-engineering edit rights. */
+  canEditMaterials?: boolean;
 };
 
 /**
@@ -49,7 +51,7 @@ type Props = {
  * digital thread the Gate panel points at ("查看产品工程") led nowhere. Every
  * action here writes through the NPI BFF; nothing is computed client-side.
  */
-export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit }: Props) {
+export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, canEditMaterials = canEdit }: Props) {
   const [snapshot, setSnapshot] = useState<NpiSnapshot>(EMPTY_NPI_SNAPSHOT);
   const [state, setState] = useState<LoadState>("loading");
   const [error, setError] = useState<string | null>(null);
@@ -247,7 +249,7 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit }
                           ))}
                         </ul>
                       )}
-                      <BuildMaterials projectId={projectId} buildId={build.id} canEdit={canEdit} />
+                      <BuildMaterials projectId={projectId} buildId={build.id} canEdit={canEditMaterials} />
                       {canEdit ? (
                         <div className="flex gap-2 pt-1">
                           <input

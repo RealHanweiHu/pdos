@@ -386,6 +386,11 @@ def _preview(
                     "本次与原有效计划占用之和超过该需求项，先核对或释放原占用"
                 )
             if per_pool[_key(original)] > Decimal(pool["available_quantity"]):
+                if source.get("source_grant_id"):
+                    raise MaterialAllocationError(
+                        "超过共享来源的当前可分配量（取共享剩余上限与来源池余量的较小者）；"
+                        "如需更多，请来源项目调整共享"
+                    )
                 raise MaterialAllocationError("同一供给池余量不足；已计入所有批次的未释放计划占用")
             proposed.append(
                 {

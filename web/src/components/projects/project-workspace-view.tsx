@@ -533,6 +533,7 @@ export function ProjectWorkspaceView({
                   key={`ProjectNpiPanel:${selectedProject.id}`}
                   canEdit={canEdit}
                   canRecordTests={["owner", "admin", "project_manager", "engineer", "quality"].includes(identity.user.role)}
+                  canEditMaterials={productEngineering.canEdit}
                   projectId={selectedProject.id}
                 />
                 <QualityResponsibilityLanding projectId={selectedProject.id}/>

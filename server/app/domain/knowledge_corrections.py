@@ -40,7 +40,7 @@ class KnowledgeCorrectionService:
             )
         ).scalar_one_or_none()
         if role is None or not is_allowed(Role(role), action):
-            raise KnowledgeAccessError("当前没有此知识操作权限")
+            raise KnowledgeAccessError("当前角色没有此项操作权限")
 
     def list(self, *, tenant_id: UUID, actor_id: UUID, project_id: UUID) -> list[dict[str, Any]]:
         with self.engine.connect() as connection:
