@@ -75,8 +75,8 @@ def assessment(
 
 def test_phase_two_prompts_are_versioned_and_routes_are_exact() -> None:
     assert {key: PROMPT_VERSIONS[key] for key in PHASE_TWO_AGENT_KEYS} == {
-        AgentKey.ENGINEERING_INTELLIGENCE: "engineering-intelligence-v2",
-        AgentKey.QUALITY_INTELLIGENCE: "quality-intelligence-v2",
+        AgentKey.ENGINEERING_INTELLIGENCE: "engineering-intelligence-v3",
+        AgentKey.QUALITY_INTELLIGENCE: "quality-intelligence-v3",
     }
     assert (
         SYSTEM_PROMPTS[AgentKey.ENGINEERING_INTELLIGENCE]
@@ -94,6 +94,21 @@ def test_phase_two_prompts_are_versioned_and_routes_are_exact() -> None:
         AgentKey.PROJECT_INTELLIGENCE,
         AgentKey.QUALITY_INTELLIGENCE,
     )
+
+
+def test_quality_capa_criteria_and_record_language() -> None:
+    # N7-02: capa_suggestion was never chosen and 2 of 6 Findings came back in English.
+    quality = INSTRUCTIONS[AgentKey.QUALITY_INTELLIGENCE]
+    assert agents_for_event("NCR_CREATED") == (AgentKey.QUALITY_INTELLIGENCE,)
+    assert "TEST_FAILED, COMPLAINT_CREATED or NCR_CREATED trigger" in quality
+    assert (
+        "Choose capa_suggestion when an NCR in the references has an approved root cause" in quality
+    )
+    assert "Choose quality_cluster_alert when" in quality
+    assert "no approved root cause covers it yet" in quality
+    assert "do not call containment missing unless it is none" in quality
+    for key in PROMPT_VERSIONS:
+        assert "in the language of the triggering business record" in INSTRUCTIONS[key], key
 
 
 @pytest.mark.parametrize(

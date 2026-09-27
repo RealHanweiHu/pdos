@@ -74,8 +74,8 @@ def risk_assessment(
 
 def test_phase_one_prompts_are_separately_versioned_and_keep_dynamic_scope_out() -> None:
     assert {key: PROMPT_VERSIONS[key] for key in PHASE_ONE_AGENT_KEYS} == {
-        AgentKey.PROJECT_INTELLIGENCE: "project-intelligence-v2",
-        AgentKey.KNOWLEDGE_LITE: "knowledge-lite-v2",
+        AgentKey.PROJECT_INTELLIGENCE: "project-intelligence-v3",
+        AgentKey.KNOWLEDGE_LITE: "knowledge-lite-v3",
     }
     assert SYSTEM_PROMPTS[AgentKey.PROJECT_INTELLIGENCE] != SYSTEM_PROMPTS[AgentKey.KNOWLEDGE_LITE]
     assert INSTRUCTIONS[AgentKey.PROJECT_INTELLIGENCE] != INSTRUCTIONS[AgentKey.KNOWLEDGE_LITE]

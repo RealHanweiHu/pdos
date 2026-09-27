@@ -316,6 +316,9 @@ SELECT
         'severity=', ncr.severity,
         '; status=', ncr.status,
         '; nonconformity=', left(ncr.nonconformity, 2000),
+        '; containment_action=', coalesce(
+            left(nullif(btrim(coalesce(ncr.containment_action, '')), ''), 1000), 'none'
+        ),
         '; approved_root_cause=', coalesce(left(root_cause.root_cause, 1500), 'none'),
         '; capa_action_count=', count(action.id)::text
     ) AS excerpt,

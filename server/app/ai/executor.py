@@ -62,27 +62,27 @@ def _load_prompt(filename: str, *, expected_agent: AgentKey) -> PromptFile:
 
 _PROMPTS = {
     AgentKey.PROJECT_INTELLIGENCE: _load_prompt(
-        "project_intelligence_v2.json",
+        "project_intelligence_v3.json",
         expected_agent=AgentKey.PROJECT_INTELLIGENCE,
     ),
     AgentKey.KNOWLEDGE_LITE: _load_prompt(
-        "knowledge_lite_v2.json",
+        "knowledge_lite_v3.json",
         expected_agent=AgentKey.KNOWLEDGE_LITE,
     ),
     AgentKey.ENGINEERING_INTELLIGENCE: _load_prompt(
-        "engineering_intelligence_v2.json",
+        "engineering_intelligence_v3.json",
         expected_agent=AgentKey.ENGINEERING_INTELLIGENCE,
     ),
     AgentKey.QUALITY_INTELLIGENCE: _load_prompt(
-        "quality_intelligence_v2.json",
+        "quality_intelligence_v3.json",
         expected_agent=AgentKey.QUALITY_INTELLIGENCE,
     ),
     AgentKey.SUPPLIER_INTELLIGENCE: _load_prompt(
-        "supplier_intelligence_v2.json",
+        "supplier_intelligence_v3.json",
         expected_agent=AgentKey.SUPPLIER_INTELLIGENCE,
     ),
     AgentKey.EXECUTIVE_INTELLIGENCE: _load_prompt(
-        "executive_intelligence_v2.json",
+        "executive_intelligence_v3.json",
         expected_agent=AgentKey.EXECUTIVE_INTELLIGENCE,
     ),
 }

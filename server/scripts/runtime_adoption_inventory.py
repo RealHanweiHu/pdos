@@ -81,7 +81,7 @@ def legacy_components() -> list[dict[str, Any]]:
         # domain workflows do not use the legacy event worker or agent prompt.
         if key not in LEGACY_CAPABILITY_KEYS:
             continue
-        prompt_file = f"server/app/ai/prompts/{contract.agent_key.value}_v2.json"
+        prompt_file = f"server/app/ai/prompts/{contract.agent_key.value}_v3.json"
         handler_path, handler = "server/app/ai/executor.py", "AgentExecutor.execute_next"
         context_path, context = "server/app/ai/context_builder.py", "RunContextBuilder.build"
         output_path, output = "server/app/ai/executor.py", "AgentAssessment"

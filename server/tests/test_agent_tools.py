@@ -684,19 +684,40 @@ def test_quality_evidence_excludes_customer_and_document_identifiers(
             )
             connection.execute(
                 tables.nonconformance_reports.insert(),
-                {
-                    "id": uuid4(),
-                    "tenant_id": tenant_id,
-                    "project_id": project_id,
-                    "complaint_id": complaint_id,
-                    "owner_user_id": actor_id,
-                    "created_by_user_id": actor_id,
-                    "code": "NCR-1",
-                    "nonconformity": "Retention below requirement",
-                    "requirement_reference": "SPEC-CONN-1",
-                    "severity": "high",
-                    "target_date": now.date() + timedelta(days=14),
-                },
+                [
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": project_id,
+                        "complaint_id": complaint_id,
+                        "owner_user_id": actor_id,
+                        "created_by_user_id": actor_id,
+                        "code": "NCR-1",
+                        "nonconformity": "Retention below requirement",
+                        "requirement_reference": "SPEC-CONN-1",
+                        "severity": "high",
+                        "status": "open",
+                        "target_date": now.date() + timedelta(days=14),
+                        "containment_action": None,
+                        "containment_completed_at": None,
+                    },
+                    {
+                        "id": uuid4(),
+                        "tenant_id": tenant_id,
+                        "project_id": project_id,
+                        "complaint_id": complaint_id,
+                        "owner_user_id": actor_id,
+                        "created_by_user_id": actor_id,
+                        "code": "NCR-2",
+                        "nonconformity": "Latch cracks after cycling",
+                        "requirement_reference": "SPEC-CONN-2",
+                        "severity": "high",
+                        "status": "root_cause",
+                        "target_date": now.date() + timedelta(days=14),
+                        "containment_action": "Quarantine lot 7 and hold shipments",
+                        "containment_completed_at": now,
+                    },
+                ],
             )
         tools = AgentReadTools(
             engine,
@@ -710,12 +731,23 @@ def test_quality_evidence_excludes_customer_and_document_identifiers(
 
         page = tools.get_quality_evidence(project_id=project_id, limit=10)
 
-        assert page.shown_count == page.total_count == 3
+        assert page.shown_count == page.total_count == 4
         assert {item["entity"] for item in page.items} == {
             "test_case",
             "complaint",
             "nonconformance_report",
         }
+        # A recorded containment must be visible so the Agent cannot report it as missing.
+        ncrs = {
+            item["label"]: item["excerpt"]
+            for item in page.items
+            if item["label"] in {"NCR-1", "NCR-2"}
+        }
+        assert "; containment_action=none; approved_root_cause=none;" in ncrs["NCR-1"]
+        assert (
+            "; containment_action=Quarantine lot 7 and hold shipments; approved_root_cause=none;"
+            in ncrs["NCR-2"]
+        )
         assert "CUSTOMER-SECRET-REF" not in str(page.items)
         assert "private/quality/object-key.pdf" not in str(page.items)
         assert "customer_id" not in str(page.items)

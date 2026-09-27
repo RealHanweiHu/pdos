@@ -1195,7 +1195,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "likelihood": 3,
                 "impact": 4,
             },
-            "project-intelligence-v2",
+            "project-intelligence-v3",
             "project_manager",
         ),
         (
@@ -1207,7 +1207,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "draft_text": "Retain this lesson only as an unverified draft.",
                 "applicability": "Projects with the same evidence pattern.",
             },
-            "knowledge-lite-v2",
+            "knowledge-lite-v3",
             "engineer",
         ),
         (
@@ -1220,7 +1220,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "likelihood": 3,
                 "impact": 4,
             },
-            "engineering-intelligence-v2",
+            "engineering-intelligence-v3",
             "engineer",
         ),
         (
@@ -1235,7 +1235,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "mitigation_plan": "Confirm containment and root cause.",
                 "contingency_plan": "Review preventive controls.",
             },
-            "quality-intelligence-v2",
+            "quality-intelligence-v3",
             "quality",
         ),
         (
@@ -1249,7 +1249,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "impact": 4,
                 "mitigation_plan": "Confirm recovery with accountable owners.",
             },
-            "supplier-intelligence-v2",
+            "supplier-intelligence-v3",
             "supplier",
         ),
         (
@@ -1263,7 +1263,7 @@ def test_agent_lease_scopes_projections_and_allows_only_controlled_writes(
                 "impact": 5,
                 "mitigation_plan": "Confirm recovery priorities with Project owners.",
             },
-            "executive-intelligence-v2",
+            "executive-intelligence-v3",
             "executive",
         ),
     ],

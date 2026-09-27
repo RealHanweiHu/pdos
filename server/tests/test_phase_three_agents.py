@@ -83,8 +83,8 @@ def assessment(
 
 def test_phase_three_prompts_are_versioned_and_routes_are_exact() -> None:
     assert {key: PROMPT_VERSIONS[key] for key in PHASE_THREE_AGENT_KEYS} == {
-        AgentKey.SUPPLIER_INTELLIGENCE: "supplier-intelligence-v2",
-        AgentKey.EXECUTIVE_INTELLIGENCE: "executive-intelligence-v2",
+        AgentKey.SUPPLIER_INTELLIGENCE: "supplier-intelligence-v3",
+        AgentKey.EXECUTIVE_INTELLIGENCE: "executive-intelligence-v3",
     }
     assert (
         SYSTEM_PROMPTS[AgentKey.SUPPLIER_INTELLIGENCE]
