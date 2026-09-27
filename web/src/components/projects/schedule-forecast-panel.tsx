@@ -35,17 +35,18 @@ function ForecastPanel({ projectId, recordId }: { projectId: string; recordId: s
   const [open, setOpen] = useState(!!recordId); const [data, setData] = useState<State | null>(null); const [estimates, setEstimates] = useState<Record<string, Estimate>>({}); const [reason, setReason] = useState(""); const [busy, setBusy] = useState(!!recordId); const [error, setError] = useState<string | null>(null); const [notice, setNotice] = useState<string | null>(null);
   const [historyPages, setHistoryPages] = useState<(string | null)[]>([null]);
   const ids = useRef(new Map<string, string>()); const loadedBasis = useRef<string | null>(null); const path = `projects/${projectId}/execution/forecasts${recordId ? `?record_id=${recordId}` : ""}`;
+  const readPath = `projects/${projectId}/execution/forecasts?limit=10${recordId ? `&record_id=${recordId}` : ""}`;
   useEffect(() => {
     if (!recordId) return;
     let active = true;
-    void caseLinkRequest<State>(path).then(value => {
+    void caseLinkRequest<State>(readPath).then(value => {
       if (active) { loadedBasis.current = value.basis_digest; setData(value); }
     }).catch(failure => {
       if (active) setError(failure instanceof Error ? failure.message : "原预测暂不可用");
     }).finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
-  }, [path, recordId]);
-  async function load() { const value = await caseLinkRequest<State>(`${path}${recordId ? "&" : "?"}limit=10`); setHistoryPages([null]); if (loadedBasis.current && loadedBasis.current !== value.basis_digest) { setEstimates({}); setNotice("实际进展已变化，请按新进展重新填写剩余工作估计。"); } loadedBasis.current = value.basis_digest; setData(value); }
+  }, [readPath, recordId]);
+  async function load() { const value = await caseLinkRequest<State>(readPath); setHistoryPages([null]); if (loadedBasis.current && loadedBasis.current !== value.basis_digest) { setEstimates({}); setNotice("实际进展已变化，请按新进展重新填写剩余工作估计。"); } loadedBasis.current = value.basis_digest; setData(value); }
   async function refresh() { setBusy(true); setError(null); try { await load(); } catch (failure) { setError(failure instanceof Error ? failure.message : "预测暂不可用"); } finally { setBusy(false); } }
   async function historyPage(pages: (string | null)[]) {
     const cursor = pages.at(-1);
