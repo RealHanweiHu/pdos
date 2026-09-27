@@ -21,7 +21,10 @@ LOOP_POLICY_PATH = "PDOS_AGENT_LOOP_QUALIFICATION_PATH"
 LOOP_POLICY_SHA = "PDOS_AGENT_LOOP_QUALIFICATION_SHA256"
 
 
-def loop_contract_digest() -> str:
+def loop_contract_sources() -> dict[str, str]:
+    # Executor imports this module; read its loaded prompt versions at call time.
+    from app.ai.executor import PROMPT_VERSIONS
+
     directory = Path(__file__).parent
     files = (
         "executor.py",
@@ -45,16 +48,15 @@ def loop_contract_digest() -> str:
         "../contracts/runtime_policy.py",
     )
     sources = {name: sha256((directory / name).read_bytes()).hexdigest() for name in files}
-    sources.update(
-        {
-            f"prompts/{p.name}": sha256(p.read_bytes()).hexdigest()
-            for p in sorted((directory / "prompts").glob("*_intelligence_v1.json"))
-        }
-    )
-    sources["prompts/knowledge_lite_v1.json"] = sha256(
-        (directory / "prompts/knowledge_lite_v1.json").read_bytes()
-    ).hexdigest()
-    return sha256(json.dumps(sources, sort_keys=True).encode()).hexdigest()
+    # Bind the prompts the executor actually loads; a fixed *_v1 glob went stale at v2.
+    for version in PROMPT_VERSIONS.values():
+        name = version.replace("-", "_") + ".json"
+        sources[f"prompts/{name}"] = sha256((directory / "prompts" / name).read_bytes()).hexdigest()
+    return sources
+
+
+def loop_contract_digest() -> str:
+    return sha256(json.dumps(loop_contract_sources(), sort_keys=True).encode()).hexdigest()
 
 
 class LoopQualification(BaseModel):

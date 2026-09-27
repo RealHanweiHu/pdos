@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.ai import router as ai_router
+from app.api.ai_write_policy import router as ai_write_policy_router
 from app.api.auth import router as auth_router
 from app.api.change_governance import router as change_governance_router
 from app.api.conversations import router as conversations_router
@@ -127,4 +128,5 @@ app.include_router(project_reports_router)
 app.include_router(customer_reports_router)
 app.include_router(memories_router)
 app.include_router(model_governance_router)
+app.include_router(ai_write_policy_router)
 app.include_router(findings_router)

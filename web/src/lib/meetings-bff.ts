@@ -45,6 +45,13 @@ function allowedPath(method: "GET" | "POST" | "PUT", segments: string[]) {
   if (method === "GET" && segments.join("/") === "preparation/options") return true;
   if (!isUuid(segments[0])) return false;
   const rest = segments.slice(1);
+  if (rest[0] === "ai-minutes-drafts") {
+    if (rest.length === 1) return method === "GET";
+    if (rest.length === 2 && rest[1] === "scope") return method === "POST";
+    if (rest.length === 3 && isUuid(rest[1]) && rest[2] === "history") return method === "GET";
+    if (rest.length === 3 && isUuid(rest[1]) && rest[2] === "actions") return method === "POST";
+    return method === "POST" && rest.length === 4 && rest[1] === "runs" && isUuid(rest[2]) && rest[3] === "withdraw";
+  }
   if (rest[0] === "transcripts" && isUuid(rest[1])) {
     if (method === "GET" && rest.length === 2) return true;
     if ((method === "GET" || method === "POST") && rest.length === 3 && rest[2] === "reading") return true;
@@ -106,6 +113,18 @@ export async function forwardMeetings(
     let path = `/api/projects/${encodeURIComponent(projectId)}/meetings${
       suffix ? `/${suffix}` : ""
     }${cursor ? `?cursor=${encodeURIComponent(cursor)}` : beforeVersion ? `?before_version=${beforeVersion}` : beforeId ? `?before_id=${beforeId}` : before ? `?before=${before}` : ""}`;
+    if (segments[1] === "ai-minutes-drafts") {
+      const params = new URL(request.url).searchParams;
+      const kind = params.get("kind") ?? "minutes";
+      if (!["minutes", "actions", "decisions"].includes(kind)) return sessionError(400, "INVALID_DRAFT_KIND", "Invalid meeting draft kind");
+      path += `${path.includes("?") ? "&" : "?"}kind=${kind}`;
+      const draftBefore = method === "GET" ? params.get("before") : null;
+      if (draftBefore !== null) {
+        const valid = segments.at(-1) === "history" ? /^[1-9][0-9]{0,8}$/.test(draftBefore) : segments.length === 2 && isUuid(draftBefore);
+        if (!valid) return sessionError(400, "INVALID_DRAFT_CURSOR", "Invalid draft cursor");
+        path += `&before=${encodeURIComponent(draftBefore)}`;
+      }
+    }
     if (provider) path += `${path.includes("?") ? "&" : "?"}provider=${provider}`;
     if (method === "GET" && segments.length === 3 && segments[0] === "planning" && segments[2] === "runs") {
       const runBefore = new URL(request.url).searchParams.get("before");

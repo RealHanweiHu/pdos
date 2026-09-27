@@ -395,6 +395,8 @@ PVT/MP 内部移交包含冻结配置/BOM、SOP/治具/工艺/检验引用、测
 
 ## 14. AI 的能力合同与编排
 
+**2026-09-20 DC-11 修订（2026-09-27 同步）**：首批对象/操作以[已批准写入分级政策](2026-09-20-ai-direct-write-tier-policy.md)及[生效登记](../contracts/pdos-runtime-v1/freeze-record.md#dc-11-写入分级政策)为准。T0 可撤回直接写、T1 预填一次确认、T2 人裁决；写入能力登记 `write_tier` 及对象/操作，FREE/CONFIRM/HARD_GATE 对应 T0/T1/T2，只读能力不因此获得写入权。本文及旧附件的“全部模型业务变更须 Finding 接受→独立应用”仅对未迁移能力继续适用；T0 的 Finding 留作审计，不入待办。独立 AI 主体、当前来源、范围权限、同事务溯源、撤回和逐能力资格均为实际生效条件，不能仅改标签即开启。首批施工和统一确认节奏见唯一整合清单。
+
 LLM 负责文字理解、查证选择、比较、假设、工作包和解释；确定性表单/转换/计算直接执行。六领域 Agent + PMI 是业务职责划分，ID/结构/硬件/FW/DQE/SQE/IE/采购/管理等是专业证据视角，不能各自复制一套权限和存储。
 
 每个 Capability 注册：key/version、业务目标、触发/去重、typed scope、预期输出、Context builder、prompt/Skill/toolset、模型资格、预算/质量 profile、rollout、责任模块、入口/结果回链及失败人工替代。附录 A 完整列出 27 个原语义；现有键可映射，登记不等于 handler、真实模型和员工闭环已接通。

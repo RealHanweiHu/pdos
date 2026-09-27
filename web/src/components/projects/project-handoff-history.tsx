@@ -33,6 +33,8 @@ export function ProjectHandoffHistory({ projectId, itemKey }: { projectId: strin
       const person = (id: unknown) => typeof id === "string" ? (typeof people[id] === "string" ? String(people[id]) : `成员 ${id}（原姓名未保存）`) : "未指定";
       const document = details && isRecord(details.document) ? details.document : null;
       const before = item.before_snapshot, after = item.after_snapshot;
+      const manifest = details && isRecord(details.business_sources) ? details.business_sources : null;
+      const sources = manifest && Array.isArray(manifest.groups) ? manifest.groups.filter(isRecord) : [];
       return <article key={item.id} className="space-y-1 rounded-md border p-2"><p>{actions[item.action] ?? item.action} · {new Date(item.created_at).toLocaleString("zh-CN")} · {person(item.actor_user_id)}</p><p>接收人：{person(after.receiver_user_id)}</p>
         {before && before.receiver_user_id !== after.receiver_user_id ? <p>原接收人：{person(before.receiver_user_id)}</p> : null}
         {details && typeof details.receiver_change_reason === "string" ? <p className="whitespace-pre-wrap">换人原因：{details.receiver_change_reason}</p> : null}
@@ -41,6 +43,10 @@ export function ProjectHandoffHistory({ projectId, itemKey }: { projectId: strin
         <p>原文档：{document && typeof document.filename === "string" ? document.filename : String(after.document_id ?? "未保存")}</p>
         {typeof after.document_id === "string" && /^[0-9a-f-]{36}$/.test(after.document_id) ? <Link className="text-primary underline" href={`/projects?project=${projectId}&tab=documents&entity_id=${after.document_id}`}>查看原文档</Link> : null}
         {document && typeof document.sha256 === "string" ? <p className="break-all text-xs text-muted-foreground">原文件摘要：{document.sha256}</p> : null}
+        {manifest ? <details className="text-xs"><summary className="cursor-pointer">办理时固定的业务依据 · {sources.length} 类</summary>
+          <p className="my-1 text-muted-foreground">以下为办理当时的记录数量与校验摘要，原结论保留；当前变化见交接清单。</p>
+          {sources.map((source, index) => <div key={typeof source.key === "string" ? source.key : index} className="space-y-1 border-l pl-2 py-1"><p>{typeof source.label === "string" ? source.label : "业务依据"} · {typeof source.count === "number" ? source.count : "未知"} 条</p><p className="break-all font-mono text-muted-foreground">{typeof source.digest === "string" ? source.digest : "未保存摘要"}</p></div>)}
+        </details> : <p className="text-xs text-muted-foreground">此历史记录未保存业务依据明细，不能用当前资料代替当时依据。</p>}
         {!details ? <p className="text-xs text-muted-foreground">旧记录仅保留原办理内容，未保存当时姓名与文件摘要。</p> : null}
       </article>;
     })}

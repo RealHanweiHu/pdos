@@ -599,10 +599,14 @@ def schedule_forecasts(
     context: Context,
     engine: Database,
     record_id: UUID | None = None,
+    before: UUID | None = None,
+    limit: Annotated[int, Query(ge=1, le=50)] = 50,
 ) -> dict[str, Any]:
     no_store(response)
     try:
-        return ScheduleForecastService(engine).get(context, project_id, record_id=record_id)
+        return ScheduleForecastService(engine).get(
+            context, project_id, record_id=record_id, before=before, limit=limit
+        )
     except (ValueError, OverflowError, ProductWorkAccessError) as error:
         raise failure(error) from error
 

@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { AiMeetingDrafts } from "./ai-meeting-drafts";
 import { isRecord, responseBody } from "@/components/workspace-api";
 
 const input = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
@@ -91,7 +92,7 @@ export function MeetingMinutes({ projectId, meetingId, canManage, isCompleted }:
   }
   const segment = source?.segments.find(item => item.id === segmentId);
   const editable = canManage && isCompleted && data?.editable && !busy;
-  return <details className="rounded-lg border p-3" onToggle={event => { if (event.currentTarget.open && !data && !busy) void act(load); }}>
+  return <><AiMeetingDrafts key={`${projectId}:${meetingId}`} projectId={projectId} meetingId={meetingId} onPublished={async () => { await load(); }} /><AiMeetingDrafts key={`${projectId}:${meetingId}:actions`} kind="actions" projectId={projectId} meetingId={meetingId} onPublished={async () => { await load(); }} /><AiMeetingDrafts key={`${projectId}:${meetingId}:decisions`} kind="decisions" projectId={projectId} meetingId={meetingId} onPublished={async () => { await load(); }} /><details className="rounded-lg border p-3" onToggle={event => { if (event.currentTarget.open && !data && !busy) void act(load); }}>
     <summary className="cursor-pointer text-sm font-medium">正式纪要与确认版本</summary>
     <div className="mt-3 space-y-3">
       <p className="text-xs text-muted-foreground">手工编写会议讨论、结论及未决事项，选取对应转写原句后具名确认。每次修订保留旧版，纪要确认不会替代决定批准或行动分派。</p>
@@ -132,5 +133,5 @@ export function MeetingMinutes({ projectId, meetingId, canManage, isCompleted }:
       </div></details>)}
       {data?.next && <Button size="sm" variant="outline" disabled={busy} onClick={() => void act(older)}>查看更多历史版本</Button>}
     </div>
-  </details>;
+  </details></>;
 }

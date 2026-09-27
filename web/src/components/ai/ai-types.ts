@@ -35,6 +35,7 @@ export type FindingEvidence = {
 };
 
 export type AiFinding = {
+  ai_draft_id?: string | null;
   review_undo_until?: string | null;
   superseded_by?: string | null;
   id: string;
@@ -185,6 +186,8 @@ export type ReviewInboxDigest = {
 };
 
 export type AiCapability = {
+  write_tier?: "t0" | "t1" | "t2" | null;
+  write_operations?: string[];
   capability_key: string;
   agent_key: string;
   zone: "free" | "confirm" | "hard_gate";

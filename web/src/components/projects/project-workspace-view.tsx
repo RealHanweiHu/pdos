@@ -32,6 +32,7 @@ import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form"
 import { ProjectList, projectStatusLabels } from "./project-list";
 import { ProjectIntake } from "./project-intake";
 import { OpenApiAccess } from "./open-api-access";
+import { ProjectMembers } from "./project-members";
 import { ProjectWebhooks } from "./project-webhooks";
 import { ValueMeasurement } from "./value-measurement";
 import { AuditEvidenceExports } from "./audit-evidence-exports";
@@ -402,6 +403,7 @@ export function ProjectWorkspaceView({
                 workItems={workItems}
               />
             ) : null}
+            {activeTab === "overview" && canViewWorkItems && <ProjectMembers key={`ProjectMembers:${selectedProject.id}`} projectId={selectedProject.id} userId={identity.user.id} />}
             {activeTab === "overview" && canViewWorkItems && <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4"><div><h3 className="font-semibold">计划与资源</h3><p className="mt-1 text-sm text-muted-foreground">正式计划、实际进展、预测、承诺与资源预约集中办理。</p></div><Button type="button" variant="outline" onClick={() => onTabChange("plan")}>办理计划与资源</Button></section>}
             {activeTab === "overview" && <ProjectReportExports key={`ProjectReportExports:${selectedProject.id}`} projectId={selectedProject.id}/>}
             {activeTab === "overview" && <CustomerReportPackages key={`CustomerReportPackages:${selectedProject.id}`} projectId={selectedProject.id}/>}

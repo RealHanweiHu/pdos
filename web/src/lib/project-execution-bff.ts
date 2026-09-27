@@ -16,6 +16,18 @@ export async function executionForward(request: Request, projectId: string, oper
     if (target !== null && !/^[0-9a-f-]{36}$/i.test(target)) return sessionError(400, "INVALID_TARGET", "Invalid application reference");
     const forecast = request.method === "GET" && operation === "forecasts" ? new URL(request.url).searchParams.get("record_id") : null;
     if (forecast !== null && !/^[0-9a-f-]{36}$/i.test(forecast)) return sessionError(400, "INVALID_FORECAST", "Invalid forecast reference");
-    return forwardJson(await pdosApiFetch(`/api/projects/${projectId}/execution${suffix}${reallocationQuery || (scheduleCursor ? `?before=${scheduleCursor}` : before ? `?before_id=${before}` : target ? `?target_id=${target}` : forecast ? `?record_id=${forecast}` : "")}`, { method: request.method, headers: { Authorization: `Bearer ${token}`, ...(body ? { "Content-Type": "application/json" } : {}) }, body }));
+    const forecastQuery = new URLSearchParams();
+    if (request.method === "GET" && operation === "forecasts") {
+      const params = new URL(request.url).searchParams;
+      const cursor = params.get("before");
+      const limit = params.get("limit");
+      if (cursor !== null && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cursor)) return sessionError(400, "INVALID_CURSOR", "Invalid forecast cursor");
+      if (limit !== null && (!/^[1-9][0-9]?$/.test(limit) || Number(limit) > 50)) return sessionError(400, "INVALID_LIMIT", "Invalid forecast page size");
+      if (forecast && cursor) return sessionError(400, "INVALID_CURSOR", "A fixed forecast cannot use a history cursor");
+      if (forecast) forecastQuery.set("record_id", forecast);
+      if (cursor) forecastQuery.set("before", cursor);
+      if (limit) forecastQuery.set("limit", limit);
+    }
+    return forwardJson(await pdosApiFetch(`/api/projects/${projectId}/execution${suffix}${(forecastQuery.size ? `?${forecastQuery}` : "") || reallocationQuery || (scheduleCursor ? `?before=${scheduleCursor}` : before ? `?before_id=${before}` : target ? `?target_id=${target}` : forecast ? `?record_id=${forecast}` : "")}`, { method: request.method, headers: { Authorization: `Bearer ${token}`, ...(body ? { "Content-Type": "application/json" } : {}) }, body }));
   } catch (error) { return sessionError(error instanceof InvalidRequestBodyError ? 400 : 503, "EXECUTION_UNAVAILABLE", "执行申请暂不可用，请稍后重试"); }
 }

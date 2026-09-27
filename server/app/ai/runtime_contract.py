@@ -198,6 +198,8 @@ NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
         "NCR_STATUS_CHANGED",
         "NPI_RECORD_CHANGED",
         "PROJECT_CREATED",
+        "PROJECT_MEMBER_ADDED",  # Staffing is access control, not model work.
+        "PROJECT_MEMBER_REMOVED",
         "PROJECT_STATUS_CHANGED",
         "PROJECT_UPDATED",
         "RESOURCE_RESERVATION_OWNER_TRANSFERRED",

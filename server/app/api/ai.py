@@ -612,6 +612,8 @@ class AiCapabilityResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     capability_key: str
+    write_tier: str | None = None
+    write_operations: list[str] = []
     agent_key: str
     zone: str
     rollout: str
@@ -647,6 +649,8 @@ def list_capabilities(
         items=[
             AiCapabilityResponse(
                 capability_key=contract.key.value,
+                write_tier=contract.write_tier.value if contract.write_tier else None,
+                write_operations=list(contract.write_operations),
                 agent_key=contract.agent_key.value,
                 zone=contract.zone.value,
                 rollout=contract.rollout.value,

@@ -272,6 +272,18 @@ def persist_decisions(
                 },
             ),
         )
+        from app.domain.ai_meeting_drafts import capture_minutes_draft
+
+        capture_minutes_draft(
+            connection,
+            row=row,
+            finding_id=finding_id,
+            payload=payload,
+            snapshot=snapshot,
+            invocation_id=invocation_id,
+            now=created_at,
+            kind="decisions",
+        )
         result.append(str(finding_id))
     return result
 
@@ -294,6 +306,11 @@ def apply_decision(
         connection, tenant_id=finding.tenant_id, project_id=finding.project_id
     ):
         raise MeetingDecisionProposalError("项目已不可用")
+    from app.domain.ai_meeting_draft_content import require_unpublished_origin
+
+    require_unpublished_origin(
+        connection, finding.tenant_id, finding.project_id, finding.finding_type, finding.origin_key
+    )
     validate_decision(connection, finding, payload)
     KnowledgeCorrectionService._authorize(
         connection, finding.tenant_id, actor_user_id, finding.project_id, Action.WORK_ITEM_EDIT

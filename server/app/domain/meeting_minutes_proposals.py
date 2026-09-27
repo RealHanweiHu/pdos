@@ -236,6 +236,17 @@ def persist_minutes_proposal(
             },
         ),
     )
+    from app.domain.ai_meeting_drafts import capture_minutes_draft
+
+    capture_minutes_draft(
+        connection,
+        row=row,
+        finding_id=finding_id,
+        payload=payload,
+        snapshot=snapshot,
+        invocation_id=invocation_id,
+        now=created_at,
+    )
     return finding_id
 
 

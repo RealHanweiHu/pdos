@@ -9414,6 +9414,385 @@ agent_subscriptions = Table(
     schema=AI_SCHEMA,
 )
 
+# DC-11 principals are not users: no password, human role, or T2 credential.
+ai_principals = Table(
+    "ai_principals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("principal_key", String(64), nullable=False),
+    Column("display_name", String(128), nullable=False),
+    Column("principal_kind", String(16), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint(
+        "principal_kind='ai' AND principal_key='pdos-agent' AND display_name='PDOS Agent'",
+        name="identity",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ai_principal_scope"),
+    UniqueConstraint("tenant_id", "principal_key", name="uq_ai_principal_key"),
+    schema=AI_SCHEMA,
+)
+
+ai_write_policies = Table(
+    "ai_write_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("principal_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("mode", String(16), nullable=False),
+    Column("contract_version", String(64), nullable=False),
+    Column("operation_settings", json_type, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND mode IN ('legacy','tiered') AND btrim(reason)<>'' "
+        "AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    CheckConstraint(
+        "contract_version='dc11-write-policy.v1' AND jsonb_typeof(operation_settings)='object'",
+        name="contract",
+    ),
+    CheckConstraint(
+        "coalesce(operation_settings ?& ARRAY['meeting.minutes.draft','meeting.actions."
+        "draft','meeting.decisions.draft','event.issue.create','record.ai_fields.update"
+        "','report.weekly.draft','test_report.rows.confirm'] AND operation_settings - A"
+        "RRAY['meeting.minutes.draft','meeting.actions.draft','meeting.decisions.draft'"
+        ",'event.issue.create','record.ai_fields.update','report.weekly.draft','test_re"
+        "port.rows.confirm'] = '{}'::jsonb AND jsonb_typeof((operation_settings->'meeti"
+        "ng.minutes.draft'))='object' AND (operation_settings->'meeting.minutes.draft')"
+        " - ARRAY['mode','minimum_confirmation_basis_points','maximum_retraction_basis_"
+        "points']='{}'::jsonb AND (operation_settings->'meeting.minutes.draft')->>'mode"
+        "' IN ('disabled','confirm','automatic') AND jsonb_typeof((operation_settings->"
+        "'meeting.minutes.draft')->'minimum_confirmation_basis_points')='number' AND (o"
+        "peration_settings->'meeting.minutes.draft')->>'minimum_confirmation_basis_poin"
+        "ts' ~ '^[0-9]+$' AND ((operation_settings->'meeting.minutes.draft')->>'minimum"
+        "_confirmation_basis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb_typeof("
+        "(operation_settings->'meeting.minutes.draft')->'maximum_retraction_basis_point"
+        "s')='number' AND (operation_settings->'meeting.minutes.draft')->>'maximum_retr"
+        "action_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'meeting.minutes.d"
+        "raft')->>'maximum_retraction_basis_points')::numeric BETWEEN 0 AND 500 AND jso"
+        "nb_typeof((operation_settings->'meeting.actions.draft'))='object' AND (operati"
+        "on_settings->'meeting.actions.draft') - ARRAY['mode','minimum_confirmation_bas"
+        "is_points','maximum_retraction_basis_points']='{}'::jsonb AND (operation_setti"
+        "ngs->'meeting.actions.draft')->>'mode' IN ('disabled','confirm','automatic') A"
+        "ND jsonb_typeof((operation_settings->'meeting.actions.draft')->'minimum_confir"
+        "mation_basis_points')='number' AND (operation_settings->'meeting.actions.draft"
+        "')->>'minimum_confirmation_basis_points' ~ '^[0-9]+$' AND ((operation_settings"
+        "->'meeting.actions.draft')->>'minimum_confirmation_basis_points')::numeric BET"
+        "WEEN 9000 AND 10000 AND jsonb_typeof((operation_settings->'meeting.actions.dra"
+        "ft')->'maximum_retraction_basis_points')='number' AND (operation_settings->'me"
+        "eting.actions.draft')->>'maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((o"
+        "peration_settings->'meeting.actions.draft')->>'maximum_retraction_basis_points"
+        "')::numeric BETWEEN 0 AND 500 AND jsonb_typeof((operation_settings->'meeting.d"
+        "ecisions.draft'))='object' AND (operation_settings->'meeting.decisions.draft')"
+        " - ARRAY['mode','minimum_confirmation_basis_points','maximum_retraction_basis_"
+        "points']='{}'::jsonb AND (operation_settings->'meeting.decisions.draft')->>'mo"
+        "de' IN ('disabled','confirm','automatic') AND jsonb_typeof((operation_settings"
+        "->'meeting.decisions.draft')->'minimum_confirmation_basis_points')='number' AN"
+        "D (operation_settings->'meeting.decisions.draft')->>'minimum_confirmation_basi"
+        "s_points' ~ '^[0-9]+$' AND ((operation_settings->'meeting.decisions.draft')->>"
+        "'minimum_confirmation_basis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb"
+        "_typeof((operation_settings->'meeting.decisions.draft')->'maximum_retraction_b"
+        "asis_points')='number' AND (operation_settings->'meeting.decisions.draft')->>'"
+        "maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'meeti"
+        "ng.decisions.draft')->>'maximum_retraction_basis_points')::numeric BETWEEN 0 A"
+        "ND 500 AND jsonb_typeof((operation_settings->'event.issue.create'))='object' A"
+        "ND (operation_settings->'event.issue.create') - ARRAY['mode','minimum_confirma"
+        "tion_basis_points','maximum_retraction_basis_points']='{}'::jsonb AND (operati"
+        "on_settings->'event.issue.create')->>'mode' IN ('disabled','confirm','automati"
+        "c') AND jsonb_typeof((operation_settings->'event.issue.create')->'minimum_conf"
+        "irmation_basis_points')='number' AND (operation_settings->'event.issue.create'"
+        ")->>'minimum_confirmation_basis_points' ~ '^[0-9]+$' AND ((operation_settings-"
+        ">'event.issue.create')->>'minimum_confirmation_basis_points')::numeric BETWEEN"
+        " 9000 AND 10000 AND jsonb_typeof((operation_settings->'event.issue.create')->'"
+        "maximum_retraction_basis_points')='number' AND (operation_settings->'event.iss"
+        "ue.create')->>'maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((operation_s"
+        "ettings->'event.issue.create')->>'maximum_retraction_basis_points')::numeric B"
+        "ETWEEN 0 AND 500 AND jsonb_typeof((operation_settings->'record.ai_fields.updat"
+        "e'))='object' AND (operation_settings->'record.ai_fields.update') - ARRAY['mod"
+        "e','minimum_confirmation_basis_points','maximum_retraction_basis_points']='{}'"
+        "::jsonb AND (operation_settings->'record.ai_fields.update')->>'mode' IN ('disa"
+        "bled','confirm','automatic') AND jsonb_typeof((operation_settings->'record.ai_"
+        "fields.update')->'minimum_confirmation_basis_points')='number' AND (operation_"
+        "settings->'record.ai_fields.update')->>'minimum_confirmation_basis_points' ~ '"
+        "^[0-9]+$' AND ((operation_settings->'record.ai_fields.update')->>'minimum_conf"
+        "irmation_basis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb_typeof((oper"
+        "ation_settings->'record.ai_fields.update')->'maximum_retraction_basis_points')"
+        "='number' AND (operation_settings->'record.ai_fields.update')->>'maximum_retra"
+        "ction_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'record.ai_fields.u"
+        "pdate')->>'maximum_retraction_basis_points')::numeric BETWEEN 0 AND 500 AND js"
+        "onb_typeof((operation_settings->'report.weekly.draft'))='object' AND (operatio"
+        "n_settings->'report.weekly.draft') - ARRAY['mode','minimum_confirmation_basis_"
+        "points','maximum_retraction_basis_points']='{}'::jsonb AND (operation_settings"
+        "->'report.weekly.draft')->>'mode' IN ('disabled','confirm','automatic') AND js"
+        "onb_typeof((operation_settings->'report.weekly.draft')->'minimum_confirmation_"
+        "basis_points')='number' AND (operation_settings->'report.weekly.draft')->>'min"
+        "imum_confirmation_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'report"
+        ".weekly.draft')->>'minimum_confirmation_basis_points')::numeric BETWEEN 9000 A"
+        "ND 10000 AND jsonb_typeof((operation_settings->'report.weekly.draft')->'maximu"
+        "m_retraction_basis_points')='number' AND (operation_settings->'report.weekly.d"
+        "raft')->>'maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((operation_settin"
+        "gs->'report.weekly.draft')->>'maximum_retraction_basis_points')::numeric BETWE"
+        "EN 0 AND 500 AND jsonb_typeof((operation_settings->'test_report.rows.confirm')"
+        ")='object' AND (operation_settings->'test_report.rows.confirm') - ARRAY['mode'"
+        ",'minimum_confirmation_basis_points','maximum_retraction_basis_points']='{}'::"
+        "jsonb AND (operation_settings->'test_report.rows.confirm')->>'mode' IN ('disab"
+        "led','confirm') AND jsonb_typeof((operation_settings->'test_report.rows.confir"
+        "m')->'minimum_confirmation_basis_points')='number' AND (operation_settings->'t"
+        "est_report.rows.confirm')->>'minimum_confirmation_basis_points' ~ '^[0-9]+$' A"
+        "ND ((operation_settings->'test_report.rows.confirm')->>'minimum_confirmation_b"
+        "asis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb_typeof((operation_sett"
+        "ings->'test_report.rows.confirm')->'maximum_retraction_basis_points')='number'"
+        " AND (operation_settings->'test_report.rows.confirm')->>'maximum_retraction_ba"
+        "sis_points' ~ '^[0-9]+$' AND ((operation_settings->'test_report.rows.confirm')"
+        "->>'maximum_retraction_basis_points')::numeric BETWEEN 0 AND 500, false)",
+        name="operation_settings",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ai_write_policy_scope"),
+    UniqueConstraint("tenant_id", "revision", name="uq_ai_write_policy_revision"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_ai_write_policy_request"),
+    schema=AI_SCHEMA,
+)
+
+ai_write_scope_revisions = Table(
+    "ai_write_scope_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("operation_key", String(64), nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("enabled", Boolean, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "operation_key IN ('meeting.minutes.draft','meeting.actions.draft','meeting.dec"
+        "isions.draft') AND revision>0 AND btrim(reason)<>'' AND request_digest ~ '^[a-"
+        "f0-9]{64}$'",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_scope_identity"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "principal_id",
+        "operation_key",
+        "revision",
+        name="uq_ai_scope_revision",
+    ),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_ai_scope_request"),
+    schema=AI_SCHEMA,
+)
+
+ai_meeting_drafts = Table(
+    "ai_meeting_drafts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("draft_kind", String(16), nullable=False, server_default=text("'minutes'")),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("scope_revision_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("model_invocation_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("origin", String(16), nullable=False),
+    Column("capture_mode", String(16), nullable=False),
+    Column("payload", json_type, nullable=False),
+    Column("source_snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scope_revision_id"],
+        [
+            f"{AI_SCHEMA}.ai_write_scope_revisions.tenant_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.project_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "model_invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.tenant_id", f"{AI_SCHEMA}.model_invocations.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "origin='ai' AND capture_mode='trial' AND draft_kind IN ('minutes','actions','d"
+        "ecisions') AND jsonb_typeof(payload)='object' AND jsonb_typeof(source_snapshot"
+        ")='object'",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_minutes_draft_scope"),
+    UniqueConstraint("tenant_id", "finding_id", name="uq_ai_minutes_draft_finding"),
+    schema=AI_SCHEMA,
+)
+
+ai_meeting_draft_actions = Table(
+    "ai_meeting_draft_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("draft_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("body", Text, nullable=False),
+    Column("unresolved_points", Text, nullable=False),
+    Column("official_minutes_id", Uuid),
+    Column("published_task_id", Uuid),
+    Column("published_decision_id", Uuid),
+    Column("payload", JSONB(none_as_null=True)),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "published_task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "published_decision_id"],
+        [
+            f"{PROJECT_SCHEMA}.decisions.tenant_id",
+            f"{PROJECT_SCHEMA}.decisions.project_id",
+            f"{PROJECT_SCHEMA}.decisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "draft_id"],
+        [
+            f"{AI_SCHEMA}.ai_meeting_drafts.tenant_id",
+            f"{AI_SCHEMA}.ai_meeting_drafts.project_id",
+            f"{AI_SCHEMA}.ai_meeting_drafts.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "official_minutes_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_minutes_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_minutes_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND action IN ('confirm','edit','withdraw','publish') AND btrim(rea"
+        "son)<>'' AND request_digest ~ '^[a-f0-9]{64}$' AND length(body) BETWEEN 1 AND "
+        "20000 AND length(unresolved_points) BETWEEN 1 AND 5000 AND (payload IS NULL OR"
+        " jsonb_typeof(payload)='object') AND ((action='publish' AND num_nonnulls(offic"
+        "ial_minutes_id,published_task_id,published_decision_id)=1) OR (action<>'publis"
+        "h' AND num_nonnulls(official_minutes_id,published_task_id,published_decision_i"
+        "d)=0))",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "draft_id", "revision", name="uq_ai_minutes_action_revision"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_minutes_action_request"
+    ),
+    schema=AI_SCHEMA,
+)
+Index(
+    "ix_ai_minutes_draft_history",
+    ai_meeting_drafts.c.tenant_id,
+    ai_meeting_drafts.c.project_id,
+    ai_meeting_drafts.c.meeting_id,
+    ai_meeting_drafts.c.created_at,
+    ai_meeting_drafts.c.id,
+)
+
 agent_runs = Table(
     "agent_runs",
     metadata,
@@ -28006,6 +28385,11 @@ for _table in metadata.tables.values():
 
 @dataclass(frozen=True)
 class Tables:
+    ai_meeting_draft_actions: Table
+    ai_meeting_drafts: Table
+    ai_write_scope_revisions: Table
+    ai_principals: Table
+    ai_write_policies: Table
     research_measurement_workpacks: Table
     research_measurement_workpack_members: Table
     research_measurement_deliveries: Table
@@ -28445,6 +28829,11 @@ class Tables:
 
 
 tables = Tables(
+    ai_meeting_draft_actions=ai_meeting_draft_actions,
+    ai_meeting_drafts=ai_meeting_drafts,
+    ai_write_scope_revisions=ai_write_scope_revisions,
+    ai_principals=ai_principals,
+    ai_write_policies=ai_write_policies,
     research_measurement_workpacks=research_measurement_workpacks,
     research_measurement_workpack_members=research_measurement_workpack_members,
     research_measurement_deliveries=research_measurement_deliveries,

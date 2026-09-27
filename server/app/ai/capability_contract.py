@@ -1,11 +1,9 @@
-"""Legacy capability keys and declarations used by the current runtime.
+"""Capability declarations and DC-11 operation-specific write classifications.
 
-Zone labels alone never authorize model writes. Business candidates use the
-Finding review/apply boundary; deterministic import confirmation has its own
-human action. The ordinary employee path requires live rollout at dispatch,
-tools, result disclosure and application. Shadow is reserved for a separately
-authorized evaluation path, and disabled capabilities cannot apply old pending
-candidates. Previously applied business history remains valid.
+FREE/CONFIRM/HARD_GATE mean T0/T1/T2 for explicitly registered write operations.
+Read-only capabilities confer no mutation permission. Runtime rollout, tenant
+policy, qualification and independent AI scope remain separate execution gates.
+Unmigrated operations retain their existing Finding review/apply boundary.
 """
 
 from __future__ import annotations
@@ -21,6 +19,7 @@ from app.ai.runtime_contract import (
     agents_for_event,
 )
 from app.ai.tools import tool_definitions_for_agent
+from app.ai.write_policy import WRITE_OPERATIONS, WriteTier, operation_keys_for_capability
 
 
 class UnknownCapabilityError(LookupError):
@@ -91,6 +90,15 @@ class CapabilityContract(BaseModel):
     tools: tuple[str, ...] = ()
     event_driven: bool = True
     quality_control: str = Field(min_length=1, max_length=64)
+
+    @property
+    def write_operations(self) -> tuple[str, ...]:
+        return operation_keys_for_capability(self.key.value)
+
+    @property
+    def write_tier(self) -> WriteTier | None:
+        tiers = {WRITE_OPERATIONS[key].write_tier for key in self.write_operations}
+        return next(iter(tiers)) if len(tiers) == 1 else None
 
 
 _EVENT_AGENT_PROJECTIONS: tuple[str, ...] = (
@@ -271,7 +279,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
         CapabilityKey.KNOWLEDGE_MEETING_DECISIONS: CapabilityContract(
             key=CapabilityKey.KNOWLEDGE_MEETING_DECISIONS,
             agent_key=AgentKey.KNOWLEDGE_LITE,
-            zone=CapabilityZone.HARD_GATE,
+            zone=CapabilityZone.FREE,
             rollout=CapabilityRollout.SHADOW,
             prompt_version="meeting-decisions-v1",
             finding_types=("meeting_decision",),
@@ -282,7 +290,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
         CapabilityKey.KNOWLEDGE_MEETING_ACTIONS: CapabilityContract(
             key=CapabilityKey.KNOWLEDGE_MEETING_ACTIONS,
             agent_key=AgentKey.KNOWLEDGE_LITE,
-            zone=CapabilityZone.HARD_GATE,
+            zone=CapabilityZone.FREE,
             rollout=CapabilityRollout.SHADOW,
             prompt_version="meeting-actions-v1",
             finding_types=("meeting_action",),
@@ -293,7 +301,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
         CapabilityKey.KNOWLEDGE_MEETING_MINUTES: CapabilityContract(
             key=CapabilityKey.KNOWLEDGE_MEETING_MINUTES,
             agent_key=AgentKey.KNOWLEDGE_LITE,
-            zone=CapabilityZone.HARD_GATE,
+            zone=CapabilityZone.FREE,
             rollout=CapabilityRollout.SHADOW,
             prompt_version="meeting-reading-v1",
             finding_types=("meeting_minutes",),
@@ -507,6 +515,6 @@ def capabilities_for_event(event_type: str) -> tuple[CapabilityKey, ...]:
         for agent_key in agents_for_event(event_type)
         for key, contract in CAPABILITY_CONTRACTS.items()
         if contract.agent_key is agent_key
-        and contract.zone is CapabilityZone.HARD_GATE
+        and bool(contract.finding_types)
         and contract.event_driven
     )

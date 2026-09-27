@@ -36,6 +36,8 @@ from app.domain import (
     meeting_schedule_revision,
 )
 from app.domain import meeting_recurrence_commands as recurrence_commands
+from app.domain.ai_meeting_draft_content import DraftKind
+from app.domain.ai_meeting_drafts import AiMinutesDraftService, DraftChange, ScopeChange
 from app.domain.knowledge_push import KnowledgeAccessError, KnowledgeVersionError
 from app.domain.knowledge_sources import KnowledgeSourceBindingError, KnowledgeSourceSelection
 from app.domain.meeting_followup import MeetingFollowupService
@@ -1121,6 +1123,116 @@ class MinutesConfirmationRequest(BaseModel):
     unresolved_points: str = Field(min_length=1, max_length=5000)
     reason: str = Field(min_length=1, max_length=3000)
     citations: list[MinutesCitationInput] = Field(min_length=1, max_length=100)
+
+
+class MinutesRunWithdrawal(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    request_id: UUID
+    reason: str = Field(min_length=1, max_length=1000)
+
+
+@router.post("/{meeting_id}/ai-minutes-drafts/runs/{run_id}/withdraw")
+def ai_minutes_run_withdraw(
+    project_id: UUID,
+    meeting_id: UUID,
+    run_id: UUID,
+    body: MinutesRunWithdrawal,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    kind: DraftKind = "minutes",
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return AiMinutesDraftService(engine, kind).withdraw_run(
+            context.tenant.id,
+            project_id,
+            meeting_id,
+            run_id,
+            context.user.id,
+            body.request_id,
+            body.reason,
+        )
+    except Exception as error:
+        raise meeting_error(error) from error
+
+
+@router.get("/{meeting_id}/ai-minutes-drafts")
+def ai_minutes_drafts_get(
+    project_id: UUID,
+    meeting_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before: UUID | None = None,
+    kind: DraftKind = "minutes",
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return AiMinutesDraftService(engine, kind).get(
+            context.tenant.id, project_id, meeting_id, context.user.id, before
+        )
+    except Exception as error:
+        raise meeting_error(error) from error
+
+
+@router.post("/{meeting_id}/ai-minutes-drafts/scope")
+def ai_minutes_scope_post(
+    project_id: UUID,
+    meeting_id: UUID,
+    body: ScopeChange,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    kind: DraftKind = "minutes",
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return AiMinutesDraftService(engine, kind).change_scope(
+            context.tenant.id, project_id, context.user.id, body
+        )
+    except Exception as error:
+        raise meeting_error(error) from error
+
+
+@router.get("/{meeting_id}/ai-minutes-drafts/{draft_id}/history")
+def ai_minutes_history_get(
+    project_id: UUID,
+    meeting_id: UUID,
+    draft_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before: int | None = Query(default=None, ge=1),
+    kind: DraftKind = "minutes",
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return AiMinutesDraftService(engine, kind).history(
+            context.tenant.id, project_id, meeting_id, draft_id, context.user.id, before
+        )
+    except Exception as error:
+        raise meeting_error(error) from error
+
+
+@router.post("/{meeting_id}/ai-minutes-drafts/{draft_id}/actions")
+def ai_minutes_draft_post(
+    project_id: UUID,
+    meeting_id: UUID,
+    draft_id: UUID,
+    body: DraftChange,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    kind: DraftKind = "minutes",
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return AiMinutesDraftService(engine, kind).change(
+            context.tenant.id, project_id, meeting_id, draft_id, context.user.id, body
+        )
+    except Exception as error:
+        raise meeting_error(error) from error
 
 
 @router.get("/{meeting_id}/minutes")

@@ -6,7 +6,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import AwareDatetime, Field
-from sqlalchemy import Connection, Engine, func, select, true
+from sqlalchemy import Connection, Engine, Select, func, select, true, tuple_
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
@@ -512,35 +512,97 @@ def forecast_changes(before: dict[str, Any], after: dict[str, Any]) -> list[dict
     return changed
 
 
+def forecast_history_query(tenant_id: UUID, project_id: UUID) -> Select[Any]:
+    """Scope history and its real preceding version before applying page boundaries."""
+    records = tables.schedule_time_records
+    runs = tables.schedule_forecast_runs
+    previous_records = records.alias("previous_forecast_record")
+    previous_runs = runs.alias("previous_forecast_run")
+    previous = (
+        select(
+            previous_runs.c.record_id.label("previous_record_id"),
+            previous_records.c.version.label("previous_version"),
+            previous_runs.c.result.label("previous_result"),
+        )
+        .join(
+            previous_records,
+            (previous_records.c.tenant_id == previous_runs.c.tenant_id)
+            & (previous_records.c.id == previous_runs.c.record_id),
+        )
+        .where(
+            previous_runs.c.tenant_id == tenant_id,
+            previous_runs.c.project_id == project_id,
+            previous_records.c.version < records.c.version,
+        )
+        .order_by(previous_records.c.version.desc())
+        .limit(1)
+        .correlate(records)
+        .lateral("previous_forecast")
+    )
+    return (
+        select(runs, records.c.version, records.c.created_at, previous)
+        .join(
+            records,
+            (records.c.tenant_id == runs.c.tenant_id) & (records.c.id == runs.c.record_id),
+        )
+        .outerjoin(previous, true())
+        .where(runs.c.tenant_id == tenant_id, runs.c.project_id == project_id)
+    )
+
+
 class ScheduleForecastService:
     def __init__(self, engine: Engine):
         self.engine = engine
 
     def get(
-        self, context: AuthContext, project_id: UUID, *, record_id: UUID | None = None
+        self,
+        context: AuthContext,
+        project_id: UUID,
+        *,
+        record_id: UUID | None = None,
+        before: UUID | None = None,
+        limit: int = 50,
     ) -> dict[str, Any]:
+        if not 1 <= limit <= 50 or (record_id is not None and before is not None):
+            raise ProductWorkError("预测分页范围无效，指定版本不能同时使用历史游标")
         with self.engine.connect() as connection:
             _project(connection, context, project_id)
             capture = capture_basis(connection, context.tenant.id, project_id)
             records = tables.schedule_time_records
             runs = tables.schedule_forecast_runs
+            query = forecast_history_query(context.tenant.id, project_id)
+            if before is not None:
+                cursor = (
+                    connection.execute(
+                        select(records.c.created_at, records.c.id)
+                        .join(
+                            runs,
+                            (runs.c.tenant_id == records.c.tenant_id)
+                            & (runs.c.record_id == records.c.id),
+                        )
+                        .where(
+                            runs.c.tenant_id == context.tenant.id,
+                            runs.c.project_id == project_id,
+                            records.c.id == before,
+                        )
+                    )
+                    .mappings()
+                    .one_or_none()
+                )
+                if cursor is None:
+                    raise ProductWorkError("预测历史游标不存在于当前可访问项目中")
+                query = query.where(
+                    tuple_(records.c.created_at, records.c.id)
+                    < tuple_(cursor["created_at"], cursor["id"])
+                )
             history = list(
                 connection.execute(
-                    select(runs, records.c.version)
-                    .join(
-                        records,
-                        (records.c.tenant_id == runs.c.tenant_id)
-                        & (records.c.id == runs.c.record_id),
-                    )
-                    .where(
-                        runs.c.tenant_id == context.tenant.id,
-                        runs.c.project_id == project_id,
-                        runs.c.record_id == record_id if record_id else true(),
-                    )
-                    .order_by(records.c.version.desc())
-                    .limit(51)
+                    query.where(runs.c.record_id == record_id if record_id else true())
+                    .order_by(records.c.created_at.desc(), records.c.id.desc())
+                    .limit(limit + 1)
                 ).mappings()
             )
+            page = history[:limit]
             if record_id is not None and not history:
                 raise ProductWorkError("所选预测版本不存在于当前可访问项目中")
             errors = list(
@@ -550,7 +612,7 @@ class ScheduleForecastService:
                         tables.schedule_forecast_errors.c.tenant_id == context.tenant.id,
                         tables.schedule_forecast_errors.c.project_id == project_id,
                         tables.schedule_forecast_errors.c.forecast_record_id.in_(
-                            [row["record_id"] for row in history[:50]]
+                            [row["record_id"] for row in page]
                         ),
                     )
                     .order_by(tables.schedule_forecast_errors.c.observed_at.desc())
@@ -577,9 +639,7 @@ class ScheduleForecastService:
                     .where(
                         source_errors.c.tenant_id == context.tenant.id,
                         source_errors.c.project_id == project_id,
-                        source_errors.c.forecast_record_id.in_(
-                            [row["record_id"] for row in history[:50]]
-                        ),
+                        source_errors.c.forecast_record_id.in_([row["record_id"] for row in page]),
                     )
                     .order_by(
                         source_observations.c.observed_at.desc(),
@@ -609,9 +669,7 @@ class ScheduleForecastService:
                     .where(
                         revised.c.tenant_id == context.tenant.id,
                         revised.c.project_id == project_id,
-                        revised.c.forecast_record_id.in_(
-                            [row["record_id"] for row in history[:50]]
-                        ),
+                        revised.c.forecast_record_id.in_([row["record_id"] for row in page]),
                     )
                     .order_by(corrections.c.version.desc())
                 ).mappings()
@@ -627,22 +685,27 @@ class ScheduleForecastService:
                 ],
                 "items": [
                     {
-                        **public_forecast(row),
+                        **public_forecast(
+                            {key: value for key, value in row.items() if key != "previous_result"}
+                        ),
                         "basis_is_current": row["basis_digest"] == capture["basis_digest"],
-                        "changes": forecast_changes(history[index + 1]["result"], row["result"])
-                        if index + 1 < len(history)
+                        "changes": forecast_changes(row["previous_result"], row["result"])
+                        if row["previous_result"] is not None
                         else None,
                     }
-                    for index, row in enumerate(history[:50])
+                    for row in page
                 ],
-                "has_more": len(history) > 50,
+                "has_more": len(history) > limit,
+                "next_before": str(page[-1]["record_id"]) if len(history) > limit else None,
+                "page_size": limit,
                 "errors": [_plain(row) for row in errors],
                 "source_errors": [_plain(row) for row in business_errors],
                 "source_error_corrections": correction_error_views(
-                    connection, context.tenant.id, project_id, history[:50]
+                    connection, context.tenant.id, project_id, page
                 ),
                 "error_corrections": [_plain(row) for row in revisions],
                 "can_recalculate": record_id is None
+                and before is None
                 and is_allowed(context.user.role, Action.PROJECT_EDIT),
             }
 
