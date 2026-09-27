@@ -1,12 +1,14 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProjectTestImport } from "./project-test-import";
-import { readTestImport, uploadTestReport } from "./project-npi-api";
+import { NpiRequestError, readTestImport, uploadTestReport } from "./project-npi-api";
 
 vi.mock("./project-npi-api", () => ({
   uploadTestReport: vi.fn(),
   readTestImport: vi.fn(),
-  NpiRequestError: class extends Error {},
+  NpiRequestError: class extends Error {
+    constructor(readonly code: string, message: string) { super(message); }
+  },
 }));
 const upload = vi.mocked(uploadTestReport);
 const batch = { id: "original-batch", project_id: "project", plan_id: "plan", document_id: "document", status: "parsed" as const, created_run_ids: ["run"], skipped_rows: [], reused_existing: true };
@@ -45,6 +47,23 @@ describe("test report reuse notice", () => {
     reject(new Error("network"));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("报告上传失败，请重试"));
     expect(screen.getByRole("button", { name: "上传并检查" })).toBeEnabled();
+  });
+  it("explains a stopped model in Chinese instead of the service message", async () => {
+    upload.mockRejectedValue(new NpiRequestError(
+      "IMPORT_MODEL_UNAVAILABLE", "original mapping request is unavailable; use a confirmed template",
+    ));
+    render(<ProjectTestImport projectId="project" planId="plan" />);
+    selectFile();
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("AI 列识别暂不可用");
+    expect(alert).toHaveTextContent("本次未保存文件或测试记录");
+    expect(alert).not.toHaveTextContent("original mapping request");
+  });
+  it("keeps an unmapped service message as sent", async () => {
+    upload.mockRejectedValue(new NpiRequestError("IMPORT_PREVIEW_CHANGED", "报告草稿或目标资料已变化，请刷新预览后确认"));
+    render(<ProjectTestImport projectId="project" planId="plan" />);
+    selectFile();
+    expect(await screen.findByRole("alert")).toHaveTextContent("报告草稿或目标资料已变化，请刷新预览后确认");
   });
 });
 

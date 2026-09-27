@@ -25,6 +25,7 @@ from sqlalchemy.exc import IntegrityError
 from app.ai import application_gateway
 from app.ai.budget_adoption import METER_DIGEST_KEY, METER_PATH_KEY, MODE_KEY, PROFILE_KEY
 from app.ai.call_identity import ModelCallSlot, model_call_id
+from app.ai.context_projection import project_gateway_context
 from app.ai.gateway import GatewayInvocation, GatewayResult, StructuredModelGateway
 from app.api.ai import get_application_gateway
 from app.db.engine import get_engine
@@ -90,6 +91,7 @@ class FakeObjectStore:
 class FakeGateway:
     def __init__(self) -> None:
         self.calls = 0
+        self.contexts: list[dict[str, Any]] = []
 
     def invoke_structured[OutputT: BaseModel](
         self, invocation: GatewayInvocation, output_type: type[OutputT]
@@ -98,6 +100,10 @@ class FakeGateway:
         assert invocation.model_call_id == model_call_id(
             invocation.run_id, ModelCallSlot.REPORT_MAPPING
         )
+        # The real gateway sends only the projected context; N7-02 found it had been empty.
+        projection = project_gateway_context(invocation.context)
+        assert projection.removed_paths == (), projection.removed_paths
+        self.contexts.append(dict(projection.payload))
         self.calls += 1
         return GatewayResult(
             status="succeeded",
@@ -372,6 +378,20 @@ def test_model_mapped_import_creates_draft_runs_without_touching_cases(
         assert response.status_code == 201, response.text
         body = response.json()
         assert gateway.calls == 1
+        sent = gateway.contexts[0]["report_mapping"]
+        assert [item["column"] for item in sent["headers"]] == [
+            "用例名称",
+            "样机SN",
+            "测试结果",
+            "泄漏率(sccm)",
+            "备注",
+            "PCB版本",
+            "固件版本",
+        ]
+        assert sent["total_rows"] == 4 and len(sent["sample_rows"]) == 4
+        assert sent["sample_rows"][1]["row"] == 3
+        assert {"column": "测试结果", "value": "FAIL"} in sent["sample_rows"][1]["cells"]
+        assert {"column": "备注", "value": "leak at seam"} in sent["sample_rows"][1]["cells"]
         assert body["mapping_source"] == "model"
         assert body["confidence"] == pytest.approx(0.86)
         assert len(body["created_run_ids"]) == 2

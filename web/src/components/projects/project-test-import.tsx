@@ -6,6 +6,15 @@ import { Button } from "@/components/ui/button";
 import { NpiRequestError, readTestImport, uploadTestReport, type TestImportBatch } from "./project-npi-api";
 
 type Props = { projectId: string; planId: string; onImported?: () => Promise<void> };
+// Upload failures carry English service messages; these are the ones a user can act on.
+const UPLOAD_ERRORS: Record<string, string> = {
+  IMPORT_MODEL_UNAVAILABLE: "AI 列识别暂不可用，且这种表头格式还没有已确认的映射模板，本次未保存文件或测试记录。可改用已确认过的报告格式，或稍后重试。",
+  IMPORT_ACCESS_DENIED: "你当前没有导入该项目测试报告的权限，本次未保存任何内容。",
+  IMPORT_PLAN_NOT_FOUND: "测试计划已不存在或不可用，请刷新页面后重试。",
+  IMPORT_PROJECT_NOT_FOUND: "项目已不存在或不可用，请刷新页面后重试。",
+  IMPORT_MAPPING_CHANGED: "这种报告格式的映射模板刚有变更，请重新上传。",
+  IMPORT_MAPPING_REQUEST_CONFLICT: "同一份报告的识别请求正在处理或与先前请求冲突，请稍后刷新查看。",
+};
 const storageKey = (projectId: string, planId: string) => `pdos:report-import:${projectId}:${planId}`;
 
 export function ProjectTestImport(props: Props) {
@@ -102,7 +111,7 @@ function ImportSession({ projectId, planId, onImported }: Props) {
         } else { setBatch(result); await imported.current?.(); }
       }
     } catch (failure) {
-      if (active.current) setError(failure instanceof NpiRequestError ? failure.message : "报告上传失败，请重试");
+      if (active.current) setError(failure instanceof NpiRequestError ? UPLOAD_ERRORS[failure.code] ?? failure.message : "报告上传失败，请重试");
     } finally {
       inFlight.current = false;
       if (active.current) setBusy(false);

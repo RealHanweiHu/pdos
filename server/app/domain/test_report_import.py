@@ -112,11 +112,24 @@ class ImportBatchResult:
 def mapping_request(
     *, report: ParsedWorkbook, actor_user_id: UUID, plan_id: UUID, content_sha256: str
 ) -> tuple[str, dict[str, Any], dict[str, Any]]:
-    sample_rows = [
-        {key: _normalize(value) for key, value in row.values.items()}
-        for row in report.rows[:_MAX_SAMPLE_ROWS_FOR_MODEL]
-    ]
-    model_context = {"headers": report.headers, "sample_rows": sample_rows}
+    # Fixed keys only: the gateway projection drops free-form keys such as header names,
+    # so each cell carries its column instead of being keyed by it.
+    model_context = {
+        "report_mapping": {
+            "headers": [{"column": header} for header in report.headers],
+            "sample_rows": [
+                {
+                    "row": row.source["row"],
+                    "cells": [
+                        {"column": header, "value": _normalize(row.values.get(header))}
+                        for header in report.headers
+                    ],
+                }
+                for row in report.rows[:_MAX_SAMPLE_ROWS_FOR_MODEL]
+            ],
+            "total_rows": len(report.rows),
+        }
+    }
 
     def digest(value: object) -> str:
         return hashlib.sha256(
@@ -605,7 +618,10 @@ class TestReportImportService:
             plan_id=plan_id,
             content_sha256=content_sha256,
         )
-        sample_rows = model_context["sample_rows"]
+        sample_rows = [
+            {cell["column"]: cell["value"] for cell in row["cells"]}
+            for row in model_context["report_mapping"]["sample_rows"]
+        ]
         store = ImportMappingRunStore(self._engine, gateway=self._gateway)
         try:
             run, created = store.start(

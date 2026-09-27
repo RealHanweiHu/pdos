@@ -42,6 +42,11 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
         },
     ),
     "question": None,
+    "report_mapping": {
+        "headers": ({"column": None},),
+        "sample_rows": ({"row": None, "cells": ({"column": None, "value": None},)},),
+        "total_rows": None,
+    },
     "test_plan": {
         "product_type": None,
         "previous_proposal": None,
