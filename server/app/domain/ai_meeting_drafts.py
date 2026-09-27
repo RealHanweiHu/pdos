@@ -25,6 +25,7 @@ from app.domain.ai_meeting_draft_content import (
     consumed,
     edit_content,
     publish_work,
+    record_publication_finding,
     validate_source,
 )
 from app.domain.knowledge_corrections import KnowledgeCorrectionService
@@ -597,6 +598,8 @@ class AiMinutesDraftService:
                 )
             )
         official = task_id = decision_id = None
+        if change.action == "publish":
+            record_publication_finding(c, draft, content, actor, now, change.reason)
         if change.action == "publish" and self.kind == "minutes":
             payload = MeetingMinutesPayload.model_validate(draft["payload"])
             result = MeetingMinutesService(self.engine).confirm(
@@ -625,6 +628,19 @@ class AiMinutesDraftService:
             official = UUID(result["id"])
         elif change.action == "publish":
             task_id, decision_id = publish_work(self.engine, c, draft, content, actor, now)
+        if change.action == "publish":
+            target = official or task_id or decision_id
+            if target is None:
+                raise MeetingStateError("正式办理未返回实际业务记录")
+            # Preserve the original strictly ordered review/application receipts.
+            # This is the observed completion time, not a fabricated clock offset.
+            completed_at = datetime.now(UTC)
+            if completed_at <= now:
+                raise MeetingStateError("当前时钟无法记录办理先后顺序，请稍后重试")
+            record_publication_finding(
+                c, draft, content, actor, completed_at, change.reason, entity_id=target
+            )
+            now = completed_at
         values = dict(
             id=uuid4(),
             tenant_id=draft["tenant_id"],

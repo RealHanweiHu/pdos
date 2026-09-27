@@ -91,7 +91,7 @@ export function AiMeetingDrafts({ projectId, meetingId, onPublished, kind = "min
     try {
       const result = await request<{ items?: { result: string; reason: string }[] }>(command.url, command.body);
       setPending(null); setEdit(null); setEditedPayload(null); setReviewAction(null); setReason("");
-      setNotice(result.items ? `本次纪要生成撤回完成：${result.items.filter(item => item.result === "withdrawn").length} 条已撤回；${result.items.filter(item => item.result === "skipped").map(item => item.reason).join("、") || "没有跳过项"}。原历史保留。` : "办理回执已保存。AI原稿和具名修改历史均已保留。");
+      setNotice(result.items ? `本次${noun}生成撤回完成：${result.items.filter(item => item.result === "withdrawn").length} 条已撤回；${result.items.filter(item => item.result === "skipped").map(item => item.reason).join("、") || "没有跳过项"}。原历史保留。` : "办理回执已保存。AI原稿和具名修改历史均已保留。");
       await load(); await onPublished();
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "结果尚未确认，请重试原请求。");
@@ -114,7 +114,7 @@ export function AiMeetingDrafts({ projectId, meetingId, onPublished, kind = "min
     }) });
   }
   const locked = busy || pending !== null;
-  return <details className="rounded-lg border bg-card p-3" onToggle={event => {
+  return <details className="rounded-lg border bg-card p-2 sm:p-3" onToggle={event => {
     if (event.currentTarget.open && !data && !flight.current) void refresh();
   }}>
     <summary className="cursor-pointer text-sm font-medium"><RobotIcon className="mr-1.5 inline text-primary" size={16} aria-hidden="true" />AI {noun}草稿</summary>
@@ -136,7 +136,7 @@ export function AiMeetingDrafts({ projectId, meetingId, onPublished, kind = "min
       {notice && <p role="status" className="text-xs text-success">{notice}</p>}
       {pending && <div className="flex flex-wrap items-center gap-2 text-xs"><p>保存结果尚未确认，请复用原请求找回回执。</p><Button size="sm" disabled={busy} onClick={() => void execute(pending)}>重试原请求</Button></div>}
       {data?.items.length === 0 && <p className="py-2 text-xs text-muted-foreground">尚无分级写入草稿。已生成的旧候选仍可从原入口回查。</p>}
-      {data?.items.map(item => <article key={item.id} className="rounded-lg border p-3">
+      {data?.items.map(item => <article key={item.id} className="rounded-lg border p-2 sm:p-3">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs"><p className="font-semibold">{item.writer_name} · {item.state === "published" ? kind === "actions" ? "已下达行动" : kind === "decisions" ? "已批准决策" : "已正式发布" : labels[item.state]}</p><span className="text-muted-foreground">{new Date(item.created_at).toLocaleString("zh-CN")}</span></div>
         {!item.source_current && item.state !== "published" && <p className="mt-2 text-xs text-destructive">原转录、说话人或正式来源已变化，请重新核对并生成。</p>}
         {kind === "decisions" && item.state === "active" && item.current_payload.approver_id && item.current_payload.approver_id !== data.current_user_id ? <p className="mt-2 text-xs text-muted-foreground">等待草稿中指定的批准人本人办理。</p> : null}
@@ -145,7 +145,7 @@ export function AiMeetingDrafts({ projectId, meetingId, onPublished, kind = "min
           <section className="min-w-0"><h4 className="mb-1 text-xs font-medium">纪要正文</h4><p className="whitespace-pre-wrap break-words text-sm leading-6">{item.body}</p></section>
           <section className="min-w-0 rounded-md bg-muted/30 p-3"><h4 className="mb-1 text-xs font-medium">未决事项</h4><p className="whitespace-pre-wrap break-words text-xs leading-5">{item.unresolved_points}</p></section>
         </div></>}
-        {item.published_entity_id && <a className="mt-2 inline-block text-xs text-primary underline" href={`/projects?project=${projectId}&tab=${kind === "actions" ? "work-items" : "decisions"}&entity_id=${item.published_entity_id}&meeting=${meetingId}`}>打开正式{noun}记录</a>}
+        {item.published_entity_id && <a className="mt-2 inline-block text-xs text-primary underline" href={`/projects?project=${projectId}&tab=${kind === "actions" ? "work-items" : "decisions"}&entity_id=${item.published_entity_id}&meeting=${meetingId}${kind === "minutes" ? `&minutes=${item.published_entity_id}` : ""}`}>打开正式{noun}记录</a>}
         <details className="mt-3 text-xs"><summary className="cursor-pointer text-muted-foreground">查看原文引用与办理历史</summary>
           <div className="mt-2 space-y-2">{item.payload.citations.map((quote, index) => <blockquote className="whitespace-pre-wrap break-words border-l-2 border-primary/30 pl-3 leading-5" key={`${quote.segment_id}:${index}`}>{quote.exact_quote}</blockquote>)}
           <details className="rounded-md border p-2"><summary className="cursor-pointer">AI 原稿 · 原始正文</summary>{kind === "minutes" ? <><p className="mt-2 whitespace-pre-wrap break-words leading-5">{item.payload.body}</p><p className="mt-2 whitespace-pre-wrap break-words text-muted-foreground">未决事项：{item.payload.unresolved_points}</p></> : <StructuredContent kind={kind} projectId={projectId} payload={item.payload} />}<a className="text-primary underline" href={`/ai-review?finding=${item.finding_id}`}>查看原候选和生成依据</a></details>

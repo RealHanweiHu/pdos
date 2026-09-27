@@ -73,6 +73,12 @@ _EVENT_AGENT_ROUTES: dict[str, tuple[AgentKey, ...]] = {
 # sibling event.
 NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
     {
+        # DC-11 settings and draft receipts must not re-trigger their own model work.
+        "AI_WRITE_POLICY_REVISED",
+        "AI_WRITE_SCOPE_REVISED",
+        "AI_MINUTES_DRAFT_CREATED",
+        "AI_MINUTES_DRAFT_CHANGED",
+        "AI_MINUTES_RUN_WITHDRAWN",
         # N7 consent, observations and independent reception receipts feed
         # descriptive calculations only; participation never requests model work.
         "RESEARCH_MEASUREMENT_RECORDED",

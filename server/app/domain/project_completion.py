@@ -145,7 +145,13 @@ def handoff_replay(
         return None
     if prior["context"]["handoff_request"]["digest"] != fingerprint:
         raise CompletionError("此请求编号已用于另一项交接操作")
-    return {**prior["after_snapshot"], "request_id": str(request_id)}
+    receipt = {**prior["after_snapshot"], "request_id": str(request_id)}
+    # Audit JSON retains the original timestamps as text. Restore their types so
+    # a replay uses the same API serialization as the original database receipt.
+    for field in ("created_at", "updated_at", "responded_at"):
+        if isinstance(receipt.get(field), str):
+            receipt[field] = datetime.fromisoformat(receipt[field])
+    return receipt
 
 
 def handoff_audit(

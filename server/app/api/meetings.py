@@ -1243,6 +1243,7 @@ def get_official_minutes(
     context: Annotated[AuthContext, Depends(current_context)],
     engine: Annotated[Engine, Depends(get_engine)],
     before_version: int | None = Query(default=None, ge=1),
+    record_id: UUID | None = None,
 ) -> dict[str, object]:
     no_store(response)
     try:
@@ -1252,6 +1253,7 @@ def get_official_minutes(
             meeting_id=meeting_id,
             actor_id=context.user.id,
             before_version=before_version,
+            record_id=record_id,
         )
     except Exception as error:
         raise meeting_error(error) from error

@@ -9,6 +9,7 @@ vi.mock("next/headers", () => ({
 import { GET, POST, PUT } from "./route";
 
 const meetingId = "33333333-3333-4333-8333-333333333333";
+const minutesId = "44444444-4444-4444-8444-444444444444";
 
 function context(meetingPath: string[]) {
   return {
@@ -75,6 +76,47 @@ describe("meetings BFF catch-all", () => {
       `http://127.0.0.1:8000/api/projects/project%2Fid%20with%20spaces/meetings/${meetingId}/archive`,
     );
     expect(fetchMock.mock.calls[0]?.[1]).not.toHaveProperty("body");
+  });
+
+  it("forwards an exact minutes record without replacing it with the latest page", async () => {
+    const original = { items: [{ id: minutesId, version_no: 1 }], current_version: 3, next_before: null };
+    fetchMock.mockResolvedValue(Response.json(original));
+    const result = await GET(
+      new Request(`http://localhost?record_id=${minutesId}`),
+      context([meetingId, "minutes"]),
+    );
+    expect(result.status).toBe(200);
+    expect(await result.json()).toEqual(original);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe(
+      `http://127.0.0.1:8000/api/projects/project%2Fid%20with%20spaces/meetings/${meetingId}/minutes?record_id=${minutesId}`,
+    );
+    expect(fetchMock.mock.calls[0]?.[1]).toEqual(expect.objectContaining({
+      method: "GET", headers: expect.objectContaining({ Authorization: "Bearer signed.jwt.value" }),
+    }));
+  });
+
+  it("rejects invalid or conflicting minutes selectors before contacting the API", async () => {
+    expect((await GET(
+      new Request("http://localhost?record_id=not-a-uuid"), context([meetingId, "minutes"]),
+    )).status).toBe(400);
+    expect((await GET(
+      new Request(`http://localhost?record_id=${minutesId}&before_version=2`), context([meetingId, "minutes"]),
+    )).status).toBe(409);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("preserves the existing minutes cursor and returns a missing record error unchanged", async () => {
+    fetchMock.mockResolvedValueOnce(Response.json({ items: [], next_before: null }));
+    await GET(new Request("http://localhost?before_version=2"), context([meetingId, "minutes"]));
+    expect(String(fetchMock.mock.calls[0]?.[0]).endsWith(`/minutes?before_version=2`)).toBe(true);
+    const missing = { detail: { code: "MEETING_NOT_FOUND", message: "Meeting was not found" } };
+    fetchMock.mockResolvedValueOnce(Response.json(missing, { status: 404 }));
+    const response = await GET(
+      new Request(`http://localhost?record_id=${minutesId}`), context([meetingId, "minutes"]),
+    );
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual(missing);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it("fails closed for unknown paths, non-uuid ids, missing sessions and bad JSON", async () => {

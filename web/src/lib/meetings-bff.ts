@@ -102,6 +102,10 @@ export async function forwardMeetings(
     const beforeVersion = method === "GET" && segments.at(-1) === "minutes"
       ? new URL(request.url).searchParams.get("before_version") : null;
     if (beforeVersion !== null && !/^[1-9][0-9]{0,8}$/.test(beforeVersion)) return sessionError(400, "INVALID_VERSION", "Invalid minutes version");
+    const minutesRecord = method === "GET" && segments.at(-1) === "minutes"
+      ? new URL(request.url).searchParams.get("record_id") : null;
+    if (minutesRecord !== null && !isUuid(minutesRecord)) return sessionError(400, "INVALID_RECORD_ID", "Invalid minutes record");
+    if (minutesRecord && beforeVersion) return sessionError(409, "INVALID_VERSION_QUERY", "指定纪要版本不能同时使用历史分页");
     const beforeId = method === "GET" && ["planning", "responsibility-history", "roster", "history", "schedule", "automation", "notifications", "conference-requests"].includes(segments.at(-1) ?? "")
       ? new URL(request.url).searchParams.get("before_id") : null;
     if (beforeId !== null && !/^[1-9][0-9]{0,18}$/.test(beforeId)) return sessionError(400, "INVALID_CURSOR", "Invalid responsibility cursor");
@@ -113,6 +117,7 @@ export async function forwardMeetings(
     let path = `/api/projects/${encodeURIComponent(projectId)}/meetings${
       suffix ? `/${suffix}` : ""
     }${cursor ? `?cursor=${encodeURIComponent(cursor)}` : beforeVersion ? `?before_version=${beforeVersion}` : beforeId ? `?before_id=${beforeId}` : before ? `?before=${before}` : ""}`;
+    if (minutesRecord) path += `?record_id=${encodeURIComponent(minutesRecord)}`;
     if (segments[1] === "ai-minutes-drafts") {
       const params = new URL(request.url).searchParams;
       const kind = params.get("kind") ?? "minutes";

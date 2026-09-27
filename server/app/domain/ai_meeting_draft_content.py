@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Literal
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from sqlalchemy import Connection, Engine, RowMapping, select
 
@@ -186,3 +186,115 @@ def publish_work(
         return None, decision
     except ValueError as error:
         raise MeetingStateError(str(error) or "请补齐正式办理资料") from error
+
+
+def record_publication_finding(
+    c: Connection,
+    draft: RowMapping,
+    content: dict[str, Any],
+    actor: UUID,
+    now: datetime,
+    reason: str,
+    *,
+    entity_id: UUID | None = None,
+) -> None:
+    """Bridge the named human publication to the original immutable-origin guards.
+
+    Called before and after the formal domain operation in the same transaction.
+    Draft confirmation alone never accepts a formal Finding. A failed publication
+    rolls back both this receipt and the domain write; no accepted item is queued.
+    """
+    from app.domain.findings import FindingService
+    from app.domain.meeting_action_proposals import validate_action
+    from app.domain.meeting_decision_proposals import validate_decision
+    from app.domain.meeting_minutes_proposals import validate_finding_minutes
+
+    before = FindingService._get(c, tenant_id=draft["tenant_id"], finding_id=draft["finding_id"])
+    kind = draft["draft_kind"]
+    entity_type = {"minutes": "meeting_minutes", "actions": "task", "decisions": "decision"}[kind]
+    values: dict[str, Any]
+    if entity_id is None:
+        if before.status != "archived":
+            raise MeetingStateError("原候选已沿其他流程办理，请刷新草稿")
+        try:
+            if kind == "minutes":
+                validate_finding_minutes(c, before, MeetingMinutesPayload.model_validate(content))
+            elif kind == "actions":
+                validate_action(c, before, MeetingActionPayload.model_validate(content))
+            else:
+                validate_decision(c, before, MeetingDecisionPayload.model_validate(content))
+        except ValueError as error:
+            raise MeetingStateError(str(error)) from error
+        # Re-enter the original finite-state machine only inside this human
+        # publication transaction; no pending-review item escapes the commit.
+        c.execute(
+            tables.findings.update()
+            .where(
+                tables.findings.c.tenant_id == draft["tenant_id"],
+                tables.findings.c.id == before.id,
+            )
+            .values(status="pending_review", updated_at=now)
+        )
+        restored = FindingService._get(c, tenant_id=draft["tenant_id"], finding_id=before.id)
+        FindingService._record_lifecycle_action(
+            c,
+            before=before,
+            after=restored,
+            actor_user_id=actor,
+            action="restored",
+            from_status="archived",
+            to_status="pending_review",
+            detail={"source": "ai_draft_human_publication", "draft_id": str(draft["id"])},
+            occurred_at=now,
+        )
+        before = restored
+        decision = "accepted"
+        values = {
+            "status": decision,
+            "accepted_payload": content,
+            "reviewed_by_user_id": actor,
+            "reviewed_at": now,
+            "review_comment": reason,
+            "updated_at": now,
+        }
+    else:
+        if before.status != "accepted":
+            raise MeetingStateError("正式办理缺少本次具名确认")
+        decision = "applied"
+        values = {
+            "status": decision,
+            "applied_by_user_id": actor,
+            "applied_at": now,
+            "applied_entity_type": entity_type,
+            "applied_entity_id": entity_id,
+            "updated_at": now,
+        }
+    c.execute(
+        tables.findings.update()
+        .where(tables.findings.c.tenant_id == draft["tenant_id"], tables.findings.c.id == before.id)
+        .values(**values)
+    )
+    c.execute(
+        tables.finding_actions.insert().values(
+            id=uuid4(),
+            tenant_id=draft["tenant_id"],
+            project_id=draft["project_id"],
+            finding_id=before.id,
+            action=decision,
+            actor_user_id=actor,
+            from_status=before.status,
+            to_status=decision,
+            detail={
+                "source": "ai_draft_human_publication",
+                "draft_id": str(draft["id"]),
+                "comment": reason,
+                "entity_type": entity_type if entity_id else None,
+                "entity_id": str(entity_id) if entity_id else None,
+            },
+            created_at=now,
+        )
+    )
+    after = FindingService._get(c, tenant_id=draft["tenant_id"], finding_id=before.id)
+    FindingService._feedback_event(
+        c, before=before, after=after, actor_user_id=actor, decision=decision, occurred_at=now
+    )

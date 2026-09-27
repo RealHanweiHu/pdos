@@ -25,6 +25,7 @@ from app.ai.runtime_contract import (
     AgentKey,
     agents_for_event,
 )
+from app.ai.write_policy import WRITE_OPERATIONS, WriteMode, WriteTier, default_settings
 
 PROMPT_DIRECTORY = Path(__file__).resolve().parents[1] / "app" / "ai" / "prompts"
 
@@ -72,9 +73,9 @@ ADDED_CAPABILITY_CONTRACTS: dict[str, tuple[CapabilityZone, tuple[str, ...]]] = 
         CapabilityZone.HARD_GATE,
         ("meeting_issue", "meeting_risk", "meeting_change"),
     ),
-    "knowledge_lite.meeting_decisions": (CapabilityZone.HARD_GATE, ("meeting_decision",)),
-    "knowledge_lite.meeting_actions": (CapabilityZone.HARD_GATE, ("meeting_action",)),
-    "knowledge_lite.meeting_minutes": (CapabilityZone.HARD_GATE, ("meeting_minutes",)),
+    "knowledge_lite.meeting_decisions": (CapabilityZone.FREE, ("meeting_decision",)),
+    "knowledge_lite.meeting_actions": (CapabilityZone.FREE, ("meeting_action",)),
+    "knowledge_lite.meeting_minutes": (CapabilityZone.FREE, ("meeting_minutes",)),
     "knowledge_lite.meeting_reading": (CapabilityZone.FREE, ()),
     "engineering_intelligence.cost_discussion_followup": (CapabilityZone.HARD_GATE, ()),
     "engineering_intelligence.cost_reduction": (CapabilityZone.HARD_GATE, ("cost_reduction",)),
@@ -148,12 +149,25 @@ def test_prompt_versions_stay_in_sync_with_prompt_files() -> None:
 
 
 def test_zone_and_rollout_invariants() -> None:
+    dc11_drafts = {
+        "knowledge_lite.meeting_minutes": "meeting.minutes.draft",
+        "knowledge_lite.meeting_actions": "meeting.actions.draft",
+        "knowledge_lite.meeting_decisions": "meeting.decisions.draft",
+    }
     for contract in CAPABILITY_CONTRACTS.values():
         if contract.key.value in ADDED_CAPABILITY_CONTRACTS:
             zone, finding_types = ADDED_CAPABILITY_CONTRACTS[contract.key.value]
             assert (contract.zone, contract.finding_types) == (zone, finding_types)
             assert contract.rollout is CapabilityRollout.SHADOW
             assert not contract.event_driven
+            if contract.zone is CapabilityZone.FREE and contract.finding_types:
+                # DC-11 permits these draft operations only; zone membership
+                # does not grant direct execution or formal publication.
+                operation_key = dc11_drafts[contract.key.value]
+                assert contract.write_operations == (operation_key,)
+                assert contract.write_tier is WriteTier.T0
+                assert default_settings()[operation_key].mode is WriteMode.DISABLED
+                assert not WRITE_OPERATIONS[operation_key].adapter_ready
             continue
         # Hard-gate output must flow through Finding review with per-capability
         # quality control; confirm-zone output is draft + human confirm.
@@ -164,8 +178,8 @@ def test_zone_and_rollout_invariants() -> None:
         else:
             assert not contract.finding_types
             assert contract.zone is CapabilityZone.CONFIRM, (
-                "no model capability may ship in the free zone (D32: free-zone "
-                "writes are reserved for deterministic rule engines)"
+                "legacy model writes retain confirmation; DC-11 draft exceptions "
+                "must be explicitly registered above"
             )
         # Phase-three agents stay shadow until their phase opens.
         expected_rollout = (
@@ -175,6 +189,8 @@ def test_zone_and_rollout_invariants() -> None:
             else CapabilityRollout.LIVE
         )
         assert contract.rollout is expected_rollout
+    assert WRITE_OPERATIONS["formal_action.execute"].write_tier is WriteTier.T2
+    assert "formal_action.execute" not in default_settings()
 
 
 def test_disabled_output_is_blocked_even_when_another_agent_capability_is_live(
