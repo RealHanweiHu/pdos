@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { ArrowLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { requestIdentity } from "@/components/workspace-api";
@@ -28,6 +29,16 @@ const field = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
 const lines = (value: string) => value.split("\n").map((item) => item.trim()).filter(Boolean);
 const accessLabels: Record<string, string> = { viewer: "只读", contributor: "协作", manager: "管理" };
 const tabs = ["研究", "竞品", "细分 / JTBD", "机会树", "策略", "定义", "矩阵 / 路线图", "实验 / 决策", "导出中心", "投入观察"];
+const spaceLifecycleLabels: Record<string, string> = { draft: "草稿", active: "启用", archived: "已归档", retired: "已退役" };
+
+function spaceMeta(space: Space) {
+  const parts: string[] = [];
+  if (space.user_groups.length) parts.push(`${space.user_groups.length} 个用户群`);
+  if (space.regions.length) parts.push(`${space.regions.length} 个地域`);
+  if (space.use_scenarios.length) parts.push(`${space.use_scenarios.length} 个场景`);
+  if (space.research_questions.length) parts.push(`${space.research_questions.length} 个研究问题`);
+  return parts.join(" · ");
+}
 
 function useRequestId() {
   const last = useRef({ body: "", id: "" });
@@ -39,7 +50,8 @@ function useRequestId() {
 }
 
 export function ProductWorkspace() {
-  const { replace } = useRouter();
+  const { push, replace } = useRouter();
+  const searchParams = useSearchParams();
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [identityFailed, setIdentityFailed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -60,11 +72,18 @@ export function ProductWorkspace() {
     }).catch(() => { if (live) setIdentityFailed(true); });
     void request<{ items: Space[]; can_create: boolean }>("spaces").then((data) => {
       if (!live) return; setSpaces(data.items); setCanCreate(data.can_create);
-      const target = new URLSearchParams(window.location.search).get("space");
-      if (target && data.items.some((space) => space.id === target)) setSelected(target);
     }).catch((failure) => { if (live) setError(failure.message); });
     return () => { live = false; };
   }, [replace]);
+  // Selection follows the ?space= deep link in both directions, so shared
+  // links and browser back/forward keep the directory and workspace in sync.
+  useEffect(() => {
+    if (!spaces) return;
+    const target = searchParams.get("space");
+    setSelected(target && spaces.some((space) => space.id === target) ? target : "");
+  }, [searchParams, spaces]);
+  const openSpace = (id: string) => { setCreateOpen(false); push(`/product-work?space=${encodeURIComponent(id)}`); };
+  const closeSpace = () => { push("/product-work"); };
   async function logout() {
     setLoggingOut(true);
     try {
@@ -84,28 +103,72 @@ export function ProductWorkspace() {
   if (identity === null) {
     return <main aria-busy="true" className="mx-auto max-w-6xl px-4 py-10 text-sm text-muted-foreground">正在加载产品管理工作台…</main>;
   }
+  const selectedSpace = spaces?.find((space) => space.id === selected) ?? null;
   return <WorkspaceShell active="product-work" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
     <div className="space-y-6">
-    <header><h1 className="text-2xl font-semibold">产品管理工作台</h1><p className="mt-2 text-sm text-muted-foreground">围绕市场空间组织研究、来源与专业协作，立项前即可开展工作。</p></header>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    <div className="flex flex-wrap items-center gap-3">
-      <label className="min-w-64 flex-1 text-sm">市场空间<select className={field} value={selected} onChange={(event) => { setSelected(event.target.value); setCreateOpen(false); }}><option value="">选择市场空间</option>{spaces?.map((space) => <option key={space.id} value={space.id}>{space.code} · {space.title}</option>)}</select></label>
-      {canCreate && <Button variant="outline" onClick={() => setCreateOpen(!createOpen)}>新建市场空间</Button>}
-      <Button variant="outline" disabled={busy} onClick={() => { setError(null); void load().catch((failure) => setError(failure.message)); }}>刷新</Button>
-    </div>
-    {spaces?.length === 0 && <p className="text-sm text-muted-foreground">尚无可访问市场空间。{canCreate ? "可先登记用户群、地域、场景和研究问题。" : "请由空间负责人将你加入协作成员。"}</p>}
-    {createOpen && canCreate && <form className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2" onSubmit={(event) => {
-      event.preventDefault(); const form = new FormData(event.currentTarget);
-      const body = { code: String(form.get("code")).trim(), title: String(form.get("title")).trim(), user_groups: lines(String(form.get("groups"))), regions: lines(String(form.get("regions"))), use_scenarios: lines(String(form.get("scenarios"))), research_questions: lines(String(form.get("questions"))) };
-      setBusy(true); setError(null);
-      void request<Space>("spaces", "POST", { ...body, request_id: stableId(body) }).then(async (space) => { await load(); setSelected(space.id); setCreateOpen(false); }).catch((failure) => setError(failure.message)).finally(() => setBusy(false));
-    }}>
-      <label className="text-sm">空间编号<input required name="code" maxLength={128} pattern="[a-zA-Z0-9_.:-]+" className={field} placeholder="如 portable-inflation" /></label>
-      <label className="text-sm">空间名称<input required name="title" maxLength={512} className={field} /></label>
-      {[["groups", "用户群"], ["regions", "地域 / 市场"], ["scenarios", "使用场景"], ["questions", "待研究问题"]].map(([key, label]) => <label key={key} className="text-sm">{label}（每行一项）<textarea required name={key} className={field} /></label>)}
-      <Button disabled={busy}>创建市场空间</Button>
-    </form>}
-    {selected && <SpaceWorkspace key={selected} spaceId={selected} />}
+    {selectedSpace ? (
+      <>
+        <div className="flex min-w-0 items-center gap-1.5">
+          <Button className="-ml-2 gap-1 text-muted-foreground" onClick={closeSpace} size="sm" variant="ghost">
+            <ArrowLeftIcon aria-hidden="true" className="size-4" />
+            市场空间
+          </Button>
+          <span aria-hidden="true" className="text-sm text-muted-foreground">/</span>
+          <span className="shrink-0 rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{selectedSpace.code}</span>
+          <span className="truncate text-sm font-medium">{selectedSpace.title}</span>
+        </div>
+        <SpaceWorkspace key={selected} spaceId={selected} />
+      </>
+    ) : (
+      <>
+        <header className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold">产品管理工作台</h1>
+            <p className="mt-2 text-sm text-muted-foreground">围绕市场空间组织研究、来源与专业协作，立项前即可开展工作。</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {canCreate && <Button variant="outline" onClick={() => setCreateOpen(!createOpen)}>新建市场空间</Button>}
+            <Button variant="outline" disabled={busy} onClick={() => { setError(null); void load().catch((failure) => setError(failure.message)); }}>刷新</Button>
+          </div>
+        </header>
+        {createOpen && canCreate && <form className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2" onSubmit={(event) => {
+          event.preventDefault(); const form = new FormData(event.currentTarget);
+          const body = { code: String(form.get("code")).trim(), title: String(form.get("title")).trim(), user_groups: lines(String(form.get("groups"))), regions: lines(String(form.get("regions"))), use_scenarios: lines(String(form.get("scenarios"))), research_questions: lines(String(form.get("questions"))) };
+          setBusy(true); setError(null);
+          void request<Space>("spaces", "POST", { ...body, request_id: stableId(body) }).then(async (space) => { await load(); setCreateOpen(false); openSpace(space.id); }).catch((failure) => setError(failure.message)).finally(() => setBusy(false));
+        }}>
+          <label className="text-sm">空间编号<input required name="code" maxLength={128} pattern="[a-zA-Z0-9_.:-]+" className={field} placeholder="如 portable-inflation" /></label>
+          <label className="text-sm">空间名称<input required name="title" maxLength={512} className={field} /></label>
+          {[["groups", "用户群"], ["regions", "地域 / 市场"], ["scenarios", "使用场景"], ["questions", "待研究问题"]].map(([key, label]) => <label key={key} className="text-sm">{label}（每行一项）<textarea required name={key} className={field} /></label>)}
+          <Button disabled={busy}>创建市场空间</Button>
+        </form>}
+        {spaces?.length === 0 && <p className="text-sm text-muted-foreground">尚无可访问市场空间。{canCreate ? "可先登记用户群、地域、场景和研究问题。" : "请由空间负责人将你加入协作成员。"}</p>}
+        {spaces && spaces.length > 0 ? (
+          <div className="overflow-hidden rounded-lg border bg-card">
+            <ul className="divide-y" role="list">
+              {spaces.map((space) => (
+                <li key={space.id}>
+                  <button
+                    className="flex min-h-11 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25"
+                    onClick={() => openSpace(space.id)}
+                    type="button"
+                  >
+                    <span className="shrink-0 rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{space.code}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">{space.title}</span>
+                      {spaceMeta(space) ? <span className="mt-0.5 block truncate text-xs text-muted-foreground">{spaceMeta(space)}</span> : null}
+                    </span>
+                    <span className="shrink-0 rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">{spaceLifecycleLabels[space.lifecycle] ?? space.lifecycle}</span>
+                    <CaretRightIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </>
+    )}
     </div>
   </WorkspaceShell>;
 }
