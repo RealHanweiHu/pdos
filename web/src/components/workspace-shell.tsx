@@ -2,7 +2,6 @@
 
 import {
   BookOpenTextIcon,
-  BuildingsIcon,
   ChatCircleTextIcon,
   ClipboardTextIcon,
   FolderOpenIcon,
@@ -11,15 +10,10 @@ import {
   KanbanIcon,
   ListIcon,
   ListChecksIcon,
-  LockKeyIcon,
   PackageIcon,
-  PulseIcon,
-  PlugsConnectedIcon,
-  RobotIcon,
   SignOutIcon,
   SquaresFourIcon,
   TrayIcon,
-  UsersThreeIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRef, useState, type ReactNode } from "react";
@@ -97,64 +91,26 @@ const domains = [
       },
     ],
   },
-  {
-    domain: "Settings",
-    label: "设置",
-    items: [
-      { href: "/settings/security", label: "账户安全", icon: LockKeyIcon, key: "account-security" },
-      {
-        href: "/settings/integrations/dingtalk",
-        label: "钉钉集成",
-        icon: PlugsConnectedIcon,
-        key: "dingtalk-integration",
-        internalOnly: true,
-      },
-      {
-        href: "/settings/integrations/tencent-meeting",
-        label: "腾讯会议集成",
-        icon: PlugsConnectedIcon,
-        key: "tencent-meeting-integration",
-        internalOnly: true,
-      },
-      {
-        href: "/governance/users",
-        label: "成员与角色",
-        icon: UsersThreeIcon,
-        key: "user-management",
-        adminOnly: true,
-      },
-      {
-        href: "/governance/organization",
-        label: "组织与代理",
-        icon: BuildingsIcon,
-        key: "organization",
-        adminOnly: true,
-      },
-      {
-        href: "/governance/ai",
-        label: "AI 治理",
-        icon: RobotIcon,
-        key: "ai-governance",
-        adminOnly: true,
-      },
-      {
-        href: "/governance/models",
-        label: "模型治理",
-        icon: GearSixIcon,
-        key: "model-governance",
-        adminOnly: true,
-      },
-      { href: "/events", label: "事件流", icon: PulseIcon, key: "events", adminOnly: true },
-    ],
-  },
 ] as const;
+
+/**
+ * One pinned settings entry, Linear-style. The account, integration and
+ * governance pages behind it are classified by SettingsNav inside the
+ * settings area instead of occupying flat sidebar entries.
+ */
+const settingsEntry = {
+  href: "/settings/security",
+  label: "设置",
+  icon: GearSixIcon,
+  key: "settings",
+} as const;
 
 type NavigationItem = (typeof domains)[number]["items"][number];
 type NavigationGroup = { domain: string; label: string; items: readonly NavigationItem[] };
 
-// Field capture and global search keep the shell when opened through their
-// contextual links or direct URL; they simply have no sidebar entry to light up.
-type WorkspaceView = NavigationItem["key"] | "capture" | "search";
+// Settings-area pages highlight the single settings entry; field capture and
+// global search keep the shell without a sidebar entry to light up.
+type WorkspaceView = NavigationItem["key"] | typeof settingsEntry.key | "capture" | "search";
 
 function DomainSection({ active, group }: { active: WorkspaceView; group: NavigationGroup }) {
   return (
@@ -207,9 +163,7 @@ export function WorkspaceShell({
       ),
     }))
     .filter((group) => group.items.length > 0);
-  const mainDomains = visibleDomains.filter((group) => group.domain !== "Settings");
-  const settingsDomain = visibleDomains.find((group) => group.domain === "Settings") ?? null;
-  const visibleNavigation = visibleDomains.flatMap((group) => group.items);
+  const visibleNavigation = [...visibleDomains.flatMap((group) => group.items), settingsEntry];
   const currentNavigation = visibleNavigation.find((item) => item.key === active);
   return (
     <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
@@ -230,15 +184,23 @@ export function WorkspaceShell({
           <span className="font-semibold tracking-tight">PDOS</span>
         </div>
         <nav aria-label="主导航" className="flex-1 overflow-y-auto px-2.5 py-3">
-          {mainDomains.map((group) => (
+          {visibleDomains.map((group) => (
             <DomainSection active={active} group={group} key={group.domain} />
           ))}
         </nav>
-        {settingsDomain ? (
-          <div className="border-t border-sidebar-border px-2.5 py-2">
-            <DomainSection active={active} group={settingsDomain} />
-          </div>
-        ) : null}
+        <div className="border-t border-sidebar-border px-2.5 py-2">
+          <Link
+            aria-current={active === settingsEntry.key ? "page" : undefined}
+            className={cn(
+              "flex min-h-11 items-center gap-2 rounded-md px-2 text-[13px] text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30 lg:min-h-8",
+              active === settingsEntry.key && "bg-sidebar-accent text-sidebar-accent-foreground",
+            )}
+            href={settingsEntry.href}
+          >
+            <GearSixIcon aria-hidden="true" className="size-4" weight="regular" />
+            {settingsEntry.label}
+          </Link>
+        </div>
         <div className="border-t border-sidebar-border px-4 py-3">
           <p className="truncate text-xs font-medium text-sidebar-accent-foreground">
             {identity.user.display_name}

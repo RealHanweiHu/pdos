@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { isRecord, requestIdentity, responseBody } from "@/components/workspace-api";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
@@ -67,5 +68,5 @@ export function TencentMeetingIntegration() {
       <details className="rounded-lg border p-4"><summary className="cursor-pointer font-medium">账号映射历史</summary>{data.items.map(item => <article key={item.id} className="mt-3 border-t pt-3 text-sm"><p>v{item.version} · {labels[item.status]} · {item.actor_name} · {new Date(item.created_at).toLocaleString("zh-CN")}</p><p>{item.external_display_name} · {item.external_user_id} · 企业应用 {item.app_id}</p><p>{item.evidence}</p></article>)}{data.next_before_version && <Button variant="outline" size="sm" className="mt-3" disabled={frozen} onClick={() => void load(data.person.id, data.next_before_version ?? undefined)}>更早版本</Button>}</details>
     </>}
   </div>;
-  return identity ? <WorkspaceShell active="tencent-meeting-integration" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>{content}</WorkspaceShell> : <main className="p-6">{error || "正在读取账号资料…"}</main>;
+  return identity ? <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}><SettingsNav current="tencent-meeting-integration" identity={identity}>{content}</SettingsNav></WorkspaceShell> : <main className="p-6">{error || "正在读取账号资料…"}</main>;
 }

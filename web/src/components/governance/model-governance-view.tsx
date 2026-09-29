@@ -2,6 +2,7 @@ import { CheckCircleIcon, ShieldCheckIcon, WarningCircleIcon } from "@phosphor-i
 import { type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
@@ -112,11 +113,12 @@ export function ModelGovernanceView({
 
   return (
     <WorkspaceShell
-      active="model-governance"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={onLogout}
     >
+      <SettingsNav current="model-governance" identity={identity}>
       <div className="border-b pb-4">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           Governance
@@ -209,6 +211,7 @@ export function ModelGovernanceView({
 
         <BudgetMeter snapshot={snapshot} />
       </div>
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

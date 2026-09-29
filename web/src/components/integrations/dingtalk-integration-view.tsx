@@ -6,6 +6,7 @@ import {
 } from "@phosphor-icons/react/ssr";
 
 import { Button } from "@/components/ui/button";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
@@ -38,11 +39,12 @@ export function DingTalkIntegrationView({
   const healthy = data.status.configured && data.status.binding_status === "active";
   return (
     <WorkspaceShell
-      active="dingtalk-integration"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={onLogout}
     >
+      <SettingsNav current="dingtalk-integration" identity={identity}>
       <div className="border-b pb-4">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           Integration
@@ -139,6 +141,7 @@ export function DingTalkIntegrationView({
           )}
         </section>
       ) : null}
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

@@ -36,15 +36,18 @@ function renderShell(role: string) {
 describe("WorkspaceShell global domain navigation (D31 regrouped)", () => {
   afterEach(cleanup);
 
-  it("keeps the sidebar to daily destinations with settings pinned below", () => {
+  it("keeps the sidebar to daily destinations with a single pinned settings entry", () => {
     const nav = renderShell("owner");
     for (const domain of ["工作", "项目", "产品", "AI 与知识"]) {
       expect(nav.getByText(domain)).toBeInTheDocument();
     }
-    // Governance moved into the pinned 设置 group; no separate 管理 domain.
-    expect(nav.queryByText("管理")).not.toBeInTheDocument();
+    // Governance, integrations and account pages integrate into one settings
+    // entry; the settings area navigates internally via SettingsNav.
     const aside = within(screen.getByRole("complementary"));
-    expect(aside.getByText("设置")).toBeInTheDocument();
+    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute(
+      "href",
+      "/settings/security",
+    );
     for (const label of [
       "账户安全",
       "钉钉集成",
@@ -55,13 +58,9 @@ describe("WorkspaceShell global domain navigation (D31 regrouped)", () => {
       "模型治理",
       "事件流",
     ]) {
-      expect(aside.getByRole("link", { name: label })).toBeInTheDocument();
+      expect(aside.queryByRole("link", { name: label })).not.toBeInTheDocument();
     }
     expect(nav.getByRole("link", { name: "组合与阻塞" })).toHaveAttribute("href", "/portfolio");
-    expect(aside.getByRole("link", { name: "组织与代理" })).toHaveAttribute(
-      "href",
-      "/governance/organization",
-    );
   });
 
   it("has no entries for contextual surfaces or project workspace tabs", () => {
@@ -93,8 +92,7 @@ describe("WorkspaceShell global domain navigation (D31 regrouped)", () => {
     for (const label of ["成员与角色", "组织与代理", "AI 治理", "模型治理", "事件流"]) {
       expect(aside.queryByRole("link", { name: label })).not.toBeInTheDocument();
     }
-    expect(aside.getByRole("link", { name: "账户安全" })).toBeInTheDocument();
-    expect(aside.getByRole("link", { name: "钉钉集成" })).toBeInTheDocument();
+    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute("href", "/settings/security");
     expect(nav.getByRole("link", { name: "我的工作" })).toBeInTheDocument();
   });
 
@@ -103,12 +101,11 @@ describe("WorkspaceShell global domain navigation (D31 regrouped)", () => {
     expect(nav.queryByRole("link", { name: "组合与阻塞" })).not.toBeInTheDocument();
     expect(nav.queryByText("AI 与知识")).not.toBeInTheDocument();
     expect(nav.queryByRole("link", { name: "我的工作" })).not.toBeInTheDocument();
-    // Projects, product surfaces and account security stay reachable for external collaborators.
+    // Projects, product surfaces and the settings area stay reachable for external collaborators.
     expect(nav.getByRole("link", { name: "项目工作区" })).toBeInTheDocument();
     expect(nav.getByRole("link", { name: "需求池" })).toBeInTheDocument();
     const aside = within(screen.getByRole("complementary"));
-    expect(aside.getByRole("link", { name: "账户安全" })).toBeInTheDocument();
-    expect(aside.queryByRole("link", { name: "钉钉集成" })).not.toBeInTheDocument();
+    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute("href", "/settings/security");
   });
 
   it("starts with a compact mobile current entry and preserves every permitted destination when expanded", async () => {

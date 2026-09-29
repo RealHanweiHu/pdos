@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { requestUserManagementBootstrap } from "@/components/users/user-management-api";
 import type { ManagedUser } from "@/components/users/user-management-types";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { ProcessTemplateLibrary } from "./process-template-library";
@@ -176,11 +177,12 @@ export function OrganizationGovernance() {
 
   return (
     <WorkspaceShell
-      active="organization"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={() => void logout()}
     >
+      <SettingsNav current="organization" identity={identity}>
       <div className="border-b pb-4">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           Admin Workspace
@@ -600,6 +602,7 @@ export function OrganizationGovernance() {
       </section>
       <OrganizationHandoverHistory sourceId={handoverFrom} targetId={handoverTo}/>
       <ProcessTemplateLibrary />
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

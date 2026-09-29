@@ -10,6 +10,7 @@ import {
 } from "@/components/ai/ai-api";
 import type { AiCapability, AiTouchpoint, AiUsage } from "@/components/ai/ai-types";
 import { requestProjects } from "@/components/projects/project-api";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
@@ -100,7 +101,8 @@ export function AiGovernance() {
   }
 
   return (
-    <WorkspaceShell active="ai-governance" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+      <SettingsNav current="ai-governance" identity={identity}>
       <div className="border-b pb-4">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           Admin Workspace
@@ -253,6 +255,7 @@ export function AiGovernance() {
           </table>
         </div>
       </section>
+      </SettingsNav>
     </WorkspaceShell>
   );
 }
