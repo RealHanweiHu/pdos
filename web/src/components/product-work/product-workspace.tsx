@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
+import { ArrowLeftIcon, CaretRightIcon, ListBulletsIcon, SquaresFourIcon } from "@phosphor-icons/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { requestIdentity } from "@/components/workspace-api";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
+import { cn } from "@/lib/utils";
 import { WorkHistory } from "./work-history";
 import { WorkResponsibility, WorkResponsibilityLanding } from "./work-responsibility";
 import { actionLabels, command, request, stateLabels, type Evidence, type Member, type ProductCatalog, type Research, type Space, type WorkItem, type Workspace } from "./product-work-api";
@@ -30,6 +31,7 @@ const lines = (value: string) => value.split("\n").map((item) => item.trim()).fi
 const accessLabels: Record<string, string> = { viewer: "只读", contributor: "协作", manager: "管理" };
 const tabs = ["研究", "竞品", "细分 / JTBD", "机会树", "策略", "定义", "矩阵 / 路线图", "实验 / 决策", "导出中心", "投入观察"];
 const spaceLifecycleLabels: Record<string, string> = { draft: "草稿", active: "启用", archived: "已归档", retired: "已退役" };
+const VIEW_STORAGE_KEY = "pdos.productWork.view";
 
 function spaceMeta(space: Space) {
   const parts: string[] = [];
@@ -38,6 +40,39 @@ function spaceMeta(space: Space) {
   if (space.use_scenarios.length) parts.push(`${space.use_scenarios.length} 个场景`);
   if (space.research_questions.length) parts.push(`${space.research_questions.length} 个研究问题`);
   return parts.join(" · ");
+}
+
+/**
+ * Derived identity tile for a market space: a deterministic gradient and
+ * monogram from the space code. Spaces have no real cover-image field yet, so
+ * the tile is an honest derived mark rather than fabricated photography; a
+ * future cover field can replace it in place.
+ */
+function SpaceVisual({ code, title }: { code: string; title: string }) {
+  let hash = 0;
+  for (let index = 0; index < code.length; index += 1) {
+    hash = (hash * 31 + code.charCodeAt(index)) % 360;
+  }
+  const monogram =
+    code
+      .split(/[-_:]/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join("") || title.charAt(0);
+  return (
+    <div
+      aria-hidden="true"
+      className="flex h-28 items-end p-3 dark:brightness-75"
+      style={{
+        backgroundImage: `linear-gradient(135deg, hsl(${hash} 42% 82%), hsl(${(hash + 48) % 360} 38% 68%))`,
+      }}
+    >
+      <span className="font-mono text-xl font-semibold tracking-tight text-white/95 [text-shadow:0_1px_2px_rgb(0_0_0/0.25)]">
+        {monogram}
+      </span>
+    </div>
+  );
 }
 
 function useRequestId() {
@@ -57,10 +92,14 @@ export function ProductWorkspace() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [spaces, setSpaces] = useState<Space[] | null>(null);
   const [canCreate, setCanCreate] = useState(false);
-  const [selected, setSelected] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "cards">(() =>
+    typeof window !== "undefined" && window.localStorage.getItem(VIEW_STORAGE_KEY) === "cards"
+      ? "cards"
+      : "list",
+  );
   const stableId = useRequestId();
   const load = async () => { const data = await request<{ items: Space[]; can_create: boolean }>("spaces"); setSpaces(data.items); setCanCreate(data.can_create); };
   useEffect(() => {
@@ -75,15 +114,16 @@ export function ProductWorkspace() {
     }).catch((failure) => { if (live) setError(failure.message); });
     return () => { live = false; };
   }, [replace]);
-  // Selection follows the ?space= deep link in both directions, so shared
-  // links and browser back/forward keep the directory and workspace in sync.
-  useEffect(() => {
-    if (!spaces) return;
-    const target = searchParams.get("space");
-    setSelected(target && spaces.some((space) => space.id === target) ? target : "");
-  }, [searchParams, spaces]);
+  // Selection is derived from the ?space= deep link, so shared links and
+  // browser back/forward keep the directory and workspace in sync.
+  const target = searchParams.get("space");
+  const selected = spaces && target && spaces.some((space) => space.id === target) ? target : "";
   const openSpace = (id: string) => { setCreateOpen(false); push(`/product-work?space=${encodeURIComponent(id)}`); };
   const closeSpace = () => { push("/product-work"); };
+  const changeViewMode = (mode: "list" | "cards") => {
+    setViewMode(mode);
+    window.localStorage.setItem(VIEW_STORAGE_KEY, mode);
+  };
   async function logout() {
     setLoggingOut(true);
     try {
@@ -128,6 +168,23 @@ export function ProductWorkspace() {
             <p className="mt-2 text-sm text-muted-foreground">围绕市场空间组织研究、来源与专业协作，立项前即可开展工作。</p>
           </div>
           <div className="flex items-center gap-2">
+            <div aria-label="切换视图" className="flex items-center rounded-lg border p-0.5" role="group">
+              {([["list", ListBulletsIcon, "列表"], ["cards", SquaresFourIcon, "卡片"]] as const).map(([mode, Icon, label]) => (
+                <button
+                  aria-label={`${label}视图`}
+                  aria-pressed={viewMode === mode}
+                  className={cn(
+                    "flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+                    viewMode === mode && "bg-muted text-foreground",
+                  )}
+                  key={mode}
+                  onClick={() => changeViewMode(mode)}
+                  type="button"
+                >
+                  <Icon aria-hidden="true" className="size-4" />
+                </button>
+              ))}
+            </div>
             {canCreate && <Button variant="outline" onClick={() => setCreateOpen(!createOpen)}>新建市场空间</Button>}
             <Button variant="outline" disabled={busy} onClick={() => { setError(null); void load().catch((failure) => setError(failure.message)); }}>刷新</Button>
           </div>
@@ -144,7 +201,7 @@ export function ProductWorkspace() {
           <Button disabled={busy}>创建市场空间</Button>
         </form>}
         {spaces?.length === 0 && <p className="text-sm text-muted-foreground">尚无可访问市场空间。{canCreate ? "可先登记用户群、地域、场景和研究问题。" : "请由空间负责人将你加入协作成员。"}</p>}
-        {spaces && spaces.length > 0 ? (
+        {spaces && spaces.length > 0 && viewMode === "list" ? (
           <div className="overflow-hidden rounded-lg border bg-card">
             <ul className="divide-y" role="list">
               {spaces.map((space) => (
@@ -165,6 +222,28 @@ export function ProductWorkspace() {
                 </li>
               ))}
             </ul>
+          </div>
+        ) : null}
+        {spaces && spaces.length > 0 && viewMode === "cards" ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {spaces.map((space) => (
+              <button
+                className="overflow-hidden rounded-lg border bg-card text-left transition-colors hover:border-foreground/25 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
+                key={space.id}
+                onClick={() => openSpace(space.id)}
+                type="button"
+              >
+                <SpaceVisual code={space.code} title={space.title} />
+                <span className="block space-y-2 p-4">
+                  <span className="flex items-center gap-2">
+                    <span className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{space.code}</span>
+                    <span className="ml-auto rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">{spaceLifecycleLabels[space.lifecycle] ?? space.lifecycle}</span>
+                  </span>
+                  <span className="block truncate text-sm font-medium">{space.title}</span>
+                  {spaceMeta(space) ? <span className="block truncate text-xs text-muted-foreground">{spaceMeta(space)}</span> : null}
+                </span>
+              </button>
+            ))}
           </div>
         ) : null}
       </>
