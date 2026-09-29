@@ -1,7 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { requestIdentity } from "@/components/workspace-api";
+import { WorkspaceShell } from "@/components/workspace-shell";
+import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { WorkHistory } from "./work-history";
 import { WorkResponsibility, WorkResponsibilityLanding } from "./work-responsibility";
 import { actionLabels, command, request, stateLabels, type Evidence, type Member, type ProductCatalog, type Research, type Space, type WorkItem, type Workspace } from "./product-work-api";
@@ -35,6 +39,10 @@ function useRequestId() {
 }
 
 export function ProductWorkspace() {
+  const { replace } = useRouter();
+  const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
+  const [identityFailed, setIdentityFailed] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [spaces, setSpaces] = useState<Space[] | null>(null);
   const [canCreate, setCanCreate] = useState(false);
   const [selected, setSelected] = useState("");
@@ -45,14 +53,39 @@ export function ProductWorkspace() {
   const load = async () => { const data = await request<{ items: Space[]; can_create: boolean }>("spaces"); setSpaces(data.items); setCanCreate(data.can_create); };
   useEffect(() => {
     let live = true;
+    void requestIdentity().then((loaded) => {
+      if (!live) return;
+      if (loaded === null) { replace("/login"); return; }
+      setIdentity(loaded);
+    }).catch(() => { if (live) setIdentityFailed(true); });
     void request<{ items: Space[]; can_create: boolean }>("spaces").then((data) => {
       if (!live) return; setSpaces(data.items); setCanCreate(data.can_create);
       const target = new URLSearchParams(window.location.search).get("space");
       if (target && data.items.some((space) => space.id === target)) setSelected(target);
     }).catch((failure) => { if (live) setError(failure.message); });
     return () => { live = false; };
-  }, []);
-  return <main className="space-y-6">
+  }, [replace]);
+  async function logout() {
+    setLoggingOut(true);
+    try {
+      await fetch("/api/session/logout", { method: "POST", credentials: "same-origin" });
+    } finally {
+      replace("/login");
+    }
+  }
+  if (identityFailed) {
+    return (
+      <main className="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center px-6 text-center">
+        <h1 className="text-lg font-semibold">产品管理工作台暂不可用</h1>
+        <p className="mt-1 text-sm text-muted-foreground">无法读取当前登录身份，请刷新重试。</p>
+      </main>
+    );
+  }
+  if (identity === null) {
+    return <main aria-busy="true" className="mx-auto max-w-6xl px-4 py-10 text-sm text-muted-foreground">正在加载产品管理工作台…</main>;
+  }
+  return <WorkspaceShell active="product-work" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+    <div className="space-y-6">
     <header><h1 className="text-2xl font-semibold">产品管理工作台</h1><p className="mt-2 text-sm text-muted-foreground">围绕市场空间组织研究、来源与专业协作，立项前即可开展工作。</p></header>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     <div className="flex flex-wrap items-center gap-3">
@@ -73,7 +106,8 @@ export function ProductWorkspace() {
       <Button disabled={busy}>创建市场空间</Button>
     </form>}
     {selected && <SpaceWorkspace key={selected} spaceId={selected} />}
-  </main>;
+    </div>
+  </WorkspaceShell>;
 }
 
 function MemberSelect({ members, name, label, required = false, defaultValue = "" }: { members: Member[]; name: string; label: string; required?: boolean; defaultValue?: string }) {

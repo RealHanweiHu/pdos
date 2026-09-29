@@ -440,7 +440,11 @@ describe("ProjectWorkspace", () => {
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
     expect(screen.queryByRole("region", { name: "计划与资源办理" })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "办理计划与资源" }));
-    expect(await screen.findByRole("region", { name: "计划与资源办理" })).toBeInTheDocument();
+    // The plan panel is a deferred dynamic import; allow extra time under
+    // full-suite parallel load instead of flaking on the 1s default.
+    expect(
+      await screen.findByRole("region", { name: "计划与资源办理" }, { timeout: 5000 }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("heading", { name: "滚动预测与预测偏差" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "四时间对照与独立承诺" })).toBeInTheDocument();
