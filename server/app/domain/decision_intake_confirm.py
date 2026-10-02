@@ -318,6 +318,7 @@ class DecisionIntakeConfirmation:
                     )
                     if (
                         current_target is None
+                        or (kind == "issue" and current_target.get("withdrawn_at") is not None)
                         or digest(snapshot(current_target, kind)) != selection.expected_digest
                     ):
                         results.append(

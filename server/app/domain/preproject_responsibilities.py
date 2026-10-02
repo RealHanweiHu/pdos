@@ -10,9 +10,11 @@ from sqlalchemy import Connection, Engine, exists, or_, select, text
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, Role, is_allowed
 from app.db.schema import tables
+from app.domain.definition_inheritance import effective_content, expand_definition, sparse_content
 from app.domain.product_workspace import (
     ProductWorkAccessError,
     ProductWorkError,
+    _audit_snapshot,
     _line,
     _member,
     _plain,
@@ -135,7 +137,7 @@ def record(c: Connection, context: AuthContext, space: UUID, kind: Kind, id: UUI
     if row is None:
         raise ProductWorkAccessError("原工作不存在或不可访问")
     _line(c, context, space, row.get("product_line_id"))
-    return row
+    return expand_definition(c, row) if kind == "definition" else row
 
 
 def manage(c: Connection, context: AuthContext, space: UUID, row: Any) -> None:
@@ -388,7 +390,10 @@ def reassign(
                 for item in content["items"]:
                     if item["item_key"] == command.key:
                         item["owner_user_id"] = str(command.user_id)
-            values.update(content=content, review_digest=None)
+            values.update(
+                content=sparse_content(c, context.tenant.id, row["base_definition_id"], content),
+                review_digest=None,
+            )
             if row["state"] == "in_review":
                 # Existing DB contract allows content changes only between drafts.
                 # Return and edit share the original space lock and transaction.
@@ -473,6 +478,8 @@ def reassign(
                 .mappings()
                 .one()
             )
+        if kind == "definition":
+            after = expand_definition(c, after)
         ids = [context.user.id, command.user_id]
         if selected["user_id"]:
             ids.append(UUID(selected["user_id"]))
@@ -516,8 +523,12 @@ def reassign(
             ),
             AuditDraft(
                 action=AUDIT_ACTION,
-                before_snapshot=_plain(row),
-                after_snapshot=_plain(after),
+                before_snapshot=_audit_snapshot(
+                    "research_subscription" if kind == "subscription" else kind, row
+                ),
+                after_snapshot=_audit_snapshot(
+                    "research_subscription" if kind == "subscription" else kind, after
+                ),
                 context={
                     "market_space_id": str(space),
                     "kind": kind,
@@ -537,7 +548,9 @@ def reassign(
         return {
             "request_id": str(command.request_id),
             "audit_id": written.audit_row_id,
-            "record": _plain(after),
+            "record": _audit_snapshot(
+                "research_subscription" if kind == "subscription" else kind, after
+            ),
         }
 
 
@@ -551,9 +564,9 @@ def definition_obligations(c: Connection, tenant: UUID, user: UUID) -> list[dict
             d.c.tenant_id == tenant,
             d.c.state.in_(("draft", "in_review")),
             or_(
-                d.c.content["items"].contains([{"owner_user_id": str(user)}]),
+                effective_content(d)["items"].contains([{"owner_user_id": str(user)}]),
                 *[
-                    d.c.content["reviewers"][key].as_string() == str(user)
+                    effective_content(d)["reviewers"][key].as_string() == str(user)
                     for key in ("id", "md", "ee", "fw", "dqe")
                 ],
             ),
@@ -567,6 +580,7 @@ def definition_obligations(c: Connection, tenant: UUID, user: UUID) -> list[dict
     )
     items = []
     for row in c.execute(query).mappings():
+        row = expand_definition(c, row)
         completed = (
             set(
                 c.execute(

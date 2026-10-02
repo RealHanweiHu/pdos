@@ -1,0 +1,398 @@
+--- before/web/next.config.ts
++++ after/web/next.config.ts
+@@ -25,6 +25,7 @@
+ 
+ const nextConfig: NextConfig = {
+   output: "standalone",
++  devIndicators: false,
+   async headers() {
+     return [{ headers: securityHeaders, source: "/:path*" }];
+   },
+--- before/web/src/components/ai/xiaopai-provider.tsx
++++ after/web/src/components/ai/xiaopai-provider.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import { ArrowsOutSimpleIcon, ChatCircleTextIcon, XIcon } from "@phosphor-icons/react";
++import { ArrowsOutSimpleIcon, ArrowUpIcon, LinkSimpleIcon, SparkleIcon, XIcon } from "@phosphor-icons/react";
+ import { usePathname, useRouter, useSearchParams } from "next/navigation";
+ import { createContext, Suspense, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+ import { Button } from "@/components/ui/button";
+@@ -8,9 +8,13 @@
+ import type { Project } from "@/components/projects/project-types";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ import { ProjectConversation } from "./project-conversation";
+-import { parseWorkFocus } from "./conversation-work-focus";
++import { resolveXiaopaiPageContext, restoreXiaopaiPageContext, type XiaopaiPageContext } from "./xiaopai-page-context";
+ import { XiaopaiFollowup } from "./xiaopai-followup";
+ 
++const dotClass = "inline-flex shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[inset_0_2px_4px_#ffffff40,inset_0_-3px_5px_#00000020]";
++function PaiDot({ large = false }: { large?: boolean }) {
++  return <span aria-hidden="true" className={`${dotClass} ${large ? "size-12" : "size-8"}`}><SparkleIcon weight="fill" size={large ? 24 : 16}/></span>;
++}
+ type IdentityBridge = { setIdentity: (value: WorkspaceIdentity) => void };
+ const Context = createContext<IdentityBridge | null>(null);
+ export function XiaopaiIdentity({ identity }: { identity: WorkspaceIdentity }) {
+@@ -30,51 +34,100 @@
+   const [open, setOpen] = useState(false);
+   const [projects, setProjects] = useState<Project[]>([]);
+   const [contexts, setContexts] = useState<string[]>([]);
+-  const [current, setCurrent] = useState("");
+   const [conversations, setConversations] = useState<Record<string, string>>({});
++  const [followupConversations, setFollowupConversations] = useState<Record<string, string>>({});
+   const [requestedGoals, setRequestedGoals] = useState<Record<string, string>>({});
++  const [source, setSource] = useState<XiaopaiPageContext | null>(null);
++  const [pageExcerpt, setPageExcerpt] = useState("");
++  const [draft, setDraft] = useState("");
+   const [error, setError] = useState<string | null>(null);
+-  const panel = useRef<HTMLElement>(null);
+-  const launcher = useRef<HTMLButtonElement>(null);
+-  const adoptedPage = useRef("");
++  const [loading, setLoading] = useState(false);
++  const panel = useRef<HTMLElement>(null), launcher = useRef<HTMLButtonElement>(null);
+   const visible = !hidden && (open || full);
+-  const pageProject = query.get("project") ?? query.get("project_id") ?? "";
++  const queryString = query.toString();
++  const liveContext = resolveXiaopaiPageContext(pathname, new URLSearchParams(queryString));
++  const page = full ? (query.get("project") ? { ...liveContext, label: "项目", href: `/projects?project=${query.get("project")}` } : restoreXiaopaiPageContext(query.get("source")) ?? source) : liveContext;
++  const projectId = page?.projectId ?? "";
++  const current = projects.some(p => p.id === projectId) ? projectId : "";
++  const project = projects.find(p => p.id === current);
+   const pageConversation = full ? query.get("conversation") : null;
+-  const focus = parseWorkFocus(query.get("focus_kind"), query.get("focus_id")) ?? ["task", "issue", "risk", "capa", "gate"].map(kind => parseWorkFocus(kind, query.get(kind))).find(Boolean);
+-  const focusId = focus?.id, focusKind = focus?.kind;
++  const focusId = page?.focus?.id, focusKind = page?.focus?.kind;
++
++  useEffect(() => {
++    if (hidden || pathname === "/ask") return;
++    const timer = window.setTimeout(() => {
++      setSource(resolveXiaopaiPageContext(pathname, new URLSearchParams(queryString)));
++      setPageExcerpt("");
++      setError(null);
++    }, 0);
++    return () => window.clearTimeout(timer);
++  }, [hidden, pathname, queryString]);
+   useEffect(() => {
+     if (!visible) return;
+     let active = true;
+-    void requestProjectList().then(value => { if (active) { if (!value) { setError("请重新登录后打开小Pai"); return; } setProjects(value); } }).catch(() => { if (active) setError("项目上下文暂时无法读取，请稍后重试"); });
+-    return () => { active = false; };
+-  }, [visible, pathname]);
++    const timer = window.setTimeout(() => {
++      setLoading(true);
++      void requestProjectList().then(value => {
++        if (!active) return;
++        if (!value) { setError("请重新登录后打开小Pai"); return; }
++        setProjects(value);
++      }).catch(() => { if (active) setError("页面上下文暂时无法读取，请稍后重试"); }).finally(() => { if (active) setLoading(false); });
++    }, 0);
++    return () => { active = false; window.clearTimeout(timer); };
++  }, [visible, projectId]);
+   useEffect(() => {
+-    if (!visible || !pageProject || !projects.some(p => p.id === pageProject)) return;
+-    const key = `${pageProject}:${pageConversation ?? ""}`;
+-    if (adoptedPage.current === key) return;
+-    const timer = window.setTimeout(() => { adoptedPage.current = key; setCurrent(pageProject); setContexts(old => old.includes(pageProject) ? old : [...old, pageProject]); if (pageConversation) setConversations(old => ({ ...old, [pageProject]: pageConversation })); }, 0);
++    if (!visible || !current) return;
++    const timer = window.setTimeout(() => {
++      setContexts(old => old.includes(current) ? old : [...old, current]);
++      if (pageConversation) setConversations(old => old[current] === pageConversation ? old : { ...old, [current]: pageConversation });
++    }, 0);
+     return () => window.clearTimeout(timer);
+-  }, [visible, pageProject, pageConversation, projects]);
++  }, [visible, current, pageConversation]);
++  useEffect(() => {
++    if (!visible || full) return;
++    // Read only text already rendered for this user. Never scrape inputs,
++    // hidden state, files, or another page, and never publish this snapshot.
++    const main = document.querySelector("main");
++    if (!main) return;
++    const capture = () => setPageExcerpt((main.innerText ?? "").replace(/\n{3,}/g, "\n\n").trim().slice(0, 2400));
++    const timer = window.setTimeout(capture, 0);
++    const observer = new MutationObserver(capture);
++    observer.observe(main, { childList: true, subtree: true, characterData: true });
++    return () => { window.clearTimeout(timer); observer.disconnect(); };
++  }, [visible, full, pathname, queryString]);
+   useEffect(() => {
+     if (!visible) return;
+     const timer = window.setTimeout(() => panel.current?.focus(), 0);
+     return () => window.clearTimeout(timer);
+   }, [visible]);
+-  const close = () => { setOpen(false); if (full) router.push(current ? `/projects?project=${current}` : "/"); else launcher.current?.focus(); };
++  const close = () => { setOpen(false); if (full) router.push(page?.href ?? "/"); else launcher.current?.focus(); };
++  const expand = () => {
++    const params = new URLSearchParams();
++    if (page) params.set("source", page.href);
++    if (current && conversations[current]) params.set("conversation", conversations[current]);
++    router.push(`/ask${params.size ? `?${params}` : ""}`);
++  };
+   if (hidden) return null;
++  const contextLabel = loading ? "正在读取当前页面…" : project?.name ?? page?.label ?? "个人对话";
+   return <>
+-    {!full && <Button ref={launcher} aria-label="打开小Pai" aria-expanded={visible} aria-controls="xiaopai-panel" className="fixed bottom-5 right-5 z-40 gap-2 shadow-lg" onClick={() => setOpen(!open)}><ChatCircleTextIcon aria-hidden="true" size={20}/>小Pai</Button>}
+-    <section ref={panel} id="xiaopai-panel" tabIndex={-1} aria-label="小Pai对话" hidden={!visible} onKeyDown={e => { if (e.key === "Escape" && !full) close(); }} className={full ? "fixed inset-x-0 bottom-0 top-14 z-30 overflow-y-auto bg-background p-4 sm:p-6 lg:left-56" : "fixed bottom-20 right-3 top-16 z-40 flex w-[min(560px,calc(100vw-24px))] flex-col overflow-hidden rounded-lg border bg-background shadow-xl"}>
+-      <header className="flex shrink-0 items-center justify-between gap-3 border-b p-4"><div><h1 className="font-semibold">小Pai</h1><p className="mt-1 text-xs text-muted-foreground">一起处理项目工作，持续跟进到有结果。</p></div><div className="flex gap-1">{!full && <Button size="icon" variant="ghost" aria-label="展开小Pai完整页面" onClick={() => router.push(`/ask${current ? `?project=${current}${conversations[current] ? `&conversation=${conversations[current]}` : ""}` : ""}`)}><ArrowsOutSimpleIcon aria-hidden="true"/></Button>}<Button size="icon" variant="ghost" aria-label="收起小Pai" onClick={close}><XIcon aria-hidden="true"/></Button></div></header>
+-      <div className={`space-y-4 overflow-y-auto p-4 ${full ? "mx-auto max-w-5xl" : "min-h-0 flex-1"}`}>
+-        <label className="block text-xs text-muted-foreground">当前上下文<select aria-label="小Pai当前项目" className="ml-2 max-w-full rounded-lg border bg-background p-2 text-foreground" value={current} onChange={e => { const id = e.target.value; setCurrent(id); if (id) setContexts(old => old.includes(id) ? old : [...old, id]); }}><option value="">选择项目开始</option>{projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
+-        {contexts.length > 1 && <p className="text-xs text-muted-foreground">已带入 {contexts.filter(id => projects.some(p => p.id === id)).map(id => projects.find(p => p.id === id)?.name).join("、")} 的项目会话。每个项目的内容按其成员权限共享；已开始的任务继续处理原项目。</p>}
+-        {!current && <p className="py-6 text-sm text-muted-foreground">从项目页面打开时，小Pai会自动带入相关项目。也可以在这里选择项目，开始对话或交办持续跟进。</p>}
+-        {contexts.filter(id => projects.some(p => p.id === id)).map(id => <div key={id} hidden={current !== id} className="space-y-4">
+-          <ProjectConversation onDelegateRequest={goal => setRequestedGoals(old => ({ ...old, [id]: goal }))} projectId={id} shared defaultOpen initialConversationId={conversations[id]} initialAttachmentId={current === id ? query.get("attachment") ?? undefined : undefined} initialFragment={Number(query.get("fragment")) || 1} initialWorkFocus={current === id && focusId && focusKind ? { id: focusId, kind: focusKind } : undefined} onConversationReady={cid => setConversations(old => old[id] === cid ? old : { ...old, [id]: cid })}/>
+-          <XiaopaiFollowup requestedGoal={requestedGoals[id]} projectId={id} userId={identity!.user.id} conversationId={conversations[id]} onConversationReady={cid => setConversations(old => old[id] === cid ? old : { ...old, [id]: cid })}/>
+-        </div>)}
+-        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
++    {!full && <button ref={launcher} type="button" aria-label="打开小Pai" title="小Pai · 你的个人 Agent" aria-expanded={visible} aria-controls="xiaopai-panel" className="fixed bottom-5 right-5 z-40 rounded-full p-1 outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 motion-reduce:transition-none" onClick={() => setOpen(!open)}><PaiDot large/></button>}
++    <section ref={panel} id="xiaopai-panel" tabIndex={-1} aria-label="小Pai对话" hidden={!visible} onKeyDown={e => { if (e.key === "Escape" && !full) close(); }} className={full ? "fixed inset-x-0 bottom-0 top-12 z-30 flex flex-col bg-background lg:left-56" : "fixed bottom-24 right-3 top-16 z-40 flex w-[min(480px,calc(100vw-24px))] flex-col overflow-hidden rounded-lg border bg-background shadow-xl"}>
++      <header className="flex shrink-0 items-center justify-between gap-3 border-b px-5 py-4"><div className="flex items-center gap-3"><PaiDot/><div><h1 className="text-sm font-semibold">小Pai</h1><p className="text-xs text-muted-foreground">你的个人 Agent</p></div></div><div className="flex gap-1">{!full && <Button size="icon" variant="ghost" aria-label="展开小Pai完整页面" onClick={expand}><ArrowsOutSimpleIcon aria-hidden="true"/></Button>}<Button size="icon" variant="ghost" aria-label="收起小Pai" onClick={close}><XIcon aria-hidden="true"/></Button></div></header>
++      <div className={`flex min-h-0 flex-1 flex-col ${full ? "mx-auto w-full max-w-3xl" : ""}`}>
++        <div className="flex shrink-0 items-center gap-2 border-b px-5 py-3 text-xs text-muted-foreground" role="status"><LinkSimpleIcon aria-hidden="true" size={14}/><span className="shrink-0">已自动带入</span><span className="truncate font-medium text-foreground">{contextLabel}</span>{focusKind && <span className="shrink-0">· 当前工作对象</span>}</div>
++        {projectId && !current && !loading && <p role="alert" className="px-5 pt-3 text-sm text-destructive">当前项目不存在或已无权访问，未读取其对话内容。</p>}
++        {error && <p role="alert" className="px-5 pt-3 text-sm text-destructive">{error}</p>}
++        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
++          {!current && <div className="flex min-h-full flex-col">
++            <div className="flex flex-1 flex-col items-center justify-center py-12 text-center"><PaiDot large/><h2 className="mt-5 text-xl font-medium tracking-tight">有什么想一起处理？</h2><p className="mt-3 max-w-xs text-sm leading-6 text-muted-foreground">我会跟着你的工作页面带入上下文。<br/>直接说出目标，不需要先选项目。</p></div>
++            {page && <details className="pb-3 text-xs text-muted-foreground"><summary className="cursor-pointer py-2">查看已带入的页面上下文</summary><p className="py-2">{page.label}{page.spaceId ? " · 当前市场空间" : ""} · 当前页面可见资料</p>{pageExcerpt ? <p className="max-h-40 overflow-y-auto whitespace-pre-wrap leading-5">{pageExcerpt}</p> : <p>已保留来源页面；未读取隐藏内容或其他工作范围。</p>}</details>}
++          </div>}
++          {contexts.filter(id => projects.some(p => p.id === id)).map(id => <div key={id} hidden={current !== id} className="space-y-4">
++            <ProjectConversation presentation="assistant" onDelegateRequest={goal => setRequestedGoals(old => ({ ...old, [id]: goal }))} projectId={id} defaultOpen initialConversationId={conversations[id]} initialAttachmentId={current === id ? query.get("attachment") ?? undefined : undefined} initialFragment={Number(query.get("fragment")) || 1} initialWorkFocus={current === id && focusId && focusKind ? { id: focusId, kind: focusKind } : undefined} onConversationReady={cid => setConversations(old => old[id] === cid ? old : { ...old, [id]: cid })}/>
++            <details open={!!requestedGoals[id]} className="border-t pt-3"><summary className="cursor-pointer py-2 text-xs text-muted-foreground">持续委托与跟进</summary><XiaopaiFollowup requestedGoal={requestedGoals[id]} projectId={id} userId={identity!.user.id} conversationId={followupConversations[id]} onConversationReady={cid => setFollowupConversations(old => old[id] === cid ? old : { ...old, [id]: cid })}/></details>
++          </div>)}
++        </div>
++        {!current && <form className="shrink-0 border-t px-5 pb-4 pt-3" onSubmit={e => { e.preventDefault(); setError("已带入当前页面，但此页面的 AI 对话处理尚未接入。输入内容已保留，未提交或共享。"); }}><div className="rounded-lg border bg-card p-3 focus-within:ring-1 focus-within:ring-ring"><textarea aria-label="给小Pai的消息" placeholder="和小Pai说说你想做什么…" maxLength={2000} value={draft} onChange={e => setDraft(e.target.value)} className="min-h-20 w-full resize-none bg-transparent text-sm outline-none"/><div className="flex items-center justify-between gap-3"><span className="text-xs text-muted-foreground">个人对话 · 仅你可见</span><Button type="submit" size="icon" aria-label="发送给小Pai" disabled={!draft.trim() || loading}><ArrowUpIcon aria-hidden="true"/></Button></div></div><p className="mt-2 text-xs text-muted-foreground">此页面的 AI 对话处理尚未接入。</p></form>}
+       </div>
+     </section>
+   </>;
+--- before/web/src/components/ai/project-conversation.tsx
++++ after/web/src/components/ai/project-conversation.tsx
+@@ -29,7 +29,9 @@
+ const modes: Record<string, string> = { meeting_planning: "起草临时会议", quality_work_package: "准备品质调查与整改建议", change_work_package: "准备工程变更影响建议", note: "保存补充说明", project_query: "询问项目事实", meeting_reading: "核对会议内容", minutes: "准备纪要待审稿", actions: "准备行动待审稿", decisions: "准备决策待审稿", business: "准备问题、风险和变更" };
+ async function request(path: string, body?: object): Promise<unknown> { const r = await fetch(path, { method: body ? "POST" : "GET", cache: "no-store", headers: body ? { "Content-Type": "application/json" } : undefined, body: body ? JSON.stringify(body) : undefined }); const value: unknown = await responseBody(r).catch(() => null); if (!r.ok) throw new Error(isRecord(value) && isRecord(value.detail) && typeof value.detail.message === "string" ? value.detail.message : "会话暂不可用，请刷新查看已保存消息"); return value; }
+ 
+-export function ProjectConversation({ projectId, meetingId = null, initialConversationId, defaultOpen = false, onDraftDirtyChange, initialAttachmentId, initialFragment, initialWorkFocus, shared = false, onConversationReady, onDelegateRequest }: { onDelegateRequest?: (goal: string) => void; shared?: boolean; onConversationReady?: (id: string) => void; initialWorkFocus?: WorkFocus; projectId: string; meetingId?: string | null; initialConversationId?: string; defaultOpen?: boolean; onDraftDirtyChange?: (dirty: boolean) => void; initialAttachmentId?: string; initialFragment?: number }) {
++export function ProjectConversation({ presentation = "standard", projectId, meetingId = null, initialConversationId, defaultOpen = false, onDraftDirtyChange, initialAttachmentId, initialFragment, initialWorkFocus, shared = false, onConversationReady, onDelegateRequest }: { presentation?: "standard" | "assistant"; onDelegateRequest?: (goal: string) => void; shared?: boolean; onConversationReady?: (id: string) => void; initialWorkFocus?: WorkFocus; projectId: string; meetingId?: string | null; initialConversationId?: string; defaultOpen?: boolean; onDraftDirtyChange?: (dirty: boolean) => void; initialAttachmentId?: string; initialFragment?: number }) {
++  const assistant = presentation === "assistant";
++  const Root = assistant ? "section" : "details";
+   const [data, setData] = useState<Data | null>(null);
+   const [sessions, setSessions] = useState<{ id: string; time: string; archived: boolean }[]>([]);
+   const [loaded, setLoaded] = useState(false);
+@@ -67,13 +69,13 @@
+     setFocusSource(value);
+   }
+   async function loadSources() { if (!meetingId) return; const base = `/api/projects/${projectId}/meetings/${meetingId}`; const [detail, raw] = await Promise.all([request(base), request(`${base}/transcripts`)]); setMeetingTitle(text(record(detail).title)); const v = record(raw); setTranscripts(list(v.items).map(r => { const row = record(r); return { id: text(row.id), time: text(row.uploaded_at) }; })); }
+-  async function initialize() { const values = record(await request(`/api/conversations?${scopeQuery}`)); const entries = list(values.items).filter(r => !shared || record(r).visibility === "project").map(r => { const row = record(r); return { id: text(row.id), time: text(row.updated_at), archived: row.archived_at !== null }; }); setSessions(entries); const identity = await requestIdentity(); if (!identity) throw new Error("请重新登录后打开会话"); setActingUserId(identity.user.id); setCanUpload(["owner", "admin", "project_manager", "engineer", "quality"].includes(identity.user.role)); const selected = data?.id ?? initialConversationId ?? entries[0]?.id; if (selected) await load(selected); await loadSources(); await readWorkFocus(); setLoaded(true); }
++  async function initialize() { const values = record(await request(`/api/conversations?${scopeQuery}`)); const entries = list(values.items).filter(r => assistant ? record(r).visibility === (shared ? "project" : "private") : !shared || record(r).visibility === "project").map(r => { const row = record(r); return { id: text(row.id), time: text(row.updated_at), archived: row.archived_at !== null }; }); setSessions(entries); const identity = await requestIdentity(); if (!identity) throw new Error("请重新登录后打开会话"); setActingUserId(identity.user.id); setCanUpload(["owner", "admin", "project_manager", "engineer", "quality"].includes(identity.user.role)); const selected = data?.id ?? initialConversationId ?? entries[0]?.id; if (selected) await load(selected); await loadSources(); await readWorkFocus(); setLoaded(true); }
+   async function act(work: () => Promise<void>) { setBusy(true); setError(null); try { await work(); } catch (e) { setError(e instanceof Error ? e.message : "会话办理未完成"); } finally { setBusy(false); } }
+   const openInitially = useEffectEvent(async () => { try { await initialize(); } catch (e) { setError(e instanceof Error ? e.message : "会话暂不可用"); } finally { setBusy(false); } });
+   useEffect(() => { if (!defaultOpen && !initialConversationId) return; const handle = window.setTimeout(() => { void openInitially(); }, 0); return () => window.clearTimeout(handle); }, [defaultOpen, initialConversationId]);
+   useEffect(() => { onDraftDirtyChange?.(hasDraft || draftBusy); }, [hasDraft, draftBusy, onDraftDirtyChange]);
+   const followPageFocus = useEffectEvent(() => {
+-    if (!shared || hasDraft || draftBusy) return;
++    if ((!shared && !assistant) || hasDraft || draftBusy) return;
+     const target = initialWorkFocus;
+     if (target?.id === workFocus?.id && target?.kind === workFocus?.kind) return;
+     setWorkFocus(target);
+@@ -88,7 +90,7 @@
+   const filesReady = !selectedFiles.length || mode === "note" || (mode === "project_query" && selectedFiles.every(f => f.status === "extracted" && f.classification === "internal" && !f.revoked_at));
+   const available = (!workFocus || (!!focusSource && !selectedFiles.length && ["note", "project_query"].includes(mode) && !meetingId)) && filesReady && (mode !== "meeting_planning" || (planningSource?.ready === true && !selectedFiles.length && !meetingId)) && (mode !== "quality_work_package" || qualitySource?.ready === true) && (mode !== "change_work_package" || changeSource?.ready === true) && (!sourceMode || (source && source.reading.rollout === "live" && source.reading[rolloutField[mode]] === "live" && (mode !== "minutes" || source.reading.minutes_version !== null)));
+   async function send(action = mode) {
+-    if (action !== "note" && shared && onDelegateRequest && /^(?:请|帮我|小Pai[，,：: ]*)?(?:持续跟进|盯着|跟进这个项目|帮我盯)/.test(body.trim())) {
++    if (action !== "note" && (shared || assistant) && onDelegateRequest && /^(?:请|帮我|小Pai[，,：: ]*)?(?:持续跟进|盯着|跟进这个项目|帮我盯)/.test(body.trim())) {
+       onDelegateRequest(body.trim());
+       setNotice("已整理持续委托，请在下方核对工作日历并开始跟进；尚未启动后台任务。");
+       return;
+@@ -111,19 +113,20 @@
+     }
+   }
+   const operations = data?.items.some(m => ["queued", "running"].includes(String(m.receipt.status)) || m.receipt.convened_discussion != null);
+-  return <details className="rounded-lg border bg-card p-4" open={defaultOpen || !!initialConversationId} onToggle={e => { if (e.currentTarget.open && !defaultOpen && !initialConversationId && !loaded && !busy) void act(initialize); }}>
+-    <summary className="cursor-pointer font-semibold">{shared ? "对话与项目记忆" : meetingId ? "在同一会话核对会议与办理" : "连续项目会话"}</summary>
+-    <div className="mt-4 space-y-4">
+-      <p className="text-xs text-muted-foreground">{(data ? data.visibility === "project" : shared) ? "项目成员可见：本会话的消息、附件与办理结果共享。小Pai会保留补充和纠正的原文依据。" : <>会话仅本人可见，范围固定在当前{meetingId ? "项目和会议" : "项目"}；业务对象仍按项目权限共享。补充说明会保存为新消息，不自动批准任何候选。</>}</p>
++  return <Root className={assistant ? "space-y-4" : "rounded-lg border bg-card p-4"} open={assistant ? undefined : defaultOpen || !!initialConversationId} onToggle={e => { if (e.currentTarget.open && !defaultOpen && !initialConversationId && !loaded && !busy) void act(initialize); }}>
++    {!assistant && <summary className="cursor-pointer font-semibold">{shared ? "对话与项目记忆" : meetingId ? "在同一会话核对会议与办理" : "连续项目会话"}</summary>}
++    <div className={assistant ? "space-y-4" : "mt-4 space-y-4"}>
++      <p className="text-xs text-muted-foreground">{(data ? data.visibility === "project" : shared) ? "项目成员可见：本会话的消息、附件与办理结果共享。小Pai会保留补充和纠正的原文依据。" : assistant ? "个人对话 · 仅你可见" : <>会话仅本人可见，范围固定在当前{meetingId ? "项目和会议" : "项目"}；业务对象仍按项目权限共享。补充说明会保存为新消息，不自动批准任何候选。</>}</p>
+       {meetingId && <p className="text-sm font-medium">当前会议：{meetingTitle ?? "正在读取会议名称…"}</p>}
+-      <div className="flex flex-wrap items-center gap-2"><Button size="sm" variant="outline" disabled={busy} onClick={() => void act(initialize)}>刷新会话</Button><Button size="sm" variant="outline" disabled={draftBusy || hasDraft} onClick={() => void act(async () => { await create(); setSource(null); setChangeSource(null); setQualitySource(null); setPlanningSource(null); setMode(meetingId ? "note" : "project_query"); setSelectedFiles([]); })}>新会话</Button>{sessions.length > 0 && <select aria-label={shared ? "选择项目共享会话" : "选择本人会话"} className="rounded-md border bg-background p-2 text-xs" disabled={draftBusy || hasDraft} value={data?.id ?? ""} onChange={e => void act(async () => { await load(e.target.value); setSource(null); setChangeSource(null); setQualitySource(null); setPlanningSource(null); setMode(meetingId ? "note" : "project_query"); setSelectedFiles([]); })}>{sessions.map(s => <option key={s.id} value={s.id}>{new Date(s.time).toLocaleString("zh-CN")}{s.archived ? " · 已归档" : ""}</option>)}</select>}{data && <a className="text-xs text-primary underline" href={`/ask?project=${projectId}${meetingId ? `&meeting=${meetingId}` : ""}&conversation=${data.id}${workFocus ? `&focus_kind=${workFocus.kind}&focus_id=${workFocus.id}` : ""}`}>在完整会话页继续</a>}</div>
++      <details open={!assistant}><summary className="cursor-pointer text-xs text-muted-foreground">对话记录与操作</summary><div className="mt-2 flex flex-wrap items-center gap-2"><Button size="sm" variant="outline" disabled={busy} onClick={() => void act(initialize)}>刷新会话</Button><Button size="sm" variant="outline" disabled={draftBusy || hasDraft} onClick={() => void act(async () => { await create(); setSource(null); setChangeSource(null); setQualitySource(null); setPlanningSource(null); setMode(meetingId ? "note" : "project_query"); setSelectedFiles([]); })}>新会话</Button>{sessions.length > 0 && <select aria-label={shared ? "选择项目共享会话" : "选择本人会话"} className="rounded-md border bg-background p-2 text-xs" disabled={draftBusy || hasDraft} value={data?.id ?? ""} onChange={e => void act(async () => { await load(e.target.value); setSource(null); setChangeSource(null); setQualitySource(null); setPlanningSource(null); setMode(meetingId ? "note" : "project_query"); setSelectedFiles([]); })}>{sessions.map(s => <option key={s.id} value={s.id}>{new Date(s.time).toLocaleString("zh-CN")}{s.archived ? " · 已归档" : ""}</option>)}</select>}{data && <a className="text-xs text-primary underline" href={`/ask?project=${projectId}${meetingId ? `&meeting=${meetingId}` : ""}&conversation=${data.id}${workFocus ? `&focus_kind=${workFocus.kind}&focus_id=${workFocus.id}` : ""}`}>在完整会话页继续</a>}</div></details>
+       {workFocus && <div className="space-y-2">
+         {focusSource ? <WorkFocusSummary value={focusSource}/> : <p className="text-sm">正在读取工作对象；读取成功后才能保存本条消息。</p>}
+         <div className="flex gap-2"><Button size="sm" variant="outline" disabled={draftBusy} onClick={() => void act(() => readWorkFocus())}>重新读取当前对象</Button><Button size="sm" variant="ghost" disabled={draftBusy || !!body.trim()} onClick={() => { setWorkFocus(undefined); setFocusSource(null); }}>清除对象范围</Button></div>
+       </div>}
+       {data?.archived && <p className="text-xs">此会话已归档，历史与业务回执保留。</p>}
+       {data?.next && <Button size="sm" variant="outline" disabled={busy} onClick={() => void act(() => load(data.id, true))}>查看更早消息</Button>}
+-      <div className="space-y-4" aria-live="polite">{data?.items.map(message => { const result = isRecord(message.receipt.result) ? message.receipt.result : null; const findingIds = message.action === "meeting_planning" ? [] : [typeof message.receipt.finding_id === "string" ? message.receipt.finding_id : null, ...(Array.isArray(message.receipt.finding_ids) ? message.receipt.finding_ids.filter((v): v is string => typeof v === "string") : [])].filter((v): v is string => !!v); return <article key={message.id} className="space-y-3 rounded-lg border p-3"><p className="text-xs text-muted-foreground">{new Date(message.time).toLocaleString("zh-CN")} · {modes[message.action]}</p><p className="whitespace-pre-wrap text-sm">{message.body}</p><p className="text-xs">{({ pending: "消息已保存，尚待运行", saved: "补充说明已保存", queued: "等待查证", running: "正在办理", succeeded: "本次整理已完成", degraded: "本次运行未完成", failed: "本次运行失败", cancelled: "本次运行已停止" } as Record<string, string>)[String(message.receipt.status)] ?? String(message.receipt.status)}</p>{message.receipt.current === false && <p className="text-xs text-destructive">此运行来源已变化，请重新核对。</p>}
++      {assistant && !data?.items.length && <div className="py-10"><p className="text-lg font-medium">一起处理眼前的工作</p><p className="mt-2 text-sm leading-6 text-muted-foreground">直接告诉我你的目标。我已带入当前项目{workFocus ? "和工作对象" : ""}，会按你的权限查证。</p></div>}
++      <div className="space-y-4" aria-live="polite">{data?.items.map(message => { const result = isRecord(message.receipt.result) ? message.receipt.result : null; const findingIds = message.action === "meeting_planning" ? [] : [typeof message.receipt.finding_id === "string" ? message.receipt.finding_id : null, ...(Array.isArray(message.receipt.finding_ids) ? message.receipt.finding_ids.filter((v): v is string => typeof v === "string") : [])].filter((v): v is string => !!v); return <article key={message.id} className={assistant ? "space-y-3 border-b pb-5" : "space-y-3 rounded-lg border p-3"}><p className="text-xs text-muted-foreground">{new Date(message.time).toLocaleString("zh-CN")} · {modes[message.action]}</p><p className="whitespace-pre-wrap text-sm">{message.body}</p><p className="text-xs">{({ pending: "消息已保存，尚待运行", saved: "补充说明已保存", queued: "等待查证", running: "正在办理", succeeded: "本次整理已完成", degraded: "本次运行未完成", failed: "本次运行失败", cancelled: "本次运行已停止" } as Record<string, string>)[String(message.receipt.status)] ?? String(message.receipt.status)}</p>{message.receipt.current === false && <p className="text-xs text-destructive">此运行来源已变化，请重新核对。</p>}
+         {message.objectFocus && <><WorkFocusSummary value={message.objectFocus} historical/>{message.objectFocus.available !== false && <Button size="sm" variant="outline" disabled={draftBusy || hasDraft} onClick={() => void act(async () => { const target = parseWorkFocus(String(message.objectFocus?.kind), String(message.objectFocus?.id)); if (!target) throw new Error("原对象范围不完整"); setWorkFocus(target); setMode("project_query"); await readWorkFocus(target); })}>读取此对象当前资料继续问</Button>}</>}
+         {message.qualitySource && <p className="text-xs">本条使用原 NCR 与 {String(message.qualitySource.selection_count)} 项选定证据。<a className="ml-2 text-primary underline" href={`/projects?project=${projectId}&tab=quality&ncr=${String(message.qualitySource.ncr_id)}`}>打开原质量记录</a></p>}
+         {typeof message.receipt.run_id === "string" && message.action === "quality_work_package" && <AgentRunProgressPanel projectId={projectId} runId={message.receipt.run_id}/>}
+@@ -153,10 +156,10 @@
+       {operationBusy && <p role="status" className="text-xs">正在办理，仍可刷新会话查看进度或停止本次运行。</p>}
+       {operations && <Button size="sm" variant="outline" disabled={busy} onClick={() => data && void act(() => load(data.id))}>查看最新运行结果</Button>}
+       {meetingId && <><MeetingTranscripts projectId={projectId} meetingId={meetingId} canUpload={canUpload && !data?.archived} isActive={!data?.archived} /><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={busy} onClick={() => void act(async () => { await loadSources(); if (source) await chooseSource(source.id); })}>刷新转写与当前版本</Button><select aria-label="本次使用的转写" disabled={busy} className="rounded-md border bg-background p-2 text-xs" value={source?.id ?? ""} onChange={e => void act(() => chooseSource(e.target.value))}><option value="">选择已核对的转写</option>{transcripts.map(t => <option key={t.id} value={t.id}>{new Date(t.time).toLocaleString("zh-CN")}</option>)}</select></div></>}
+-      {!workFocus && <details open={!shared || selectedFiles.length > 0 || !!initialAttachmentId}><summary className="cursor-pointer text-sm text-muted-foreground">{shared ? "添加资料（项目成员可见）" : "本条消息的附件"}</summary><ConversationFiles shared={data ? data.visibility === "project" : shared} conversationId={data?.id} ensureConversation={create} selected={selectedFiles} onSelectionChange={setSelectedFiles} onBusyChange={setFilesBusy} disabled={draftBusy || !!data?.archived} initialAttachmentId={initialAttachmentId} initialFragment={initialFragment} /></details>}
+-      {!data?.archived && <form className="space-y-3" onSubmit={e => { e.preventDefault(); void act(() => send()); }}>{!shared && <label className="block text-xs">本次办理<select className="ml-2 rounded-md border bg-background p-2" value={mode} disabled={draftBusy || planningDirty} onChange={e => { setMode(e.target.value); setPlanningDirty(false); setChangeSource(null); setQualitySource(null); setPlanningSource(null); }}>{Object.entries(modes).filter(([key]) => shared ? ["note", "project_query"].includes(key) : workFocus ? ["note", "project_query"].includes(key) : meetingId ? key !== "meeting_planning" : ["note", "project_query", "change_work_package", "quality_work_package", "meeting_planning"].includes(key)).map(([key, label]) => <option key={key} value={key}>{workFocus && key === "project_query" ? "询问所选工作对象" : label}</option>)}</select></label>}{mode === "meeting_planning" && <fieldset disabled={draftBusy}><MeetingPlanning projectId={projectId} showRuns={false} initialQuestion={body} onSelected={setPlanningSource} onDraftDirtyChange={setPlanningDirty}/>{planningSource && <p className="text-xs">本条起草请求：{planningSource.label}</p>}<p className="text-xs text-muted-foreground">完整问题和产出在上方要求中编辑、预览并保存；历史消息与本条附件不加入模型资料。补充新要求请修订资料后重新选择。原说明草稿保留在其他办理方式中。</p></fieldset>}{mode === "quality_work_package" && <ConversationQualitySource projectId={projectId} disabled={draftBusy} onChange={setQualitySource}/>} {mode === "change_work_package" && <ConversationChangeSource projectId={projectId} disabled={draftBusy} onChange={setChangeSource}/>}{mode !== "meeting_planning" && <textarea aria-label="会话消息" className="min-h-24 w-full rounded-lg border bg-background p-3 text-sm" maxLength={2000} value={body} disabled={draftBusy} onChange={e => setBody(e.target.value)} placeholder="说明本次目标，或补充、纠正上一轮信息…" />}<Button disabled={draftBusy || (mode !== "meeting_planning" && !body.trim()) || !available}>{draftBusy ? "正在保存或办理…" : shared ? "发送" : "保存并继续"}</Button>{shared && <Button type="button" variant="ghost" disabled={draftBusy || !body.trim()} onClick={() => void act(() => send("note"))}>仅保存为项目说明</Button>}{!available && <p className="text-xs text-muted-foreground">{workFocus ? "请先读取当前对象资料；对象问答只使用本次选定字段。" : mode === "meeting_planning" ? "请选择已核对的最新会议要求并移出本条附件；AI 能力通过阶段评测后才能发起，要求仍可先保存。" : mode === "quality_work_package" ? "请先选择原 NCR 并核对资料；能力通过阶段评测且有办理权限后才能生成。品质准备使用原质量证据，请移出本条私人附件。" : mode === "change_work_package" ? "工程建议须先核对原变更资料，能力通过阶段评测且具有办理权限后才能生成；本项使用原业务来源，请移出本条附件。未开放时可先保存补充说明。" : "所选附件须抽取完成且为内部资料才能问答；会议候选使用已核对转写且能力已就绪。未满足时可先保存补充说明，或调整本条附件选择。"}</p>}</form>}
++      {!workFocus && <details open={(!shared && !assistant) || selectedFiles.length > 0 || !!initialAttachmentId}><summary className="cursor-pointer text-sm text-muted-foreground">{shared ? "添加资料（项目成员可见）" : "本条消息的附件"}</summary><ConversationFiles shared={data ? data.visibility === "project" : shared} conversationId={data?.id} ensureConversation={create} selected={selectedFiles} onSelectionChange={setSelectedFiles} onBusyChange={setFilesBusy} disabled={draftBusy || !!data?.archived} initialAttachmentId={initialAttachmentId} initialFragment={initialFragment} /></details>}
++      {!data?.archived && <form className="space-y-3" onSubmit={e => { e.preventDefault(); void act(() => send()); }}>{!shared && !assistant && <label className="block text-xs">本次办理<select className="ml-2 rounded-md border bg-background p-2" value={mode} disabled={draftBusy || planningDirty} onChange={e => { setMode(e.target.value); setPlanningDirty(false); setChangeSource(null); setQualitySource(null); setPlanningSource(null); }}>{Object.entries(modes).filter(([key]) => shared ? ["note", "project_query"].includes(key) : workFocus ? ["note", "project_query"].includes(key) : meetingId ? key !== "meeting_planning" : ["note", "project_query", "change_work_package", "quality_work_package", "meeting_planning"].includes(key)).map(([key, label]) => <option key={key} value={key}>{workFocus && key === "project_query" ? "询问所选工作对象" : label}</option>)}</select></label>}{mode === "meeting_planning" && <fieldset disabled={draftBusy}><MeetingPlanning projectId={projectId} showRuns={false} initialQuestion={body} onSelected={setPlanningSource} onDraftDirtyChange={setPlanningDirty}/>{planningSource && <p className="text-xs">本条起草请求：{planningSource.label}</p>}<p className="text-xs text-muted-foreground">完整问题和产出在上方要求中编辑、预览并保存；历史消息与本条附件不加入模型资料。补充新要求请修订资料后重新选择。原说明草稿保留在其他办理方式中。</p></fieldset>}{mode === "quality_work_package" && <ConversationQualitySource projectId={projectId} disabled={draftBusy} onChange={setQualitySource}/>} {mode === "change_work_package" && <ConversationChangeSource projectId={projectId} disabled={draftBusy} onChange={setChangeSource}/>}{mode !== "meeting_planning" && <textarea aria-label="会话消息" className="min-h-24 w-full rounded-lg border bg-background p-3 text-sm" maxLength={2000} value={body} disabled={draftBusy} onChange={e => setBody(e.target.value)} placeholder={assistant ? "和小Pai说说你想做什么…" : "说明本次目标，或补充、纠正上一轮信息…"} />}<Button disabled={draftBusy || (mode !== "meeting_planning" && !body.trim()) || !available}>{draftBusy ? "正在保存或办理…" : (shared || assistant) ? "发送" : "保存并继续"}</Button>{shared && <Button type="button" variant="ghost" disabled={draftBusy || !body.trim()} onClick={() => void act(() => send("note"))}>仅保存为项目说明</Button>}{!available && <p className="text-xs text-muted-foreground">{workFocus ? "请先读取当前对象资料；对象问答只使用本次选定字段。" : mode === "meeting_planning" ? "请选择已核对的最新会议要求并移出本条附件；AI 能力通过阶段评测后才能发起，要求仍可先保存。" : mode === "quality_work_package" ? "请先选择原 NCR 并核对资料；能力通过阶段评测且有办理权限后才能生成。品质准备使用原质量证据，请移出本条私人附件。" : mode === "change_work_package" ? "工程建议须先核对原变更资料，能力通过阶段评测且具有办理权限后才能生成；本项使用原业务来源，请移出本条附件。未开放时可先保存补充说明。" : "所选附件须抽取完成且为内部资料才能问答；会议候选使用已核对转写且能力已就绪。未满足时可先保存补充说明，或调整本条附件选择。"}</p>}</form>}
+       {data && (!shared || data.creatorId === actingUserId) && <Button size="sm" variant="ghost" disabled={draftBusy || hasDraft} onClick={() => void act(async () => { await request(`/api/conversations/${data.id}/archive`, { archived: !data.archived }); await load(data.id); })}>{data.archived ? "恢复会话" : "归档此会话"}</Button>}
+       {notice && <p role="status" className="text-xs">{notice}</p>}{error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+     </div>
+-  </details>;
++  </Root>;
+ }
+--- before/web/src/components/ai/xiaopai-provider.test.tsx
++++ after/web/src/components/ai/xiaopai-provider.test.tsx
+@@ -21,7 +21,8 @@
+     fireEvent.change(draft, { target: { value: "A中尚未提交的内容" } });
+     route.query = `project=${b}`;
+     view.rerender(<App/>);
+-    await waitFor(() => expect(screen.getByRole("combobox", { name: "小Pai当前项目" })).toHaveValue(b));
++    await waitFor(() => expect(screen.getByText("项目B")).toBeVisible());
++    expect(screen.queryByRole("combobox", { name: "小Pai当前项目" })).not.toBeInTheDocument();
+     expect(draft).toHaveValue("A中尚未提交的内容");
+     fireEvent.click(screen.getByRole("button", { name: "收起小Pai" }));
+     fireEvent.click(screen.getByRole("button", { name: "打开小Pai" }));
+@@ -29,6 +30,36 @@
+     view.rerender(<App/>);
+     expect(draft).toHaveValue("A中尚未提交的内容");
+     expect(screen.queryByRole("button", { name: "打开小Pai" })).not.toBeInTheDocument();
++  });
++  it("opens from a non-project page without a project picker, never keeps the old project active, and carries its origin into the full page", async () => {
++    const view = render(<App/>);
++    fireEvent.click(await screen.findByRole("button", { name: "打开小Pai" }));
++    await screen.findByLabelText(`draft-${a}`);
++    route.path = "/product-work";
++    route.query = "space=20000000-0000-4000-8000-000000000001&line=line-one";
++    view.rerender(<App/>);
++    expect(await screen.findByLabelText("给小Pai的消息")).toBeVisible();
++    expect(screen.getByLabelText(`draft-${a}`)).not.toBeVisible();
++    expect(screen.queryByRole("combobox", { name: "小Pai当前项目" })).not.toBeInTheDocument();
++    fireEvent.change(screen.getByLabelText("给小Pai的消息"), { target: { value: "帮我看这个市场空间" } });
++    fireEvent.click(screen.getByRole("button", { name: "展开小Pai完整页面" }));
++    const destination = route.push.mock.calls.at(-1)?.[0] as string;
++    expect(new URL(destination, "https://pdos.invalid").searchParams.get("source")).toBe(`/product-work?${route.query}`);
++    route.path = "/ask";
++    route.query = destination.split("?")[1];
++    view.rerender(<App/>);
++    expect(screen.getByLabelText("给小Pai的消息")).toHaveValue("帮我看这个市场空间");
++    expect(screen.getByText("产品工作", { exact: true })).toBeVisible();
++    fireEvent.click(screen.getByRole("button", { name: "发送给小Pai" }));
++    expect(await screen.findByRole("alert")).toHaveTextContent("未提交或共享");
++  });
++  it("restores a full-page source link after a refresh without selecting another project", async () => {
++    route.path = "/ask";
++    route.query = new URLSearchParams({ source: `/projects?project=${b}&task=30000000-0000-4000-8000-000000000001` }).toString();
++    render(<App/>);
++    expect(await screen.findByLabelText(`draft-${b}`)).toBeVisible();
++    expect(screen.getByText("项目B")).toBeVisible();
++    expect(screen.queryByLabelText(`draft-${a}`)).not.toBeInTheDocument();
+   });
+   it("does not expose the internal conversation surface to external roles or on login", async () => {
+     const view = render(<App user={{ ...identity, user: { ...identity.user, role: "customer" } }}/>);
+--- before/web/src/app/ask/page.tsx
++++ after/web/src/app/ask/page.tsx
+@@ -1,5 +1,5 @@
+ import type { Metadata } from "next";
+ import { Suspense } from "react";
+ import { AskWorkspace } from "@/components/ai/ask-workspace";
+-export const metadata: Metadata = { title: "小Pai · 对话与持续跟进" };
++export const metadata: Metadata = { title: "小Pai · 个人 Agent" };
+ export default function AskPage() { return <Suspense fallback={<p className="p-6 text-sm">正在打开会话…</p>}><AskWorkspace /></Suspense>; }
+--- before/web/src/components/ai/ask-workspace.tsx
++++ after/web/src/components/ai/ask-workspace.tsx
+@@ -18,5 +18,5 @@
+   const [busy, setBusy] = useState(false);
+   useEffect(() => { let active = true; void requestIdentity().then(value => { if (!active) return; if (!value) router.replace("/login"); else setIdentity(value); }).catch(() => { if (active) setError("小Pai入口暂时无法连接，请刷新重试"); }); return () => { active = false; }; }, [router]);
+   if (!identity) return <p className="p-6 text-sm" role="status">{error ?? "正在打开小Pai…"}</p>;
+-  return <WorkspaceShell active="ask" identity={identity} loggingOut={busy} onLogout={() => { setBusy(true); void fetch("/api/session/logout", { method: "POST" }).finally(() => router.replace("/login")); }}><div className="min-h-[70vh] p-6"><p className="sr-only">小Pai完整对话与项目持续跟进</p></div></WorkspaceShell>;
++  return <WorkspaceShell active="ask" identity={identity} loggingOut={busy} onLogout={() => { setBusy(true); void fetch("/api/session/logout", { method: "POST" }).finally(() => router.replace("/login")); }}><div className="min-h-[70vh] p-6"><p className="sr-only">小Pai个人 Agent 完整对话</p></div></WorkspaceShell>;
+ }
+--- before/web/src/components/ai/xiaopai-page-context.ts
++++ after/web/src/components/ai/xiaopai-page-context.ts
+@@ -0,0 +1,37 @@
++import { parseWorkFocus, type WorkFocus } from "./conversation-work-focus";
++
++const pageLabels: Record<string, string> = {
++  "/": "驾驶舱", "/my-work": "我的工作", "/projects": "项目", "/product-work": "产品工作",
++  "/portfolio": "项目组合", "/knowledge": "知识库", "/ai-review": "AI 待办",
++  "/requirements": "需求池", "/cases": "开发案例",
++  "/search": "搜索", "/capture": "资料采集", "/settings": "设置",
++};
++export type XiaopaiPageContext = {
++  href: string;
++  label: string;
++  projectId: string;
++  spaceId: string;
++  focus?: WorkFocus;
++};
++
++// Only our own workspace routes can become page context. This is a hint;
++// every actual project/object read is authorized again by the server.
++export function resolveXiaopaiPageContext(path: string, params: URLSearchParams): XiaopaiPageContext {
++  const label = pageLabels[path] ?? (path.startsWith("/settings/") ? "设置" : "当前页面");
++  const focus = parseWorkFocus(params.get("focus_kind"), params.get("focus_id")) ??
++    ["task", "issue", "risk", "capa", "gate"].map(kind => parseWorkFocus(kind, params.get(kind) ?? params.get(`${kind}_id`))).find(Boolean);
++  return {
++    href: `${path}${params.size ? `?${params}` : ""}`,
++    label,
++    projectId: params.get("project") ?? params.get("project_id") ?? "",
++    spaceId: path === "/product-work" ? params.get("space") ?? "" : "",
++    focus,
++  };
++}
++
++export function restoreXiaopaiPageContext(source: string | null): XiaopaiPageContext | null {
++  if (!source || !source.startsWith("/") || source.startsWith("//")) return null;
++  const url = new URL(source, "https://pdos.invalid");
++  if (url.origin !== "https://pdos.invalid" || !(url.pathname in pageLabels || url.pathname.startsWith("/settings/"))) return null;
++  return resolveXiaopaiPageContext(url.pathname, url.searchParams);
++}
+--- before/web/src/components/ai/project-conversation-personal.test.tsx
++++ after/web/src/components/ai/project-conversation-personal.test.tsx
+@@ -0,0 +1,45 @@
++import { cleanup, render, screen, waitFor } from "@testing-library/react";
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { ProjectConversation } from "./project-conversation";
++
++vi.mock("@/components/workspace-api", async importOriginal => ({ ...await importOriginal<object>(), requestIdentity: async () => ({ user: { id: "user", role: "engineer" } }) }));
++vi.mock("./conversation-files", async importOriginal => ({ ...await importOriginal<object>(), ConversationFiles: () => <p>附件</p> }));
++const projectId = "10000000-0000-4000-8000-000000000001";
++const calls: string[] = [];
++function mockConversations(privateHistory = true) {
++  vi.stubGlobal("fetch", vi.fn(async (url: string) => {
++    calls.push(url);
++    const entries = [
++      { id: "shared", visibility: "project", updated_at: "2026-09-30T00:00:00Z", archived_at: null },
++      ...(privateHistory ? [{ id: "private", visibility: "private", updated_at: "2026-09-29T00:00:00Z", archived_at: null }] : []),
++    ];
++    if (url.includes("?project_id=")) return Response.json({ items: entries });
++    const id = url.split("/").at(-1);
++    return Response.json({ conversation: { id, project_id: projectId, meeting_id: null, created_by_user_id: "user", visibility: id === "shared" ? "project" : "private", context_version: 1, archived_at: null }, items: [] });
++  }));
++}
++afterEach(() => { cleanup(); vi.unstubAllGlobals(); calls.length = 0; });
++describe("个人 Agent 会话可见范围", () => {
++  it("does not silently load a newer shared conversation into the personal agent", async () => {
++    mockConversations();
++    const ready = vi.fn();
++    render(<ProjectConversation projectId={projectId} presentation="assistant" defaultOpen onConversationReady={ready}/>);
++    await waitFor(() => expect(ready).toHaveBeenCalledWith("private"));
++    expect(calls).not.toContain("/api/conversations/shared");
++    expect(screen.getByText("个人对话 · 仅你可见")).toBeVisible();
++  });
++  it("leaves personal history empty if only shared sessions exist", async () => {
++    mockConversations(false);
++    render(<ProjectConversation projectId={projectId} presentation="assistant" defaultOpen/>);
++    await waitFor(() => expect(screen.getByLabelText("会话消息")).toBeEnabled());
++    expect(calls).not.toContain("/api/conversations/shared");
++    expect(screen.queryByRole("combobox", { name: "选择本人会话" })).not.toBeInTheDocument();
++  });
++  it("clearly labels an explicitly opened shared conversation instead of relabeling it as private", async () => {
++    mockConversations();
++    render(<ProjectConversation projectId={projectId} presentation="assistant" defaultOpen initialConversationId="shared"/>);
++    await waitFor(() => expect(calls).toContain("/api/conversations/shared"));
++    expect(await screen.findByText(/项目成员可见：本会话/)).toBeVisible();
++    expect(screen.queryByText("个人对话 · 仅你可见")).not.toBeInTheDocument();
++  });
++});

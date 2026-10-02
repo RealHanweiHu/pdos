@@ -10,6 +10,7 @@ from sqlalchemy import Connection, Engine, func, select
 from app.auth.repository import AuthContext
 from app.contracts.common_objects import Contract, Digest
 from app.db.schema import tables
+from app.domain.definition_inheritance import effective_content
 from app.domain.product_catalog import PARENT_LEVEL
 from app.domain.product_definitions import _definition, _row
 from app.domain.product_roadmap import latest_rows
@@ -75,7 +76,7 @@ def matrix_query(context: AuthContext, space_id: UUID, line_id: UUID | None) -> 
             definitions.c.id.label("definition_id"),
             definitions.c.revision_number.label("definition_revision"),
             *(
-                definitions.c.content[key].label(key)
+                effective_content(definitions)[key].label(key)
                 for key in (
                     "target_users",
                     "scenarios",

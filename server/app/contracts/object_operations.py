@@ -36,8 +36,10 @@ class ResearchConcludeRequest(CommandPrecondition):
 
     @model_validator(mode="after")
     def conclusion_sources(self) -> Self:
-        if self.findings and not self.source_refs:
-            raise ValueError("research_findings_require_sources")
+        if not self.source_refs:
+            raise ValueError("research_conclusion_requires_snapshot_sources")
+        if any(ref.kind != "evidence_snapshot" for ref in self.source_refs):
+            raise ValueError("research_conclusion_requires_snapshot_sources")
         return self
 
 

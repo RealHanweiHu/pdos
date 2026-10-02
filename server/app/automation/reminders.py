@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID
 
-from sqlalchemy import Engine, select, text, tuple_
+from sqlalchemy import Engine, exists, or_, select, text, tuple_
 
 from app.db.schema import tables
 from app.domain.findings import FindingService
@@ -80,7 +80,15 @@ class ReminderScheduler:
                     .join(tables.tenants, tables.tenants.c.id == tables.projects.c.tenant_id)
                     .where(
                         tables.tenants.c.status == "active",
-                        tables.projects.c.status != "archived",
+                        or_(
+                            tables.projects.c.status != "archived",
+                            exists(
+                                select(tables.xiaopai_delegations.c.id).where(
+                                    tables.xiaopai_delegations.c.project_id == tables.projects.c.id,
+                                    tables.xiaopai_delegations.c.status == "active",
+                                )
+                            ),
+                        ),
                     )
                     .order_by(tables.projects.c.tenant_id, tables.projects.c.id)
                     .limit(PROJECT_BATCH_SIZE)
@@ -138,6 +146,15 @@ class ReminderScheduler:
         except Exception as error:
             failed = True
             self._log_failure(tenant_id, project_id, "risks", error)
+        try:
+            from app.domain.xiaopai import XiaopaiService
+
+            XiaopaiService(self._engine).scan_project(tenant_id, project_id, as_of)
+        except Exception as error:
+            # No model fallback and no stale follow-up dispatch after a failed scan.
+            outcome.failed_projects += 1
+            self._log_failure(tenant_id, project_id, "xiaopai", error)
+            return
         try:
             reminders = self._reminders.scan(
                 tenant_id=tenant_id,

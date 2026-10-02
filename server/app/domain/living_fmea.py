@@ -207,6 +207,7 @@ def sources(
         ids = list(
             c.execute(
                 source_query(kind, context.tenant.id, project)
+                .where(*([TABLES[kind].c.withdrawn_at.is_(None)] if kind == "issue" else []))
                 .with_only_columns(TABLES[kind].c.id)
                 .order_by(TABLES[kind].c.id)
                 .offset(offset)
@@ -483,6 +484,8 @@ def save(
         values = []
         for ref in draft.content.references:
             value = read_source(c, context.tenant.id, project, ref.kind, ref.id)
+            if ref.kind == "issue" and value.get("withdrawn_at") is not None:
+                raise ProductWorkError("原问题已撤回，不能新增 FMEA 引用")
             if digest(value) != ref.expected_digest:
                 raise ProductWorkError("关联资料已变化，请重新读取原值并核对")
             values.append({**ref.model_dump(mode="json"), "value": value})
@@ -599,6 +602,7 @@ def coverage(engine: Engine, context: AuthContext, project: UUID, offset: int) -
         issues = (
             c.execute(
                 source_query("issue", context.tenant.id, project)
+                .where(tables.issues.c.withdrawn_at.is_(None))
                 .order_by(tables.issues.c.id)
                 .offset(offset)
                 .limit(31)

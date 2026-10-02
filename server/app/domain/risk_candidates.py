@@ -82,6 +82,7 @@ def _active_specs(
             tables.issues.c.tenant_id == tenant_id,
             tables.issues.c.project_id == project_id,
             tables.issues.c.status != "closed",
+            tables.issues.c.withdrawn_at.is_(None),
             tables.issues.c.target_date < today,
         )
     ).all()

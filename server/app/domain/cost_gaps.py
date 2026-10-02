@@ -344,6 +344,8 @@ def creation_preview(
     if command.mode == "link":
         assert command.issue_id is not None
         issue = _plain(dict(row(c, context.tenant.id, project, tables.issues, command.issue_id)))
+        if issue.get("withdrawn_at") is not None:
+            raise ProductWorkError("原问题已撤回，不能新增费用差异关联")
         if issue["status"] == "closed":
             raise ProductWorkError("原问题已关闭，请先沿原问题重新打开后关联")
     else:
@@ -691,6 +693,7 @@ class CostGapService:
                 tables.issues.c.tenant_id == context.tenant.id,
                 tables.issues.c.project_id == project,
                 tables.issues.c.status != "closed",
+                tables.issues.c.withdrawn_at.is_(None),
             )
             if search:
                 needle = (

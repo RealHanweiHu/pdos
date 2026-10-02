@@ -62,6 +62,15 @@ describe("quality BFF catch-all", () => {
     );
   });
 
+  it("forwards FMEA candidate reads and writes only for a bound entry", async () => {
+    fetchMock.mockImplementation(async () => Response.json({ items: [] }));
+    expect((await GET(new Request("http://localhost"), context(["fmea", ncrId, "design-rules"]))).status).toBe(200);
+    expect((await POST(jsonRequest({ publication_id: complaintId }), context(["fmea", ncrId, "design-rules"]))).status).toBe(200);
+    expect((await POST(jsonRequest({}), context(["fmea", "bad-id", "design-rules"]))).status).toBe(404);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[1][1]).toEqual(expect.objectContaining({ method: "POST", body: JSON.stringify({ publication_id: complaintId }) }));
+  });
+
   it("fails closed for unknown paths, missing sessions, and non-JSON writes", async () => {
     expect(
       (await GET(new Request("http://localhost"), context(["internal-dump"]))).status,

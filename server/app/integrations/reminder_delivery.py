@@ -91,6 +91,7 @@ class ReminderDeliveryDispatcher:
                     tables.reminders.c.project_id == project_id,
                     tables.reminders.c.status.in_(("fired", "acknowledged")),
                     tables.reminders.c.target_entity.not_in(("change_discussion", "meeting")),
+                    tables.reminders.c.policy_key.not_like("xiaopai_%"),
                 )
                 .order_by(tables.reminders.c.fired_at, tables.reminders.c.id)
             ).all()

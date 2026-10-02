@@ -1,6 +1,14 @@
 from fastapi import FastAPI
 
 from app.api.ai import router as ai_router
+from app.api.ai_issue_applications import router as ai_issue_applications_router
+from app.api.ai_issue_event_history import router as ai_issue_event_history_router
+from app.api.ai_issue_event_runs import router as ai_issue_event_runs_router
+from app.api.ai_issue_event_sources import router as ai_issue_event_sources_router
+from app.api.ai_issue_observations import router as ai_issue_observations_router
+from app.api.ai_issue_trials import router as ai_issue_trials_router
+from app.api.ai_write_policy import router as ai_write_policy_router
+from app.api.ai_write_trials import router as ai_write_trials_router
 from app.api.auth import router as auth_router
 from app.api.change_governance import router as change_governance_router
 from app.api.conversations import router as conversations_router
@@ -37,6 +45,7 @@ from app.api.organization import router as organization_router
 from app.api.plan_scenarios import router as plan_scenarios_router
 from app.api.process_templates import router as process_templates_router
 from app.api.product_engineering import router as product_engineering_router
+from app.api.product_evaluation import router as product_evaluation_router
 from app.api.product_research import router as product_research_router
 from app.api.product_workspace import router as product_workspace_router
 from app.api.project_completion import router as project_completion_router
@@ -61,6 +70,7 @@ from app.api.users import router as users_router
 from app.api.value_measurement import router as value_measurement_router
 from app.api.value_workpacks import router as value_workpacks_router
 from app.api.work_items import router as work_items_router
+from app.api.xiaopai import router as xiaopai_router
 
 app = FastAPI(
     title="PDOS API",
@@ -104,7 +114,14 @@ app.include_router(events_router)
 app.include_router(work_items_router)
 app.include_router(my_work_router)
 app.include_router(reminders_router)
+app.include_router(xiaopai_router)
 app.include_router(issue_risks_router)
+app.include_router(ai_issue_event_sources_router)
+app.include_router(ai_issue_applications_router)
+app.include_router(ai_issue_event_runs_router)
+app.include_router(ai_issue_event_history_router)
+app.include_router(ai_issue_observations_router)
+app.include_router(ai_issue_trials_router)
 app.include_router(issue_intake_router)
 app.include_router(issue_intake_compensation_router)
 app.include_router(decisions_router)
@@ -127,4 +144,7 @@ app.include_router(project_reports_router)
 app.include_router(customer_reports_router)
 app.include_router(memories_router)
 app.include_router(model_governance_router)
+app.include_router(product_evaluation_router)
+app.include_router(ai_write_policy_router)
+app.include_router(ai_write_trials_router)
 app.include_router(findings_router)

@@ -3,7 +3,7 @@
 from typing import Any
 from uuid import UUID, uuid4, uuid5
 
-from sqlalchemy import Connection, Engine, select
+from sqlalchemy import Connection, Engine, select, text
 from sqlalchemy.exc import IntegrityError
 
 from app.auth.repository import AuthContext
@@ -20,6 +20,7 @@ from app.domain.resource_reallocation_inputs import (
     ReallocationApply,
     ReallocationDecision,
     ReallocationDraft,
+    ReallocationReview,
     ReallocationSubmit,
     capture,
 )
@@ -263,6 +264,47 @@ class ResourceReallocationService:
                 raise ProductWorkError("调整中须包含当前项目的实际预约")
             return result
 
+    def review(
+        self, context: AuthContext, project: UUID, command: ReallocationReview
+    ) -> dict[str, Any]:
+        with self.engine.begin() as c:
+            saved = row(c, context, command.allocation_id)
+            access(c, context, project, saved)
+            if saved["payload_digest"] != command.expected_digest:
+                raise ProductWorkError("核对内容与所选版本不一致，请刷新原记录")
+            decisions, applied = outcomes(c, context, saved["id"])
+            if applied or any(d["action"] in ("reject", "withdraw") for d in decisions):
+                return {
+                    "allocation_id": str(saved["id"]),
+                    "payload_digest": saved["payload_digest"],
+                    "sources_current": False,
+                    "capacity_clear": False,
+                    "blockers": ["此调整已结束，请刷新查看实际回执"],
+                }
+            try:
+                ensure_current(c, context, saved)
+            except ProductWorkError as error:
+                # A project participant receives no other project's source details.
+                reason = (
+                    str(error)
+                    if is_allowed(context.user.role, Action.TENANT_MANAGE)
+                    else "整批调整的来源或容量条件已变化，请由资源管理员核对并重新提出"
+                )
+                return {
+                    "allocation_id": str(saved["id"]),
+                    "payload_digest": saved["payload_digest"],
+                    "sources_current": False,
+                    "capacity_clear": False,
+                    "blockers": [reason],
+                }
+            return {
+                "allocation_id": str(saved["id"]),
+                "payload_digest": saved["payload_digest"],
+                "sources_current": True,
+                "capacity_clear": True,
+                "blockers": [],
+            }
+
     def submit(
         self, context: AuthContext, project: UUID, command: ReallocationSubmit
     ) -> dict[str, Any]:
@@ -276,6 +318,13 @@ class ResourceReallocationService:
     ) -> dict[str, Any]:
         _role(context, Action.TENANT_MANAGE)
         with self.engine.begin() as c:
+            c.execute(
+                text("SELECT pg_advisory_xact_lock(hashtextextended(:key, 0))"),
+                {
+                    "key": f"resource-reallocation:{context.tenant.id}:"
+                    f"{context.user.id}:{command.request_id}"
+                },
+            )
             _project(c, context, project)
             t = tables.resource_reallocations
             fingerprint = digest(command.model_dump(mode="json"))
@@ -363,6 +412,17 @@ class ResourceReallocationService:
             own = access(c, context, project, saved)
             t = tables.resource_reallocation_decisions
             fingerprint = digest({"project_id": str(project), **command.model_dump(mode="json")})
+            # Wait for earlier decisions before reading the request receipt. A retry
+            # already waiting on these locks must see the first committed decision.
+            for part in parts(c, context, saved["id"]):
+                c.execute(
+                    select(tables.projects.c.id)
+                    .where(
+                        tables.projects.c.tenant_id == context.tenant.id,
+                        tables.projects.c.id == part["project_id"],
+                    )
+                    .with_for_update()
+                )
             prior = (
                 c.execute(
                     select(t).where(
@@ -378,16 +438,6 @@ class ResourceReallocationService:
                 if prior["request_digest"] != fingerprint:
                     raise ProductWorkError("请求编号已用于另一项确认")
                 return _plain(prior)
-            # Shared inventory lock serializes decisions and application after project locks.
-            for part in parts(c, context, saved["id"]):
-                c.execute(
-                    select(tables.projects.c.id)
-                    .where(
-                        tables.projects.c.tenant_id == context.tenant.id,
-                        tables.projects.c.id == part["project_id"],
-                    )
-                    .with_for_update()
-                )
             decisions, applied = outcomes(c, context, saved["id"])
             if applied or any(d["action"] in ("reject", "withdraw") for d in decisions):
                 raise ProductWorkError("此调整已结束，请查看原回执")
@@ -578,6 +628,14 @@ class ResourceReallocationService:
                             ],
                         },
                     )
+                from app.domain.schedule_resource_feedback import refresh_after_reallocation
+
+                refresh_after_reallocation(
+                    c,
+                    context.tenant.id,
+                    [part["project_id"] for part in parts(c, context, saved["id"])],
+                    context.user.id,
+                )
                 return _plain(result)
         except IntegrityError as error:
             raise ProductWorkError(

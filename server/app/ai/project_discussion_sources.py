@@ -156,7 +156,7 @@ def linked_definitions(
     for value in candidates:
         try:
             _role(context, Action.PRODUCT_WORK_VIEW)
-            definition_row(c, context, value["market_space_id"], value["id"])
+            value = definition_row(c, context, value["market_space_id"], value["id"])
         except ProductWorkAccessError:
             continue
         result.append(value)
@@ -169,6 +169,7 @@ def options(c: Connection, context: AuthContext, project: UUID) -> dict[str, Any
         records = c.execute(
             select(table)
             .where(table.c.tenant_id == context.tenant.id, table.c.project_id == project)
+            .where(*([table.c.withdrawn_at.is_(None)] if kind == "issue" else []))
             .order_by(table.c.created_at.desc(), table.c.id)
             .limit(100)
         ).mappings()
@@ -339,8 +340,8 @@ def state(
                 .mappings()
                 .one_or_none()
             )
-            if row is None:
-                raise ProductWorkError("所选资料不存在或不属于当前项目")
+            if row is None or (value.kind == "issue" and row.get("withdrawn_at") is not None):
+                raise ProductWorkError("所选资料不存在、已撤回或不属于当前项目")
             fields = {
                 k: v
                 for k, v in row.items()

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
+from typing import Any, cast
 from uuid import UUID, uuid4
 
 import httpx2
@@ -36,8 +37,31 @@ FactoryResult = tuple[dict[str, str], list[httpx2.Request], list[dict[str, objec
 PlanScenario = tuple[TestClient, Scope, Gateway, dict[str, str], str, dict[str, object]]
 
 
+def install_gateway(request: pytest.FixtureRequest, dependency: Callable[..., Any]) -> None:
+    """Restore the owned dictionary before a later owner can reveal it again."""
+    missing = object()
+    owned_overrides = app.dependency_overrides
+    previous = owned_overrides.get(get_application_gateway, missing)
+
+    def restore_gateway() -> None:
+        if owned_overrides.get(get_application_gateway, missing) is not dependency:
+            return
+        if previous is missing:
+            owned_overrides.pop(get_application_gateway, None)
+        else:
+            owned_overrides[get_application_gateway] = cast(Callable[..., Any], previous)
+
+    request.addfinalizer(restore_gateway)
+    owned_overrides[get_application_gateway] = dependency
+
+
 def factory(
-    engine: Engine, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, output: dict[str, object]
+    engine: Engine,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    request: pytest.FixtureRequest,
+    output: dict[str, object],
 ) -> FactoryResult:
     path, doc, _ = publication(tmp_path, qualified_input_limit=32000)
     doc["models"][0]["window_tokens"] = 64000
@@ -134,11 +158,12 @@ def factory(
         with application_gateway.configured_application_gateway(engine, environment) as gateway:
             yield gateway
 
-    app.dependency_overrides[get_application_gateway] = configured
+    install_gateway(request, configured)
     return environment, calls, snapshots
 
 
 def test_risk_api_budget_predates_inference_and_replay_does_not_reset(
+    request: pytest.FixtureRequest,
     api_context: ApiContext,
     isolated_ai_api_database: str,
     tmp_path: Path,
@@ -151,6 +176,7 @@ def test_risk_api_budget_predates_inference_and_replay_does_not_reset(
         get_engine(),
         tmp_path,
         monkeypatch,
+        request=request,
         output=dict(
             disposition="no_action",
             candidate_type=None,
@@ -184,7 +210,11 @@ def test_risk_api_budget_predates_inference_and_replay_does_not_reset(
 
 @pytest.mark.parametrize("continuation", ["budgeted", "legacy", "unbound_parent"])
 def test_test_plan_conversation_inherits_budget_and_cannot_reset_by_mode(
-    scenario: PlanScenario, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, continuation: str
+    request: pytest.FixtureRequest,
+    scenario: PlanScenario,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    continuation: str,
 ) -> None:
     _, scope, _, _, _, _ = scenario
     output = {
@@ -200,7 +230,9 @@ def test_test_plan_conversation_inherits_budget_and_cannot_reset_by_mode(
     if continuation == "unbound_parent":
         initial = suggest(scenario)
         assert initial.status_code == 200 and initial.json()["status"] == "created", initial.text
-    environment, calls, snapshots = factory(scope.engine, tmp_path, monkeypatch, output=output)
+    environment, calls, snapshots = factory(
+        scope.engine, tmp_path, monkeypatch, request=request, output=output
+    )
     if continuation != "unbound_parent":
         initial = suggest(scenario)
         assert initial.status_code == 200 and initial.json()["status"] == "created", initial.text
@@ -251,6 +283,7 @@ def test_test_plan_conversation_inherits_budget_and_cannot_reset_by_mode(
 
 @pytest.mark.parametrize("entry", ["chat", "risk"])
 def test_creation_rechecks_original_login_and_returns_forbidden(
+    request: pytest.FixtureRequest,
     api_context: ApiContext,
     isolated_ai_api_database: str,
     tmp_path: Path,
@@ -262,7 +295,7 @@ def test_creation_rechecks_original_login_and_returns_forbidden(
     client, _, _ = api_context
     tenant, actor, headers = setup_owner(client)
     project, event_id = seed_project_and_users(isolated_ai_api_database, tenant_id=tenant)
-    _, calls, _ = factory(get_engine(), tmp_path, monkeypatch, output={})
+    _, calls, _ = factory(get_engine(), tmp_path, monkeypatch, request=request, output={})
     original = application_authorization.issue_application_authorization
 
     def changed(
@@ -307,12 +340,15 @@ def test_creation_rechecks_original_login_and_returns_forbidden(
 
 
 def test_test_plan_creation_rejects_changed_session_as_forbidden(
-    scenario: PlanScenario, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    request: pytest.FixtureRequest,
+    scenario: PlanScenario,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from app.ai import application_authorization
 
     _, scope, _, _, _, _ = scenario
-    _, calls, _ = factory(scope.engine, tmp_path, monkeypatch, output={})
+    _, calls, _ = factory(scope.engine, tmp_path, monkeypatch, request=request, output={})
     original = application_authorization.issue_application_authorization
 
     def changed(

@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-09-30T15:11:52.666755+00:00",
+  "status": "test_code_and_static_checks_ready",
+  "db_execution": "not_run",
+  "database_url_assignment": "pending_coordinator",
+  "no_migrations_or_cleanup": true,
+  "prior_application_candidate": "38d3d40bf6434697b65ee66c856039ff335c6f176ffd8aabd412d0e3b8c6c345",
+  "declared_cases": 20,
+  "static_checks": {
+    "ast_compile": "passed_without_import_or_execution",
+    "ruff": "passed",
+    "mypy": "passed_two_files"
+  },
+  "files": [
+    {
+      "path": "server/tests/test_supplier_replies_postgres.py",
+      "sha256": "30a6553017b1b71ceb181d75edf416b1361badc3848b68b6850f699393aeb225",
+      "declared_cases": 13,
+      "tests": [
+        {
+          "name": "test_reply_saves_v2_event_audit_and_serial_replay_once",
+          "declared_cases": 2
+        },
+        {
+          "name": "test_two_real_connections_replay_same_reply_once",
+          "declared_cases": 1
+        },
+        {
+          "name": "test_reply_request_reuse_outside_original_binding_is_rejected",
+          "declared_cases": 5
+        },
+        {
+          "name": "test_reply_preview_drift_refuses_any_partial_write",
+          "declared_cases": 4
+        },
+        {
+          "name": "test_real_event_and_audit_inserts_roll_back_on_audit_failure_then_recover",
+          "declared_cases": 1
+        }
+      ]
+    },
+    {
+      "path": "server/tests/test_parallel_supply_postgres.py",
+      "sha256": "5cefa1545b0c68ec563254db2340fbed280d394e9d3815b2a5af532fbf5e419c",
+      "declared_cases": 7,
+      "tests": [
+        {
+          "name": "test_two_projects_and_unreconciled_issue_deduct_original_pool_once",
+          "declared_cases": 1
+        },
+        {
+          "name": "test_two_projects_concurrently_compete_for_one_pool_without_oversubscription",
+          "declared_cases": 1
+        },
+        {
+          "name": "test_price_unit_mismatch_cannot_be_saved_in_any_cost_stage",
+          "declared_cases": 3
+        },
+        {
+          "name": "test_changed_bom_unit_blocks_old_calculation_and_new_gap_from_freeze",
+          "declared_cases": 1
+        },
+        {
+          "name": "test_correct_units_roll_up_then_named_approval_retains_frozen_cost_after_revision",
+          "declared_cases": 1
+        }
+      ]
+    }
+  ],
+  "test_candidate_digest": "50f1565d719144b995df84724a2b6fc8ed5bad63021a1ec6b2fc8c5a347908ac"
+}

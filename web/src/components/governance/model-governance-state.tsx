@@ -38,7 +38,7 @@ export function ModelGovernanceForbidden({
 }) {
   return (
     <WorkspaceShell
-      active="model-governance"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={onLogout}

@@ -1,0 +1,8 @@
+{
+  "server/app/ai/product_matrix_preparation.py": "1c2bbbbeb687e002d0c4532059a6e34de13c110b0225639a044954047a1eea31",
+  "server/app/ai/product_matrix_runs.py": "eae2baf1005156795804c131ce8284219f4978be4e559a13d2f31fdd2009f7ef",
+  "server/migrations/versions/0405_matrix_scoring_context.py": "3dbdde1333967d3ddbc771d9c6b9ce585ebc0b32eaa2fb9ce62d3e46419c14da",
+  "server/tests/test_matrix_scoring_context_api.py": "8ae051aced7ab5c07c6baaf04fef86fc5ba7c3dd672d8ea3edfe71b318ceda6e",
+  "server/tests/test_matrix_scoring_context_migration.py": "7313857c8dd42c085e03c98188f08e97c41416201d3ad918a5afc04be07f9fad",
+  "server/tests/test_migrations.py": "61609a497d537c50d61f4a1cb769f8573bf5b801856b86a40e5b500711438a45"
+}

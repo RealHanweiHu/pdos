@@ -99,6 +99,10 @@ class FindingGroundTruthConflictError(ValueError):
     pass
 
 
+class FindingAiDraftOwnedError(FindingGroundTruthConflictError):
+    """A migrated candidate is managed by the single-confirmation draft workflow."""
+
+
 class FindingApplyPermissionError(PermissionError):
     pass
 
@@ -205,6 +209,7 @@ class FindingRecord:
     created_at: datetime
     updated_at: datetime
     superseded_by: str | None = None
+    ai_draft_id: UUID | None = None
 
 
 @dataclass(frozen=True)
@@ -260,6 +265,7 @@ def _record(row: RowMapping) -> FindingRecord:
         created_at=row["created_at"],
         updated_at=row["updated_at"],
         superseded_by=row.get("superseded_by"),
+        ai_draft_id=row.get("ai_draft_id"),
     )
 
 
@@ -267,6 +273,14 @@ def _finding_select() -> Any:
     return (
         select(
             tables.findings,
+            select(tables.ai_meeting_drafts.c.id)
+            .where(
+                tables.ai_meeting_drafts.c.tenant_id == tables.findings.c.tenant_id,
+                tables.ai_meeting_drafts.c.finding_id == tables.findings.c.id,
+            )
+            .correlate(tables.findings)
+            .scalar_subquery()
+            .label("ai_draft_id"),
             tables.agent_runs.c.run_context["superseded_by"].as_string().label("superseded_by"),
         )
         .join(
@@ -320,7 +334,20 @@ class FindingService:
         statement = _finding_select().where(
             tables.findings.c.tenant_id == tenant_id,
             tables.findings.c.id == finding_id,
-            tables.findings.c.finding_type.not_in(("intake_organization", "meeting_plan")),
+            tables.findings.c.finding_type.not_in(
+                (
+                    "intake_organization",
+                    "meeting_plan",
+                    "product_research_plan",
+                    "product_competitor_observations",
+                    "product_market_segments",
+                    "product_opportunities",
+                    "product_experiments",
+                    "product_strategy_drafts",
+                    "product_definition_drafts",
+                    "product_rfq_requirements",
+                )
+            ),
         )
         if for_update:
             statement = statement.with_for_update(of=tables.findings)
@@ -388,6 +415,9 @@ class FindingService:
         if before is None:
             raise FindingNotFoundError
         if before.finding_type in {
+            "meeting_minutes",
+            "meeting_action",
+            "meeting_decision",
             "change_work_package",
             "capa_work_package",
             "supplier_recovery",
@@ -401,6 +431,17 @@ class FindingService:
                 raise FindingGroundTruthConflictError
         record = self._get(connection, tenant_id=tenant_id, finding_id=finding_id, for_update=True)
         change_notice_disclosure.require(connection, record, actor_user_id)
+        if (
+            record.finding_type in {"meeting_minutes", "meeting_action", "meeting_decision"}
+            and connection.execute(
+                select(tables.ai_meeting_drafts.c.id).where(
+                    tables.ai_meeting_drafts.c.tenant_id == tenant_id,
+                    tables.ai_meeting_drafts.c.finding_id == finding_id,
+                )
+            ).first()
+            is not None
+        ):
+            raise FindingAiDraftOwnedError
         return record
 
     def review(
@@ -767,7 +808,20 @@ class FindingService:
             tables.findings.c.updated_at < cutoff,
             tables.findings.c.scope_kind == "project",
             employee_finding_visibility(),
-            tables.findings.c.finding_type.not_in(("intake_organization", "meeting_plan")),
+            tables.findings.c.finding_type.not_in(
+                (
+                    "intake_organization",
+                    "meeting_plan",
+                    "product_research_plan",
+                    "product_competitor_observations",
+                    "product_market_segments",
+                    "product_opportunities",
+                    "product_experiments",
+                    "product_strategy_drafts",
+                    "product_definition_drafts",
+                    "product_rfq_requirements",
+                )
+            ),
         )
         if project_id is not None:
             statement = statement.where(tables.findings.c.project_id == project_id)

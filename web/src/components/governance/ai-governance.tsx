@@ -10,9 +10,11 @@ import {
 } from "@/components/ai/ai-api";
 import type { AiCapability, AiTouchpoint, AiUsage } from "@/components/ai/ai-types";
 import { requestProjects } from "@/components/projects/project-api";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
+import { AiWritePolicy } from "./ai-write-policy";
 
 type LoadState = "loading" | "ready" | "forbidden" | "error" | "redirecting";
 
@@ -100,7 +102,8 @@ export function AiGovernance() {
   }
 
   return (
-    <WorkspaceShell active="ai-governance" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+      <SettingsNav current="ai-governance" identity={identity}>
       <div className="border-b pb-4">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           Admin Workspace
@@ -110,6 +113,8 @@ export function AiGovernance() {
           租户级 AI 用量、能力合同与触点失能态；预算耗尽或模型不可用时每个触点给出人工替代路径。
         </p>
       </div>
+
+      <AiWritePolicy />
 
       <section aria-label="用量与预算" className="mt-5 rounded-lg border bg-card p-4">
         <h2 className="text-sm font-semibold">用量与预算</h2>
@@ -225,7 +230,7 @@ export function AiGovernance() {
                 return (
                   <tr className="border-b last:border-b-0" key={capability.capability_key}>
                     <td className="py-1.5 pr-3 font-mono">{capability.capability_key}</td>
-                    <td className="py-1.5 pr-3">{zoneLabels[capability.zone]}</td>
+                    <td className="py-1.5 pr-3">{capability.write_tier ? `${capability.write_tier.toUpperCase()} · ${capability.write_tier === "t0" ? "可撤回写入" : capability.write_tier === "t1" ? "预填确认" : "人工裁决"}` : zoneLabels[capability.zone]}</td>
                     <td className="py-1.5 pr-3">
                       <span
                         className={cn(
@@ -253,6 +258,7 @@ export function AiGovernance() {
           </table>
         </div>
       </section>
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

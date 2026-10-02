@@ -335,6 +335,7 @@ class IssueIntakeConfirmation:
                                 tables.issues.c.tenant_id == ctx.tenant.id,
                                 tables.issues.c.project_id == project,
                                 tables.issues.c.id == reuse.issue_id,
+                                tables.issues.c.withdrawn_at.is_(None),
                             )
                             .with_for_update()
                         )

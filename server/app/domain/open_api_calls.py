@@ -331,6 +331,8 @@ class OpenApiCallService:
             q = select(*(t.c[k] for k in columns)).where(
                 t.c.tenant_id == context.tenant.id, t.c.project_id == project
             )
+            if command.kind == "issue":
+                q = q.where(t.c.withdrawn_at.is_(None))
             if command.before_id:
                 q = q.where(t.c.id < command.before_id)
             values = c.execute(q.order_by(t.c.id.desc()).limit(command.limit + 1)).mappings().all()

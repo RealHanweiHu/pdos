@@ -166,6 +166,7 @@ from app.domain.resource_reallocation_inputs import (
     ReallocationApply,
     ReallocationDecision,
     ReallocationDraft,
+    ReallocationReview,
     ReallocationSubmit,
 )
 from app.domain.resource_reallocations import ResourceReallocationService
@@ -599,10 +600,14 @@ def schedule_forecasts(
     context: Context,
     engine: Database,
     record_id: UUID | None = None,
+    before: UUID | None = None,
+    limit: Annotated[int, Query(ge=1, le=50)] = 50,
 ) -> dict[str, Any]:
     no_store(response)
     try:
-        return ScheduleForecastService(engine).get(context, project_id, record_id=record_id)
+        return ScheduleForecastService(engine).get(
+            context, project_id, record_id=record_id, before=before, limit=limit
+        )
     except (ValueError, OverflowError, ProductWorkAccessError) as error:
         raise failure(error) from error
 
@@ -1519,13 +1524,15 @@ def reallocations(
 @router.post("/api/projects/{project_id}/execution/resource-reallocation-preview")
 def reallocation_preview(
     project_id: UUID,
-    payload: ReallocationDraft,
+    payload: ReallocationDraft | ReallocationReview,
     response: Response,
     context: Context,
     engine: Database,
 ) -> dict[str, Any]:
     no_store(response)
     try:
+        if isinstance(payload, ReallocationReview):
+            return ResourceReallocationService(engine).review(context, project_id, payload)
         return ResourceReallocationService(engine).preview(context, project_id, payload)
     except (ValueError, OverflowError, ProductWorkAccessError) as error:
         raise failure(error) from error

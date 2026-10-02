@@ -10,6 +10,37 @@ from sqlalchemy import Connection, select
 from app.db.schema import tables
 
 
+def forecast_node(forecast: Any, node_id: UUID) -> dict[str, Any] | None:
+    """Read an immutable result, resolving legacy keys only from its own basis."""
+    mapping: dict[str, UUID | None] = {}
+    identity: UUID | None
+    for state in (forecast.get("inputs") or {}).get("basis", {}).get("tasks", []):
+        key = state.get("node_key")
+        if not isinstance(key, str):
+            continue
+        try:
+            identity = UUID(str(state.get("node_id")))
+        except ValueError:
+            identity = None
+        mapping[key] = identity if key not in mapping else None
+    matches: list[dict[str, Any]] = []
+    for node in forecast["result"]["nodes"]:
+        stored_id = node.get("node_id")
+        if stored_id is not None:
+            try:
+                identity = UUID(str(stored_id))
+            except ValueError:
+                continue
+            if node.get("node_key") in mapping and mapping[node["node_key"]] != identity:
+                continue
+        else:
+            identity = mapping.get(node.get("node_key"))
+        if identity == node_id:
+            matches.append(node)
+    # Missing or ambiguous provenance cannot create an attributed error.
+    return dict(matches[0]) if len(matches) == 1 else None
+
+
 def correction_error_views(
     connection: Connection, tenant_id: UUID, project_id: UUID, forecasts: list[Any]
 ) -> list[dict[str, Any]]:
@@ -26,14 +57,7 @@ def correction_error_views(
         original = correction["original_snapshot"]
         cutoff = datetime.fromisoformat(original["observed_at"])
         for forecast in forecasts:
-            node = next(
-                (
-                    node
-                    for node in forecast["result"]["nodes"]
-                    if node["node_id"] == str(correction["node_id"])
-                ),
-                None,
-            )
+            node = forecast_node(forecast, correction["node_id"])
             as_of = datetime.fromisoformat(forecast["result"]["as_of"])
             if node is None or as_of >= cutoff:
                 continue
@@ -107,7 +131,11 @@ def record_source_errors(connection: Connection, observation: Any, previous: Any
             continue
         rows = connection.execute(
             select(
-                times.c.record_id, column.label("predicted_at"), records.c.contract, runs.c.result
+                times.c.record_id,
+                column.label("predicted_at"),
+                records.c.contract,
+                runs.c.result,
+                runs.c.inputs,
             )
             .join(
                 records,
@@ -133,9 +161,7 @@ def record_source_errors(connection: Connection, observation: Any, previous: Any
             as_of = datetime.fromisoformat(row["contract"]["as_of"])
             if as_of >= min(actual, observation["observed_at"]):
                 continue
-            result = next(
-                (node for node in row["result"]["nodes"] if node["node_id"] == str(node_id)), None
-            )
+            result = forecast_node(row, node_id)
             if result is None or result.get(
                 "actual_start" if point == "start" else "actual_finish"
             ):

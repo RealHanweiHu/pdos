@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { caseLinkRequest } from "@/components/cases/case-requirements";
 
@@ -23,12 +23,13 @@ function ScheduleActualCorrectionsContent({ projectId, onCorrected }: Correction
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const requests = useRef(new Map<string, string>());
   const point = data?.points.find((item) => item.id === selected);
   const path = `projects/${projectId}/execution/actual-corrections`;
   async function refresh() {
     setBusy(true); setError(null);
     try { setData(await caseLinkRequest<State>(path)); setSelected(""); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : "纠错历史读取失败"); }
+    catch (failure) { setData(null); setError(failure instanceof Error ? failure.message : "纠错历史读取失败"); }
     finally { setBusy(false); }
   }
   useEffect(() => { let alive = true;
@@ -38,13 +39,18 @@ function ScheduleActualCorrectionsContent({ projectId, onCorrected }: Correction
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!point || busy) return;
     setBusy(true); setError(null); setNotice(null);
+    let saved = false;
     try {
-      await caseLinkRequest(path, { request_id: crypto.randomUUID(), task_id: point.task_id, point: point.point, expected_digest: point.digest, observed_at: new Date(time).toISOString(), reason, evidence });
+      const body = { task_id: point.task_id, point: point.point, expected_digest: point.digest, observed_at: time === localTime(point.observed_at) ? point.observed_at : new Date(time).toISOString(), reason, evidence };
+      const key = JSON.stringify(body); let id = requests.current.get(key); if (!id) { id = crypto.randomUUID(); requests.current.set(key, id); }
+      await caseLinkRequest(path, { ...body, request_id: id });
+      saved = true;
       setReason(""); setEvidence(""); setSelected("");
-      setNotice("纠错已保存，实际时间与预测已更新。其他已展开的时间对照或预测面板请刷新后查看。");
+      setNotice("纠错已保存，实际时间与预测已更新，可回查原记录和误差修订。");
+      window.dispatchEvent(new Event("pdos:forecast-updated"));
       onCorrected();
       setData(await caseLinkRequest<State>(path));
-    } catch (failure) { setError(failure instanceof Error ? failure.message : "实际时间纠错失败"); }
+    } catch (failure) { if (saved) setData(null); setError(failure instanceof Error ? failure.message : "实际时间纠错失败"); }
     finally { setBusy(false); }
   }
   return <details className="space-y-3 rounded-md border p-3">

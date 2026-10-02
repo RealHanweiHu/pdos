@@ -623,3 +623,81 @@ def test_object_ownership_catalog_resolves_models_namespaces_and_work_items() ->
             item in (root / "tasks/ai-native-integrated-todo.md").read_text()
             for item in record["work_items"]
         )
+
+
+def strategy_candidate_payload(disciplines: list[str]) -> dict[str, Any]:
+    """Unconfirmed proposal with explicit unknown budgets and existing work identifiers."""
+    fact = hypothesis()
+    budget = {"amount": None, "basis": fact}
+    return {
+        "opportunity_id": uuid4(),
+        "title": "专业约束候选",
+        "canvas": {key: fact for key in StrategyCanvas.model_fields},
+        "route_comparisons": [
+            {
+                "solution_id": uuid4(),
+                "currency": "CNY",
+                "price_target": budget,
+                "nre_budget": budget,
+                "id_cycle_days": budget,
+                "modules": [{"key": "assembly", "name": "装配", "target": budget}],
+                **{
+                    key: fact
+                    for key in (
+                        "scope",
+                        "quality",
+                        "supply",
+                        "manufacturing",
+                        "resources",
+                        "trade_off",
+                    )
+                },
+            }
+            for _ in range(3)
+        ],
+        "professional_constraints": [
+            {"discipline": discipline, "statement": fact, "work_item_id": uuid4()}
+            for discipline in disciplines
+        ],
+        "unknowns": ["设备投入与产能待验证，未形成承诺"],
+        "decision_reason": "待人工核对",
+    }
+
+
+@pytest.mark.parametrize("manufacturing", ["ie", "pie", "IE", "PIE"])
+def test_strategy_candidate_accepts_pie_without_rewriting_legacy_ie(manufacturing: str) -> None:
+    from app.contracts.product_planning_ai import StrategyCandidate
+
+    payload = strategy_candidate_payload(["dqe", "sqe", manufacturing])
+    value = StrategyCandidate.model_validate(payload)
+    assert value.professional_constraints[-1].discipline == manufacturing
+    assert (
+        value.professional_constraints[-1].work_item_id
+        == payload["professional_constraints"][-1]["work_item_id"]
+    )
+    assert value.professional_constraints[-1].statement.fact_kind == "hypothesis"
+    assert value.route_comparisons[0].modules[0].target.amount is None
+    assert value.unknowns == ("设备投入与产能待验证，未形成承诺",)
+
+
+@pytest.mark.parametrize(
+    "disciplines", [["dqe", "sqe", "product"], ["pie", "sqe", "test"], ["dqe", "pie", "test"]]
+)
+def test_pie_does_not_replace_dqe_sqe_or_missing_manufacturing(disciplines: list[str]) -> None:
+    from app.contracts.product_planning_ai import StrategyCandidate
+
+    with pytest.raises(ValidationError, match="DQE/SQE"):
+        StrategyCandidate.model_validate(strategy_candidate_payload(disciplines))
+
+
+def test_pie_candidate_cannot_supply_disposition_or_authority() -> None:
+    from app.contracts.product_planning_ai import StrategyCandidate
+
+    payload = strategy_candidate_payload(["dqe", "sqe", "pie"])
+    payload["professional_constraints"][-1]["disposition"] = {
+        "outcome": "accepted",
+        "reason": "AI宣称已确认",
+        "sources": [],
+    }
+    with pytest.raises(ValidationError, match="disposition"):
+        StrategyCandidate.model_validate(payload)

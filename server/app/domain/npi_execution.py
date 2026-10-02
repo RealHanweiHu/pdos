@@ -1019,13 +1019,15 @@ class NpiExecutionService:
             if before_row["status"] == "planned" and status == "planned":
                 raise NpiTransitionError
             if related_issue_id is not None:
-                self._row(
+                related_issue = self._row(
                     connection,
                     tables.issues,
                     tenant_id=tenant_id,
                     project_id=project_id,
                     record_id=related_issue_id,
                 )
+                if related_issue.get("withdrawn_at") is not None:
+                    raise NpiScopeError
             now = datetime.now(UTC)
             values: dict[str, Any] = {
                 "status": status,

@@ -1,0 +1,25 @@
+# ruff: noqa: E501
+"""Immutable, pre-registered Issue trial protocols; no qualification grants."""
+
+from alembic import op
+
+revision = "0391_ai_issue_trial_protocols"
+down_revision = "0390_ai_issue_observations"
+branch_labels = None
+depends_on = None
+
+DDL = "\nCREATE TABLE cehub_ai.ai_issue_trial_protocols (\n\tid UUID NOT NULL, \n\ttenant_id UUID NOT NULL, \n\tproject_id UUID NOT NULL, \n\tactor_user_id UUID NOT NULL, \n\trequest_id UUID NOT NULL, \n\trequest_digest VARCHAR(64) NOT NULL, \n\tpolicy_id UUID NOT NULL, \n\tprincipal_id UUID NOT NULL, \n\tscope_revision_id UUID NOT NULL, \n\twindow_start TIMESTAMP WITH TIME ZONE NOT NULL, \n\twindow_end TIMESTAMP WITH TIME ZONE NOT NULL, \n\tevidence_kind VARCHAR(32) NOT NULL, \n\tprotocol JSONB NOT NULL, \n\tprotocol_digest VARCHAR(64) NOT NULL, \n\toutput_event_row_id BIGINT NOT NULL, \n\tcreated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tCONSTRAINT pk_ai_issue_trial_protocols PRIMARY KEY (id), \n\tCONSTRAINT fk_ai_issue_trial_protocols_tenant_id_projects FOREIGN KEY(tenant_id, project_id) REFERENCES cehub_project.projects (tenant_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT fk_ai_issue_trial_protocols_tenant_id_users FOREIGN KEY(tenant_id, actor_user_id) REFERENCES cehub_core.users (tenant_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT fk_ai_issue_trial_protocols_tenant_id_events FOREIGN KEY(tenant_id, output_event_row_id) REFERENCES cehub_event.events (tenant_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT fk_ai_issue_trial_protocols_tenant_id_ai_write_policies FOREIGN KEY(tenant_id, policy_id) REFERENCES cehub_ai.ai_write_policies (tenant_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT fk_ai_issue_trial_protocols_tenant_id_ai_principals FOREIGN KEY(tenant_id, principal_id) REFERENCES cehub_ai.ai_principals (tenant_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT fk_ai_issue_trial_protocols_tenant_id_ai_write_scope_revisions FOREIGN KEY(tenant_id, project_id, scope_revision_id) REFERENCES cehub_ai.ai_write_scope_revisions (tenant_id, project_id, id) ON DELETE RESTRICT, \n\tCONSTRAINT uq_ai_issue_trial_scope UNIQUE (tenant_id, project_id, id), \n\tCONSTRAINT uq_ai_issue_trial_request UNIQUE (tenant_id, actor_user_id, request_id), \n\tCONSTRAINT ck_ai_issue_trial_protocols_shape CHECK (window_start < window_end AND window_end-window_start <= interval '366 days' AND evidence_kind IN ('real_business','controlled_replay','synthetic') AND (evidence_kind<>'real_business' OR window_start>created_at) AND request_digest ~ '^[a-f0-9]{64}$' AND protocol_digest ~ '^[a-f0-9]{64}$' AND (jsonb_typeof(protocol)='object' AND protocol->>'version'='event-issue-trial-protocol-v1' AND protocol->>'id'=id::text AND protocol->>'tenant_id'=tenant_id::text AND protocol->>'project_id'=project_id::text AND protocol->>'actor_user_id'=actor_user_id::text AND protocol->>'evidence_kind'=evidence_kind AND (protocol->>'window_start')::timestamptz=window_start AND (protocol->>'window_end')::timestamptz=window_end AND (protocol->>'created_at')::timestamptz=created_at AND protocol->'qualification_granted'='false'::jsonb) IS TRUE)\n)\n\n"
+GUARDS = "CREATE FUNCTION cehub_ai.guard_issue_trial_protocol() RETURNS trigger LANGUAGE plpgsql AS $$\nBEGIN\n IF NOT EXISTS(SELECT 1 FROM cehub_event.events e JOIN cehub_audit.audit_log a\n  ON a.tenant_id=e.tenant_id AND a.project_id=e.project_id AND a.event_id=e.event_id\n   AND a.entity=e.entity AND a.entity_id=e.entity_id AND a.timestamp=e.timestamp\n  WHERE e.tenant_id=NEW.tenant_id AND e.project_id=NEW.project_id AND e.id=NEW.output_event_row_id\n   AND e.entity='ai_issue_trial_protocol' AND e.entity_id=NEW.id\n   AND e.event_type='AI_ISSUE_TRIAL_REGISTERED' AND e.schema_version=1\n   AND e.source='ai_issue_trial_service' AND e.payload->>'protocol_id'=NEW.id::text\n   AND e.payload->>'protocol_digest'=NEW.protocol_digest\n   AND e.payload->>'evidence_kind'=NEW.evidence_kind\n   AND a.actor_user_id=NEW.actor_user_id AND a.action='ai_issue.trial_registered'\n   AND a.after_snapshot->>'protocol_digest'=NEW.protocol_digest)\n THEN RAISE EXCEPTION 'Issue trial requires its original named event and audit'; END IF;\n RETURN NEW;\nEND $$;\nCREATE TRIGGER guard_issue_trial_protocol BEFORE INSERT ON cehub_ai.ai_issue_trial_protocols\n FOR EACH ROW EXECUTE FUNCTION cehub_ai.guard_issue_trial_protocol();\nCREATE TRIGGER immutable_issue_trial_protocol BEFORE UPDATE OR DELETE ON cehub_ai.ai_issue_trial_protocols\n FOR EACH ROW EXECUTE FUNCTION cehub_ai.protect_checkpoint_history();\nREVOKE ALL ON cehub_ai.ai_issue_trial_protocols FROM PUBLIC;\nDO $$ BEGIN IF EXISTS(SELECT 1 FROM pg_roles WHERE rolname='pdos_agent') THEN\n REVOKE ALL ON cehub_ai.ai_issue_trial_protocols FROM pdos_agent; END IF; END $$;\n"
+
+
+def upgrade() -> None:
+    op.execute(DDL)
+    op.execute(GUARDS)
+
+
+def downgrade() -> None:
+    op.execute(
+        "DO $$ BEGIN IF EXISTS(SELECT 1 FROM cehub_ai.ai_issue_trial_protocols) THEN RAISE EXCEPTION 'Retain original Issue trial protocols'; END IF; END $$;"
+    )
+    op.execute("DROP TABLE cehub_ai.ai_issue_trial_protocols")
+    op.execute("DROP FUNCTION cehub_ai.guard_issue_trial_protocol()")

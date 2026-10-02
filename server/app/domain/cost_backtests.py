@@ -134,6 +134,10 @@ def _compare(
         xb, yb = abom.get(x["bom_item_id"]), bbom.get(y["bom_item_id"])
         if bool(xb) != bool(yb) or xb and yb and xb["part_number"] != yb["part_number"]:
             gaps.append("BOM对应项／料号不同，须在工程变更后的同范围计算另行比较")
+        if xb and yb and (
+            xb["unit"] != yb["unit"] or xp["unit"] != xb["unit"] or yp["unit"] != yb["unit"]
+        ):
+            gaps.append("BOM用量或计价单位不一致，未假定历史单位换算关系")
         if x["value"] is None or y["value"] is None:
             gaps.append("至少一边原计算金额不完整")
         delta = Decimal(y["value"]) - Decimal(x["value"]) if not gaps else None

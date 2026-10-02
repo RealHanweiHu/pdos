@@ -9,7 +9,7 @@ Run commands from `server/`:
 
 ```bash
 uv sync --python 3.12 --group dev
-uv run --python 3.12 uvicorn app.main:app --reload
+uv run --env-file ../.env --python 3.12 uvicorn app.main:app --reload
 uv run --python 3.12 ruff check .
 uv run --python 3.12 ruff format --check .
 uv run --python 3.12 mypy
@@ -17,8 +17,23 @@ uv run --python 3.12 pytest
 uv run --python 3.12 alembic heads
 ```
 
+The API launch explicitly loads the repository-root `.env` into the server process,
+as does `make dev`. Model catalog, budget, and input-meter configuration read this
+process environment; loading authentication settings alone does not configure the
+model gateway. Existing process variables take precedence. The file is parsed as
+dotenv data, not executed as shell code; single-quote literal values containing `$`
+to avoid dotenv interpolation. These launch options do not alter the
+explicit database requirements for tests and migrations below.
+
 Alembic upgrade and downgrade commands require an explicit `DATABASE_URL`. Test database
-execution is wired through the fail-close `pdos_test` guard in S0-1d.
+execution requires an explicitly exported `TEST_DATABASE_URL` targeting a disposable,
+independent `pdos_test` database. The test guard never loads this value from `.env`;
+`PDOS_TEST_DATABASE_URL` is not an alias. Local `localhost` / `127.0.0.1` / `::1`
+port **57432 is protected and always refused**, even when explicitly configured.
+Select and verify a separate test container/port before running tests, test migrations,
+or smoke scripts. Tests may clear all tenant data on their configured database.
+The guard unit tests (`tests/test_database_safety.py`, `tests/test_db_cleanup.py`)
+use synthetic URLs and mocked connections and do not need a database.
 
 ## Authentication configuration
 
@@ -104,6 +119,23 @@ transaction; cross-project dependencies, cross-Workflow Stages, and failed write
 partial rows.
 
 ## Events and audit
+
+Issue event processing records an immutable trigger receipt separately from the mutable
+run status. The source history endpoint is project-authorized and preserves the original
+actor's private run scope. The work-items panel lists that actor's unresolved runs and links
+back to the saved suggestion and original source; skipped events remain in source history.
+
+Historical Issue business calls can be verified against an operator-installed publication
+using `PDOS_AI_ISSUE_BUSINESS_CALL_PUBLICATION_PATH` and
+`PDOS_AI_ISSUE_BUSINESS_CALL_PUBLICATION_SHA256`. The strict document contract is
+`app/ai/issue_business_call_publication.py`; the server checks the file pin, tenant, validity,
+exact project/run/invocation/model binding, immutable-originals digest and receipt uniqueness.
+An operator must compare real provider receipts and local originals before installing it.
+Missing or mismatched proof fails closed. There is no HTTP publication or automatic
+qualification endpoint. Synthetic fixtures and golden evaluations are not business-call proof.
+This reader verifies completed historical calls only: real-time proof for newly generated
+calls remains separate work, as do independent evaluation, T1 trial qualification and current
+scope authorization. Installing a publication does not grant T0 eligibility.
 
 `cehub_event.events` is an ordered stream with `(source, event_id)` idempotency and tenant-safe
 project scope. `app/events/catalog.py` freezes each event version, producer, consumer set, payload

@@ -57,13 +57,17 @@ def rows(table: Table) -> list[RowMapping]:
 
 @pytest.fixture
 def setup(
-    chat_setup: ChatSetup, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    chat_setup: ChatSetup,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> ApplicationContextSetup:
     client, _, _, _, project, headers, body = chat_setup
     _, calls, _ = api_factory.factory(
         get_engine(),
         tmp_path,
         monkeypatch,
+        request=request,
         output={
             "disposition": "answered",
             "claims": [{"text": "Project status", "citation_ids": [f"project:{project}"]}],

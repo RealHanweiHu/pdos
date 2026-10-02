@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import type { IssueTransitionExtra } from "./project-work-item-api";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import { useFirstScreenSample } from "@/components/diagnostics/use-first-screen-sample";
@@ -71,6 +72,7 @@ import {
   type WorkItemLoadState,
 } from "./project-workspace-view";
 import type { Project } from "./project-types";
+import type { ProjectWorkKind } from "./project-work-queue";
 import { useProjectActions } from "./use-project-actions";
 
 type LoadState = "loading" | "ready" | "error" | "redirecting";
@@ -80,10 +82,11 @@ function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
 }
 
-function pushProjectLocation(projectId: string, tab: ProjectWorkspaceTab) {
+function pushProjectLocation(projectId: string, tab: ProjectWorkspaceTab, workKind?: ProjectWorkKind) {
   const params = new URLSearchParams();
   params.set("project", projectId);
   params.set("tab", tab);
+  if (tab === "work-items" && workKind) params.set("view", workKind);
   const target = `/projects?${params.toString()}`;
   if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== target) {
     window.history.pushState(null, "", target);
@@ -113,6 +116,7 @@ export function ProjectWorkspace() {
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [activeTab, setActiveTab] = useState<ProjectWorkspaceTab>("overview");
+  const [workKind, setWorkKind] = useState<ProjectWorkKind>();
   const [workItemState, setWorkItemState] = useState<WorkItemLoadState>("idle");
   const [workItems, setWorkItems] = useState<ProjectWorkItems | null>(null);
   const [workItemBusy, setWorkItemBusy] = useState(false);
@@ -174,11 +178,10 @@ export function ProjectWorkspace() {
   const canViewWorkItems = identity !== null && workItemRoles.includes(identity.user.role);
   const canViewProductEngineering = canViewWorkItems;
 
-  async function loadWorkItems(projectId: string) {
+  async function loadWorkItems(projectId: string, preserveContext = false) {
     const sequence = requestSequence.current + 1;
     requestSequence.current = sequence;
-    setWorkItemState("loading");
-    setWorkItems(null);
+    if (!preserveContext) { setWorkItemState("loading"); setWorkItems(null); }
     setWorkItemError(null);
     try {
       const loaded = await requestProjectWorkItems(projectId);
@@ -186,7 +189,10 @@ export function ProjectWorkspace() {
       setWorkItems(loaded);
       setWorkItemState("ready");
     } catch {
-      if (requestSequence.current === sequence) setWorkItemState("error");
+      if (requestSequence.current === sequence) {
+        if (preserveContext) { setWorkItemError("撤回已记录，但工作项清单刷新失败，请重试读取。"); throw new Error("撤回已记录，但工作项清单刷新失败，请重试读取。"); }
+        setWorkItemState("error");
+      }
     }
   }
 
@@ -447,13 +453,23 @@ export function ProjectWorkspace() {
   async function moveIssue(
     issue: ProjectIssue,
     toStatus: IssueStatus,
-    extra: { comment?: string; closure_evidence_ref?: string } = {},
+    extra: IssueTransitionExtra = {},
   ) {
-    return mutateWorkItem(
-      () => transitionIssue(issue.project_id, issue.id, toStatus, extra),
+    if (toStatus !== "closed") return mutateWorkItem(
+      () => transitionIssue(issue.project_id, issue.id, toStatus, { expected_updated_at: issue.updated_at, ...extra }),
       (items, updated) => ({ ...items, issues: items.issues.map((item) => item.id === issue.id ? updated as ProjectIssue : item) }),
       "问题状态已更新",
     );
+    setWorkItemBusy(true); setWorkItemError(null); setWorkItemStatus(null);
+    try {
+      const updated = await transitionIssue(issue.project_id, issue.id, toStatus, { expected_updated_at: issue.updated_at, ...extra });
+      setWorkItems(items => items ? { ...items, issues: items.issues.map(item => item.id === issue.id ? updated : item) } : items);
+      setWorkItemStatus("问题状态已更新");
+      return true;
+    } catch (error) {
+      setWorkItemError(messageFrom(error));
+      throw error;
+    } finally { setWorkItemBusy(false); }
   }
 
   async function moveRisk(risk: ProjectRisk, toStatus: RiskStatus) {
@@ -466,7 +482,7 @@ export function ProjectWorkspace() {
 
   /** Each domain loads its own data the first time it is opened. */
   function loadTabData(tab: ProjectWorkspaceTab, projectId: string, force = false) {
-    if (["overview", "work-items"].includes(tab) && canViewWorkItems && (force || workItemState === "idle")) {
+    if (["overview", "stages", "work-items"].includes(tab) && canViewWorkItems && (force || workItemState === "idle")) {
       void loadWorkItems(projectId);
     }
     if (tab === "overview" && canViewWorkItems && (force || (!activityLoading && !activityLoaded))) {
@@ -486,13 +502,14 @@ export function ProjectWorkspace() {
     }
   }
 
-  function changeTab(tab: ProjectWorkspaceTab) {
-    if (tab === activeTab) return;
+  function changeTab(tab: ProjectWorkspaceTab, workKind?: ProjectWorkKind) {
+    if (tab === activeTab && !workKind) return;
     setActiveTab(tab);
+    setWorkKind(workKind);
     setHighlightedEventId(null);
     setHighlightedEntityId(null);
     if (actions.selectedProject) {
-      handledLocation.current = pushProjectLocation(actions.selectedProject.id, tab);
+      handledLocation.current = pushProjectLocation(actions.selectedProject.id, tab, workKind);
       loadTabData(tab, actions.selectedProject.id);
     }
   }
@@ -524,10 +541,11 @@ export function ProjectWorkspace() {
       handledLocation.current = `${window.location.search}${window.location.hash}`;
     }
     actions.selectProject(project);
-    const tab = canViewWorkItems
-      ? resolveTab(params.get("tab"), params, window.location.hash) ?? "overview"
-      : "overview";
+    const requestedTab = resolveTab(params.get("tab"), params, window.location.hash) ?? "overview";
+    const tab = canViewWorkItems || requestedTab === "stages" || requestedTab === "management" ? requestedTab : "overview";
     setActiveTab(tab);
+    const requestedWorkKind = params.get("view") ?? ({ tasks: "tasks", issues: "issues", risks: "risks" } as Record<string, string>)[params.get("tab") ?? ""];
+    setWorkKind(["tasks", "issues", "risks"].includes(requestedWorkKind) ? requestedWorkKind as ProjectWorkKind : undefined);
     const eventId = Number(params.get("event_id"));
     setHighlightedEventId(Number.isSafeInteger(eventId) && eventId > 0 ? eventId : null);
     setHighlightedEntityId(params.get("entity_id"));
@@ -696,6 +714,7 @@ export function ProjectWorkspace() {
     <ProjectWorkspaceView
       key={navigationRevision}
       activeTab={activeTab}
+      workKind={workKind}
       activities={activities}
       activityError={activityError}
       activityLoading={activityLoading}
@@ -708,6 +727,7 @@ export function ProjectWorkspace() {
       identity={identity}
       loggingOut={loggingOut}
       onCreateIssue={addIssue}
+      onIssueChanged={async () => { if (actions.selectedProject) await loadWorkItems(actions.selectedProject.id, true); }}
       onCreateRisk={addRisk}
       onCreateTask={addTask}
       onLogout={() => void logout()}

@@ -1,0 +1,10 @@
+{
+  "url": "http://127.0.0.1:3023/product-work?space=49ae912b-afca-4c7f-a718-6b738c25f9f8&tab=overview&line=6bdc158e-ae8d-4ef1-b435-809cdffd3cd9",
+  "container": "pdos-ui-preview-20261001-b28c",
+  "frontend_session": 58123,
+  "api_session": 53005,
+  "records": {
+    "space_id": "49ae912b-afca-4c7f-a718-6b738c25f9f8",
+    "line_id": "6bdc158e-ae8d-4ef1-b435-809cdffd3cd9"
+  }
+}

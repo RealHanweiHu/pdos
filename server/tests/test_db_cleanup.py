@@ -12,7 +12,7 @@ from sqlalchemy.engine import make_url
 from app.db.test_safety import UnsafeTestDatabaseError
 from tests.db_cleanup import clear_test_tenants
 
-TEST_URL = "postgresql+psycopg://test:test@localhost:57432/pdos_test"
+TEST_URL = "postgresql+psycopg://test:test@localhost:57550/pdos_test"
 
 
 def relation(oid: int, name: str, **changes: object) -> dict[str, object]:
@@ -195,7 +195,7 @@ def test_failed_rollback_invalidates_connection_instead_of_returning_it_to_pool(
     [
         TEST_URL.replace("pdos_test", "pdos"),
         TEST_URL.replace("localhost", "remote.example"),
-        TEST_URL.replace("57432", "57433"),
+        TEST_URL.replace("57550", "57551"),
         TEST_URL + "?host=remote.example",
         TEST_URL + "?service=production",
     ],

@@ -1,0 +1,66 @@
+{
+  "method": "AST-extracted pure dispatch functions; no imported application or database code",
+  "source_sha256": "369cb9c67e1409b13513b628791b55c81385dfae75ae5c578d035a2d833a55bf",
+  "cases": [
+    {
+      "case": "完整产品目标",
+      "instruction": "研究这个气泵市场，完成竞品分析、机会判断和产品定义",
+      "scope": {
+        "scope_kind": "product_line",
+        "product_line_id": "explicit-line"
+      },
+      "result": [
+        null,
+        "说明已保存。请明确本轮目标，例如竞品分析、市场分析或研究规划；多个目标请分轮办理。"
+      ]
+    },
+    {
+      "case": "决策问题",
+      "instruction": "这些证据支持继续开发还是应该停止？",
+      "scope": {
+        "scope_kind": "product_line",
+        "product_line_id": "explicit-line"
+      },
+      "result": [
+        null,
+        "说明已保存。请明确本轮目标，例如竞品分析、市场分析或研究规划；多个目标请分轮办理。"
+      ]
+    },
+    {
+      "case": "单一研究目标",
+      "instruction": "制定研究规划",
+      "scope": {
+        "scope_kind": "market_space",
+        "product_line_id": null
+      },
+      "result": [
+        "research_planning",
+        null
+      ]
+    },
+    {
+      "case": "定义缺产品线",
+      "instruction": "整理产品定义草案",
+      "scope": {
+        "scope_kind": "market_space",
+        "product_line_id": null
+      },
+      "result": [
+        null,
+        "说明已保存。此目标需要具体产品线，请进入该产品线后继续。"
+      ]
+    },
+    {
+      "case": "明确产品线定义",
+      "instruction": "整理产品定义草案",
+      "scope": {
+        "scope_kind": "product_line",
+        "product_line_id": "explicit-line"
+      },
+      "result": [
+        "product_definition",
+        null
+      ]
+    }
+  ]
+}

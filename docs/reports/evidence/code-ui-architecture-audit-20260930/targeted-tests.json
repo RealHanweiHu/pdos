@@ -1,0 +1,7 @@
+{
+  "chunk_id": "e664ea",
+  "wall_time_seconds": 0.000017167,
+  "exit_code": 1,
+  "original_token_count": 295,
+  "output": " ❯ src/components/projects/project-workspace-tabs.test.ts (4 tests | 1 failed) 8ms\n     × redirects each pre-regrouping tab onto the domain that absorbed it 4ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/components/projects/project-workspace-tabs.test.ts > project workspace tab compatibility > redirects each pre-regrouping tab onto the domain that absorbed it\nAssertionError: expected 'stages' to be 'overview' // Object.is equality\n\nExpected: \"overview\"\nReceived: \"stages\"\n\n ❯ src/components/projects/project-workspace-tabs.test.ts:28:36\n     26|\n     27|   it(\"redirects each pre-regrouping tab onto the domain that absorbed …\n     28|     expect(resolveTab(\"timeline\")).toBe(\"overview\");\n       |                                    ^\n     29|     expect(resolveTab(\"ai-chat\")).toBe(\"overview\");\n     30|     expect(resolveTab(\"tasks\")).toBe(\"work-items\");\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed | 5 passed (6)\n      Tests  1 failed | 34 passed (35)\n   Start at  10:24:41\n   Duration  5.60s (transform 4.66s, setup 1.10s, import 18.36s, tests 1.57s, environment 5.32s)\n\n"
+}

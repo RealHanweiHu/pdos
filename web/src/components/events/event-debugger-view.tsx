@@ -2,6 +2,7 @@ import { ArrowClockwiseIcon, CaretDownIcon } from "@phosphor-icons/react/ssr";
 import { type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
@@ -93,7 +94,8 @@ export function EventDebuggerView({
   }
 
   return (
-    <WorkspaceShell active="events" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
+    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
+      <SettingsNav current="events" identity={identity}>
       <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-4">
         <div>
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Internal Debug</p>
@@ -135,6 +137,7 @@ export function EventDebuggerView({
         <ul className="mt-5 space-y-3" role="list">{events.map((event) => <EventCard event={event} key={event.id} />)}</ul>
       )}
       {hasMore ? <div className="mt-5 flex justify-center"><Button className="h-11" disabled={loadingMore} onClick={onLoadMore} variant="outline">{loadingMore ? "正在加载…" : "加载更多"}</Button></div> : null}
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

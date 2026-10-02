@@ -1,0 +1,1058 @@
+--- a/docs/design/2026-08-09-ui-baseline.md
++++ b/docs/design/2026-08-09-ui-baseline.md
+@@ -1,6 +1,10 @@
+-# UI 基线 v0.6（继承S0-0交付物）
++# UI 基线 v0.6.2（继承S0-0交付物）
++
++> **v0.6.2 正式采用 Linear restyle（2026-09-30）**：用户确认采用 `ui/linear-restyle` 的 `d3d8087` 版本，整合到当前开发目录。继承四个日常分组和单一设置入口、账户/集成/治理分类导航、市场空间列表/卡片与面包屑；保留当前小Pai、产品线范围、业务标签与权限深链。搜索与现场采集由内部成员顶栏入口及原业务记录链接承接，桌面侧栏固定于视口、长内容只滚动导航；手机保留可触达的操作尺寸。视图偏好仅为可选本地设置，浏览器存储不可用不阻断目录。验证与余项以唯一整合清单为准。
+ 
+ > **v0.6 Linear 视觉校准（2026-09-28）**：用户指示整体风格向 Linear 靠拢。品牌橙 accent 保留（全站锁定不变），校准表面/密度/字排：暗主题背景 `#0f1113`、侧栏 `#131519`、卡片 `#16181d`、边框 `#26292e`；亮主题侧栏 `#f7f7f8`、侧栏边框 `#e9e9ec`；顶栏与侧栏品牌行降为 48px，顶栏底色融入页面背景仅留发丝线；侧栏导航行桌面 32px/13px 文字/16px 图标（触屏保持 44px），激活态改为浅色块无橙色内嵌条；正文 antialiased。视觉 token 其余不变。
++>
++> **v0.6.1 设置区整合（2026-09-29）**：用户指示进一步减少入口。侧边栏设置组收敛为单一「设置」沉底入口（齿轮，指向账户安全）；账户安全/钉钉/腾讯会议/成员与角色/组织与代理/AI 治理/模型治理/事件流八个低频页改由设置区内的分类子导航（账户/集成/治理三段，桌面左列、移动端横排）承接，全部路由不变。侧边栏最终形态：工作/项目/产品/AI 与知识四组 + 单一设置入口。
+ 
+ > **v0.5 全局导航重排（2026-09-28）**：用户指示收敛全局入口、按 Linear/Notion 方式分类减冗，侧边栏只留日常目的地。全局十域重排为五组：工作（我的工作/驾驶舱）/项目/产品/AI 与知识/设置（设置组沉底固定于用户卡上方，收纳治理、集成与账户安全）；工程·变更、试制·测试·质量、Gate·交付物三个全局深链入口撤销，由项目工作区九标签承接；现场采集与搜索不设侧边栏入口，由业务记录上下文链接直达；`/product-work` 补齐全局壳。视觉 token、项目九标签与产品管理八区不变。
+ 
+--- a/docs/design/2026-09-10-pdos-complete-design-contract.md
++++ b/docs/design/2026-09-10-pdos-complete-design-contract.md
+@@ -257,7 +257,7 @@
+ 
+ | 信息架构 | 完整区域 |
+ |---|---|
+-| 全局五组（2026-09-28 由十域重排） | 工作、项目、产品、AI 与知识、设置（沉底固定）。工程/质量/交付不再设全局入口，由项目工作区标签承接；现场采集/搜索不设侧边栏入口，由业务记录上下文链接直达；治理、集成与账户安全统一归入设置 |
++| 全局五组（2026-09-28 由十域重排，2026-09-30确认采用Linear restyle） | 工作、项目、产品、AI 与知识、设置（单一沉底入口）。工程/质量/交付不再设全局入口，由项目工作区标签承接；现场采集/搜索不设侧边栏入口，由内部成员顶栏及业务记录上下文链接直达；设置区内以账户/集成/治理分类子导航承接账户安全、钉钉/腾讯会议集成与五项治理页，路由不变 |
+ | 项目九标签 | 概览·控制塔；计划·资源；工作项；物料·供应；工程·变更；例会·决策；Gate·交付物；试制·测试·质量；文档·知识 |
+ | 产品管理八区 | 研究中心；竞品情报；市场细分·JTBD；机会树；产品策略；产品定义；产品矩阵·路线图；实验·决策 |
+ 
+--- a/web/src/app/product-work/page.tsx
++++ b/web/src/app/product-work/page.tsx
+@@ -1,3 +1,11 @@
+ import { Suspense } from "react";
++
++import type { Metadata } from "next";
++
+ import { ProductWorkspace } from "@/components/product-work/product-workspace";
+-export default function ProductWorkPage() { return <Suspense fallback={<p className="px-4 py-10 text-sm text-muted-foreground">正在加载产品管理工作台…</p>}><ProductWorkspace /></Suspense>; }
++
++export const metadata: Metadata = { title: "产品管理工作台 · PDOS" };
++
++export default function ProductWorkPage() {
++  return <Suspense fallback={<p className="p-6 text-sm">正在打开产品管理工作台…</p>}><ProductWorkspace /></Suspense>;
++}
+--- a/web/src/components/account/account-security.tsx
++++ b/web/src/components/account/account-security.tsx
+@@ -5,6 +5,7 @@
+ import { type FormEvent, useEffect, useState } from "react";
+ 
+ import { Button } from "@/components/ui/button";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import { requestIdentity } from "@/components/workspace-api";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+@@ -117,11 +118,12 @@
+ 
+   return (
+     <WorkspaceShell
+-      active="account-security"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={() => void logout()}
+     >
++      <SettingsNav current="account-security" identity={identity}>
+       <div className="mx-auto max-w-2xl">
+         <p className="font-mono text-xs font-semibold tracking-[0.18em] text-primary">ACCOUNT SECURITY</p>
+         {changed ? (
+@@ -189,6 +191,7 @@
+           </>
+         )}
+       </div>
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/events/event-debugger-state.tsx
++++ b/web/src/components/events/event-debugger-state.tsx
+@@ -33,7 +33,7 @@
+   onLogout: () => void;
+ }) {
+   return (
+-    <WorkspaceShell active="events" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
++    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
+       <section className="mx-auto max-w-lg rounded-lg border bg-card p-6 text-center">
+         <LockKeyIcon aria-hidden="true" className="mx-auto size-9 text-muted-foreground" />
+         <h1 className="mt-3 text-lg font-semibold">仅管理员可访问</h1>
+--- a/web/src/components/events/event-debugger-view.tsx
++++ b/web/src/components/events/event-debugger-view.tsx
+@@ -2,6 +2,7 @@
+ import { type FormEvent } from "react";
+ 
+ import { Button } from "@/components/ui/button";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ 
+@@ -93,7 +94,8 @@
+   }
+ 
+   return (
+-    <WorkspaceShell active="events" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
++    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
++      <SettingsNav current="events" identity={identity}>
+       <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-4">
+         <div>
+           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Internal Debug</p>
+@@ -135,6 +137,7 @@
+         <ul className="mt-5 space-y-3" role="list">{events.map((event) => <EventCard event={event} key={event.id} />)}</ul>
+       )}
+       {hasMore ? <div className="mt-5 flex justify-center"><Button className="h-11" disabled={loadingMore} onClick={onLoadMore} variant="outline">{loadingMore ? "正在加载…" : "加载更多"}</Button></div> : null}
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/governance/ai-governance.tsx
++++ b/web/src/components/governance/ai-governance.tsx
+@@ -10,6 +10,7 @@
+ } from "@/components/ai/ai-api";
+ import type { AiCapability, AiTouchpoint, AiUsage } from "@/components/ai/ai-types";
+ import { requestProjects } from "@/components/projects/project-api";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ import { cn } from "@/lib/utils";
+@@ -101,7 +102,8 @@
+   }
+ 
+   return (
+-    <WorkspaceShell active="ai-governance" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
++    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
++      <SettingsNav current="ai-governance" identity={identity}>
+       <div className="border-b pb-4">
+         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+           Admin Workspace
+@@ -256,6 +258,7 @@
+           </table>
+         </div>
+       </section>
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/governance/model-governance-state.tsx
++++ b/web/src/components/governance/model-governance-state.tsx
+@@ -38,7 +38,7 @@
+ }) {
+   return (
+     <WorkspaceShell
+-      active="model-governance"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={onLogout}
+--- a/web/src/components/governance/model-governance-view.tsx
++++ b/web/src/components/governance/model-governance-view.tsx
+@@ -2,6 +2,7 @@
+ import { type FormEvent } from "react";
+ 
+ import { Button } from "@/components/ui/button";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ 
+@@ -112,11 +113,12 @@
+ 
+   return (
+     <WorkspaceShell
+-      active="model-governance"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={onLogout}
+     >
++      <SettingsNav current="model-governance" identity={identity}>
+       <div className="border-b pb-4">
+         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+           Governance
+@@ -209,6 +211,7 @@
+ 
+         <BudgetMeter snapshot={snapshot} />
+       </div>
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/integrations/dingtalk-integration-view.tsx
++++ b/web/src/components/integrations/dingtalk-integration-view.tsx
+@@ -6,6 +6,7 @@
+ } from "@phosphor-icons/react/ssr";
+ 
+ import { Button } from "@/components/ui/button";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ 
+@@ -38,11 +39,12 @@
+   const healthy = data.status.configured && data.status.binding_status === "active";
+   return (
+     <WorkspaceShell
+-      active="dingtalk-integration"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={onLogout}
+     >
++      <SettingsNav current="dingtalk-integration" identity={identity}>
+       <div className="border-b pb-4">
+         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+           Integration
+@@ -139,6 +141,7 @@
+           )}
+         </section>
+       ) : null}
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/integrations/dingtalk-integration.tsx
++++ b/web/src/components/integrations/dingtalk-integration.tsx
+@@ -95,7 +95,7 @@
+   }
+   if (state === "forbidden") {
+     return (
+-      <WorkspaceShell active="dingtalk-integration" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
++      <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+         <section className="mx-auto max-w-lg rounded-lg border bg-card p-6 text-center">
+           <LockKeyIcon aria-hidden="true" className="mx-auto size-9 text-muted-foreground" />
+           <h1 className="mt-3 text-lg font-semibold">当前角色不可访问</h1>
+--- a/web/src/components/integrations/tencent-meeting-integration.tsx
++++ b/web/src/components/integrations/tencent-meeting-integration.tsx
+@@ -3,6 +3,7 @@
+ import { useEffect, useState } from "react";
+ import { useRouter } from "next/navigation";
+ import { Button } from "@/components/ui/button";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import { isRecord, requestIdentity, responseBody } from "@/components/workspace-api";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+@@ -67,5 +68,5 @@
+       <details className="rounded-lg border p-4"><summary className="cursor-pointer font-medium">账号映射历史</summary>{data.items.map(item => <article key={item.id} className="mt-3 border-t pt-3 text-sm"><p>v{item.version} · {labels[item.status]} · {item.actor_name} · {new Date(item.created_at).toLocaleString("zh-CN")}</p><p>{item.external_display_name} · {item.external_user_id} · 企业应用 {item.app_id}</p><p>{item.evidence}</p></article>)}{data.next_before_version && <Button variant="outline" size="sm" className="mt-3" disabled={frozen} onClick={() => void load(data.person.id, data.next_before_version ?? undefined)}>更早版本</Button>}</details>
+     </>}
+   </div>;
+-  return identity ? <WorkspaceShell active="tencent-meeting-integration" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>{content}</WorkspaceShell> : <main className="p-6">{error || "正在读取账号资料…"}</main>;
++  return identity ? <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}><SettingsNav current="tencent-meeting-integration" identity={identity}>{content}</SettingsNav></WorkspaceShell> : <main className="p-6">{error || "正在读取账号资料…"}</main>;
+ }
+--- a/web/src/components/organization/organization-governance.tsx
++++ b/web/src/components/organization/organization-governance.tsx
+@@ -7,6 +7,7 @@
+ 
+ import { requestUserManagementBootstrap } from "@/components/users/user-management-api";
+ import type { ManagedUser } from "@/components/users/user-management-types";
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ import { ProcessTemplateLibrary } from "./process-template-library";
+@@ -176,11 +177,12 @@
+ 
+   return (
+     <WorkspaceShell
+-      active="organization"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={() => void logout()}
+     >
++      <SettingsNav current="organization" identity={identity}>
+       <div className="border-b pb-4">
+         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+           Admin Workspace
+@@ -600,6 +602,7 @@
+       </section>
+       <OrganizationHandoverHistory sourceId={handoverFrom} targetId={handoverTo}/>
+       <ProcessTemplateLibrary />
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/product-work/product-workspace.test.tsx
++++ b/web/src/components/product-work/product-workspace.test.tsx
+@@ -18,10 +18,16 @@
+ vi.mock("./competitors", () => ({ CompetitorWorkspace: () => <p>竞品业务区</p> }));
+ vi.mock("./product-ai-runs", () => ({ ProductAiRuns: () => null }));
+ vi.mock("./product-shadow-evaluation", () => ({ ProductShadowEvaluation: () => <p>管理员影子评测入口</p> }));
+-const spaces = [{ id: "one", code: "ONE", title: "空间一", user_groups: [], regions: [], use_scenarios: [] }, { id: "two", code: "TWO", title: "空间二", user_groups: [], regions: [], use_scenarios: [] }];
++const spaces = [{ id: "one", code: "ONE", title: "空间一", user_groups: [], regions: [], use_scenarios: [] }, { id: "two", code: "TWO", title: "空间二", user_groups: [], regions: [], use_scenarios: [] }].map(space => ({ ...space, lifecycle: "draft", research_questions: [] }));
++const memoryStorage = new Map<string, string>();
+ const catalog = { nodes: [{ id: "line-one", name: "产品线一", level: "line" }], members: [], line_access: {}, can_create_line: false };
+ let fetcher: ReturnType<typeof vi.fn<typeof fetch>>;
+ beforeEach(() => {
++  memoryStorage.clear();
++  vi.stubGlobal("localStorage", {
++    getItem: (key: string) => memoryStorage.get(key) ?? null,
++    setItem: (key: string, value: string) => void memoryStorage.set(key, value),
++  });
+   currentRole.value = "product_manager";
+   window.history.replaceState(null, "", "/product-work?space=one&tab=research&line=line-one");
+   const push = window.history.pushState.bind(window.history);
+@@ -67,7 +73,10 @@
+   await waitFor(() => expect(screen.getByLabelText("工作归属")).toHaveValue(""));
+   expect(new URLSearchParams(location.search).has("line")).toBe(true);
+   expect(location.hash).toBe("");
+-  fireEvent.change(screen.getByLabelText("市场空间"), { target: { value: "two" } });
++  fireEvent.click(screen.getByRole("button", { name: "市场空间" }));
++  const spaceLink = await screen.findByRole("link", { name: /空间二/ });
++  expect(spaceLink).toHaveAttribute("href", "/product-work?space=two&tab=research");
++  act(() => window.history.pushState(null, "", spaceLink.getAttribute("href")));
+   await screen.findByRole("heading", { name: "空间二" });
+   expect(location.search).toBe("?space=two&tab=research");
+   expect(screen.getByLabelText("工作归属")).toHaveValue("all");
+@@ -98,3 +107,31 @@
+   expect(screen.queryByRole("tab", { name: "能力评测" })).not.toBeInTheDocument();
+   expect(screen.queryByText("管理员影子评测入口")).not.toBeInTheDocument();
+ });
++
++it("opens the directory with shareable space links and persists the list/card preference", async () => {
++  window.history.replaceState(null, "", "/product-work");
++  const view = render(<ProductWorkspace/>);
++  expect(await screen.findByRole("link", { name: /空间一/ })).toHaveAttribute("href", "/product-work?space=one&tab=research");
++  expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
++  expect(screen.getByRole("button", { name: "列表视图" })).toHaveAttribute("aria-pressed", "true");
++  fireEvent.click(screen.getByRole("button", { name: "卡片视图" }));
++  expect(memoryStorage.get("pdos.productWork.view")).toBe("cards");
++  expect(screen.getByText("O")).toBeInTheDocument();
++  view.unmount(); render(<ProductWorkspace/>);
++  await screen.findByRole("link", { name: /空间一/ });
++  expect(screen.getByRole("button", { name: "卡片视图" })).toHaveAttribute("aria-pressed", "true");
++  fireEvent.click(screen.getByRole("button", { name: "列表视图" }));
++  expect(memoryStorage.get("pdos.productWork.view")).toBe("list");
++});
++
++it("keeps the directory usable when browser storage is unavailable", async () => {
++  window.history.replaceState(null, "", "/product-work");
++  vi.stubGlobal("localStorage", {
++    getItem: () => { throw new DOMException("Storage disabled", "SecurityError"); },
++    setItem: () => { throw new DOMException("Storage disabled", "SecurityError"); },
++  });
++  render(<ProductWorkspace/>);
++  expect(await screen.findByRole("link", { name: /空间一/ })).toBeInTheDocument();
++  fireEvent.click(screen.getByRole("button", { name: "卡片视图" }));
++  expect(screen.getByRole("button", { name: "卡片视图" })).toHaveAttribute("aria-pressed", "true");
++});
+--- a/web/src/components/product-work/product-workspace.tsx
++++ b/web/src/components/product-work/product-workspace.tsx
+@@ -1,11 +1,14 @@
+ "use client";
+ 
++import { ArrowLeftIcon, CaretRightIcon, ListBulletsIcon, SquaresFourIcon } from "@phosphor-icons/react";
++import Link from "next/link";
+ import { useRouter, useSearchParams } from "next/navigation";
+ import { useEffect, useRef, useState } from "react";
+ import { Button } from "@/components/ui/button";
+ import { requestIdentity } from "@/components/workspace-api";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
++import { cn } from "@/lib/utils";
+ import { WorkHistory } from "./work-history";
+ import { WorkResponsibility, WorkResponsibilityLanding } from "./work-responsibility";
+ import { actionLabels, command, request, stateLabels, type Evidence, type Member, type ProductCatalog, type Research, type Space, type WorkItem, type Workspace } from "./product-work-api";
+@@ -35,6 +38,51 @@
+ 
+ const tabKeys = ["research", "competitors", "segments", "opportunities", "strategies", "definitions", "matrix", "experiments", "exports", "measurement", "evaluation"];
+ 
++const spaceLifecycleLabels: Record<string, string> = { draft: "草稿", active: "启用", archived: "已归档", retired: "已退役" };
++const VIEW_STORAGE_KEY = "pdos.productWork.view";
++
++function spaceMeta(space: Space) {
++  const parts: string[] = [];
++  if (space.user_groups.length) parts.push(`${space.user_groups.length} 个用户群`);
++  if (space.regions.length) parts.push(`${space.regions.length} 个地域`);
++  if (space.use_scenarios.length) parts.push(`${space.use_scenarios.length} 个场景`);
++  if (space.research_questions.length) parts.push(`${space.research_questions.length} 个研究问题`);
++  return parts.join(" · ");
++}
++
++/**
++ * Derived identity tile for a market space: a deterministic gradient and
++ * monogram from the space code. Spaces have no real cover-image field yet, so
++ * the tile is an honest derived mark rather than fabricated photography; a
++ * future cover field can replace it in place.
++ */
++function SpaceVisual({ code, title }: { code: string; title: string }) {
++  let hash = 0;
++  for (let index = 0; index < code.length; index += 1) {
++    hash = (hash * 31 + code.charCodeAt(index)) % 360;
++  }
++  const monogram =
++    code
++      .split(/[-_:]/)
++      .filter(Boolean)
++      .slice(0, 2)
++      .map((part) => part.charAt(0).toUpperCase())
++      .join("") || title.charAt(0);
++  return (
++    <div
++      aria-hidden="true"
++      className="flex h-28 items-end p-3 dark:brightness-75"
++      style={{
++        backgroundImage: `linear-gradient(135deg, hsl(${hash} 42% 82%), hsl(${(hash + 48) % 360} 38% 68%))`,
++      }}
++    >
++      <span className="font-mono text-xl font-semibold tracking-tight text-white/95 [text-shadow:0_1px_2px_rgb(0_0_0/0.25)]">
++        {monogram}
++      </span>
++    </div>
++  );
++}
++
+ function navigateWorkspace(change: { space?: string; tab?: string; line?: string | null }) {
+   const params = change.space !== undefined ? new URLSearchParams() : new URLSearchParams(window.location.search);
+   if (change.space !== undefined) {
+@@ -61,17 +109,19 @@
+ 
+ export function ProductWorkspace() {
+   const { replace } = useRouter();
++  const search = useSearchParams();
+   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
+   const [identityFailed, setIdentityFailed] = useState(false);
+   const [loggingOut, setLoggingOut] = useState(false);
+   const [spaces, setSpaces] = useState<Space[] | null>(null);
+   const [canCreate, setCanCreate] = useState(false);
+-  const search = useSearchParams();
+-  const targetSpace = search.get("space") ?? "";
+-  const selected = spaces?.some(space => space.id === targetSpace) ? targetSpace : "";
+   const [createOpen, setCreateOpen] = useState(false);
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState<string | null>(null);
++  const [viewMode, setViewMode] = useState<"list" | "cards">(() => {
++    try { return typeof window !== "undefined" && window.localStorage.getItem(VIEW_STORAGE_KEY) === "cards" ? "cards" : "list"; }
++    catch { return "list"; }
++  });
+   const stableId = useRequestId();
+   const load = async () => { const data = await request<{ items: Space[]; can_create: boolean }>("spaces"); setSpaces(data.items); setCanCreate(data.can_create); };
+   useEffect(() => {
+@@ -83,10 +133,19 @@
+     }).catch(() => { if (live) setIdentityFailed(true); });
+     void request<{ items: Space[]; can_create: boolean }>("spaces").then((data) => {
+       if (!live) return; setSpaces(data.items); setCanCreate(data.can_create);
+-
+     }).catch((failure) => { if (live) setError(failure.message); });
+     return () => { live = false; };
+   }, [replace]);
++  // Selection is derived from the ?space= deep link, so shared links and
++  // browser back/forward keep the directory and workspace in sync.
++  const targetSpace = search.get("space") ?? "";
++  const selected = spaces?.some(space => space.id === targetSpace) ? targetSpace : "";
++  const openSpace = (id: string) => { setCreateOpen(false); navigateWorkspace({ space: id }); };
++  const closeSpace = () => { navigateWorkspace({ space: "" }); };
++  const changeViewMode = (mode: "list" | "cards") => {
++    setViewMode(mode);
++    try { window.localStorage.setItem(VIEW_STORAGE_KEY, mode); } catch { /* Storage preference is optional. */ }
++  };
+   async function logout() {
+     setLoggingOut(true);
+     try {
+@@ -106,29 +165,110 @@
+   if (identity === null) {
+     return <main aria-busy="true" className="mx-auto max-w-6xl px-4 py-10 text-sm text-muted-foreground">正在加载产品管理工作台…</main>;
+   }
++  const selectedSpace = spaces?.find((space) => space.id === selected) ?? null;
+   return <WorkspaceShell active="product-work" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+     <div className="space-y-6">
+-    <header><h1 className="text-2xl font-semibold">产品管理工作台</h1><p className="mt-2 text-sm text-muted-foreground">围绕市场空间组织研究、来源与专业协作，立项前即可开展工作。</p></header>
+     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+-    <div className="flex flex-wrap items-center gap-3">
+-      <label className="min-w-64 flex-1 text-sm">市场空间<select className={field} value={selected} onChange={(event) => { navigateWorkspace({ space: event.target.value }); setCreateOpen(false); }}><option value="">选择市场空间</option>{spaces?.map((space) => <option key={space.id} value={space.id}>{space.code} · {space.title}</option>)}</select></label>
+-      {canCreate && <Button variant="outline" onClick={() => setCreateOpen(!createOpen)}>新建市场空间</Button>}
+-      <Button variant="outline" disabled={busy} onClick={() => { setError(null); void load().catch((failure) => setError(failure.message)); }}>刷新</Button>
+-    </div>
+-    {spaces?.length === 0 && <p className="text-sm text-muted-foreground">尚无可访问市场空间。{canCreate ? "可先登记用户群、地域、场景和研究问题。" : "请由空间负责人将你加入协作成员。"}</p>}
+-    {createOpen && canCreate && <form className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2" onSubmit={(event) => {
+-      event.preventDefault(); const form = new FormData(event.currentTarget);
+-      const body = { code: String(form.get("code")).trim(), title: String(form.get("title")).trim(), user_groups: lines(String(form.get("groups"))), regions: lines(String(form.get("regions"))), use_scenarios: lines(String(form.get("scenarios"))), research_questions: lines(String(form.get("questions"))) };
+-      setBusy(true); setError(null);
+-      void request<Space>("spaces", "POST", { ...body, request_id: stableId(body) }).then(async (space) => { await load(); navigateWorkspace({ space: space.id }); setCreateOpen(false); }).catch((failure) => setError(failure.message)).finally(() => setBusy(false));
+-    }}>
+-      <label className="text-sm">空间编号<input required name="code" maxLength={128} pattern={"[a-zA-Z0-9_.:\\-]+"} className={field} placeholder="如 portable-inflation" /></label>
+-      <label className="text-sm">空间名称<input required name="title" maxLength={512} className={field} /></label>
+-      {[["groups", "用户群"], ["regions", "地域 / 市场"], ["scenarios", "使用场景"], ["questions", "待研究问题"]].map(([key, label]) => <label key={key} className="text-sm">{label}（每行一项）<textarea required name={key} className={field} /></label>)}
+-      <Button disabled={busy}>创建市场空间</Button>
+-    </form>}
+     {spaces && targetSpace && !selected && <p role="alert" className="text-sm text-destructive">此市场空间不存在或当前无权访问，请重新选择。</p>}
+-    {selected && <SpaceWorkspace key={`${selected}:${search.get("line") ?? "all"}`} spaceId={selected} canEvaluate={["owner", "admin"].includes(identity.user.role)} />}
++    {selectedSpace ? (
++      <>
++        <div className="flex min-w-0 items-center gap-1.5">
++          <Button className="-ml-2 gap-1 text-muted-foreground" onClick={closeSpace} size="sm" variant="ghost">
++            <ArrowLeftIcon aria-hidden="true" className="size-4" />
++            市场空间
++          </Button>
++          <span aria-hidden="true" className="text-sm text-muted-foreground">/</span>
++          <span className="max-w-[35%] shrink-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{selectedSpace.code}</span>
++          <span className="truncate text-sm font-medium">{selectedSpace.title}</span>
++        </div>
++        <SpaceWorkspace key={`${selected}:${search.get("line") ?? "all"}`} spaceId={selected} canEvaluate={["owner", "admin"].includes(identity.user.role)} />
++      </>
++    ) : (
++      <>
++        <header className="flex flex-wrap items-end justify-between gap-3">
++          <div>
++            <h1 className="text-2xl font-semibold">产品管理工作台</h1>
++            <p className="mt-2 text-sm text-muted-foreground">围绕市场空间组织研究、来源与专业协作，立项前即可开展工作。</p>
++          </div>
++          <div className="flex items-center gap-2">
++            <div aria-label="切换视图" className="flex items-center rounded-lg border p-0.5" role="group">
++              {([["list", ListBulletsIcon, "列表"], ["cards", SquaresFourIcon, "卡片"]] as const).map(([mode, Icon, label]) => (
++                <button
++                  aria-label={`${label}视图`}
++                  aria-pressed={viewMode === mode}
++                  className={cn(
++                    "flex size-11 items-center sm:size-7 justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
++                    viewMode === mode && "bg-muted text-foreground",
++                  )}
++                  key={mode}
++                  onClick={() => changeViewMode(mode)}
++                  type="button"
++                >
++                  <Icon aria-hidden="true" className="size-4" />
++                </button>
++              ))}
++            </div>
++            {canCreate && <Button variant="outline" onClick={() => setCreateOpen(!createOpen)}>新建市场空间</Button>}
++            <Button variant="outline" disabled={busy} onClick={() => { setError(null); void load().catch((failure) => setError(failure.message)); }}>刷新</Button>
++          </div>
++        </header>
++        {createOpen && canCreate && <form className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2" onSubmit={(event) => {
++          event.preventDefault(); const form = new FormData(event.currentTarget);
++          const body = { code: String(form.get("code")).trim(), title: String(form.get("title")).trim(), user_groups: lines(String(form.get("groups"))), regions: lines(String(form.get("regions"))), use_scenarios: lines(String(form.get("scenarios"))), research_questions: lines(String(form.get("questions"))) };
++          setBusy(true); setError(null);
++          void request<Space>("spaces", "POST", { ...body, request_id: stableId(body) }).then(async (space) => { await load(); setCreateOpen(false); openSpace(space.id); }).catch((failure) => setError(failure.message)).finally(() => setBusy(false));
++        }}>
++          <label className="text-sm">空间编号<input required name="code" maxLength={128} pattern={"[a-zA-Z0-9_.:\\-]+"} className={field} placeholder="如 portable-inflation" /></label>
++          <label className="text-sm">空间名称<input required name="title" maxLength={512} className={field} /></label>
++          {[["groups", "用户群"], ["regions", "地域 / 市场"], ["scenarios", "使用场景"], ["questions", "待研究问题"]].map(([key, label]) => <label key={key} className="text-sm">{label}（每行一项）<textarea required name={key} className={field} /></label>)}
++          <Button disabled={busy}>创建市场空间</Button>
++        </form>}
++        {spaces?.length === 0 && <p className="text-sm text-muted-foreground">尚无可访问市场空间。{canCreate ? "可先登记用户群、地域、场景和研究问题。" : "请由空间负责人将你加入协作成员。"}</p>}
++        {spaces && spaces.length > 0 && viewMode === "list" ? (
++          <div className="overflow-hidden rounded-lg border bg-card">
++            <ul className="divide-y" role="list">
++              {spaces.map((space) => (
++                <li key={space.id}>
++                  <Link
++                    className="flex min-h-11 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25"
++                    href={`/product-work?space=${encodeURIComponent(space.id)}&tab=research`}
++                  >
++                    <span className="max-w-[40%] shrink-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{space.code}</span>
++                    <span className="min-w-0 flex-1">
++                      <span className="block truncate text-sm font-medium">{space.title}</span>
++                      {spaceMeta(space) ? <span className="mt-0.5 block truncate text-xs text-muted-foreground">{spaceMeta(space)}</span> : null}
++                    </span>
++                    <span className="shrink-0 rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">{spaceLifecycleLabels[space.lifecycle] ?? space.lifecycle}</span>
++                    <CaretRightIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
++                  </Link>
++                </li>
++              ))}
++            </ul>
++          </div>
++        ) : null}
++        {spaces && spaces.length > 0 && viewMode === "cards" ? (
++          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
++            {spaces.map((space) => (
++              <Link
++                className="overflow-hidden rounded-lg border bg-card text-left transition-colors hover:border-foreground/25 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
++                key={space.id}
++                href={`/product-work?space=${encodeURIComponent(space.id)}&tab=research`}
++              >
++                <SpaceVisual code={space.code} title={space.title} />
++                <span className="block space-y-2 p-4">
++                  <span className="flex items-center gap-2">
++                    <span className="min-w-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{space.code}</span>
++                    <span className="ml-auto rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">{spaceLifecycleLabels[space.lifecycle] ?? space.lifecycle}</span>
++                  </span>
++                  <span className="block truncate text-sm font-medium">{space.title}</span>
++                  {spaceMeta(space) ? <span className="block truncate text-xs text-muted-foreground">{spaceMeta(space)}</span> : null}
++                </span>
++              </Link>
++            ))}
++          </div>
++        ) : null}
++      </>
++    )}
+     </div>
+   </WorkspaceShell>;
+ }
+--- a/web/src/components/settings/settings-nav.test.tsx
++++ b/web/src/components/settings/settings-nav.test.tsx
+@@ -0,0 +1,77 @@
++import { cleanup, render, screen, within } from "@testing-library/react";
++import { afterEach, describe, expect, it, vi } from "vitest";
++
++import { SettingsNav } from "./settings-nav";
++import type { WorkspaceIdentity } from "@/components/workspace-types";
++
++vi.mock("next/navigation", () => ({
++  useRouter: () => ({ replace: vi.fn() }),
++  usePathname: () => "/settings/security",
++}));
++
++const identity = (role: string): WorkspaceIdentity =>
++  ({
++    tenant: { id: "tenant-1", slug: "beepump", name: "Beehive Technology" },
++    user: {
++      id: "user-1",
++      tenant_id: "tenant-1",
++      username: "someone",
++      display_name: "Someone",
++      role,
++      email: null,
++      is_active: true,
++    },
++  }) as WorkspaceIdentity;
++
++function renderNav(role: string, current: Parameters<typeof SettingsNav>[0]["current"] = "account-security") {
++  render(
++    <SettingsNav current={current} identity={identity(role)}>
++      <p>settings content</p>
++    </SettingsNav>,
++  );
++  return within(screen.getByRole("navigation", { name: "设置导航" }));
++}
++
++describe("SettingsNav classified secondary navigation", () => {
++  afterEach(cleanup);
++
++  it("classifies all eight settings surfaces for an admin", () => {
++    const nav = renderNav("owner");
++    for (const section of ["账户", "集成", "治理"]) {
++      expect(nav.getByText(section)).toBeInTheDocument();
++    }
++    for (const [label, href] of [
++      ["账户安全", "/settings/security"],
++      ["钉钉", "/settings/integrations/dingtalk"],
++      ["腾讯会议", "/settings/integrations/tencent-meeting"],
++      ["成员与角色", "/governance/users"],
++      ["组织与代理", "/governance/organization"],
++      ["AI 治理", "/governance/ai"],
++      ["模型治理", "/governance/models"],
++      ["事件流", "/events"],
++    ] as const) {
++      expect(nav.getByRole("link", { name: label })).toHaveAttribute("href", href);
++    }
++    expect(screen.getByText("settings content")).toBeInTheDocument();
++  });
++
++  it("hides the governance section from an engineer", () => {
++    const nav = renderNav("engineer");
++    expect(nav.queryByText("治理")).not.toBeInTheDocument();
++    expect(nav.getByText("账户")).toBeInTheDocument();
++    expect(nav.getByText("集成")).toBeInTheDocument();
++    expect(nav.queryByRole("link", { name: "事件流" })).not.toBeInTheDocument();
++  });
++
++  it("leaves only the account section for an external member", () => {
++    const nav = renderNav("supplier");
++    expect(nav.getAllByRole("link")).toHaveLength(1);
++    expect(nav.getByRole("link", { name: "账户安全" })).toBeInTheDocument();
++  });
++
++  it("marks the current section entry as the page", () => {
++    const nav = renderNav("owner", "model-governance");
++    expect(nav.getByRole("link", { name: "模型治理" })).toHaveAttribute("aria-current", "page");
++    expect(nav.getByRole("link", { name: "账户安全" })).not.toHaveAttribute("aria-current");
++  });
++});
+--- a/web/src/components/settings/settings-nav.tsx
++++ b/web/src/components/settings/settings-nav.tsx
+@@ -0,0 +1,93 @@
++"use client";
++
++import Link from "next/link";
++import type { ReactNode } from "react";
++
++import type { WorkspaceIdentity } from "@/components/workspace-types";
++import { cn } from "@/lib/utils";
++
++/**
++ * Settings-area secondary navigation (D31 follow-up, 2026-09-29): the global
++ * sidebar carries one pinned 设置 entry; the rarely opened account,
++ * integration and governance pages are classified here into 账户 / 集成 /
++ * 治理 sections instead of eight flat sidebar entries. Routes stay unchanged,
++ * so existing bookmarks and receipts keep working.
++ */
++const sections = [
++  {
++    label: "账户",
++    items: [{ href: "/settings/security", label: "账户安全", key: "account-security" }],
++  },
++  {
++    label: "集成",
++    internalOnly: true,
++    items: [
++      { href: "/settings/integrations/dingtalk", label: "钉钉", key: "dingtalk-integration" },
++      {
++        href: "/settings/integrations/tencent-meeting",
++        label: "腾讯会议",
++        key: "tencent-meeting-integration",
++      },
++    ],
++  },
++  {
++    label: "治理",
++    adminOnly: true,
++    items: [
++      { href: "/governance/users", label: "成员与角色", key: "user-management" },
++      { href: "/governance/organization", label: "组织与代理", key: "organization" },
++      { href: "/governance/ai", label: "AI 治理", key: "ai-governance" },
++      { href: "/governance/models", label: "模型治理", key: "model-governance" },
++      { href: "/events", label: "事件流", key: "events" },
++    ],
++  },
++] as const;
++
++export type SettingsSectionKey = (typeof sections)[number]["items"][number]["key"];
++
++export function SettingsNav({
++  current,
++  identity,
++  children,
++}: {
++  current: SettingsSectionKey;
++  identity: WorkspaceIdentity;
++  children: ReactNode;
++}) {
++  const isAdmin = ["owner", "admin"].includes(identity.user.role);
++  const isExternal = ["supplier", "customer"].includes(identity.user.role);
++  const visibleSections = sections.filter(
++    (section) =>
++      (!("adminOnly" in section) || isAdmin) && (!("internalOnly" in section) || !isExternal),
++  );
++  return (
++    <div className="lg:grid lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-8">
++      <nav aria-label="设置导航" className="mb-6 lg:mb-0">
++        {visibleSections.map((section) => (
++          <div className="mb-4 last:mb-0 lg:mb-5" key={section.label}>
++            <p className="hidden px-2 pb-1 text-[11px] font-medium text-muted-foreground lg:block">
++              {section.label}
++            </p>
++            <ul className="flex flex-wrap gap-1 lg:block lg:space-y-0.5" role="list">
++              {section.items.map(({ href, key, label }) => (
++                <li key={key}>
++                  <Link
++                    aria-current={current === key ? "page" : undefined}
++                    className={cn(
++                      "flex min-h-11 items-center rounded-md px-2 text-[13px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 lg:min-h-8",
++                      current === key && "bg-muted font-medium text-foreground",
++                    )}
++                    href={href}
++                  >
++                    {label}
++                  </Link>
++                </li>
++              ))}
++            </ul>
++          </div>
++        ))}
++      </nav>
++      <div className="min-w-0">{children}</div>
++    </div>
++  );
++}
+--- a/web/src/components/users/user-management-state.tsx
++++ b/web/src/components/users/user-management-state.tsx
+@@ -34,7 +34,7 @@
+ }) {
+   return (
+     <WorkspaceShell
+-      active="user-management"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={onLogout}
+--- a/web/src/components/users/user-management-view.tsx
++++ b/web/src/components/users/user-management-view.tsx
+@@ -1,5 +1,6 @@
+ import { CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react/ssr";
+ 
++import { SettingsNav } from "@/components/settings/settings-nav";
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+ 
+@@ -43,11 +44,12 @@
+ }) {
+   return (
+     <WorkspaceShell
+-      active="user-management"
++      active="settings"
+       identity={identity}
+       loggingOut={loggingOut}
+       onLogout={onLogout}
+     >
++      <SettingsNav current="user-management" identity={identity}>
+       <div className="border-b pb-4">
+         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+           Governance
+@@ -83,6 +85,7 @@
+           users={users}
+         />
+       </div>
++      </SettingsNav>
+     </WorkspaceShell>
+   );
+ }
+--- a/web/src/components/workspace-shell.test.tsx
++++ b/web/src/components/workspace-shell.test.tsx
+@@ -36,15 +36,27 @@
+ describe("WorkspaceShell global domain navigation (D31 regrouped)", () => {
+   afterEach(cleanup);
+ 
+-  it("keeps the sidebar to daily destinations with settings pinned below", () => {
++  it("keeps search and first-time field capture reachable from the top bar for internal members", () => {
++    renderShell("engineer");
++    expect(screen.getByRole("link", { name: "搜索" })).toHaveAttribute("href", "/search");
++    expect(screen.getByRole("link", { name: "现场采集" })).toHaveAttribute("href", "/capture");
++    cleanup(); renderShell("supplier");
++    expect(screen.queryByRole("link", { name: "搜索" })).not.toBeInTheDocument();
++    expect(screen.queryByRole("link", { name: "现场采集" })).not.toBeInTheDocument();
++  });
++
++  it("keeps the sidebar to daily destinations with a single pinned settings entry", () => {
+     const nav = renderShell("owner");
+     for (const domain of ["工作", "项目", "产品", "AI 与知识"]) {
+       expect(nav.getByText(domain)).toBeInTheDocument();
+     }
+-    // Governance moved into the pinned 设置 group; no separate 管理 domain.
+-    expect(nav.queryByText("管理")).not.toBeInTheDocument();
++    // Governance, integrations and account pages integrate into one settings
++    // entry; the settings area navigates internally via SettingsNav.
+     const aside = within(screen.getByRole("complementary"));
+-    expect(aside.getByText("设置")).toBeInTheDocument();
++    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute(
++      "href",
++      "/settings/security",
++    );
+     for (const label of [
+       "账户安全",
+       "钉钉集成",
+@@ -55,13 +67,9 @@
+       "模型治理",
+       "事件流",
+     ]) {
+-      expect(aside.getByRole("link", { name: label })).toBeInTheDocument();
++      expect(aside.queryByRole("link", { name: label })).not.toBeInTheDocument();
+     }
+     expect(nav.getByRole("link", { name: "组合与阻塞" })).toHaveAttribute("href", "/portfolio");
+-    expect(aside.getByRole("link", { name: "组织与代理" })).toHaveAttribute(
+-      "href",
+-      "/governance/organization",
+-    );
+   });
+ 
+   it("has no entries for contextual surfaces or project workspace tabs", () => {
+@@ -93,8 +101,7 @@
+     for (const label of ["成员与角色", "组织与代理", "AI 治理", "模型治理", "事件流"]) {
+       expect(aside.queryByRole("link", { name: label })).not.toBeInTheDocument();
+     }
+-    expect(aside.getByRole("link", { name: "账户安全" })).toBeInTheDocument();
+-    expect(aside.getByRole("link", { name: "钉钉集成" })).toBeInTheDocument();
++    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute("href", "/settings/security");
+     expect(nav.getByRole("link", { name: "我的工作" })).toBeInTheDocument();
+   });
+ 
+@@ -103,12 +110,11 @@
+     expect(nav.queryByRole("link", { name: "组合与阻塞" })).not.toBeInTheDocument();
+     expect(nav.queryByText("AI 与知识")).not.toBeInTheDocument();
+     expect(nav.queryByRole("link", { name: "我的工作" })).not.toBeInTheDocument();
+-    // Projects, product surfaces and account security stay reachable for external collaborators.
++    // Projects, product surfaces and the settings area stay reachable for external collaborators.
+     expect(nav.getByRole("link", { name: "项目工作区" })).toBeInTheDocument();
+     expect(nav.getByRole("link", { name: "需求池" })).toBeInTheDocument();
+     const aside = within(screen.getByRole("complementary"));
+-    expect(aside.getByRole("link", { name: "账户安全" })).toBeInTheDocument();
+-    expect(aside.queryByRole("link", { name: "钉钉集成" })).not.toBeInTheDocument();
++    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute("href", "/settings/security");
+   });
+ 
+   it("starts with a compact mobile current entry and preserves every permitted destination when expanded", async () => {
+--- a/web/src/components/workspace-shell.tsx
++++ b/web/src/components/workspace-shell.tsx
+@@ -2,7 +2,8 @@
+ 
+ import {
+   BookOpenTextIcon,
+-  BuildingsIcon,
++  CameraIcon,
++  MagnifyingGlassIcon,
+   ChatCircleTextIcon,
+   ClipboardTextIcon,
+   FolderOpenIcon,
+@@ -11,15 +12,10 @@
+   KanbanIcon,
+   ListIcon,
+   ListChecksIcon,
+-  LockKeyIcon,
+   PackageIcon,
+-  PulseIcon,
+-  PlugsConnectedIcon,
+-  RobotIcon,
+   SignOutIcon,
+   SquaresFourIcon,
+   TrayIcon,
+-  UsersThreeIcon,
+ } from "@phosphor-icons/react";
+ import Link from "next/link";
+ import { useRef, useState, type ReactNode } from "react";
+@@ -33,8 +29,7 @@
+ /**
+  * Global navigation (D31, regrouped 2026-09-28): five groups instead of ten
+  * mostly single-entry domains. The sidebar carries only daily destinations;
+- * contextual surfaces (field capture, global search) are reached from the
+- * records that link to them, and rarely opened governance/integration/account
++ * search and field capture are reached from the top bar or source records, and rarely opened governance/integration/account
+  * pages sit in the pinned 设置 group above the user card. Project-scoped work
+  * (engineering, quality, gates) is reached through the project workspace's own
+  * tab bar, not through duplicate sidebar deep-links.
+@@ -98,64 +93,26 @@
+       },
+     ],
+   },
+-  {
+-    domain: "Settings",
+-    label: "设置",
+-    items: [
+-      { href: "/settings/security", label: "账户安全", icon: LockKeyIcon, key: "account-security" },
+-      {
+-        href: "/settings/integrations/dingtalk",
+-        label: "钉钉集成",
+-        icon: PlugsConnectedIcon,
+-        key: "dingtalk-integration",
+-        internalOnly: true,
+-      },
+-      {
+-        href: "/settings/integrations/tencent-meeting",
+-        label: "腾讯会议集成",
+-        icon: PlugsConnectedIcon,
+-        key: "tencent-meeting-integration",
+-        internalOnly: true,
+-      },
+-      {
+-        href: "/governance/users",
+-        label: "成员与角色",
+-        icon: UsersThreeIcon,
+-        key: "user-management",
+-        adminOnly: true,
+-      },
+-      {
+-        href: "/governance/organization",
+-        label: "组织与代理",
+-        icon: BuildingsIcon,
+-        key: "organization",
+-        adminOnly: true,
+-      },
+-      {
+-        href: "/governance/ai",
+-        label: "AI 治理",
+-        icon: RobotIcon,
+-        key: "ai-governance",
+-        adminOnly: true,
+-      },
+-      {
+-        href: "/governance/models",
+-        label: "模型治理",
+-        icon: GearSixIcon,
+-        key: "model-governance",
+-        adminOnly: true,
+-      },
+-      { href: "/events", label: "事件流", icon: PulseIcon, key: "events", adminOnly: true },
+-    ],
+-  },
+ ] as const;
++
++/**
++ * One pinned settings entry, Linear-style. The account, integration and
++ * governance pages behind it are classified by SettingsNav inside the
++ * settings area instead of occupying flat sidebar entries.
++ */
++const settingsEntry = {
++  href: "/settings/security",
++  label: "设置",
++  icon: GearSixIcon,
++  key: "settings",
++} as const;
+ 
+ type NavigationItem = (typeof domains)[number]["items"][number];
+ type NavigationGroup = { domain: string; label: string; items: readonly NavigationItem[] };
+ 
+-// Field capture and global search keep the shell when opened through their
+-// contextual links or direct URL; they simply have no sidebar entry to light up.
+-type WorkspaceView = NavigationItem["key"] | "capture" | "search";
++// Settings-area pages highlight the single settings entry; field capture and
++// global search keep the shell without a sidebar entry to light up.
++type WorkspaceView = NavigationItem["key"] | typeof settingsEntry.key | "capture" | "search";
+ 
+ function DomainSection({ active, group }: { active: WorkspaceView; group: NavigationGroup }) {
+   return (
+@@ -208,9 +165,7 @@
+       ),
+     }))
+     .filter((group) => group.items.length > 0);
+-  const mainDomains = visibleDomains.filter((group) => group.domain !== "Settings");
+-  const settingsDomain = visibleDomains.find((group) => group.domain === "Settings") ?? null;
+-  const visibleNavigation = visibleDomains.flatMap((group) => group.items);
++  const visibleNavigation = [...visibleDomains.flatMap((group) => group.items), settingsEntry];
+   const currentNavigation = visibleNavigation.find((item) => item.key === active);
+   return (
+     <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
+@@ -221,7 +176,7 @@
+       >
+         跳到主要内容
+       </a>
+-      <aside className="hidden border-r border-sidebar-border bg-sidebar lg:flex lg:flex-col">
++      <aside className="hidden border-r border-sidebar-border bg-sidebar lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
+         <div className="flex h-12 items-center gap-2 border-b border-sidebar-border px-4">
+           <span
+             aria-hidden="true"
+@@ -231,16 +186,24 @@
+           </span>
+           <span className="font-semibold tracking-tight">PDOS</span>
+         </div>
+-        <nav aria-label="主导航" className="flex-1 overflow-y-auto px-2.5 py-3">
+-          {mainDomains.map((group) => (
++        <nav aria-label="主导航" className="min-h-0 flex-1 overflow-y-auto px-2.5 py-3">
++          {visibleDomains.map((group) => (
+             <DomainSection active={active} group={group} key={group.domain} />
+           ))}
+         </nav>
+-        {settingsDomain ? (
+-          <div className="border-t border-sidebar-border px-2.5 py-2">
+-            <DomainSection active={active} group={settingsDomain} />
+-          </div>
+-        ) : null}
++        <div className="border-t border-sidebar-border px-2.5 py-2">
++          <Link
++            aria-current={active === settingsEntry.key ? "page" : undefined}
++            className={cn(
++              "flex min-h-11 items-center gap-2 rounded-md px-2 text-[13px] text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30 lg:min-h-8",
++              active === settingsEntry.key && "bg-sidebar-accent text-sidebar-accent-foreground",
++            )}
++            href={settingsEntry.href}
++          >
++            <GearSixIcon aria-hidden="true" className="size-4" weight="regular" />
++            {settingsEntry.label}
++          </Link>
++        </div>
+         <div className="border-t border-sidebar-border px-4 py-3">
+           <p className="truncate text-xs font-medium text-sidebar-accent-foreground">
+             {identity.user.display_name}
+@@ -266,6 +229,14 @@
+             {identity.tenant.name} · {identity.user.display_name}
+           </p>
+           <div className="ml-auto flex items-center gap-1">
++            {!isExternal && <>
++              <Link aria-current={active === "search" ? "page" : undefined} aria-label="搜索" title="搜索" href="/search" className="flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 sm:size-8">
++                <MagnifyingGlassIcon aria-hidden="true" className="size-4" />
++              </Link>
++              <Link aria-current={active === "capture" ? "page" : undefined} aria-label="现场采集" title="现场采集" href="/capture" className="flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 sm:size-8">
++                <CameraIcon aria-hidden="true" className="size-4" />
++              </Link>
++            </>}
+             <ThemeToggle />
+             <Button
+               aria-label="退出登录"

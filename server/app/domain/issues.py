@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from contextlib import nullcontext
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
 
 from sqlalchemy import Connection, Engine, select
@@ -19,6 +20,9 @@ from app.domain.process_template_fields import (
 )
 from app.domain.project_write_lock import lock_project_write_scope
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
+
+if TYPE_CHECKING:
+    from app.domain.material_exceptions import MaterialClosureReference
 
 
 class IssueNotFoundError(LookupError):
@@ -69,7 +73,7 @@ class IssueRecord:
     owner_user_id: UUID | None
     verifier_user_id: UUID | None
     sample_id: UUID | None
-    reported_by_user_id: UUID
+    reported_by_user_id: UUID | None
     title: str
     description: str | None
     issue_type: str
@@ -87,6 +91,10 @@ class IssueRecord:
     source_finding_id: UUID | None = None
     source_field_capture_id: UUID | None = None
     template_fields: dict[str, Any] = field(default_factory=dict)
+    created_by_ai_principal_id: UUID | None = None
+    ai_writer_name: str | None = None
+    withdrawn_at: datetime | None = None
+    ai_withdrawal_id: UUID | None = None
 
 
 @dataclass(frozen=True)
@@ -129,6 +137,17 @@ def _issue_statement() -> Any:
         tables.issues.c.verifier_user_id,
         tables.issues.c.sample_id,
         tables.issues.c.reported_by_user_id,
+        tables.issues.c.created_by_ai_principal_id,
+        tables.issues.c.withdrawn_at,
+        tables.issues.c.ai_withdrawal_id,
+        select(tables.ai_principals.c.display_name)
+        .where(
+            tables.ai_principals.c.tenant_id == tables.issues.c.tenant_id,
+            tables.ai_principals.c.id == tables.issues.c.created_by_ai_principal_id,
+        )
+        .correlate(tables.issues)
+        .scalar_subquery()
+        .label("ai_writer_name"),
         tables.issues.c.title,
         tables.issues.c.description,
         tables.issues.c.issue_type,
@@ -159,7 +178,14 @@ def _issue_statement() -> Any:
 
 def _record_from_row(row: RowMapping) -> IssueRecord:
     reporter_id = row["reported_by_user_id"]
-    if not isinstance(reporter_id, UUID):
+    principal_id = row.get("created_by_ai_principal_id")
+    if any(
+        value is not None and not isinstance(value, UUID) for value in (reporter_id, principal_id)
+    ):
+        raise IssueNotFoundError
+    if (reporter_id is None) == (principal_id is None):
+        raise IssueNotFoundError
+    if principal_id is not None and not row.get("ai_writer_name"):
         raise IssueNotFoundError
     return IssueRecord(
         id=row["id"],
@@ -169,6 +195,10 @@ def _record_from_row(row: RowMapping) -> IssueRecord:
         verifier_user_id=row["verifier_user_id"],
         sample_id=row["sample_id"],
         reported_by_user_id=reporter_id,
+        created_by_ai_principal_id=principal_id,
+        ai_writer_name=row.get("ai_writer_name"),
+        withdrawn_at=row.get("withdrawn_at"),
+        ai_withdrawal_id=row.get("ai_withdrawal_id"),
         title=row["title"],
         description=row["description"],
         issue_type=row["issue_type"],
@@ -192,6 +222,8 @@ def _record_from_row(row: RowMapping) -> IssueRecord:
 def _issue_snapshot(record: IssueRecord) -> dict[str, object]:
     return {
         "project_id": str(record.project_id),
+        "withdrawn_at": record.withdrawn_at.isoformat() if record.withdrawn_at else None,
+        "ai_withdrawal_id": str(record.ai_withdrawal_id) if record.ai_withdrawal_id else None,
         **(
             {"source_finding_id": str(record.source_finding_id)} if record.source_finding_id else {}
         ),
@@ -200,7 +232,17 @@ def _issue_snapshot(record: IssueRecord) -> dict[str, object]:
         "verifier_user_id": (
             str(record.verifier_user_id) if record.verifier_user_id is not None else None
         ),
-        "reported_by_user_id": str(record.reported_by_user_id),
+        "reported_by_user_id": (
+            str(record.reported_by_user_id) if record.reported_by_user_id else None
+        ),
+        **(
+            {
+                "created_by_ai_principal_id": str(record.created_by_ai_principal_id),
+                "ai_writer_name": record.ai_writer_name,
+            }
+            if record.created_by_ai_principal_id
+            else {}
+        ),
         **({"template_fields": record.template_fields} if record.template_fields else {}),
         "title": record.title,
         "description": record.description,
@@ -361,6 +403,7 @@ class IssueService:
                     .where(
                         tables.issues.c.tenant_id == tenant_id,
                         tables.issues.c.project_id == project_id,
+                        tables.issues.c.withdrawn_at.is_(None),
                     )
                     .order_by(tables.issues.c.updated_at.desc(), tables.issues.c.id.desc())
                 ).mappings()
@@ -375,6 +418,203 @@ class IssueService:
         draft: IssueDraft,
         connection: Connection | None = None,
         source_finding_id: UUID | None = None,
+        now: datetime | None = None,
+    ) -> IssueRecord:
+        return self._create(
+            tenant_id=tenant_id,
+            actor_user_id=actor_user_id,
+            project_id=project_id,
+            draft=draft,
+            connection=connection,
+            source_finding_id=source_finding_id,
+            now=now,
+        )
+
+    def create_from_ai_event(
+        self,
+        *,
+        tenant_id: UUID,
+        project_id: UUID,
+        principal_id: UUID,
+        policy_id: UUID,
+        scope_revision_id: UUID,
+        requested_by_user_id: UUID,
+        confirmed_by_user_id: UUID | None,
+        result_id: UUID,
+        run_id: UUID,
+        model_invocation_id: UUID,
+        source_event_row_id: int,
+        application_id: UUID,
+        draft: IssueDraft,
+        connection: Connection,
+        write_execution: dict[str, Any] | None = None,
+        now: datetime | None = None,
+    ) -> IssueRecord:
+        """Create a confirmed or qualified automatic proposal with its actual AI author.
+
+        The application service owns source freshness, permissions, deduplication,
+        and the atomic application receipt/backlink. No automatic grant is inferred.
+        """
+        tenant_status = connection.execute(
+            select(tables.tenants.c.status)
+            .where(tables.tenants.c.id == tenant_id)
+            .with_for_update()
+        ).scalar_one_or_none()
+        if tenant_status != "active" or not lock_project_write_scope(
+            connection, tenant_id=tenant_id, project_id=project_id
+        ):
+            raise IssueNotFoundError
+        policy = (
+            connection.execute(
+                select(tables.ai_write_policies)
+                .where(tables.ai_write_policies.c.tenant_id == tenant_id)
+                .order_by(tables.ai_write_policies.c.revision.desc())
+                .limit(1)
+            )
+            .mappings()
+            .one_or_none()
+        )
+        scope = (
+            connection.execute(
+                select(tables.ai_write_scope_revisions)
+                .where(
+                    tables.ai_write_scope_revisions.c.tenant_id == tenant_id,
+                    tables.ai_write_scope_revisions.c.project_id == project_id,
+                    tables.ai_write_scope_revisions.c.principal_id == principal_id,
+                    tables.ai_write_scope_revisions.c.operation_key == "event.issue.create",
+                )
+                .order_by(tables.ai_write_scope_revisions.c.revision.desc())
+                .limit(1)
+            )
+            .mappings()
+            .one_or_none()
+        )
+        principal = connection.execute(
+            select(tables.ai_principals.c.id).where(
+                tables.ai_principals.c.tenant_id == tenant_id,
+                tables.ai_principals.c.id == principal_id,
+                tables.ai_principals.c.principal_kind == "ai",
+            )
+        ).scalar_one_or_none()
+        if (
+            tenant_status != "active"
+            or principal is None
+            or policy is None
+            or policy["id"] != policy_id
+            or policy["principal_id"] != principal_id
+            or policy["mode"] != "tiered"
+            or policy["operation_settings"].get("event.issue.create", {}).get("mode")
+            not in {"confirm", "automatic"}
+            or scope is None
+            or scope["id"] != scope_revision_id
+            or not scope["enabled"]
+        ):
+            raise IssueScopeError("AI 写入政策或项目授权已变化，请重新核对")
+        result = (
+            connection.execute(
+                select(tables.ai_issue_event_results).where(
+                    tables.ai_issue_event_results.c.tenant_id == tenant_id,
+                    tables.ai_issue_event_results.c.project_id == project_id,
+                    tables.ai_issue_event_results.c.id == result_id,
+                    tables.ai_issue_event_results.c.run_id == run_id,
+                    tables.ai_issue_event_results.c.model_invocation_id == model_invocation_id,
+                    tables.ai_issue_event_results.c.event_row_id == source_event_row_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        run = (
+            connection.execute(
+                select(tables.agent_runs).where(
+                    tables.agent_runs.c.tenant_id == tenant_id,
+                    tables.agent_runs.c.project_id == project_id,
+                    tables.agent_runs.c.id == run_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        expected_people = {requested_by_user_id}
+        if confirmed_by_user_id is not None:
+            expected_people.add(confirmed_by_user_id)
+        people = set(
+            connection.execute(
+                select(tables.users.c.id).where(
+                    tables.users.c.tenant_id == tenant_id,
+                    tables.users.c.id.in_(expected_people),
+                    tables.users.c.is_active.is_(True),
+                )
+            ).scalars()
+        )
+        if (
+            result is None
+            or run is None
+            or run["status"] != "succeeded"
+            or run["requested_by_user_id"] != requested_by_user_id
+            or people != expected_people
+        ):
+            raise IssueScopeError("原生成结果、请求人或确认人无法核对")
+        if confirmed_by_user_id is None:
+            if (
+                write_execution is None
+                or write_execution.get("route") != "direct"
+                or write_execution.get("run_id") != str(run_id)
+                or write_execution.get("policy_id") != str(policy_id)
+                or write_execution.get("scope_revision_id") != str(scope_revision_id)
+                or write_execution.get("principal_id") != str(principal_id)
+                or run["run_context"].get("issue_write_execution") != write_execution
+                or policy["operation_settings"]["event.issue.create"]["mode"] != "automatic"
+            ):
+                raise IssueScopeError("自动建单须使用同事务核验的原运行执行依据")
+        elif write_execution is not None:
+            raise IssueScopeError("人工确认与自动办理回执不能混用")
+        proposal = result["proposal"]
+        source_kind = result["source_snapshot"].get("source_kind")
+        if (
+            proposal.get("disposition") != "create_issue"
+            or proposal.get("title") != draft.title
+            or proposal.get("description") != draft.description
+            or proposal.get("severity") != draft.severity
+            or draft.issue_type
+            != {"test_failure": "test_failure", "material_exception": "supplier"}.get(source_kind)
+        ):
+            raise IssueScopeError("待创建问题与原生成建议不一致")
+        return self._create(
+            tenant_id=tenant_id,
+            actor_user_id=None,
+            project_id=project_id,
+            draft=draft,
+            connection=connection,
+            created_by_ai_principal_id=principal_id,
+            audit_context={
+                "origin": "ai",
+                "writer_principal_id": str(principal_id),
+                "requested_by_user_id": str(requested_by_user_id),
+                "confirmed_by_user_id": str(confirmed_by_user_id) if confirmed_by_user_id else None,
+                **({"write_execution": write_execution} if write_execution else {}),
+                "result_id": str(result_id),
+                "run_id": str(run_id),
+                "model_invocation_id": str(model_invocation_id),
+                "source_event_row_id": source_event_row_id,
+                "application_id": str(application_id),
+                "policy_id": str(policy_id),
+                "scope_revision_id": str(scope_revision_id),
+            },
+            now=now,
+        )
+
+    def _create(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID | None,
+        project_id: UUID,
+        draft: IssueDraft,
+        connection: Connection | None = None,
+        source_finding_id: UUID | None = None,
+        created_by_ai_principal_id: UUID | None = None,
+        audit_context: dict[str, Any] | None = None,
         now: datetime | None = None,
     ) -> IssueRecord:
         issue_id = uuid4()
@@ -428,6 +668,7 @@ class IssueService:
                     "verifier_user_id": draft.verifier_user_id,
                     "sample_id": draft.sample_id,
                     "reported_by_user_id": actor_user_id,
+                    "created_by_ai_principal_id": created_by_ai_principal_id,
                     "title": draft.title,
                     "source_finding_id": source_finding_id,
                     "description": draft.description,
@@ -459,7 +700,11 @@ class IssueService:
                     payload={"issue_id": str(issue_id), "severity": issue.severity},
                     occurred_at=occurred_at,
                 ),
-                AuditDraft(action="issue.create", after_snapshot=_issue_snapshot(issue)),
+                AuditDraft(
+                    action="issue.create",
+                    after_snapshot=_issue_snapshot(issue),
+                    context=audit_context or {},
+                ),
             )
             return issue
 
@@ -487,7 +732,7 @@ class IssueService:
                 and patch.expected_updated_at != before.updated_at
             ):
                 raise TemplateFieldConflictError("问题内容或状态已变化，请刷新工作卡后核对")
-            if before.status == "closed":
+            if before.status == "closed" or before.withdrawn_at is not None:
                 raise IssueTerminalError
             workflow_id = self._project_workflow(
                 connection, tenant_id=tenant_id, project_id=project_id
@@ -596,6 +841,7 @@ class IssueService:
         comment: str | None = None,
         closure_evidence_ref: str | None = None,
         expected_updated_at: datetime | None = None,
+        material_closures: Sequence[MaterialClosureReference] | None = None,
     ) -> IssueRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
@@ -606,6 +852,8 @@ class IssueService:
             )
             if expected_updated_at is not None and expected_updated_at != before.updated_at:
                 raise TemplateFieldConflictError("问题内容或状态已变化，请刷新工作卡后核对")
+            if before.withdrawn_at is not None:
+                raise IssueTerminalError
             if to_status not in ISSUE_TRANSITIONS[before.status]:
                 raise IssueInvalidTransitionError
             if to_status == "analysis" and (
@@ -657,6 +905,23 @@ class IssueService:
             if comment is not None:
                 audit_context["comment"] = comment
             if to_status == "closed":
+                # Import locally: material exceptions create their original Issue.
+                from app.domain.material_exceptions import validate_material_issue_closure
+
+                material_context = validate_material_issue_closure(
+                    connection,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    issue_id=issue_id,
+                    actor_user_id=actor_user_id,
+                    expected_sources=(
+                        list(material_closures) if material_closures is not None else None
+                    ),
+                )
+                if material_context["sources"]:
+                    if expected_updated_at is None:
+                        raise TemplateFieldConflictError("请先刷新原问题并核对其当前版本再关闭")
+                    audit_context["material_closure"] = material_context
                 values["closure_evidence_ref"] = closure_evidence_ref
             if before.status == "closed":
                 values["reopen_count"] = before.reopen_count + 1

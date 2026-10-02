@@ -184,7 +184,15 @@ class DecisionIntakeCorrections:
                     else None
                 )
                 value = snapshot(record, kind) if record is not None else None
-                if target_id and (value is None or digest(value) != expected):
+                if target_id and (
+                    value is None
+                    or (
+                        kind == "issue"
+                        and record is not None
+                        and record.get("withdrawn_at") is not None
+                    )
+                    or digest(value) != expected
+                ):
                     raise ConversationError("目标决策或问题已变化，请重新读取并核对")
                 targets[kind] = value
             receipt = (

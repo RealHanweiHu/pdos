@@ -278,66 +278,79 @@ class RequirementService:
         actor_user_id: UUID,
         draft: RequirementCreate,
     ) -> RequirementRecord:
-        requirement_id = uuid4()
-        occurred_at = datetime.now(UTC)
         try:
             with self._engine.begin() as connection:
-                if draft.customer_id is not None and not self._active_customer_exists(
-                    connection,
-                    tenant_id=tenant_id,
-                    customer_id=draft.customer_id,
-                ):
-                    raise CustomerNotFoundError
-                connection.execute(
-                    tables.requirements.insert(),
-                    {
-                        "id": requirement_id,
-                        "tenant_id": tenant_id,
-                        "customer_id": draft.customer_id,
-                        "created_by_user_id": actor_user_id,
-                        "code": draft.code,
-                        "title": draft.title,
-                        "description": draft.description,
-                        "source": draft.source,
-                        "status": "draft",
-                        "priority": draft.priority,
-                        "acceptance_criteria": draft.acceptance_criteria,
-                        "created_at": occurred_at,
-                        "updated_at": occurred_at,
-                    },
+                return self.create_connection(
+                    connection, tenant_id=tenant_id, actor_user_id=actor_user_id, draft=draft
                 )
-                record = self._get_record(
-                    connection,
-                    tenant_id=tenant_id,
-                    requirement_id=requirement_id,
-                )
-                EventAuditWriter(
-                    connection,
-                    tenant_id=tenant_id,
-                    actor_user_id=actor_user_id,
-                ).record(
-                    EventDraft(
-                        event_id=f"requirement:{requirement_id}:created",
-                        event_type="REQUIREMENT_CREATED",
-                        source="requirement_service",
-                        entity_id=requirement_id,
-                        payload={
-                            "requirement_code": record.code,
-                            "status": record.status,
-                            "priority": record.priority,
-                        },
-                        occurred_at=occurred_at,
-                    ),
-                    AuditDraft(
-                        action="requirement.create",
-                        after_snapshot=_snapshot(record),
-                    ),
-                )
-                return record
         except IntegrityError as error:
             if "uq_requirements_tenant_code" in str(error.orig):
                 raise RequirementCodeConflictError from error
             raise
+
+    def create_connection(
+        self,
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        draft: RequirementCreate,
+    ) -> RequirementRecord:
+        """Shared transaction boundary for reviewed draft intake batches."""
+        requirement_id = uuid4()
+        occurred_at = datetime.now(UTC)
+        if draft.customer_id is not None and not self._active_customer_exists(
+            connection,
+            tenant_id=tenant_id,
+            customer_id=draft.customer_id,
+        ):
+            raise CustomerNotFoundError
+        connection.execute(
+            tables.requirements.insert(),
+            {
+                "id": requirement_id,
+                "tenant_id": tenant_id,
+                "customer_id": draft.customer_id,
+                "created_by_user_id": actor_user_id,
+                "code": draft.code,
+                "title": draft.title,
+                "description": draft.description,
+                "source": draft.source,
+                "status": "draft",
+                "priority": draft.priority,
+                "acceptance_criteria": draft.acceptance_criteria,
+                "created_at": occurred_at,
+                "updated_at": occurred_at,
+            },
+        )
+        record = self._get_record(
+            connection,
+            tenant_id=tenant_id,
+            requirement_id=requirement_id,
+        )
+        EventAuditWriter(
+            connection,
+            tenant_id=tenant_id,
+            actor_user_id=actor_user_id,
+        ).record(
+            EventDraft(
+                event_id=f"requirement:{requirement_id}:created",
+                event_type="REQUIREMENT_CREATED",
+                source="requirement_service",
+                entity_id=requirement_id,
+                payload={
+                    "requirement_code": record.code,
+                    "status": record.status,
+                    "priority": record.priority,
+                },
+                occurred_at=occurred_at,
+            ),
+            AuditDraft(
+                action="requirement.create",
+                after_snapshot=_snapshot(record),
+            ),
+        )
+        return record
 
     def update(
         self,

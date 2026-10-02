@@ -138,7 +138,9 @@ def entry(
             return upload(client, headers, ids["project_id"], ids["plan_id"], content)
 
     original_invoke = StructuredModelGateway.invoke_structured
-    environment, calls, _ = api_factory.factory(get_engine(), tmp_path, monkeypatch, output=output)
+    environment, calls, _ = api_factory.factory(
+        get_engine(), tmp_path, monkeypatch, request=request, output=output
+    )
     # Creation-only fixture assumptions do not apply to the retained recovery history.
     monkeypatch.setattr(StructuredModelGateway, "invoke_structured", original_invoke)
     try:

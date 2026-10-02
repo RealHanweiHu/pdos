@@ -73,6 +73,22 @@ _EVENT_AGENT_ROUTES: dict[str, tuple[AgentKey, ...]] = {
 # sibling event.
 NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
     {
+        # DC-11 settings and draft receipts must not re-trigger their own model work.
+        "AI_WRITE_POLICY_REVISED",
+        "AI_WRITE_TRIAL_REGISTERED",
+        "AI_WRITE_TRIAL_COLLECTED",
+        "AI_WRITE_AUTOMATIC_STOPPED",
+        "AI_WRITE_SCOPE_REVISED",
+        "AI_ISSUE_SAMPLE_REVIEWED",
+        "AI_ISSUE_TRIAL_REGISTERED",
+        "AI_ISSUE_TRIAL_COLLECTED",
+        "AI_ISSUE_OBSERVATION_SAVED",
+        "AI_ISSUE_PROPOSAL_REVIEW_RECORDED",
+        "AI_ISSUE_WITHDRAWAL_RECORDED",
+        "AI_ISSUE_APPLICATION_RECORDED",
+        "AI_MINUTES_DRAFT_CREATED",
+        "AI_MINUTES_DRAFT_CHANGED",
+        "AI_MINUTES_RUN_WITHDRAWN",
         # N7 consent, observations and independent reception receipts feed
         # descriptive calculations only; participation never requests model work.
         "RESEARCH_MEASUREMENT_RECORDED",
@@ -143,6 +159,8 @@ NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
         "PROJECT_SCHEDULE_SCENARIO_EVALUATED",
         "RESEARCH_TASK_CHANGED",
         "RESOURCE_CAPACITY_PUBLISHED",
+        "RESOURCE_PRIORITY_PUBLISHED",
+        "RESOURCE_REALLOCATION_RECORDED",
         "RESOURCE_RESERVATION_CHANGED",
         "RESOURCE_RESERVATION_RECORDED",
         "RESOURCE_RESERVATION_REPLACED",
@@ -175,8 +193,8 @@ NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
         "EFFECTIVENESS_REVIEWED",
         "ERP_BOM_REFERENCE_ADDED",
         "ISSUE_UPDATED",
-        # V2-1: meetings emit state changes, but no agent capability consumes
-        # them until V2-5 lands `meeting_minutes`.
+        # MeetingEventQueue consumes these as source-bound application requests;
+        # they must not enter the generic project/agent debounce dispatcher.
         "MEETING_STATE_CHANGED",
         # V2-9: a debate is convened explicitly (by an agent or a person), so
         # its state changes drive notifications, not another agent run.
@@ -198,6 +216,8 @@ NO_ROUTE_EVENT_TYPES: frozenset[str] = frozenset(
         "NCR_STATUS_CHANGED",
         "NPI_RECORD_CHANGED",
         "PROJECT_CREATED",
+        "PROJECT_MEMBER_ADDED",  # Staffing is access control, not model work.
+        "PROJECT_MEMBER_REMOVED",
         "PROJECT_STATUS_CHANGED",
         "PROJECT_UPDATED",
         "RESOURCE_RESERVATION_OWNER_TRANSFERRED",

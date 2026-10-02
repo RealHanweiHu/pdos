@@ -14,6 +14,11 @@ from app.db.schema import tables
 from app.domain.decisions import DecisionService, _decision_statement, _record_from_row
 from app.domain.gates import GateService
 from app.domain.product_workspace import _plain, digest
+from app.domain.project_handoff_sources import (
+    accepted_source_manifest,
+    source_manifest,
+    source_review,
+)
 from app.domain.project_write_lock import lock_project_write_scope
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
@@ -49,7 +54,11 @@ def _rows(connection: Connection, table: Any, tenant_id: UUID, project_id: UUID)
 
 
 def _fingerprint(
-    connection: Connection, tenant_id: UUID, project_id: UUID, item: Any
+    connection: Connection,
+    tenant_id: UUID,
+    project_id: UUID,
+    item: Any,
+    business_sources: dict[str, Any] | None = None,
 ) -> str | None:
     doc = connection.execute(
         select(tables.documents.c.sha256).where(
@@ -79,23 +88,29 @@ def _fingerprint(
             if version
             else None
         )
-    groups = {
-        "configuration": (tables.specifications, tables.sample_build_configurations),
-        "bom": (tables.development_boms, tables.development_bom_items),
-        "test_certification": (tables.test_reports, tables.certifications),
-        "residuals": (tables.issues, tables.risks),
-    }
-    for table in groups.get(item["item_key"], ()):
-        source[table.name] = [dict(row) for row in _rows(connection, table, tenant_id, project_id)]
+    source["business_sources"] = (
+        business_sources
+        if business_sources is not None
+        else source_manifest(connection, tenant_id, project_id, item["item_key"])
+    )
     return hashlib.sha256(json.dumps(source, sort_keys=True, default=str).encode()).hexdigest()
 
 
-def handoff_digest(connection: Connection, tenant: UUID, project: UUID, key: str, item: Any) -> str:
+def handoff_digest(
+    connection: Connection,
+    tenant: UUID,
+    project: UUID,
+    key: str,
+    item: Any,
+    business_sources: dict[str, Any] | None = None,
+) -> str:
     return digest(
         {
             "item_key": key,
             "record": _plain(item) if item else None,
-            "source": _fingerprint(connection, tenant, project, item) if item else None,
+            "source": _fingerprint(connection, tenant, project, item, business_sources)
+            if item
+            else None,
         }
     )
 
@@ -130,7 +145,13 @@ def handoff_replay(
         return None
     if prior["context"]["handoff_request"]["digest"] != fingerprint:
         raise CompletionError("此请求编号已用于另一项交接操作")
-    return {**prior["after_snapshot"], "request_id": str(request_id)}
+    receipt = {**prior["after_snapshot"], "request_id": str(request_id)}
+    # Audit JSON retains the original timestamps as text. Restore their types so
+    # a replay uses the same API serialization as the original database receipt.
+    for field in ("created_at", "updated_at", "responded_at"):
+        if isinstance(receipt.get(field), str):
+            receipt[field] = datetime.fromisoformat(receipt[field])
+    return receipt
 
 
 def handoff_audit(
@@ -178,6 +199,7 @@ def handoff_audit(
             "document": _plain(document) if document else None,
             "receiver_change_reason": change_reason,
             "source_fingerprint": _fingerprint(connection, tenant, project, after),
+            "business_sources": source_manifest(connection, tenant, project, after["item_key"]),
         },
     }
 
@@ -269,6 +291,8 @@ def readiness(connection: Connection, *, tenant_id: UUID, project_id: UUID) -> d
         if task["status"] not in {"done", "skipped"}:
             block(f"task:{task['id']}", f"未完成任务：{task['title']}")
     for issue in _rows(connection, tables.issues, tenant_id, project_id):
+        if issue.get("withdrawn_at") is not None:
+            continue
         if issue["severity"] in {"high", "critical"} or (
             issue["status"] == "closed" and project.get(f"issue_verify_{issue['severity']}", False)
         ):
@@ -313,13 +337,40 @@ def readiness(connection: Connection, *, tenant_id: UUID, project_id: UUID) -> d
     handoffs = []
     for key, label in HANDOFF_ITEMS.items():
         item = existing.get(key)
-        current = (
-            item is not None
-            and item["status"] == "accepted"
-            and _member(connection, tenant_id, project_id, item["receiver_user_id"])
-            and item["accepted_fingerprint"]
-            == _fingerprint(connection, tenant_id, project_id, item)
+        sources = source_manifest(connection, tenant_id, project_id, key)
+        accepted_sources = accepted_source_manifest(connection, tenant_id, project_id, key, item)
+        source_checks = source_review(sources, accepted_sources)
+        reasons = []
+        fingerprint = (
+            _fingerprint(connection, tenant_id, project_id, item, sources) if item else None
         )
+        if item is None:
+            reasons.append("尚未提交交接资料")
+        else:
+            if item["status"] != "accepted":
+                reasons.append(
+                    "交接已退回，须补充后重新接收"
+                    if item["status"] == "returned"
+                    else "等待指定接收人核对"
+                )
+            if not _member(connection, tenant_id, project_id, item["receiver_user_id"]):
+                reasons.append("原接收人已不是有效项目成员，请重新指定")
+            if fingerprint is None:
+                reasons.append("原交接文档已不可用，请重新提交")
+            if item["status"] == "accepted":
+                if accepted_sources is None:
+                    reasons.append("原接收未保存本版业务依据摘要，须重新核对；原签名与结论保留")
+                else:
+                    reasons.extend(
+                        f"{row['label']}已变化，须重新核对"
+                        for row in source_checks
+                        if row["changed"]
+                    )
+                    if item["accepted_fingerprint"] != fingerprint and not any(
+                        row["changed"] for row in source_checks
+                    ):
+                        reasons.append("交接文档、适用范围或办理内容已变化，须重新核对")
+        current = not reasons
         if not current:
             block(f"handoff:{key}", f"交接尚未有效接收：{label}")
         handoffs.append(
@@ -327,7 +378,12 @@ def readiness(connection: Connection, *, tenant_id: UUID, project_id: UUID) -> d
                 **(dict(item) if item else {"item_key": key, "status": "missing"}),
                 "label": label,
                 "acceptance_current": current,
-                "review_digest": handoff_digest(connection, tenant_id, project_id, key, item),
+                "acceptance_reasons": reasons,
+                "source_checks": source_checks,
+                "source_coverage_version": sources["version"],
+                "review_digest": handoff_digest(
+                    connection, tenant_id, project_id, key, item, sources
+                ),
             }
         )
     # Some live blockers apply to multiple stages; keep one actionable row.

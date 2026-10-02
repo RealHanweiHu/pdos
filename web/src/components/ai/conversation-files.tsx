@@ -61,7 +61,8 @@ export function AttachmentDetail({ conversationId, attachmentId, initialOpen = f
   </details>;
 }
 
-export function ConversationFiles({ conversationId, ensureConversation, selected, onSelectionChange, onBusyChange, disabled, initialAttachmentId, initialFragment }: {
+export function ConversationFiles({ conversationId, ensureConversation, selected, onSelectionChange, onBusyChange, disabled, initialAttachmentId, initialFragment, shared = false }: {
+  shared?: boolean;
   conversationId?: string; ensureConversation: () => Promise<string>; selected: ConversationAttachment[];
   onSelectionChange: (rows: ConversationAttachment[]) => void; onBusyChange: (busy: boolean) => void; disabled: boolean;
   initialAttachmentId?: string; initialFragment?: number;
@@ -128,9 +129,9 @@ export function ConversationFiles({ conversationId, ensureConversation, selected
   }
   return <section className="space-y-3 rounded-lg border p-3" onDragOver={e => { e.preventDefault(); }} onDrop={e => { e.preventDefault(); if (!disabled && !busy) void act(() => upload(Array.from(e.dataTransfer.files))); }}>
     <p className="text-sm font-medium">本条消息的文件</p>
-    <p className="text-xs text-muted-foreground">拖入或选择PDF/XLSX/授权EML，每条最多6个、每个20 MiB。文件仅本人可见；内部资料抽取完成后可用于问答，机密或受限资料仅保存并供本人核对。扫描PDF目前需要OCR；表格公式按原文展示，不代算结果。EML仅抽取邮件头和正文文字；请上传有权用于此项目的原件，在整理草稿中填写许可依据及用途。</p>
+    <p className="text-xs text-muted-foreground">拖入或选择PDF/XLSX/授权EML，每条最多6个、每个20 MiB。{shared ? "本会话附件对项目成员可见，仅接受项目内共享资料。机密或受限资料请放入私人会话。内部资料抽取后可用于问答。" : "文件仅本人可见；内部资料抽取完成后可用于问答，机密或受限资料仅保存并供本人核对。"}扫描PDF目前需要OCR；表格公式按原文展示，不代算结果。EML仅抽取邮件头和正文文字；请上传有权用于此项目的原件，在整理草稿中填写许可依据及用途。</p>
     <div className="flex flex-wrap gap-2">
-      <select className="rounded-md border bg-background p-2 text-xs" aria-label="新上传文件的资料级别" value={classification} disabled={disabled || busy} onChange={e => setClassification(e.target.value)}><option value="internal">内部资料，可供模型阅读</option><option value="confidential">机密资料，仅本人核对</option><option value="restricted">受限资料，仅本人核对</option></select>
+      <select className="rounded-md border bg-background p-2 text-xs" aria-label="新上传文件的资料级别" value={classification} disabled={disabled || busy} onChange={e => setClassification(e.target.value)}><option value="internal">内部资料，可供模型阅读</option>{!shared && <><option value="confidential">机密资料，仅本人核对</option><option value="restricted">受限资料，仅本人核对</option></>}</select>
       <input ref={input} type="file" className="hidden" accept=".pdf,.xlsx,.eml" multiple onChange={e => { const files = Array.from(e.target.files ?? []); e.target.value = ""; if (files.length) void act(() => upload(files)); }} />
       <Button type="button" size="sm" variant="outline" disabled={disabled || busy} onClick={() => input.current?.click()}>选择文件</Button>
       {conversationId && <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void act(refreshSelected)}>刷新附件回执</Button>}

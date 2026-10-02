@@ -27,6 +27,7 @@ from app.domain.product_workspace import (
 )
 
 PROJECTION = "product-matrix-context.v1"
+SCORING_PROJECTION = "product-matrix-context.v2"
 
 
 class MatrixPrompt(BaseModel):
@@ -43,7 +44,7 @@ PROMPT = MatrixPrompt.model_validate_json(
 
 
 def prompt_for(snapshot: dict[str, Any]) -> MatrixPrompt:
-    if snapshot["projection_version"] != PROJECTION:
+    if snapshot["projection_version"] not in (PROJECTION, SCORING_PROJECTION):
         raise ProductWorkError("原产品矩阵资料版本不可用")
     return PROMPT
 
@@ -90,11 +91,21 @@ def readable(c: Connection, context: AuthContext, snapshot: dict[str, Any]) -> N
 
 
 def source_state(
-    c: Connection, context: AuthContext, space_id: UUID, selection: MatrixExplanationSelection
+    c: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    selection: MatrixExplanationSelection,
+    *,
+    projection_version: str | None = None,
 ) -> dict[str, Any]:
     _space(c, context, space_id)
     saved = read_view(c, context, space_id, record_row(c, context, space_id, selection.record_id))
     result = saved["result"]
+    projection_version = projection_version or (
+        SCORING_PROJECTION if "scoring" in result else PROJECTION
+    )
+    if projection_version not in (PROJECTION, SCORING_PROJECTION):
+        raise ProductWorkError("原产品矩阵资料版本不可用")
     original = result["snapshot"]
     products = {item["id"]: item for item in original["products"]}
     criterion_keys = [item["criterion"]["key"] for item in result["criteria"]]
@@ -242,6 +253,8 @@ def source_state(
             fields,
         )
     reference("overlap", "引擎记录的共同匹配判据", {"pairs": result["overlap"]})
+    if projection_version == SCORING_PROJECTION and "scoring" in result:
+        reference("scoring", "原需求覆盖评分、政策权重与未知区间", result["scoring"])
     selected_products: set[str] = set()
     for identity in selection.roadmap_ids:
         t = tables.product_roadmap_revisions
@@ -298,6 +311,11 @@ def source_state(
         "路线图为具名计划；与原定义不一致的路线图不能推定同版产品安排。",
         "产品未立项不阻止本次资料读取；未读取工程实测、ERP/PLM主数据或实际上市反馈。",
     ]
+    if projection_version == SCORING_PROJECTION:
+        limits.append(
+            "评分仅引用原引擎结果和用户政策；未知区间不是确定得分，"
+            "不得重算或更换权重，不代表商业收益或立项优先级。"
+        )
     missing_roadmaps = sorted(set(products) - selected_products)
     if missing_roadmaps:
         omissions.append(
@@ -311,7 +329,7 @@ def source_state(
         "market_space_id": str(space_id),
         "actor_id": str(context.user.id),
         "selection": selection.model_dump(mode="json"),
-        "projection_version": PROJECTION,
+        "projection_version": projection_version,
         "record_result_digest": saved["result_digest"],
         "product_ids": list(products),
         "criterion_keys": criterion_keys,
@@ -337,6 +355,7 @@ def rebuild(c: Connection, tenant_id: UUID, snapshot: dict[str, Any]) -> dict[st
         context,
         UUID(snapshot["market_space_id"]),
         MatrixExplanationSelection.model_validate(snapshot["selection"]),
+        projection_version=snapshot["projection_version"],
     )
 
 

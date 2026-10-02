@@ -1,7 +1,9 @@
 """Internal definition template: explicit fields, complete text, no remote content."""
 
 import json
+import unicodedata
 from io import BytesIO
+from itertools import groupby
 from typing import Any, Literal
 from xml.sax.saxutils import escape
 
@@ -26,6 +28,8 @@ from reportlab.platypus import (  # type: ignore[import-untyped]
 )
 
 Format = Literal["docx", "xlsx", "pptx", "pdf"]
+# Optional lineage sections extend the existing database-supported template.
+# The source projection is versioned separately; stored receipts keep their template metadata.
 VERSION = "internal-definition.v1"
 MIMES = {
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -54,7 +58,8 @@ def sections(snapshot: dict[str, Any]) -> list[tuple[str, str]]:
             "版本与状态",
             f"{snapshot['status_label']}\n定义 {d['id']}\n"
             f"修订 {d['revision_number']} · 内容版本 {d['version']}\n"
-            f"发布时间 {d['published_at'] or '未发布'}\n模板 {VERSION}",
+            f"发布时间 {d['published_at'] or '未发布'}\n"
+            f"模板 {snapshot.get('template_version', VERSION)}",
         ),
         ("对象范围", value(snapshot["product"])),
         (
@@ -63,6 +68,13 @@ def sections(snapshot: dict[str, Any]) -> list[tuple[str, str]]:
             or "本次读取未发现已登记的来源提示；不构成资料完整性认证。",
         ),
     ]
+    if d.get("strategy_ref"):
+        data.append(("所消费的锁定策略版本（未附策略全文）", value(d["strategy_ref"])))
+    if snapshot.get("lineage"):
+        data.append(("锁定业务来源的当前状态（不自动换版）", value(snapshot["lineage"])))
+    if d.get("base_definition_ref"):
+        data.append(("派生父产品锁定发布版", value(d["base_definition_ref"])))
+        data.append(("显式接受的父版更新", value(d.get("parent_updates", []))))
     labels = {
         "target_users": "目标用户",
         "scenarios": "使用场景",
@@ -117,6 +129,71 @@ def chunks(text: str, size: int) -> list[str]:
     return [text[i : i + size] for i in range(0, len(text), size)] or [""]
 
 
+def pdf_text(text: str) -> str:
+    """Use portable Latin metrics while retaining the Chinese CID font.
+
+    Helvetica's WinAnsi repertoire includes Latin punctuation such as ·, ±
+    and ° as well as ASCII. Escape each source run before adding markup so
+    user text cannot become Paragraph instructions. Newlines remain explicit
+    breaks in every style.
+    """
+
+    # These temperature compatibility glyphs have unreliable CID fallbacks.
+    # Expand only their equivalent display forms; source values and digests
+    # (and every other export format) retain the original characters.
+    text = text.replace("℃", "°C").replace("℉", "°F")
+
+    def latin(char: str) -> bool:
+        try:
+            char.encode("cp1252")
+        except UnicodeEncodeError:
+            return False
+        return True
+
+    return "<br/>".join(
+        "".join(
+            f'<font name="Helvetica">{escape("".join(run))}</font>'
+            if is_latin
+            else escape("".join(run))
+            for is_latin, run in groupby(line, key=latin)
+        )
+        for line in text.split("\n")
+    )
+
+
+def cell_lines(text: str, columns: int) -> list[str]:
+    """Estimate visible lines while retaining every original character.
+
+    A character limit alone misses newline-heavy records and wide CJK text.
+    The pieces deliberately contain no added wrapping characters: joining them
+    recovers the exact source, and Excel performs its own visual wrapping.
+    """
+    result: list[str] = []
+    part, width = "", 0
+    for char in text:
+        size = (
+            0
+            if unicodedata.combining(char) or char == "\r"
+            else 4
+            if char == "\t"
+            else 2
+            if unicodedata.east_asian_width(char) in {"W", "F", "A"}
+            else 1
+        )
+        if char != "\n" and part and width + size > columns:
+            result.append(part)
+            part, width = "", 0
+        part += char
+        if char == "\n":
+            result.append(part)
+            part, width = "", 0
+        else:
+            width += size
+    if part or not result or text.endswith("\n"):
+        result.append(part)
+    return result
+
+
 def render(snapshot: dict[str, Any], format: Format, receipt: dict[str, str]) -> bytes:
     return render_sections(
         snapshot["definition"]["title"],
@@ -161,19 +238,34 @@ def render_sections(
         sheet.title = audience_label + "报告"
         sheet.append(["章节 / 字段", "原值 / 固定记录"])
         for heading, text in [(title, status), *body]:
-            for index, part in enumerate(chunks(text, 2000)):
-                sheet.append([heading if index == 0 else heading + f"（续 {index + 1}）", part])
+            # Long labels must not make the left cell taller than the page.
+            if len(cell_lines(heading, 26)) > 2:
+                text = heading + "\n\n" + text
+                heading = cell_lines(heading, 26)[0] + "…"
+            lines = cell_lines(text, 90)
+            for index, offset in enumerate(range(0, len(lines), 12)):
+                part = "".join(lines[offset : offset + 12])
+                if offset and not part:
+                    continue
+                label = heading if index == 0 else heading + f"（续 {index + 1}）"
+                sheet.append([label, part])
                 for cell in sheet[sheet.max_row]:
                     # User-controlled strings never become formula or hyperlink cells.
                     cell.data_type = "s"
                     cell.alignment = Alignment(wrap_text=True, vertical="top")
+                    cell.font = Font(name="Arial", size=11)
+                visible_lines = max(len(cell_lines(label, 26)), len(cell_lines(part, 90)))
+                sheet.row_dimensions[sheet.max_row].height = visible_lines * 16 + 8
         sheet.freeze_panes = "B2"
         sheet.column_dimensions["A"].width = 32
         sheet.column_dimensions["B"].width = 110
         sheet.auto_filter.ref = sheet.dimensions
         for cell in sheet[1]:
             cell.fill = PatternFill("solid", fgColor="C2410C")
-            cell.font = Font(color="FFFFFF", bold=True)
+            cell.font = Font(name="Arial", size=11, color="FFFFFF", bold=True)
+        sheet.row_dimensions[1].height = 24
+        sheet.print_title_rows = "1:1"
+        sheet.print_area = sheet.dimensions
         sheet.sheet_properties.pageSetUpPr = PageSetupProperties(fitToPage=True)
         sheet.page_setup.orientation = "landscape"
         sheet.page_setup.paperSize = sheet.PAPERSIZE_A4
@@ -244,21 +336,32 @@ def render_sections(
             spaceAfter=6,
             keepWithNext=True,
         )
-        story = [Paragraph(escape(title), heading_style)]
+        story = [Paragraph(pdf_text(title), heading_style)]
         for heading, text in body:
-            story.append(Paragraph(escape(heading), heading_style))
-            for part in chunks(text, 2000):
-                story.append(Paragraph(escape(part).replace("\n", "<br/>"), normal))
+            story.append(Paragraph(pdf_text(heading), heading_style))
+            # Keep a heading with a small first block, not thousands of characters
+            # of audit JSON. Large keep-with-next groups otherwise waste a whole page.
+            lines = text.split("\n")
+            for offset in range(0, len(lines), 4):
+                for part in chunks("\n".join(lines[offset : offset + 4]), 2000):
+                    story.append(Paragraph(pdf_text(part), normal))
             story.append(Spacer(1, 4 * mm))
 
         def footer(canvas: Any, document: Any) -> None:
             canvas.saveState()
-            canvas.setFont("STSong-Light", 8)
-            canvas.drawString(
-                18 * mm,
-                12 * mm,
-                status + " · " + audience_label + " · " + receipt["编号"] + f" · {document.page}",
+            label = Paragraph(
+                pdf_text(
+                    status
+                    + " · "
+                    + audience_label
+                    + " · "
+                    + receipt["编号"]
+                    + f" · {document.page}"
+                ),
+                ParagraphStyle("footer", parent=normal, fontSize=8, leading=10),
             )
+            _, height = label.wrap(document.width, 18 * mm)
+            label.drawOn(canvas, 18 * mm, 12 * mm - height + 8)
             canvas.restoreState()
 
         SimpleDocTemplate(

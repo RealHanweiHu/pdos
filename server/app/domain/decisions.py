@@ -207,6 +207,7 @@ class DecisionService:
                 table.c.tenant_id == tenant_id,
                 table.c.project_id == project_id,
                 table.c.id == row_id,
+                *([table.c.withdrawn_at.is_(None)] if table is tables.issues else []),
             )
         ).scalar_one_or_none()
         if found is None:

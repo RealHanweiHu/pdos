@@ -1,11 +1,11 @@
 """Cited competitor observations and deterministic comparison of stated conditions."""
 
 from datetime import UTC, date, datetime
-from typing import Any, Literal, Self
+from typing import Any, Literal, Self, cast
 from uuid import UUID, uuid4
 
 from pydantic import Field, model_validator
-from sqlalchemy import Engine, select
+from sqlalchemy import Connection, Engine, select, true
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
@@ -85,10 +85,7 @@ class CertificationObservation(Contract):
         return self
 
 
-class CompetitorDraft(Input):
-    request_id: UUID
-    product_line_id: UUID | None = None
-    supersedes_id: UUID | None = None
+class CompetitorContent(Input):
     brand: str = Field(min_length=1, max_length=256)
     model: str = Field(min_length=1, max_length=256)
     variant: str = Field(min_length=1, max_length=256)
@@ -116,6 +113,12 @@ class CompetitorDraft(Input):
         return self
 
 
+class CompetitorDraft(CompetitorContent):
+    request_id: UUID
+    product_line_id: UUID | None = None
+    supersedes_id: UUID | None = None
+
+
 class ComparisonRequest(Contract):
     observation_ids: tuple[UUID, ...] = Field(min_length=2, max_length=6)
 
@@ -141,7 +144,9 @@ class CompetitorService:
     def __init__(self, engine: Engine) -> None:
         self.engine = engine
 
-    def list(self, context: AuthContext, space_id: UUID) -> dict[str, Any]:
+    def list(
+        self, context: AuthContext, space_id: UUID, *, record_id: UUID | None = None
+    ) -> dict[str, Any]:
         with self.engine.connect() as connection:
             _space(connection, context, space_id)
             table = tables.competitor_observations
@@ -152,12 +157,21 @@ class CompetitorService:
                         table.c.tenant_id == context.tenant.id,
                         table.c.market_space_id == space_id,
                         _line_filter(table, context),
+                        table.c.id == record_id if record_id else true(),
                     )
                     .order_by(table.c.created_at.desc())
                     .limit(200)
                 ).mappings()
             )
-            superseded = {row["supersedes_id"] for row in rows if row["supersedes_id"]}
+            superseded = set(
+                connection.execute(
+                    select(table.c.supersedes_id).where(
+                        table.c.tenant_id == context.tenant.id,
+                        table.c.market_space_id == space_id,
+                        table.c.supersedes_id.in_([row["id"] for row in rows]),
+                    )
+                ).scalars()
+            )
             return {
                 "items": [
                     {
@@ -169,116 +183,17 @@ class CompetitorService:
                 ]
             }
 
+    def detail(self, context: AuthContext, space_id: UUID, record_id: UUID) -> dict[str, Any]:
+        items = self.list(context, space_id, record_id=record_id)["items"]
+        if not items:
+            raise ProductWorkAccessError("记录不存在或不可访问")
+        return cast(dict[str, Any], items[0])
+
     def create(
         self, context: AuthContext, space_id: UUID, draft: CompetitorDraft
     ) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            _line(
-                connection,
-                context,
-                space_id,
-                draft.product_line_id,
-                access="contributor",
-                writable=True,
-            )
-            table = tables.competitor_observations
-            fingerprint = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.owner_user_id == context.user.id,
-                        table.c.request_id == draft.request_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if existing:
-                if existing["request_digest"] != fingerprint:
-                    raise ProductWorkError("同一请求编号不能用于不同竞品观察")
-                return _record(existing)
-            node_id = uuid4()
-            series_id, version = node_id, 1
-            if draft.supersedes_id:
-                previous = (
-                    connection.execute(
-                        select(table).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.market_space_id == space_id,
-                            table.c.id == draft.supersedes_id,
-                        )
-                    )
-                    .mappings()
-                    .one_or_none()
-                )
-                if previous is None:
-                    raise ProductWorkAccessError("前一观察记录不存在或不可访问")
-                _line(
-                    connection,
-                    context,
-                    space_id,
-                    previous["product_line_id"],
-                    access="contributor",
-                    writable=True,
-                )
-                if (
-                    previous["product_line_id"],
-                    previous["brand"],
-                    previous["model"],
-                    previous["variant"],
-                ) != (draft.product_line_id, draft.brand, draft.model, draft.variant):
-                    raise ProductWorkError("修订须保持同一范围、品牌、型号和变体")
-                if connection.execute(
-                    select(table.c.id).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.supersedes_id == previous["id"],
-                    )
-                ).first():
-                    raise ProductWorkError("此记录已有新版，请以最新观察创建修订")
-                series_id, version = previous["series_id"], previous["version"] + 1
-            payload = draft.model_dump(
-                mode="json",
-                exclude={"request_id", "product_line_id", "supersedes_id", "observed_on"},
-            )
-            payload["identity_sources"] = _resolve(connection, context, draft.identity_sources)
-            for metric, value in zip(draft.metrics, payload["metrics"], strict=True):
-                value["source_refs"] = _resolve(connection, context, metric.source_refs)
-            if draft.price_quote:
-                payload["price_quote"]["source_refs"] = _resolve(
-                    connection, context, draft.price_quote.source_refs
-                )
-            for certification, value in zip(
-                draft.certifications, payload["certifications"], strict=True
-            ):
-                value["source_refs"] = _resolve(connection, context, certification.source_refs)
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        **payload,
-                        id=node_id,
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=draft.product_line_id,
-                        series_id=series_id,
-                        supersedes_id=draft.supersedes_id,
-                        version=version,
-                        owner_user_id=context.user.id,
-                        observed_on=draft.observed_on,
-                        request_id=draft.request_id,
-                        request_digest=fingerprint,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
-            )
-            _emit(connection, context, space_id, "competitor_observation", "recorded", row)
-            return _record(row)
+            return create_competitor_in_connection(connection, context, space_id, draft)
 
     def compare(
         self, context: AuthContext, space_id: UUID, request: ComparisonRequest
@@ -303,11 +218,27 @@ class CompetitorService:
                     raise ProductWorkAccessError("部分观察记录不存在或不可访问")
                 _line(connection, context, space_id, row["product_line_id"])
                 rows.append(row)
+            superseded = set(
+                connection.execute(
+                    select(table.c.supersedes_id).where(
+                        table.c.tenant_id == context.tenant.id,
+                        table.c.market_space_id == space_id,
+                        _line_filter(table, context),
+                        table.c.supersedes_id.in_(request.observation_ids),
+                    )
+                ).scalars()
+            )
             metrics = [{metric["key"]: metric for metric in row["metrics"]} for row in rows]
             keys = sorted({key for item in metrics for key in item})
             result = []
             context_warnings = _quality(
                 connection, context, [ref for row in rows for ref in row["identity_sources"]]
+            )
+            context_warnings.extend(
+                f"{row['brand']} {row['model']} {row['variant']} 的 v{row['version']}"
+                " 观察已有后续修订，请重核参数；本次仍使用所选历史版本"
+                for row in rows
+                if row["id"] in superseded
             )
             for field, message in (
                 ("configuration", "配置不同，请结合比较用途判断"),
@@ -412,9 +343,128 @@ class CompetitorService:
                 }
             )
             return {
-                "observations": [_record(row) for row in rows],
+                "observations": [
+                    {**_record(row), "is_latest": row["id"] not in superseded} for row in rows
+                ],
                 "rows": result,
                 "comparison_policy_version": "declared-conditions-v1",
                 "as_of": datetime.now(UTC).isoformat(),
                 "note": "同口径标记仅说明录入条件一致，不代表证据已独立验证；本表不自动排名。",
             }
+
+
+def create_competitor_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: CompetitorDraft,
+    *,
+    source_finding_id: UUID | None = None,
+    source_finding_position: int | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    _line(
+        connection,
+        context,
+        space_id,
+        draft.product_line_id,
+        access="contributor",
+        writable=True,
+    )
+    table = tables.competitor_observations
+    fingerprint = digest(draft.model_dump(mode="json"))
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.owner_user_id == context.user.id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同竞品观察")
+        return _record(existing)
+    node_id = uuid4()
+    series_id, version = node_id, 1
+    if draft.supersedes_id:
+        previous = (
+            connection.execute(
+                select(table).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space_id,
+                    table.c.id == draft.supersedes_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if previous is None:
+            raise ProductWorkAccessError("前一观察记录不存在或不可访问")
+        _line(
+            connection,
+            context,
+            space_id,
+            previous["product_line_id"],
+            access="contributor",
+            writable=True,
+        )
+        if (
+            previous["product_line_id"],
+            previous["brand"],
+            previous["model"],
+            previous["variant"],
+        ) != (draft.product_line_id, draft.brand, draft.model, draft.variant):
+            raise ProductWorkError("修订须保持同一范围、品牌、型号和变体")
+        if connection.execute(
+            select(table.c.id).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.supersedes_id == previous["id"],
+            )
+        ).first():
+            raise ProductWorkError("此记录已有新版，请以最新观察创建修订")
+        series_id, version = previous["series_id"], previous["version"] + 1
+    payload = draft.model_dump(
+        mode="json",
+        exclude={"request_id", "product_line_id", "supersedes_id", "observed_on"},
+    )
+    payload["identity_sources"] = _resolve(connection, context, draft.identity_sources)
+    for metric, value in zip(draft.metrics, payload["metrics"], strict=True):
+        value["source_refs"] = _resolve(connection, context, metric.source_refs)
+    if draft.price_quote:
+        payload["price_quote"]["source_refs"] = _resolve(
+            connection, context, draft.price_quote.source_refs
+        )
+    for certification, value in zip(draft.certifications, payload["certifications"], strict=True):
+        value["source_refs"] = _resolve(connection, context, certification.source_refs)
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **payload,
+                id=node_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=draft.product_line_id,
+                series_id=series_id,
+                supersedes_id=draft.supersedes_id,
+                version=version,
+                owner_user_id=context.user.id,
+                observed_on=draft.observed_on,
+                request_id=draft.request_id,
+                request_digest=fingerprint,
+                source_finding_id=source_finding_id,
+                source_finding_position=source_finding_position,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    _emit(connection, context, space_id, "competitor_observation", "recorded", row)
+    return _record(row)

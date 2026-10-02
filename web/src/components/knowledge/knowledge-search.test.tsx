@@ -97,7 +97,7 @@ describe("KnowledgeSearch", () => {
 
   it("separates draft history from verified semantic results and enforces four eyes", async () => {
     const user = userEvent.setup();
-    const draft = memory();
+    const draft = memory({ knowledge_kind: "design_rule", source_refs: [{ kind: "fmea_publication", reference: "publication", entry_id: "11111111-1111-4111-8111-111111111111", version: 2, title: "Connector FMEA" }] });
     const verified = memory({
       status: "verified",
       verified_by_user_id: "quality-1",
@@ -132,6 +132,9 @@ describe("KnowledgeSearch", () => {
     expect(screen.getByRole("complementary", { name: "Memory 登记册" })).toHaveTextContent("草稿");
     expect(screen.getByRole("button", { name: "验证" })).toBeInTheDocument();
     await user.type(screen.getByLabelText("语义检索"), "connector lesson");
+    await user.click(screen.getByText("核对完整内容与适用边界", { selector: "summary" }));
+    expect(screen.getByText("适用与排除边界：Connector family A")).toBeVisible();
+    expect(screen.getByRole("link", { name: "回查 FMEA 原发布 v2 · Connector FMEA" })).toHaveAttribute("href", "/projects?project=project-1&tab=quality&fmea=11111111-1111-4111-8111-111111111111");
     await user.click(screen.getByRole("button", { name: "搜索已验证 Memory" }));
 
     const results = await screen.findByRole("region", { name: "Knowledge Search 结果" });

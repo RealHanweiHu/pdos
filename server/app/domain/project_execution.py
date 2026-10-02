@@ -14,6 +14,7 @@ from app.contracts.planning_records import CaseProjectConversion
 from app.db.schema import tables
 from app.domain.case_requirements import _case, _relations, require_case_requirements_ready
 from app.domain.case_reviews import case_review_blockers, review_basis
+from app.domain.definition_inheritance import expand_definition
 from app.domain.initial_plan_reviews import _inputs, _reviewer, build_review_snapshot
 from app.domain.plan_responsibilities import _candidate
 from app.domain.product_definitions import _row as definition_row
@@ -267,6 +268,7 @@ def _origin(
                 )
             ).mappings()
         )
+        row = expand_definition(connection, row)
         confirmed = {
             item["item_key"] for item in row["content"]["items"] if item["state"] == "confirmed"
         }

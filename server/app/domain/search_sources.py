@@ -129,6 +129,8 @@ def statement(
     conversation: Any = cast(literal(None), Uuid)
     status: Any = source.c.status if "status" in source.c else literal(None, String)
     where: list[Any] = [source.c.tenant_id == tenant]
+    if kind == "issue":
+        where.append(source.c.withdrawn_at.is_(None))
     where.append(true() if is_allowed(Role(role), KIND_ACTIONS[kind]) else false())
     if scoped:
         where.append(project_scope(project, tenant, user, role))

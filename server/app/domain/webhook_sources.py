@@ -2,11 +2,12 @@
 
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, union_all
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.schema import tables
+from app.domain.ai_issue_silent_events import is_silent_ai_issue_event
 from app.domain.customer_report_packages import approved, customer
 from app.domain.product_workspace import ProductWorkError, _plain, digest
 from app.domain.quality_operations import authorize
@@ -22,7 +23,56 @@ WORK_EVENTS = {
 SOURCE_EVENTS = WORK_EVENTS | {"CUSTOMER_REPORT_RECORDED"}
 
 
-def notification(c: Any, context: AuthContext, endpoint: Any, event_id: int) -> dict[str, Any]:
+class SilentAICompletion(ProductWorkError):
+    """A successful AI creation has no automatic notification side effect."""
+
+
+def has_explicit_send(c: Any, delivery: Any) -> bool:
+    """Preserve original named sends and later explicit retries, never infer consent.
+
+    The immutable queued audit distinguishes automatic endpoint dispatch from a
+    human send. A persisted retry is a separate, authorized human action. The
+    mutable delivery reason/status is not evidence of either.
+    """
+    a, e, actions = tables.audit_log, tables.events, tables.webhook_delivery_actions
+    queued = (
+        select(a.c.actor_user_id)
+        .select_from(
+            a.join(
+                e,
+                (e.c.tenant_id == a.c.tenant_id)
+                & (e.c.project_id == a.c.project_id)
+                & (e.c.event_id == a.c.event_id)
+                & (e.c.entity_id == a.c.entity_id)
+                & (e.c.timestamp == a.c.timestamp),
+            )
+        )
+        .where(
+            a.c.tenant_id == delivery["tenant_id"],
+            a.c.project_id == delivery["project_id"],
+            a.c.entity_id == delivery["id"],
+            a.c.action == "webhook.queued",
+            a.c.actor_user_id.is_not(None),
+            a.c.after_snapshot["automated"].as_boolean().is_(False),
+            e.c.event_type == "WEBHOOK_RECORDED",
+            e.c.source == "webhook_service",
+            e.c.entity == a.c.entity,
+            e.c.payload["action"].as_string() == "queued",
+        )
+    )
+    retry = select(actions.c.actor_user_id).where(
+        actions.c.tenant_id == delivery["tenant_id"],
+        actions.c.project_id == delivery["project_id"],
+        actions.c.delivery_id == delivery["id"],
+        actions.c.action == "retry",
+        actions.c.actor_user_id.is_not(None),
+    )
+    return c.execute(union_all(queued, retry).limit(1)).scalar_one_or_none() is not None
+
+
+def notification(
+    c: Any, context: AuthContext, endpoint: Any, event_id: int, *, automated: bool = False
+) -> dict[str, Any]:
     project = endpoint["project_id"]
     authorize(c, context, project, Action.INTEGRATION_PROJECT_SEND)
     t = tables.events
@@ -37,6 +87,8 @@ def notification(c: Any, context: AuthContext, endpoint: Any, event_id: int) -> 
     )
     if event is None or event["event_type"] not in SOURCE_EVENTS:
         raise ProductWorkError("该事件不在Webhook通知范围")
+    if automated and is_silent_ai_issue_event(c, event):
+        raise SilentAICompletion("AI建单成功保持静默；具名外发须另行明确办理。")
     refs: dict[str, Any] = {}
     if event["event_type"] in WORK_EVENTS:
         if endpoint["audience"] != "internal":
@@ -55,6 +107,7 @@ def notification(c: Any, context: AuthContext, endpoint: Any, event_id: int) -> 
                     t.c.tenant_id == context.tenant.id,
                     t.c.project_id == project,
                     t.c.id == event["entity_id"],
+                    *(() if is_task else (t.c.withdrawn_at.is_(None),)),
                 )
             )
             .mappings()

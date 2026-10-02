@@ -56,7 +56,7 @@ def responsibilities() -> tuple[Responsibility, ...]:
             "问题负责人",
             t.issues,
             "owner_user_id",
-            t.issues.c.status != "closed",
+            (t.issues.c.status != "closed") & t.issues.c.withdrawn_at.is_(None),
             Action.ISSUE_EXECUTE,
         ),
         Responsibility(
@@ -64,7 +64,7 @@ def responsibilities() -> tuple[Responsibility, ...]:
             "问题验证人",
             t.issues,
             "verifier_user_id",
-            t.issues.c.status != "closed",
+            (t.issues.c.status != "closed") & t.issues.c.withdrawn_at.is_(None),
             Action.ISSUE_VERIFY,
         ),
         Responsibility(

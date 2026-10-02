@@ -5,7 +5,7 @@ const MAX_FILE = 20 * 1024 * 1024;
 async function forward(method: "GET" | "POST", request: Request, context: Context) {
   const path = (await context.params).conversationPath ?? [];
   const isAttachment = path[1] === "attachments";
-  const shapes = method === "GET" ? [[], ["#"], ["#", "attachments"], ["#", "attachments", "#"], ["#", "attachments", "#", "email-parts"], ["#", "attachments", "#", "email-origins"],
+  const shapes = method === "GET" ? [[], ["#"], ["#", "matrix-options"], ["#", "attachments"], ["#", "attachments", "#"], ["#", "attachments", "#", "email-parts"], ["#", "attachments", "#", "email-origins"],
     ["#", "messages", "#", "intake-ai-sources"], ["#", "messages", "#", "report-imports"], ["#", "intake-ai-sources", "#"], ["#", "intake-ai-findings", "#"], ["#", "intake-ai-sources", "#", "runs"], ["#", "report-imports", "#"],
     ["#", "messages", "#", "email-intake-previews"], ["#", "messages", "#", "pdf-intake-previews"], ["#", "messages", "#", "decision-intake-previews"], ["#", "messages", "#", "issue-intake-previews"], ["#", "decision-intake-previews", "#"], ["#", "decision-intake-previews", "#", "target-options"], ["#", "issue-intake-previews", "#"], ["#", "issue-intake-previews", "#", "issue-options"]] :
     [[], ["#", "intake-ai-findings", "#", "prepare-import"], ["#", "intake-ai-findings", "#", "observation-preview"], ["#", "intake-ai-findings", "#", "adopt-observations"], ["#", "intake-ai-findings", "#", "preview"], ["#", "intake-ai-findings", "#", "review"], ["#", "intake-ai-sources", "#", "runs"], ["#", "messages"], ["#", "archive"], ["#", "attachments"], ["#", "messages", "#", "run"],
@@ -16,7 +16,7 @@ async function forward(method: "GET" | "POST", request: Request, context: Contex
   const token = await currentSessionToken(); if (!token) return sessionError(401, "INVALID_ACCESS_TOKEN", "Authentication required");
   try {
     const query = new URLSearchParams();
-    if (method === "GET") for (const key of path.length ? (isAttachment ? ["after_ordinal", "before_id"] : ["pdf-intake-previews", "email-intake-previews"].includes(path.at(-1) ?? "") ? ["kind"] : path.at(-1) === "target-options" ? ["kind", "search", "target_id", "before_updated_at", "before_id"] : path.at(-1) === "issue-options" ? ["search", "issue_id", "before_updated_at", "before_id"] : ["before_sequence", "before_revision"]) : ["project_id", "meeting_id"]) {
+    if (method === "GET") for (const key of path.length ? (path.at(-1) === "matrix-options" ? ["before_id"] : isAttachment ? ["after_ordinal", "before_id"] : ["pdf-intake-previews", "email-intake-previews"].includes(path.at(-1) ?? "") ? ["kind"] : path.at(-1) === "target-options" ? ["kind", "search", "target_id", "before_updated_at", "before_id"] : path.at(-1) === "issue-options" ? ["search", "issue_id", "before_updated_at", "before_id"] : ["before_sequence", "before_revision"]) : ["project_id", "meeting_id", "scope_kind", "market_space_id", "product_line_id"]) {
       const value = new URL(request.url).searchParams.get(key); if (value) query.set(key, value);
     }
     let body: BodyInit | undefined;

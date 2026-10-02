@@ -1,0 +1,653 @@
+--- a/web/src/components/projects/project-workspace-view.tsx
++++ b/web/src/components/projects/project-workspace-view.tsx
+@@ -30,17 +30,11 @@
+ 
+ import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form";
+ import { ProjectList, projectStatusLabels } from "./project-list";
+-import { ProjectIntake } from "./project-intake";
+-import { OpenApiAccess } from "./open-api-access";
+-import { ProjectMembers } from "./project-members";
+-import { ProjectWebhooks } from "./project-webhooks";
+-import { ValueMeasurement } from "./value-measurement";
+-import { AuditEvidenceExports } from "./audit-evidence-exports";
+-import { CustomerReportPackages } from "./customer-report-packages";
+-import { ProjectReportExports } from "./project-report-exports";
+ import { ProjectOverview } from "./project-overview";
+ import { ProjectProcessGuide } from "./project-process-guide";
+ import { ProjectTimeline } from "./project-timeline";
++import { ProjectStageBoard } from "./project-stage-board";
++import { ProjectManagementPanel } from "./project-management-panel";
+ import type { Project } from "./project-types";
+ import type { ProjectActivity } from "./project-activity";
+ 
+@@ -50,8 +44,6 @@
+ import { IdHandoffLanding } from "./id-handoff-landing";
+ import { IdFreezeRequestLanding } from "./id-freeze-request-landing";
+ 
+-import { ProjectTemplatePanel } from "./project-template-panel";
+-import { ProjectCompletionPanel } from "./project-completion-panel";
+ 
+ import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
+ import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
+@@ -106,7 +98,8 @@
+   | "decisions"
+   | "gates"
+   | "quality"
+-  | "documents";
++  | "documents"
++  | "management";
+ 
+ export const LEGACY_TAB_ALIASES: Record<string, ProjectWorkspaceTab> = {
+   timeline: "overview",
+@@ -126,6 +119,8 @@
+     (["execution", "baseline", "commitment"].includes(search?.get("approval_policy_kind") ?? "") && !!search?.get("approval_policy_id")) ||
+     ["#schedule-forecasts", "#schedule-commitments", "#resource-reservations", "#cross-proposal-landing"].includes(hash) || /^#reservation-[0-9a-f-]{36}$/i.test(hash)
+   )) return "plan";
++  if ((raw === null || raw === "overview") && ["completion_item", "intake_proposal", "intake_decision"].some(key => !!search?.get(key))) return "management";
++  if ((raw === null || raw === "overview") && ["id_handoff", "id_freeze_request", "id_revision", "specification_owner_id"].some(key => !!search?.get(key))) return "engineering";
+   if (raw === null) return null;
+   if (TAB_KEYS.has(raw as ProjectWorkspaceTab)) return raw as ProjectWorkspaceTab;
+   return LEGACY_TAB_ALIASES[raw] ?? null;
+@@ -145,7 +140,7 @@
+ };
+ 
+ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[] = [
+-  { key: "overview", label: "概览·控制塔" },
++  { key: "overview", label: "总览" },
+   { key: "plan", label: "计划·资源", internalOnly: true },
+   { key: "work-items", label: "工作项", internalOnly: true },
+   { key: "materials", label: "物料·供应", internalOnly: true },
+@@ -154,6 +149,7 @@
+   { key: "gates", label: "Gate·交付物", internalOnly: true },
+   { key: "quality", label: "试制·测试·质量", internalOnly: true },
+   { key: "documents", label: "文档·知识", internalOnly: true },
++  { key: "management", label: "项目管理", internalOnly: true },
+ ];
+ 
+ const TAB_KEYS = new Set<ProjectWorkspaceTab>(tabs.map((tab) => tab.key));
+@@ -302,56 +298,25 @@
+   const tabButtons = useRef<Partial<Record<ProjectWorkspaceTab, HTMLButtonElement | null>>>({});
+   const visibleTabs = tabs.filter((tab) => !tab.internalOnly || canViewWorkItems);
+   const workItemUnavailable = canViewWorkItems && workItemState !== "ready";
+-  const currentStageProgress = selectedProject
+-    ? Math.round((selectedProject.current_stage.sequence / selectedProject.workflow.stages.length) * 100)
+-    : 0;
+ 
+   return (
+     <WorkspaceShell active="projects" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
+       {statusMessage ? <p className="mb-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success" role="status">{statusMessage}</p> : null}
+       {errorMessage ? <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{errorMessage}</p> : null}
+-      <div className="border-b pb-4">
+-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Execution</p>
+-        <h1 className="mt-1 text-lg font-semibold">项目工作区</h1>
+-        <p className="mt-1 text-sm text-muted-foreground">项目上下文、七阶段 Timeline 与可执行工作项在同一工作区闭环。</p>
++      <div className="flex flex-wrap items-start justify-between gap-3 pb-5">
++        <div className="min-w-0 flex-1">
++          <p className="text-xs text-muted-foreground">项目工作区{selectedProject && <> / {selectedProject.code}</>}</p>
++          <div className="mt-2 flex flex-wrap items-center gap-3"><h1 className="min-w-0 break-words text-xl font-semibold tracking-tight">{selectedProject?.name ?? "项目工作区"}</h1>{selectedProject && <><span className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">{projectStatusLabels[selectedProject.status]}</span><span className="rounded-md bg-accent px-2 py-1 text-xs text-primary">{selectedProject.current_stage.name}</span></>}</div>
++          {!selectedProject && <p className="mt-2 text-sm text-muted-foreground">选择一个项目，查看阶段进展和待办工作。</p>}
++        </div>
++        {selectedProject && <Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded(current => !current)} variant="outline">{projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}</Button>}
+       </div>
+-
+-      <div className="mt-6">
+-        {selectedProject ? (
+-          <div className="flex items-center justify-between gap-3 rounded-lg border bg-card px-4 py-2">
+-            <span className="truncate text-sm"><span className="mr-2 font-mono text-xs text-muted-foreground">{selectedProject.code}</span>{selectedProject.name}</span>
+-            <Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded((current) => !current)} variant="outline">
+-              {projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}
+-            </Button>
+-          </div>
+-        ) : null}
+-        {!selectedProject || projectListExpanded ? (
+-          <div className={selectedProject ? "mt-2" : undefined} id="project-list-panel">
+-            <ProjectList onSelect={(project) => { setProjectListExpanded(false); onSelect(project); }} projects={projects} selectedId={selectedProject?.id ?? null} />
+-          </div>
+-        ) : null}
+-      </div>
++      {(!selectedProject || projectListExpanded) && <div className="mb-5" id="project-list-panel"><ProjectList onSelect={project => { setProjectListExpanded(false); onSelect(project); }} projects={projects} selectedId={selectedProject?.id ?? null}/></div>}
+ 
+       {selectedProject ? (
+-        <section aria-label="项目详情" className="mt-6 min-w-0 overflow-hidden rounded-lg border bg-card">
+-          <div className="px-4 pt-4 sm:px-5">
+-            <div className="flex flex-wrap items-start gap-2">
+-              <div className="min-w-0 flex-1">
+-                <p className="font-mono text-[11px] text-primary">{selectedProject.code}</p>
+-                <h2 className="mt-1 truncate text-lg font-semibold">{selectedProject.name}</h2>
+-              </div>
+-              <span className="rounded-full border bg-muted px-2 py-1 text-[11px] text-muted-foreground">{projectStatusLabels[selectedProject.status]}</span>
+-              <span className="rounded-full border bg-muted px-2 py-1 text-[11px] text-muted-foreground">{selectedProject.current_stage.name}</span>
+-            </div>
+-            <div className="mt-4 flex items-center gap-3">
+-              <div aria-label={`阶段进度 ${currentStageProgress}%`} className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuemax={100} aria-valuemin={0} aria-valuenow={currentStageProgress}>
+-                <span className="block h-full rounded-full bg-primary" style={{ width: `${currentStageProgress}%` }} />
+-              </div>
+-              <span className="font-mono text-[11px] text-muted-foreground">P{selectedProject.current_stage.sequence}/{selectedProject.workflow.stages.length}</span>
+-            </div>
+-          </div>
+-          <div className="mt-4 overflow-x-auto border-t" role="tablist" aria-label="项目工作区标签">
+-            <div className="flex min-w-max px-2 sm:px-4">
++        <section aria-label="项目详情" className="min-w-0">
++          <div className="sticky top-12 z-20 overflow-x-auto border-b border-t bg-background" role="tablist" aria-label="项目工作区标签">
++            <div className="flex min-w-max">
+               {visibleTabs.map((tab, index) => (
+                 <button
+                   aria-controls={`project-panel-${tab.key}`}
+@@ -386,7 +351,7 @@
+           </div>
+           <div
+             aria-labelledby={`project-tab-${activeTab}`}
+-            className="min-w-0 bg-background p-4 sm:p-5"
++            className="min-w-0 bg-background py-5"
+             id={`project-panel-${activeTab}`}
+             role="tabpanel"
+           >
+@@ -402,46 +367,17 @@
+                 onUpdate={(values) => onUpdate(selectedProject, values)}
+                 project={selectedProject}
+                 saving={saving}
+-                workItems={workItems}
++                workItems={workItemState === "ready" ? workItems : null}
+               />
+             ) : null}
+-            {activeTab === "overview" && canViewWorkItems && <ProjectMembers key={`ProjectMembers:${selectedProject.id}`} projectId={selectedProject.id} userId={identity.user.id} />}
+-            {activeTab === "overview" && canViewWorkItems && <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4"><div><h3 className="font-semibold">计划与资源</h3><p className="mt-1 text-sm text-muted-foreground">正式计划、实际进展、预测、承诺与资源预约集中办理。</p></div><Button type="button" variant="outline" onClick={() => onTabChange("plan")}>办理计划与资源</Button></section>}
+-            {activeTab === "overview" && <ProjectReportExports key={`ProjectReportExports:${selectedProject.id}`} projectId={selectedProject.id}/>}
+-            {activeTab === "overview" && <CustomerReportPackages key={`CustomerReportPackages:${selectedProject.id}`} projectId={selectedProject.id}/>}
+-            {activeTab === "overview" && <AuditEvidenceExports key={`AuditEvidenceExports:${selectedProject.id}`} projectId={selectedProject.id}/>}
+-            {activeTab === "overview" && <OpenApiAccess key={`OpenApiAccess:${selectedProject.id}`} projectId={selectedProject.id}/>}
+-            {activeTab === "overview" && <ProjectWebhooks key={`ProjectWebhooks:${selectedProject.id}`} projectId={selectedProject.id}/>}
+-            {activeTab === "overview" && canViewWorkItems && <ValueMeasurement key={`ValueMeasurement:${selectedProject.id}`} projectId={selectedProject.id}/>}
+-            {activeTab === "overview" && canViewWorkItems && <ContextKnowledge key={`ContextKnowledge:${selectedProject.id}`} projectId={selectedProject.id} contextKind="project_kickoff" entityId={selectedProject.id} />}
+-            {activeTab === "overview" && canViewWorkItems ? (
+-              <>
+-                <ProjectIntake key={`intake:${selectedProject.id}`} projectId={selectedProject.id} />
+-                <ProjectTemplatePanel key={`template:${selectedProject.id}`} projectId={selectedProject.id} stageCode={selectedProject.current_stage.code} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)} />
+-                <IdHandoffLanding projectId={selectedProject.id} />
+-                <IdFreezeRequestLanding projectId={selectedProject.id} />
+-                <ProjectIdDesign key={`id-design:${selectedProject.id}`} projectId={selectedProject.id} />
+-                <SpecificationResponsibilityLanding projectId={selectedProject.id}/>
+-                <ProjectCompletionPanel key={`ProjectCompletionPanel:${selectedProject.id}`} projectId={selectedProject.id} userId={identity.user.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)} />
+-                <div className="mt-6">
+-                  <ProjectProcessGuide project={selectedProject} onOpen={onTabChange} />
+-                </div>
+-                <div className="mt-6 border-t pt-6">
+-                  <ProjectTimeline
+-                    activities={activities}
+-                    activityError={activityError}
+-                    loading={activityLoading}
+-                    onRetry={onRetryActivity}
+-                    highlightedEntityId={highlightedEntityId}
+-                    highlightedEventId={highlightedEventId}
+-                    project={selectedProject}
+-                  />
+-                </div>
+-                <div className="mt-6 border-t pt-6">
+-                  <ProjectAiChat key={`ProjectAiChat:${selectedProject.id}`} projectId={selectedProject.id} />
+-                </div>
+-              </>
+-            ) : null}
++            {activeTab === "overview" && <div className="mt-5 space-y-5">
++              <ProjectStageBoard project={selectedProject} workItems={workItemState === "ready" ? workItems : null} canViewWorkItems={canViewWorkItems} loading={workItemState === "loading" || workItemState === "idle"} onPlan={() => onTabChange("plan")}/>
++              {canViewWorkItems ? <>
++                <details className="border-t pt-3"><summary className="cursor-pointer py-2 text-sm font-medium">阶段指南与辅助查阅</summary><div className="mt-3 space-y-4"><ProjectProcessGuide project={selectedProject} onOpen={onTabChange}/><ContextKnowledge key={`ContextKnowledge:${selectedProject.id}`} projectId={selectedProject.id} contextKind="project_kickoff" entityId={selectedProject.id}/><ProjectAiChat key={`ProjectAiChat:${selectedProject.id}`} projectId={selectedProject.id}/></div></details>
++                <ProjectTimeline activities={activities} activityError={activityError} loading={activityLoading} onRetry={onRetryActivity} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject}/>
++              </> : <ProjectManagementPanel external project={selectedProject} userId={identity.user.id} canManage={false}/>}
++            </div>}
++            {activeTab === "management" && canViewWorkItems && <ProjectManagementPanel key={selectedProject.id} project={selectedProject} userId={identity.user.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)}/>}
+             {activeTab === "plan" && canViewWorkItems && <ProjectPlanPanel key={selectedProject.id} projectId={selectedProject.id} userId={identity.user.id}/>}
+             {activeTab === "work-items" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
+             {activeTab === "work-items" && workItems ? (
+@@ -467,6 +403,7 @@
+             ) : null}
+             {activeTab === "engineering" ? (
+               <div className="space-y-8">
++                <IdHandoffLanding projectId={selectedProject.id}/><IdFreezeRequestLanding projectId={selectedProject.id}/><ProjectIdDesign key={`id-design:${selectedProject.id}`} projectId={selectedProject.id}/><SpecificationResponsibilityLanding projectId={selectedProject.id}/>
+                 <EngineeringReviewPackages key={`EngineeringReviewPackages:${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
+                 <ProductEngineeringPanel {...productEngineering} />
+                 {/* The tab is named 「工程·变更」; the ECR chain had been in the
+--- a/web/src/components/projects/project-overview.tsx
++++ b/web/src/components/projects/project-overview.tsx
+@@ -34,66 +34,19 @@
+   const openIssues = workItems?.issues.filter((issue) => issue.status !== "closed").length;
+   const openRisks = workItems?.risks.filter((risk) => risk.status !== "closed").length;
+   return (
+-    <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+-      <section aria-label="项目概览" className="rounded-lg border bg-card p-4">
+-        <div className="flex flex-wrap items-start justify-between gap-3 border-b pb-4">
+-          <div>
+-            <h3 className="font-semibold">项目概览</h3>
+-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{project.description ?? "暂无项目描述"}</p>
+-          </div>
+-          <span className="rounded-full border bg-muted px-2 py-1 text-[11px] font-medium text-muted-foreground">{projectStatusLabels[project.status]}</span>
+-        </div>
+-        <dl className="grid gap-4 py-4 text-xs sm:grid-cols-3">
+-          <div><dt className="text-muted-foreground">当前阶段</dt><dd className="mt-1 font-medium">{project.current_stage.name}</dd></div>
+-          <div><dt className="text-muted-foreground">开始日期</dt><dd className="mt-1 font-mono">{project.start_date ?? "未设置"}</dd></div>
+-          <div><dt className="text-muted-foreground">目标日期</dt><dd className="mt-1 font-mono">{project.target_date ?? "未设置"}</dd></div>
+-        </dl>
+-        {canEdit ? <div className="border-t pt-4">
+-          {editing ? (
+-            <ProjectForm
+-              busy={saving}
+-              key={project.id}
+-              onCancel={() => setEditing(false)}
+-              onSubmit={async (values) => {
+-                const result = await onUpdate(values);
+-                if (result.ok) setEditing(false);
+-                return result;
+-              }}
+-              project={project}
+-            />
+-          ) : (
+-            <Button onClick={() => setEditing(true)} variant="outline">编辑项目</Button>
+-          )}
+-          <div className={editing ? "mt-5 border-t pt-4" : "mt-4"}>
+-            <ProjectStatusActions busy={saving} onStageTransition={onStageTransition} onStatusTransition={onStatusTransition} project={project} />
+-          </div>
+-        </div> : null}
+-      </section>
+-      <aside className="space-y-4">
+-        {canViewWorkItems ? (
+-          <section aria-label="工作项汇总" className="overflow-hidden rounded-lg border bg-card">
+-            <h3 className="border-b px-4 py-3 font-semibold">执行快照</h3>
+-            <div className="grid grid-cols-3 divide-x py-4 text-center">
+-              <div><strong className="font-mono text-2xl" data-metric="task">{activeTasks ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">进行中任务</p></div>
+-              <div><strong className="font-mono text-2xl" data-metric="issue">{openIssues ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">开放问题</p></div>
+-              <div><strong className="font-mono text-2xl" data-metric="risk">{openRisks ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">开放风险</p></div>
+-            </div>
+-          </section>
+-        ) : (
+-          <section className="rounded-lg border bg-card p-4">
+-            <h3 className="font-semibold">成员视图</h3>
+-            <p className="mt-1 text-xs leading-5 text-muted-foreground">外部成员仅可查看已授权的项目概览与阶段时间线。</p>
+-          </section>
+-        )}
+-        <section className="rounded-lg border bg-card p-4">
+-          <h3 className="font-semibold">Workflow</h3>
+-          <dl className="mt-3 space-y-3 text-xs">
+-            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">模板</dt><dd className="text-right font-medium">{project.workflow.name}</dd></div>
+-            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">版本</dt><dd className="font-mono">v{project.workflow.version}</dd></div>
+-            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">阶段</dt><dd className="font-mono">{project.current_stage.sequence} / {project.workflow.stages.length}</dd></div>
+-          </dl>
+-        </section>
+-      </aside>
+-    </div>
++    <section aria-label="项目概览" className="space-y-3 border-b pb-5">
++      <div className="flex flex-wrap items-start justify-between gap-3">
++        <div className="min-w-0 flex-1"><h3 className="sr-only">项目概览</h3><p className="max-w-3xl text-sm leading-6 text-muted-foreground">{project.description ?? "暂无项目描述"}</p></div>
++        {canEdit && <Button size="sm" variant="outline" disabled={saving} onClick={() => setEditing(!editing)}>{editing ? "收起编辑" : "编辑项目"}</Button>}
++      </div>
++      <dl className="flex flex-wrap gap-x-6 gap-y-3 text-xs">
++        <div><dt className="inline text-muted-foreground">开始日期</dt><dd className="ml-2 inline font-medium">{project.start_date ?? "未设置"}</dd></div>
++        <div><dt className="inline text-muted-foreground">目标日期</dt><dd className="ml-2 inline font-medium">{project.target_date ?? "未设置"}</dd></div>
++        {canViewWorkItems && <><div><dt className="inline text-muted-foreground">未完成任务</dt><dd className="ml-2 inline font-medium" data-metric="task">{activeTasks ?? "—"}</dd></div><div><dt className="inline text-muted-foreground">开放问题</dt><dd className="ml-2 inline font-medium" data-metric="issue">{openIssues ?? "—"}</dd></div><div><dt className="inline text-muted-foreground">开放风险</dt><dd className="ml-2 inline font-medium" data-metric="risk">{openRisks ?? "—"}</dd></div></>}
++      </dl>
++      {editing && canEdit && <div className="rounded-lg border bg-card p-4"><ProjectForm busy={saving} key={project.id} onCancel={() => setEditing(false)} onSubmit={async values => { const result = await onUpdate(values); if (result.ok) setEditing(false); return result; }} project={project}/></div>}
++      {canEdit && <details className="text-xs"><summary className="inline-flex min-h-8 cursor-pointer items-center text-muted-foreground">项目状态与阶段操作</summary><div className="max-w-xl"><p className="mt-2 text-muted-foreground">当前状态：{projectStatusLabels[project.status]}。阶段推进仍须满足原有评审条件。</p><ProjectStatusActions busy={saving} onStageTransition={onStageTransition} onStatusTransition={onStatusTransition} project={project}/></div></details>}
++      {!canViewWorkItems && <p className="text-xs text-muted-foreground">外部成员仅可查看已授权的项目概览与阶段。</p>}
++    </section>
+   );
+ }
+--- a/web/src/components/projects/project-timeline.tsx
++++ b/web/src/components/projects/project-timeline.tsx
+@@ -1,83 +1,31 @@
+-import { CheckIcon } from "@phosphor-icons/react/ssr";
++"use client";
+ 
++import { useState } from "react";
+ import { cn } from "@/lib/utils";
+ import { Button } from "@/components/ui/button";
+-
+ import type { Project } from "./project-types";
+ import type { ProjectActivity } from "./project-activity";
+ 
++const eventLabels: Record<string, string> = { TASK_CREATED: "创建任务", TASK_STATUS_CHANGED: "任务状态变更", ISSUE_CREATED: "创建问题", ISSUE_STATUS_CHANGED: "问题状态变更", RISK_CREATED: "登记风险", RISK_STATUS_CHANGED: "风险状态变更", PROJECT_CREATED: "创建项目", PROJECT_UPDATED: "项目资料更新", PROJECT_STATUS_CHANGED: "项目状态变更", PROJECT_STAGE_CHANGED: "项目阶段变更", TEST_FAILED: "测试未通过", DECISION_RECORDED: "新增决策", REMINDER_STATE_CHANGED: "提醒状态变更", FMEA_UPDATED: "设计风险资料更新" };
+ function formatTimestamp(value: string) {
+-  return new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
++  const date = new Date(value);
++  return Number.isNaN(date.getTime()) ? "时间未提供" : new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(date);
+ }
+-
+-export function ProjectTimeline({
+-  activities,
+-  activityError,
+-  loading,
+-  onRetry,
+-  highlightedEntityId,
+-  highlightedEventId,
+-  project,
+-}: {
+-  activities: ProjectActivity[];
+-  activityError: boolean;
+-  loading: boolean;
+-  onRetry: () => void;
+-  highlightedEntityId: string | null;
+-  highlightedEventId: number | null;
+-  project: Project;
+-}) {
+-  return (
+-    <section aria-label="项目阶段 Timeline" className="rounded-lg border bg-card p-4" data-state={loading ? "loading" : activityError ? "error" : "ready"}>
+-      <div className="flex items-end justify-between gap-4">
+-        <div>
+-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-primary">Workflow v{project.workflow.version}</p>
+-          <h2 className="mt-1 font-semibold">项目阶段 Timeline</h2>
+-        </div>
+-        <span className="text-xs text-muted-foreground">当前 · {project.current_stage.name}</span>
+-      </div>
+-      <ol className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-7">
+-        {project.workflow.stages.map((stage) => {
+-          const completed = stage.sequence < project.current_stage.sequence;
+-          const current = stage.id === project.current_stage.id;
+-          return (
+-            <li className={cn("rounded-lg border p-3", current && "border-primary bg-primary/8", completed && "bg-muted/50")} key={stage.id}>
+-              <div className="flex items-center justify-between gap-2">
+-                <span className="font-mono text-[11px] text-muted-foreground">P{stage.sequence}</span>
+-                {completed ? <CheckIcon aria-label="已完成阶段" className="text-success" weight="bold" /> : null}
+-              </div>
+-              <p className="mt-2 text-sm font-medium">{stage.name}</p>
+-              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{stage.description}</p>
+-            </li>
+-          );
+-        })}
+-      </ol>
+-      <div className="mt-5 border-t pt-4">
+-        <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">近期项目活动</h3><span className="font-mono text-[10px] text-muted-foreground">最新 {activities.length} 条</span></div>
+-        {activityError ? <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/8 px-3 py-3 text-sm text-destructive" role="alert">项目活动暂不可用；证据不会被显示为不存在。</p> : null}
+-        {activityError ? <Button className="mt-2" onClick={onRetry} variant="outline">重新加载项目活动</Button> : null}
+-        {loading ? <p className="mt-3 text-sm text-muted-foreground" aria-busy="true">正在加载项目活动…</p> : null}
+-        {!loading && !activityError && activities.length === 0 ? <p className="mt-3 rounded-lg border border-dashed px-3 py-8 text-center text-sm text-muted-foreground">还没有项目活动。</p> : null}
+-        {!activityError && activities.length > 0 ? (
+-          <ol className="mt-3 divide-y overflow-hidden rounded-lg border" role="list">
+-            {activities.map((activity) => {
+-              const highlighted = activity.id === highlightedEventId || activity.entity_id === highlightedEntityId;
+-              return (
+-                <li
+-                  aria-current={highlighted ? "true" : undefined}
+-                  className={cn("grid gap-1 px-3 py-3 sm:grid-cols-[84px_minmax(0,1fr)_160px] sm:items-center", highlighted && "bg-primary/8 shadow-[inset_3px_0_0_var(--primary)]")}
+-                  id={`event-${activity.id}`}
+-                  key={activity.id}
+-                >
+-                  <span className="font-mono text-[11px] text-muted-foreground">#{activity.id}</span>
+-                  <span className="font-mono text-xs font-semibold text-primary">{activity.event_type}</span>
+-                  <span className="text-[11px] text-muted-foreground sm:text-right">{formatTimestamp(activity.timestamp)}</span>
+-                </li>
+-              );
+-            })}
+-          </ol>
+-        ) : null}
+-      </div>
+-    </section>
+-  );
++export function ProjectTimeline({ activities, activityError, loading, onRetry, highlightedEntityId, highlightedEventId }: { activities: ProjectActivity[]; activityError: boolean; loading: boolean; onRetry: () => void; highlightedEntityId: string | null; highlightedEventId: number | null; project: Project }) {
++  const [expanded, setExpanded] = useState(false);
++  const focused = activities.find(activity => activity.id === highlightedEventId || activity.entity_id === highlightedEntityId);
++  const recent = activities.slice(0, 6);
++  const shown = expanded ? activities : focused && !recent.includes(focused) ? [...recent.slice(0, 5), focused] : recent;
++  return <section aria-label="项目动态" className="space-y-3 border-t pt-5" data-state={loading ? "loading" : activityError ? "error" : "ready"}>
++    <div className="flex items-center justify-between gap-3"><h2 className="text-sm font-semibold">近期动态</h2>{!activityError && !loading && <span className="text-xs text-muted-foreground">{activities.length} 条记录</span>}</div>
++    {activityError && <div><p className="text-sm text-destructive" role="alert">项目活动暂不可用；证据不会被显示为不存在。</p><Button className="mt-2" onClick={onRetry} size="sm" variant="outline">重新加载项目活动</Button></div>}
++    {loading && <p className="text-sm text-muted-foreground" aria-busy="true">正在加载项目活动…</p>}
++    {!loading && !activityError && activities.length === 0 && <p className="py-3 text-sm text-muted-foreground">还没有项目活动。</p>}
++    {!activityError && shown.length > 0 && <ol className="divide-y" role="list" aria-label="近期活动记录">{shown.map(activity => {
++      const highlighted = activity.id === highlightedEventId || activity.entity_id === highlightedEntityId;
++      return <li aria-current={highlighted ? "true" : undefined} className={cn("flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-md px-2 py-2.5 text-xs", highlighted && "bg-accent")} id={`event-${activity.id}`} key={activity.id}><span className="flex items-center gap-2"><span className="size-1.5 rounded-full bg-muted-foreground/50" aria-hidden="true"/><span title={`#${activity.id} · ${activity.event_type}`}>{eventLabels[activity.event_type] ?? "项目记录更新"}</span></span><time className="text-muted-foreground" dateTime={activity.timestamp}>{formatTimestamp(activity.timestamp)}</time></li>;
++    })}</ol>}
++    {!activityError && activities.length > 6 && <Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>{expanded ? "收起活动记录" : `展开全部 ${activities.length} 条记录`}</Button>}
++    {!activityError && expanded && <details className="text-xs text-muted-foreground"><summary className="cursor-pointer py-2">查看原始事件类型</summary><ul aria-label="原始事件记录" className="max-h-56 space-y-2 overflow-y-auto">{activities.map(activity => <li key={activity.id}>#{activity.id} · {activity.event_type} · {activity.entity}</li>)}</ul></details>}
++  </section>;
+ }
+--- a/web/src/components/projects/project-workspace.test.tsx
++++ b/web/src/components/projects/project-workspace.test.tsx
+@@ -436,6 +436,7 @@
+ 
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
++    await user.click(screen.getByText("项目状态与阶段操作"));
+     await user.click(screen.getByRole("button", { name: "提交立项" }));
+ 
+     expect(fetchMock).toHaveBeenCalledWith(
+@@ -521,7 +522,7 @@
+     await waitFor(() => expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true"));
+     expect(screen.getByRole("heading", { name: project.name })).toBeInTheDocument();
+     await act(async () => { window.history.back(); });
+-    await waitFor(() => expect(screen.getByRole("tab", { name: "概览·控制塔" })).toHaveAttribute("aria-selected", "true"));
++    await waitFor(() => expect(screen.getByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true"));
+     expect(new URLSearchParams(window.location.search).get("event_id")).toBe("41");
+     await act(async () => { window.history.forward(); });
+     await waitFor(() => expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true"));
+@@ -562,7 +563,7 @@
+       expect(resolveTab("quality", new URLSearchParams(ref))).toBe("quality");
+     }
+     expect(resolveTab("overview", new URLSearchParams(), "#schedule-forecasts")).toBe("plan");
+-    expect(resolveTab("overview", new URLSearchParams("intake_proposal=x"))).toBe("overview");
++    expect(resolveTab("overview", new URLSearchParams("intake_proposal=x"))).toBe("management");
+     expect(resolveTab("timeline", new URLSearchParams("event_id=1"))).toBe("overview");
+     expect(resolveTab("unrecognized", new URLSearchParams("forecast=x"))).toBeNull();
+   });
+@@ -581,12 +582,12 @@
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+ 
+-    // D9/D31: nine manufacturing domains, not one tab per table.
+-    expect(await screen.findAllByRole("tab")).toHaveLength(9);
++    // D9/D31: the nine manufacturing domains plus a separate project-management surface.
++    expect(await screen.findAllByRole("tab")).toHaveLength(10);
+     expect(screen.getByRole("tab", { name: "计划·资源" })).toBeInTheDocument();
+     expect(screen.getByRole("tab", { name: "工程·变更" })).toBeInTheDocument();
+     expect(screen.getByRole("tab", { name: "试制·测试·质量" })).toBeInTheDocument();
+-    expect(screen.getByRole("tab", { name: "概览·控制塔" })).toHaveAttribute("aria-selected", "true");
++    expect(screen.getByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true");
+     expect(screen.getByText("1", { selector: "[data-metric='task']" })).toBeInTheDocument();
+ 
+     await user.click(screen.getByRole("tab", { name: "工作项" }));
+@@ -1004,9 +1005,9 @@
+     render(<ProjectWorkspace />);
+ 
+     expect(await screen.findByRole("heading", { name: "Next pump platform" })).toBeInTheDocument();
+-    expect(screen.getByRole("tab", { name: "概览·控制塔" })).toHaveAttribute("aria-selected", "true");
+-    expect(await screen.findByText("TEST_FAILED")).toBeInTheDocument();
+-    expect(screen.getByText("TEST_FAILED").closest("li")).toHaveAttribute("aria-current", "true");
++    expect(screen.getByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true");
++    expect(await screen.findByText("测试未通过")).toBeInTheDocument();
++    expect(screen.getByText("测试未通过").closest("li")).toHaveAttribute("aria-current", "true");
+     await waitFor(() => expect(fetchMock.mock.calls.filter(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toHaveLength(3));
+   });
+ 
+@@ -1086,7 +1087,7 @@
+       throw new Error(`unexpected internal request: ${String(input)}`);
+     });
+     render(<ProjectWorkspace />);
+-    expect(await screen.findByRole("tab", { name: "概览·控制塔" })).toHaveAttribute("aria-selected", "true");
++    expect(await screen.findByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true");
+     expect(screen.getAllByRole("tab")).toHaveLength(1);
+     expect(fetchMock).toHaveBeenCalledTimes(2);
+   });
+@@ -1107,10 +1108,10 @@
+     expect(await screen.findByLabelText("任务标题")).toBeEnabled();
+     expect(fetchMock.mock.calls.filter(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toHaveLength(3);
+     expect(fetchMock.mock.calls.filter(([input]) => String(input).endsWith("/activity"))).toHaveLength(0);
+-    await userEvent.click(screen.getByRole("tab", { name: "概览·控制塔" }));
++    await userEvent.click(screen.getByRole("tab", { name: "总览" }));
+     expect(await screen.findByText("还没有项目活动。")).toBeInTheDocument();
+     await userEvent.click(screen.getByRole("tab", { name: "工作项" }));
+-    await userEvent.click(screen.getByRole("tab", { name: "概览·控制塔" }));
++    await userEvent.click(screen.getByRole("tab", { name: "总览" }));
+     expect(fetchMock.mock.calls.filter(([input]) => String(input).endsWith("/activity"))).toHaveLength(1);
+     expect(fetchMock.mock.calls.filter(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toHaveLength(3);
+   });
+--- /dev/null
++++ b/web/src/components/projects/project-stage-board.tsx
+@@ -0,0 +1,52 @@
++"use client";
++
++import Link from "next/link";
++import { useState } from "react";
++import { ArrowRightIcon, CheckIcon, CircleIcon, RowsIcon, SquaresFourIcon } from "@phosphor-icons/react";
++import { Button } from "@/components/ui/button";
++import { cn } from "@/lib/utils";
++import type { Project, ProjectStage } from "./project-types";
++import type { ProjectIssue, ProjectTask, ProjectWorkItems } from "./project-work-item-types";
++
++type Item = { id: string; title: string; stageId: string | null; kind: "task" | "action" | "issue"; status: string; date: string | null; closed: boolean; blocked: boolean; dependencies: string[] };
++const taskLabels: Record<string, string> = { todo: "待开始", in_progress: "进行中", blocked: "已阻塞", done: "已完成", skipped: "已跳过", pending_approval: "待批准" };
++const issueLabels: Record<string, string> = { open: "待分析", analysis: "分析中", action: "整改中", verification: "待验证", closed: "已关闭" };
++const lanes = [{ key: "task", label: "项目任务", caption: "开发与交付" }, { key: "action", label: "协同行动", caption: "会议、变更与整改" }, { key: "issue", label: "问题闭环", caption: "分析、整改与验证" }] as const;
++function taskItem(task: ProjectTask): Item {
++  return { id: task.id, title: task.title, stageId: task.stage_id, kind: task.kind === "task" ? "task" : "action", status: task.readiness === "waiting" && task.status === "todo" ? "等待前置" : taskLabels[task.status] ?? task.status, date: task.due_date, closed: ["done", "skipped"].includes(task.status), blocked: task.status === "blocked" || task.readiness === "blocked", dependencies: task.dependency_task_ids };
++}
++function issueItem(issue: ProjectIssue): Item {
++  return { id: issue.id, title: issue.title, stageId: issue.stage_id, kind: "issue", status: issueLabels[issue.status] ?? issue.status, date: issue.target_date, closed: issue.status === "closed", blocked: false, dependencies: [] };
++}
++function itemHref(projectId: string, item: Item) {
++  return `/projects?${new URLSearchParams({ project: projectId, tab: "work-items", entity_id: item.id })}`;
++}
++function stageState(project: Project, stage: ProjectStage) {
++  if (stage.id === project.current_stage.id) return "当前阶段";
++  return stage.sequence < project.current_stage.sequence ? "已走过" : "后续阶段";
++}
++
++export function ProjectStageBoard({ project, workItems, canViewWorkItems, loading = false, onPlan }: { project: Project; workItems: ProjectWorkItems | null; canViewWorkItems: boolean; loading?: boolean; onPlan: () => void }) {
++  const [view, setView] = useState<"lanes" | "stages">("lanes");
++  const [activeOnly, setActiveOnly] = useState(false);
++  const [dependencies, setDependencies] = useState(false);
++  const stages = [...project.workflow.stages].sort((a, b) => a.sequence - b.sequence);
++  const stageIds = new Set(stages.map(stage => stage.id));
++  const allItems = canViewWorkItems && workItems ? [...workItems.tasks.map(taskItem), ...workItems.issues.map(issueItem)] : [];
++  const items = activeOnly ? allItems.filter(item => !item.closed) : allItems;
++  // Missing/retired stage assignments are shown explicitly, never assigned to
++  // the current stage by inference and never silently omitted by the filter.
++  const unassigned = allItems.some(item => !item.stageId || !stageIds.has(item.stageId));
++  const columns = [...stages.map(stage => ({ id: stage.id, name: stage.name, stage })), ...(unassigned ? [{ id: "unassigned", name: "未归阶段", stage: null }] : [])];
++  const taskNames = new Map(workItems?.tasks.map(task => [task.id, task.title]) ?? []);
++  const risks = canViewWorkItems && workItems ? workItems.risks.filter(risk => risk.status !== "closed") : [];
++  const cellItems = (columnId: string, kind?: Item["kind"]) => items.filter(item => (!kind || item.kind === kind) && (columnId === "unassigned" ? !item.stageId || !stageIds.has(item.stageId) : item.stageId === columnId));
++  const renderItem = (item: Item) => <li key={item.id}><Link prefetch={false} href={itemHref(project.id, item)} className="block rounded-md border bg-card p-3 transition-colors hover:border-primary/50 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`打开${item.kind === "issue" ? "问题" : "任务"}：${item.title}`} title={item.title}><span className="line-clamp-2 text-left text-sm font-medium leading-5">{item.title}</span><span className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"><span className={cn("inline-flex items-center gap-1.5", item.blocked ? "text-destructive" : item.closed ? "text-success" : "text-muted-foreground")}>{item.closed ? <CheckIcon aria-hidden="true" size={12}/> : <CircleIcon aria-hidden="true" size={7} weight="fill"/>}{item.status}</span>{item.date && <span className="text-muted-foreground">{item.date.slice(5)} 到期</span>}</span>{dependencies && item.dependencies.length > 0 && <span className="mt-2 block border-t pt-2 text-xs leading-5 text-muted-foreground">前置：{item.dependencies.map(id => taskNames.get(id) ?? "未读取的前置任务").join("、")}</span>}</Link></li>;
++  return <section aria-label="项目阶段 Timeline" className="min-w-0 space-y-3">
++    <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-base font-semibold">阶段泳道</h2><p className="mt-1 text-xs text-muted-foreground">{project.workflow.name} · v{project.workflow.version} · 阶段 {project.current_stage.sequence}/{stages.length}</p></div><div className="flex flex-wrap items-center gap-2">{canViewWorkItems && <Button type="button" size="sm" variant="ghost" onClick={onPlan}>办理计划与资源<ArrowRightIcon aria-hidden="true"/></Button>}<div className="flex rounded-md border bg-card p-0.5" role="group" aria-label="阶段展示方式"><Button type="button" size="sm" variant={view === "lanes" ? "secondary" : "ghost"} aria-pressed={view === "lanes"} onClick={() => setView("lanes")}><SquaresFourIcon aria-hidden="true"/>泳道</Button><Button type="button" size="sm" variant={view === "stages" ? "secondary" : "ghost"} aria-pressed={view === "stages"} onClick={() => setView("stages")}><RowsIcon aria-hidden="true"/>阶段列表</Button></div></div></div>
++    {canViewWorkItems && <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground"><p>横向看阶段，纵向看工作类型</p><label className="inline-flex min-h-8 cursor-pointer items-center gap-2"><input type="checkbox" checked={activeOnly} onChange={e => setActiveOnly(e.target.checked)}/>仅未完成</label><label className="inline-flex min-h-8 cursor-pointer items-center gap-2"><input type="checkbox" checked={dependencies} onChange={e => setDependencies(e.target.checked)}/>显示前置关系</label></div>}
++    {view === "lanes" ? <div className="max-h-[560px] overflow-auto rounded-lg border bg-card" tabIndex={0} aria-label="可滚动的阶段泳道"><table className="w-full border-collapse text-left" style={{ minWidth: canViewWorkItems ? 120 + columns.length * 190 : stages.length * 190 }}><caption className="sr-only">真实项目阶段与按归属划分的任务、行动、问题；阶段位置不代表任务完成率。</caption><thead className="sticky top-0 z-20 bg-card"><tr>{canViewWorkItems && <th scope="col" className="sticky left-0 z-30 w-28 border-b border-r bg-card p-3 text-xs font-medium text-muted-foreground">工作类型</th>}{columns.map(column => <th key={column.id} scope="col" className={cn("min-w-44 border-b border-r p-4 last:border-r-0", column.stage?.id === project.current_stage.id && "bg-accent")}><span className="flex items-center justify-between gap-2"><span className="text-sm font-semibold">{column.name}</span>{column.stage && <span className={cn("shrink-0 text-[11px] font-normal", column.stage.id === project.current_stage.id ? "text-primary" : "text-muted-foreground")}>{stageState(project, column.stage)}</span>}</span>{column.stage?.description && <span className="mt-2 block max-w-64 truncate text-xs font-normal text-muted-foreground" title={column.stage.description}>{column.stage.description}</span>}</th>)}</tr></thead>{canViewWorkItems && <tbody>{!workItems ? <tr><td colSpan={columns.length + 1} className="p-8 text-center text-sm text-muted-foreground">{loading ? "正在读取阶段工作项…" : "工作项尚未读取，不能据此判断任务或问题数量。"}</td></tr> : lanes.map(lane => <tr key={lane.key}><th scope="row" className="sticky left-0 z-10 w-28 border-r border-t bg-card p-3 align-top"><span className="block text-xs font-medium">{lane.label}</span><span className="mt-1 block text-[11px] font-normal leading-5 text-muted-foreground">{lane.caption}</span></th>{columns.map(column => { const rows = cellItems(column.id, lane.key); return <td key={column.id} className={cn("border-r border-t p-3 align-top last:border-r-0", column.stage?.id === project.current_stage.id && "bg-accent/30")}><ul className="max-h-64 space-y-2 overflow-y-auto">{rows.map(renderItem)}</ul>{rows.length === 0 && <p className="py-3 text-xs text-muted-foreground">{activeOnly ? "无未完成事项" : "暂无事项"}</p>}</td>; })}</tr>)}</tbody>}</table></div> : <ol className="divide-y rounded-lg border bg-card">{columns.map(column => <li key={column.id} className={cn("flex flex-wrap items-start justify-between gap-3 px-4 py-4", column.stage?.id === project.current_stage.id && "bg-accent")}><div><p className="text-sm font-medium">{column.name}{column.stage && <span className="ml-3 text-xs font-normal text-muted-foreground">{stageState(project, column.stage)}</span>}</p>{column.stage?.description && <p className="mt-1 text-xs text-muted-foreground">{column.stage.description}</p>}</div>{canViewWorkItems && <span className="text-xs text-muted-foreground">{workItems ? `${cellItems(column.id).length} ${activeOnly ? "项未完成" : "项工作"}` : "数量未读取"}</span>}</li>)}</ol>}
++    {canViewWorkItems && workItems && <div className="flex flex-wrap items-start gap-x-4 gap-y-2 border-b pb-3 text-xs"><span className="shrink-0 font-medium">跨阶段风险</span>{risks.length === 0 ? <span className="text-muted-foreground">当前无开放风险</span> : <><span className="text-muted-foreground">{risks.length} 项开放</span>{risks.slice(0, 3).map(risk => <Link prefetch={false} key={risk.id} className="max-w-full truncate text-primary underline-offset-4 hover:underline" href={`/projects?${new URLSearchParams({ project: project.id, tab: "work-items", entity_id: risk.id })}`}>{risk.title}</Link>)}</>}</div>}
++    <p className="text-xs text-muted-foreground">按真实归属展示；阶段位置不代表完成率。具体排期与资源安排在“计划·资源”中查看。</p>
++  </section>;
++}
+--- /dev/null
++++ b/web/src/components/projects/project-stage-board.test.tsx
+@@ -0,0 +1,68 @@
++import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
++import { afterEach, describe, expect, it, vi } from "vitest";
++import type { Project } from "./project-types";
++import type { ProjectTask, ProjectWorkItems } from "./project-work-item-types";
++import { ProjectStageBoard } from "./project-stage-board";
++import { ProjectTimeline } from "./project-timeline";
++import { resolveTab } from "./project-workspace-view";
++
++const stages = [1, 2, 3].map(n => ({ id: `stage-${n}`, code: `s${n}`, name: `阶段${n}`, sequence: n, description: null }));
++const project = { id: "project-one", name: "项目一", status: "active", current_stage: stages[1], workflow: { name: "实际三阶段模板", version: 2, stages } } as Project;
++function task(id: string, stage: string | null, status = "todo"): ProjectTask {
++  return { id, title: id, stage_id: stage, status, kind: "task", readiness: "ready", due_date: null, dependency_task_ids: [] } as unknown as ProjectTask;
++}
++const empty: ProjectWorkItems = { tasks: [], issues: [], risks: [] };
++afterEach(cleanup);
++describe("项目阶段泳道与工作区布局", () => {
++  it("uses the actual workflow and keeps unassigned/removed-stage work visible", () => {
++    render(<ProjectStageBoard project={project} canViewWorkItems workItems={{ ...empty, tasks: [task("当前任务", "stage-2"), task("待归类任务", null), task("旧阶段任务", "retired-stage")] }} onPlan={vi.fn()}/>);
++    expect(screen.getAllByRole("columnheader")).toHaveLength(5);
++    expect(screen.getByRole("columnheader", { name: /阶段2.*当前阶段/ })).toBeInTheDocument();
++    expect(screen.getByRole("columnheader", { name: "未归阶段" })).toBeInTheDocument();
++    const current = screen.getByRole("link", { name: "打开任务：当前任务" });
++    expect(current).toHaveAttribute("href", "/projects?project=project-one&tab=work-items&entity_id=%E5%BD%93%E5%89%8D%E4%BB%BB%E5%8A%A1");
++    expect(screen.getByRole("link", { name: "打开任务：待归类任务" })).toBeInTheDocument();
++    expect(screen.getByRole("link", { name: "打开任务：旧阶段任务" })).toBeInTheDocument();
++  });
++  it("filters completed work while preserving its unknown-stage column, and shows actual dependency titles on request", () => {
++    const dependent = { ...task("联调", "stage-2"), dependency_task_ids: ["原前置"] };
++    render(<ProjectStageBoard project={project} canViewWorkItems workItems={{ ...empty, tasks: [task("原前置", "stage-1", "done"), dependent, task("已完成未归阶段", null, "done")] }} onPlan={vi.fn()}/>);
++    fireEvent.click(screen.getByRole("checkbox", { name: "仅未完成" }));
++    expect(screen.queryByRole("link", { name: "打开任务：原前置" })).not.toBeInTheDocument();
++    expect(screen.getByRole("columnheader", { name: "未归阶段" })).toBeInTheDocument();
++    fireEvent.click(screen.getByRole("checkbox", { name: "显示前置关系" }));
++    expect(screen.getByText("前置：原前置")).toBeVisible();
++    fireEvent.click(screen.getByRole("button", { name: "阶段列表" }));
++    expect(screen.queryByRole("table")).not.toBeInTheDocument();
++    expect(screen.getByText("阶段2")).toBeVisible();
++  });
++  it("does not display false zero counts while source data is unavailable", () => {
++    render(<ProjectStageBoard project={project} canViewWorkItems workItems={null} onPlan={vi.fn()}/>);
++    expect(screen.getByText("工作项尚未读取，不能据此判断任务或问题数量。")).toBeVisible();
++    expect(screen.queryByText("暂无事项")).not.toBeInTheDocument();
++    expect(screen.queryByText("当前无开放风险")).not.toBeInTheDocument();
++  });
++  it("never exposes internal work supplied accidentally to an external overview", () => {
++    render(<ProjectStageBoard project={project} canViewWorkItems={false} workItems={{ ...empty, tasks: [task("内部任务", "stage-2")] }} onPlan={vi.fn()}/>);
++    expect(screen.queryByText("内部任务")).not.toBeInTheDocument();
++    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
++    expect(screen.queryByRole("button", { name: "办理计划与资源" })).not.toBeInTheDocument();
++    expect(screen.getAllByRole("columnheader")).toHaveLength(3);
++  });
++  it("keeps a deep-linked older event visible without rendering the entire activity history", () => {
++    const activities = Array.from({ length: 20 }, (_, i) => ({ id: 20 - i, event_type: "TEST_FAILED", entity: "test_report", entity_id: `report-${i}`, timestamp: "2026-09-30T01:00:00Z" }));
++    render(<ProjectTimeline project={project} activities={activities} activityError={false} loading={false} highlightedEntityId={null} highlightedEventId={2} onRetry={vi.fn()}/>);
++    const list = screen.getByRole("list", { name: "近期活动记录" });
++    expect(within(list).getAllByRole("listitem")).toHaveLength(6);
++    expect(document.getElementById("event-2")).toHaveAttribute("aria-current", "true");
++    fireEvent.click(screen.getByRole("button", { name: "展开全部 20 条记录" }));
++    expect(within(list).getAllByRole("listitem")).toHaveLength(20);
++  });
++  it("restores moved management and engineering links while letting another explicit domain win", () => {
++    expect(resolveTab("overview", new URLSearchParams("completion_item=configuration"))).toBe("management");
++    expect(resolveTab(null, new URLSearchParams("intake_proposal=original"))).toBe("management");
++    expect(resolveTab("overview", new URLSearchParams("id_freeze_request=original&id_revision=revision"))).toBe("engineering");
++    expect(resolveTab("quality", new URLSearchParams("completion_item=configuration"))).toBe("quality");
++    expect(resolveTab("management")).toBe("management");
++  });
++});
+--- /dev/null
++++ b/web/src/components/projects/project-management-panel.tsx
+@@ -0,0 +1,46 @@
++"use client";
++
++import Link from "next/link";
++import { useSearchParams } from "next/navigation";
++import { cn } from "@/lib/utils";
++import type { Project } from "./project-types";
++import { ProjectMembers } from "./project-members";
++import { ProjectIntake } from "./project-intake";
++import { ProjectTemplatePanel } from "./project-template-panel";
++import { ProjectCompletionPanel } from "./project-completion-panel";
++import { ProjectReportExports } from "./project-report-exports";
++import { CustomerReportPackages } from "./customer-report-packages";
++import { AuditEvidenceExports } from "./audit-evidence-exports";
++import { OpenApiAccess } from "./open-api-access";
++import { ProjectWebhooks } from "./project-webhooks";
++import { ValueMeasurement } from "./value-measurement";
++
++const sections = [
++  { key: "people", label: "成员与协作", description: "核对项目成员、负责人及项目内访问权限。" },
++  { key: "workflow", label: "流程与初始化", description: "维护项目模板，核对在途资料与初始化记录。" },
++  { key: "reports", label: "报告与导出", description: "整理内部报告、客户报告与审核证据包。" },
++  { key: "connections", label: "接口与测量", description: "管理受控接口、事件通知与活动测量。" },
++  { key: "completion", label: "结项与交接", description: "核对配置、原件、残余问题与具名交接。" },
++];
++function Reports({ projectId }: { projectId: string }) {
++  return <><ProjectReportExports projectId={projectId}/><CustomerReportPackages projectId={projectId}/><AuditEvidenceExports projectId={projectId}/></>;
++}
++export function ProjectManagementPanel({ project, userId, canManage, external = false }: { project: Project; userId: string; canManage: boolean; external?: boolean }) {
++  const query = useSearchParams();
++  // Old links to completion/intake keep the relevant group visible after
++  // moving those tools out of the overview. Explicit section links win.
++  const selected = query.get("section") ?? (query.has("completion_item") ? "completion" : query.has("intake_proposal") || query.has("intake_decision") ? "workflow" : "people");
++  const current = sections.find(section => section.key === selected) ?? sections[0];
++  if (external) return <details className="border-t pt-4"><summary className="cursor-pointer text-sm">其他项目服务</summary><div className="mt-4 space-y-4"><Reports projectId={project.id}/><OpenApiAccess projectId={project.id}/><ProjectWebhooks projectId={project.id}/></div></details>;
++  return <section aria-label="项目管理" className="space-y-5">
++    <nav aria-label="项目管理分类" className="flex flex-wrap gap-1 border-b pb-3">{sections.map(section => <Link prefetch={false} key={section.key} aria-current={current.key === section.key ? "page" : undefined} className={cn("inline-flex min-h-11 items-center rounded-md px-3 text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", current.key === section.key ? "bg-muted font-medium text-foreground" : "text-muted-foreground")} href={`/projects?${new URLSearchParams({ project: project.id, tab: "management", section: section.key })}`}>{section.label}</Link>)}</nav>
++    <div><h2 className="text-base font-semibold">{current.label}</h2><p className="mt-1 text-sm text-muted-foreground">{current.description}</p></div>
++    <div className="space-y-4">
++      {current.key === "people" && <ProjectMembers projectId={project.id} userId={userId}/>}
++      {current.key === "workflow" && <><ProjectTemplatePanel projectId={project.id} stageCode={project.current_stage.code} canManage={canManage}/><ProjectIntake projectId={project.id}/></>}
++      {current.key === "reports" && <Reports projectId={project.id}/>}
++      {current.key === "connections" && <><OpenApiAccess projectId={project.id}/><ProjectWebhooks projectId={project.id}/><ValueMeasurement projectId={project.id}/></>}
++      {current.key === "completion" && <ProjectCompletionPanel projectId={project.id} userId={userId} canManage={canManage}/>}
++    </div>
++  </section>;
++}

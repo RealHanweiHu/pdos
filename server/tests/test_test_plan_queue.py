@@ -38,7 +38,10 @@ QueuedPlan = tuple[
 
 @pytest.fixture
 def queued_plan(
-    scenario: PlanScenario, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    scenario: PlanScenario,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> QueuedPlan:
     output: dict[str, object] = {
         **deepcopy(READY),
@@ -52,7 +55,7 @@ def queued_plan(
         ],
     }
     original = StructuredModelGateway.invoke_structured
-    env, calls, _ = factory(get_engine(), tmp_path, monkeypatch, output=output)
+    env, calls, _ = factory(get_engine(), tmp_path, monkeypatch, request=request, output=output)
     monkeypatch.setattr(StructuredModelGateway, "invoke_structured", original)
     client, _, _, headers, path, plan = scenario
     url = f"{path}/test-plans/{plan['id']}/suggestion-requests"

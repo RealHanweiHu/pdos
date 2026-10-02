@@ -5,7 +5,7 @@ from typing import Any, Literal
 from uuid import UUID, uuid4
 
 from pydantic import Field
-from sqlalchemy import Engine, select
+from sqlalchemy import Connection, Engine, select
 from sqlalchemy.exc import IntegrityError
 
 from app.auth.repository import AuthContext
@@ -46,6 +46,7 @@ class ProductDraft(Input):
     name: str = Field(min_length=1, max_length=2048)
     level: Level
     parent_id: UUID | None = None
+    derived_from: UUID | None = None
     owner_user_id: UUID
     regions: list[Key] = Field(default_factory=list, max_length=30)
     channels: list[Key] = Field(default_factory=list, max_length=30)
@@ -113,6 +114,97 @@ def _node_row(connection: Any, context: AuthContext, space_id: UUID, node_id: UU
     if row is None:
         raise ProductWorkAccessError("产品节点不存在或无权访问")
     return row
+
+
+def create_product_in_connection(
+    connection: Connection, context: AuthContext, space_id: UUID, draft: ProductDraft
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_MANAGE)
+    _space(connection, context, space_id, access="manager", lock=True)
+    table = tables.product_nodes
+    fingerprint = digest(
+        draft.model_dump(
+            mode="json", exclude={"derived_from"} if draft.derived_from is None else set()
+        )
+    )
+    source = None
+    if draft.derived_from:
+        source = _node_row(connection, context, space_id, draft.derived_from)
+        _line(connection, context, space_id, source["product_line_id"])
+        from app.domain.product_definitions import _release
+
+        released = _release(connection, context, source["id"])
+        if (
+            source["level"] != draft.level
+            or source["level"] == "line"
+            or source["lifecycle"] == "retired"
+            or released is None
+            or released["action"] != "publish"
+        ):
+            raise ProductWorkError("派生须选择同层级、未退役且有生效定义的父产品")
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        _line(connection, context, space_id, existing["product_line_id"])
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同产品内容")
+        return _node(existing)
+    node_id = uuid4()
+    if draft.level == "line":
+        if draft.parent_id is not None:
+            raise ProductWorkError("产品线没有上级产品节点")
+        line_id = node_id
+        _member(connection, context, space_id, draft.owner_user_id)
+    else:
+        if draft.parent_id is None:
+            raise ProductWorkError("请指定相邻层级的上级产品")
+        parent = _node_row(connection, context, space_id, draft.parent_id)
+        line_id = parent["product_line_id"]
+        _line(connection, context, space_id, line_id, access="manager", writable=True)
+        if parent["level"] != PARENT_LEVEL[draft.level] or parent["lifecycle"] == "retired":
+            raise ProductWorkError("上级须为相邻产品层级，且未退役")
+        _member(connection, context, space_id, draft.owner_user_id, line_id)
+    if source is not None and source["product_line_id"] != line_id:
+        raise ProductWorkError("派生来源须属于同一产品线；请在父产品所属产品线创建派生产品")
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **draft.model_dump(),
+                id=node_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=line_id,
+                request_digest=fingerprint,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    if draft.level == "line":
+        for user_id in {context.user.id, draft.owner_user_id}:
+            connection.execute(
+                tables.product_line_members.insert().values(
+                    tenant_id=context.tenant.id,
+                    market_space_id=space_id,
+                    product_line_id=node_id,
+                    user_id=user_id,
+                    access="manager",
+                    added_by_user_id=context.user.id,
+                )
+            )
+    _emit(connection, context, space_id, "product_node", "created", row)
+    return _node(row)
 
 
 class ProductCatalogService:
@@ -196,73 +288,7 @@ class ProductCatalogService:
         _role(context, Action.PRODUCT_WORK_MANAGE)
         try:
             with self.engine.begin() as connection:
-                _space(connection, context, space_id, access="manager", lock=True)
-                table = tables.product_nodes
-                fingerprint = digest(draft.model_dump(mode="json"))
-                existing = (
-                    connection.execute(
-                        select(table).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.market_space_id == space_id,
-                            table.c.request_id == draft.request_id,
-                        )
-                    )
-                    .mappings()
-                    .one_or_none()
-                )
-                if existing:
-                    _line(connection, context, space_id, existing["product_line_id"])
-                    if existing["request_digest"] != fingerprint:
-                        raise ProductWorkError("同一请求编号不能用于不同产品内容")
-                    return _node(existing)
-                node_id = uuid4()
-                if draft.level == "line":
-                    if draft.parent_id is not None:
-                        raise ProductWorkError("产品线没有上级产品节点")
-                    line_id = node_id
-                    _member(connection, context, space_id, draft.owner_user_id)
-                else:
-                    if draft.parent_id is None:
-                        raise ProductWorkError("请指定相邻层级的上级产品")
-                    parent = _node_row(connection, context, space_id, draft.parent_id)
-                    line_id = parent["product_line_id"]
-                    _line(connection, context, space_id, line_id, access="manager", writable=True)
-                    if (
-                        parent["level"] != PARENT_LEVEL[draft.level]
-                        or parent["lifecycle"] == "retired"
-                    ):
-                        raise ProductWorkError("上级须为相邻产品层级，且未退役")
-                    _member(connection, context, space_id, draft.owner_user_id, line_id)
-                row = (
-                    connection.execute(
-                        table.insert()
-                        .values(
-                            **draft.model_dump(),
-                            id=node_id,
-                            tenant_id=context.tenant.id,
-                            market_space_id=space_id,
-                            product_line_id=line_id,
-                            request_digest=fingerprint,
-                        )
-                        .returning(table)
-                    )
-                    .mappings()
-                    .one()
-                )
-                if draft.level == "line":
-                    for user_id in {context.user.id, draft.owner_user_id}:
-                        connection.execute(
-                            tables.product_line_members.insert().values(
-                                tenant_id=context.tenant.id,
-                                market_space_id=space_id,
-                                product_line_id=node_id,
-                                user_id=user_id,
-                                access="manager",
-                                added_by_user_id=context.user.id,
-                            )
-                        )
-                _emit(connection, context, space_id, "product_node", "created", row)
-                return _node(row)
+                return create_product_in_connection(connection, context, space_id, draft)
         except IntegrityError as error:
             raise ProductWorkError("产品编号已存在，或上级产品关系已变化，请刷新") from error
 

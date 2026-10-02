@@ -21,12 +21,14 @@ from app.domain.product_catalog import (
     SpaceChange,
     SpaceLifecycle,
 )
+from app.domain.product_master_references import MasterReferenceSave, ProductMasterReferenceService
 from app.domain.product_workspace import (
     AssignWork,
     CancelResearch,
     MarketSpaceDraft,
     ProductWorkAccessError,
     ProductWorkError,
+    ProductWorkRunNotFoundError,
     ProductWorkspaceService,
     ResearchDraft,
     WorkAction,
@@ -41,6 +43,10 @@ Database = Annotated[Engine, Depends(get_engine)]
 def _error(error: Exception) -> HTTPException:
     if isinstance(error, ProductWorkAccessError):
         return HTTPException(403, detail={"code": "PRODUCT_WORK_FORBIDDEN", "message": str(error)})
+    if isinstance(error, ProductWorkRunNotFoundError):
+        return HTTPException(
+            404, detail={"code": "PRODUCT_WORK_RUN_NOT_FOUND", "message": str(error)}
+        )
     if isinstance(error, ProductWorkError):
         return HTTPException(409, detail={"code": "PRODUCT_WORK_INVALID", "message": str(error)})
     raise error
@@ -140,11 +146,19 @@ def work_history(
 
 @router.get("/spaces/{space_id}/evidence")
 def evidence_options(
-    space_id: UUID, response: Response, context: Context, engine: Database
+    space_id: UUID,
+    response: Response,
+    context: Context,
+    engine: Database,
+    snapshot_ids: Annotated[list[UUID] | None, Query(min_length=1, max_length=100)] = None,
 ) -> dict[str, Any]:
     no_store(response)
     try:
-        return {"items": ProductWorkspaceService(engine).evidence_options(context, space_id)}
+        return {
+            "items": ProductWorkspaceService(engine).evidence_options(
+                context, space_id, snapshot_ids
+            )
+        }
     except Exception as error:
         raise _error(error) from error
 
@@ -286,6 +300,33 @@ def change_product(
     try:
         return ProductCatalogService(engine).change(context, space_id, node_id, body)
     except Exception as error:
+        raise _error(error) from error
+
+
+@router.get("/spaces/{space_id}/products/{node_id}/master-references")
+def product_master_reference_read(
+    space_id: UUID, node_id: UUID, response: Response, context: Context, engine: Database
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return ProductMasterReferenceService(engine).read(context, space_id, node_id)
+    except (ProductWorkError, ProductWorkAccessError) as error:
+        raise _error(error) from error
+
+
+@router.post("/spaces/{space_id}/products/{node_id}/master-references", status_code=201)
+def product_master_reference_save(
+    space_id: UUID,
+    node_id: UUID,
+    body: MasterReferenceSave,
+    response: Response,
+    context: Context,
+    engine: Database,
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return ProductMasterReferenceService(engine).save(context, space_id, node_id, body)
+    except (ProductWorkError, ProductWorkAccessError) as error:
         raise _error(error) from error
 
 

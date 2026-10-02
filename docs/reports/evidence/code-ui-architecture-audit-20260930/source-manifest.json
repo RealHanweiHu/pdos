@@ -1,0 +1,62 @@
+{
+  "web/src/components/ai/xiaopai-provider.tsx": {
+    "sha256": "2c7e81c151c71ac913b9c5ce3e7371611197478c51741d8db8638747ed643d4d",
+    "lines": 134
+  },
+  "web/src/components/ai/xiaopai-page-context.ts": {
+    "sha256": "78bf93e6c67aecf2ec419c2b1ad633f00642eb27593d4c86709fee1b3879ef12",
+    "lines": 37
+  },
+  "web/src/components/projects/project-stage-board.tsx": {
+    "sha256": "a81358568823809688bc706fc8c581dd1a585dbe72de07026afe67bce9b7ce48",
+    "lines": 52
+  },
+  "web/src/components/projects/project-work-queue.tsx": {
+    "sha256": "0ef78b761eb8d94e4f360d4d5608180e7ee072fa2f30b9e2a19970bd7f67e18b",
+    "lines": 37
+  },
+  "web/src/components/projects/project-workspace.tsx": {
+    "sha256": "913fcc4f53ff9ed18b5dcc4031cb8afb2aaa8fc5087b4cb28dccf248e996e414",
+    "lines": 805
+  },
+  "web/src/components/projects/project-workspace-view.tsx": {
+    "sha256": "a0eb6ff53ce51c6e281f5d1fd646e7ab637d7cf3195a67f43a41bac5699e5b08",
+    "lines": 508
+  },
+  "web/src/components/product-work/product-workspace.tsx": {
+    "sha256": "7bfcac8be2b1a2e3de504b120fdc9e301efde3df5651a0e464d00eb11e2da4e7",
+    "lines": 416
+  },
+  "web/src/components/product-work/product-ai-preparation.tsx": {
+    "sha256": "20168e48bfb5204f1391b619bbb1c3f6e349b22a8c4a1378a305c215d1f84b02",
+    "lines": 114
+  },
+  "web/src/components/product-work/product-ai-runs.tsx": {
+    "sha256": "f8bcc8b834c8ee980ec8ae57784a3ce1b4527a0abcea7ac8c053fb3125496495",
+    "lines": 184
+  },
+  "web/src/components/diagnostics/use-first-screen-sample.ts": {
+    "sha256": "cbf128a1c70b7bd91d44f7a6a1d96f9077aef1df9c9dab8fae2581a40d5fbbb8",
+    "lines": 85
+  },
+  "server/app/domain/product_workspace.py": {
+    "sha256": "b1012d498d34e1672487b52989473d758b8f2018c9c524f247d50cd579ac3c52",
+    "lines": 1302
+  },
+  "server/app/ai/product_work_runs.py": {
+    "sha256": "12751eee6bebc70f95e0a692627cafad18c17b17f62a95d2e4ed7538a66260aa",
+    "lines": 517
+  },
+  "server/app/api/product_research.py": {
+    "sha256": "e8a450068d842d790cf04ab948f443d90f8b563a0ae13da2fe28d8338bd45b48",
+    "lines": 1884
+  },
+  "server/app/db/schema.py": {
+    "sha256": "bb18023a08137cb35c19f2b1767a9172b48df144dc52143f186dd4ef7daf1621",
+    "lines": 30636
+  },
+  "server/scripts/run_application_worker.py": {
+    "sha256": "e86fa32464c174e1a7cb30f42fd6f6efcdd995f3109bf06cbc13ec5924a6aba5",
+    "lines": 74
+  }
+}

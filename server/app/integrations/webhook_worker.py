@@ -13,7 +13,12 @@ from app.db.schema import tables
 from app.domain.product_workspace import ProductWorkError, digest
 from app.domain.project_webhooks import control, insert_delivery, principal
 from app.domain.quality_operations import authorize
-from app.domain.webhook_sources import SOURCE_EVENTS, notification
+from app.domain.webhook_sources import (
+    SOURCE_EVENTS,
+    SilentAICompletion,
+    has_explicit_send,
+    notification,
+)
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 from app.integrations.webhook_protocol import (
     PROTOCOL,
@@ -128,7 +133,7 @@ class WebhookWorker:
                 for event_id in events:
                     delivery = None
                     try:
-                        basis = notification(c, context, row, event_id)
+                        basis = notification(c, context, row, event_id, automated=True)
                     except (ProductWorkError, PermissionError):
                         pass
                     else:
@@ -296,12 +301,20 @@ class WebhookWorker:
                 try:
                     context = principal(self.engine, ep)
                     authorize(c, context, ep["project_id"], Action.INTEGRATION_PROJECT_MANAGE)
-                    basis = notification(c, context, ep, row["source_event_id"])
+                    basis = notification(
+                        c,
+                        context,
+                        ep,
+                        row["source_event_id"],
+                        automated=not has_explicit_send(c, row),
+                    )
                     if basis["digest"] != row["basis_digest"]:
                         raise ProductWorkError("source changed")
                     body = body_bytes(row["payload"])
                     if sha256(body).hexdigest() != row["payload_digest"]:
                         raise ProductWorkError("body changed")
+                except SilentAICompletion:
+                    status, outcome, code = "cancelled", "abandoned", "silent_ai_success"
                 except (ProductWorkError, PermissionError):
                     status, outcome, code = (
                         "source_changed",

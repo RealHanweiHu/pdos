@@ -1,0 +1,17 @@
+{
+  "server/app/domain/product_evidence_findings.py": "a5f1fd87078330e18c105008e363f39019500ffc97aabe1ff1329770c6a8353b",
+  "server/app/domain/competitors.py": "b0c2e591db81ab0d3418168ae90e3d64fc703dcbde99d14e6eb9be19d2b622f8",
+  "server/app/domain/market_analysis.py": "b37feadd44822e256c406eb1e0e0fb346a9b1db63cc5d58358fa95cf6a036849",
+  "server/app/api/product_research.py": "e8a450068d842d790cf04ab948f443d90f8b563a0ae13da2fe28d8338bd45b48",
+  "server/tests/test_product_evidence_findings_api.py": "932fe24e554b38074001f1e5b7c0fc769a43918702b096f9954a236c5e7aa21c",
+  "server/tests/test_product_discovery_findings_api.py": "3a5068baebc3dc3a7ea06fc4f4dc58e5e3ed49751c95d5234134d16fe9a799f4",
+  "server/tests/test_product_planning_findings_api.py": "055ca37913d37464dd0c960da23b46f41500e322e3654a6dfc2964aa7feb615a",
+  "web/src/components/product-work/competitors.tsx": "023d6bc4f68a2eca54efbee8e6f84fcb56523fb5f71e07d322228a5914bb3444",
+  "web/src/components/product-work/market-segments.tsx": "0caf59b8eeb235bfd49a1cd38422ff436070c3501f83d03243bfbaf387ecbc6f",
+  "web/src/components/product-work/product-evidence-proposal.tsx": "3feea7fbd5afe526bc289df706236f73720a7000b401b974e4673d6476d52021",
+  "web/src/components/product-work/product-evidence-proposal.test.tsx": "2da3bdf612a327d4bb4d4485dff44132b1e2b6d76828b1f0487603e704f867c5",
+  "web/src/components/product-work/product-discovery-proposal.test.tsx": "795053a941400a2b532f8d9bf2679517c5238783cffb164246cc584ffc630c8f",
+  "web/src/components/product-work/product-planning-proposal.test.tsx": "49f3ea7438467442415812292207e2b37351f099b2057df166a63af860d2fb45",
+  "web/src/components/product-work/product-result-navigation.test.tsx": "dc42935c0a8563a88c57257a4e50eac02c700843daf55e4f47e9468c76eb0d90",
+  "docs/reports/evidence/pm-loop-20260929/result-navigation.md": "039ff23fd85dfe504f02e20da350aacdc4a9abf7982c152190b7158273836171"
+}

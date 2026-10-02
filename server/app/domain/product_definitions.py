@@ -17,6 +17,7 @@ from app.contracts.object_operations import (
 )
 from app.contracts.product_records import FactStatement, ProductDefinition, SpecificationItem
 from app.db.schema import tables
+from app.domain.definition_inheritance import expand_definition, sparse_content
 from app.domain.market_analysis import _fact
 from app.domain.product_evidence import evidence_quality, resolve_evidence
 from app.domain.product_strategies import _manager
@@ -88,6 +89,7 @@ class DefinitionDraft(Input):
     product_id: UUID
     strategy_id: UUID
     supersedes_id: UUID | None = None
+    base_definition_id: UUID | None = None
     content: DefinitionContent
 
 
@@ -113,22 +115,23 @@ class DefinitionReview(CommandPrecondition):
 
 
 def definition_digest(row: Any) -> str:
-    return digest(
-        _plain(
-            {
-                key: row[key]
-                for key in (
-                    "id",
-                    "tenant_id",
-                    "product_id",
-                    "strategy_id",
-                    "strategy_ref",
-                    "revision_number",
-                    "content",
-                )
-            }
+    value = {
+        key: row[key]
+        for key in (
+            "id",
+            "tenant_id",
+            "product_id",
+            "strategy_id",
+            "strategy_ref",
+            "revision_number",
+            "content",
         )
-    )
+    }
+    if row.get("base_definition_id") is not None:
+        value.update(
+            base_definition_ref=row["base_definition_ref"], parent_updates=row["parent_updates"]
+        )
+    return digest(_plain(value))
 
 
 def _release(connection: Connection, context: AuthContext, product_id: UUID) -> Any:
@@ -170,7 +173,7 @@ def _row(
         access="contributor" if write else "viewer",
         writable=write,
     )
-    return row
+    return expand_definition(connection, row)
 
 
 def _resolve_content(
@@ -252,6 +255,7 @@ def definition_diff(before: Any, after: Any) -> dict[str, Any]:
 
 
 def _definition(connection: Connection, context: AuthContext, row: Any) -> dict[str, Any]:
+    row = expand_definition(connection, row)
     content = row["content"]
     refs = []
     for fact in (
@@ -310,6 +314,11 @@ def _definition(connection: Connection, context: AuthContext, row: Any) -> dict[
         if row["supersedes_id"]
         else None
     )
+    parent_definition = (
+        _row(connection, context, row["market_space_id"], row["base_definition_id"])
+        if row["base_definition_id"]
+        else None
+    )
     product = (
         connection.execute(
             select(tables.product_nodes.c.name, tables.product_nodes.c.code).where(
@@ -357,11 +366,169 @@ def _definition(connection: Connection, context: AuthContext, row: Any) -> dict[
             connection, context, row["market_space_id"], row["product_line_id"]
         ),
         "source_warnings": evidence_quality(connection, context, refs),
-        "stable_item_keys": [item["item_key"] for item in previous["content"]["items"]]
-        if previous
-        else [],
+        "stable_item_keys": sorted(
+            {
+                item["item_key"]
+                for source in (previous, parent_definition)
+                if source
+                for item in source["content"]["items"]
+            }
+        ),
         "diff": definition_diff(previous, row),
     }
+
+
+def create_definition_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: DefinitionDraft,
+    *,
+    source_finding_id: UUID | None = None,
+    source_finding_position: int | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    product = (
+        connection.execute(
+            select(tables.product_nodes).where(
+                tables.product_nodes.c.tenant_id == context.tenant.id,
+                tables.product_nodes.c.market_space_id == space_id,
+                tables.product_nodes.c.id == draft.product_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if product is None:
+        raise ProductWorkAccessError("产品不存在或不可访问")
+    line_id = product["product_line_id"]
+    _line(connection, context, space_id, line_id, access="contributor", writable=True)
+    if product["lifecycle"] == "retired":
+        raise ProductWorkError("已退役产品不能创建新定义")
+    table = tables.product_definitions
+    fingerprint = digest(
+        draft.model_dump(
+            mode="json",
+            exclude={"base_definition_id"} if draft.base_definition_id is None else set(),
+        )
+    )
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.created_by_user_id == context.user.id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同定义")
+        return _definition(connection, context, existing)
+    strategy = (
+        connection.execute(
+            select(tables.product_strategies).where(
+                tables.product_strategies.c.tenant_id == context.tenant.id,
+                tables.product_strategies.c.market_space_id == space_id,
+                tables.product_strategies.c.id == draft.strategy_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if (
+        strategy is None
+        or strategy["state"] != "published"
+        or strategy["product_line_id"] not in {None, line_id}
+    ):
+        raise ProductWorkError("定义须引用同范围已发布策略")
+    node_id = uuid4()
+    series_id, revision, previous = node_id, 1, None
+    if draft.supersedes_id:
+        previous = _row(connection, context, space_id, draft.supersedes_id)
+        if previous["state"] != "published" or previous["product_id"] != product["id"]:
+            raise ProductWorkError("新修订须基于同一产品的已发布定义")
+        if connection.execute(
+            select(table.c.id).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.supersedes_id == previous["id"],
+            )
+        ).first():
+            raise ProductWorkError("已存在后续定义修订，请打开该修订")
+        series_id, revision = previous["series_id"], previous["revision_number"] + 1
+    elif connection.execute(
+        select(table.c.id).where(
+            table.c.tenant_id == context.tenant.id, table.c.product_id == product["id"]
+        )
+    ).first():
+        raise ProductWorkError("产品已有定义，请编辑草稿或从已发布版创建修订")
+    base_id = draft.base_definition_id or (previous["base_definition_id"] if previous else None)
+    base_ref = None
+    if product["derived_from"] is not None:
+        if base_id is None:
+            raise ProductWorkError("派生产品须锁定父产品已发布定义")
+        parent = _row(connection, context, space_id, base_id)
+        if parent["state"] != "published" or parent["product_id"] != product["derived_from"]:
+            raise ProductWorkError("父定义与派生产品来源不一致")
+        base_ref = SourceRef(
+            tenant_id=context.tenant.id,
+            kind="product_definition",
+            ref_id=parent["id"],
+            version=parent["version"],
+            digest=parent["review_digest"],
+            as_of=parent["published_at"],
+        ).model_dump(mode="json")
+    elif base_id is not None:
+        raise ProductWorkError("仅派生产品可引用父定义")
+    value = _resolve_content(connection, context, space_id, line_id, draft.content, previous)
+    value = sparse_content(connection, context.tenant.id, base_id, value)
+    reference = SourceRef(
+        tenant_id=context.tenant.id,
+        kind="product_strategy",
+        ref_id=strategy["id"],
+        version=strategy["version"],
+        as_of=strategy["approval"]["approved_at"],
+        digest=strategy["approval"]["payload_digest"],
+    )
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                id=node_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=line_id,
+                product_id=product["id"],
+                strategy_id=strategy["id"],
+                base_definition_id=base_id,
+                base_definition_ref=base_ref,
+                parent_updates=previous["parent_updates"] if previous else [],
+                strategy_ref=reference.model_dump(mode="json"),
+                owner_user_id=draft.content.owner_user_id,
+                created_by_user_id=context.user.id,
+                series_id=series_id,
+                supersedes_id=draft.supersedes_id,
+                revision_number=revision,
+                title=draft.content.title,
+                content=value,
+                request_id=draft.request_id,
+                request_digest=fingerprint,
+                source_finding_id=source_finding_id,
+                source_finding_position=source_finding_position,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    row = expand_definition(connection, row)
+    result = _definition(connection, context, row)
+    _emit(connection, context, space_id, "product_definition", "created", row)
+    return result
 
 
 class ProductDefinitionService:
@@ -394,121 +561,8 @@ class ProductDefinitionService:
     def create(
         self, context: AuthContext, space_id: UUID, draft: DefinitionDraft
     ) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            product = (
-                connection.execute(
-                    select(tables.product_nodes).where(
-                        tables.product_nodes.c.tenant_id == context.tenant.id,
-                        tables.product_nodes.c.market_space_id == space_id,
-                        tables.product_nodes.c.id == draft.product_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if product is None:
-                raise ProductWorkAccessError("产品不存在或不可访问")
-            line_id = product["product_line_id"]
-            _line(connection, context, space_id, line_id, access="contributor", writable=True)
-            if product["lifecycle"] == "retired":
-                raise ProductWorkError("已退役产品不能创建新定义")
-            table = tables.product_definitions
-            fingerprint = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.created_by_user_id == context.user.id,
-                        table.c.request_id == draft.request_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if existing:
-                if existing["request_digest"] != fingerprint:
-                    raise ProductWorkError("同一请求编号不能用于不同定义")
-                return _definition(connection, context, existing)
-            strategy = (
-                connection.execute(
-                    select(tables.product_strategies).where(
-                        tables.product_strategies.c.tenant_id == context.tenant.id,
-                        tables.product_strategies.c.market_space_id == space_id,
-                        tables.product_strategies.c.id == draft.strategy_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if (
-                strategy is None
-                or strategy["state"] != "published"
-                or strategy["product_line_id"] not in {None, line_id}
-            ):
-                raise ProductWorkError("定义须引用同范围已发布策略")
-            node_id = uuid4()
-            series_id, revision, previous = node_id, 1, None
-            if draft.supersedes_id:
-                previous = _row(connection, context, space_id, draft.supersedes_id)
-                if previous["state"] != "published" or previous["product_id"] != product["id"]:
-                    raise ProductWorkError("新修订须基于同一产品的已发布定义")
-                if connection.execute(
-                    select(table.c.id).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.supersedes_id == previous["id"],
-                    )
-                ).first():
-                    raise ProductWorkError("已存在后续定义修订，请打开该修订")
-                series_id, revision = previous["series_id"], previous["revision_number"] + 1
-            elif connection.execute(
-                select(table.c.id).where(
-                    table.c.tenant_id == context.tenant.id, table.c.product_id == product["id"]
-                )
-            ).first():
-                raise ProductWorkError("产品已有定义，请编辑草稿或从已发布版创建修订")
-            value = _resolve_content(
-                connection, context, space_id, line_id, draft.content, previous
-            )
-            reference = SourceRef(
-                tenant_id=context.tenant.id,
-                kind="product_strategy",
-                ref_id=strategy["id"],
-                version=strategy["version"],
-                as_of=strategy["approval"]["approved_at"],
-                digest=strategy["approval"]["payload_digest"],
-            )
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        id=node_id,
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=line_id,
-                        product_id=product["id"],
-                        strategy_id=strategy["id"],
-                        strategy_ref=reference.model_dump(mode="json"),
-                        owner_user_id=draft.content.owner_user_id,
-                        created_by_user_id=context.user.id,
-                        series_id=series_id,
-                        supersedes_id=draft.supersedes_id,
-                        revision_number=revision,
-                        title=draft.content.title,
-                        content=value,
-                        request_id=draft.request_id,
-                        request_digest=fingerprint,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
-            )
-            result = _definition(connection, context, row)
-            _emit(connection, context, space_id, "product_definition", "created", row)
-            return result
+            return create_definition_in_connection(connection, context, space_id, draft)
 
     def change(
         self,
@@ -552,7 +606,9 @@ class ProductDefinitionService:
                     connection, context, space_id, row["product_line_id"], command.content, previous
                 )
                 values = {
-                    "content": value,
+                    "content": sparse_content(
+                        connection, context.tenant.id, row["base_definition_id"], value
+                    ),
                     "title": command.content.title,
                     "owner_user_id": command.content.owner_user_id,
                 }
@@ -683,6 +739,7 @@ class ProductDefinitionService:
                 .mappings()
                 .one()
             )
+            updated = expand_definition(connection, updated)
             if action == "publish":
                 self._append_release(
                     connection,

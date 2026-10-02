@@ -1,0 +1,10 @@
+{
+  "server/app/contracts/product_work_ai.py": "b706b54d2099c8f97adaf453bcc0a54291043ebbdd782486ec1525eeeb492514",
+  "server/app/ai/product_work_preparation.py": "9ebf489487aba548d979148c558e1f7e50207070bbb78c976a00eb5592b57b75",
+  "server/app/api/product_research.py": "fe3979d352c4c9cf334a99dcef4485cf40a3fe9f1b7323c8d3caee688e59d43f",
+  "server/tests/test_product_work_preparation_api.py": "2dfc95631d8fb01a455e985ecc1df0df07dc02df9d84b4329232c6ca734db950",
+  "web/src/components/product-work/product-ai-preparation.tsx": "d370c828b9b509b448ddfb91ae3634dada5e07b7768a7a52d0e5170a1f9a0eb2",
+  "web/src/components/product-work/product-ai-preparation.test.tsx": "86ccae594f3026a0c8f905d7e6d075a57145b13d2abadfff081bcdb694082078",
+  "web/src/components/product-work/product-workspace.tsx": "078f9be283e77bca9e51c1c183ea5c92824843483f56f57380c410394afd39ea",
+  "web/src/app/api/product-work/[[...workPath]]/route.ts": "bcfe0ab21b5a836c749672293ee4cde5980d8a62cf1f6db4e6882ea12df7fa39"
+}

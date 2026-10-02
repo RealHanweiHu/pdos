@@ -67,6 +67,7 @@ function formatTime(value: string) {
 }
 
 function sourceLabel(memory: MemoryRecord) {
+  if (memory.source_refs.some(ref => ref.kind === "fmea_publication")) return "FMEA 发布依据";
   if (memory.source_ncr_id) return "CAPA / NCR";
   if (memory.source_finding_id) return "Knowledge Finding";
   return "人工整理";
@@ -433,9 +434,10 @@ export function KnowledgeSearch() {
                         <h3 className="mt-2 text-sm font-semibold">{memory.title}</h3>
                         <p className="mt-1 text-xs text-muted-foreground">{knowledgeKindLabel(memory.knowledge_kind)}{!memory.knowledge_kind && memory.status === "verified" ? " · 保留原审核历史，可通过修正补齐" : ""}</p>
                         <MemorySources key={`${memory.id}:${memory.updated_at}`} projectId={memory.project_id} memoryId={memory.id} />
+                        {memory.source_refs.filter(ref => ref.kind === "fmea_publication" && typeof ref.entry_id === "string" && /^[0-9a-f-]{36}$/i.test(ref.entry_id)).map(ref => <a key={String(ref.reference)} className="mt-2 block text-xs text-primary underline" href={`/projects?project=${encodeURIComponent(memory.project_id)}&tab=quality&fmea=${encodeURIComponent(String(ref.entry_id))}`}>回查 FMEA 原发布 v{String(ref.version)} · {String(ref.title ?? "原依据")}</a>)}
                         {memory.status === "draft" && !memory.knowledge_kind && <p className="text-xs text-muted-foreground">请先编辑草稿确认分类，再由另一位有权限的成员审核。</p>}
                         {memory.status === "verified" && <CorrectionForm key={`${memory.id}:${memory.content_sha256}`} memory={memory} onSubmitted={() => setCorrectionRevision(value => value + 1)} />}
-                        <p className="mt-1 line-clamp-3 text-xs leading-5 text-muted-foreground">{memory.content}</p>
+                        <details className="mt-2 rounded-md border p-2 text-xs"><summary className="cursor-pointer font-medium">核对完整内容与适用边界</summary><p className="mt-2 whitespace-pre-wrap break-words leading-5">{memory.content}</p><p className="mt-2 whitespace-pre-wrap break-words leading-5">适用与排除边界：{memory.applicability || "尚未填写，需先核对"}</p></details>
                         <p className="mt-2 font-mono text-[10px] text-muted-foreground">更新 {formatTime(memory.updated_at)}</p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {memory.status === "draft" ? (

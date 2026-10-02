@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { FmeaDesignRules } from "./fmea-design-rules";
 import { FmeaCandidates } from "./fmea-candidates";
 import { Button } from "@/components/ui/button";
 import { FmeaSources, FmeaSourceValue, field, kinds, label, obj, request, rows, text, type Reference, type Row } from "./fmea-sources";
@@ -56,7 +57,7 @@ export function LivingFmea({ projectId }: { projectId: string }) {
   const latest = obj(detail?.latest), pub = obj(detail?.publication), published = obj(detail?.published_version);
   const excluded = rows(obj(candidate?.snapshot).sources).filter(r => !references.some(ref => ref.kind === r.kind && ref.id === r.id));
   const samePublished = pub.version_id === latest.id;
-  return <details className="rounded-lg border bg-card p-4" onToggle={e => { if (e.currentTarget.open && !list && !busy) void act(() => load()); }}>
+  return <details className="rounded-lg border bg-card p-4" onToggle={e => { if (e.target === e.currentTarget && e.currentTarget.open && !list && !busy) void act(async () => { await load(); const entry = new URLSearchParams(window.location.search).get("fmea"); if (entry && /^[0-9a-f-]{36}$/i.test(entry)) await select(entry); }); }}>
     <summary className="cursor-pointer font-semibold">Living FMEA · 失效模式与风险控制</summary>
     <div className="mt-4 space-y-4">
       <p className="text-sm text-muted-foreground">以实际需求、物料、测试和质量记录核对失效模式。评分由人员按明确方法评定；修订保存后须明确发布，原版本持续保留。</p>
@@ -70,6 +71,7 @@ export function LivingFmea({ projectId }: { projectId: string }) {
         <h4 className="font-medium">{text(obj(latest.body).title)} · 最新修订 v{text(latest.version)}</h4>
         {rows(detail.sources).some(s => s.current !== true) && <p className="text-primary">关联记录已变化或不可用。请在修订中重新读取原值、核对结论后保存。</p>}
         <ContentView version={latest}/>
+        <FmeaDesignRules key={text(detail.digest)} projectId={projectId} entryId={text(detail.entry_id)}/>
         {list?.can_edit === true && <Button size="sm" disabled={busy} onClick={() => start(true)}>以最新版本修订</Button>}
         {pub.id ? <p className="text-sm">当前发布 v{text(published.version)} · {text(obj(detail.people)[text(pub.published_by_user_id)])} · {text(pub.published_at)}{Array.isArray(detail.published_source_gaps) && detail.published_source_gaps.length > 0 ? " · 原关联资料需重核" : ""}</p> : <p className="text-sm">尚未发布。</p>}
         {!!pub.id && !samePublished && <details className="rounded-md border p-2"><summary className="cursor-pointer">对照当前发布版本 v{text(published.version)}</summary><ContentView version={published}/></details>}

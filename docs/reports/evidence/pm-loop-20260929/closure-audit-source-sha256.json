@@ -1,0 +1,14 @@
+{
+  "server/app/domain/competitors.py": "6f6a2d9dcf03628b6474c14006894e6df66e8bfe8498d7b443ccf375acd549c2",
+  "server/tests/test_competitor_history_api.py": "4fed8796df0f0c34d0dfa93626b76e18180acac859b7ac593a287b57cb2e18de",
+  "server/tests/test_product_evidence_findings_api.py": "13f4d846ce75fe380527360e2006b5d50a5a06dc5f11cc46b0e0e0a1d252b237",
+  "web/src/components/product-work/competitors.tsx": "023d6bc4f68a2eca54efbee8e6f84fcb56523fb5f71e07d322228a5914bb3444",
+  "web/src/components/product-work/product-result-navigation.test.tsx": "15ae61283f991143b922fcc36451edfdaa14d621c2807e0fa9f6334b965561a1",
+  "server/app/exports/definition_documents.py": "4fffa8eb060fac7c2454db2d865bf64994efd954f110e4a6bbce6535d8b96c04",
+  "server/app/domain/product_matrix_coverage.py": "74524e1c46e8d056fe30999d32960c4b29310ed7296fe71cc749932fd3a10cf0",
+  "server/app/domain/product_matrix_records.py": "e9517c1ca10a947dc7744b7e323f45512c93655462e3c741fc59a2d14160b945",
+  "server/app/domain/portfolio_scoring.py": "705804cf7c937d856e3669510f964ea16e6ba18b4dc6150e0427c27168ab6628",
+  "server/app/domain/product_strategies.py": "390bfc06c762de8a5846c816995943f6c2bb1cd034cb4e3c3975bf5c53bdb5b3",
+  "server/app/domain/product_definitions.py": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b",
+  "server/tests/test_product_manager_loop_api.py": "40c1f7d33fa66dfc911ffd6a64eff0d4a4488a136b4f19834a01a6e292fa26b1"
+}

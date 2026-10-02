@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FmeaSourceValue, field, obj, rows, text, type Row } from "./fmea-sources";
+import { IssueQualityProgress } from "./issue-quality-progress";
 
 const ncrLabels: Record<string, string> = { open: "NCR 已建立", containment: "遏制中", root_cause: "根因调查", action: "措施执行", verification: "有效性验证", closed: "已关闭" };
 const issueLabels: Record<string, string> = { open: "待分析", analysis: "分析中", action: "行动中", verification: "待验证", closed: "已关闭" };
@@ -39,7 +40,7 @@ export function IssueQualityLinks({ projectId, issueId, ncrId }: { projectId: st
   async function loadDocuments(more = false) { const value = await request(projectId, `/options?kind=document&offset=${more ? documentNext ?? 0 : 0}`); setDocuments(old => more ? [...old, ...rows(value.items)] : rows(value.items)); setDocumentNext(typeof value.next_offset === "number" ? value.next_offset : null); }
   const anchor = obj(data?.anchor), other = options.find(o => o.id === selected), people = obj(data?.people);
   const locked = busy || mode !== null || retractId !== null;
-  return <details className="rounded-md border p-3" onToggle={e => { if (e.currentTarget.open && !data && !busy) void act(() => read()); }}>
+  return <details className="rounded-md border p-3" onToggle={e => { if (e.target === e.currentTarget && e.currentTarget.open && !data && !busy) void act(() => read()); }}>
     <summary className="cursor-pointer font-medium">{issueId ? "质量升级与 NCR/CAPA 关联" : "关联的问题协调与执行反馈"}</summary>
     <div className="mt-3 space-y-3"><p className="text-xs text-muted-foreground">关联与升级保留双方原状态。问题关闭、措施完成和质量有效性分别按原流程核验。</p>
       {error && <p role="alert" className="text-destructive">{error}</p>}
@@ -49,6 +50,7 @@ export function IssueQualityLinks({ projectId, issueId, ncrId }: { projectId: st
         <p className="text-xs">{text(people[text(link.created_by_user_id)])} · {text(link.created_at)} · {link.origin === "escalated" ? "原问题升级" : "显式关联"}</p><p className="whitespace-pre-wrap text-sm">关联依据：{text(link.reason)}</p>
         {link.has_later_changes === true && <p className="text-xs text-primary">双方已有后续记录，以下为当前进展；原关联时快照保留在历史中。</p>}
         <StateSummary issue={left} ncr={right} people={people}/>
+        {issueId && right.id != null && <IssueQualityProgress projectId={projectId} ncrId={text(right.id)}/>}
         <div className="flex flex-wrap gap-3 text-xs"><a className="text-primary underline" href={`/projects?project=${projectId}&tab=work-items&entity_id=${left.id}#issue-${left.id}`}>打开原问题</a><a className="text-primary underline" href={`/projects?project=${projectId}&tab=quality&ncr=${right.id}`}>打开原 NCR/CAPA</a></div>
         <details className="text-xs"><summary className="cursor-pointer">关联时原始资料</summary><StateSummary issue={obj(obj(link.snapshot).issue)} ncr={obj(obj(link.snapshot).ncr)} people={people}/></details>
         {link.retraction ? <p className="text-xs">解除人：{text(people[text(undone.created_by_user_id)])} · {text(undone.created_at)} · {text(undone.reason)}</p> : data?.can_retract === true && <Button size="sm" variant="outline" disabled={locked} onClick={() => { setRetractId(text(link.id)); setRetractReason(""); }}>更正误关联 / 解除</Button>}

@@ -90,6 +90,8 @@ def source_record(
     query = select(table).where(
         table.c.tenant_id == tenant_id, table.c.project_id == project_id, table.c.id == source_id
     )
+    if kind == "issue" and lock:
+        query = query.where(table.c.withdrawn_at.is_(None))
     if kind == "risk":
         query = query.where(table.c.draft_state == "confirmed")
     row = connection.execute(query.with_for_update() if lock else query).mappings().one_or_none()
@@ -422,7 +424,9 @@ class MeetingPreparationService:
                 (
                     "issue",
                     select(tables.issues)
-                    .where(tables.issues.c.status != "closed")
+                    .where(
+                        tables.issues.c.status != "closed", tables.issues.c.withdrawn_at.is_(None)
+                    )
                     .order_by(
                         case(
                             (tables.issues.c.severity == "critical", 0),
@@ -474,6 +478,7 @@ class MeetingPreparationService:
                     .where(
                         tables.issues.c.tenant_id == tenant_id,
                         tables.issues.c.project_id == project_id,
+                        tables.issues.c.withdrawn_at.is_(None),
                     )
                     .order_by(
                         tables.material_exceptions.c.created_at.desc(),

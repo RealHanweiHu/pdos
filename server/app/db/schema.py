@@ -45,7 +45,9 @@ from app.db.namespaces import (
     QUALITY_SCHEMA,
     SUPPLIER_SCHEMA,
 )
+from app.db.product_master_reference_schema import define_table as define_product_master_references
 from app.db.vector import Vector
+from app.db.xiaopai_schema import define_xiaopai_tables
 
 NAMING_CONVENTION = {
     "ix": "ix_%(table_name)s_%(column_0_name)s",
@@ -8287,6 +8289,37 @@ issues = Table(
     # build configuration is not the same finding as one on another.
     Column("sample_id", Uuid),
     Column("reported_by_user_id", Uuid),
+    # Independent, non-login AI identity; never placed in the human directory.
+    Column("created_by_ai_principal_id", Uuid),
+    Column("withdrawn_at", DateTime(timezone=True)),
+    Column("ai_withdrawal_id", Uuid),
+    CheckConstraint(
+        "(withdrawn_at IS NULL)=(ai_withdrawal_id IS NULL) AND "
+        "(withdrawn_at IS NULL OR created_by_ai_principal_id IS NOT NULL)",
+        name="ai_withdrawal",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "ai_withdrawal_id"],
+        [
+            f"{AI_SCHEMA}.ai_issue_withdrawal_receipts.tenant_id",
+            f"{AI_SCHEMA}.ai_issue_withdrawal_receipts.project_id",
+            f"{AI_SCHEMA}.ai_issue_withdrawal_receipts.id",
+        ],
+        ondelete="RESTRICT",
+        deferrable=True,
+        initially="DEFERRED",
+        name="fk_issue_ai_withdrawal",
+    ),
+    CheckConstraint(
+        "reported_by_user_id IS NULL OR created_by_ai_principal_id IS NULL",
+        name="creator_exclusive",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "created_by_ai_principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        name="fk_issues_tenant_ai_creator",
+        ondelete="RESTRICT",
+    ),
     Column("title", String(512), nullable=False),
     Column("description", Text),
     Column("issue_type", String(32), nullable=False, server_default=text("'engineering'")),
@@ -9414,6 +9447,1280 @@ agent_subscriptions = Table(
     schema=AI_SCHEMA,
 )
 
+# DC-11 principals are not users: no password, human role, or T2 credential.
+ai_principals = Table(
+    "ai_principals",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("principal_key", String(64), nullable=False),
+    Column("display_name", String(128), nullable=False),
+    Column("principal_kind", String(16), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint(
+        "principal_kind='ai' AND principal_key='pdos-agent' AND display_name='PDOS Agent'",
+        name="identity",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ai_principal_scope"),
+    UniqueConstraint("tenant_id", "principal_key", name="uq_ai_principal_key"),
+    schema=AI_SCHEMA,
+)
+
+ai_write_policies = Table(
+    "ai_write_policies",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("principal_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("mode", String(16), nullable=False),
+    Column("contract_version", String(64), nullable=False),
+    Column("operation_settings", json_type, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND mode IN ('legacy','tiered') AND btrim(reason)<>'' "
+        "AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    CheckConstraint(
+        "contract_version='dc11-write-policy.v1' AND jsonb_typeof(operation_settings)='object'",
+        name="contract",
+    ),
+    CheckConstraint(
+        "coalesce(operation_settings ?& ARRAY['meeting.minutes.draft','meeting.actions."
+        "draft','meeting.decisions.draft','event.issue.create','record.ai_fields.update"
+        "','report.weekly.draft','test_report.rows.confirm'] AND operation_settings - A"
+        "RRAY['meeting.minutes.draft','meeting.actions.draft','meeting.decisions.draft'"
+        ",'event.issue.create','record.ai_fields.update','report.weekly.draft','test_re"
+        "port.rows.confirm'] = '{}'::jsonb AND jsonb_typeof((operation_settings->'meeti"
+        "ng.minutes.draft'))='object' AND (operation_settings->'meeting.minutes.draft')"
+        " - ARRAY['mode','minimum_confirmation_basis_points','maximum_retraction_basis_"
+        "points']='{}'::jsonb AND (operation_settings->'meeting.minutes.draft')->>'mode"
+        "' IN ('disabled','confirm','automatic') AND jsonb_typeof((operation_settings->"
+        "'meeting.minutes.draft')->'minimum_confirmation_basis_points')='number' AND (o"
+        "peration_settings->'meeting.minutes.draft')->>'minimum_confirmation_basis_poin"
+        "ts' ~ '^[0-9]+$' AND ((operation_settings->'meeting.minutes.draft')->>'minimum"
+        "_confirmation_basis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb_typeof("
+        "(operation_settings->'meeting.minutes.draft')->'maximum_retraction_basis_point"
+        "s')='number' AND (operation_settings->'meeting.minutes.draft')->>'maximum_retr"
+        "action_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'meeting.minutes.d"
+        "raft')->>'maximum_retraction_basis_points')::numeric BETWEEN 0 AND 500 AND jso"
+        "nb_typeof((operation_settings->'meeting.actions.draft'))='object' AND (operati"
+        "on_settings->'meeting.actions.draft') - ARRAY['mode','minimum_confirmation_bas"
+        "is_points','maximum_retraction_basis_points']='{}'::jsonb AND (operation_setti"
+        "ngs->'meeting.actions.draft')->>'mode' IN ('disabled','confirm','automatic') A"
+        "ND jsonb_typeof((operation_settings->'meeting.actions.draft')->'minimum_confir"
+        "mation_basis_points')='number' AND (operation_settings->'meeting.actions.draft"
+        "')->>'minimum_confirmation_basis_points' ~ '^[0-9]+$' AND ((operation_settings"
+        "->'meeting.actions.draft')->>'minimum_confirmation_basis_points')::numeric BET"
+        "WEEN 9000 AND 10000 AND jsonb_typeof((operation_settings->'meeting.actions.dra"
+        "ft')->'maximum_retraction_basis_points')='number' AND (operation_settings->'me"
+        "eting.actions.draft')->>'maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((o"
+        "peration_settings->'meeting.actions.draft')->>'maximum_retraction_basis_points"
+        "')::numeric BETWEEN 0 AND 500 AND jsonb_typeof((operation_settings->'meeting.d"
+        "ecisions.draft'))='object' AND (operation_settings->'meeting.decisions.draft')"
+        " - ARRAY['mode','minimum_confirmation_basis_points','maximum_retraction_basis_"
+        "points']='{}'::jsonb AND (operation_settings->'meeting.decisions.draft')->>'mo"
+        "de' IN ('disabled','confirm','automatic') AND jsonb_typeof((operation_settings"
+        "->'meeting.decisions.draft')->'minimum_confirmation_basis_points')='number' AN"
+        "D (operation_settings->'meeting.decisions.draft')->>'minimum_confirmation_basi"
+        "s_points' ~ '^[0-9]+$' AND ((operation_settings->'meeting.decisions.draft')->>"
+        "'minimum_confirmation_basis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb"
+        "_typeof((operation_settings->'meeting.decisions.draft')->'maximum_retraction_b"
+        "asis_points')='number' AND (operation_settings->'meeting.decisions.draft')->>'"
+        "maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'meeti"
+        "ng.decisions.draft')->>'maximum_retraction_basis_points')::numeric BETWEEN 0 A"
+        "ND 500 AND jsonb_typeof((operation_settings->'event.issue.create'))='object' A"
+        "ND (operation_settings->'event.issue.create') - ARRAY['mode','minimum_confirma"
+        "tion_basis_points','maximum_retraction_basis_points']='{}'::jsonb AND (operati"
+        "on_settings->'event.issue.create')->>'mode' IN ('disabled','confirm','automati"
+        "c') AND jsonb_typeof((operation_settings->'event.issue.create')->'minimum_conf"
+        "irmation_basis_points')='number' AND (operation_settings->'event.issue.create'"
+        ")->>'minimum_confirmation_basis_points' ~ '^[0-9]+$' AND ((operation_settings-"
+        ">'event.issue.create')->>'minimum_confirmation_basis_points')::numeric BETWEEN"
+        " 9000 AND 10000 AND jsonb_typeof((operation_settings->'event.issue.create')->'"
+        "maximum_retraction_basis_points')='number' AND (operation_settings->'event.iss"
+        "ue.create')->>'maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((operation_s"
+        "ettings->'event.issue.create')->>'maximum_retraction_basis_points')::numeric B"
+        "ETWEEN 0 AND 500 AND jsonb_typeof((operation_settings->'record.ai_fields.updat"
+        "e'))='object' AND (operation_settings->'record.ai_fields.update') - ARRAY['mod"
+        "e','minimum_confirmation_basis_points','maximum_retraction_basis_points']='{}'"
+        "::jsonb AND (operation_settings->'record.ai_fields.update')->>'mode' IN ('disa"
+        "bled','confirm','automatic') AND jsonb_typeof((operation_settings->'record.ai_"
+        "fields.update')->'minimum_confirmation_basis_points')='number' AND (operation_"
+        "settings->'record.ai_fields.update')->>'minimum_confirmation_basis_points' ~ '"
+        "^[0-9]+$' AND ((operation_settings->'record.ai_fields.update')->>'minimum_conf"
+        "irmation_basis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb_typeof((oper"
+        "ation_settings->'record.ai_fields.update')->'maximum_retraction_basis_points')"
+        "='number' AND (operation_settings->'record.ai_fields.update')->>'maximum_retra"
+        "ction_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'record.ai_fields.u"
+        "pdate')->>'maximum_retraction_basis_points')::numeric BETWEEN 0 AND 500 AND js"
+        "onb_typeof((operation_settings->'report.weekly.draft'))='object' AND (operatio"
+        "n_settings->'report.weekly.draft') - ARRAY['mode','minimum_confirmation_basis_"
+        "points','maximum_retraction_basis_points']='{}'::jsonb AND (operation_settings"
+        "->'report.weekly.draft')->>'mode' IN ('disabled','confirm','automatic') AND js"
+        "onb_typeof((operation_settings->'report.weekly.draft')->'minimum_confirmation_"
+        "basis_points')='number' AND (operation_settings->'report.weekly.draft')->>'min"
+        "imum_confirmation_basis_points' ~ '^[0-9]+$' AND ((operation_settings->'report"
+        ".weekly.draft')->>'minimum_confirmation_basis_points')::numeric BETWEEN 9000 A"
+        "ND 10000 AND jsonb_typeof((operation_settings->'report.weekly.draft')->'maximu"
+        "m_retraction_basis_points')='number' AND (operation_settings->'report.weekly.d"
+        "raft')->>'maximum_retraction_basis_points' ~ '^[0-9]+$' AND ((operation_settin"
+        "gs->'report.weekly.draft')->>'maximum_retraction_basis_points')::numeric BETWE"
+        "EN 0 AND 500 AND jsonb_typeof((operation_settings->'test_report.rows.confirm')"
+        ")='object' AND (operation_settings->'test_report.rows.confirm') - ARRAY['mode'"
+        ",'minimum_confirmation_basis_points','maximum_retraction_basis_points']='{}'::"
+        "jsonb AND (operation_settings->'test_report.rows.confirm')->>'mode' IN ('disab"
+        "led','confirm') AND jsonb_typeof((operation_settings->'test_report.rows.confir"
+        "m')->'minimum_confirmation_basis_points')='number' AND (operation_settings->'t"
+        "est_report.rows.confirm')->>'minimum_confirmation_basis_points' ~ '^[0-9]+$' A"
+        "ND ((operation_settings->'test_report.rows.confirm')->>'minimum_confirmation_b"
+        "asis_points')::numeric BETWEEN 9000 AND 10000 AND jsonb_typeof((operation_sett"
+        "ings->'test_report.rows.confirm')->'maximum_retraction_basis_points')='number'"
+        " AND (operation_settings->'test_report.rows.confirm')->>'maximum_retraction_ba"
+        "sis_points' ~ '^[0-9]+$' AND ((operation_settings->'test_report.rows.confirm')"
+        "->>'maximum_retraction_basis_points')::numeric BETWEEN 0 AND 500, false)",
+        name="operation_settings",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ai_write_policy_scope"),
+    UniqueConstraint("tenant_id", "revision", name="uq_ai_write_policy_revision"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_ai_write_policy_request"),
+    schema=AI_SCHEMA,
+)
+
+ai_write_trial_protocols = Table(
+    "ai_write_trial_protocols",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("policy_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("protocol", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(protocol)='object'",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ai_trial_protocol_scope"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_trial_protocol_request"
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_write_trial_receipts = Table(
+    "ai_write_trial_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column(
+        "tenant_id",
+        Uuid,
+        ForeignKey(f"{CORE_SCHEMA}.tenants.id", ondelete="RESTRICT"),
+        nullable=False,
+    ),
+    Column("protocol_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("as_of", DateTime(timezone=True), nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "protocol_id"],
+        [
+            f"{AI_SCHEMA}.ai_write_trial_protocols.tenant_id",
+            f"{AI_SCHEMA}.ai_write_trial_protocols.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "request_digest ~ '^[a-f0-9]{64}$' AND jsonb_typeof(receipt)='object' "
+        "AND as_of<=created_at",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_ai_trial_receipt_scope"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_trial_receipt_request"
+    ),
+    schema=AI_SCHEMA,
+)
+
+Index(
+    "ix_ai_trial_protocol_history",
+    ai_write_trial_protocols.c.tenant_id,
+    ai_write_trial_protocols.c.created_at,
+    ai_write_trial_protocols.c.id,
+)
+Index(
+    "ix_ai_trial_receipt_history",
+    ai_write_trial_receipts.c.tenant_id,
+    ai_write_trial_receipts.c.protocol_id,
+    ai_write_trial_receipts.c.created_at,
+    ai_write_trial_receipts.c.id,
+)
+
+ai_write_scope_revisions = Table(
+    "ai_write_scope_revisions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("operation_key", String(64), nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("enabled", Boolean, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "operation_key IN ('meeting.minutes.draft','meeting.actions.draft','meeting.dec"
+        "isions.draft','event.issue.create') AND revision>0 AND btrim(reason)<>'' "
+        "AND request_digest ~ '^[a-"
+        "f0-9]{64}$'",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_scope_identity"),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "principal_id",
+        "operation_key",
+        "revision",
+        name="uq_ai_scope_revision",
+    ),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_ai_scope_request"),
+    schema=AI_SCHEMA,
+)
+
+ai_meeting_drafts = Table(
+    "ai_meeting_drafts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("draft_kind", String(16), nullable=False, server_default=text("'minutes'")),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("scope_revision_id", Uuid, nullable=False),
+    Column("finding_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("model_invocation_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("origin", String(16), nullable=False),
+    Column("capture_mode", String(16), nullable=False),
+    Column("write_receipt", json_type),
+    Column("payload", json_type, nullable=False),
+    Column("source_snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "meeting_id"],
+        [f"{PROJECT_SCHEMA}.meetings.tenant_id", f"{PROJECT_SCHEMA}.meetings.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scope_revision_id"],
+        [
+            f"{AI_SCHEMA}.ai_write_scope_revisions.tenant_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.project_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "model_invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.tenant_id", f"{AI_SCHEMA}.model_invocations.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "origin='ai' AND capture_mode IN ('trial','direct') "
+        "AND draft_kind IN ('minutes','actions','decisions') "
+        "AND jsonb_typeof(payload)='object' AND jsonb_typeof(source_snapshot)='object' "
+        "AND (write_receipt IS NULL OR jsonb_typeof(write_receipt)='object') "
+        "AND (capture_mode='trial' OR (write_receipt IS NOT NULL "
+        "AND write_receipt->>'route'='direct' "
+        "AND jsonb_typeof(write_receipt->'sampled')='boolean' "
+        "AND write_receipt->>'binding_digest' ~ '^[a-f0-9]{64}$') IS TRUE)",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_minutes_draft_scope"),
+    UniqueConstraint("tenant_id", "finding_id", name="uq_ai_minutes_draft_finding"),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_event_results = Table(
+    "ai_issue_event_results",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("model_invocation_id", Uuid, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("source_snapshot", json_type, nullable=False),
+    Column("proposal", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "model_invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.tenant_id", f"{AI_SCHEMA}.model_invocations.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "(source_digest ~ '^[a-f0-9]{64}$' AND event_row_id>0 "
+        "AND jsonb_typeof(source_snapshot)='object' AND jsonb_typeof(proposal)='object' "
+        "AND source_snapshot->>'version'='event-issue-source-v1' "
+        "AND source_snapshot->>'source_digest'=source_digest "
+        "AND source_snapshot->>'event_row_id'=event_row_id::text "
+        "AND source_snapshot->>'tenant_id'=tenant_id::text "
+        "AND source_snapshot->>'project_id'=project_id::text "
+        "AND proposal->>'disposition' IN "
+        "('create_issue','reuse_issue','insufficient_evidence')) IS TRUE",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "run_id", name="uq_ai_issue_result_run"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_issue_result_scope"),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_trial_collections = Table(
+    "ai_issue_trial_collections",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("protocol_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("collection_digest", String(64), nullable=False),
+    Column("as_of", DateTime(timezone=True), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("collection", json_type, nullable=False),
+    Column("output_event_row_id", BigInteger, nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "output_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "protocol_id"],
+        [
+            f"{AI_SCHEMA}.ai_issue_trial_protocols.{key}"
+            for key in ("tenant_id", "project_id", "id")
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_issue_trial_collection_request"
+    ),
+    UniqueConstraint(
+        "tenant_id", "project_id", "protocol_id", "id", name="uq_ai_issue_trial_collection_scope"
+    ),
+    CheckConstraint(
+        "as_of<=created_at AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND collection_digest ~ '^[a-f0-9]{64}$' "
+        "AND (jsonb_typeof(collection)='object' "
+        "AND collection->>'version'='event-issue-trial-collection-v1' "
+        "AND collection->>'id'=id::text AND collection->>'tenant_id'=tenant_id::text "
+        "AND collection->>'project_id'=project_id::text "
+        "AND collection->>'protocol_id'=protocol_id::text "
+        "AND collection->>'actor_user_id'=actor_user_id::text "
+        "AND (collection->>'as_of')::timestamptz=as_of "
+        "AND (collection->>'created_at')::timestamptz=created_at "
+        "AND collection->'selection_complete'='true'::jsonb "
+        "AND collection->'qualification_granted'='false'::jsonb "
+        "AND jsonb_typeof(collection->'items')='array' "
+        "AND jsonb_typeof(collection->'total_runs')='number' "
+        "AND collection->>'total_runs' ~ '^(0|[1-9][0-9]*)$' "
+        "AND jsonb_typeof(collection->'matching_runs')='number' "
+        "AND collection->>'matching_runs' ~ '^(0|[1-9][0-9]*)$' "
+        "AND jsonb_array_length(collection->'items')=(collection->>'total_runs')::numeric "
+        "AND (collection->>'matching_runs')::numeric "
+        "<=(collection->>'total_runs')::numeric) IS TRUE",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_trial_protocols = Table(
+    "ai_issue_trial_protocols",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("scope_revision_id", Uuid, nullable=False),
+    Column("window_start", DateTime(timezone=True), nullable=False),
+    Column("window_end", DateTime(timezone=True), nullable=False),
+    Column("evidence_kind", String(32), nullable=False),
+    Column("protocol", json_type, nullable=False),
+    Column("protocol_digest", String(64), nullable=False),
+    Column("output_event_row_id", BigInteger, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "output_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scope_revision_id"],
+        [
+            f"{AI_SCHEMA}.ai_write_scope_revisions.tenant_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.project_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_issue_trial_scope"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_ai_issue_trial_request"),
+    CheckConstraint(
+        "window_start < window_end AND window_end-window_start <= interval '366 days' "
+        "AND evidence_kind IN ('real_business','controlled_replay','synthetic') "
+        "AND (evidence_kind<>'real_business' OR window_start>created_at) "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND protocol_digest ~ '^[a-f0-9]{64}$' "
+        "AND (jsonb_typeof(protocol)='object' "
+        "AND protocol->>'version'='event-issue-trial-protocol-v1' "
+        "AND protocol->>'id'=id::text AND protocol->>'tenant_id'=tenant_id::text "
+        "AND protocol->>'project_id'=project_id::text "
+        "AND protocol->>'actor_user_id'=actor_user_id::text "
+        "AND protocol->>'evidence_kind'=evidence_kind "
+        "AND (protocol->>'window_start')::timestamptz=window_start "
+        "AND (protocol->>'window_end')::timestamptz=window_end "
+        "AND (protocol->>'created_at')::timestamptz=created_at "
+        "AND protocol->'qualification_granted'='false'::jsonb) IS TRUE",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_observations = Table(
+    "ai_issue_observations",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("window_start", DateTime(timezone=True), nullable=False),
+    Column("window_end", DateTime(timezone=True), nullable=False),
+    Column("as_of", DateTime(timezone=True), nullable=False),
+    Column("observation", json_type, nullable=False),
+    Column("observation_digest", String(64), nullable=False),
+    Column("output_event_row_id", BigInteger, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "output_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_issue_observation_scope"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_issue_observation_request"
+    ),
+    CheckConstraint(
+        "window_start < window_end AND window_end <= as_of AND as_of <= created_at "
+        "AND window_end-window_start <= interval '366 days' "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND observation_digest ~ '^[a-f0-9]{64}$' "
+        "AND (jsonb_typeof(observation)='object' "
+        "AND observation->>'version'='event-issue-observation-v1' "
+        "AND observation->>'id'=id::text AND observation->>'tenant_id'=tenant_id::text "
+        "AND observation->>'project_id'=project_id::text "
+        "AND observation->'qualification_granted'='false'::jsonb "
+        "AND jsonb_typeof(observation->'items')='array' "
+        "AND jsonb_array_length(observation->'items')="
+        "(observation->>'total_runs')::integer) IS TRUE",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_generation_bindings = Table(
+    "ai_issue_generation_bindings",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("source_digest", String(64), nullable=False),
+    Column("policy_id", Uuid),
+    Column("principal_id", Uuid),
+    Column("scope_revision_id", Uuid),
+    Column("capture_kind", String(24), nullable=False),
+    Column("reason_code", String(80), nullable=False),
+    Column("snapshot", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scope_revision_id"],
+        [
+            f"{AI_SCHEMA}.ai_write_scope_revisions.tenant_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.project_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "run_id", name="uq_issue_generation_binding_run"),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_issue_generation_binding_scope"),
+    CheckConstraint(
+        "(capture_kind IN ('evidence_only','trial_candidate') AND event_row_id>0 "
+        "AND source_digest ~ '^[a-f0-9]{64}$' AND btrim(reason_code)<>'' "
+        "AND jsonb_typeof(snapshot)='object' "
+        "AND snapshot->>'version'='event-issue-generation-binding-v1' "
+        "AND snapshot->>'operation_key'='event.issue.create') IS TRUE",
+        name="shape",
+    ),
+    CheckConstraint(
+        "capture_kind<>'trial_candidate' OR (policy_id IS NOT NULL "
+        "AND principal_id IS NOT NULL AND scope_revision_id IS NOT NULL)",
+        name="trial_binding",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_proposal_reviews = Table(
+    "ai_issue_proposal_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("result_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("output_event_row_id", BigInteger, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "result_id"],
+        [
+            f"{AI_SCHEMA}.ai_issue_event_results.tenant_id",
+            f"{AI_SCHEMA}.ai_issue_event_results.project_id",
+            f"{AI_SCHEMA}.ai_issue_event_results.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "output_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "result_id", "version", name="uq_issue_proposal_review_version"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_issue_proposal_review_request"
+    ),
+    CheckConstraint(
+        "version>0 AND action IN ('decline','reopen') AND btrim(reason)<>'' "
+        "AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_applications = Table(
+    "ai_issue_applications",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("result_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("model_invocation_id", Uuid, nullable=False),
+    Column("principal_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("scope_revision_id", Uuid, nullable=False),
+    Column("requested_by_user_id", Uuid, nullable=False),
+    Column("confirmed_by_user_id", Uuid),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("source_event_row_id", BigInteger, nullable=False),
+    Column("source_key", String(128), nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("disposition", String(16), nullable=False),
+    Column("capture_mode", String(16), nullable=False),
+    Column("output_event_row_id", BigInteger, nullable=False),
+    Column("issue_event_row_id", BigInteger),
+    Column("receipt", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_0",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "result_id"],
+        [
+            f"{AI_SCHEMA}.ai_issue_event_results.tenant_id",
+            f"{AI_SCHEMA}.ai_issue_event_results.project_id",
+            f"{AI_SCHEMA}.ai_issue_event_results.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_1",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_2",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "model_invocation_id"],
+        [f"{AI_SCHEMA}.model_invocations.tenant_id", f"{AI_SCHEMA}.model_invocations.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_3",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_4",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_5",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "scope_revision_id"],
+        [
+            f"{AI_SCHEMA}.ai_write_scope_revisions.tenant_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.project_id",
+            f"{AI_SCHEMA}.ai_write_scope_revisions.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_6",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requested_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_7",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "confirmed_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_8",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_9",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "output_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_10",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "issue_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_11",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [
+            f"{PROJECT_SCHEMA}.issues.tenant_id",
+            f"{PROJECT_SCHEMA}.issues.project_id",
+            f"{PROJECT_SCHEMA}.issues.id",
+        ],
+        ondelete="RESTRICT",
+        name="fk_ai_issue_application_12",
+    ),
+    CheckConstraint(
+        "disposition IN ('created','reused') AND capture_mode IN ('trial','direct') "
+        "AND btrim(source_key)<>'' AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(receipt)='object' "
+        "AND ((disposition='created')=(issue_event_row_id IS NOT NULL)) "
+        "AND ((capture_mode='trial' AND confirmed_by_user_id IS NOT NULL "
+        "AND receipt->>'route'='confirmed_trial') OR "
+        "(capture_mode='direct' AND confirmed_by_user_id IS NULL "
+        "AND receipt->>'route'='automatic' "
+        "AND receipt->'write_receipt'->>'version'='event-issue-write-execution-v1' "
+        "AND receipt->'write_receipt'->>'route'='direct' "
+        "AND jsonb_typeof(receipt->'write_receipt'->'sampled')='boolean' "
+        "AND receipt->'write_receipt'->>'binding_digest' ~ '^[a-f0-9]{64}$' "
+        "AND receipt->'write_receipt'->>'run_id'=run_id::text "
+        "AND receipt->'write_receipt'->>'policy_id'=policy_id::text "
+        "AND receipt->'write_receipt'->>'principal_id'=principal_id::text "
+        "AND receipt->'write_receipt'->>'scope_revision_id'=scope_revision_id::text)) IS TRUE",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_issue_application_scope"),
+    UniqueConstraint("tenant_id", "result_id", name="uq_ai_issue_application_result"),
+    UniqueConstraint(
+        "tenant_id", "project_id", "source_key", name="uq_ai_issue_application_source"
+    ),
+    UniqueConstraint("tenant_id", "source_event_row_id", name="uq_ai_issue_application_event"),
+    UniqueConstraint(
+        "tenant_id", "confirmed_by_user_id", "request_id", name="uq_ai_issue_application_request"
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_sample_reviews = Table(
+    "ai_issue_sample_reviews",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("application_id", Uuid, nullable=False),
+    Column("issue_id", Uuid, nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("version", Integer, nullable=False),
+    Column("verdict", String(32), nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("issue_snapshot", json_type, nullable=False),
+    Column("issue_digest", String(64), nullable=False),
+    Column("issue_updated_at", DateTime(timezone=True), nullable=False),
+    Column("output_event_row_id", BigInteger, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "application_id"],
+        [f"{AI_SCHEMA}.ai_issue_applications.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "issue_id"],
+        [f"{PROJECT_SCHEMA}.issues.{k}" for k in ("tenant_id", "project_id", "id")],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "output_event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_issue_sample_scope"),
+    UniqueConstraint("tenant_id", "actor_user_id", "request_id", name="uq_ai_issue_sample_request"),
+    UniqueConstraint("tenant_id", "application_id", "version", name="uq_ai_issue_sample_version"),
+    CheckConstraint(
+        "version>0 AND verdict IN ('accepted','needs_correction') AND btrim(reason)<>'' "
+        "AND request_digest ~ '^[a-f0-9]{64}$' AND issue_digest ~ '^[a-f0-9]{64}$' "
+        "AND issue_updated_at<=created_at AND (jsonb_typeof(issue_snapshot)='object' "
+        "AND issue_snapshot->>'id'=issue_id::text "
+        "AND issue_snapshot->>'project_id'=project_id::text "
+        "AND (issue_snapshot->>'updated_at')::timestamptz=issue_updated_at) IS TRUE",
+        name="shape",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_withdrawal_receipts = Table(
+    "ai_issue_withdrawal_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("run_id", Uuid, nullable=False),
+    Column("application_id", Uuid),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("kind", String(16), nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("items", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "application_id"],
+        [
+            f"{AI_SCHEMA}.ai_issue_applications.tenant_id",
+            f"{AI_SCHEMA}.ai_issue_applications.project_id",
+            f"{AI_SCHEMA}.ai_issue_applications.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "kind IN ('single','run') AND ((kind='single')=(application_id IS NOT NULL)) "
+        "AND btrim(reason)<>'' AND request_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(items)='array'",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "project_id", "id", name="uq_ai_issue_withdrawal_scope"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_issue_withdrawal_request"
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_issue_event_receipts = Table(
+    "ai_issue_event_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("operation_key", String(80), nullable=False),
+    Column("source_digest", String(64)),
+    Column("run_id", Uuid),
+    Column("principal_id", Uuid),
+    Column("status", String(20), nullable=False),
+    Column("reason", String(80), nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "operation_key='event.issue.create' AND event_row_id>0 "
+        "AND status IN ('queued','reused','skipped') AND btrim(reason)<>'' "
+        "AND (source_digest IS NULL OR source_digest ~ '^[a-f0-9]{64}$') "
+        "AND ((status='skipped' AND run_id IS NULL) OR "
+        "(status IN ('queued','reused') AND run_id IS NOT NULL "
+        "AND source_digest IS NOT NULL AND principal_id IS NOT NULL)) "
+        "AND (jsonb_typeof(receipt)='object' "
+        "AND receipt->>'version'='issue-event-receipt.v1' "
+        "AND receipt->>'consumer_key'='issue_creation_events_v1' "
+        "AND receipt->>'event_row_id'=event_row_id::text "
+        "AND receipt->>'operation_key'=operation_key "
+        "AND receipt->>'status'=status AND receipt->>'reason'=reason "
+        "AND btrim(receipt->>'message')<>'' "
+        "AND (receipt->>'created_at')::timestamptz=created_at) IS TRUE",
+        name="shape",
+    ),
+    UniqueConstraint(
+        "tenant_id", "event_row_id", "operation_key", name="uq_ai_issue_event_operation"
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_meeting_event_receipts = Table(
+    "ai_meeting_event_receipts",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("meeting_id", Uuid, nullable=False),
+    Column("event_row_id", BigInteger, nullable=False),
+    Column("operation_key", String(80), nullable=False),
+    Column("transcript_id", Uuid),
+    Column("source_digest", String(64)),
+    Column("run_id", Uuid),
+    Column("principal_id", Uuid),
+    Column("status", String(20), nullable=False),
+    Column("reason", String(80), nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "meeting_id"],
+        [
+            f"{PROJECT_SCHEMA}.meetings.tenant_id",
+            f"{PROJECT_SCHEMA}.meetings.project_id",
+            f"{PROJECT_SCHEMA}.meetings.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "event_row_id"],
+        [f"{EVENT_SCHEMA}.events.tenant_id", f"{EVENT_SCHEMA}.events.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "transcript_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_transcripts.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_transcripts.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "run_id"],
+        [f"{AI_SCHEMA}.agent_runs.tenant_id", f"{AI_SCHEMA}.agent_runs.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "principal_id"],
+        [f"{AI_SCHEMA}.ai_principals.tenant_id", f"{AI_SCHEMA}.ai_principals.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "operation_key IN ('meeting.minutes.draft','meeting.actions.draft',"
+        "'meeting.decisions.draft') AND status IN ('queued','reused','skipped') "
+        "AND btrim(reason)<>'' AND jsonb_typeof(receipt)='object' "
+        "AND (source_digest IS NULL OR source_digest ~ '^[a-f0-9]{64}$') "
+        "AND (status='skipped' OR (run_id IS NOT NULL AND transcript_id IS NOT NULL "
+        "AND source_digest IS NOT NULL AND principal_id IS NOT NULL))",
+        name="shape",
+    ),
+    UniqueConstraint(
+        "tenant_id", "event_row_id", "operation_key", name="uq_ai_meeting_event_operation"
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_write_runtime_stops = Table(
+    "ai_write_runtime_stops",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("policy_id", Uuid, nullable=False),
+    Column("operation_key", String(80), nullable=False),
+    Column("binding_digest", String(64), nullable=False),
+    Column("receipt", json_type, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id"],
+        [f"{PROJECT_SCHEMA}.projects.tenant_id", f"{PROJECT_SCHEMA}.projects.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "policy_id"],
+        [f"{AI_SCHEMA}.ai_write_policies.tenant_id", f"{AI_SCHEMA}.ai_write_policies.id"],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "operation_key IN ('meeting.minutes.draft','meeting.actions.draft',"
+        "'meeting.decisions.draft','event.issue.create') AND binding_digest ~ '^[a-f0-9]{64}$' "
+        "AND jsonb_typeof(receipt)='object'",
+        name="shape",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "project_id",
+        "policy_id",
+        "operation_key",
+        "binding_digest",
+        name="uq_ai_write_runtime_stop",
+    ),
+    schema=AI_SCHEMA,
+)
+
+ai_meeting_draft_actions = Table(
+    "ai_meeting_draft_actions",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("project_id", Uuid, nullable=False),
+    Column("draft_id", Uuid, nullable=False),
+    Column("revision", Integer, nullable=False),
+    Column("action", String(16), nullable=False),
+    Column("actor_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("reason", String(1000), nullable=False),
+    Column("body", Text, nullable=False),
+    Column("unresolved_points", Text, nullable=False),
+    Column("official_minutes_id", Uuid),
+    Column("published_task_id", Uuid),
+    Column("published_decision_id", Uuid),
+    Column("payload", JSONB(none_as_null=True)),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "published_task_id"],
+        [
+            f"{PROJECT_SCHEMA}.tasks.tenant_id",
+            f"{PROJECT_SCHEMA}.tasks.project_id",
+            f"{PROJECT_SCHEMA}.tasks.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "published_decision_id"],
+        [
+            f"{PROJECT_SCHEMA}.decisions.tenant_id",
+            f"{PROJECT_SCHEMA}.decisions.project_id",
+            f"{PROJECT_SCHEMA}.decisions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "project_id", "draft_id"],
+        [
+            f"{AI_SCHEMA}.ai_meeting_drafts.tenant_id",
+            f"{AI_SCHEMA}.ai_meeting_drafts.project_id",
+            f"{AI_SCHEMA}.ai_meeting_drafts.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "actor_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "official_minutes_id"],
+        [
+            f"{PROJECT_SCHEMA}.meeting_minutes_versions.tenant_id",
+            f"{PROJECT_SCHEMA}.meeting_minutes_versions.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    CheckConstraint(
+        "revision>0 AND action IN ('confirm','edit','withdraw','publish') AND btrim(rea"
+        "son)<>'' AND request_digest ~ '^[a-f0-9]{64}$' AND length(body) BETWEEN 1 AND "
+        "20000 AND length(unresolved_points) BETWEEN 1 AND 5000 AND (payload IS NULL OR"
+        " jsonb_typeof(payload)='object') AND ((action='publish' AND num_nonnulls(offic"
+        "ial_minutes_id,published_task_id,published_decision_id)=1) OR (action<>'publis"
+        "h' AND num_nonnulls(official_minutes_id,published_task_id,published_decision_i"
+        "d)=0))",
+        name="shape",
+    ),
+    UniqueConstraint("tenant_id", "draft_id", "revision", name="uq_ai_minutes_action_revision"),
+    UniqueConstraint(
+        "tenant_id", "actor_user_id", "request_id", name="uq_ai_minutes_action_request"
+    ),
+    schema=AI_SCHEMA,
+)
+Index(
+    "ix_ai_minutes_draft_history",
+    ai_meeting_drafts.c.tenant_id,
+    ai_meeting_drafts.c.project_id,
+    ai_meeting_drafts.c.meeting_id,
+    ai_meeting_drafts.c.created_at,
+    ai_meeting_drafts.c.id,
+)
+
 agent_runs = Table(
     "agent_runs",
     metadata,
@@ -9434,15 +10741,28 @@ agent_runs = Table(
     Column("market_space_id", Uuid),
     Column("scope_kind", String(16), nullable=False, server_default=text("'project'")),
     CheckConstraint(
-        "(scope_kind='project' AND project_id IS NOT NULL AND market_space_id IS NULL "
+        "((scope_kind='project' AND project_id IS NOT NULL AND market_space_id IS NULL "
         "AND context_version NOT IN "
         "('process-template-request-v1','product-matrix-request-v1')) OR "
         "(scope_kind='tenant' AND project_id IS NULL AND market_space_id IS NULL AND "
-        "agent_key='knowledge_lite' "
-        "AND context_version='process-template-request-v1') OR "
-        "(scope_kind='market_space' AND project_id IS NULL AND market_space_id IS NOT NULL "
-        "AND agent_key='product_management_intelligence' AND "
-        "context_version='product-matrix-request-v1')",
+        "agent_key='knowledge_lite' AND context_version='process-template-request-v1') OR "
+        "(scope_kind='market_space' AND project_id IS NULL AND market_space_id IS NOT "
+        "NULL AND agent_key='product_management_intelligence' AND "
+        "context_version='product-matrix-request-v1') OR "
+        "(context_version='product-work-request-v1' AND scope_kind='market_space' AND "
+        "project_id IS NULL AND market_space_id IS NOT NULL AND "
+        "agent_key='product_management_intelligence' AND subscription_id IS NULL AND "
+        "first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 AND "
+        "event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)<>'' "
+        "AND requested_by_user_id IS NOT NULL AND status IN "
+        "('running','succeeded','degraded','failed')) IS TRUE) OR "
+        "(context_version='product-evaluation-request-v1' AND scope_kind='market_space' "
+        "AND project_id IS NULL AND market_space_id IS NOT NULL AND "
+        "agent_key='product_management_intelligence' AND subscription_id IS NULL AND "
+        "first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 AND "
+        "event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)<>'' "
+        "AND requested_by_user_id IS NOT NULL AND status IN "
+        "('running','succeeded','degraded','failed')) IS TRUE",
         name="scope",
     ),
     Column("subscription_id", Uuid),
@@ -9497,38 +10817,54 @@ agent_runs = Table(
     ),
     CheckConstraint("window_started_at <= window_ended_at", name="window_order"),
     CheckConstraint(
-        "(((agent_key = 'ai_chat' OR (agent_key='product_management_intelligence' AND "
-        "context_version='product-matrix-request-v1') OR (agent_key='supplier_intelligence' AND "
+        "((((agent_key = 'ai_chat' OR (agent_key='product_management_intelligence' AND "
+        "context_version='product-matrix-request-v1') OR "
+        "(agent_key='supplier_intelligence' AND "
         "context_version='supplier-recovery-request-v1') OR (agent_key = "
         "'quality_intelligence' AND context_version IN ('report-mapping-request-v1', "
-        "'quality-work-package-request-v1')) OR (agent_key='knowledge_lite' AND "
-        "context_version IN "
-        "('meeting-reading-request-v1','meeting-minutes-request-v1','meeting-actions-requ"
-        "est-v1','meeting-decisions-request-v1','meeting-business-request-v1','process-te"
-        "mplate-request-v1','intake-organization-request-v1','meeting-planning-request-v1"
-        "')) "
-        "OR (agent_key='engineering_intelligence' AND "
-        "context_version IN ('change-work-package-request-v1','cost-reduction-request-v1')) "
-        "OR (agent_key='executive_intelligence' AND "
-        "context_version IN ('portfolio-explanation-request-v1','executive-brief-request-v1'))) "
-        "AND subscription_id IS NULL "
-        "AND first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count = "
-        "0 AND event_row_ids = '[]'::jsonb AND request_id IS NOT NULL AND "
-        "btrim(request_id) <> '' AND requested_by_user_id IS NOT NULL AND (status IN "
-        "('running', 'succeeded', 'degraded', 'failed') OR (agent_key IN "
-        "('ai_chat','quality_intelligence') AND status = 'queued'))) OR (agent_key <> "
-        "'ai_chat' AND subscription_id IS NOT NULL AND ((request_id IS NULL AND "
-        "requested_by_user_id IS NULL) OR ((agent_key='project_intelligence' AND "
-        "context_version='risk-suggestion-request-v1' OR "
-        "agent_key='quality_intelligence' AND context_version='test-plan-request-v1') "
-        "AND request_id IS NOT NULL AND btrim(request_id)<>'' AND requested_by_user_id "
-        "IS NOT NULL)) AND first_event_row_id IS NOT NULL AND last_event_row_id IS NOT "
-        "NULL AND CASE WHEN jsonb_typeof(event_row_ids) = 'array' THEN event_count > 0 "
-        "AND first_event_row_id > 0 AND last_event_row_id >= first_event_row_id AND "
-        "jsonb_array_length(event_row_ids) = event_count AND "
-        "(event_row_ids->>0)::bigint = first_event_row_id AND "
-        "(event_row_ids->>(event_count - 1))::bigint = last_event_row_id ELSE false "
-        "END)) IS TRUE",
+        "'quality-work-package-request-v1','event-issue-request-v1')) OR "
+        "(agent_key='knowledge_lite' AND context_version IN "
+        "('meeting-reading-request-v1','meeting-minutes-request-v1','meeting-actions-request-v1',"
+        "'meeting-decisions-request-v1','meeting-business-request-v1','process-template-request-v1',"
+        "'intake-organization-request-v1','meeting-planning-request-v1')) "
+        "OR (agent_key='engineering_intelligence' AND context_version IN "
+        "('change-work-package-request-v1','cost-reduction-request-v1')) OR "
+        "(agent_key='executive_intelligence' AND context_version IN "
+        "('portfolio-explanation-request-v1','executive-brief-request-v1'))) AND "
+        "subscription_id IS NULL AND first_event_row_id IS NULL AND last_event_row_id IS "
+        "NULL AND event_count = 0 AND event_row_ids = '[]'::jsonb AND request_id IS NOT "
+        "NULL AND btrim(request_id) <> '' AND requested_by_user_id IS NOT NULL AND "
+        "(status IN ('running', 'succeeded', 'degraded', 'failed') OR (agent_key IN "
+        "('ai_chat','quality_intelligence') AND status = 'queued') OR (status='queued' "
+        "AND agent_key='knowledge_lite' AND context_version IN "
+        "('meeting-minutes-request-v1','meeting-actions-request-v1',"
+        "'meeting-decisions-request-v1') "
+        "AND run_context->'reading_event_trigger'->>'version'='meeting-event.v1'))) OR "
+        "(agent_key <> 'ai_chat' AND subscription_id IS NOT NULL AND ((request_id IS NULL "
+        "AND requested_by_user_id IS NULL) OR ((agent_key='project_intelligence' AND "
+        "context_version='risk-suggestion-request-v1' OR agent_key='quality_intelligence' "
+        "AND context_version='test-plan-request-v1') AND request_id IS NOT NULL AND "
+        "btrim(request_id)<>'' AND requested_by_user_id IS NOT NULL)) AND "
+        "first_event_row_id IS NOT NULL AND last_event_row_id IS NOT NULL AND CASE WHEN "
+        "jsonb_typeof(event_row_ids) = 'array' THEN event_count > 0 AND "
+        "first_event_row_id > 0 AND last_event_row_id >= first_event_row_id AND "
+        "jsonb_array_length(event_row_ids) = event_count AND (event_row_ids->>0)::bigint "
+        "= first_event_row_id AND (event_row_ids->>(event_count - 1))::bigint = "
+        "last_event_row_id ELSE false END)) IS TRUE OR "
+        "(context_version='product-work-request-v1' AND scope_kind='market_space' AND "
+        "project_id IS NULL AND market_space_id IS NOT NULL AND "
+        "agent_key='product_management_intelligence' AND subscription_id IS NULL AND "
+        "first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 AND "
+        "event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)<>'' "
+        "AND requested_by_user_id IS NOT NULL AND status IN "
+        "('running','succeeded','degraded','failed')) IS TRUE) OR "
+        "(context_version='product-evaluation-request-v1' AND scope_kind='market_space' "
+        "AND project_id IS NULL AND market_space_id IS NOT NULL AND "
+        "agent_key='product_management_intelligence' AND subscription_id IS NULL AND "
+        "first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 AND "
+        "event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)<>'' "
+        "AND requested_by_user_id IS NOT NULL AND status IN "
+        "('running','succeeded','degraded','failed')) IS TRUE",
         name="event_bounds_consistent",
     ),
     ForeignKeyConstraint(
@@ -9544,19 +10880,20 @@ agent_runs = Table(
     CheckConstraint("jsonb_typeof(run_context) = 'object'", name="context_object"),
     CheckConstraint("btrim(context_version) <> ''", name="context_version_nonblank"),
     CheckConstraint(
-        "(status IN ('debouncing', 'queued') AND started_at IS NULL AND completed_at IS NULL) "
-        "OR (status IN ('running', 'waiting_input') AND started_at IS NOT NULL AND "
-        "completed_at IS NULL) "
-        "OR (status IN ('succeeded', 'degraded', 'failed') "
-        "AND started_at IS NOT NULL AND completed_at IS NOT NULL) OR "
-        "(status='failed' AND started_at IS NULL AND completed_at IS NOT NULL "
-        "AND ((dispatch_policy='milestone.v1' AND dispatch_deadline IS NOT NULL "
-        "AND error_code='AGENT_TRIGGER_DEADLINE_EXCEEDED') OR "
-        "error_code IN ('BUDGET_LINEAGE_EXPIRED','AGENT_AUTHORIZATION_CHANGED') OR "
-        "(error_code='EVENT_RUN_CANCELLED' AND request_id IS NULL "
-        "AND requested_by_user_id IS NULL AND subscription_id IS NOT NULL) OR "
-        "(agent_key IN ('ai_chat','project_intelligence','quality_intelligence') "
-        "AND run_context->>'application_queue_version'='1'))) IS TRUE",
+        "(status IN ('debouncing', 'queued') AND started_at IS NULL AND completed_at IS N"
+        "ULL) OR (status IN ('running', 'waiting_input') AND started_at IS NOT NULL AND c"
+        "ompleted_at IS NULL) OR (status IN ('succeeded', 'degraded', 'failed') AND start"
+        "ed_at IS NOT NULL AND completed_at IS NOT NULL) OR (status='failed' AND started_"
+        "at IS NULL AND completed_at IS NOT NULL AND ((dispatch_policy='milestone.v1' AND"
+        " dispatch_deadline IS NOT NULL AND error_code='AGENT_TRIGGER_DEADLINE_EXCEEDED')"
+        " OR error_code IN ('BUDGET_LINEAGE_EXPIRED','AGENT_AUTHORIZATION_CHANGED') OR (e"
+        "rror_code='EVENT_RUN_CANCELLED' AND request_id IS NULL AND requested_by_user_id "
+        "IS NULL AND subscription_id IS NOT NULL) OR (agent_key IN ('ai_chat','project_in"
+        "telligence','quality_intelligence') AND run_context->>'application_queue_version"
+        "'='1') OR (agent_key='knowledge_lite' AND context_version IN ('meeting-minutes-r"
+        "equest-v1','meeting-actions-request-v1','meeting-decisions-request-v1') AND run_"
+        "context->'reading_event_trigger'->>'version'='meeting-event.v1' AND run_context-"
+        ">>'application_queue_version'='1'))) IS TRUE",
         name="lifecycle_consistent",
     ),
     CheckConstraint(
@@ -9832,19 +11169,28 @@ finding_quality_controls = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', "
-        "'blocker_alert', 'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' "
+        "((((agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion',"
+        " 'blocker_alert', 'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' "
         "AND finding_type IN ('knowledge_draft', 'meeting_minutes', 'meeting_action', "
         "'meeting_decision', 'meeting_issue', 'meeting_risk', 'meeting_change', "
         "'process_template_configuration','intake_organization','meeting_plan')) OR "
         "(agent_key = 'engineering_intelligence' AND finding_type IN "
         "('bom_impact_suggestion', 'change_impact_suggestion', 'change_work_package', "
-        "'cost_reduction')) "
-        "OR (agent_key = 'quality_intelligence' AND finding_type IN "
+        "'cost_reduction')) OR (agent_key = 'quality_intelligence' AND finding_type IN "
         "('quality_cluster_alert', 'capa_suggestion', 'test_plan_change', "
-        "'capa_work_package')) OR (agent_key = 'supplier_intelligence' AND finding_type "
-        "IN ('supplier_delay_risk','supplier_recovery')) OR (agent_key = "
-        "'executive_intelligence' AND finding_type = 'executive_portfolio_brief')",
+        "'capa_work_package')) OR (agent_key = 'supplier_intelligence' AND finding_type"
+        " IN ('supplier_delay_risk','supplier_recovery')) OR (agent_key = "
+        "'executive_intelligence' AND finding_type = 'executive_portfolio_brief') OR "
+        "(agent_key='product_management_intelligence' AND "
+        "finding_type='product_research_plan') IS TRUE OR "
+        "(agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_competitor_observations','product_market_segments')) IS TRUE) OR "
+        "(agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_opportunities','product_experiments')) IS TRUE) OR "
+        "(agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_strategy_drafts','product_definition_drafts')) IS TRUE) OR "
+        "(agent_key='product_management_intelligence' AND "
+        "finding_type='product_rfq_requirements') IS TRUE",
         name="type_allowed",
     ),
     CheckConstraint("status IN ('active', 'narrowed')", name="status_allowed"),
@@ -9896,10 +11242,23 @@ findings = Table(
     Column("project_id", Uuid),
     Column("scope_kind", String(16), nullable=False, server_default=text("'project'")),
     CheckConstraint(
-        "(scope_kind='project' AND project_id IS NOT NULL "
-        "AND finding_type<>'process_template_configuration') OR "
-        "(scope_kind='tenant' AND project_id IS NULL AND agent_key='knowledge_lite' "
-        "AND finding_type='process_template_configuration')",
+        "((((scope_kind='project' AND project_id IS NOT NULL AND "
+        "finding_type<>'process_template_configuration') OR (scope_kind='tenant' AND "
+        "project_id IS NULL AND agent_key='knowledge_lite' AND "
+        "finding_type='process_template_configuration') OR (scope_kind='market_space' "
+        "AND project_id IS NULL AND agent_key='product_management_intelligence' AND "
+        "finding_type='product_research_plan') IS TRUE OR (scope_kind='market_space' "
+        "AND project_id IS NULL AND agent_key='product_management_intelligence' AND "
+        "finding_type IN ('product_competitor_observations','product_market_segments'))"
+        " IS TRUE) OR (scope_kind='market_space' AND project_id IS NULL AND "
+        "agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_opportunities','product_experiments')) IS TRUE) OR "
+        "(scope_kind='market_space' AND project_id IS NULL AND "
+        "agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_strategy_drafts','product_definition_drafts')) IS TRUE) OR "
+        "(scope_kind='market_space' AND project_id IS NULL AND "
+        "agent_key='product_management_intelligence' AND "
+        "finding_type='product_rfq_requirements') IS TRUE",
         name="scope",
     ),
     Column("run_id", Uuid, nullable=False),
@@ -9935,19 +11294,28 @@ findings = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "(agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion', "
-        "'blocker_alert', 'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' "
+        "((((agent_key = 'project_intelligence' AND finding_type IN ('risk_suggestion',"
+        " 'blocker_alert', 'gate_readiness_anomaly')) OR (agent_key = 'knowledge_lite' "
         "AND finding_type IN ('knowledge_draft', 'meeting_minutes', 'meeting_action', "
         "'meeting_decision', 'meeting_issue', 'meeting_risk', 'meeting_change', "
         "'process_template_configuration','intake_organization','meeting_plan')) OR "
         "(agent_key = 'engineering_intelligence' AND finding_type IN "
         "('bom_impact_suggestion', 'change_impact_suggestion', 'change_work_package', "
-        "'cost_reduction')) "
-        "OR (agent_key = 'quality_intelligence' AND finding_type IN "
+        "'cost_reduction')) OR (agent_key = 'quality_intelligence' AND finding_type IN "
         "('quality_cluster_alert', 'capa_suggestion', 'test_plan_change', "
-        "'capa_work_package')) OR (agent_key = 'supplier_intelligence' AND finding_type "
-        "IN ('supplier_delay_risk','supplier_recovery')) OR (agent_key = "
-        "'executive_intelligence' AND finding_type = 'executive_portfolio_brief')",
+        "'capa_work_package')) OR (agent_key = 'supplier_intelligence' AND finding_type"
+        " IN ('supplier_delay_risk','supplier_recovery')) OR (agent_key = "
+        "'executive_intelligence' AND finding_type = 'executive_portfolio_brief') OR "
+        "(agent_key='product_management_intelligence' AND "
+        "finding_type='product_research_plan') IS TRUE OR "
+        "(agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_competitor_observations','product_market_segments')) IS TRUE) OR "
+        "(agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_opportunities','product_experiments')) IS TRUE) OR "
+        "(agent_key='product_management_intelligence' AND finding_type IN "
+        "('product_strategy_drafts','product_definition_drafts')) IS TRUE) OR "
+        "(agent_key='product_management_intelligence' AND "
+        "finding_type='product_rfq_requirements') IS TRUE",
         name="type_allowed",
     ),
     CheckConstraint(
@@ -9964,13 +11332,19 @@ findings = Table(
         name="accepted_payload_object",
     ),
     CheckConstraint(
-        "jsonb_typeof(evidence_event_ids) = 'array' AND "
+        "(((jsonb_typeof(evidence_event_ids) = 'array' AND "
         "(jsonb_array_length(evidence_event_ids) > 0 OR (finding_type IN "
-        "('meeting_minutes','meeting_action','meeting_decision','meeting_issue','meeting_"
-        "risk','meeting_change','change_work_package','capa_work_package','supplier_recov"
-        "ery','cost_reduction','process_template_configuration','intake_organization','me"
-        "eting_plan') "
-        "AND evidence_event_ids='[]'::jsonb))",
+        "('meeting_minutes','meeting_action','meeting_decision','meeting_issue','meeting_risk','meeting_change','change_work_package','capa_work_package','supplier_recovery','cost_reduction','process_template_configuration','intake_organization','meeting_plan')"
+        " AND evidence_event_ids='[]'::jsonb)) OR (finding_type='product_research_plan'"
+        " AND evidence_event_ids='[]'::jsonb) IS TRUE OR (finding_type IN "
+        "('product_competitor_observations','product_market_segments') AND "
+        "evidence_event_ids='[]'::jsonb) IS TRUE) OR (finding_type IN "
+        "('product_opportunities','product_experiments') AND "
+        "evidence_event_ids='[]'::jsonb) IS TRUE) OR (finding_type IN "
+        "('product_strategy_drafts','product_definition_drafts') AND "
+        "evidence_event_ids='[]'::jsonb) IS TRUE) OR "
+        "(finding_type='product_rfq_requirements' AND evidence_event_ids='[]'::jsonb) "
+        "IS TRUE",
         name="evidence_event_ids_array",
     ),
     CheckConstraint(
@@ -9991,17 +11365,43 @@ findings = Table(
         name="review_lifecycle_consistent",
     ),
     CheckConstraint(
-        "(status <> 'applied' AND applied_by_user_id IS NULL AND applied_at IS NULL "
-        "AND applied_entity_type IS NULL AND applied_entity_id IS NULL) OR "
-        "(status = 'applied' AND applied_by_user_id IS NOT NULL AND applied_at IS NOT NULL "
-        "AND applied_entity_type IN ('risk', 'memory', 'issue', 'task', 'test_run', "
-        "'sample_build_configuration', 'knowledge_candidate', 'schedule_change_proposal', "
-        "'material_exception', 'test_plan', 'meeting_minutes', 'decision', 'ecr', "
-        "'change_impact_scope', 'quality_work_package', 'supplier_recovery', 'cost_reduction', "
-        "'process_template_revision', "
-        "'project_intake_proposal', 'meeting') "
-        "AND applied_entity_id IS NOT NULL "
-        "AND reviewed_at < applied_at)",
+        "((((status <> 'applied' AND applied_by_user_id IS NULL AND applied_at IS NULL "
+        "AND applied_entity_type IS NULL AND applied_entity_id IS NULL) OR (status = "
+        "'applied' AND applied_by_user_id IS NOT NULL AND applied_at IS NOT NULL AND "
+        "applied_entity_type IN ('risk', 'memory', 'issue', 'task', 'test_run', "
+        "'sample_build_configuration', 'knowledge_candidate', "
+        "'schedule_change_proposal', 'material_exception', 'test_plan', "
+        "'meeting_minutes', 'decision', 'ecr', 'change_impact_scope', "
+        "'quality_work_package', 'supplier_recovery', 'cost_reduction', "
+        "'process_template_revision', 'project_intake_proposal', 'meeting') AND "
+        "applied_entity_id IS NOT NULL AND reviewed_at < applied_at) OR "
+        "(finding_type='product_research_plan' AND status='applied' AND "
+        "reviewed_by_user_id IS NOT NULL AND reviewed_at IS NOT NULL AND "
+        "accepted_payload IS NOT NULL AND applied_by_user_id IS NOT NULL AND applied_at"
+        " IS NOT NULL AND applied_entity_type='research_task' AND applied_entity_id IS "
+        "NOT NULL AND reviewed_at<applied_at) IS TRUE OR (finding_type IN "
+        "('product_competitor_observations','product_market_segments') AND "
+        "status='applied' AND reviewed_by_user_id IS NOT NULL AND reviewed_at IS NOT "
+        "NULL AND accepted_payload IS NOT NULL AND applied_by_user_id IS NOT NULL AND "
+        "applied_at IS NOT NULL AND applied_entity_type IN "
+        "('competitor_observation','market_segment') AND applied_entity_id IS NOT NULL "
+        "AND reviewed_at<applied_at) IS TRUE) OR (finding_type IN "
+        "('product_opportunities','product_experiments') AND status='applied' AND "
+        "reviewed_by_user_id IS NOT NULL AND reviewed_at IS NOT NULL AND "
+        "accepted_payload IS NOT NULL AND applied_by_user_id IS NOT NULL AND applied_at"
+        " IS NOT NULL AND applied_entity_type IN ('opportunity','experiment') AND "
+        "applied_entity_id IS NOT NULL AND reviewed_at<applied_at) IS TRUE) OR "
+        "(finding_type IN ('product_strategy_drafts','product_definition_drafts') AND "
+        "status='applied' AND reviewed_by_user_id IS NOT NULL AND reviewed_at IS NOT "
+        "NULL AND accepted_payload IS NOT NULL AND applied_by_user_id IS NOT NULL AND "
+        "applied_at IS NOT NULL AND applied_entity_type IN "
+        "('product_strategy','product_definition') AND applied_entity_id IS NOT NULL "
+        "AND reviewed_at<applied_at) IS TRUE) OR "
+        "(finding_type='product_rfq_requirements' AND status='applied' AND "
+        "reviewed_by_user_id IS NOT NULL AND reviewed_at IS NOT NULL AND "
+        "accepted_payload IS NOT NULL AND applied_by_user_id IS NOT NULL AND applied_at"
+        " IS NOT NULL AND applied_entity_type='requirement' AND applied_entity_id IS "
+        "NOT NULL AND reviewed_at<applied_at) IS TRUE",
         name="apply_lifecycle_consistent",
     ),
     ForeignKeyConstraint(
@@ -14070,9 +15470,45 @@ product_definitions = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_finding_position", Integer),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_product_definitions_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_product_definitions_source_finding_position",
+    ),
+    CheckConstraint(
+        "(source_finding_id IS NULL AND source_finding_position IS NULL) OR "
+        "(source_finding_id IS NOT NULL AND source_finding_position IS NOT NULL "
+        "AND source_finding_position BETWEEN 1 AND 6)",
+        name="finding_position",
+    ),
     Column("market_space_id", Uuid, nullable=False),
     Column("product_line_id", Uuid, nullable=False),
     Column("product_id", Uuid, nullable=False),
+    Column("base_definition_id", Uuid),
+    Column("base_definition_ref", JSONB(none_as_null=True)),
+    Column("parent_updates", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    CheckConstraint(
+        "(base_definition_id IS NULL) = (base_definition_ref IS NULL)", name="base_shape"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "base_definition_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_definitions.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_definitions.id",
+        ],
+        name="fk_product_definitions_base",
+        ondelete="RESTRICT",
+    ),
     Column("strategy_id", Uuid, nullable=False),
     Column("strategy_ref", JSONB, nullable=False),
     Column("owner_user_id", Uuid, nullable=False),
@@ -14331,6 +15767,26 @@ product_strategies = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_finding_position", Integer),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_product_strategies_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_product_strategies_source_finding_position",
+    ),
+    CheckConstraint(
+        "(source_finding_id IS NULL AND source_finding_position IS NULL) OR "
+        "(source_finding_id IS NOT NULL AND source_finding_position IS NOT NULL "
+        "AND source_finding_position BETWEEN 1 AND 6)",
+        name="finding_position",
+    ),
     Column("market_space_id", Uuid, nullable=False),
     Column("product_line_id", Uuid),
     Column("opportunity_id", Uuid, nullable=False),
@@ -14511,6 +15967,26 @@ experiments = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_finding_position", Integer),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_experiments_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_experiments_source_finding_position",
+    ),
+    CheckConstraint(
+        "(source_finding_id IS NULL AND source_finding_position IS NULL) OR "
+        "(source_finding_id IS NOT NULL AND source_finding_position IS NOT NULL "
+        "AND source_finding_position BETWEEN 1 AND 6)",
+        name="finding_position",
+    ),
     Column("market_space_id", Uuid, nullable=False),
     Column("product_line_id", Uuid),
     Column("opportunity_id", Uuid, nullable=False),
@@ -14696,6 +16172,26 @@ opportunities = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_finding_position", Integer),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_opportunities_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_opportunities_source_finding_position",
+    ),
+    CheckConstraint(
+        "(source_finding_id IS NULL AND source_finding_position IS NULL) OR "
+        "(source_finding_id IS NOT NULL AND source_finding_position IS NOT NULL "
+        "AND source_finding_position BETWEEN 1 AND 6)",
+        name="finding_position",
+    ),
     Column("market_space_id", Uuid, nullable=False),
     Column("product_line_id", Uuid),
     Column("owner_user_id", Uuid, nullable=False),
@@ -14926,6 +16422,26 @@ market_segments = Table(
     Column("revision_reason", Text, nullable=False),
     Column("request_id", Uuid, nullable=False),
     Column("request_digest", String(64), nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_finding_position", Integer),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_market_segments_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_market_segments_source_finding_position",
+    ),
+    CheckConstraint(
+        "(source_finding_id IS NULL AND source_finding_position IS NULL) OR "
+        "(source_finding_id IS NOT NULL AND source_finding_position IS NOT NULL "
+        "AND source_finding_position BETWEEN 1 AND 6)",
+        name="finding_position",
+    ),
     Column(
         "created_at",
         DateTime(timezone=True),
@@ -15044,6 +16560,26 @@ competitor_observations = Table(
     Column("revision_reason", Text, nullable=False),
     Column("request_id", Uuid, nullable=False),
     Column("request_digest", String(64), nullable=False),
+    Column("source_finding_id", Uuid),
+    Column("source_finding_position", Integer),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_competitor_observations_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_competitor_observations_source_finding_position",
+    ),
+    CheckConstraint(
+        "(source_finding_id IS NULL AND source_finding_position IS NULL) OR "
+        "(source_finding_id IS NOT NULL AND source_finding_position IS NOT NULL "
+        "AND source_finding_position BETWEEN 1 AND 6)",
+        name="finding_position",
+    ),
     Column(
         "created_at",
         DateTime(timezone=True),
@@ -15371,6 +16907,145 @@ research_searches = Table(
     schema=PRODUCT_SCHEMA,
 )
 
+product_source_files = Table(
+    "product_source_files",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("uploaded_by_user_id", Uuid, nullable=False),
+    Column("request_id", Uuid, nullable=False),
+    Column("request_digest", String(64), nullable=False),
+    Column("filename", Text, nullable=False),
+    Column("media_type", Text, nullable=False),
+    Column("classification", String(16), nullable=False),
+    Column("size_bytes", BigInteger, nullable=False),
+    Column("sha256", String(64), nullable=False),
+    Column("object_key", Text, nullable=False),
+    Column("parser_version", String(64), nullable=False),
+    Column("status", String(32), nullable=False, server_default="awaiting_upload"),
+    Column("error_code", String(128)),
+    Column("fragments", JSONB, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("extraction_metadata", JSONB, nullable=False, server_default=text("'{}'::jsonb")),
+    Column("version", Integer, nullable=False, server_default="1"),
+    Column("revoked_at", DateTime(timezone=True)),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint("tenant_id", "market_space_id", "id", name="uq_product_source_files_space_id"),
+    UniqueConstraint(
+        "tenant_id",
+        "market_space_id",
+        "uploaded_by_user_id",
+        "request_id",
+        name="uq_product_source_files_request",
+    ),
+    UniqueConstraint("object_key", name="uq_product_source_files_object_key"),
+    CheckConstraint(
+        "size_bytes BETWEEN 1 AND 20971520 AND version>0 AND btrim(filename)<>''",
+        name="bounds",
+    ),
+    CheckConstraint(
+        "sha256 ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$'",
+        name="digests",
+    ),
+    CheckConstraint(
+        "classification IN ('internal','confidential','restricted')",
+        name="classification",
+    ),
+    CheckConstraint(
+        "status IN ('awaiting_upload','uploaded','extracted','ocr_required','failed')",
+        name="status",
+    ),
+    CheckConstraint(
+        "jsonb_typeof(fragments)='array' AND jsonb_typeof(extraction_metadata)='object'",
+        name="extraction",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [
+            f"{PRODUCT_SCHEMA}.market_spaces.tenant_id",
+            f"{PRODUCT_SCHEMA}.market_spaces.id",
+        ],
+        name="fk_product_source_files_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_source_files_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "uploaded_by_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_product_source_files_uploader",
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+product_rfq_requirement_links = Table(
+    "product_rfq_requirement_links",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("source_finding_id", Uuid, nullable=False),
+    Column("source_finding_position", Integer, nullable=False),
+    Column("requirement_id", Uuid, nullable=False),
+    Column("accepted_item", JSONB, nullable=False),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    UniqueConstraint(
+        "tenant_id",
+        "source_finding_id",
+        "source_finding_position",
+        name="uq_product_rfq_requirement_links_position",
+    ),
+    UniqueConstraint(
+        "tenant_id", "requirement_id", name="uq_product_rfq_requirement_links_requirement"
+    ),
+    CheckConstraint(
+        "source_finding_position BETWEEN 1 AND 20 AND jsonb_typeof(accepted_item)='object'",
+        name="item",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "requirement_id"],
+        [f"{PROJECT_SCHEMA}.requirements.tenant_id", f"{PROJECT_SCHEMA}.requirements.id"],
+        ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
 product_nodes = Table(
     "product_nodes",
     metadata,
@@ -15378,6 +17053,18 @@ product_nodes = Table(
     Column("tenant_id", Uuid, nullable=False),
     Column("market_space_id", Uuid, nullable=False),
     Column("product_line_id", Uuid, nullable=False),
+    Column("derived_from", Uuid),
+    CheckConstraint("derived_from IS NULL OR derived_from<>id", name="derivation_not_self"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "derived_from"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_product_nodes_derived_from",
+        ondelete="RESTRICT",
+    ),
     Column("parent_id", Uuid),
     Column("level", String(16), nullable=False),
     Column("code", String(128), nullable=False),
@@ -15524,6 +17211,14 @@ research_tasks = Table(
     Column("version", Integer, nullable=False, server_default=text("1")),
     Column("request_id", Uuid, nullable=False),
     Column("request_digest", String(64), nullable=False),
+    Column("source_finding_id", Uuid),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_finding_id"],
+        [f"{AI_SCHEMA}.findings.tenant_id", f"{AI_SCHEMA}.findings.id"],
+        name="fk_research_tasks_source_finding",
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint("tenant_id", "source_finding_id", name="uq_research_tasks_source_finding"),
     Column(
         "created_at",
         DateTime(timezone=True),
@@ -24316,10 +26011,12 @@ conversations = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
-    Column("project_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
     Column("meeting_id", Uuid),
     Column("created_by_user_id", Uuid, nullable=False),
     Column("title", String(256), nullable=False),
+    Column("visibility", String(16), nullable=False, server_default=text("'private'")),
+    CheckConstraint("visibility IN ('private','project')", name="visibility"),
     Column("context_version", Integer, nullable=False),
     Column("next_sequence", Integer, nullable=False),
     Column("archived_at", DateTime(timezone=True)),
@@ -24359,6 +26056,33 @@ conversations = Table(
         "project_id",
         "updated_at",
     ),
+    Column("scope_kind", String(32), nullable=False, server_default=text("'project'")),
+    Column("market_space_id", Uuid),
+    Column("product_line_id", Uuid),
+    CheckConstraint(
+        "((scope_kind='project' AND project_id IS NOT NULL AND market_space_id IS NULL "
+        "AND product_line_id IS NULL) "
+        "OR (scope_kind='personal' AND project_id IS NULL AND market_space_id IS NULL "
+        "AND product_line_id IS NULL AND meeting_id IS NULL AND visibility='private') "
+        "OR (scope_kind='market_space' AND project_id IS NULL AND market_space_id IS NOT NULL "
+        "AND product_line_id IS NULL AND meeting_id IS NULL AND visibility='private') "
+        "OR (scope_kind='product_line' AND project_id IS NULL AND market_space_id IS NOT NULL "
+        "AND product_line_id IS NOT NULL AND meeting_id IS NULL AND visibility='private')) IS TRUE",
+        name="typed_scope",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_conversation_typed_scope"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.{k}" for k in ("tenant_id", "id")],
+        name="fk_conversations_market_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [f"{PRODUCT_SCHEMA}.product_nodes.{k}" for k in ("tenant_id", "market_space_id", "id")],
+        name="fk_conversations_product_line",
+        ondelete="RESTRICT",
+    ),
     schema=AI_SCHEMA,
 )
 
@@ -24367,7 +26091,7 @@ conversation_messages = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
-    Column("project_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
     Column("conversation_id", Uuid, nullable=False),
     Column("author_user_id", Uuid, nullable=False),
     Column("sequence", Integer, nullable=False),
@@ -24437,15 +26161,15 @@ conversation_messages = Table(
     CheckConstraint(
         "action IN ('note','project_query','meeting_reading','minutes',"
         "'actions','decisions','business','change_work_package',"
-        "'quality_work_package','meeting_planning')",
+        "'quality_work_package','meeting_planning','product_work')",
         name="action_allowed",
     ),
     CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="request_digest"),
     CheckConstraint(
-        "(action IN ('note','project_query') AND transcript_id IS NULL "
+        "(action IN ('note','project_query','product_work') AND transcript_id IS NULL "
         "AND expected_digest IS NULL AND expected_minutes_version IS NULL) "
         "OR (action NOT IN ('note','project_query','change_work_package',"
-        "'quality_work_package','meeting_planning') "
+        "'quality_work_package','meeting_planning','product_work') "
         "AND transcript_id IS NOT NULL "
         "AND expected_digest IS NOT NULL AND expected_digest ~ '^[0-9a-f]{64}$' "
         "AND ((action='minutes' AND expected_minutes_version IS NOT NULL "
@@ -24508,6 +26232,39 @@ conversation_messages = Table(
         "OR (action<>'meeting_planning' AND meeting_planning_brief_id IS NULL)) IS TRUE",
         name="meeting_planning_source",
     ),
+    Column("product_work_request", JSONB(none_as_null=True)),
+    CheckConstraint(
+        "((action='product_work' AND project_id IS NULL AND product_work_request IS NOT NULL "
+        "AND jsonb_typeof(product_work_request)='object' "
+        "AND jsonb_typeof(product_work_request->'selection')='object' "
+        "AND product_work_request->>'expected_digest' ~ '^[0-9a-f]{64}$' "
+        "AND jsonb_typeof(product_work_request->'user_instruction')='string') "
+        "OR (action<>'product_work' AND product_work_request IS NULL)) IS TRUE "
+        "AND (product_work_request IS NULL OR ((NOT (product_work_request ? 'kind') OR "
+        "(jsonb_typeof(product_work_request->'kind')='string' AND "
+        "product_work_request->>'kind'='work')) OR "
+        "(product_work_request->>'kind'='matrix' AND "
+        "product_work_request - ARRAY['kind','selection','expected_digest','user_instruction',"
+        "'product_line_id']::text[]='{}'::jsonb AND product_work_request ? 'product_line_id' "
+        "AND jsonb_typeof(product_work_request->'product_line_id') IN ('string','null') "
+        "AND (product_work_request->'selection') - ARRAY['record_id','roadmap_ids']::text[]="
+        "'{}'::jsonb AND jsonb_typeof(product_work_request->'selection'->'record_id')='string' "
+        "AND product_work_request->'selection'->>'record_id' ~ "
+        "'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' AND "
+        "jsonb_typeof(product_work_request->'selection'->'roadmap_ids')='array')) IS TRUE) "
+        "AND (project_id IS NOT NULL "
+        "OR (action IN ('note','product_work') AND object_focus IS NULL))",
+        name="product_request",
+    ),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "id", name="uq_conversation_message_typed_scope"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "conversation_id"],
+        [f"{AI_SCHEMA}.conversations.{k}" for k in ("tenant_id", "id")],
+        name="fk_conversation_messages_typed_conversation",
+        ondelete="RESTRICT",
+    ),
     schema=AI_SCHEMA,
 )
 
@@ -24517,7 +26274,7 @@ conversation_attachments = Table(
     metadata,
     Column("id", Uuid, primary_key=True),
     Column("tenant_id", Uuid, nullable=False),
-    Column("project_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
     Column("conversation_id", Uuid, nullable=False),
     Column("request_id", Uuid, nullable=False),
     Column("uploaded_by_user_id", Uuid, nullable=False),
@@ -24593,6 +26350,15 @@ conversation_attachments = Table(
         name="extraction",
     ),
     Index("ix_conversation_attachment_created", "tenant_id", "conversation_id", "created_at"),
+    UniqueConstraint(
+        "tenant_id", "conversation_id", "id", name="uq_conversation_attachment_typed_scope"
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "conversation_id"],
+        [f"{AI_SCHEMA}.conversations.{k}" for k in ("tenant_id", "id")],
+        name="fk_conversation_attachments_typed_conversation",
+        ondelete="RESTRICT",
+    ),
     schema=AI_SCHEMA,
 )
 
@@ -24746,7 +26512,7 @@ conversation_attachment_requests = Table(
     "conversation_attachment_requests",
     metadata,
     Column("tenant_id", Uuid, primary_key=True),
-    Column("project_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
     Column("conversation_id", Uuid, primary_key=True),
     Column("request_id", Uuid, primary_key=True),
     Column("attachment_id", Uuid, nullable=False),
@@ -24762,6 +26528,15 @@ conversation_attachment_requests = Table(
         ondelete="RESTRICT",
     ),
     CheckConstraint("request_digest ~ '^[0-9a-f]{64}$'", name="digest"),
+    ForeignKeyConstraint(
+        ["tenant_id", "conversation_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_attachments.{k}"
+            for k in ("tenant_id", "conversation_id", "id")
+        ],
+        name="fk_conversation_attachment_requests_typed_attachment",
+        ondelete="RESTRICT",
+    ),
     schema=AI_SCHEMA,
 )
 
@@ -24769,7 +26544,7 @@ conversation_message_attachments = Table(
     "conversation_message_attachments",
     metadata,
     Column("tenant_id", Uuid, primary_key=True),
-    Column("project_id", Uuid, nullable=False),
+    Column("project_id", Uuid),
     Column("conversation_id", Uuid, nullable=False),
     Column("message_id", Uuid, primary_key=True),
     Column("attachment_id", Uuid, primary_key=True),
@@ -24798,6 +26573,21 @@ conversation_message_attachments = Table(
         ondelete="RESTRICT",
     ),
     CheckConstraint("ordinal BETWEEN 1 AND 6", name="ordinal"),
+    ForeignKeyConstraint(
+        ["tenant_id", "conversation_id", "message_id"],
+        [f"{AI_SCHEMA}.conversation_messages.{k}" for k in ("tenant_id", "conversation_id", "id")],
+        name="fk_conversation_message_attachments_typed_message",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "conversation_id", "attachment_id"],
+        [
+            f"{AI_SCHEMA}.conversation_attachments.{k}"
+            for k in ("tenant_id", "conversation_id", "id")
+        ],
+        name="fk_conversation_message_attachments_typed_attachment",
+        ondelete="RESTRICT",
+    ),
     schema=AI_SCHEMA,
 )
 
@@ -27984,6 +29774,8 @@ Index(
     resource_reallocations.c.id.desc(),
 )
 
+product_master_references = define_product_master_references(metadata)
+
 # PostgreSQL already stores SQLAlchemy's deterministic shortened identifiers.
 # Alembic's check-constraint comparator compares the raw metadata name, so pin
 # long check names to that same physical identifier. Generated DDL is unchanged.
@@ -28004,8 +29796,34 @@ for _table in metadata.tables.values():
             )
 
 
+xiaopai_delegations, xiaopai_followups, xiaopai_receipts = define_xiaopai_tables(metadata)
+
+
 @dataclass(frozen=True)
 class Tables:
+    product_master_references: Table
+    xiaopai_delegations: Table
+    xiaopai_followups: Table
+    xiaopai_receipts: Table
+    ai_issue_trial_collections: Table
+    ai_issue_trial_protocols: Table
+    ai_issue_observations: Table
+    ai_issue_withdrawal_receipts: Table
+    ai_issue_generation_bindings: Table
+    ai_issue_proposal_reviews: Table
+    ai_issue_sample_reviews: Table
+    ai_issue_applications: Table
+    ai_issue_event_results: Table
+    ai_issue_event_receipts: Table
+    ai_meeting_event_receipts: Table
+    ai_write_trial_protocols: Table
+    ai_write_runtime_stops: Table
+    ai_write_trial_receipts: Table
+    ai_meeting_draft_actions: Table
+    ai_meeting_drafts: Table
+    ai_write_scope_revisions: Table
+    ai_principals: Table
+    ai_write_policies: Table
     research_measurement_workpacks: Table
     research_measurement_workpack_members: Table
     research_measurement_deliveries: Table
@@ -28212,6 +30030,8 @@ class Tables:
     research_subscriptions: Table
     research_collection_runs: Table
     research_searches: Table
+    product_rfq_requirement_links: Table
+    product_source_files: Table
     product_nodes: Table
     product_line_members: Table
     market_spaces: Table
@@ -28445,6 +30265,29 @@ class Tables:
 
 
 tables = Tables(
+    product_master_references=product_master_references,
+    xiaopai_delegations=xiaopai_delegations,
+    xiaopai_followups=xiaopai_followups,
+    xiaopai_receipts=xiaopai_receipts,
+    ai_issue_withdrawal_receipts=ai_issue_withdrawal_receipts,
+    ai_issue_sample_reviews=ai_issue_sample_reviews,
+    ai_issue_applications=ai_issue_applications,
+    ai_issue_generation_bindings=ai_issue_generation_bindings,
+    ai_issue_trial_collections=ai_issue_trial_collections,
+    ai_issue_trial_protocols=ai_issue_trial_protocols,
+    ai_issue_observations=ai_issue_observations,
+    ai_issue_proposal_reviews=ai_issue_proposal_reviews,
+    ai_issue_event_results=ai_issue_event_results,
+    ai_issue_event_receipts=ai_issue_event_receipts,
+    ai_meeting_event_receipts=ai_meeting_event_receipts,
+    ai_write_trial_protocols=ai_write_trial_protocols,
+    ai_write_runtime_stops=ai_write_runtime_stops,
+    ai_write_trial_receipts=ai_write_trial_receipts,
+    ai_meeting_draft_actions=ai_meeting_draft_actions,
+    ai_meeting_drafts=ai_meeting_drafts,
+    ai_write_scope_revisions=ai_write_scope_revisions,
+    ai_principals=ai_principals,
+    ai_write_policies=ai_write_policies,
     research_measurement_workpacks=research_measurement_workpacks,
     research_measurement_workpack_members=research_measurement_workpack_members,
     research_measurement_deliveries=research_measurement_deliveries,
@@ -28651,6 +30494,8 @@ tables = Tables(
     research_subscriptions=research_subscriptions,
     research_collection_runs=research_collection_runs,
     research_searches=research_searches,
+    product_rfq_requirement_links=product_rfq_requirement_links,
+    product_source_files=product_source_files,
     product_nodes=product_nodes,
     product_line_members=product_line_members,
     market_spaces=market_spaces,

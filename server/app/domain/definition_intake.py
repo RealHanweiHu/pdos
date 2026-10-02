@@ -249,7 +249,7 @@ def _inspect(
     differences = []
     if target:
         for key in ("title", "description", "acceptance_criteria"):
-            if _plain(target[key]) != proposed[key]:
+            if target[key] != proposed[key]:
                 differences.append(key)
         if differences and mode == "reuse" and not candidate.acknowledge_differences:
             blockers.append("复用需求与建议内容有差异，须查看并明确确认差异")

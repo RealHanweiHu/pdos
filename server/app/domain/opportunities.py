@@ -5,7 +5,7 @@ from typing import Any, Literal, Self
 from uuid import UUID, uuid4
 
 from pydantic import Field, model_validator
-from sqlalchemy import Engine, select
+from sqlalchemy import Connection, Engine, select
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
@@ -117,6 +117,187 @@ def _dto(row: Any, segment: Any) -> dict[str, Any]:
         "segment_version": segment["version"],
         "alternatives_missing": max(0, 3 - len(row["solutions"])),
     }
+
+
+def create_opportunity_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: OpportunityDraft,
+    *,
+    source_finding_id: UUID | None = None,
+    source_finding_position: int | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    segment = (
+        connection.execute(
+            select(tables.market_segments).where(
+                tables.market_segments.c.tenant_id == context.tenant.id,
+                tables.market_segments.c.market_space_id == space_id,
+                tables.market_segments.c.id == draft.segment_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if segment is None:
+        raise ProductWorkAccessError("所选市场细分不存在或不可访问")
+    line_id = segment["product_line_id"]
+    _line(connection, context, space_id, line_id, access="contributor", writable=True)
+    table = tables.opportunities
+    fingerprint = digest(draft.model_dump(mode="json"))
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.owner_user_id == context.user.id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同机会内容")
+        result = _dto(existing, segment)
+        result["requirement_links"] = links_for(connection, context, existing["id"])
+        result["requirement_refs"] = [link["reference"] for link in result["requirement_links"]]
+        return result
+    node_id = uuid4()
+    series_id, version = node_id, 1
+    if draft.supersedes_id:
+        previous = (
+            connection.execute(
+                select(table).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space_id,
+                    table.c.id == draft.supersedes_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if previous is None:
+            raise ProductWorkAccessError("此前机会版本不存在或不可访问")
+        _line(
+            connection,
+            context,
+            space_id,
+            previous["product_line_id"],
+            access="contributor",
+            writable=True,
+        )
+        if (previous["segment_id"], previous["parent_opportunity_id"]) != (
+            draft.segment_id,
+            draft.parent_opportunity_id,
+        ):
+            raise ProductWorkError("修订须保留原市场细分和父机会关系；新的问题分支请另建机会")
+        if previous["state"] == "closed":
+            raise ProductWorkError("已关闭机会保留历史；后续探索请另建机会")
+        if connection.execute(
+            select(table.c.id).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.supersedes_id == previous["id"],
+            )
+        ).first():
+            raise ProductWorkError("机会已有新版，请从最新版本修订")
+        series_id, version = previous["series_id"], previous["version"] + 1
+    if draft.parent_opportunity_id:
+        parent = (
+            connection.execute(
+                select(table).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space_id,
+                    table.c.id == draft.parent_opportunity_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if parent is None or parent["segment_id"] != draft.segment_id:
+            raise ProductWorkError("父机会须属于同一市场细分版本")
+        if draft.supersedes_id is None and parent["state"] == "closed":
+            raise ProductWorkError("不能在已关闭机会下创建新分支")
+        if (
+            draft.supersedes_id is None
+            and connection.execute(
+                select(table.c.id).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.supersedes_id == parent["id"],
+                )
+            ).first()
+        ):
+            raise ProductWorkError("父机会已有新版，请刷新后选择最新版本创建分支")
+    solutions = []
+    for solution in draft.solutions:
+        solutions.append(
+            {
+                **solution.model_dump(mode="json"),
+                "rationale": _fact(connection, context, solution.rationale),
+                "constraints": [_fact(connection, context, fact) for fact in solution.constraints],
+            }
+        )
+    values = draft.model_dump(
+        exclude={
+            "requirement_links",
+            "request_id",
+            "supersedes_id",
+            "solutions",
+            "importance_basis",
+            "satisfaction_basis",
+        }
+    )
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **values,
+                id=node_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=line_id,
+                owner_user_id=context.user.id,
+                series_id=series_id,
+                supersedes_id=draft.supersedes_id,
+                version=version,
+                desired_outcome_id=segment["desired_outcome_id"],
+                importance_basis=_fact(connection, context, draft.importance_basis),
+                satisfaction_basis=_fact(connection, context, draft.satisfaction_basis),
+                scoring_policy_version="importance-unmet-v1",
+                opportunity_score=score(draft.importance, draft.satisfaction),
+                solutions=solutions,
+                request_id=draft.request_id,
+                request_digest=fingerprint,
+                source_finding_id=source_finding_id,
+                source_finding_position=source_finding_position,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    result = _dto(row, segment)
+    result["requirement_links"] = save_links(
+        connection,
+        context,
+        space_id,
+        row["id"],
+        draft.supersedes_id,
+        draft.requirement_links,
+    )
+    result["requirement_refs"] = [link["reference"] for link in result["requirement_links"]]
+    _emit(
+        connection,
+        context,
+        space_id,
+        "opportunity",
+        "recorded",
+        {**row, "requirement_links": result["requirement_links"]},
+    )
+    return result
 
 
 class OpportunityService:
@@ -252,178 +433,5 @@ class OpportunityService:
     def create(
         self, context: AuthContext, space_id: UUID, draft: OpportunityDraft
     ) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            segment = (
-                connection.execute(
-                    select(tables.market_segments).where(
-                        tables.market_segments.c.tenant_id == context.tenant.id,
-                        tables.market_segments.c.market_space_id == space_id,
-                        tables.market_segments.c.id == draft.segment_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if segment is None:
-                raise ProductWorkAccessError("所选市场细分不存在或不可访问")
-            line_id = segment["product_line_id"]
-            _line(connection, context, space_id, line_id, access="contributor", writable=True)
-            table = tables.opportunities
-            fingerprint = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.owner_user_id == context.user.id,
-                        table.c.request_id == draft.request_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if existing:
-                if existing["request_digest"] != fingerprint:
-                    raise ProductWorkError("同一请求编号不能用于不同机会内容")
-                result = _dto(existing, segment)
-                result["requirement_links"] = links_for(connection, context, existing["id"])
-                result["requirement_refs"] = [
-                    link["reference"] for link in result["requirement_links"]
-                ]
-                return result
-            node_id = uuid4()
-            series_id, version = node_id, 1
-            if draft.supersedes_id:
-                previous = (
-                    connection.execute(
-                        select(table).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.market_space_id == space_id,
-                            table.c.id == draft.supersedes_id,
-                        )
-                    )
-                    .mappings()
-                    .one_or_none()
-                )
-                if previous is None:
-                    raise ProductWorkAccessError("此前机会版本不存在或不可访问")
-                _line(
-                    connection,
-                    context,
-                    space_id,
-                    previous["product_line_id"],
-                    access="contributor",
-                    writable=True,
-                )
-                if (previous["segment_id"], previous["parent_opportunity_id"]) != (
-                    draft.segment_id,
-                    draft.parent_opportunity_id,
-                ):
-                    raise ProductWorkError(
-                        "修订须保留原市场细分和父机会关系；新的问题分支请另建机会"
-                    )
-                if previous["state"] == "closed":
-                    raise ProductWorkError("已关闭机会保留历史；后续探索请另建机会")
-                if connection.execute(
-                    select(table.c.id).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.supersedes_id == previous["id"],
-                    )
-                ).first():
-                    raise ProductWorkError("机会已有新版，请从最新版本修订")
-                series_id, version = previous["series_id"], previous["version"] + 1
-            if draft.parent_opportunity_id:
-                parent = (
-                    connection.execute(
-                        select(table).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.market_space_id == space_id,
-                            table.c.id == draft.parent_opportunity_id,
-                        )
-                    )
-                    .mappings()
-                    .one_or_none()
-                )
-                if parent is None or parent["segment_id"] != draft.segment_id:
-                    raise ProductWorkError("父机会须属于同一市场细分版本")
-                if draft.supersedes_id is None and parent["state"] == "closed":
-                    raise ProductWorkError("不能在已关闭机会下创建新分支")
-                if (
-                    draft.supersedes_id is None
-                    and connection.execute(
-                        select(table.c.id).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.supersedes_id == parent["id"],
-                        )
-                    ).first()
-                ):
-                    raise ProductWorkError("父机会已有新版，请刷新后选择最新版本创建分支")
-            solutions = []
-            for solution in draft.solutions:
-                solutions.append(
-                    {
-                        **solution.model_dump(mode="json"),
-                        "rationale": _fact(connection, context, solution.rationale),
-                        "constraints": [
-                            _fact(connection, context, fact) for fact in solution.constraints
-                        ],
-                    }
-                )
-            values = draft.model_dump(
-                exclude={
-                    "requirement_links",
-                    "request_id",
-                    "supersedes_id",
-                    "solutions",
-                    "importance_basis",
-                    "satisfaction_basis",
-                }
-            )
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        **values,
-                        id=node_id,
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=line_id,
-                        owner_user_id=context.user.id,
-                        series_id=series_id,
-                        supersedes_id=draft.supersedes_id,
-                        version=version,
-                        desired_outcome_id=segment["desired_outcome_id"],
-                        importance_basis=_fact(connection, context, draft.importance_basis),
-                        satisfaction_basis=_fact(connection, context, draft.satisfaction_basis),
-                        scoring_policy_version="importance-unmet-v1",
-                        opportunity_score=score(draft.importance, draft.satisfaction),
-                        solutions=solutions,
-                        request_id=draft.request_id,
-                        request_digest=fingerprint,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
-            )
-            result = _dto(row, segment)
-            result["requirement_links"] = save_links(
-                connection,
-                context,
-                space_id,
-                row["id"],
-                draft.supersedes_id,
-                draft.requirement_links,
-            )
-            result["requirement_refs"] = [link["reference"] for link in result["requirement_links"]]
-            _emit(
-                connection,
-                context,
-                space_id,
-                "opportunity",
-                "recorded",
-                {**row, "requirement_links": result["requirement_links"]},
-            )
-            return result
+            return create_opportunity_in_connection(connection, context, space_id, draft)

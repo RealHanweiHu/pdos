@@ -10,7 +10,7 @@ from pathlib import PurePath
 from typing import Any
 from uuid import UUID, uuid5
 
-from sqlalchemy import Connection, Engine, func, select
+from sqlalchemy import Connection, Engine, func, or_, select
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
@@ -24,7 +24,7 @@ from app.domain.documents import (
     extract_document_details,
 )
 from app.domain.knowledge_corrections import KnowledgeCorrectionService
-from app.domain.product_workspace import _plain, digest
+from app.domain.product_workspace import _plain, _role, digest
 from app.storage.documents import DocumentObjectStore, ReadableDocumentObjectStore
 
 PARSER_VERSION = "conversation-pdf-xlsx.v1"
@@ -78,13 +78,17 @@ class ConversationAttachmentService:
         if write:
             if conversation["archived_at"] is not None:
                 raise ConversationError("会话已归档，请先恢复后再上传或解析")
-            KnowledgeCorrectionService._authorize(
-                c,
-                context.tenant.id,
-                context.user.id,
-                conversation["project_id"],
-                Action.DOCUMENT_ANALYZE,
-            )
+            if conversation.get("scope_kind", "project") == "project":
+                KnowledgeCorrectionService._authorize(
+                    c,
+                    context.tenant.id,
+                    context.user.id,
+                    conversation["project_id"],
+                    Action.DOCUMENT_ANALYZE,
+                )
+            else:
+                _role(context, Action.DOCUMENT_ANALYZE)
+
         return conversation
 
     @staticmethod
@@ -131,6 +135,13 @@ class ConversationAttachmentService:
             raise ConversationError("附件摘要或资料级别无效")
         with self.engine.begin() if connection is None else nullcontext(connection) as c:
             conv = self._scope(c, context, conversation_id, write=True)
+            if conv.get("scope_kind", "project") != "project" and media_type not in {
+                "application/pdf",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            }:
+                raise ConversationError("非项目私人附件当前仅支持PDF/XLSX，不支持邮件子件")
+            if conv["visibility"] == "project" and classification != "internal":
+                raise ConversationError("受限资料请保留在私人会话，不自动向全部项目成员共享")
             signature = digest(
                 dict(sha256=sha256, size_bytes=size_bytes, classification=classification)
             )
@@ -392,13 +403,18 @@ def bind_attachments(
 ) -> None:
     if len(attachment_ids) > MAX_ATTACHMENTS or len(set(attachment_ids)) != len(attachment_ids):
         raise ConversationError("每条消息最多选择6个不同附件")
-    if attachment_ids and action not in {"note", "project_query"}:
+    allowed = (
+        {"note", "project_query"}
+        if conversation.get("scope_kind", "project") == "project"
+        else {"note", "product_work"}
+    )
+    if attachment_ids and action not in allowed:
         raise ConversationError("文件附件请先用项目事实问答阅读；专业候选使用已核对的原业务资料")
     for ordinal, aid in enumerate(attachment_ids, 1):
         row = ConversationAttachmentService._row(c, context.tenant.id, conversation["id"], aid)
         if row["revoked_at"] is not None:
             raise ConversationError("所选附件已停止引用，请重新选择")
-        if action == "project_query" and (
+        if action in {"project_query", "product_work"} and (
             row["status"] != "extracted" or row["classification"] != "internal"
         ):
             raise ConversationError(
@@ -456,7 +472,10 @@ def attachment_evidence(
                         tables.conversation_attachments.c.tenant_id == tenant_id,
                         tables.conversation_attachments.c.project_id == project_id,
                         tables.conversation_attachments.c.id == aid,
-                        tables.conversations.c.created_by_user_id == actor_user_id,
+                        or_(
+                            tables.conversations.c.created_by_user_id == actor_user_id,
+                            tables.conversations.c.visibility == "project",
+                        ),
                     )
                 )
                 .mappings()

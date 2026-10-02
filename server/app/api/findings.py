@@ -23,6 +23,7 @@ from app.domain.cost_reduction_findings import CostReductionPayload
 from app.domain.findings import (
     FINDING_ARCHIVE_TTL_DAYS,
     FINDING_REVIEW_UNDO_SECONDS,
+    FindingAiDraftOwnedError,
     FindingApplyNotSupportedError,
     FindingApplyPermissionError,
     FindingGroundTruthConflictError,
@@ -108,6 +109,7 @@ class FindingResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     superseded_by: str | None = None
+    ai_draft_id: UUID | None = None
     review_undo_until: datetime | None = None
 
 
@@ -204,6 +206,7 @@ def response_from_record(record: FindingRecord) -> FindingResponse:
         created_at=record.created_at,
         updated_at=record.updated_at,
         superseded_by=record.superseded_by,
+        ai_draft_id=record.ai_draft_id,
         review_undo_until=(
             record.reviewed_at + timedelta(seconds=FINDING_REVIEW_UNDO_SECONDS)
             if record.status in {"accepted", "rejected"}
@@ -287,6 +290,14 @@ def finding_error(error: Exception) -> HTTPException:
             detail={
                 "code": "FINDING_APPLY_NOT_SUPPORTED",
                 "message": "This Finding type cannot be applied to a business record",
+            },
+        )
+    if isinstance(error, FindingAiDraftOwnedError):
+        return HTTPException(
+            status_code=409,
+            detail={
+                "code": "FINDING_AI_DRAFT_OWNED",
+                "message": "本候选已进入AI会议草稿，请打开会议进行一次确认、修订或撤回",
             },
         )
     if isinstance(error, FindingGroundTruthConflictError):

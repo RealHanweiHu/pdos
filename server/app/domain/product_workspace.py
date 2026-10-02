@@ -31,6 +31,10 @@ class ProductWorkError(ValueError):
     pass
 
 
+class ProductWorkRunNotFoundError(ProductWorkError):
+    """An original private run cannot be safely resolved for the current actor."""
+
+
 class ProductWorkAccessError(PermissionError):
     pass
 
@@ -351,6 +355,33 @@ def _sources(
     return result
 
 
+def _result_sources(
+    connection: Connection, context: AuthContext, refs: tuple[SourceRef, ...]
+) -> list[dict[str, Any]]:
+    """Submitted research/work results need readable captured content, not metadata alone."""
+    from app.domain.product_evidence import resolve_evidence
+
+    resolved = resolve_evidence(connection, context, refs)
+    for ref in resolved:
+        body = connection.execute(
+            select(tables.evidence_contents.c.body).where(
+                tables.evidence_contents.c.tenant_id == context.tenant.id,
+                tables.evidence_contents.c.content_digest == ref["digest"],
+            )
+        ).scalar_one_or_none()
+        if body is None or not body.strip():
+            raise ProductWorkError("所选来源正文为空，请重新采集有效正文后引用")
+    return resolved
+
+
+def _audit_snapshot(kind: str, row: Any) -> dict[str, Any]:
+    value = _plain(row)
+    if kind == "research_subscription":
+        # A lease authorizes an internal collector; retain its status, not its identity.
+        value["collection_in_progress"] = value.pop("lease_token", None) is not None
+    return value
+
+
 def _emit(
     connection: Connection,
     context: AuthContext,
@@ -403,8 +434,8 @@ def _emit(
         event,
         AuditDraft(
             action=f"{kind}.{action}",
-            before_snapshot=_plain(before) if before else None,
-            after_snapshot=_plain(row),
+            before_snapshot=_audit_snapshot(kind, before) if before else None,
+            after_snapshot=_audit_snapshot(kind, row),
             context={
                 "market_space_id": str(space_id),
                 "command_digest": digest(operation.model_dump(mode="json")) if operation else None,
@@ -432,6 +463,64 @@ def _precondition(
     if row["version"] != command.expected_version or digest(_plain(row)) != command.payload_digest:
         raise ProductWorkError("工作内容或状态已变化，请刷新后办理")
     return True
+
+
+def create_research_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: ResearchDraft,
+    *,
+    source_finding_id: UUID | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    _line(
+        connection,
+        context,
+        space_id,
+        draft.product_line_id,
+        access="contributor",
+        writable=True,
+    )
+    _member(connection, context, space_id, draft.owner_user_id, draft.product_line_id)
+    table = tables.research_tasks
+    request_digest = digest(draft.model_dump(mode="json"))
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != request_digest:
+            raise ProductWorkError("同一请求编号不能用于不同内容")
+        return _research(existing)
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **draft.model_dump(),
+                id=uuid4(),
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                created_by_user_id=context.user.id,
+                request_digest=request_digest,
+                source_finding_id=source_finding_id,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    _research(row)
+    _emit(connection, context, space_id, "research_task", "created", row)
+    return _research(row)
 
 
 def create_work_in_connection(
@@ -719,54 +808,8 @@ class ProductWorkspaceService:
     def create_research(
         self, context: AuthContext, space_id: UUID, draft: ResearchDraft
     ) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            _line(
-                connection,
-                context,
-                space_id,
-                draft.product_line_id,
-                access="contributor",
-                writable=True,
-            )
-            _member(connection, context, space_id, draft.owner_user_id, draft.product_line_id)
-            table = tables.research_tasks
-            request_digest = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.request_id == draft.request_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if existing:
-                if existing["request_digest"] != request_digest:
-                    raise ProductWorkError("同一请求编号不能用于不同内容")
-                return _research(existing)
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        **draft.model_dump(),
-                        id=uuid4(),
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        created_by_user_id=context.user.id,
-                        request_digest=request_digest,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
-            )
-            _research(row)
-            _emit(connection, context, space_id, "research_task", "created", row)
-            return _research(row)
+            return create_research_in_connection(connection, context, space_id, draft)
 
     def research_action(
         self,
@@ -814,7 +857,7 @@ class ProductWorkspaceService:
             elif isinstance(command, ResearchConcludeRequest):
                 if command.research_task_id != task_id or row["state"] != "active":
                     raise ProductWorkError("仅进行中的研究可提交结论")
-                sources = _sources(connection, context, command.source_refs)
+                sources = _result_sources(connection, context, command.source_refs)
                 values.update(
                     state="completed",
                     conclusion=command.conclusion,
@@ -938,7 +981,7 @@ class ProductWorkspaceService:
                     values["state"] = target
                 values["result_note"] = command.note
                 if action == "submit":
-                    evidence = _sources(connection, context, command.evidence)
+                    evidence = _result_sources(connection, context, command.evidence)
                     if not evidence:
                         raise ProductWorkError("请关联输出证据后提交")
                     values["evidence"] = evidence
@@ -1067,10 +1110,12 @@ class ProductWorkspaceService:
                 "next_before_id": rows[19]["id"] if len(rows) > 20 else None,
             }
 
-    def evidence_options(self, context: AuthContext, space_id: UUID) -> list[dict[str, Any]]:
+    def evidence_options(
+        self, context: AuthContext, space_id: UUID, snapshot_ids: list[UUID] | None = None
+    ) -> list[dict[str, Any]]:
         with self.engine.connect() as connection:
             _space(connection, context, space_id)
-            rows = connection.execute(
+            statement = (
                 select(
                     tables.evidence_snapshots, tables.research_sources.c.name.label("source_name")
                 )
@@ -1084,8 +1129,14 @@ class ProductWorkspaceService:
                     tables.research_sources.c.status == "active",
                 )
                 .order_by(tables.evidence_snapshots.c.captured_at.desc())
-                .limit(200)
-            ).mappings()
+            )
+            if snapshot_ids is not None:
+                if not snapshot_ids or len(snapshot_ids) > 100:
+                    raise ProductWorkError("每次核对需提供1至100个原快照ID")
+                statement = statement.where(tables.evidence_snapshots.c.id.in_(snapshot_ids))
+            else:
+                statement = statement.limit(200)
+            rows = connection.execute(statement).mappings()
             now = datetime.now(UTC)
             return [
                 {

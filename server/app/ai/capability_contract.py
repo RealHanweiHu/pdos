@@ -1,11 +1,9 @@
-"""Legacy capability keys and declarations used by the current runtime.
+"""Capability declarations and DC-11 operation-specific write classifications.
 
-Zone labels alone never authorize model writes. Business candidates use the
-Finding review/apply boundary; deterministic import confirmation has its own
-human action. The ordinary employee path requires live rollout at dispatch,
-tools, result disclosure and application. Shadow is reserved for a separately
-authorized evaluation path, and disabled capabilities cannot apply old pending
-candidates. Previously applied business history remains valid.
+FREE/CONFIRM/HARD_GATE mean T0/T1/T2 for explicitly registered write operations.
+Read-only capabilities confer no mutation permission. Runtime rollout, tenant
+policy, qualification and independent AI scope remain separate execution gates.
+Unmigrated operations retain their existing Finding review/apply boundary.
 """
 
 from __future__ import annotations
@@ -21,6 +19,7 @@ from app.ai.runtime_contract import (
     agents_for_event,
 )
 from app.ai.tools import tool_definitions_for_agent
+from app.ai.write_policy import WRITE_OPERATIONS, WriteTier, operation_keys_for_capability
 
 
 class UnknownCapabilityError(LookupError):
@@ -40,7 +39,16 @@ class CapabilityRollout(StrEnum):
 
 
 class CapabilityKey(StrEnum):
+    QUALITY_EVENT_ISSUE = "quality_intelligence.event_issue"
+    PRODUCT_RFQ_REQUIREMENTS = "product_management_intelligence.rfq_requirements"
     PRODUCT_MATRIX = "product_management_intelligence.product_matrix"
+    PRODUCT_RESEARCH_PLANNING = "product_management_intelligence.research_planning"
+    PRODUCT_COMPETITOR_ANALYSIS = "product_management_intelligence.competitor_analysis"
+    PRODUCT_MARKET_ANALYSIS = "product_management_intelligence.market_analysis"
+    PRODUCT_OPPORTUNITY_MAPPING = "product_management_intelligence.opportunity_mapping"
+    PRODUCT_EXPERIMENT_DESIGN = "product_management_intelligence.experiment_design"
+    PRODUCT_STRATEGY = "product_management_intelligence.product_strategy"
+    PRODUCT_DEFINITION = "product_management_intelligence.product_definition"
     EXECUTIVE_PORTFOLIO_EXPLANATION = "executive_intelligence.portfolio_explanation"
     EXECUTIVE_BRIEF = "executive_intelligence.executive_brief"
     KNOWLEDGE_MEETING_PLANNING = "knowledge_lite.meeting_planning"
@@ -92,6 +100,15 @@ class CapabilityContract(BaseModel):
     event_driven: bool = True
     quality_control: str = Field(min_length=1, max_length=64)
 
+    @property
+    def write_operations(self) -> tuple[str, ...]:
+        return operation_keys_for_capability(self.key.value)
+
+    @property
+    def write_tier(self) -> WriteTier | None:
+        tiers = {WRITE_OPERATIONS[key].write_tier for key in self.write_operations}
+        return next(iter(tiers)) if len(tiers) == 1 else None
+
 
 _EVENT_AGENT_PROJECTIONS: tuple[str, ...] = (
     "project_context",
@@ -127,6 +144,100 @@ def _finding_capability(
 
 CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = MappingProxyType(
     {
+        CapabilityKey.QUALITY_EVENT_ISSUE: CapabilityContract(
+            key=CapabilityKey.QUALITY_EVENT_ISSUE,
+            agent_key=AgentKey.QUALITY_INTELLIGENCE,
+            zone=CapabilityZone.FREE,
+            rollout=CapabilityRollout.SHADOW,
+            prompt_version="issue-event-v1",
+            projections=("event_issue_source", "references", "question"),
+            tools=(),
+            event_driven=False,
+            quality_control="event_issue_source_citation_control",
+        ),
+        **{
+            capability: CapabilityContract(
+                key=capability,
+                agent_key=AgentKey.PRODUCT_MANAGEMENT_INTELLIGENCE,
+                zone=CapabilityZone.HARD_GATE
+                if capability
+                in (
+                    CapabilityKey.PRODUCT_RESEARCH_PLANNING,
+                    CapabilityKey.PRODUCT_STRATEGY,
+                    CapabilityKey.PRODUCT_DEFINITION,
+                    CapabilityKey.PRODUCT_OPPORTUNITY_MAPPING,
+                    CapabilityKey.PRODUCT_EXPERIMENT_DESIGN,
+                    CapabilityKey.PRODUCT_COMPETITOR_ANALYSIS,
+                    CapabilityKey.PRODUCT_MARKET_ANALYSIS,
+                )
+                else CapabilityZone.FREE,
+                rollout=CapabilityRollout.SHADOW,
+                prompt_version="product-research-v2"
+                if capability is CapabilityKey.PRODUCT_RESEARCH_PLANNING
+                else "product-evidence-v3"
+                if capability
+                in (
+                    CapabilityKey.PRODUCT_COMPETITOR_ANALYSIS,
+                    CapabilityKey.PRODUCT_MARKET_ANALYSIS,
+                )
+                else "product-discovery-v4"
+                if capability
+                in (
+                    CapabilityKey.PRODUCT_OPPORTUNITY_MAPPING,
+                    CapabilityKey.PRODUCT_EXPERIMENT_DESIGN,
+                )
+                else "product-planning-v6",
+                finding_types=("product_research_plan",)
+                if capability is CapabilityKey.PRODUCT_RESEARCH_PLANNING
+                else ("product_competitor_observations",)
+                if capability is CapabilityKey.PRODUCT_COMPETITOR_ANALYSIS
+                else ("product_market_segments",)
+                if capability is CapabilityKey.PRODUCT_MARKET_ANALYSIS
+                else ("product_opportunities",)
+                if capability is CapabilityKey.PRODUCT_OPPORTUNITY_MAPPING
+                else ("product_experiments",)
+                if capability is CapabilityKey.PRODUCT_EXPERIMENT_DESIGN
+                else ("product_strategy_drafts",)
+                if capability is CapabilityKey.PRODUCT_STRATEGY
+                else ("product_definition_drafts",),
+                projections=("product_work_source", "references", "question"),
+                tools=(),
+                event_driven=False,
+                quality_control="finding_quality_control"
+                if capability
+                in (
+                    CapabilityKey.PRODUCT_RESEARCH_PLANNING,
+                    CapabilityKey.PRODUCT_STRATEGY,
+                    CapabilityKey.PRODUCT_DEFINITION,
+                    CapabilityKey.PRODUCT_OPPORTUNITY_MAPPING,
+                    CapabilityKey.PRODUCT_EXPERIMENT_DESIGN,
+                    CapabilityKey.PRODUCT_COMPETITOR_ANALYSIS,
+                    CapabilityKey.PRODUCT_MARKET_ANALYSIS,
+                )
+                else "product_work_citation_control",
+            )
+            for capability in (
+                CapabilityKey.PRODUCT_RESEARCH_PLANNING,
+                CapabilityKey.PRODUCT_COMPETITOR_ANALYSIS,
+                CapabilityKey.PRODUCT_MARKET_ANALYSIS,
+                CapabilityKey.PRODUCT_OPPORTUNITY_MAPPING,
+                CapabilityKey.PRODUCT_EXPERIMENT_DESIGN,
+                CapabilityKey.PRODUCT_STRATEGY,
+                CapabilityKey.PRODUCT_DEFINITION,
+            )
+        },
+        CapabilityKey.PRODUCT_RFQ_REQUIREMENTS: CapabilityContract(
+            key=CapabilityKey.PRODUCT_RFQ_REQUIREMENTS,
+            agent_key=AgentKey.PRODUCT_MANAGEMENT_INTELLIGENCE,
+            zone=CapabilityZone.CONFIRM,
+            rollout=CapabilityRollout.SHADOW,
+            prompt_version="product-rfq-v6",
+            finding_types=("product_rfq_requirements",),
+            projections=("product_work_source", "references", "question"),
+            tools=(),
+            event_driven=False,
+            quality_control="finding_quality_control",
+        ),
         CapabilityKey.PRODUCT_MATRIX: CapabilityContract(
             key=CapabilityKey.PRODUCT_MATRIX,
             agent_key=AgentKey.PRODUCT_MANAGEMENT_INTELLIGENCE,
@@ -271,7 +382,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
         CapabilityKey.KNOWLEDGE_MEETING_DECISIONS: CapabilityContract(
             key=CapabilityKey.KNOWLEDGE_MEETING_DECISIONS,
             agent_key=AgentKey.KNOWLEDGE_LITE,
-            zone=CapabilityZone.HARD_GATE,
+            zone=CapabilityZone.FREE,
             rollout=CapabilityRollout.SHADOW,
             prompt_version="meeting-decisions-v1",
             finding_types=("meeting_decision",),
@@ -282,7 +393,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
         CapabilityKey.KNOWLEDGE_MEETING_ACTIONS: CapabilityContract(
             key=CapabilityKey.KNOWLEDGE_MEETING_ACTIONS,
             agent_key=AgentKey.KNOWLEDGE_LITE,
-            zone=CapabilityZone.HARD_GATE,
+            zone=CapabilityZone.FREE,
             rollout=CapabilityRollout.SHADOW,
             prompt_version="meeting-actions-v1",
             finding_types=("meeting_action",),
@@ -293,7 +404,7 @@ CAPABILITY_CONTRACTS: MappingProxyType[CapabilityKey, CapabilityContract] = Mapp
         CapabilityKey.KNOWLEDGE_MEETING_MINUTES: CapabilityContract(
             key=CapabilityKey.KNOWLEDGE_MEETING_MINUTES,
             agent_key=AgentKey.KNOWLEDGE_LITE,
-            zone=CapabilityZone.HARD_GATE,
+            zone=CapabilityZone.FREE,
             rollout=CapabilityRollout.SHADOW,
             prompt_version="meeting-reading-v1",
             finding_types=("meeting_minutes",),
@@ -507,6 +618,6 @@ def capabilities_for_event(event_type: str) -> tuple[CapabilityKey, ...]:
         for agent_key in agents_for_event(event_type)
         for key, contract in CAPABILITY_CONTRACTS.items()
         if contract.agent_key is agent_key
-        and contract.zone is CapabilityZone.HARD_GATE
+        and bool(contract.finding_types)
         and contract.event_driven
     )

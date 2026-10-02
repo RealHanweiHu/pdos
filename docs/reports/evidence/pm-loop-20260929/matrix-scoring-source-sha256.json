@@ -1,0 +1,11 @@
+{
+  "server/app/domain/product_matrix_scoring.py": "8415e21e313056a3948a467d685edde8cf5e5286b86e19d0eba74c52133040de",
+  "server/app/domain/product_matrix_coverage.py": "41b42adaa6ed7f04fd784b5adb6abb65907a142bcda633591847294af4e73343",
+  "server/app/domain/product_matrix_records.py": "c12115caba7750cb2bbfae23d7c57e8ad776509b46e9acf4b69ae1bbbf31a5d8",
+  "server/tests/test_product_matrix_scoring.py": "a468aff788aefa1e1d4a59ad4b7827551e68f443e92d3a5a5fcb16ef701b99ed",
+  "server/tests/product_matrix_scoring_journey.py": "0dd87884f325839cae4059b96148f151a66497d9664f7eb03fbed0a4e92a02a1",
+  "server/tests/test_product_manager_loop_api.py": "21c2e81577e7b8cbf9ae15a161deccdff972a849083d9eb953fbc34b7b720f0c",
+  "web/src/components/product-work/product-matrix-coverage.tsx": "829970bc3037f11c874bcb7ab40c7c7498b22b3598f25adf8d0719ee7025f7e7",
+  "web/src/components/product-work/product-matrix-scoring.tsx": "1308d5560364f32914a6af41f32bdbed2fdced21e279c9bc5c8fe8acbda6006a",
+  "web/src/components/product-work/product-matrix-scoring.test.tsx": "d7df9154340616ece216d794dd977bd95a5edc35a95780821d151d0cb1e95f1e"
+}

@@ -1,0 +1,8 @@
+{
+  "server/app/ai/product_shadow_evaluation.py": "0701d93ae25fedcb06e602b72789273068168999800ddc6a4f21cdbda6e0fd98",
+  "server/app/api/product_evaluation.py": "3cce16504cd30c46c38a97cf41c927d7ef8a7b9e5ce723d3122e669f4c783840",
+  "server/migrations/versions/0407_product_shadow_evaluation.py": "88aeb22d615d7f349c2ac9c720a188ba820ef4dce1ab214b184d93dcb8cc9d26",
+  "server/tests/test_product_shadow_evaluation_api.py": "899f36879902a2405e0acaf0e3f2d807b29335d3ffbb961bf9241ab9c4d71765",
+  "server/tests/test_product_shadow_evaluation_migration.py": "0182a288213441f2b8451ead5caabc510fc4819c983cc4dd3812c4fef18a1772",
+  "server/tests/test_model_gateway_schema.py": "a51983bffd7741ddf77ba43aee0c6ab51ba27e5f484016b9b8693b431140778f"
+}

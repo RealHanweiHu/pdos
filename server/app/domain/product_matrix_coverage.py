@@ -5,7 +5,7 @@ from itertools import combinations
 from typing import Any, Literal, Self
 from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import Field, SerializerFunctionWrapHandler, model_serializer, model_validator
 from sqlalchemy import Engine, exists, select
 
 from app.auth.repository import AuthContext
@@ -14,6 +14,7 @@ from app.db.schema import tables
 from app.domain.market_analysis import FACT_GROUPS
 from app.domain.product_evidence import evidence_quality
 from app.domain.product_matrix import MatrixComparison, ProductMatrixService
+from app.domain.product_matrix_scoring import CoverageScoringPolicy, score_coverage
 from app.domain.product_workspace import (
     ProductWorkAccessError,
     ProductWorkError,
@@ -75,11 +76,23 @@ class CoverageCriterion(Contract):
 class CoverageCalculation(CoveragePreparation):
     expected_source_digest: Digest
     criteria: tuple[CoverageCriterion, ...] = Field(min_length=1, max_length=20)
+    scoring_policy: CoverageScoringPolicy | None = None
+
+    @model_serializer(mode="wrap")
+    def preserve_legacy_input(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        value: dict[str, Any] = handler(self)
+        if self.scoring_policy is None:
+            value.pop("scoring_policy", None)
+        return value
 
     @model_validator(mode="after")
     def criteria_scope(self) -> Self:
         if len({item.key for item in self.criteria}) != len(self.criteria):
             raise ValueError("判据编号不能重复")
+        if self.scoring_policy is not None and {
+            item.criterion_key for item in self.scoring_policy.weights
+        } != {item.key for item in self.criteria}:
+            raise ValueError("评分政策须逐一覆盖全部判据，不能遗漏或加入其他判据")
         selected = {item.product_id for item in self.choices}
         if any(
             mapping.product_id not in selected
@@ -375,4 +388,9 @@ def calculate_snapshot(query: CoverageCalculation, prepared: dict[str, Any]) -> 
             "否则为已知声明缺口。未知不补分、不做销量/收益计算。"
         ),
     }
+    if query.scoring_policy is not None:
+        result["scoring"] = score_coverage(
+            query.scoring_policy, results, [product["id"] for product in prepared["products"]]
+        )
+        result["formula_version"] = "market-definition-coverage.v2"
     return {**result, "result_digest": digest(result)}

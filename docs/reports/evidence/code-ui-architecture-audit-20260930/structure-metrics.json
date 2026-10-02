@@ -1,0 +1,2984 @@
+{
+  "server/app/domain": {
+    "files": 405,
+    "lines": 156291,
+    "largest": [
+      {
+        "lines": 1928,
+        "path": "server/app/domain/gates.py"
+      },
+      {
+        "lines": 1402,
+        "path": "server/app/domain/findings.py"
+      },
+      {
+        "lines": 1340,
+        "path": "server/app/domain/npi_execution.py"
+      },
+      {
+        "lines": 1302,
+        "path": "server/app/domain/product_workspace.py"
+      },
+      {
+        "lines": 1072,
+        "path": "server/app/domain/research_workpacks.py"
+      },
+      {
+        "lines": 1065,
+        "path": "server/app/domain/project_execution.py"
+      },
+      {
+        "lines": 1034,
+        "path": "server/app/domain/tasks.py"
+      },
+      {
+        "lines": 1026,
+        "path": "server/app/domain/project_intake.py"
+      }
+    ]
+  },
+  "server/app/ai": {
+    "files": 127,
+    "lines": 39717,
+    "largest": [
+      {
+        "lines": 1148,
+        "path": "server/app/ai/executor.py"
+      },
+      {
+        "lines": 1142,
+        "path": "server/app/ai/application_domain_context.py"
+      },
+      {
+        "lines": 1069,
+        "path": "server/app/ai/tools.py"
+      },
+      {
+        "lines": 958,
+        "path": "server/app/ai/change_discussion_runs.py"
+      },
+      {
+        "lines": 838,
+        "path": "server/app/ai/meeting_reading.py"
+      },
+      {
+        "lines": 802,
+        "path": "server/app/ai/gateway.py"
+      },
+      {
+        "lines": 758,
+        "path": "server/app/ai/chat.py"
+      },
+      {
+        "lines": 716,
+        "path": "server/app/ai/issue_event_runs.py"
+      }
+    ]
+  },
+  "web/src/components": {
+    "files": 514,
+    "lines": 46940,
+    "largest": [
+      {
+        "lines": 805,
+        "path": "web/src/components/projects/project-workspace.tsx"
+      },
+      {
+        "lines": 763,
+        "path": "web/src/components/ai/ai-api.ts"
+      },
+      {
+        "lines": 608,
+        "path": "web/src/components/organization/organization-governance.tsx"
+      },
+      {
+        "lines": 545,
+        "path": "web/src/components/projects/project-work-items.tsx"
+      },
+      {
+        "lines": 520,
+        "path": "web/src/components/knowledge/knowledge-search.tsx"
+      },
+      {
+        "lines": 515,
+        "path": "web/src/components/my-work/my-work-view.tsx"
+      },
+      {
+        "lines": 508,
+        "path": "web/src/components/projects/project-workspace-view.tsx"
+      },
+      {
+        "lines": 416,
+        "path": "web/src/components/product-work/product-workspace.tsx"
+      }
+    ]
+  },
+  "web/src/lib": {
+    "files": 26,
+    "lines": 1893,
+    "largest": [
+      {
+        "lines": 328,
+        "path": "web/src/lib/npi-bff.ts"
+      },
+      {
+        "lines": 170,
+        "path": "web/src/lib/meetings-bff.ts"
+      },
+      {
+        "lines": 152,
+        "path": "web/src/lib/pdos-api.ts"
+      },
+      {
+        "lines": 140,
+        "path": "web/src/lib/changes-bff.ts"
+      },
+      {
+        "lines": 120,
+        "path": "web/src/lib/quality-capa-bff.ts"
+      },
+      {
+        "lines": 114,
+        "path": "web/src/lib/login-rate-limit.ts"
+      },
+      {
+        "lines": 110,
+        "path": "web/src/lib/knowledge-push-bff.ts"
+      },
+      {
+        "lines": 91,
+        "path": "web/src/lib/customer-changes-bff.ts"
+      }
+    ]
+  },
+  "product_workspace_importers": {
+    "count": 298,
+    "paths": [
+      "server/app/domain/ai_issue_applications.py",
+      "server/app/domain/ai_issue_direct_route.py",
+      "server/app/domain/ai_issue_event_sources.py",
+      "server/app/domain/ai_issue_generation_bindings.py",
+      "server/app/domain/ai_issue_observations.py",
+      "server/app/domain/ai_issue_proposal_reviews.py",
+      "server/app/domain/ai_issue_sample_reviews.py",
+      "server/app/domain/ai_issue_trial_collections.py",
+      "server/app/domain/ai_issue_trial_current.py",
+      "server/app/domain/ai_issue_trial_protocols.py",
+      "server/app/domain/ai_issue_trial_qualification.py",
+      "server/app/domain/ai_issue_withdrawals.py",
+      "server/app/domain/ai_issue_write_access.py",
+      "server/app/domain/ai_meeting_drafts.py",
+      "server/app/domain/approval_responsibilities.py",
+      "server/app/domain/audit_customer_files.py",
+      "server/app/domain/audit_customer_projection.py",
+      "server/app/domain/audit_report_bundles.py",
+      "server/app/domain/baseline_change_application.py",
+      "server/app/domain/baseline_changes.py",
+      "server/app/domain/build_material_changes.py",
+      "server/app/domain/build_materials.py",
+      "server/app/domain/case_requirements.py",
+      "server/app/domain/case_review_responsibilities.py",
+      "server/app/domain/case_reviews.py",
+      "server/app/domain/certification_execution.py",
+      "server/app/domain/change_compliance.py",
+      "server/app/domain/change_decision_summary.py",
+      "server/app/domain/change_discussion_briefs.py",
+      "server/app/domain/change_discussion_notifications.py",
+      "server/app/domain/change_execution_evidence.py",
+      "server/app/domain/change_execution_followups.py",
+      "server/app/domain/change_execution_overview.py",
+      "server/app/domain/change_execution_results.py",
+      "server/app/domain/change_execution_tasks.py",
+      "server/app/domain/change_governance.py",
+      "server/app/domain/change_impact_graph.py",
+      "server/app/domain/change_impact_scope.py",
+      "server/app/domain/change_notice_disclosure.py",
+      "server/app/domain/change_quiet_origins.py",
+      "server/app/domain/change_quiet_periods.py",
+      "server/app/domain/change_quiet_replacements.py",
+      "server/app/domain/change_quiet_sources.py",
+      "server/app/domain/change_work_package_proposals.py",
+      "server/app/domain/competitors.py",
+      "server/app/domain/conversation_attachments.py",
+      "server/app/domain/conversation_email_parts.py",
+      "server/app/domain/conversation_focus.py",
+      "server/app/domain/conversation_report_imports.py",
+      "server/app/domain/conversations.py",
+      "server/app/domain/cost_alternatives.py",
+      "server/app/domain/cost_backtests.py",
+      "server/app/domain/cost_definition_feedback.py",
+      "server/app/domain/cost_freezes.py",
+      "server/app/domain/cost_gaps.py",
+      "server/app/domain/cost_imports.py",
+      "server/app/domain/cost_inputs.py",
+      "server/app/domain/cost_reduction_findings.py",
+      "server/app/domain/cost_rollups.py",
+      "server/app/domain/cross_project_schedule.py",
+      "server/app/domain/cross_project_schedule_application.py",
+      "server/app/domain/customer_report_packages.py",
+      "server/app/domain/decision_intake_amendments.py",
+      "server/app/domain/decision_intake_batch_progress.py",
+      "server/app/domain/decision_intake_confirm.py",
+      "server/app/domain/decision_intake_correction_batches.py",
+      "server/app/domain/decision_intake_corrections.py",
+      "server/app/domain/decision_intake_preview.py",
+      "server/app/domain/decision_intake_references.py",
+      "server/app/domain/decision_intake_state.py",
+      "server/app/domain/decision_intake_targets.py",
+      "server/app/domain/decision_responsibilities.py",
+      "server/app/domain/definition_exports.py",
+      "server/app/domain/definition_inheritance.py",
+      "server/app/domain/definition_intake.py",
+      "server/app/domain/derived_definitions.py",
+      "server/app/domain/document_previews.py",
+      "server/app/domain/engineering_review_packages.py",
+      "server/app/domain/experiment_feedback.py",
+      "server/app/domain/experiment_succession.py",
+      "server/app/domain/experiments.py",
+      "server/app/domain/field_capture_drafts.py",
+      "server/app/domain/field_captures.py",
+      "server/app/domain/field_recognitions.py",
+      "server/app/domain/firmware_package_tasks.py",
+      "server/app/domain/firmware_task_results.py",
+      "server/app/domain/firmware_work_packages.py",
+      "server/app/domain/fmea_candidates.py",
+      "server/app/domain/fmea_design_rules.py",
+      "server/app/domain/forecast_capacity.py",
+      "server/app/domain/formal_schedule.py",
+      "server/app/domain/gate_assignments.py",
+      "server/app/domain/gate_conditions.py",
+      "server/app/domain/gate_responsibilities.py",
+      "server/app/domain/gates.py",
+      "server/app/domain/handover_workflows.py",
+      "server/app/domain/id_change_impact.py",
+      "server/app/domain/id_design.py",
+      "server/app/domain/id_design_activation.py",
+      "server/app/domain/id_design_changes.py",
+      "server/app/domain/id_design_checkpoints.py",
+      "server/app/domain/id_design_freeze.py",
+      "server/app/domain/id_design_handoff.py",
+      "server/app/domain/id_design_responsibilities.py",
+      "server/app/domain/id_design_revision_branch.py",
+      "server/app/domain/id_handoff_runtime.py",
+      "server/app/domain/initial_plan_application.py",
+      "server/app/domain/initial_plan_candidates.py",
+      "server/app/domain/initial_plan_reviews.py",
+      "server/app/domain/input_wait_responsibilities.py",
+      "server/app/domain/intake_ai_findings.py",
+      "server/app/domain/intake_ai_imports.py",
+      "server/app/domain/intake_ai_observations.py",
+      "server/app/domain/intake_ai_sources.py",
+      "server/app/domain/issue_intake_batch_progress.py",
+      "server/app/domain/issue_intake_compensation_results.py",
+      "server/app/domain/issue_intake_compensations.py",
+      "server/app/domain/issue_intake_confirm.py",
+      "server/app/domain/issue_intake_correction_batches.py",
+      "server/app/domain/issue_intake_corrections.py",
+      "server/app/domain/issue_intake_preview.py",
+      "server/app/domain/issue_intake_references.py",
+      "server/app/domain/issue_intake_reuse.py",
+      "server/app/domain/knowledge_corrections.py",
+      "server/app/domain/knowledge_learning.py",
+      "server/app/domain/knowledge_push.py",
+      "server/app/domain/knowledge_reuse.py",
+      "server/app/domain/living_fmea.py",
+      "server/app/domain/market_analysis.py",
+      "server/app/domain/material_admission.py",
+      "server/app/domain/material_allocations.py",
+      "server/app/domain/material_corrections.py",
+      "server/app/domain/material_coverage.py",
+      "server/app/domain/material_exceptions.py",
+      "server/app/domain/material_exposure.py",
+      "server/app/domain/material_movements.py",
+      "server/app/domain/material_schedule.py",
+      "server/app/domain/meeting_action_proposals.py",
+      "server/app/domain/meeting_business_proposals.py",
+      "server/app/domain/meeting_conference_requests.py",
+      "server/app/domain/meeting_decision_proposals.py",
+      "server/app/domain/meeting_followup.py",
+      "server/app/domain/meeting_forecasts.py",
+      "server/app/domain/meeting_generation.py",
+      "server/app/domain/meeting_minutes.py",
+      "server/app/domain/meeting_minutes_proposals.py",
+      "server/app/domain/meeting_notifications.py",
+      "server/app/domain/meeting_planning.py",
+      "server/app/domain/meeting_planning_review.py",
+      "server/app/domain/meeting_preparation.py",
+      "server/app/domain/meeting_recurrence_commands.py",
+      "server/app/domain/meeting_recurrence_roster.py",
+      "server/app/domain/meeting_recurring_conferences.py",
+      "server/app/domain/meeting_recurring_notifications.py",
+      "server/app/domain/meeting_rescheduling.py",
+      "server/app/domain/meeting_retrospectives.py",
+      "server/app/domain/meeting_schedule_revision.py",
+      "server/app/domain/meeting_transcripts.py",
+      "server/app/domain/milestone_designations.py",
+      "server/app/domain/open_api_calls.py",
+      "server/app/domain/open_api_credentials.py",
+      "server/app/domain/opportunities.py",
+      "server/app/domain/opportunity_requirements.py",
+      "server/app/domain/opportunity_succession.py",
+      "server/app/domain/pdf_intake_previews.py",
+      "server/app/domain/plan_responsibilities.py",
+      "server/app/domain/plan_scenarios.py",
+      "server/app/domain/portfolio_application_plan.py",
+      "server/app/domain/portfolio_applications.py",
+      "server/app/domain/portfolio_comparisons.py",
+      "server/app/domain/portfolio_control_queue.py",
+      "server/app/domain/portfolio_escalations.py",
+      "server/app/domain/portfolio_execution_preparations.py",
+      "server/app/domain/portfolio_health.py",
+      "server/app/domain/portfolio_health_overview.py",
+      "server/app/domain/portfolio_health_policy.py",
+      "server/app/domain/portfolio_materials.py",
+      "server/app/domain/portfolio_milestones.py",
+      "server/app/domain/portfolio_product_pipeline.py",
+      "server/app/domain/portfolio_progress.py",
+      "server/app/domain/portfolio_resources.py",
+      "server/app/domain/portfolio_selections.py",
+      "server/app/domain/portfolio_sources.py",
+      "server/app/domain/portfolio_suppliers.py",
+      "server/app/domain/preproject_responsibilities.py",
+      "server/app/domain/process_template_briefs.py",
+      "server/app/domain/process_template_findings.py",
+      "server/app/domain/process_templates.py",
+      "server/app/domain/product_catalog.py",
+      "server/app/domain/product_definitions.py",
+      "server/app/domain/product_evidence.py",
+      "server/app/domain/product_evidence_findings.py",
+      "server/app/domain/product_master_references.py",
+      "server/app/domain/product_matrix.py",
+      "server/app/domain/product_matrix_coverage.py",
+      "server/app/domain/product_matrix_dispositions.py",
+      "server/app/domain/product_matrix_outcomes.py",
+      "server/app/domain/product_matrix_records.py",
+      "server/app/domain/product_matrix_scoring.py",
+      "server/app/domain/product_metric_calculations.py",
+      "server/app/domain/product_research_findings.py",
+      "server/app/domain/product_result_feedback.py",
+      "server/app/domain/product_result_followups.py",
+      "server/app/domain/product_rfq_requirements.py",
+      "server/app/domain/product_roadmap.py",
+      "server/app/domain/product_source_files.py",
+      "server/app/domain/product_strategies.py",
+      "server/app/domain/professional_change_routes.py",
+      "server/app/domain/project_completion.py",
+      "server/app/domain/project_execution.py",
+      "server/app/domain/project_handoff_sources.py",
+      "server/app/domain/project_intake.py",
+      "server/app/domain/project_intake_progress.py",
+      "server/app/domain/project_intake_results.py",
+      "server/app/domain/project_intake_work.py",
+      "server/app/domain/project_report_exports.py",
+      "server/app/domain/project_resource_schedules.py",
+      "server/app/domain/project_scenario_capacity.py",
+      "server/app/domain/project_schedule_scenarios.py",
+      "server/app/domain/project_webhooks.py",
+      "server/app/domain/quality_issue_links.py",
+      "server/app/domain/quality_learning.py",
+      "server/app/domain/quality_operations.py",
+      "server/app/domain/quality_responsibilities.py",
+      "server/app/domain/quality_result_source.py",
+      "server/app/domain/quality_work_packages.py",
+      "server/app/domain/requirement_package_succession.py",
+      "server/app/domain/research_collection.py",
+      "server/app/domain/research_measurement.py",
+      "server/app/domain/research_measurement_sources.py",
+      "server/app/domain/research_search.py",
+      "server/app/domain/research_source_responsibilities.py",
+      "server/app/domain/research_subscriptions.py",
+      "server/app/domain/research_workpack_sources.py",
+      "server/app/domain/research_workpacks.py",
+      "server/app/domain/reservation_owner_transfers.py",
+      "server/app/domain/reservation_replacements.py",
+      "server/app/domain/resource_allocation_release.py",
+      "server/app/domain/resource_capacity.py",
+      "server/app/domain/resource_inventory.py",
+      "server/app/domain/resource_priorities.py",
+      "server/app/domain/resource_reallocation_inputs.py",
+      "server/app/domain/resource_reallocations.py",
+      "server/app/domain/resource_reservations.py",
+      "server/app/domain/resource_schedule_preparations.py",
+      "server/app/domain/resource_schedule_solver.py",
+      "server/app/domain/responsibility_handover.py",
+      "server/app/domain/retirement_feedback.py",
+      "server/app/domain/review_materials.py",
+      "server/app/domain/risk_followup_results.py",
+      "server/app/domain/risk_followups.py",
+      "server/app/domain/sample_configuration_comparison.py",
+      "server/app/domain/sample_configuration_revisions.py",
+      "server/app/domain/sample_configurations.py",
+      "server/app/domain/schedule_actual_corrections.py",
+      "server/app/domain/schedule_commitments.py",
+      "server/app/domain/schedule_forecasts.py",
+      "server/app/domain/schedule_milestones.py",
+      "server/app/domain/schedule_network.py",
+      "server/app/domain/schedule_nodes.py",
+      "server/app/domain/schedule_resource_feedback.py",
+      "server/app/domain/schedule_responsibility_changes.py",
+      "server/app/domain/schedule_source_actuals.py",
+      "server/app/domain/schedule_source_corrections.py",
+      "server/app/domain/specification_responsibility.py",
+      "server/app/domain/supplier_compliance.py",
+      "server/app/domain/supplier_engineering.py",
+      "server/app/domain/supplier_notice_applications.py",
+      "server/app/domain/supplier_notice_dispatches.py",
+      "server/app/domain/supplier_notice_impact.py",
+      "server/app/domain/supplier_notice_reviews.py",
+      "server/app/domain/supplier_notice_scans.py",
+      "server/app/domain/supplier_notice_watches.py",
+      "server/app/domain/supplier_recovery_findings.py",
+      "server/app/domain/supplier_recovery_results.py",
+      "server/app/domain/supplier_recovery_reviews.py",
+      "server/app/domain/supplier_replies.py",
+      "server/app/domain/supply_imports.py",
+      "server/app/domain/supply_sharing.py",
+      "server/app/domain/task_preparation.py",
+      "server/app/domain/task_takeover.py",
+      "server/app/domain/task_takeover_knowledge.py",
+      "server/app/domain/task_takeover_residuals.py",
+      "server/app/domain/tencent_meeting_bindings.py",
+      "server/app/domain/test_execution_preparations.py",
+      "server/app/domain/test_import_execution_times.py",
+      "server/app/domain/test_import_history.py",
+      "server/app/domain/test_import_preview.py",
+      "server/app/domain/test_import_revisions.py",
+      "server/app/domain/test_import_samples.py",
+      "server/app/domain/test_verification_paths.py",
+      "server/app/domain/tooling_resources.py",
+      "server/app/domain/tooling_rounds.py",
+      "server/app/domain/tooling_schedule.py",
+      "server/app/domain/value_measurement.py",
+      "server/app/domain/value_workpacks.py",
+      "server/app/domain/webhook_sources.py",
+      "server/app/domain/xiaopai.py"
+    ],
+    "private_helpers": [
+      {
+        "path": "server/app/domain/schedule_source_actuals.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/process_templates.py",
+        "line": 49,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/quality_operations.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/test_execution_preparations.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/engineering_review_packages.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/audit_customer_projection.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_priorities.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_priorities.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/reservation_replacements.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/reservation_replacements.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/portfolio_sources.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_sources"
+      },
+      {
+        "path": "server/app/domain/experiment_feedback.py",
+        "line": 15,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/portfolio_progress.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_progress.py",
+        "line": 19,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/sample_configuration_comparison.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_matrix_dispositions.py",
+        "line": 16,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/product_matrix_records.py",
+        "line": 24,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_matrix_records.py",
+        "line": 24,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_matrix_records.py",
+        "line": 24,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_matrix_records.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix_records.py",
+        "line": 24,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_matrix_records.py",
+        "line": 24,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/cost_gaps.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_control_queue.py",
+        "line": 32,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_control_queue.py",
+        "line": 32,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/fmea_candidates.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_milestones.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_milestones.py",
+        "line": 18,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/id_design_revision_branch.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_revision_branch.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/cost_rollups.py",
+        "line": 25,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/gate_responsibilities.py",
+        "line": 9,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_change_impact.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_execution.py",
+        "line": 21,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/project_execution.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_execution.py",
+        "line": 21,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_execution.py",
+        "line": 21,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/quality_work_packages.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/process_template_briefs.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/intake_ai_findings.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/material_exposure.py",
+        "line": 32,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_impact.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/tencent_meeting_bindings.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_withdrawals.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_execution_overview.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/material_coverage.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_trial_protocols.py",
+        "line": 30,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_evidence.py",
+        "line": 12,
+        "name": "_sources"
+      },
+      {
+        "path": "server/app/domain/gate_conditions.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 16,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 16,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 16,
+        "name": "_sources"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 16,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 215,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 324,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/definition_exports.py",
+        "line": 497,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_master_references.py",
+        "line": 16,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_master_references.py",
+        "line": 16,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_master_references.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_master_references.py",
+        "line": 16,
+        "name": "_result_sources"
+      },
+      {
+        "path": "server/app/domain/product_master_references.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_master_references.py",
+        "line": 16,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/conversation_attachments.py",
+        "line": 27,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/test_import_preview.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_comparisons.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_comparisons.py",
+        "line": 21,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/opportunity_succession.py",
+        "line": 12,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/opportunity_succession.py",
+        "line": 12,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/resource_inventory.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_inventory.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/portfolio_selections.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_selections.py",
+        "line": 24,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/review_materials.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_replies.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/intake_ai_observations.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/material_allocations.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/sample_configuration_revisions.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/tooling_rounds.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_reservations.py",
+        "line": 29,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_reservations.py",
+        "line": 29,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/ai_issue_generation_bindings.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_actual_corrections.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/knowledge_push.py",
+        "line": 35,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_suppliers.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_event_sources.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/intake_ai_sources.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/task_preparation.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_backtests.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/conversation_report_imports.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_recurring_notifications.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_changes.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_changes.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/opportunity_requirements.py",
+        "line": 12,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/opportunity_requirements.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/opportunity_requirements.py",
+        "line": 12,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/opportunity_requirements.py",
+        "line": 12,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/input_wait_responsibilities.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_quiet_periods.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_resources.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_resources.py",
+        "line": 18,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_handoff_sources.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_intake.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/research_subscriptions.py",
+        "line": 18,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/ai_issue_sample_reviews.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_minutes.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_meeting_drafts.py",
+        "line": 36,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/build_materials.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_allocation_release.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_allocation_release.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/meeting_retrospectives.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_applications.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_compensation_results.py",
+        "line": 25,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_correction_batches.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_health.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_health.py",
+        "line": 21,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/meeting_preparation.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/firmware_work_packages.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/open_api_calls.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/quality_responsibilities.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_forecasts.py",
+        "line": 9,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_quiet_replacements.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_nodes.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_nodes.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/change_execution_followups.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/milestone_designations.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/milestone_designations.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/tooling_resources.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/reservation_owner_transfers.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/reservation_owner_transfers.py",
+        "line": 12,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/id_design_activation.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_activation.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/retirement_feedback.py",
+        "line": 17,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/retirement_feedback.py",
+        "line": 17,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/retirement_feedback.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/retirement_feedback.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/retirement_feedback.py",
+        "line": 17,
+        "name": "_sources"
+      },
+      {
+        "path": "server/app/domain/retirement_feedback.py",
+        "line": 17,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/document_previews.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_recovery_reviews.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_applications.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_applications.py",
+        "line": 22,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/portfolio_escalations.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_escalations.py",
+        "line": 19,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/quality_result_source.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/quality_result_source.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/definition_intake.py",
+        "line": 17,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/material_corrections.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_impact_graph.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_schedule_preparations.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_schedule_preparations.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_completion.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/field_captures.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/fmea_design_rules.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_compliance.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_intake_confirm.py",
+        "line": 29,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/case_reviews.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/case_reviews.py",
+        "line": 21,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_resource_schedules.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_resource_schedules.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_report_exports.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_report_exports.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/resource_schedule_solver.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/material_admission.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/firmware_task_results.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_responsibilities.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_responsibilities.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/value_workpacks.py",
+        "line": 27,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_metric_calculations.py",
+        "line": 14,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_metric_calculations.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_handoff.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_handoff.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/portfolio_application_plan.py",
+        "line": 33,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_application_plan.py",
+        "line": 33,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/professional_change_routes.py",
+        "line": 27,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_watches.py",
+        "line": 16,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_watches.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_watches.py",
+        "line": 16,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/schedule_forecasts.py",
+        "line": 27,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_forecasts.py",
+        "line": 27,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/decision_intake_corrections.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_quiet_sources.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_trial_collections.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/plan_responsibilities.py",
+        "line": 18,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/plan_responsibilities.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/customer_report_packages.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_recovery_results.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/firmware_package_tasks.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_engineering.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_references.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/field_capture_drafts.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/sample_configurations.py",
+        "line": 433,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/sample_configurations.py",
+        "line": 292,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_proposal_reviews.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_preview.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_measurement_sources.py",
+        "line": 11,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/research_measurement_sources.py",
+        "line": 11,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/research_measurement_sources.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_measurement_sources.py",
+        "line": 11,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/research_measurement_sources.py",
+        "line": 11,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/meeting_action_proposals.py",
+        "line": 75,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_action_proposals.py",
+        "line": 106,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_reduction_findings.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix_outcomes.py",
+        "line": 20,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_matrix_outcomes.py",
+        "line": 20,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_matrix_outcomes.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix_outcomes.py",
+        "line": 20,
+        "name": "_sources"
+      },
+      {
+        "path": "server/app/domain/product_matrix_outcomes.py",
+        "line": 211,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_matrix_outcomes.py",
+        "line": 211,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/id_design_checkpoints.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_checkpoints.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/portfolio_product_pipeline.py",
+        "line": 19,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/portfolio_product_pipeline.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_product_pipeline.py",
+        "line": 19,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/research_workpacks.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/task_takeover_residuals.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_dispatches.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supply_imports.py",
+        "line": 32,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_freezes.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_collection.py",
+        "line": 17,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/research_collection.py",
+        "line": 17,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/forecast_capacity.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_confirm.py",
+        "line": 33,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_scenario_capacity.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/responsibility_handover.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_trial_current.py",
+        "line": 30,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/baseline_changes.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/baseline_changes.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_reviews.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_transcripts.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_applications.py",
+        "line": 29,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/material_schedule.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_rfq_requirements.py",
+        "line": 20,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_rfq_requirements.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_rfq_requirements.py",
+        "line": 20,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/meeting_planning.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/baseline_change_application.py",
+        "line": 33,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/baseline_change_application.py",
+        "line": 33,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_result_followups.py",
+        "line": 21,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_result_followups.py",
+        "line": 21,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_result_followups.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_result_followups.py",
+        "line": 215,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/preproject_responsibilities.py",
+        "line": 14,
+        "name": "_audit_snapshot"
+      },
+      {
+        "path": "server/app/domain/preproject_responsibilities.py",
+        "line": 14,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/preproject_responsibilities.py",
+        "line": 14,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/preproject_responsibilities.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/preproject_responsibilities.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/preproject_responsibilities.py",
+        "line": 14,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/product_matrix_coverage.py",
+        "line": 18,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_matrix_coverage.py",
+        "line": 18,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_matrix_coverage.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix_coverage.py",
+        "line": 18,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_scope_ref"
+      },
+      {
+        "path": "server/app/domain/opportunities.py",
+        "line": 18,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/product_source_files.py",
+        "line": 24,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_source_files.py",
+        "line": 24,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_source_files.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_source_files.py",
+        "line": 24,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_source_files.py",
+        "line": 24,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/initial_plan_reviews.py",
+        "line": 16,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/initial_plan_reviews.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_execution_preparations.py",
+        "line": 29,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_execution_preparations.py",
+        "line": 29,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/approval_responsibilities.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_intake_references.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/conversation_focus.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_observations.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/requirement_package_succession.py",
+        "line": 13,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/requirement_package_succession.py",
+        "line": 105,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_scope_ref"
+      },
+      {
+        "path": "server/app/domain/experiments.py",
+        "line": 17,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/decision_intake_preview.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_notifications.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supplier_recovery_findings.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_execution_results.py",
+        "line": 33,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_capacity.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_capacity.py",
+        "line": 26,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_research_findings.py",
+        "line": 17,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_research_findings.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_research_findings.py",
+        "line": 17,
+        "name": "_research"
+      },
+      {
+        "path": "server/app/domain/formal_schedule.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_materials.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_materials.py",
+        "line": 20,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/resource_reallocation_inputs.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/material_movements.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/open_api_credentials.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/ai_issue_write_access.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/initial_plan_application.py",
+        "line": 30,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/initial_plan_application.py",
+        "line": 30,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/cost_alternatives.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix.py",
+        "line": 17,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_matrix.py",
+        "line": 17,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_matrix.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_matrix.py",
+        "line": 17,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/meeting_followup.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_freeze.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_freeze.py",
+        "line": 13,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_scope_ref"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "line": 24,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/research_search.py",
+        "line": 15,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/research_search.py",
+        "line": 15,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/research_search.py",
+        "line": 15,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/research_search.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_search.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/research_search.py",
+        "line": 15,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/supplier_compliance.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/value_measurement.py",
+        "line": 25,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/tooling_schedule.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/knowledge_reuse.py",
+        "line": 30,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_recurring_conferences.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_reallocations.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/resource_reallocations.py",
+        "line": 12,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/material_exceptions.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/experiment_succession.py",
+        "line": 12,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/meeting_recurrence_roster.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_source_responsibilities.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_source_responsibilities.py",
+        "line": 13,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/change_decision_summary.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/xiaopai.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/living_fmea.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_schedule_scenarios.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_schedule_scenarios.py",
+        "line": 26,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/pdf_intake_previews.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/conversation_email_parts.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_intake_targets.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_recurrence_commands.py",
+        "line": 27,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_definition_feedback.py",
+        "line": 24,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_definition_feedback.py",
+        "line": 24,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/specification_responsibility.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/specification_responsibility.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/webhook_sources.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_responsibilities.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design_responsibilities.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/change_execution_tasks.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_scope_ref"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "line": 16,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/project_intake_results.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_result_feedback.py",
+        "line": 19,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_result_feedback.py",
+        "line": 19,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_result_feedback.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_result_feedback.py",
+        "line": 19,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_result_feedback.py",
+        "line": 19,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/test_import_samples.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/plan_scenarios.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/plan_scenarios.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/supplier_notice_scans.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_catalog.py",
+        "line": 17,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/change_discussion_briefs.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_intake_state.py",
+        "line": 9,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/id_design.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/research_workpack_sources.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/derived_definitions.py",
+        "line": 34,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/derived_definitions.py",
+        "line": 34,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/derived_definitions.py",
+        "line": 34,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/derived_definitions.py",
+        "line": 34,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/derived_definitions.py",
+        "line": 34,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/derived_definitions.py",
+        "line": 34,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/process_template_findings.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cross_project_schedule.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cross_project_schedule.py",
+        "line": 17,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_webhooks.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/certification_execution.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/certification_execution.py",
+        "line": 15,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/cross_project_schedule_application.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cross_project_schedule_application.py",
+        "line": 20,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/case_requirements.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/case_requirements.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/task_takeover.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_intake_correction_batches.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/knowledge_corrections.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/test_import_history.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/risk_followups.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/field_recognitions.py",
+        "line": 18,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_quiet_origins.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_generation.py",
+        "line": 36,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/test_verification_paths.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_health_overview.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_health_overview.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/competitors.py",
+        "line": 16,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/competitors.py",
+        "line": 16,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/competitors.py",
+        "line": 16,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/competitors.py",
+        "line": 16,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/competitors.py",
+        "line": 16,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/competitors.py",
+        "line": 16,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/case_review_responsibilities.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/research_measurement.py",
+        "line": 23,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/change_impact_scope.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_planning_review.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_batch_progress.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_imports.py",
+        "line": 23,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/test_import_execution_times.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/initial_plan_candidates.py",
+        "line": 27,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/initial_plan_candidates.py",
+        "line": 27,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/initial_plan_candidates.py",
+        "line": 27,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/initial_plan_candidates.py",
+        "line": 27,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/initial_plan_candidates.py",
+        "line": 27,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/risk_followup_results.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_health_policy.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/portfolio_health_policy.py",
+        "line": 14,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/project_intake_work.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/conversations.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_milestones.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/quality_issue_links.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/build_material_changes.py",
+        "line": 22,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/supply_sharing.py",
+        "line": 20,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_commitments.py",
+        "line": 26,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_commitments.py",
+        "line": 26,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/handover_workflows.py",
+        "line": 12,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_corrections.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/knowledge_learning.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_roadmap.py",
+        "line": 21,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_roadmap.py",
+        "line": 21,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_roadmap.py",
+        "line": 21,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/product_roadmap.py",
+        "line": 21,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_roadmap.py",
+        "line": 21,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_roadmap.py",
+        "line": 21,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/quality_learning.py",
+        "line": 11,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/project_intake_progress.py",
+        "line": 13,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_compensations.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/issue_intake_reuse.py",
+        "line": 14,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_line"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_line_filter"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_member"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_precondition"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_record"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_scope_ref"
+      },
+      {
+        "path": "server/app/domain/product_strategies.py",
+        "line": 19,
+        "name": "_space"
+      },
+      {
+        "path": "server/app/domain/schedule_source_corrections.py",
+        "line": 15,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_schedule_revision.py",
+        "line": 30,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_resource_feedback.py",
+        "line": 10,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/audit_report_bundles.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/audit_report_bundles.py",
+        "line": 19,
+        "name": "_role"
+      },
+      {
+        "path": "server/app/domain/meeting_rescheduling.py",
+        "line": 16,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/cost_inputs.py",
+        "line": 17,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/decision_intake_amendments.py",
+        "line": 29,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/meeting_conference_requests.py",
+        "line": 19,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_network.py",
+        "line": 379,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/schedule_network.py",
+        "line": 450,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_evidence_findings.py",
+        "line": 46,
+        "name": "_emit"
+      },
+      {
+        "path": "server/app/domain/product_evidence_findings.py",
+        "line": 46,
+        "name": "_plain"
+      },
+      {
+        "path": "server/app/domain/product_evidence_findings.py",
+        "line": 46,
+        "name": "_record"
+      }
+    ]
+  }
+}

@@ -183,6 +183,16 @@ class MeetingReadingService:
     def __init__(self, engine: Engine, *, gateway: ApplicationModelGateway):
         self.engine, self.gateway = engine, gateway
 
+    def enqueue_event(self, connection: Connection, **values: Any) -> dict[str, Any]:
+        from app.ai.meeting_event_runs import enqueue_event
+
+        return enqueue_event(connection, self.gateway, **values)
+
+    def execute_queued(self, run_id: UUID) -> dict[str, Any]:
+        from app.ai.meeting_event_runs import execute_queued
+
+        return execute_queued(self, run_id)
+
     @staticmethod
     def list_results(
         engine: Engine,

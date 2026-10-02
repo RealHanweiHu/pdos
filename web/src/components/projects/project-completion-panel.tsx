@@ -1,13 +1,15 @@
 "use client";
 
 import { ProjectHandoffHistory } from "./project-handoff-history";
+import { ProjectHandoffSources, type HandoffSourceCheck } from "./project-handoff-sources";
+import Link from "next/link";
 import { isRecord, responseBody } from "@/components/workspace-api";
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-type Handoff = { review_digest: string; item_key: string; label: string; status: string; acceptance_current: boolean; note?: string; document_id?: string; receiver_user_id?: string };
+type Handoff = { acceptance_reasons?: string[]; source_checks?: HandoffSourceCheck[]; review_digest: string; item_key: string; label: string; status: string; acceptance_current: boolean; note?: string; document_id?: string; receiver_user_id?: string };
 type Completion = { ready: boolean; blockers: { key: string; label: string }[]; handoff_items: Handoff[];
   documents: { id: string; filename: string }[]; members: { id: string; display_name: string }[];
   issue_policy: { low: boolean; medium: boolean } };
@@ -76,9 +78,11 @@ export function ProjectCompletionPanel({ projectId, userId, canManage }: { proje
         {data.blockers.length > 0 && <ul className="list-disc space-y-1 pl-5 text-sm">{data.blockers.map((blocker) => <li key={blocker.key}>{blocker.label}</li>)}</ul>}
         <section className="space-y-3"><h3 className="text-sm font-semibold">交付与接收</h3>
           {data.handoff_items.map((item) => <article id={`completion-${projectId}-${item.item_key}`} key={item.item_key} className="space-y-2 rounded-md border p-3">
-            <p className="text-sm font-medium">{item.label} · {item.status === "accepted" && !item.acceptance_current ? "证据已变化，需重新接收" : statusLabels[item.status]}</p>
+            <p className="text-sm font-medium">{item.label} · {item.status === "accepted" && !item.acceptance_current ? "接收需复核" : statusLabels[item.status]}</p>
             {item.document_id && <p className="text-sm">文档：{data.documents.find((doc) => doc.id === item.document_id)?.filename ?? "文档已不可用"} · 接收人：{data.members.find((member) => member.id === item.receiver_user_id)?.display_name ?? "需重新指定"}</p>}
-            {item.note && <p className="text-sm text-muted-foreground">{item.note}</p>}
+            {item.note && <p className="whitespace-pre-wrap text-sm text-muted-foreground">{item.note}</p>}
+            {item.document_id && <Link prefetch={false} className="inline-block text-xs text-primary underline underline-offset-4" href={`/projects?project=${projectId}&tab=documents&entity_id=${item.document_id}`}>查看交接原文档</Link>}
+            <ProjectHandoffSources projectId={projectId} sources={item.source_checks ?? []} reasons={item.acceptance_reasons ?? []} />
             {canManage && <Button size="sm" variant="outline" disabled={busy} onClick={() => setDraft({ key: item.item_key, document: item.document_id ?? "", receiver: item.receiver_user_id ?? "", note: item.note ?? "", digest: item.review_digest, receiverOnly: false, changeReason: "" })}>{item.status === "missing" ? "准备交接" : "更新交接"}</Button>}
             {canManage && item.document_id && item.receiver_user_id && <Button size="sm" variant="outline" disabled={busy} onClick={() => setDraft({ key: item.item_key, document: item.document_id!, receiver: "", note: item.note ?? "", digest: item.review_digest, receiverOnly: true, changeReason: "" })}>保留原资料更换接收人</Button>}
             <ProjectHandoffHistory key={`${item.item_key}:${item.review_digest}`} projectId={projectId} itemKey={item.item_key}/>

@@ -29,6 +29,7 @@ class MeetingMinutesService:
         meeting_id: UUID,
         actor_id: UUID,
         before_version: int | None = None,
+        record_id: UUID | None = None,
     ) -> dict[str, Any]:
         with (
             self.engine.connect().execution_options(
@@ -42,6 +43,8 @@ class MeetingMinutesService:
             meeting = MeetingService._get(
                 connection, tenant_id=tenant_id, project_id=project_id, meeting_id=meeting_id
             )
+            if record_id is not None and before_version is not None:
+                raise MeetingStateError("指定纪要版本不能同时使用历史分页")
             query = (
                 select(
                     tables.meeting_minutes_versions,
@@ -60,6 +63,8 @@ class MeetingMinutesService:
             )
             if before_version is not None:
                 query = query.where(tables.meeting_minutes_versions.c.version_no < before_version)
+            if record_id is not None:
+                query = query.where(tables.meeting_minutes_versions.c.id == record_id)
             fetched = (
                 connection.execute(
                     query.order_by(tables.meeting_minutes_versions.c.version_no.desc()).limit(21)
@@ -68,6 +73,8 @@ class MeetingMinutesService:
                 .all()
             )
             rows = fetched[:20]
+            if record_id is not None and not rows:
+                raise MeetingNotFoundError
             current_version = (
                 connection.execute(
                     select(func.max(tables.meeting_minutes_versions.c.version_no)).where(

@@ -55,7 +55,10 @@ QueuedImport = tuple[
 
 @pytest.fixture
 def queued_import(
-    isolated_import_database: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    isolated_import_database: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> Iterator[QueuedImport]:
     store = Store()
     app.dependency_overrides[get_document_object_store] = lambda: store
@@ -63,7 +66,9 @@ def queued_import(
         scope = Scope(client, isolated_import_database)
         ids = scope.seed()
         original = StructuredModelGateway.invoke_structured
-        env, calls, _ = factory(get_engine(), tmp_path, monkeypatch, output=MAPPING.model_dump())
+        env, calls, _ = factory(
+            get_engine(), tmp_path, monkeypatch, request=request, output=MAPPING.model_dump()
+        )
         monkeypatch.setattr(StructuredModelGateway, "invoke_structured", original)
         content = build_report([("Leak test", "SN-001", "PASS", 0.05, "ok")])
         try:

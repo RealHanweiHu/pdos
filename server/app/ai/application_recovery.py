@@ -16,7 +16,10 @@ from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.db.schema import tables
 
 SLOTS = {
+    "event_issue": ModelCallSlot.EVENT_ISSUE,
     "product_matrix": ModelCallSlot.PRODUCT_MATRIX,
+    "product_work": ModelCallSlot.PRODUCT_WORK,
+    "product_evaluation": ModelCallSlot.PRODUCT_EVALUATION,
     "portfolio_explanation": ModelCallSlot.PORTFOLIO_EXPLANATION,
     "executive_brief": ModelCallSlot.EXECUTIVE_BRIEF,
     "cost_reduction": ModelCallSlot.COST_REDUCTION,

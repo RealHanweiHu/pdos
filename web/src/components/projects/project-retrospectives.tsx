@@ -2,7 +2,7 @@
 
 import { ProjectConversation } from "@/components/ai/project-conversation";
 
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import { MeetingPlanning } from "./meeting-planning";
 import { MeetingPlanningOrigin } from "./meeting-planning-origin";
@@ -105,7 +105,7 @@ function MeetingCard({ item, projectId, canManage, canUpload, refresh }: { item:
     setDraft(null); setHistory(null); setNotice(`第 ${confirmed} 版结论已确认，经验整理记录已生成，知识仍需独立审核。`);
     await refresh();
   }
-  return <article id={`retrospective-${item.id}`} className="space-y-3 rounded-lg border p-4">
+  return <article id={`retrospective-${item.id}`} className="space-y-3 rounded-lg border p-2 sm:p-4">
     <div className="flex flex-wrap justify-between gap-2"><h3 className="font-medium">{item.title}</h3><span className="text-sm">{states[item.status]}{item.archived ? " · 已归档" : ""}</span></div>
     <p className="text-xs text-muted-foreground">{meetingTypes[item.kind]} · 计划时间：{time(item.start)} — {time(item.end)}</p>
     {item.version > 0 ? <div className="space-y-2 rounded-lg bg-muted/40 p-3"><p className="text-sm font-medium">当前已确认结论 · 第 {item.version} 版</p><p className="whitespace-pre-wrap text-sm">{item.conclusion}</p><p className="whitespace-pre-wrap text-sm">适用条件：{item.applicability}</p><ul className="space-y-1 text-xs">{item.refs.map(ref => <li key={`${ref.kind}:${ref.id}`}>{ref.title} · {ref.expected_version}</li>)}</ul>{item.refs.length === 0 && <p className="text-xs text-muted-foreground">未登记外部版本依据，知识审核时需核对。</p>}</div>
@@ -153,8 +153,8 @@ function currentMeetingFocus() {
 
 export function ProjectMeetings({ projectId, canManage, canUpload }: { projectId: string; canManage: boolean; canUpload: boolean }) {
   const focus=useSyncExternalStore(subscribeMeetingLocation,currentMeetingFocus,() => null);
-  const [expanded,setExpanded]=useState<boolean|null>(null);
-  const opened=expanded ?? Boolean(focus);
+  const [expanded,setExpanded]=useState<{focus:string|null;open:boolean}|null>(null);
+  const opened=expanded?.focus === focus ? expanded.open : Boolean(focus);
   const [items, setItems] = useState<Meeting[] | null>(null);
   const [kind,setKind] = useState("weekly");
   const [organizer,setOrganizer] = useState("");
@@ -166,6 +166,26 @@ export function ProjectMeetings({ projectId, canManage, canUpload }: { projectId
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const path = `/api/projects/${encodeURIComponent(projectId)}/meetings`;
+  useEffect(() => {
+    if (!focus) return;
+    let current = true;
+    async function loadFocusedMeeting() {
+      try {
+        const loaded = [meeting(await request(`${path}/${focus}`))];
+        if (current) { setItems(loaded); setError(null); }
+        if (canManage) {
+          const options = await request(`${path}/preparation/options`);
+          if (!isRecord(options) || !Array.isArray(options.members)) throw new Error("会议成员选项不完整");
+          const loadedMembers = options.members.map(member => { if (!isRecord(member)) throw new Error("成员不完整"); return {id:id(member.id),display_name:text(member.display_name)}; });
+          if (current) setMembers(loadedMembers);
+        }
+      } catch (failure) {
+        if (current) setError(failure instanceof Error ? failure.message : "会议回查暂不可用");
+      }
+    }
+    void loadFocusedMeeting();
+    return () => { current = false; };
+  }, [focus, path, canManage]);
   async function load() {
     const result = await request(path);
     if (!isRecord(result) || !Array.isArray(result.items)) throw new Error("复盘清单不完整");
@@ -186,7 +206,7 @@ export function ProjectMeetings({ projectId, canManage, canUpload }: { projectId
     await request(path, { meeting_type: kind, organizer_user_id:organizer, title, scheduled_start_at: new Date(start).toISOString(), scheduled_end_at: new Date(end).toISOString() });
     setCreating(false); setTitle(""); setStart(""); setEnd(""); await load();
   }
-  return <details open={opened} className="mt-6 rounded-lg border p-4" onToggle={event => { setExpanded(event.currentTarget.open); if (event.currentTarget.open && !items && !busy) void act(load); }}>
+  return <details open={opened} className="mt-6 rounded-lg border p-2 sm:p-4" onToggle={event => { setExpanded({focus,open:event.currentTarget.open}); if (event.currentTarget.open && !items && !busy && !focus) void act(load); }}>
     <summary className="cursor-pointer font-semibold">会议准备与复盘</summary>
     <div className="mt-4 space-y-4"><p className="text-sm text-muted-foreground">登记会议、准备议程与参会名单，按实际情况记录开始和结束。项目复盘可继续确认结论并形成待审经验。</p>
       <div className="flex gap-2"><Button size="sm" variant="outline" disabled={busy} onClick={() => void act(load)}>刷新会议清单</Button>{canManage && <Button size="sm" disabled={busy} onClick={() => setCreating(!creating)}>登记会议</Button>}</div>

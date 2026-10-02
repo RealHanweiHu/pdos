@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Annotated, Any, Self
+from typing import Annotated, Any, Literal, Self
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -27,6 +27,7 @@ from app.domain.process_template_gates import requirements as template_gate_requ
 from app.domain.process_template_reminders import policy as template_reminder_policy
 from app.domain.project_completion import ProjectCompletionNotReadyError
 from app.domain.project_execution import ProjectExecutionNotReadyError
+from app.domain.project_members import INTERNAL_ROLES, ProjectMemberError, ProjectMemberService
 from app.domain.project_templates import ProjectCreationTemplate, ProjectTemplateError, catalog
 from app.domain.projects import (
     DevelopmentCaseNotFoundForProjectError,
@@ -183,6 +184,64 @@ class ProjectAccessResponse(BaseModel):
     project_id: UUID
     role: Role
     allowed_actions: list[Action]
+
+
+class ProjectMemberResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    user_id: UUID
+    username: str
+    display_name: str
+    role: Role
+    is_active: bool
+    added_by_user_id: UUID
+    added_by_display_name: str
+    created_at: datetime
+    is_owner: bool
+    is_manager: bool
+    removal_blocker: str | None
+
+
+class ProjectMemberCandidateResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    user_id: UUID
+    username: str
+    display_name: str
+    role: Role
+
+
+class ProjectMemberReceiptResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    operation: Literal["add", "remove"]
+    user_id: UUID
+    replayed: bool
+
+
+class ProjectMemberRosterResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    project_id: UUID
+    owner_user_id: UUID | None
+    can_manage: bool
+    access_lost: bool = False
+    items: list[ProjectMemberResponse]
+    available_users: list[ProjectMemberCandidateResponse]
+    receipt: ProjectMemberReceiptResponse | None = None
+
+
+class ProjectMemberAddRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    request_id: UUID
+    user_id: UUID
+
+
+class ProjectMemberRemoveRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    request_id: UUID
 
 
 class ProjectActivityResponse(BaseModel):
@@ -384,6 +443,110 @@ def project_access(
         role=access.role,
         allowed_actions=sorted(access.allowed_actions, key=lambda action: action.value),
     )
+
+
+def member_conflict(error: ProjectMemberError) -> HTTPException:
+    return HTTPException(
+        status_code=(
+            status.HTTP_404_NOT_FOUND
+            if error.code == "PROJECT_MEMBER_NOT_FOUND"
+            else status.HTTP_409_CONFLICT
+        ),
+        detail={"code": error.code, "message": error.message},
+    )
+
+
+@router.get("/{project_id}/members", response_model=ProjectMemberRosterResponse)
+def project_members(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberRosterResponse:
+    access = require_project_action(
+        project_id=project_id,
+        context=context,
+        engine=engine,
+        action=Action.PROJECT_VIEW,
+    )
+    # External members see their own surfaces, not the internal team roster.
+    if access.role not in INTERNAL_ROLES:
+        raise permission_denied()
+    try:
+        roster = ProjectMemberService(engine).roster(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            can_manage=Action.PROJECT_MEMBERS_MANAGE in access.allowed_actions,
+        )
+    except ProjectNotFoundError as error:
+        raise permission_denied() from error
+    no_store(response)
+    return ProjectMemberRosterResponse.model_validate(roster)
+
+
+@router.post(
+    "/{project_id}/members",
+    response_model=ProjectMemberRosterResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_project_member(
+    project_id: UUID,
+    payload: ProjectMemberAddRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberRosterResponse:
+    require_project_action(
+        project_id=project_id,
+        context=context,
+        engine=engine,
+        action=Action.PROJECT_MEMBERS_MANAGE,
+    )
+    try:
+        roster = ProjectMemberService(engine).add(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            actor_user_id=context.user.id,
+            request_id=payload.request_id,
+            user_id=payload.user_id,
+        )
+    except (ProjectNotFoundError, ObjectPermissionDeniedError) as error:
+        raise permission_denied() from error
+    except ProjectMemberError as error:
+        raise member_conflict(error) from error
+    no_store(response)
+    return ProjectMemberRosterResponse.model_validate(roster)
+
+
+@router.post("/{project_id}/members/{user_id}/remove", response_model=ProjectMemberRosterResponse)
+def remove_project_member(
+    project_id: UUID,
+    user_id: UUID,
+    payload: ProjectMemberRemoveRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberRosterResponse:
+    require_project_action(
+        project_id=project_id,
+        context=context,
+        engine=engine,
+        action=Action.PROJECT_MEMBERS_MANAGE,
+    )
+    try:
+        roster = ProjectMemberService(engine).remove(
+            tenant_id=context.tenant.id,
+            project_id=project_id,
+            actor_user_id=context.user.id,
+            request_id=payload.request_id,
+            user_id=user_id,
+        )
+    except (ProjectNotFoundError, ObjectPermissionDeniedError) as error:
+        raise permission_denied() from error
+    except ProjectMemberError as error:
+        raise member_conflict(error) from error
+    no_store(response)
+    return ProjectMemberRosterResponse.model_validate(roster)
 
 
 @router.get("/{project_id}/activity", response_model=ProjectActivityListResponse)

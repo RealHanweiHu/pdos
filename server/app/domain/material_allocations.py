@@ -71,7 +71,7 @@ def _key(row: Any) -> PoolKey:
 
 
 def _source_query(tenant_id: UUID) -> Any:
-    s, b = tables.supply_snapshots, tables.supply_import_batches
+    s, b, d = tables.supply_snapshots, tables.supply_import_batches, tables.documents
     return (
         select(
             *(column for column in s.c if column.name not in {"raw_cells", "contract"}),
@@ -81,9 +81,12 @@ def _source_query(tenant_id: UUID) -> Any:
             b.c.fresh_until,
             b.c.captured_at,
             b.c.document_id,
+            b.c.document_digest,
+            d.c.sha256.label("current_document_digest"),
             b.c.configuration["coverage"].as_string().label("coverage"),
         )
         .join(b, (b.c.tenant_id == s.c.tenant_id) & (b.c.id == s.c.batch_id))
+        .join(d, (d.c.tenant_id == b.c.tenant_id) & (d.c.id == b.c.document_id))
         .where(s.c.tenant_id == tenant_id)
     )
 
@@ -221,7 +224,9 @@ def _pools(
             )
             quantity = source["quantity"]
             state = (
-                "stale"
+                "source_changed"
+                if source.get("document_digest") != source.get("current_document_digest")
+                else "stale"
                 if source["fresh_until"] <= observed_at
                 else "unknown_quantity"
                 if quantity is None

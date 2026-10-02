@@ -188,9 +188,21 @@ def read_progress(
     # The API has authorized current project access. Private requests remain actor-bound.
     with engine.connect().execution_options(isolation_level="REPEATABLE READ") as c:
         if market_space_id is not None:
-            from app.ai.product_matrix_runs import run_row
+            from app.ai.product_matrix_runs import run_row as matrix_run_row
+            from app.ai.product_work_runs import run_row as product_run_row
 
-            run_row(c, context, market_space_id, run_id)
+            version = c.execute(
+                select(tables.agent_runs.c.context_version).where(
+                    tables.agent_runs.c.tenant_id == context.tenant.id,
+                    tables.agent_runs.c.market_space_id == market_space_id,
+                    tables.agent_runs.c.requested_by_user_id == context.user.id,
+                    tables.agent_runs.c.id == run_id,
+                )
+            ).scalar_one_or_none()
+            if version == "product-work-request-v1":
+                product_run_row(c, context, market_space_id, run_id)
+            else:
+                matrix_run_row(c, context, market_space_id, run_id)
         elif project_id is None:
             from app.domain.process_templates import authorize
 

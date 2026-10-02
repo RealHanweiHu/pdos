@@ -66,6 +66,11 @@ class ReallocationApply(Contract):
     reason: Text
 
 
+class ReallocationReview(Contract):
+    allocation_id: UUID
+    expected_digest: Digest
+
+
 def capture(c: Connection, context: AuthContext, draft: ReallocationDraft) -> dict[str, Any]:
     r, p, users = tables.resource_reservations, tables.projects, tables.users
     ids = {item.reservation_id for item in draft.items}

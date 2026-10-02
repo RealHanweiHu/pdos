@@ -259,7 +259,9 @@ def queries(
         owner=i.c.owner_user_id,
         note=i.c.severity,
         priority=case((i.c.severity == "critical", 100), else_=90),
-        condition=(i.c.status != "closed") & i.c.severity.in_(("high", "critical")),
+        condition=(i.c.status != "closed")
+        & i.c.severity.in_(("high", "critical"))
+        & i.c.withdrawn_at.is_(None),
     )
     risks = tables.risks
     emit(
@@ -499,6 +501,7 @@ def queries(
                 & (issue.c.id == case_row.c.issue_id),
             ),
             condition=observation.c.state.in_(("exceeded", "needs_review"))
+            & issue.c.withdrawn_at.is_(None)
             & ~select(newer.c.id)
             .where(
                 newer.c.tenant_id == tenant,

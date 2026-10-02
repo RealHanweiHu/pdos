@@ -163,6 +163,7 @@ def options(
             c.execute(
                 select(table.c.id)
                 .where(table.c.tenant_id == context.tenant.id, table.c.project_id == project)
+                .where(*([table.c.withdrawn_at.is_(None)] if kind == "issue" else []))
                 .order_by(table.c.created_at.desc(), table.c.id.desc())
                 .offset(offset)
                 .limit(31)
@@ -373,6 +374,8 @@ def link(engine: Engine, context: AuthContext, project: UUID, body: Link) -> dic
             issue(c, context.tenant.id, project, body.issue_id),
             ncr(c, context.tenant.id, project, body.ncr_id),
         )
+        if left.get("withdrawn_at") is not None:
+            raise ProductWorkError("原问题已撤回，不能新增质量关联")
         if digest(left) != body.expected_issue_digest or digest(right) != body.expected_ncr_digest:
             raise ProductWorkError("原问题或质量记录已变化，请重新读取核对")
         return _plain(
@@ -405,6 +408,8 @@ def escalate(engine: Engine, context: AuthContext, project: UUID, body: Escalate
         if old:
             return _plain(dict(old))
         left = issue(c, context.tenant.id, project, body.issue_id)
+        if left.get("withdrawn_at") is not None:
+            raise ProductWorkError("原问题已撤回，不能升级质量办理")
         if (
             digest(left) != body.expected_issue_digest
             or relation_digest(c, context.tenant.id, project, body.issue_id)

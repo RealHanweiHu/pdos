@@ -147,6 +147,8 @@ def source_basis(c: Connection, tenant: UUID, project: UUID, command: RoundDraft
             )
             for identity in getattr(command, key)
         ]
+    if any(issue.get("withdrawn_at") is not None for issue in result["issue_ids"]):
+        raise ProductWorkError("原问题已撤回，不能新增模具轮次关联")
     if any(
         UUID(sample["build_batch_id"]) not in command.build_ids for sample in result["sample_ids"]
     ):

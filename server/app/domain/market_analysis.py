@@ -1,11 +1,11 @@
 """Evidence-backed segments, measurable outcomes and interval market sizing."""
 
 from decimal import Decimal, localcontext
-from typing import Any, Self
+from typing import Any, Self, cast
 from uuid import UUID, uuid4
 
 from pydantic import Field, model_validator
-from sqlalchemy import Connection, Engine, select
+from sqlalchemy import Connection, Engine, select, true
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
@@ -101,10 +101,7 @@ class OutcomeDraft(Contract):
         return self
 
 
-class MarketSegmentDraft(Input):
-    request_id: UUID
-    product_line_id: UUID | None = None
-    supersedes_id: UUID | None = None
+class MarketSegmentContent(Input):
     title: str = Field(min_length=1, max_length=512)
     target_users: tuple[FactStatement, ...] = Field(min_length=1, max_length=30)
     job_to_be_done: FactStatement
@@ -125,6 +122,12 @@ class MarketSegmentDraft(Input):
         if any(fact.approval is not None for fact in statements):
             raise ValueError("市场记录不接受客户端提供的业务批准引用")
         return self
+
+
+class MarketSegmentDraft(MarketSegmentContent):
+    request_id: UUID
+    product_line_id: UUID | None = None
+    supersedes_id: UUID | None = None
 
 
 def calculate_market(sizing: MarketSizing) -> dict[str, Any]:
@@ -216,7 +219,9 @@ class MarketAnalysisService:
     def __init__(self, engine: Engine) -> None:
         self.engine = engine
 
-    def list(self, context: AuthContext, space_id: UUID) -> dict[str, Any]:
+    def list(
+        self, context: AuthContext, space_id: UUID, *, record_id: UUID | None = None
+    ) -> dict[str, Any]:
         with self.engine.connect() as connection:
             _space(connection, context, space_id)
             table = tables.market_segments
@@ -227,12 +232,21 @@ class MarketAnalysisService:
                         table.c.tenant_id == context.tenant.id,
                         table.c.market_space_id == space_id,
                         _line_filter(table, context),
+                        table.c.id == record_id if record_id else true(),
                     )
                     .order_by(table.c.created_at.desc())
                     .limit(100)
                 ).mappings()
             )
-            replaced = {row["supersedes_id"] for row in rows if row["supersedes_id"]}
+            replaced = set(
+                connection.execute(
+                    select(table.c.supersedes_id).where(
+                        table.c.tenant_id == context.tenant.id,
+                        table.c.market_space_id == space_id,
+                        table.c.supersedes_id.in_([row["id"] for row in rows]),
+                    )
+                ).scalars()
+            )
             outcomes = {
                 row["id"]: row
                 for row in connection.execute(
@@ -263,127 +277,147 @@ class MarketAnalysisService:
                 )
             return {"items": items}
 
+    def detail(self, context: AuthContext, space_id: UUID, record_id: UUID) -> dict[str, Any]:
+        items = self.list(context, space_id, record_id=record_id)["items"]
+        if not items:
+            raise ProductWorkAccessError("记录不存在或不可访问")
+        return cast(dict[str, Any], items[0])
+
     def create(
         self, context: AuthContext, space_id: UUID, draft: MarketSegmentDraft
     ) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            _line(
-                connection,
-                context,
-                space_id,
-                draft.product_line_id,
-                access="contributor",
-                writable=True,
+            return create_segment_in_connection(connection, context, space_id, draft)
+
+
+def create_segment_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: MarketSegmentDraft,
+    *,
+    source_finding_id: UUID | None = None,
+    source_finding_position: int | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    _line(
+        connection,
+        context,
+        space_id,
+        draft.product_line_id,
+        access="contributor",
+        writable=True,
+    )
+    table = tables.market_segments
+    fingerprint = digest(draft.model_dump(mode="json"))
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.owner_user_id == context.user.id,
+                table.c.request_id == draft.request_id,
             )
-            table = tables.market_segments
-            fingerprint = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.owner_user_id == context.user.id,
-                        table.c.request_id == draft.request_id,
-                    )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同市场分析")
+        return _record(existing)
+    node_id, outcome_id = uuid4(), uuid4()
+    series_id, version = node_id, 1
+    if draft.supersedes_id:
+        previous = (
+            connection.execute(
+                select(table).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space_id,
+                    table.c.id == draft.supersedes_id,
                 )
-                .mappings()
-                .one_or_none()
             )
-            if existing:
-                if existing["request_digest"] != fingerprint:
-                    raise ProductWorkError("同一请求编号不能用于不同市场分析")
-                return _record(existing)
-            node_id, outcome_id = uuid4(), uuid4()
-            series_id, version = node_id, 1
-            if draft.supersedes_id:
-                previous = (
-                    connection.execute(
-                        select(table).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.market_space_id == space_id,
-                            table.c.id == draft.supersedes_id,
-                        )
-                    )
-                    .mappings()
-                    .one_or_none()
-                )
-                if previous is None:
-                    raise ProductWorkAccessError("此前市场分析不存在或不可访问")
-                _line(
-                    connection,
-                    context,
-                    space_id,
-                    previous["product_line_id"],
-                    access="contributor",
-                    writable=True,
-                )
-                if previous["product_line_id"] != draft.product_line_id:
-                    raise ProductWorkError("修订不能改变已有市场分析范围")
-                if connection.execute(
-                    select(table.c.id).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.supersedes_id == previous["id"],
-                    )
-                ).first():
-                    raise ProductWorkError("此分析已有新版，请以最新版本追加修订")
-                series_id, version = previous["series_id"], previous["version"] + 1
-            outcome_values = draft.outcome.model_dump(exclude={"sources"})
-            outcome_values["sources"] = resolve_evidence(connection, context, draft.outcome.sources)
-            outcome = (
-                connection.execute(
-                    tables.desired_outcomes.insert()
-                    .values(
-                        **outcome_values,
-                        id=outcome_id,
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=draft.product_line_id,
-                        owner_user_id=context.user.id,
-                    )
-                    .returning(tables.desired_outcomes)
-                )
-                .mappings()
-                .one()
+            .mappings()
+            .one_or_none()
+        )
+        if previous is None:
+            raise ProductWorkAccessError("此前市场分析不存在或不可访问")
+        _line(
+            connection,
+            context,
+            space_id,
+            previous["product_line_id"],
+            access="contributor",
+            writable=True,
+        )
+        if previous["product_line_id"] != draft.product_line_id:
+            raise ProductWorkError("修订不能改变已有市场分析范围")
+        if connection.execute(
+            select(table.c.id).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.supersedes_id == previous["id"],
             )
-            _outcome(outcome)
-            sizing = draft.sizing_inputs.model_dump(mode="json")
-            for parameter in PARAMETERS:
-                sizing[parameter]["basis"] = _fact(
-                    connection, context, getattr(draft.sizing_inputs, parameter).basis
-                )
-            values: dict[str, Any] = {
-                group: [_fact(connection, context, fact) for fact in getattr(draft, group)]
-                for group in FACT_GROUPS
-            }
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        **values,
-                        id=node_id,
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=draft.product_line_id,
-                        owner_user_id=context.user.id,
-                        series_id=series_id,
-                        supersedes_id=draft.supersedes_id,
-                        version=version,
-                        title=draft.title,
-                        job_to_be_done=_fact(connection, context, draft.job_to_be_done),
-                        desired_outcome_id=outcome_id,
-                        sizing_inputs=sizing,
-                        sizing_result=calculate_market(draft.sizing_inputs),
-                        revision_reason=draft.revision_reason,
-                        request_id=draft.request_id,
-                        request_digest=fingerprint,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
+        ).first():
+            raise ProductWorkError("此分析已有新版，请以最新版本追加修订")
+        series_id, version = previous["series_id"], previous["version"] + 1
+    outcome_values = draft.outcome.model_dump(exclude={"sources"})
+    outcome_values["sources"] = resolve_evidence(connection, context, draft.outcome.sources)
+    outcome = (
+        connection.execute(
+            tables.desired_outcomes.insert()
+            .values(
+                **outcome_values,
+                id=outcome_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=draft.product_line_id,
+                owner_user_id=context.user.id,
             )
-            _emit(connection, context, space_id, "desired_outcome", "created", outcome)
-            _emit(connection, context, space_id, "market_segment", "recorded", row)
-            return {**_record(row), "outcome": _outcome(outcome)}
+            .returning(tables.desired_outcomes)
+        )
+        .mappings()
+        .one()
+    )
+    _outcome(outcome)
+    sizing = draft.sizing_inputs.model_dump(mode="json")
+    for parameter in PARAMETERS:
+        sizing[parameter]["basis"] = _fact(
+            connection, context, getattr(draft.sizing_inputs, parameter).basis
+        )
+    values: dict[str, Any] = {
+        group: [_fact(connection, context, fact) for fact in getattr(draft, group)]
+        for group in FACT_GROUPS
+    }
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **values,
+                id=node_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=draft.product_line_id,
+                owner_user_id=context.user.id,
+                series_id=series_id,
+                supersedes_id=draft.supersedes_id,
+                version=version,
+                title=draft.title,
+                job_to_be_done=_fact(connection, context, draft.job_to_be_done),
+                desired_outcome_id=outcome_id,
+                sizing_inputs=sizing,
+                sizing_result=calculate_market(draft.sizing_inputs),
+                revision_reason=draft.revision_reason,
+                request_id=draft.request_id,
+                request_digest=fingerprint,
+                source_finding_id=source_finding_id,
+                source_finding_position=source_finding_position,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    _emit(connection, context, space_id, "desired_outcome", "created", outcome)
+    _emit(connection, context, space_id, "market_segment", "recorded", row)
+    return {**_record(row), "outcome": _outcome(outcome)}

@@ -1,0 +1,6 @@
+{
+  "web/src/components/product-work/product-rfq-proposal.tsx": "7ef1452a82c53773a39385799b21fe9362cc928dbeefac1472fd55a3527148bd",
+  "web/src/components/product-work/product-rfq-proposal.test.tsx": "11562510f10bcc59db6313757f20f58eb36840dc49f3d37e8f23f0214913dc93",
+  "server/app/domain/product_rfq_requirements.py": "fbdfa2f3e2e31785ed915c4ee8e6f052a91a1f4a57e61d74b531131ef89ba730",
+  "docs/reports/evidence/pm-loop-20260929/rfq-recovery.md": "fc5482ea7257b033e877cff1847adb057428ddde185f816d53ffb1bb9ce7505e"
+}

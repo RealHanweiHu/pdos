@@ -15,36 +15,126 @@ from app.domain.schedule_forecast_engine import calculate_forecast
 from app.domain.working_time import CalendarDefinition
 
 
+def human_estimate_input(connection: Connection, tenant_id: UUID, project_id: UUID) -> Any:
+    runs = tables.schedule_forecast_runs
+    records = tables.schedule_time_records
+    row = (
+        connection.execute(
+            select(runs.c.inputs, runs.c.record_id)
+            .join(
+                records,
+                (records.c.tenant_id == runs.c.tenant_id) & (records.c.id == runs.c.record_id),
+            )
+            .where(
+                runs.c.tenant_id == tenant_id,
+                runs.c.project_id == project_id,
+                or_(
+                    runs.c.inputs["trigger"].as_string() == "human",
+                    (runs.c.inputs["trigger"].as_string().is_(None))
+                    & (runs.c.inputs["estimates"] != {}),
+                ),
+            )
+            .order_by(records.c.version.desc())
+            .limit(1)
+        )
+        .mappings()
+        .one_or_none()
+    )
+    return row
+
+
+def qualify_estimates(inputs: dict[str, Any], local_basis: dict[str, Any]) -> dict[str, Any]:
+    previous = inputs["basis"]
+    # A new baseline, calendar or work definition invalidates all old estimates.
+    structural = ("baseline_id", "baseline_version", "plan", "allocations", "calendars")
+    if any(digest(previous.get(key)) != digest(local_basis.get(key)) for key in structural):
+        return {}
+    old = {row["node_key"]: row for row in previous["tasks"]}
+    current = {row["node_key"]: row for row in local_basis["tasks"]}
+
+    # Reservations constrain when work can run, without changing the human's
+    # remaining-work quantity. Progress, correction, ownership and input changes
+    # still invalidate that node; another node changing does not erase this one.
+    def progress(row: dict[str, Any]) -> dict[str, Any]:
+        return {key: value for key, value in row.items() if key != "resource_conditions"}
+
+    return {
+        key: value
+        for key, value in inputs.get("estimates", {}).items()
+        if key in old
+        and key in current
+        and not current[key].get("actual_finish")
+        and digest(progress(old[key])) == digest(progress(current[key]))
+    }
+
+
 def latest_human_estimates(
     connection: Connection, tenant_id: UUID, project_id: UUID, local_basis: dict[str, Any]
 ) -> dict[str, Any]:
-    runs = tables.schedule_forecast_runs
-    records = tables.schedule_time_records
-    row = connection.execute(
-        select(runs.c.inputs)
-        .join(
-            records, (records.c.tenant_id == runs.c.tenant_id) & (records.c.id == runs.c.record_id)
+    human = human_estimate_input(connection, tenant_id, project_id)
+    return qualify_estimates(human["inputs"], local_basis) if human else {}
+
+
+def timing_state(state: dict[str, Any], key: str) -> dict[str, Any]:
+    """Retain timing constraints without partner resource or evidence details."""
+    projected = {
+        name: state[name]
+        for name in (
+            "node_id",
+            "node_kind",
+            "status",
+            "source_status",
+            "actual_start",
+            "actual_finish",
+            "expected_completion_at",
+            "actual_start_event",
+            "actual_finish_event",
+            "actual_observation",
+            "actual_correction",
         )
-        .where(
-            runs.c.tenant_id == tenant_id,
-            runs.c.project_id == project_id,
-            or_(
-                runs.c.inputs["trigger"].as_string() == "human",
-                (runs.c.inputs["trigger"].as_string().is_(None))
-                & (runs.c.inputs["estimates"] != {}),
-            ),
-        )
-        .order_by(records.c.version.desc())
-        .limit(1)
-    ).scalar_one_or_none()
-    if row is None:
-        return {}
-    previous = {
-        key: value
-        for key, value in row["basis"].items()
-        if key not in ("external_dependencies", "external_input_digest")
+        if name in state
     }
-    return row.get("estimates", {}) if digest(previous) == digest(local_basis) else {}
+    projected.update(
+        node_key=key,
+        input_unknown=["前置业务依据存在缺项"] if state.get("input_unknown") else [],
+        input_warnings=["前置业务当前接收依据存在差异"] if state.get("input_warnings") else [],
+        resource_conditions=[
+            {
+                **{
+                    name: condition[name]
+                    for name in (
+                        "window_start",
+                        "window_end",
+                        "policy_status",
+                        "policy_valid_from",
+                        "policy_valid_until",
+                    )
+                    if name in condition
+                },
+                "resource_id": digest(condition.get("resource_id")),
+                "blockers": ["前置剩余资源依据存在变化"] if condition["blockers"] else [],
+            }
+            for condition in state.get("resource_conditions", [])
+        ],
+        material_conditions=[
+            {
+                "exception_id": "前置供给",
+                **{name: condition.get(name) for name in ("status", "target_point", "ready_at")},
+            }
+            for condition in state.get("material_conditions", [])
+        ],
+        tooling_conditions=[
+            {
+                "title": "前置工装",
+                **{
+                    name: condition.get(name)
+                    for name in ("status", "target_point", "ready_at", "available_at")
+                },
+            }
+            for condition in state.get("tooling_conditions", [])
+        ],
+    )
+    return projected
 
 
 def capture_network(
@@ -116,29 +206,7 @@ def capture_network(
             allocations[key] = {**allocation, "allocation_basis": "固定排程投入"}
         for state in basis["tasks"]:
             key = mapping[state["node_key"]]
-            states[key] = {
-                name: state[name]
-                for name in ("node_id", "node_kind", "status", "actual_start", "actual_finish")
-            }
-            states[key].update(
-                {
-                    name: state[name]
-                    for name in (
-                        "actual_start_event",
-                        "actual_finish_event",
-                        "actual_observation",
-                        "actual_correction",
-                    )
-                    if name in state
-                }
-            )
-            states[key].update(
-                node_key=key,
-                input_unknown=["前置业务依据存在缺项"] if state.get("input_unknown") else [],
-                input_warnings=["前置业务当前接收依据存在差异"]
-                if state.get("input_warnings")
-                else [],
-            )
+            states[key] = timing_state(state, key)
         for edge in basis["plan"]["dependencies"]:
             edges.append(
                 {

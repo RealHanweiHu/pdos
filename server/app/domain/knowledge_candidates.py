@@ -97,6 +97,7 @@ class KnowledgeCandidateService:
                     tables.issues.c.tenant_id == tenant_id,
                     tables.issues.c.project_id == project_id,
                     tables.issues.c.id == issue_id,
+                    tables.issues.c.withdrawn_at.is_(None),
                 )
             ).one_or_none()
         if row is None:

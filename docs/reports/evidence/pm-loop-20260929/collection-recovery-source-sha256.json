@@ -1,0 +1,9 @@
+{
+  "web/src/components/product-work/research-search.tsx": "6f44b1bd711fd24d8f42bbbe01ea082b0312be25fe6d8a0e06ac474c93f09e03",
+  "web/src/components/product-work/research-collection.tsx": "64d54d122d56f5e5d11b3c71c118a5032d120312eb75b88437f16cf9d139d797",
+  "web/src/components/product-work/research-search.test.tsx": "efb6cba6b2971320e2560a6cd88e71d4a20bcbdf28a7cd3346e13b07e7971cad",
+  "web/src/components/product-work/research-collection.test.tsx": "3d0b3a9f38ae3e7caf5ed937b258f8b79d2ef658c508f9fe3f472122e68558f1",
+  "server/tests/test_research_search_provider.py": "b5a73e955b5b139f9bb567f5ee021e4db775d94404baeee4ab6d6afec4af5c17",
+  "server/app/ai/research_search.py": "0d523d44585ad86b13b4b2da4303edbec511ff9531d454260ecfe1f3596cd6b6",
+  "docs/reports/evidence/pm-loop-20260929/collection-recovery.md": "93859922973e98788739bc6830641e6f4a285a9424d8a30068a553ee8dd4b7f7"
+}

@@ -20,7 +20,7 @@ export function FindingBatchReview({ projectNames, onRecorded }: { projectNames?
   const [prepared, setPrepared] = useState<Prepared | null>(null), [checked, setChecked] = useState(false);
   const [pending, setPending] = useState<FindingBatchRequest | null>(null);
   const [receipt, setReceipt] = useState<FindingBatchResult | null>(null), [lookup, setLookup] = useState("");
-  const available = items.filter(item => ["pending_review", "accepted"].includes(item.status) && !item.superseded_by);
+  const available = items.filter(item => ["pending_review", "accepted"].includes(item.status) && !item.superseded_by && !item.ai_draft_id);
   const groups = [...new Map(available.map(item => [keyOf(item), item])).values()];
   const activeKey = groups.some(item => keyOf(item) === group) ? group : groups[0] ? keyOf(groups[0]) : "";
   const grouped = available.filter(item => keyOf(item) === activeKey);
@@ -46,7 +46,7 @@ export function FindingBatchReview({ projectNames, onRecorded }: { projectNames?
     setBusy(true); setError(null); invalidate();
     try {
       const current = await Promise.all(chosen.map(item => requestFinding(item.id)));
-      if (current.some((item, index) => item.updated_at !== chosen[index].updated_at || item.superseded_by)) {
+      if (current.some((item, index) => item.updated_at !== chosen[index].updated_at || item.superseded_by || item.ai_draft_id)) {
         setItems(existing => existing.map(item => current.find(value => value.id === item.id) ?? item));
         throw new Error("本组内容已有变化，已读取新版本；人工输入保留，请重新核对后准备。");
       }

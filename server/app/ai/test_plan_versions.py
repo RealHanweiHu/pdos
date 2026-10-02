@@ -45,6 +45,12 @@ def require_version_live(version: str) -> None:
 
 
 def version_from_run(purpose: str, run_context: dict[str, Any]) -> str | None:
+    if purpose == "event_issue":
+        from app.ai.issue_event_proposal import PROMPT
+
+        if run_context.get("issue_event_prompt_version") != PROMPT.version:
+            raise CapabilityUnavailableError("EVENT_ISSUE_PROMPT_VERSION_UNKNOWN")
+        return PROMPT.version
     if purpose == "meeting_planning":
         from app.contracts.meeting_plan import PROMPT_VERSION as MEETING_PLANNING_VERSION
 

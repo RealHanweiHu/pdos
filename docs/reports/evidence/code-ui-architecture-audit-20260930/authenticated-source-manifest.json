@@ -1,0 +1,34 @@
+{
+  "recorded_at": "2026-09-30T17:48:55.083753+00:00",
+  "original_reviewed_files_changed": [],
+  "files": {
+    "web/src/components/dashboard/dashboard.tsx": {
+      "sha256": "0966e913f54c5bf49d9d3d32adb9f7541df522eb0b188196aae1a77b8da564b3",
+      "lines": 271
+    },
+    "web/src/components/ai/ai-brief-card.tsx": {
+      "sha256": "1bff370c3c6f1617ee7394be5cf53f059ce1c1e69ace0aae4e8801f18e55fa84",
+      "lines": 96
+    },
+    "web/src/components/product-work/product-source-files.tsx": {
+      "sha256": "2854706f14c9b19ae1eb892d7622823ab36bb22e4c8e68a2596c6e67962dc827",
+      "lines": 157
+    },
+    "web/src/components/product-work/product-work-api.ts": {
+      "sha256": "a8e394cfe04963844fc8d6af83469bf4d48b5c21551342d20beb85ec81f0b63c",
+      "lines": 33
+    },
+    "web/src/app/api/product-work/[[...workPath]]/route.ts": {
+      "sha256": "b7c20842d8261a5d0267b7578cea8a91179a9ff09a08dff7309011d90149ff74",
+      "lines": 56
+    },
+    "web/src/lib/pdos-api.ts": {
+      "sha256": "c43f53333feae2387c9a20b49c04970e23af384552b17b040695d699521cbe4e",
+      "lines": 152
+    },
+    "docs/design/2026-08-09-ui-baseline.md": {
+      "sha256": "183ab10c8380dc862b9aa8e37fc17dd01a1f5969aeec843c51f2daa664031327",
+      "lines": 107
+    }
+  }
+}

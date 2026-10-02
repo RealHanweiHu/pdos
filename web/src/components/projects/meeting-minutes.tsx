@@ -1,7 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
+import { AiMeetingEventHistory } from "./ai-meeting-event-history";
+import { AiMeetingDrafts } from "./ai-meeting-drafts";
 import { isRecord, responseBody } from "@/components/workspace-api";
 
 const input = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
@@ -44,8 +46,18 @@ async function request(path: string, body?: object): Promise<unknown> {
   if (!response.ok) throw new Error(isRecord(value) && isRecord(value.detail) && typeof value.detail.message === "string" ? value.detail.message : "纪要办理暂不可用，请刷新核对结果");
   return value;
 }
+function subscribeLocation(update: () => void) {
+  window.addEventListener("popstate", update);
+  return () => window.removeEventListener("popstate", update);
+}
 
 export function MeetingMinutes({ projectId, meetingId, canManage, isCompleted }: { projectId: string; meetingId: string; canManage: boolean; isCompleted: boolean }) {
+  const minutesFocus = useSyncExternalStore(subscribeLocation, () => {
+    const params = new URLSearchParams(window.location.search);
+    const wanted = params.get("minutes");
+    return params.get("meeting") === meetingId && wanted && (wanted === "all" || /^[0-9a-f-]{36}$/.test(wanted)) ? wanted : null;
+  }, () => null);
+  const focusedId = minutesFocus === "all" ? null : minutesFocus;
   const [data, setData] = useState<Data | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [source, setSource] = useState<Source | null>(null);
@@ -54,9 +66,25 @@ export function MeetingMinutes({ projectId, meetingId, canManage, isCompleted }:
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const draftPanels = useRef<HTMLDivElement>(null);
   const retry = useRef<{ signature: string; id: string } | null>(null);
   const path = `/api/projects/${projectId}/meetings/${meetingId}`;
-  async function load() { setData(parse(await request(`${path}/minutes`))); }
+  const readPath = `${path}/minutes${focusedId ? `?record_id=${focusedId}` : ""}`;
+  useEffect(() => {
+    if (!minutesFocus) return;
+    let current = true;
+    async function loadLinkedVersion() {
+      try {
+        const next = parse(await request(readPath));
+        if (current) { setData(next); setError(null); }
+      } catch (failure) {
+        if (current) { setData(null); setError(failure instanceof Error ? failure.message : "指定纪要读取失败"); }
+      }
+    }
+    void loadLinkedVersion();
+    return () => { current = false; };
+  }, [minutesFocus, readPath]);
+  async function load() { setData(parse(await request(readPath))); }
   async function older() {
     if (!data?.next) return;
     const next = parse(await request(`${path}/minutes?before_version=${data.next}`));
@@ -90,11 +118,15 @@ export function MeetingMinutes({ projectId, meetingId, canManage, isCompleted }:
     setDraft(null); await load();
   }
   const segment = source?.segments.find(item => item.id === segmentId);
-  const editable = canManage && isCompleted && data?.editable && !busy;
-  return <details className="rounded-lg border p-3" onToggle={event => { if (event.currentTarget.open && !data && !busy) void act(load); }}>
+  const editable = canManage && isCompleted && data?.editable && !busy && !focusedId;
+  return <><AiMeetingEventHistory projectId={projectId} meetingId={meetingId} onOpenDrafts={kind => {
+    const panel = draftPanels.current?.querySelector<HTMLDetailsElement>(`[data-draft-kind="${kind}"] details`);
+    if (panel) { panel.open = true; panel.scrollIntoView?.({ behavior: "smooth", block: "nearest" }); }
+  }} /><div ref={draftPanels} className="contents"><div className="contents" data-draft-kind="minutes"><AiMeetingDrafts key={`${projectId}:${meetingId}`} projectId={projectId} meetingId={meetingId} onPublished={async () => { await load(); }} /></div><div className="contents" data-draft-kind="actions"><AiMeetingDrafts key={`${projectId}:${meetingId}:actions`} kind="actions" projectId={projectId} meetingId={meetingId} onPublished={async () => { await load(); }} /></div><div className="contents" data-draft-kind="decisions"><AiMeetingDrafts key={`${projectId}:${meetingId}:decisions`} kind="decisions" projectId={projectId} meetingId={meetingId} onPublished={async () => { await load(); }} /></div></div><details open={minutesFocus ? true : undefined} className="rounded-lg border p-2 sm:p-3" onToggle={event => { if (event.currentTarget.open && !data && !busy && !minutesFocus) void act(load); }}>
     <summary className="cursor-pointer text-sm font-medium">正式纪要与确认版本</summary>
     <div className="mt-3 space-y-3">
       <p className="text-xs text-muted-foreground">手工编写会议讨论、结论及未决事项，选取对应转写原句后具名确认。每次修订保留旧版，纪要确认不会替代决定批准或行动分派。</p>
+      {focusedId && <p className="text-xs text-muted-foreground">正在回查链接指定的正式纪要，刷新保留原版本。<a className="ml-2 text-primary underline" href={`/projects?project=${projectId}&tab=decisions&meeting=${meetingId}&minutes=all`}>查看全部纪要版本</a></p>}
       <div className="flex gap-2"><Button size="sm" variant="outline" disabled={busy || !!draft} onClick={() => void act(load)}>刷新正式纪要</Button>{editable && !draft && <Button size="sm" onClick={begin}>{data.current ? "基于当前版本修订" : "编写正式纪要"}</Button>}</div>
       {!isCompleted && <p className="text-xs text-muted-foreground">会议结束且未归档时可确认正式纪要。</p>}
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}{notice && <p role="status" className="text-xs">{notice}</p>}
@@ -125,12 +157,12 @@ export function MeetingMinutes({ projectId, meetingId, canManage, isCompleted }:
       </form>}
       {!draft && source && segment && <section className="space-y-2 rounded-md bg-muted/30 p-3"><h4 className="text-sm font-medium">当前引用原文 · 片段 {segment.sequence}</h4><p className="text-xs">当前标签：{segment.label} · {segment.user ? source.members.find(member => member.id === segment.user)?.name ?? "历史项目成员" : "身份未绑定"}</p><blockquote className="max-h-64 overflow-auto whitespace-pre-wrap break-words border-l-2 pl-3 text-sm">{segment.content}</blockquote>{(!source.usable || !segment.content.includes(quote)) && <p className="text-xs text-destructive">当前来源不可用于新确认，或本版引用已无法与原句对应。</p>}<p className="text-xs text-muted-foreground">这里展示当前来源；各纪要版本中的原句摘录保持原确认记录。</p></section>}
       {data?.items.length === 0 && <p className="text-xs text-muted-foreground">尚无已确认的正式纪要。</p>}
-      {data?.items.map(entry => <details key={entry.id} className="rounded-lg border p-3"><summary className="cursor-pointer text-sm">第 {entry.version} 版{entry.version === data.current ? " · 当前版本" : " · 历史版本"} · {entry.name} · {new Date(entry.time).toLocaleString("zh-CN")}</summary><div className="mt-3 space-y-3">
+      {data?.items.map(entry => <details key={entry.id} open={entry.id === focusedId ? true : undefined} className="rounded-lg border p-2 sm:p-3"><summary className="cursor-pointer text-sm">第 {entry.version} 版{entry.version === data.current ? " · 当前版本" : " · 历史版本"} · {entry.name} · {new Date(entry.time).toLocaleString("zh-CN")}</summary><div className="mt-3 space-y-3">
         {!entry.current && <p className="text-xs text-destructive">本版引用的来源已变化或失效。原确认历史保留；继续使用前请复核并修订。</p>}
         {entry.findingId && <a className="text-xs text-primary underline" href={`/ai-review?finding=${entry.findingId}`}>查看模型建议、独立接受与应用回执</a>}<p className="whitespace-pre-wrap text-sm">{entry.body}</p><div className="text-sm"><h4 className="font-medium">未决事项</h4><p className="whitespace-pre-wrap">{entry.unresolved}</p></div><p className="whitespace-pre-wrap text-xs text-muted-foreground">确认依据：{entry.reason}</p>
         <details className="rounded-md bg-muted/30 p-2"><summary className="cursor-pointer text-xs">本版引用的原句 · {entry.citations.length} 处</summary><ul className="mt-2 space-y-2 text-xs">{entry.citations.map(item => <li key={citationKey(item)} className="space-y-1"><p className="whitespace-pre-wrap">片段 {item.sequence}：{item.exact_quote}</p><Button size="sm" variant="outline" disabled={busy || !!draft} onClick={() => void act(async () => { await loadSource(item.transcript_id); setSegmentId(item.segment_id); setQuote(item.exact_quote); })}>核对当前完整原句</Button></li>)}</ul></details>
       </div></details>)}
       {data?.next && <Button size="sm" variant="outline" disabled={busy} onClick={() => void act(older)}>查看更多历史版本</Button>}
     </div>
-  </details>;
+  </details></>;
 }

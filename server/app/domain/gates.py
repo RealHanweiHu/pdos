@@ -581,6 +581,7 @@ class GateService:
             or_(tables.issues.c.stage_id == stage_id, tables.issues.c.stage_id.is_(None)),
             tables.issues.c.severity == "critical",
             tables.issues.c.status != "closed",
+            tables.issues.c.withdrawn_at.is_(None),
         )
         risk_statement = select(tables.risks.c.id, tables.risks.c.title).where(
             tables.risks.c.tenant_id == tenant_id,

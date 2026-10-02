@@ -423,6 +423,7 @@ class MyWorkService:
                         & (tables.issues.c.status == "verification"),
                     ),
                     tables.issues.c.status != "closed",
+                    tables.issues.c.withdrawn_at.is_(None),
                 ),
                 tables.issues.c.project_id,
             )

@@ -190,42 +190,66 @@ def preview_in_connection(
             )
         ).mappings()
     }
-    mappings = batch["mapping_snapshot"] or batch["proposed_mapping"]
-    if mappings is None and batch["mapping_version_id"] is not None:
-        mappings = c.execute(
-            select(tables.import_mapping_versions.c.mapping).where(
+    mapping_version = (
+        c.execute(
+            select(tables.import_mapping_versions).where(
                 tables.import_mapping_versions.c.tenant_id == tenant_id,
                 tables.import_mapping_versions.c.id == batch["mapping_version_id"],
             )
-        ).scalar_one_or_none()
+        )
+        .mappings()
+        .one_or_none()
+        if batch["mapping_version_id"] is not None
+        else None
+    )
+    mappings = batch["mapping_snapshot"] or batch["proposed_mapping"]
+    if mappings is None and mapping_version is not None:
+        mappings = mapping_version["mapping"]
+    # The model assesses column mapping, never individual extracted results.
+    # Human mappings and fixed adapters carry a compatibility value of 1.0 in
+    # their mapping payload; it must not be presented as model confidence.
+    mapping_review = {
+        "source": batch["mapping_source"],
+        "version_id": batch["mapping_version_id"],
+        "version": mapping_version["version"] if mapping_version is not None else None,
+        "model_mapping_confidence": (batch["parse_confidence"] or {}).get("mapping_confidence")
+        if batch["mapping_source"] == "model"
+        else None,
+        "row_confidence": None,
+        "row_confidence_basis": "not_assessed",
+        "readiness_basis": "confirmation_rules",
+    }
     blockers: list[str] = []
     if batch["superseded_by_batch_id"] is not None:
         blockers.append("此批次已有重解析版本，请转入后续版本核对；原草稿仅保留追溯")
     if not runs:
         blockers.append("没有可确认测试记录，请核对跳过说明及原报告缺项")
+    batch_blockers = list(blockers)
     items = []
+    now = datetime.now(UTC)
     for run in runs:
+        item_blockers: list[str] = []
         case = cases.get(run["test_case_id"])
         if case is None:
-            blockers.append("测试记录的目标用例已不属于本计划")
+            item_blockers.append("测试记录的目标用例已不属于本计划")
         elif case["status"] == "waived":
-            blockers.append(f"用例“{case['title']}”已豁免，请重新处理报告")
+            item_blockers.append(f"用例“{case['title']}”已豁免，请重新处理报告")
         if run["evidence_document_id"] != document["id"]:
-            blockers.append("测试记录的原始证据已变化")
+            item_blockers.append("测试记录的原始证据已变化")
         if batch["status"] == "parsed" and run["draft_state"] != "draft":
-            blockers.append("批次中有记录已单独改变确认状态")
+            item_blockers.append("批次中有记录已单独改变确认状态")
         if batch["status"] == "parsed" and (
             run["executed_at"] is None
-            or run["executed_at"] > datetime.now(UTC)
+            or run["executed_at"] > now
             or run["execution_time_source"] not in {"report", "human"}
             or run["execution_time_precision"] == "unknown"
         ):
-            blockers.append(
+            item_blockers.append(
                 f"第{run['run_number']}次“{case['title'] if case else '未知用例'}”"
                 "需补录已发生的真实测试日期或时间"
             )
         if batch["status"] == "parsed" and run["sample_id"] is None:
-            blockers.append(f"第{run['run_number']}次测试尚未绑定实际样机，请先复用或补齐建档")
+            item_blockers.append(f"第{run['run_number']}次测试尚未绑定实际样机，请先复用或补齐建档")
         source = (run["conditions"] or {}).get("report_source", {})
         revision = revisions.get(run["sample_configuration_revision_id"])
         time_input = (run["conditions"] or {}).get("execution_time_input", {})
@@ -240,9 +264,22 @@ def preview_in_connection(
             and run["executed_at"].astimezone(UTC).date()
             < sample["built_at"].astimezone(UTC).date()
         ):
-            blockers.append(f"第{run['run_number']}次测试日期早于已确认装机日期，请核对真实日期")
+            item_blockers.append(
+                f"第{run['run_number']}次测试日期早于已确认装机日期，请核对真实日期"
+            )
+        blockers.extend(item_blockers)
+        if batch["status"] == "confirmed":
+            review_state = "confirmed"
+        elif batch["superseded_by_batch_id"] is not None:
+            review_state = "superseded"
+        elif batch["status"] != "parsed":
+            review_state = "unavailable"
+        else:
+            review_state = "needs_attention" if item_blockers else "ready"
         items.append(
             dict(
+                review_state=review_state,
+                review_reasons=list(dict.fromkeys(item_blockers)),
                 run=dict(run),
                 case=dict(case) if case is not None else None,
                 sample=dict(sample) if sample is not None else None,
@@ -311,6 +348,8 @@ def preview_in_connection(
                 for k in ("id", "filename", "sha256", "classification", "size_bytes", "created_at")
             },
             mapping=mappings,
+            mapping_review=mapping_review,
+            batch_blockers=batch_blockers,
             items=items,
             skipped_rows=batch["skipped_rows"],
             blockers=list(dict.fromkeys(blockers)),

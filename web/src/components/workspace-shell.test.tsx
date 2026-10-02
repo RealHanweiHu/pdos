@@ -33,69 +33,93 @@ function renderShell(role: string) {
   return within(screen.getByRole("navigation", { name: "主导航" }));
 }
 
-describe("WorkspaceShell global domain navigation (D31)", () => {
+describe("WorkspaceShell global domain navigation (D31 regrouped)", () => {
   afterEach(cleanup);
 
-  it("groups an admin's surfaces under the ten global domains", () => {
+  it("keeps search and first-time field capture reachable from the top bar for internal members", () => {
+    renderShell("engineer");
+    expect(screen.getByRole("link", { name: "搜索" })).toHaveAttribute("href", "/search");
+    expect(screen.getByRole("link", { name: "现场采集" })).toHaveAttribute("href", "/capture");
+    cleanup(); renderShell("supplier");
+    expect(screen.queryByRole("link", { name: "搜索" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "现场采集" })).not.toBeInTheDocument();
+  });
+
+  it("keeps the sidebar to daily destinations with a single pinned settings entry", () => {
     const nav = renderShell("owner");
-    for (const domain of [
-      "工作台",
-      "项目组合",
-      "产品",
-      "项目",
-      "工程",
-      "质量",
-      "交付",
-      "知识",
-      "AI 工作台",
-      "管理",
-    ]) {
+    for (const domain of ["工作", "项目", "产品", "AI 与知识"]) {
       expect(nav.getByText(domain)).toBeInTheDocument();
     }
+    // Governance, integrations and account pages integrate into one settings
+    // entry; the settings area navigates internally via SettingsNav.
+    const aside = within(screen.getByRole("complementary"));
+    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute(
+      "href",
+      "/settings/security",
+    );
+    for (const label of [
+      "账户安全",
+      "钉钉集成",
+      "腾讯会议集成",
+      "成员与角色",
+      "组织与代理",
+      "AI 治理",
+      "模型治理",
+      "事件流",
+    ]) {
+      expect(aside.queryByRole("link", { name: label })).not.toBeInTheDocument();
+    }
     expect(nav.getByRole("link", { name: "组合与阻塞" })).toHaveAttribute("href", "/portfolio");
-    expect(nav.getByRole("link", { name: "组织与代理" })).toHaveAttribute(
-      "href",
-      "/governance/organization",
-    );
   });
 
-  it("points the project-scoped domains at the matching workspace tab", () => {
-    const nav = renderShell("engineer");
-    expect(nav.getByRole("link", { name: "工程·变更" })).toHaveAttribute(
-      "href",
-      "/projects?tab=engineering",
+  it("has no entries for contextual surfaces or project workspace tabs", () => {
+    renderShell("engineer");
+    const aside = within(screen.getByRole("complementary"));
+    // Field capture and global search are reached from the records that link
+    // to them, not from the sidebar.
+    expect(aside.queryByRole("link", { name: "现场采集" })).not.toBeInTheDocument();
+    expect(aside.queryByRole("link", { name: "搜索" })).not.toBeInTheDocument();
+    // Engineering, quality and gates live in the workspace's own tab bar.
+    expect(aside.queryByRole("link", { name: "工程·变更" })).not.toBeInTheDocument();
+    expect(aside.queryByRole("link", { name: "试制·测试·质量" })).not.toBeInTheDocument();
+    expect(aside.queryByRole("link", { name: "Gate·交付物" })).not.toBeInTheDocument();
+    expect(aside.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual(
+      expect.not.arrayContaining([
+        "/capture",
+        "/search",
+        "/projects?tab=engineering",
+        "/projects?tab=quality",
+        "/projects?tab=gates",
+      ]),
     );
-    expect(nav.getByRole("link", { name: "试制·测试·质量" })).toHaveAttribute(
-      "href",
-      "/projects?tab=quality",
-    );
-    expect(nav.getByRole("link", { name: "Gate·交付物" })).toHaveAttribute(
-      "href",
-      "/projects?tab=gates",
-    );
+    expect(aside.getByRole("link", { name: "项目工作区" })).toHaveAttribute("href", "/projects");
   });
 
-  it("hides admin-only domains from an engineer but keeps their own work", () => {
+  it("hides governance entries from an engineer but keeps their own work and settings", () => {
     const nav = renderShell("engineer");
-    expect(nav.queryByText("管理")).toBeInTheDocument(); // 账户安全 keeps Admin visible
-    expect(nav.queryByRole("link", { name: "模型治理" })).not.toBeInTheDocument();
-    expect(nav.queryByRole("link", { name: "AI 治理" })).not.toBeInTheDocument();
+    const aside = within(screen.getByRole("complementary"));
+    for (const label of ["成员与角色", "组织与代理", "AI 治理", "模型治理", "事件流"]) {
+      expect(aside.queryByRole("link", { name: label })).not.toBeInTheDocument();
+    }
+    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute("href", "/settings/security");
     expect(nav.getByRole("link", { name: "我的工作" })).toBeInTheDocument();
   });
 
-  it("drops whole domains that an external member may not enter", () => {
+  it("drops internal-only domains that an external member may not enter", () => {
     const nav = renderShell("supplier");
-    expect(nav.queryByText("项目组合")).not.toBeInTheDocument();
-    expect(nav.queryByText("知识")).not.toBeInTheDocument();
-    expect(nav.queryByText("AI 工作台")).not.toBeInTheDocument();
+    expect(nav.queryByRole("link", { name: "组合与阻塞" })).not.toBeInTheDocument();
+    expect(nav.queryByText("AI 与知识")).not.toBeInTheDocument();
     expect(nav.queryByRole("link", { name: "我的工作" })).not.toBeInTheDocument();
-    // Products and Projects stay reachable for external collaborators.
+    // Projects, product surfaces and the settings area stay reachable for external collaborators.
     expect(nav.getByRole("link", { name: "项目工作区" })).toBeInTheDocument();
     expect(nav.getByRole("link", { name: "需求池" })).toBeInTheDocument();
+    const aside = within(screen.getByRole("complementary"));
+    expect(aside.getByRole("link", { name: "设置" })).toHaveAttribute("href", "/settings/security");
   });
 
   it("starts with a compact mobile current entry and preserves every permitted destination when expanded", async () => {
-    const desktop = renderShell("owner");
+    renderShell("owner");
+    const aside = within(screen.getByRole("complementary"));
     const mobile = within(screen.getByRole("navigation", { name: "移动端主导航" }));
     expect(mobile.getByText("驾驶舱", { selector: "span" })).toHaveAttribute("aria-current", "page");
     const toggle = mobile.getByRole("button", { name: "展开导航" });
@@ -106,7 +130,7 @@ describe("WorkspaceShell global domain navigation (D31)", () => {
     await userEvent.click(toggle);
     expect(toggle).toHaveAttribute("aria-expanded", "true");
     expect(mobile.getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual(
-      desktop.getAllByRole("link").map((link) => link.getAttribute("href")),
+      aside.getAllByRole("link").map((link) => link.getAttribute("href")),
     );
     await userEvent.click(mobile.getByRole("button", { name: "收起导航" }));
     expect(mobile.queryAllByRole("link")).toHaveLength(0);
@@ -120,7 +144,7 @@ describe("WorkspaceShell global domain navigation (D31)", () => {
     toggle.focus();
     await user.keyboard("{Enter}");
     await user.tab();
-    expect(mobile.getByRole("link", { name: "驾驶舱" })).toHaveFocus();
+    expect(mobile.getByRole("link", { name: "我的工作" })).toHaveFocus();
     await user.keyboard("{Escape}");
     expect(toggle).toHaveFocus();
     expect(toggle).toHaveAttribute("aria-expanded", "false");

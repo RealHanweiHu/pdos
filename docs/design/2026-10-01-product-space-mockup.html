@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品空间 UI 初稿 · 2026-10-01</title>
+<style>
+  :root[data-theme="light"]{
+    --bg:#fafafa; --surface:#ffffff; --surface-2:#f4f4f5; --border:#e4e4e7; --border-soft:#f0f0f1;
+    --text:#18181b; --text-2:#52525b; --text-3:#a1a1aa;
+    --accent:#c2410c; --accent-soft:#fff7ed; --accent-border:#fed7aa;
+    --pending:#a16207; --pending-bg:#fefce8;
+    --ok:#047857; --ok-bg:#ecfdf5;
+    --bad:#be123c; --bad-bg:#fff1f2;
+    --applied:#1d4ed8; --applied-bg:#eff6ff;
+    --chart-grid:#ececee; --target-band:rgba(194,65,12,.10);
+    --shadow:0 8px 24px rgba(24,24,27,.08);
+  }
+  :root[data-theme="dark"]{
+    --bg:#101214; --surface:#17191c; --surface-2:#1d2024; --border:#26282c; --border-soft:#202327;
+    --text:#e4e4e7; --text-2:#a1a1aa; --text-3:#5f6368;
+    --accent:#fb923c; --accent-soft:#2b1708; --accent-border:#7c2d12;
+    --pending:#facc15; --pending-bg:#2a2508;
+    --ok:#34d399; --ok-bg:#0c2a1e;
+    --bad:#fb7185; --bad-bg:#2c1218;
+    --applied:#60a5fa; --applied-bg:#101c33;
+    --chart-grid:#23262a; --target-band:rgba(251,146,60,.10);
+    --shadow:0 8px 24px rgba(0,0,0,.4);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Geist','Helvetica Neue',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--text); font-size:13px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;}
+  button{font:inherit; color:inherit;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:1px; border-radius:4px;}
+
+  /* ===== 顶部规格条 ===== */
+  .spec-bar{
+    position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:12px;
+    padding:9px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+  }
+  .spec-bar h1{font-size:13px; font-weight:600; white-space:nowrap;}
+  .spec-bar .ver{color:var(--text-3); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1;}
+  .theme-btn{
+    margin-left:auto; flex-shrink:0; padding:5px 12px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-2); cursor:pointer; font-size:12px;
+  }
+  .theme-btn:active{transform:scale(.98);}
+
+  /* ===== 应用壳 ===== */
+  .shell{display:grid; grid-template-columns:224px 1fr; min-height:calc(100vh - 40px);}
+  .sidebar{background:var(--surface-2); border-right:1px solid var(--border); padding:14px 10px; display:flex; flex-direction:column;}
+  .logo{display:flex; align-items:center; gap:8px; padding:4px 8px 14px; font-weight:700; font-size:13.5px;}
+  .logo-mark{width:22px;height:22px;border-radius:6px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;}
+  :root[data-theme="dark"] .logo-mark{color:#431407;}
+  .nav-group{margin-bottom:14px;}
+  .nav-label{font-size:10.5px; color:var(--text-3); padding:0 8px 4px; font-weight:600;}
+  .nav-item{display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:8px; color:var(--text-2); font-size:12.5px; cursor:pointer; border:none; background:none; width:100%; text-align:left;}
+  .nav-item:hover{background:var(--surface);}
+  .nav-item.on{background:var(--surface); color:var(--text); font-weight:600; box-shadow:inset 2px 0 0 var(--accent);}
+  .nav-item .cnt{margin-left:auto; font-size:11px; color:var(--text-3);}
+  .nav-item .cnt.hot{color:var(--accent); font-weight:700;}
+  .sidebar-foot{margin-top:auto; padding-top:12px; border-top:1px solid var(--border);}
+  .user-card{display:flex; align-items:center; gap:8px; padding:6px 8px;}
+  .avatar{width:24px; height:24px; border-radius:99px; background:var(--accent-soft); color:var(--accent); display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;}
+
+  .main{min-width:0; display:flex; flex-direction:column;}
+  .main-body{flex:1; padding:20px 24px 80px; max-width:1180px; width:100%; margin:0 auto;}
+
+  /* ===== 面包屑与页头 ===== */
+  .crumbs{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-3); flex-wrap:wrap;}
+  .crumbs button{background:none; border:none; color:var(--text-2); cursor:pointer; padding:2px 4px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;}
+  .crumbs button:hover{background:var(--surface-2); color:var(--text);}
+  .crumbs .here{color:var(--text); font-weight:600;}
+  .page-head{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin:14px 0 18px; flex-wrap:wrap;}
+  .page-head h2{font-size:18px; font-weight:650; display:flex; align-items:center; gap:10px;}
+  .page-head .sub{color:var(--text-2); font-size:12.5px; margin-top:4px;}
+  .head-actions{display:flex; gap:8px; align-items:center;}
+
+  /* ===== 按钮与徽标 ===== */
+  .btn{display:inline-flex; align-items:center; gap:6px; padding:6px 13px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:12.5px; cursor:pointer;}
+  .btn:hover{background:var(--surface-2);}
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600;}
+  :root[data-theme="dark"] .btn.primary{color:#431407;}
+  .btn.primary:hover{filter:brightness(1.06);}
+  .btn.ghost{border-color:transparent; background:transparent; color:var(--text-2);}
+  .btn.ghost:hover{background:var(--surface-2);}
+  .btn.sm{padding:3px 9px; font-size:11.5px; border-radius:7px;}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .badge{display:inline-flex; align-items:center; gap:4px; padding:1.5px 8px; border-radius:999px; font-size:10.5px; font-weight:600; white-space:nowrap;}
+  .b-pending{background:var(--pending-bg); color:var(--pending);}
+  .b-ok{background:var(--ok-bg); color:var(--ok);}
+  .b-bad{background:var(--bad-bg); color:var(--bad);}
+  .b-applied{background:var(--applied-bg); color:var(--applied);}
+  .b-stage{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
+  .agent-tag{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; color:var(--accent); background:var(--accent-soft); border-radius:6px; padding:1px 6px; font-weight:600;}
+
+  /* ===== 主题卡（第 2 层） ===== */
+  .theme-list{display:grid; gap:12px;}
+  .theme-card{
+    display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:16px 18px; cursor:pointer; transition:border-color .12s;
+  }
+  .theme-card:hover{border-color:var(--accent-border);}
+  .theme-card .tc-top{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .theme-card h3{font-size:14.5px; font-weight:650;}
+  .theme-card .tc-counts{display:flex; gap:14px; margin-top:8px; color:var(--text-2); font-size:12px; flex-wrap:wrap;}
+  .theme-card .tc-counts b{color:var(--text); font-weight:650;}
+  .theme-card .tc-foot{display:flex; align-items:center; gap:10px; margin-top:10px; font-size:12px; flex-wrap:wrap;}
+  .tc-pending{color:var(--accent); font-weight:600;}
+  .tc-next{color:var(--text-2);}
+  .tc-next b{color:var(--text); font-weight:550;}
+  .quiet-link{display:flex; align-items:center; gap:8px; width:100%; text-align:left; padding:11px 14px; border:1px dashed var(--border); border-radius:8px; background:none; color:var(--text-2); cursor:pointer; font-size:12.5px;}
+  .quiet-link:hover{background:var(--surface-2);}
+  .section-label{font-size:11.5px; font-weight:650; color:var(--text-3); margin:22px 0 10px; display:flex; align-items:center; gap:8px;}
+  .section-label:first-child{margin-top:0;}
+
+  /* ===== 主题工作台 tab ===== */
+  .tabs{display:flex; gap:2px; border-bottom:1px solid var(--border); margin-bottom:18px; overflow-x:auto;}
+  .tab{padding:7px 13px; border:none; background:none; cursor:pointer; font-size:12.5px; color:var(--text-2); border-bottom:2px solid transparent; white-space:nowrap;}
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--accent); font-weight:650; border-bottom-color:var(--accent);}
+  .tab .n{font-size:10.5px; color:var(--text-3); margin-left:4px;}
+  .tab.active .n{color:var(--accent);}
+
+  /* ===== 总览 ===== */
+  .ov-grid{display:grid; grid-template-columns:1.6fr 1fr; gap:14px; align-items:start;}
+  .panel{border:1px solid var(--border); border-radius:8px; background:var(--surface); overflow:hidden;}
+  .panel-h{padding:9px 14px; font-size:11.5px; font-weight:650; color:var(--text-2); background:var(--surface-2); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px;}
+  .panel-h .cnt{margin-left:auto; color:var(--text-3); font-weight:600;}
+  .panel-b{padding:12px 14px;}
+  .mini-row{display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom:1px solid var(--border-soft); font-size:12.5px; cursor:pointer; width:100%; background:none; border-left:none; border-right:none; border-top:none; text-align:left;}
+  .mini-row:last-child{border-bottom:none;}
+  .mini-row:hover{background:var(--surface-2);}
+  .mini-row .t{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .mini-row .m{color:var(--text-3); font-size:11px; white-space:nowrap;}
+
+  /* ===== 候选卡 ===== */
+  .cand{border:1.5px dashed var(--accent-border); background:var(--accent-soft); border-radius:8px; padding:12px 14px; margin-bottom:10px;}
+  .cand:last-child{margin-bottom:0;}
+  .cand .c-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .cand h4{font-size:13px; font-weight:650;}
+  .cand .c-meta{font-size:11.5px; color:var(--text-2); margin-top:4px;}
+  .cand .c-src{font-size:11px; color:var(--text-3); margin-top:6px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+  .cand .c-src button{background:none; border:none; color:var(--accent); cursor:pointer; font-size:11px; padding:0;}
+  .cand .c-actions{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+  .cand.accepted{border-style:solid; border-color:var(--ok); background:var(--ok-bg);}
+  .cand.ignored{opacity:.55; border-color:var(--border); background:var(--surface);}
+  .cand .c-state{font-size:11.5px; font-weight:650;}
+  .cand.accepted .c-state{color:var(--ok);}
+  .reason-line{display:flex; gap:6px; margin-top:8px;}
+  .reason-line[hidden]{display:none;}
+  .reason-line input{flex:1; padding:5px 9px; border:1px solid var(--border); border-radius:7px; background:var(--surface); color:var(--text); font:inherit; font-size:12px;}
+
+  /* ===== 对象卡（一行摘要） ===== */
+  .obj{display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid var(--border); border-radius:8px; background:var(--surface); margin-bottom:8px; cursor:pointer; width:100%; text-align:left;}
+  .obj:hover{border-color:var(--accent-border);}
+  .obj .dot{width:7px; height:7px; border-radius:99px; flex-shrink:0;}
+  .obj .o-main{flex:1; min-width:0;}
+  .obj .o-title{font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;}
+  .obj .o-meta{font-size:11.5px; color:var(--text-3); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;}
+  .obj .o-act{font-size:11.5px; color:var(--accent); font-weight:600; white-space:nowrap;}
+
+  /* ===== 词条 ===== */
+  .entry-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px;}
+  .entry{border:1px solid var(--border); border-radius:8px; background:var(--surface); padding:12px 14px;}
+  .entry .e-key{font-size:11px; color:var(--text-3); font-weight:650; display:flex; align-items:center; gap:6px;}
+  .entry .e-value{font-size:16px; font-weight:700; margin-top:4px; font-variant-numeric:tabular-nums;}
+  .entry .e-calib{font-size:11px; color:var(--text-2); margin-top:4px;}
+  .entry .e-foot{display:flex; align-items:center; gap:8px; margin-top:8px; font-size:10.5px; color:var(--text-3);}
+  .entry .e-foot button{background:none; border:none; color:var(--accent); cursor:pointer; font-size:10.5px; padding:0;}
+  .entry.challenged{border-color:var(--pending); background:var(--pending-bg);}
+  .e-src-detail{margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); font-size:11px; color:var(--text-2); display:none;}
+  .entry.open .e-src-detail{display:block;}
+
+  /* ===== 竞品对比表 ===== */
+  .view-toggle{display:inline-flex; border:1px solid var(--border); border-radius:8px; padding:2px; gap:2px;}
+  .view-toggle button{border:none; background:none; padding:4px 11px; border-radius:6px; font-size:12px; color:var(--text-2); cursor:pointer;}
+  .view-toggle button.on{background:var(--surface-2); color:var(--text); font-weight:600;}
+  .cmp-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:8px; background:var(--surface);}
+  table.cmp{border-collapse:collapse; width:100%; min-width:680px; font-size:12.5px;}
+  table.cmp th, table.cmp td{padding:9px 13px; border-bottom:1px solid var(--border-soft); text-align:left; vertical-align:top;}
+  table.cmp thead th{background:var(--surface-2); font-size:12px; border-bottom:1px solid var(--border);}
+  table.cmp tbody th{font-weight:600; color:var(--text-2); white-space:nowrap; font-size:12px;}
+  table.cmp .val{font-weight:650; font-variant-numeric:tabular-nums;}
+  table.cmp .na{color:var(--text-3); font-size:11.5px;}
+  table.cmp .calib{font-size:10.5px; color:var(--text-3); margin-top:2px;}
+  .nature{font-size:9.5px; padding:1px 6px; border-radius:5px; font-weight:650; margin-left:6px; white-space:nowrap;}
+  .n-claimed{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
+  .n-measured{background:var(--ok-bg); color:var(--ok);}
+  .n-inferred{background:var(--applied-bg); color:var(--applied);}
+  .col-warn{background:var(--pending-bg);}
+
+  /* ===== 图表通用 ===== */
+  .chart-box{border:1px solid var(--border); border-radius:8px; background:var(--surface); padding:16px 16px 10px;}
+  .chart-title{font-size:12px; font-weight:650; color:var(--text-2); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .chart-title .opts{margin-left:auto; display:flex; gap:6px;}
+  .chart-note{font-size:11px; color:var(--text-3); padding:6px 4px 4px;}
+  svg text{font-family:inherit;}
+  .tip{position:fixed; z-index:80; pointer-events:none; background:var(--surface); border:1px solid var(--border); border-radius:8px; box-shadow:var(--shadow); padding:8px 11px; font-size:11.5px; max-width:260px; display:none;}
+  .tip .tt{font-weight:650; margin-bottom:2px;}
+  .tip .ts{color:var(--text-3); font-size:10.5px; margin-top:3px;}
+
+  /* ===== PRD / Spec ===== */
+  .prd-grid{display:grid; grid-template-columns:1fr 1.4fr; gap:14px; align-items:start;}
+  .prd-doc{border:1px solid var(--border); border-radius:8px; background:var(--surface); padding:18px 20px;}
+  .prd-doc h3{font-size:15px; font-weight:700;}
+  .prd-doc .rev{font-size:11px; color:var(--text-3); margin:2px 0 12px;}
+  .prd-doc h5{font-size:11px; color:var(--text-3); font-weight:650; margin:14px 0 4px;}
+  .prd-doc p, .prd-doc li{font-size:12.5px;}
+  .prd-doc ul{padding-left:18px;}
+  .tbc{color:var(--pending); font-weight:600; font-size:11px;}
+  .spec-table{border:1px solid var(--border); border-radius:8px; background:var(--surface); overflow:hidden;}
+  .spec-row{display:grid; grid-template-columns:86px 1fr 130px 96px; gap:10px; padding:9px 14px; border-bottom:1px solid var(--border-soft); font-size:12px; align-items:center;}
+  .spec-row:last-child{border-bottom:none;}
+  .spec-row.head{background:var(--surface-2); font-size:11px; font-weight:650; color:var(--text-2);}
+  .spec-row .k{font-family:'Geist Mono',ui-monospace,Menlo,monospace; font-size:11px; color:var(--text-2);}
+  .spec-row .t{font-weight:600;}
+  .spec-row .tg{font-variant-numeric:tabular-nums;}
+  .spec-row .miss{font-size:10.5px; color:var(--pending);}
+  .gate-bar{display:flex; align-items:center; gap:10px; border:1px solid var(--border); border-radius:8px; background:var(--surface); padding:12px 16px; margin-bottom:14px; flex-wrap:wrap;}
+  .gate-step{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-3);}
+  .gate-step.on{color:var(--text); font-weight:650;}
+  .gate-step.done{color:var(--ok);}
+  .gate-arrow{color:var(--text-3);}
+
+  /* ===== 验证 ===== */
+  .dim-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;}
+  .dim{border:1px solid var(--border); border-radius:8px; background:var(--surface); padding:12px 14px;}
+  .dim h4{font-size:12px; font-weight:650;}
+  .dim .d-stat{font-size:11.5px; color:var(--text-2); margin-top:6px; font-variant-numeric:tabular-nums;}
+  .dim .d-stat b{font-weight:700;}
+  .s-sup{color:var(--ok);} .s-ref{color:var(--bad);} .s-inc{color:var(--pending);}
+
+  /* ===== 小Pai 抽屉 ===== */
+  .drawer-mask{position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:90; opacity:0; pointer-events:none; transition:opacity .18s;}
+  .drawer-mask.open{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; bottom:0; width:420px; max-width:94vw; z-index:95;
+    background:var(--surface); border-left:1px solid var(--border); box-shadow:var(--shadow);
+    transform:translateX(100%); transition:transform .2s ease; display:flex; flex-direction:column;
+  }
+  .drawer.open{transform:none;}
+  .dr-h{display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border);}
+  .dr-h .scope{font-size:11px; color:var(--text-2); background:var(--surface-2); border-radius:6px; padding:2px 8px;}
+  .dr-h .x{margin-left:auto;}
+  .dr-b{flex:1; overflow-y:auto; padding:14px 16px;}
+  .msg{margin-bottom:12px; font-size:12.5px;}
+  .msg .who{font-size:10.5px; color:var(--text-3); font-weight:650; margin-bottom:3px;}
+  .msg .bubble{border:1px solid var(--border); border-radius:8px; padding:9px 12px; background:var(--surface-2);}
+  .msg.mine .bubble{background:var(--accent-soft); border-color:var(--accent-border);}
+  .run-card{border:1px solid var(--border); border-radius:8px; overflow:hidden; margin:10px 0;}
+  .run-step{display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:12px; border-bottom:1px solid var(--border-soft);}
+  .run-step:last-child{border-bottom:none;}
+  .run-step .st{margin-left:auto; font-size:11px; color:var(--text-3);}
+  .dr-in{border-top:1px solid var(--border); padding:10px 14px; display:flex; gap:8px;}
+  .dr-in input{flex:1; padding:7px 11px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); font:inherit; font-size:12.5px;}
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translate(-50%,16px); z-index:99;
+    background:var(--text); color:var(--bg); padding:8px 16px; border-radius:8px; font-size:12.5px;
+    opacity:0; pointer-events:none; transition:all .2s;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0);}
+
+  .foot-note{max-width:1180px; margin:0 auto; padding:0 24px 40px; color:var(--text-3); font-size:11px;}
+
+  [data-screen]{display:none;}
+  [data-screen].active{display:block; animation:fade .18s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+
+  @media (max-width:900px){
+    .spec-bar .ver{display:none;}
+    .spec-bar{gap:8px;}
+    .shell{grid-template-columns:1fr;}
+    .sidebar{flex-direction:row; align-items:center; overflow-x:auto; border-right:none; border-bottom:1px solid var(--border); padding:8px 10px; gap:4px;}
+    .nav-group{display:flex; margin:0; gap:2px;}
+    .nav-label,.sidebar-foot{display:none;}
+    .nav-item{white-space:nowrap; width:auto;}
+    .logo{padding:4px 8px;}
+    .ov-grid,.prd-grid{grid-template-columns:1fr;}
+    .dim-grid{grid-template-columns:repeat(2,1fr);}
+    .main-body{padding:16px 14px 64px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="spec-bar">
+  <h1>产品空间 UI 初稿</h1>
+  <span class="ver">三层导航：空间 → 产品主题 → 主题工作台 · 词条与可视化 · 候选卡裁决 · 仅供评审，非生产界面</span>
+  <button class="theme-btn" id="themeBtn">暗色</button>
+</div>
+
+<div class="shell">
+  <!-- ============ 全局侧栏 ============ -->
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-mark">P</span>PDOS</div>
+    <div class="nav-group">
+      <div class="nav-label">工作</div>
+      <button class="nav-item">▦ 我的工作<span class="cnt hot">5</span></button>
+      <button class="nav-item">▤ 驾驶舱</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">项目</div>
+      <button class="nav-item">◧ 项目</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">产品</div>
+      <button class="nav-item on" data-go="s1">◈ 产品管理工作台</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">AI 与知识</div>
+      <button class="nav-item" data-action="openPai">✦ 小Pai<span class="cnt hot">2</span></button>
+      <button class="nav-item">▨ 知识库</button>
+      <button class="nav-item">◇ 审查收件箱<span class="cnt hot">3</span></button>
+    </div>
+    <div class="sidebar-foot">
+      <div class="user-card"><span class="avatar">张</span><span style="font-size:12.5px">张明 · 产品经理</span></div>
+      <button class="nav-item">⚙ 设置</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="main-body">
+
+      <!-- ============ 第 1 层：空间目录 ============ -->
+      <section data-screen="s1" class="active">
+        <div class="crumbs"><span class="here">产品管理工作台</span></div>
+        <div class="page-head">
+          <div>
+            <h2>产品管理工作台</h2>
+            <p class="sub">围绕市场空间组织产品主题；每个主题沉淀自己的研究、竞品与定义输出。</p>
+          </div>
+          <div class="head-actions">
+            <button class="btn">＋ 新建市场空间</button>
+            <button class="btn ghost">刷新</button>
+          </div>
+        </div>
+        <div class="theme-list" style="max-width:760px">
+          <button class="theme-card" data-go="s2">
+            <div class="tc-top"><h3>汽车用品空间</h3><span class="badge b-ok">启用</span><span class="mono" style="font-size:11px;color:var(--text-3)">auto-accessories</span></div>
+            <div class="tc-counts"><span><b>2</b> 个产品主题</span><span><b>4</b> 个用户群</span><span><b>3</b> 个地域</span><span><b>8</b> 位协作成员</span></div>
+            <div class="tc-foot"><span class="tc-pending">◆ 8 条候选待裁决</span><span class="tc-next">最近活动：12 分钟前</span></div>
+          </button>
+          <button class="theme-card" data-go="s2">
+            <div class="tc-top"><h3>户外便携装备空间</h3><span class="badge b-ok">启用</span><span class="mono" style="font-size:11px;color:var(--text-3)">outdoor-portable</span></div>
+            <div class="tc-counts"><span><b>1</b> 个产品主题</span><span><b>2</b> 个用户群</span><span><b>2</b> 个地域</span><span><b>5</b> 位协作成员</span></div>
+            <div class="tc-foot"><span class="tc-next">最近活动：昨天</span></div>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ 第 2 层：空间首页 = 产品主题列表 ============ -->
+      <section data-screen="s2">
+        <div class="crumbs">
+          <button data-go="s1">← 产品管理工作台</button><span>/</span><span class="here">汽车用品空间</span>
+        </div>
+        <div class="page-head">
+          <div>
+            <h2>汽车用品空间 <span class="badge b-ok">启用</span></h2>
+            <p class="sub">车主 · 应急人群 · 户外露营 · 车队用户 — 北美 / 欧洲 / 国内</p>
+          </div>
+          <div class="head-actions">
+            <button class="btn" data-action="openPai">✦ 召唤小Pai</button>
+            <button class="btn">＋ 新建产品主题</button>
+          </div>
+        </div>
+
+        <div class="section-label">产品主题</div>
+        <div class="theme-list">
+          <button class="theme-card" data-go="s3" data-theme="车载吸尘器">
+            <div class="tc-top"><h3>车载吸尘器</h3><span class="badge b-applied">开发中 · 定义协审中</span></div>
+            <div class="tc-counts"><span>研究 <b>3</b></span><span>竞品 <b>12</b></span><span>机会 <b>2</b></span><span>实验 <b>4</b></span><span>词条 <b>18</b></span></div>
+            <div class="tc-foot"><span class="tc-pending">◆ 待我裁决 2</span><span class="tc-next">下一步：<b>批准低温实验</b></span></div>
+          </button>
+          <button class="theme-card" data-go="s3" data-theme="锂电池汽车充气泵">
+            <div class="tc-top"><h3>锂电池汽车充气泵</h3><span class="badge b-stage">研究中</span></div>
+            <div class="tc-counts"><span>研究 <b>5</b></span><span>竞品 <b>6</b></span><span>细分 <b>2</b></span><span>词条 <b>11</b></span></div>
+            <div class="tc-foot"><span class="tc-pending">◆ AI 新候选 6 条待裁决</span><span class="tc-next">下一步：<b>裁决竞品候选</b></span></div>
+          </button>
+        </div>
+
+        <div class="section-label">空间级</div>
+        <div class="theme-list" style="max-width:760px">
+          <button class="quiet-link" data-go="s3" data-theme="空间共享研究">▸ 空间共享研究 — 跨主题共性资料与词条（4 项进行中）</button>
+          <button class="quiet-link">⚙ 空间设置 — 资料、生命周期、成员与权限、能力评测</button>
+        </div>
+      </section>
+
+      <!-- ============ 第 3 层：产品主题工作台 ============ -->
+      <section data-screen="s3">
+        <div class="crumbs">
+          <button data-go="s1">← 产品管理工作台</button><span>/</span>
+          <button data-go="s2">汽车用品空间</button><span>/</span>
+          <span class="here" id="themeName">锂电池汽车充气泵</span>
+        </div>
+        <div class="page-head">
+          <div>
+            <h2 id="themeTitle">锂电池汽车充气泵</h2>
+            <p class="sub">主打欧美车载应急市场 · 无线锂电一体 · 目标 2027 Q2 上市</p>
+          </div>
+          <div class="head-actions">
+            <button class="btn" data-action="openPai">✦ 召唤小Pai</button>
+            <button class="btn ghost">＋ 新建 ▾</button>
+          </div>
+        </div>
+
+        <nav class="tabs" id="themeTabs">
+          <button class="tab active" data-tab="overview">总览</button>
+          <button class="tab" data-tab="research">研究<span class="n">5</span></button>
+          <button class="tab" data-tab="competitor">竞品<span class="n">6</span></button>
+          <button class="tab" data-tab="segment">细分<span class="n">2</span></button>
+          <button class="tab" data-tab="opportunity">机会·策略<span class="n">4</span></button>
+          <button class="tab" data-tab="prd">PRD·Spec</button>
+          <button class="tab" data-tab="verify">验证<span class="n">4</span></button>
+        </nav>
+
+        <!-- ---- 总览 ---- -->
+        <div data-pane="overview">
+          <div class="ov-grid">
+            <div>
+              <div class="panel">
+                <div class="panel-h">等待你裁决<span class="cnt">4</span></div>
+                <div class="panel-b" id="candList"></div>
+              </div>
+              <div class="panel" style="margin-top:14px">
+                <div class="panel-h">缺口与信号</div>
+                <button class="mini-row" data-tabgo="research"><span class="t">⚠ 词条「用户首要痛点」被 2 条新证据挑战</span><span class="m">去复核</span></button>
+                <button class="mini-row" data-tabgo="prd"><span class="t">⚠ Spec 3 条规格缺验证方法（PS-004 / 005 / 007）</span><span class="m">去补齐</span></button>
+                <button class="mini-row" data-tabgo="research"><span class="t">○ 研究「锂电池空运法规」已达停止条件，可提交结论</span><span class="m">去办理</span></button>
+              </div>
+            </div>
+            <div>
+              <div class="panel">
+                <div class="panel-h">进行中</div>
+                <button class="mini-row" data-tabgo="research"><span class="t">欧美市场价格带分析</span><span class="m">研究 · 证据 8</span></button>
+                <button class="mini-row" data-tabgo="verify"><span class="t">预设精度 ±1psi 感知实验</span><span class="m">执行中</span></button>
+                <button class="mini-row" data-tabgo="prd"><span class="t">PRD v0.3 协审</span><span class="m">2/3 已提交意见</span></button>
+              </div>
+              <div class="panel" style="margin-top:14px">
+                <div class="panel-h">AI 最近运行</div>
+                <button class="mini-row" data-action="openPai"><span class="t">✦ 竞品分析 · 产出 4 条候选</span><span class="m b-ok badge">完成 · 2h 前</span></button>
+                <button class="mini-row" data-action="openPai"><span class="t">✦ 机会映射</span><span class="m b-pending badge">运行中</span></button>
+                <button class="mini-row" data-action="openPai"><span class="t">✦ 研究计划起草</span><span class="m">昨天 · 已应用 3 条</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- 研究 ---- -->
+        <div data-pane="research" hidden>
+          <div class="section-label">研究任务</div>
+          <button class="obj"><span class="dot" style="background:var(--applied)"></span><span class="o-main"><span class="o-title">欧美车载应急市场价格带分析</span><span class="o-meta">进行中 · 张明 · 证据 8 条 · 支持决定：定价档位</span></span></button>
+          <button class="obj"><span class="dot" style="background:var(--ok)"></span><span class="o-main"><span class="o-title">锂电池空运法规与认证路径</span><span class="o-meta">已达停止条件 · 证据 12 条</span></span><span class="o-act">去提交结论 →</span></button>
+          <button class="obj"><span class="dot" style="background:var(--applied)"></span><span class="o-main"><span class="o-title">夜间应急场景 JTBD 访谈整理</span><span class="o-meta">进行中 · 李婷 · 证据 5 条</span></span></button>
+
+          <div class="section-label">本主题词条 <span class="agent-tag">✦ AI 抽取 · 人工裁决后生效</span></div>
+          <div class="entry-grid" id="entryGrid"></div>
+        </div>
+
+        <!-- ---- 竞品 ---- -->
+        <div data-pane="competitor" hidden>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap">
+            <div class="view-toggle" id="cmpToggle">
+              <button class="on" data-view="chart">价格区间图</button>
+              <button data-view="table">同口径对比表</button>
+              <button data-view="list">观察列表</button>
+            </div>
+            <span style="font-size:11px;color:var(--text-3)">北美 · 亚马逊零售 · 含税 · 2026 Q3 · 每个数值可回溯来源</span>
+          </div>
+
+          <div data-cview="chart">
+            <div class="chart-box">
+              <div class="chart-title">价格带分布 · 无线锂电充气泵（USD）<span class="opts"><span class="badge b-stage">渠道：亚马逊</span><span class="badge b-stage">地区：北美</span></span></div>
+              <svg id="priceChart" width="100%" viewBox="0 0 760 280" style="display:block; margin-top:8px"></svg>
+              <p class="chart-note">▓ 目标价格带来自定义草案词条「价格定位 $39.99 档」——定义修订后此图自动更新。空白带 $20–28 无无线竞品，依据 6 条快照。</p>
+            </div>
+          </div>
+
+          <div data-cview="table" hidden>
+            <div class="cmp-wrap">
+              <table class="cmp">
+                <thead><tr><th style="width:120px">指标</th><th>AstroAI CZK-3662</th><th>Fanttik X8 APEX</th><th>小米 Mijia 2</th><th class="col-warn">Baseus 超迷你 ⚠</th></tr></thead>
+                <tbody id="cmpBody"></tbody>
+              </table>
+            </div>
+            <p class="chart-note">⚠ Baseus 列为 2025 Q4 快照、不含税口径，与其他列不直接可比 — <b>需复核来源或范围</b>。宣传 / 实测 / 推断分别标注；未知保留空缺，不补猜值。</p>
+          </div>
+
+          <div data-cview="list" hidden>
+            <button class="obj"><span class="dot" style="background:var(--ok)"></span><span class="o-main"><span class="o-title">AstroAI CZK-3662 · 无线 150PSI</span><span class="o-meta">$29.99 · 北美/亚马逊 · v3 · 指标 8 项 · 2 认证</span></span></button>
+            <button class="obj"><span class="dot" style="background:var(--ok)"></span><span class="o-main"><span class="o-title">Fanttik X8 APEX · 无线 150PSI</span><span class="o-meta">$59.99 · 北美/亚马逊 · v2 · 指标 9 项</span></span></button>
+            <button class="obj"><span class="dot" style="background:var(--pending)"></span><span class="o-main"><span class="o-title">Baseus 超迷你 · 无线 120PSI</span><span class="o-meta">$25.99 · 口径待复核 · v1 · 指标 5 项</span></span><span class="o-act">去复核 →</span></button>
+          </div>
+        </div>
+
+        <!-- ---- 细分 ---- -->
+        <div data-pane="segment" hidden>
+          <div class="section-label">市场细分 · JTBD</div>
+          <button class="obj"><span class="dot" style="background:var(--applied)"></span><span class="o-main"><span class="o-title">夜间应急补气车主</span><span class="o-meta">JTBD：胎压报警后安全抵达维修点 · 未满足需求 4 项 · v2</span></span></button>
+          <button class="obj"><span class="dot" style="background:var(--applied)"></span><span class="o-main"><span class="o-title">户外露营多用途用户</span><span class="o-meta">JTBD：一套设备覆盖轮胎/床垫/桨板 · 未满足需求 6 项 · v1</span></span></button>
+          <div class="section-label">规模测算（区间 + 依据，不画假精确值）</div>
+          <div class="chart-box">
+            <div class="chart-title">全球车载充气泵市场规模 · 2026E（USD）</div>
+            <svg id="sizingChart" width="100%" viewBox="0 0 760 120" style="display:block; margin-top:6px"></svg>
+            <p class="chart-note">区间来自 2 条来源的并集口径；推导过程与假设版本可展开核对。</p>
+          </div>
+        </div>
+
+        <!-- ---- 机会·策略 ---- -->
+        <div data-pane="opportunity" hidden>
+          <div class="chart-box" style="margin-bottom:14px">
+            <div class="chart-title">机会评分四象限 · 重要度 ×（1 − 满意度）<span class="opts"><span class="badge b-stage">点大小 = 证据数</span></span></div>
+            <svg id="oppChart" width="100%" viewBox="0 0 760 300" style="display:block; margin-top:8px"></svg>
+            <p class="chart-note">评分由 AI 按来源数据预填并附换算依据；点击点定位到机会卡。左上 = 高重要度低满意度 = 优先探索。</p>
+          </div>
+          <div class="section-label">机会（最新版本）</div>
+          <button class="obj"><span class="dot" style="background:var(--accent)"></span><span class="o-main"><span class="o-title">夜间应急照明一体</span><span class="o-meta">探索中 · 评分 0.60 · 候选方案 3 · 证据 6</span></span><span class="o-act">查看方案 →</span></button>
+          <button class="obj"><span class="dot" style="background:var(--accent)"></span><span class="o-main"><span class="o-title">低温启动可靠性（-10°C）</span><span class="o-meta">比较中 · 评分 0.44 · 候选方案 3 · 实验 1 项待批准</span></span></button>
+          <button class="obj"><span class="dot" style="background:var(--applied)"></span><span class="o-main"><span class="o-title">应急启动电源复合机</span><span class="o-meta">探索中 · 评分 0.49 · 候选方案 2 · 还需 1 方案才能收敛</span></span></button>
+        </div>
+
+        <!-- ---- PRD·Spec ---- -->
+        <div data-pane="prd" hidden>
+          <div class="gate-bar">
+            <span class="gate-step done">✓ 草稿 v0.3</span><span class="gate-arrow">→</span>
+            <span class="gate-step on">专业协审中（2/3）</span><span class="gate-arrow">→</span>
+            <span class="gate-step">具名发布</span><span class="gate-arrow">→</span>
+            <span class="gate-step">导出规格书</span>
+            <span style="margin-left:auto; display:flex; gap:8px">
+              <button class="btn sm">导出预览</button>
+              <button class="btn sm primary" disabled>发布（待补齐 3 项）</button>
+            </span>
+          </div>
+          <div class="prd-grid">
+            <div class="prd-doc">
+              <h3>锂电池汽车充气泵 PRD</h3>
+              <p class="rev">修订 v0.3 · 引用策略「欧美车载应急 · 修订 2」· 负责人：张明</p>
+              <h5>目标用户</h5><p>欧美私家车主，夜间/长途应急补气场景优先；兼顾户外露营多用途。</p>
+              <h5>包含功能</h5><ul><li>无线锂电充气（轮胎/球类/床垫）</li><li>数显预设自动停止</li><li>应急 LED 照明 ≥200lm</li></ul>
+              <h5>排除功能</h5><ul><li>应急启动电源（归入机会 O4 单独评估）</li><li>App 连接 <span class="tbc">待确认</span></li></ul>
+              <h5>价格定位</h5><p>$39.99 档（引用词条「价格区间 $29.99–$59.99」）· 目标成本 <span class="tbc">待确认</span></p>
+              <h5>上市窗口</h5><p>2027 Q2，黑五备货前完成首批交付。</p>
+              <h5>成功指标</h5><p>上市 90 天：评分 ≥4.4 · 退货率 &lt;3% · 充气速度差评占比 &lt;5%。</p>
+            </div>
+            <div class="spec-table">
+              <div class="spec-row head"><span>编号</span><span>条目 / 目标</span><span>验证</span><span>状态</span></div>
+              <div id="specBody"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- 验证 ---- -->
+        <div data-pane="verify" hidden>
+          <div class="dim-grid">
+            <div class="dim"><h4>价值</h4><p class="d-stat"><b class="s-sup">1 支持</b> · 1 执行中</p></div>
+            <div class="dim"><h4>可用性</h4><p class="d-stat">1 草稿</p></div>
+            <div class="dim"><h4>商业可持续性</h4><p class="d-stat"><b class="s-sup">1 支持</b></p></div>
+            <div class="dim"><h4>技术可行性</h4><p class="d-stat"><b class="s-inc">1 待批准</b></p></div>
+          </div>
+          <button class="obj"><span class="dot" style="background:var(--pending)"></span><span class="o-main"><span class="o-title">低温（-10°C）启动成功率</span><span class="o-meta">技术可行性 · 成功判据：30 次启动 ≥97% · 样本依据 2 条</span></span><span class="o-act">待你批准 →</span></button>
+          <button class="obj"><span class="dot" style="background:var(--applied)"></span><span class="o-main"><span class="o-title">预设精度 ±1psi 用户感知</span><span class="o-meta">价值 · 执行中 · 目标 10/20</span></span></button>
+          <button class="obj"><span class="dot" style="background:var(--ok)"></span><span class="o-main"><span class="o-title">$44.99 定价接受度（Van Westendorp）</span><span class="o-meta">商业可持续性 · 已结束 · 支持假设 · 证据 4 条</span></span></button>
+        </div>
+
+      </section>
+    </div>
+    <p class="foot-note">设计要点：空间 → 产品主题 → 主题工作台三层导航；研究产出结构化词条（取值/口径/来源/状态）供对比表、价格带、机会评分与定义价格定位共同引用；AI 产物一律以候选卡出现，接受与应用分离；发布保持具名人工动作。视觉沿用 UI 基线 token。</p>
+  </div>
+</div>
+
+<!-- ============ 小Pai 抽屉 ============ -->
+<div class="drawer-mask" id="drawerMask"></div>
+<aside class="drawer" id="paiDrawer" aria-label="小Pai 对话">
+  <div class="dr-h">
+    <b style="font-size:13px">✦ 小Pai</b>
+    <span class="scope" id="paiScope">汽车用品空间 / 锂电池汽车充气泵</span>
+    <button class="btn ghost sm x" data-action="closePai">✕</button>
+  </div>
+  <div class="dr-b" id="paiBody">
+    <div class="msg mine"><div class="who">你 · 2 小时前</div><div class="bubble">帮我分析欧美无线锂电充气泵的竞品价格带</div></div>
+    <div class="msg"><div class="who">小Pai</div><div class="bubble">已绑定当前主题，从 23 条来源快照中选取 6 条同口径快照运行竞品分析。</div></div>
+    <div class="run-card" id="runCard">
+      <div class="run-step"><span>✓</span>选取来源快照（6/23，同口径：北美零售·含税）<span class="st">完成</span></div>
+      <div class="run-step"><span>✓</span>运行竞品分析 · 上下文摘要已固定<span class="st">完成</span></div>
+      <div class="run-step"><span>✓</span>产出候选 4 条，等待裁决<span class="st">完成 · 回执可核对</span></div>
+    </div>
+    <div id="paiCands"></div>
+  </div>
+  <div class="dr-in"><input placeholder="继续追问，或说明要补充的资料…"><button class="btn primary sm" id="paiSend">发送</button></div>
+</aside>
+
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+
+/* ---------- 主题 ---------- */
+$('#themeBtn').addEventListener('click', () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme !== 'dark';
+  root.dataset.theme = dark ? 'dark' : 'light';
+  $('#themeBtn').textContent = dark ? '亮色' : '暗色';
+  drawPrice(); drawOpp(); drawSizing();
+});
+
+/* ---------- 三层导航 ---------- */
+function go(screen, theme){
+  $$('[data-screen]').forEach(el => el.classList.toggle('active', el.dataset.screen === screen));
+  if (theme){ $('#themeName').textContent = theme; $('#themeTitle').textContent = theme; $('#paiScope').textContent = '汽车用品空间 / ' + theme; }
+  window.scrollTo({top:0});
+}
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if (g){ go(g.dataset.go, g.dataset.theme); return; }
+  const t = e.target.closest('[data-tabgo]');
+  if (t){ switchTab(t.dataset.tabgo); return; }
+});
+
+/* ---------- 主题工作台 tab ---------- */
+function switchTab(name){
+  $$('#themeTabs .tab').forEach(el => el.classList.toggle('active', el.dataset.tab === name));
+  $$('[data-pane]').forEach(el => el.hidden = el.dataset.pane !== name);
+}
+$$('#themeTabs .tab').forEach(el => el.addEventListener('click', () => switchTab(el.dataset.tab)));
+
+/* ---------- 候选卡 ---------- */
+const CANDS = [
+  { id:'c1', kind:'竞品', title:'AstroAI CZK-3631 · 无线 150PSI · $27.99', meta:'性质：宣传口径 · 北美/亚马逊 · 含税', src:'来源：商品页快照 · 2026-09-28 · 另 2 条' },
+  { id:'c2', kind:'竞品', title:'70mai TP05 · 有线 12V · 100PSI · $19.99', meta:'性质：宣传口径 · 北美/亚马逊', src:'来源：商品页快照 · 2026-09-27' },
+  { id:'c3', kind:'词条', title:'价格区间（无线锂电 · 北美零售）：$29.99 – $59.99', meta:'观察 · 口径：USD · 含税 · 2026 Q3', src:'来源：6 条快照并集 · 换算方法可核对' },
+  { id:'c4', kind:'机会', title:'夜间应急照明不足 — 评分 0.60（重要 0.85 × 满意 0.30）', meta:'候选方案 3 个已预填：一体照明 / 分体手电 / 投影指示', src:'来源：评论聚类 214 条 · 访谈 5 条' },
+];
+const candState = {};
+function candCard(c){
+  const st = candState[c.id];
+  if (st === 'accepted') return `<div class="cand accepted"><div class="c-top"><h4>${c.title}</h4></div><div class="c-state" style="margin-top:6px">✓ 已接受 · 待独立应用为正式${c.kind}记录</div></div>`;
+  if (st === 'ignored') return `<div class="cand ignored"><div class="c-top"><h4>${c.title}</h4></div><div class="c-state" style="margin-top:6px">已忽略 · 原因已记录审计</div></div>`;
+  return `<div class="cand" data-cand="${c.id}">
+    <div class="c-top"><span class="agent-tag">✦ AI 候选 · ${c.kind}</span><h4>${c.title}</h4></div>
+    <div class="c-meta">${c.meta}</div>
+    <div class="c-src">${c.src}<button data-src="${c.id}">查看依据</button></div>
+    <div class="c-actions">
+      <button class="btn sm primary" data-act="accept" data-id="${c.id}">接受</button>
+      <button class="btn sm" data-act="revise" data-id="${c.id}">修订后接受</button>
+      <button class="btn sm ghost" data-act="ignore" data-id="${c.id}">忽略</button>
+    </div>
+    <div class="reason-line" hidden><input placeholder="忽略原因（记录审计，必填）"><button class="btn sm" data-act="confirmIgnore" data-id="${c.id}">确认</button></div>
+  </div>`;
+}
+function renderCands(){
+  $('#candList').innerHTML = CANDS.map(c => candCard(c)).join('');
+  $('#paiCands').innerHTML = CANDS.slice(0,2).map(c => candCard(c)).join('');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const id = b.dataset.id, act = b.dataset.act;
+  const card = b.closest('.cand');
+  if (act === 'ignore'){ card.querySelector('.reason-line').hidden = false; return; }
+  if (act === 'confirmIgnore'){
+    const v = card.querySelector('.reason-line input').value.trim();
+    if (!v){ toast('请填写忽略原因'); return; }
+    candState[id] = 'ignored'; toast('已忽略，原因已记录'); renderCands(); return;
+  }
+  candState[id] = 'accepted';
+  toast(act === 'revise' ? '已打开修订（示例稿略去表单）并接受 · 待独立应用' : '已接受 · 待独立应用');
+  renderCands();
+});
+document.addEventListener('click', e => {
+  const s = e.target.closest('[data-src]');
+  if (s) toast('依据面板：来源快照原文 + 口径 + as_of（示例稿略）');
+});
+
+/* ---------- 词条 ---------- */
+const ENTRIES = [
+  { key:'价格区间 · 无线锂电 · 北美零售', value:'$29.99 – $59.99', calib:'USD · 含税 · 亚马逊 · 2026 Q3', kind:'观察', srcs:6, state:'ok', detail:'6 条商品页快照并集；区间端点为 AstroAI CZK-3662 与 Fanttik X8 APEX。' },
+  { key:'市场规模 · 全球车载充气泵 2026E', value:'$1.2B – $1.5B', calib:'推导 · 两来源并集口径', kind:'推导', srcs:2, state:'ok', detail:'推导链：两份行业报告口径对齐 → 并集；假设版本 v1.2。' },
+  { key:'认证要求 · 北美 / 欧盟', value:'UL 2743 · CE/RED · UN38.3', calib:'观察 · 法规原文快照', kind:'观察', srcs:4, state:'ok', detail:'UL 2743（便携电源包）、RED（含无线模块时）、UN38.3（锂电运输）。' },
+  { key:'用户首要痛点', value:'夜间应急照明不足', calib:'观察 · 评论聚类 214 条 + 访谈 5 条', kind:'观察', srcs:5, state:'challenged', detail:'⚠ 2 条新评论快照指向「气压显示精度」抱怨占比上升，与现值冲突，需复核。' },
+  { key:'充气速度基准', value:'0→35psi ≤ 6 min', calib:'195/65R15 · 观察 · 实测快照', kind:'观察', srcs:3, state:'ok', detail:'3 条实测视频快照，条件：室温 22°C、标准胎压监测。' },
+  { key:'头部玩家集中度', value:'CR5 ≈ 62%', calib:'推导 · 假设份额模型 v0.9', kind:'推导', srcs:2, state:'ok', detail:'基于亚马逊 BSR 前 100 归并品牌；置信度偏低，建议补渠道数据。' },
+];
+const kindBadge = { '观察':'b-ok', '推导':'b-applied', '假设':'b-pending' };
+$('#entryGrid').innerHTML = ENTRIES.map((en,i) => `
+  <div class="entry ${en.state === 'challenged' ? 'challenged' : ''}" data-entry="${i}">
+    <div class="e-key">${en.key}</div>
+    <div class="e-value">${en.value}</div>
+    <div class="e-calib">${en.calib}</div>
+    <div class="e-foot">
+      <span class="badge ${kindBadge[en.kind]}">${en.kind}</span>
+      <span>${en.srcs} 条来源</span>
+      ${en.state === 'challenged' ? '<span class="badge b-pending">⚠ 待复核</span>' : '<span style="color:var(--ok)">生效中</span>'}
+      <button style="margin-left:auto" data-esrc="${i}">来源</button>
+    </div>
+    <div class="e-src-detail">${en.detail}</div>
+  </div>`).join('');
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-esrc]');
+  if (b) b.closest('.entry').classList.toggle('open');
+});
+
+/* ---------- 竞品视图切换 ---------- */
+$$('#cmpToggle button').forEach(b => b.addEventListener('click', () => {
+  $$('#cmpToggle button').forEach(x => x.classList.toggle('on', x === b));
+  $$('[data-cview]').forEach(v => v.hidden = v.dataset.cview !== b.dataset.view);
+}));
+
+/* ---------- 对比表 ---------- */
+const CMP = [
+  { row:'价格 (USD·含税)', cells:[{v:'$29.99',n:'claimed'},{v:'$59.99',n:'claimed'},{v:'$39.99',n:'inferred'},{v:'$25.99 ⚠',n:'claimed',warn:true}] },
+  { row:'电池容量', cells:[{v:'4000mAh',n:'claimed'},{v:'3×2500mAh',n:'claimed'},{v:'2000mAh×2',n:'claimed'},{v:'6000mAh ⚠',n:'claimed',warn:true}] },
+  { row:'最大气压', cells:[{v:'150 PSI',n:'claimed'},{v:'150 PSI',n:'measured'},{v:'150 PSI',n:'claimed'},{v:'120 PSI',n:'claimed'}] },
+  { row:'0→35psi 充气时间', cells:[{v:'8 min',n:'measured'},{v:'5.5 min',n:'measured'},{v:'—',na:'未披露 · 保留空缺'},{v:'9 min ⚠',n:'inferred',warn:true}] },
+  { row:'应急照明', cells:[{v:'有 · 亮度未知',n:'claimed'},{v:'100 lm',n:'measured'},{v:'有 · 亮度未知',n:'claimed'},{v:'—',na:'无此功能'}] },
+  { row:'认证', cells:[{v:'UL · CE',n:'claimed'},{v:'UL · CE · UN38.3',n:'measured'},{v:'CE',n:'claimed'},{v:'—',na:'未知 · 保留空缺'}] },
+];
+const NLABEL = { claimed:'宣传', measured:'实测', inferred:'推断' };
+$('#cmpBody').innerHTML = CMP.map(r => `<tr><th>${r.row}</th>${r.cells.map(c =>
+  `<td class="${c.warn ? 'col-warn' : ''}">${c.na ? `<span class="na">${c.na}</span>` : `<span class="val">${c.v}</span><span class="nature n-${c.n}">${NLABEL[c.n]}</span>`}<div class="calib">${c.warn ? '口径不齐 · 2025Q4 · 不含税' : '快照 2026-09 · 悬浮看来源'}</div></td>`).join('')}</tr>`).join('');
+
+/* ---------- 图表工具 ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function el(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, str, attrs){ const t = el('text', Object.assign({x:x, y:y, 'font-size':10.5, fill:css('--text-2')}, attrs||{}), parent); t.textContent = str; return t; }
+const tip = $('#tip');
+function showTip(html, x, y){ tip.innerHTML = html; tip.style.display = 'block'; tip.style.left = Math.min(x + 12, window.innerWidth - 270) + 'px'; tip.style.top = (y + 12) + 'px'; }
+function hideTip(){ tip.style.display = 'none'; }
+document.addEventListener('mousemove', e => { if (!e.target.closest('[data-tip]')) hideTip(); });
+
+/* ---------- 价格区间图 ---------- */
+const PRICE = [
+  { name:'70mai TP05 · 有线', lo:18.99, hi:21.99, mid:19.99, nature:'宣传', src:'商品页快照 · 2026-09-27' },
+  { name:'Baseus 超迷你', lo:23.99, hi:27.99, mid:25.99, nature:'宣传', src:'快照 2025Q4 · ⚠口径待复核', warn:true },
+  { name:'AstroAI CZK-3662', lo:27.99, hi:32.99, mid:29.99, nature:'宣传', src:'商品页快照 · 2026-09-28' },
+  { name:'小米 Mijia 2', lo:36.99, hi:42.99, mid:39.99, nature:'推断', src:'跨境渠道换算 · 2026-09-25' },
+  { name:'Fanttik X8 APEX', lo:54.99, hi:64.99, mid:59.99, nature:'宣传/实测', src:'商品页 + 评测快照' },
+];
+function drawPrice(){
+  const svg = $('#priceChart'); svg.innerHTML = '';
+  const L = 150, R = 700, min = 10, max = 80, rowH = 36, top = 34;
+  const X = v => L + (v - min) / (max - min) * (R - L);
+  // 目标价格带（引用定义草案词条）
+  el('rect', { x:X(34.99), y:top - 16, width:X(44.99)-X(34.99), height:PRICE.length*rowH + 22, fill:css('--target-band'), rx:6 }, svg);
+  txt(svg, X(40), top - 21, '目标价格带 $34.99–44.99 · 引用定义草案', { 'text-anchor':'middle', 'font-size':10, fill:css('--accent'), 'font-weight':600 });
+  // 网格与刻度
+  [10,20,30,40,50,60,70,80].forEach(v => {
+    el('line', { x1:X(v), y1:top-10, x2:X(v), y2:top + PRICE.length*rowH + 6, stroke:css('--chart-grid') }, svg);
+    txt(svg, X(v), top + PRICE.length*rowH + 22, '$' + v, { 'text-anchor':'middle', fill:css('--text-3') });
+  });
+  // 空白机会带
+  el('rect', { x:X(20), y:top + PRICE.length*rowH + 2, width:X(28)-X(20), height:3, fill:css('--ok'), rx:2, opacity:.7 }, svg);
+  txt(svg, X(24), top + PRICE.length*rowH + 38, '空白带 $20–28（无线竞品缺位）', { 'text-anchor':'middle', 'font-size':9.5, fill:css('--ok') });
+  PRICE.forEach((p, i) => {
+    const y = top + i * rowH + 8;
+    txt(svg, L - 10, y + 4, p.name, { 'text-anchor':'end', 'font-size':11, fill:css('--text'), 'font-weight':550 });
+    const band = el('rect', { x:X(p.lo), y:y-5, width:Math.max(X(p.hi)-X(p.lo), 6), height:10, rx:5, fill:css('--accent-soft'), stroke:p.warn ? css('--pending') : css('--accent'), 'stroke-width':1, 'data-tip':1 }, svg);
+    el('circle', { cx:X(p.mid), cy:y, r:3.4, fill:p.warn ? css('--pending') : css('--accent'), 'data-tip':1 }, svg);
+    txt(svg, X(p.hi) + 8, y + 4, '$' + p.mid, { 'font-size':10, fill:css('--text-2') });
+    band.addEventListener('mousemove', e =>
+      showTip(`<div class="tt">${p.name} · $${p.mid}</div>区间 $${p.lo}–$${p.hi} · ${p.nature}<div class="ts">${p.src}</div>`, e.clientX, e.clientY));
+  });
+}
+
+/* ---------- 机会四象限 ---------- */
+const OPP = [
+  { name:'夜间应急照明一体', imp:.85, sat:.30, ev:6, state:'探索中' },
+  { name:'低温启动可靠性', imp:.80, sat:.45, ev:4, state:'比较中' },
+  { name:'数显预设自动停止', imp:.60, sat:.55, ev:5, state:'比较中' },
+  { name:'应急启动电源复合', imp:.75, sat:.35, ev:3, state:'探索中' },
+  { name:'快充协议兼容', imp:.40, sat:.60, ev:2, state:'暂缓' },
+];
+function drawOpp(){
+  const svg = $('#oppChart'); svg.innerHTML = '';
+  const L = 46, R = 730, T = 18, B = 262;
+  const X = v => L + v * (R - L), Y = v => B - v * (B - T);
+  el('rect', { x:L, y:T, width:R-L, height:B-T, fill:'none', stroke:css('--border') }, svg);
+  [.25,.5,.75].forEach(v => {
+    el('line', { x1:X(v), y1:T, x2:X(v), y2:B, stroke:css('--chart-grid') }, svg);
+    el('line', { x1:L, y1:Y(v), x2:R, y2:Y(v), stroke:css('--chart-grid') }, svg);
+  });
+  el('line', { x1:X(.5), y1:T, x2:X(.5), y2:B, stroke:css('--text-3'), 'stroke-dasharray':'4 4' }, svg);
+  el('line', { x1:L, y1:Y(.5), x2:R, y2:Y(.5), stroke:css('--text-3'), 'stroke-dasharray':'4 4' }, svg);
+  txt(svg, R, B + 20, '满意度 →', { 'text-anchor':'end', fill:css('--text-3') });
+  txt(svg, L + 4, T + 4, '重要度 ↑', { 'text-anchor':'start', fill:css('--text-3') });
+  txt(svg, X(.13), Y(.965), '优先探索区', { 'text-anchor':'middle', 'font-size':10, fill:css('--accent'), 'font-weight':600 });
+  OPP.forEach(o => {
+    const cx = X(o.sat), cy = Y(o.imp), r = 5 + o.ev * 1.4;
+    const c = el('circle', { cx:cx, cy:cy, r:r, fill:css('--accent-soft'), stroke:css('--accent'), 'stroke-width':1.4, 'data-tip':1, style:'cursor:pointer', opacity: o.state === '暂缓' ? .45 : 1 }, svg);
+    const below = o.name === '应急启动电源复合';
+    txt(svg, cx, below ? cy + r + 13 : cy - r - 5, o.name, { 'text-anchor':'middle', 'font-size':10.5, fill:css('--text'), 'font-weight':550 });
+    c.addEventListener('mousemove', e =>
+      showTip(`<div class="tt">${o.name}</div>评分 ${(o.imp*(1-o.sat)).toFixed(2)} = 重要 ${o.imp} ×（1 − 满意 ${o.sat}）<div class="ts">${o.state} · 证据 ${o.ev} 条 · 点击定位机会卡</div>`, e.clientX, e.clientY));
+    c.addEventListener('click', () => toast('定位到机会卡（示例稿略）'));
+  });
+}
+
+/* ---------- 规模测算区间图 ---------- */
+function drawSizing(){
+  const svg = $('#sizingChart'); svg.innerHTML = '';
+  const L = 190, R = 700, min = 0.6, max = 1.8, y1 = 40, y2 = 70;
+  const X = v => L + (v - min) / (max - min) * (R - L);
+  [0.6,0.9,1.2,1.5,1.8].forEach(v => { el('line', { x1:X(v), y1:26, x2:X(v), y2:86, stroke:css('--chart-grid') }, svg); txt(svg, X(v), 102, '$' + v + 'B', { 'text-anchor':'middle', fill:css('--text-3') }); });
+  txt(svg, L - 10, y1 + 4, '行业报告 A（2025）', { 'text-anchor':'end', 'font-size':11, fill:css('--text') });
+  el('rect', { x:X(1.05), y:y1-5, width:X(1.35)-X(1.05), height:10, rx:5, fill:css('--surface-2'), stroke:css('--border') }, svg);
+  txt(svg, L - 10, y2 + 4, '行业报告 B（2026）', { 'text-anchor':'end', 'font-size':11, fill:css('--text') });
+  el('rect', { x:X(1.2), y:y2-5, width:X(1.5)-X(1.2), height:10, rx:5, fill:css('--surface-2'), stroke:css('--border') }, svg);
+  el('rect', { x:X(1.2), y:30, width:X(1.35)-X(1.2), height:52, fill:css('--target-band'), rx:4 }, svg);
+  txt(svg, X(1.275), 20, '并集口径 $1.2–1.5B · 词条生效值', { 'text-anchor':'middle', 'font-size':10, fill:css('--accent'), 'font-weight':600 });
+}
+
+/* ---------- Spec 表 ---------- */
+const SPEC = [
+  ['PS-001','最大气压','150 PSI ±3%','实测报告 TM-11','ok','已确认'],
+  ['PS-002','电池容量','6000mAh','UN38.3 + 实测','ok','已确认'],
+  ['PS-003','充气速度','0→35psi ≤6min','实测 · 室温22°C','ok','已确认'],
+  ['PS-004','工作温度','-20 ~ 60°C','缺验证方法','pending','待确认'],
+  ['PS-005','防护等级','IPX4','缺工况条件','pending','待确认'],
+  ['PS-006','数显精度','±1 PSI','比对计量泵 · DVT','applied','协审中'],
+  ['PS-007','应急照明','≥200 lm · 8h','缺验证方法','pending','待确认'],
+];
+$('#specBody').innerHTML = SPEC.map(s => `
+  <div class="spec-row">
+    <span class="k">${s[0]}</span>
+    <span><span class="t">${s[1]}</span> · <span class="tg">${s[2]}</span>${s[4]==='pending' ? `<div class="miss">⚠ ${s[3]}</div>` : ''}</span>
+    <span style="font-size:11px;color:var(--text-2)">${s[4]==='pending'?'—':s[3]}</span>
+    <span class="badge b-${s[4]}">${s[5]}</span>
+  </div>`).join('');
+
+/* ---------- 小Pai 抽屉 ---------- */
+function openPai(){ $('#paiDrawer').classList.add('open'); $('#drawerMask').classList.add('open'); }
+function closePai(){ $('#paiDrawer').classList.remove('open'); $('#drawerMask').classList.remove('open'); }
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-action="openPai"]')) openPai();
+  if (e.target.closest('[data-action="closePai"]')) closePai();
+});
+$('#drawerMask').addEventListener('click', closePai);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePai(); });
+$('#paiSend').addEventListener('click', () => toast('示例稿不真正运行；实际走受控运行链'));
+
+/* ---------- toast ---------- */
+let toastTimer;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ---------- 初始化 ---------- */
+renderCands(); drawPrice(); drawOpp(); drawSizing();
+})();
+</script>
+</body>
+</html>

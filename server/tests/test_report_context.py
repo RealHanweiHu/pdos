@@ -27,6 +27,7 @@ from tests.test_test_report_import_api import isolated_import_database as isolat
     "fault", ["before_meter", "after_response", "missing_manifest", "history", "lease_expired"]
 )
 def test_report_context_failure_never_creates_import_batch(
+    request: pytest.FixtureRequest,
     api_context: tuple[TestClient, FakeGateway],
     isolated_import_database: str,
     tmp_path: Path,
@@ -39,7 +40,11 @@ def test_report_context_failure_never_creates_import_batch(
         ids = scope.seed()
         headers = bearer_headers(client)
         _, calls, _ = api_factory.factory(
-            scope.engine, tmp_path, monkeypatch, output=MAPPING.model_dump(mode="json")
+            scope.engine,
+            tmp_path,
+            monkeypatch,
+            request=request,
+            output=MAPPING.model_dump(mode="json"),
         )
 
         def change() -> None:

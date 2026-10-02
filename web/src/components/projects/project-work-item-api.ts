@@ -3,6 +3,7 @@ import { isRecord, responseBody } from "@/components/workspace-api";
 import type {
   IssueCreateInput,
   IssueStatus,
+  MaterialClosureReference,
   ProjectIssue,
   ProjectRisk,
   ProjectTask,
@@ -63,13 +64,30 @@ export function isProjectTask(value: unknown): value is ProjectTask {
   );
 }
 
+function hasValidIssueCreator(value: Record<string, unknown>): boolean {
+  const principal = value.created_by_ai_principal_id;
+  const name = value.ai_writer_name;
+  if (name !== undefined && name !== null && (typeof name !== "string" || !name.trim())) return false;
+  if (principal === undefined || principal === null) {
+    return typeof value.reported_by_user_id === "string" && !!value.reported_by_user_id.trim() && (name === undefined || name === null);
+  }
+  return typeof principal === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(principal) && value.reported_by_user_id === null;
+}
+
+function hasValidIssueWithdrawal(value: Record<string, unknown>): boolean {
+  if (value.withdrawn_at == null && value.ai_withdrawal_id == null) return true;
+  return typeof value.withdrawn_at === "string" && Number.isFinite(Date.parse(value.withdrawn_at)) &&
+    typeof value.ai_withdrawal_id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.ai_withdrawal_id) && typeof value.created_by_ai_principal_id === "string";
+}
+
 export function isProjectIssue(value: unknown): value is ProjectIssue {
   if (!isRecord(value) || !isCommonWorkItem(value)) return false;
   return (
     isNullableString(value.stage_id) &&
     isNullableString(value.owner_user_id) &&
     isNullableString(value.verifier_user_id) &&
-    typeof value.reported_by_user_id === "string" &&
+    hasValidIssueCreator(value) &&
+    hasValidIssueWithdrawal(value) &&
     issueTypes.includes(value.issue_type as (typeof issueTypes)[number]) &&
     issueStatuses.includes(value.status as (typeof issueStatuses)[number]) &&
     priorities.includes(value.severity as (typeof priorities)[number]) &&
@@ -132,8 +150,15 @@ async function errorMessage(response: Response): Promise<string> {
   return `Work-item request failed (${response.status})`;
 }
 
+export class WorkItemRequestError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = "WorkItemRequestError";
+  }
+}
+
 async function readItem<T>(response: Response, guard: (value: unknown) => value is T, label: string) {
-  if (!response.ok) throw new Error(await errorMessage(response));
+  if (!response.ok) throw new WorkItemRequestError(await errorMessage(response), response.status);
   const body = await responseBody(response);
   if (!guard(body)) throw new Error(`invalid ${label} response`);
   return body;
@@ -216,6 +241,8 @@ export async function transitionTask(projectId: string, taskId: string, input: T
 export type IssueTransitionExtra = {
   comment?: string;
   closure_evidence_ref?: string;
+  expected_updated_at?: string;
+  material_closures?: MaterialClosureReference[];
 };
 
 export async function transitionIssue(

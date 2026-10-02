@@ -10,6 +10,7 @@ from app.api.auth import current_context, no_store
 from app.auth.repository import AuthContext
 from app.db.engine import get_engine
 from app.domain import living_fmea as service
+from app.domain.fmea_design_rules import Draft as DesignRuleDraft
 from app.domain.product_workspace import ProductWorkError
 
 router = APIRouter(prefix="/api/projects/{project_id}/quality/fmea", tags=["quality"])
@@ -105,5 +106,36 @@ def publish(
     no_store(response)
     try:
         return service.publish(engine, context, project_id, entry_id, body)
+    except Exception as exc:
+        raise error(exc) from exc
+
+
+@router.get("/{entry_id}/design-rules")
+def design_rules(
+    project_id: UUID, entry_id: UUID, response: Response, context: Context, engine: Database
+) -> dict[str, Any]:
+    from app.domain.fmea_design_rules import read
+
+    no_store(response)
+    try:
+        return read(engine, context, project_id, entry_id)
+    except Exception as exc:
+        raise error(exc) from exc
+
+
+@router.post("/{entry_id}/design-rules")
+def create_design_rule(
+    project_id: UUID,
+    entry_id: UUID,
+    body: DesignRuleDraft,
+    response: Response,
+    context: Context,
+    engine: Database,
+) -> dict[str, Any]:
+    from app.domain.fmea_design_rules import create
+
+    no_store(response)
+    try:
+        return create(engine, context, project_id, entry_id, body)
     except Exception as exc:
         raise error(exc) from exc

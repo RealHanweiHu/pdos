@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { requestIdentity } from "@/components/workspace-api";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
@@ -117,11 +118,12 @@ export function AccountSecurity() {
 
   return (
     <WorkspaceShell
-      active="account-security"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={() => void logout()}
     >
+      <SettingsNav current="account-security" identity={identity}>
       <div className="mx-auto max-w-2xl">
         <p className="font-mono text-xs font-semibold tracking-[0.18em] text-primary">ACCOUNT SECURITY</p>
         {changed ? (
@@ -189,6 +191,7 @@ export function AccountSecurity() {
           </>
         )}
       </div>
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

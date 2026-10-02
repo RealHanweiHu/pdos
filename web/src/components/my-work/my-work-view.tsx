@@ -323,6 +323,7 @@ export function MyWorkView({
             {firedNotifications.map((notification) => (
                 <li className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5" key={notification.id}>
                   <span className="min-w-0 flex-1 truncate text-sm">{notification.title}</span>
+                  {notification.policy_key.startsWith("xiaopai_") && <a className="text-sm text-primary underline" href={`/ask?project=${notification.project.id}`}>回复小Pai与查看跟进</a>}
                   {notification.target_entity === "meeting" && <a className="text-sm text-primary underline" href={`/projects?project=${notification.project.id}&tab=decisions&meeting=${notification.target_entity_id}`}>查看会议当前安排</a>}
                   {notification.target_entity === "change_discussion" && <Button type="button" size="sm" variant="outline" onClick={() => setDiscussionFocus({ projectId: notification.project.id, runId: notification.target_entity_id })}>查看讨论与摘要</Button>}
                   <span className="rounded-lg bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground">

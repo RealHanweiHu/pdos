@@ -6,7 +6,7 @@ from builtins import list as BuiltinList
 from typing import Any
 from uuid import UUID, uuid4, uuid5
 
-from sqlalchemy import Connection, Engine, func, select
+from sqlalchemy import Connection, Engine, func, or_, select
 
 from app.ai.application_gateway import ApplicationModelGateway
 from app.auth.repository import AuthContext, AuthRepository
@@ -66,6 +66,9 @@ class ConversationService:
         KnowledgeCorrectionService._authorize(
             c, context.tenant.id, context.user.id, project_id, Action.PROJECT_VIEW
         )
+        KnowledgeCorrectionService._authorize(
+            c, context.tenant.id, context.user.id, project_id, Action.WORK_ITEM_VIEW
+        )
         if meeting_id is not None:
             KnowledgeCorrectionService._authorize(
                 c, context.tenant.id, context.user.id, project_id, Action.MEETING_VIEW
@@ -103,26 +106,57 @@ class ConversationService:
     ) -> Any:
         query = select(tables.conversations).where(
             tables.conversations.c.tenant_id == context.tenant.id,
-            tables.conversations.c.created_by_user_id == context.user.id,
+            or_(
+                tables.conversations.c.created_by_user_id == context.user.id,
+                tables.conversations.c.visibility == "project",
+            ),
             tables.conversations.c.id == conversation_id,
         )
         row = c.execute(query.with_for_update() if lock else query).mappings().one_or_none()
         if row is None:
-            raise ConversationAccessError("会话不存在或不属于本人")
-        self._authorize(c, context, row["project_id"], row["meeting_id"])
+            raise ConversationAccessError("会话不存在或当前无权访问")
+        if row["scope_kind"] == "project":
+            self._authorize(c, context, row["project_id"], row["meeting_id"])
+        else:
+            from app.domain.conversation_product_work import authorize_private
+
+            if row["created_by_user_id"] != context.user.id or row["visibility"] != "private":
+                raise ConversationAccessError("私人工作会话仅供创建者读取")
+            authorize_private(c, context, row)
         return row
 
     def create(
         self,
         *,
         context: AuthContext,
-        project_id: UUID,
         request_id: UUID,
+        project_id: UUID | None = None,
         meeting_id: UUID | None = None,
+        visibility: str = "private",
+        scope_kind: str = "project",
+        market_space_id: UUID | None = None,
+        product_line_id: UUID | None = None,
     ) -> dict[str, Any]:
+        from app.domain.conversation_product_work import ConversationScope, authorize_private
+
+        scope = ConversationScope.model_validate(
+            dict(
+                scope_kind=scope_kind,
+                project_id=project_id,
+                meeting_id=meeting_id,
+                market_space_id=market_space_id,
+                product_line_id=product_line_id,
+                visibility=visibility,
+            )
+        ).model_dump()
+        if visibility == "project" and meeting_id is not None:
+            raise ConversationError("项目共享会话请从项目入口创建")
         with self.engine.begin() as c:
-            self._authorize(c, context, project_id, meeting_id)
-            # Stable caller request yields one identity, including uncertain HTTP responses.
+            if scope_kind == "project":
+                assert project_id is not None
+                self._authorize(c, context, project_id, meeting_id)
+            else:
+                authorize_private(c, context, scope)
             conversation_id = uuid5(context.user.id, "conversation:" + str(request_id))
             existing = (
                 c.execute(
@@ -135,7 +169,7 @@ class ConversationService:
                 .one_or_none()
             )
             if existing:
-                if existing["project_id"] != project_id or existing["meeting_id"] != meeting_id:
+                if any(existing[k] != v for k, v in scope.items()):
                     raise ConversationError("本请求已用于其他会话范围")
                 return _plain(dict(existing))
             from sqlalchemy.dialects.postgresql import insert
@@ -145,41 +179,75 @@ class ConversationService:
                 .values(
                     id=conversation_id,
                     tenant_id=context.tenant.id,
-                    project_id=project_id,
-                    meeting_id=meeting_id,
+                    **scope,
                     created_by_user_id=context.user.id,
-                    title="会议会话" if meeting_id else "项目会话",
+                    title=("会议会话" if meeting_id else "项目会话")
+                    if scope_kind == "project"
+                    else "个人工作会话",
                     context_version=1,
                     next_sequence=1,
                 )
                 .on_conflict_do_nothing(index_elements=[tables.conversations.c.id])
             )
             row = self._conversation(c, context, conversation_id)
-            if row["project_id"] != project_id or row["meeting_id"] != meeting_id:
+            if any(row[k] != v for k, v in scope.items()):
                 raise ConversationError("本请求已用于其他会话范围")
             return _plain(dict(row))
 
     def list(
-        self, *, context: AuthContext, project_id: UUID, meeting_id: UUID | None = None
+        self,
+        *,
+        context: AuthContext,
+        project_id: UUID | None = None,
+        meeting_id: UUID | None = None,
+        scope_kind: str = "project",
+        market_space_id: UUID | None = None,
+        product_line_id: UUID | None = None,
     ) -> list[dict[str, Any]]:
+        from app.domain.conversation_product_work import ConversationScope, authorize_private
+
+        scope = ConversationScope.model_validate(
+            dict(
+                scope_kind=scope_kind,
+                project_id=project_id,
+                meeting_id=meeting_id,
+                market_space_id=market_space_id,
+                product_line_id=product_line_id,
+            )
+        ).model_dump()
         with self.engine.connect() as c:
-            self._authorize(c, context, project_id, meeting_id)
-            return [
-                _plain(dict(row))
-                for row in c.execute(
-                    select(tables.conversations)
-                    .where(
-                        tables.conversations.c.tenant_id == context.tenant.id,
+            if scope_kind == "project":
+                assert project_id is not None
+                self._authorize(c, context, project_id, meeting_id)
+            else:
+                authorize_private(c, context, scope)
+            query = (
+                select(tables.conversations)
+                .where(
+                    tables.conversations.c.tenant_id == context.tenant.id,
+                    or_(
                         tables.conversations.c.created_by_user_id == context.user.id,
-                        tables.conversations.c.project_id == project_id,
-                        tables.conversations.c.meeting_id == meeting_id,
+                        tables.conversations.c.visibility == "project",
                     )
-                    .order_by(
-                        tables.conversations.c.updated_at.desc(), tables.conversations.c.id.desc()
-                    )
-                    .limit(50)
-                ).mappings()
-            ]
+                    if scope_kind == "project"
+                    else tables.conversations.c.created_by_user_id == context.user.id,
+                    *[
+                        tables.conversations.c[k] == scope[k]
+                        for k in (
+                            "scope_kind",
+                            "project_id",
+                            "meeting_id",
+                            "market_space_id",
+                            "product_line_id",
+                        )
+                    ],
+                )
+                .order_by(
+                    tables.conversations.c.updated_at.desc(), tables.conversations.c.id.desc()
+                )
+                .limit(50)
+            )
+            return [_plain(dict(row)) for row in c.execute(query).mappings()]
 
     def save_message(
         self,
@@ -194,6 +262,7 @@ class ConversationService:
         expected_digest: str | None = None,
         expected_minutes_version: int | None = None,
         attachment_ids: tuple[UUID, ...] = (),
+        attachment_selections: BuiltinList[dict[str, Any]] | None = None,
         ecr_id: UUID | None = None,
         impact_depth: int | None = None,
         allow_discussion: bool = False,
@@ -202,6 +271,8 @@ class ConversationService:
         quality_selections: BuiltinList[dict[str, Any]] | None = None,
         object_focus: dict[str, Any] | None = None,
         meeting_planning_brief_id: UUID | None = None,
+        product_sources: BuiltinList[dict[str, Any]] | None = None,
+        matrix_selection: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         body = body.strip()
         if action not in ACTIONS or not 1 <= len(body) <= 2000:
@@ -211,6 +282,47 @@ class ConversationService:
             c.begin(),
         ):
             conversation = self._conversation(c, context, conversation_id, lock=True)
+            if conversation["scope_kind"] != "project":
+                from app.domain.conversation_product_work import save
+
+                if (
+                    action != "note"
+                    or any(
+                        v is not None
+                        for v in (
+                            transcript_id,
+                            expected_digest,
+                            expected_minutes_version,
+                            ecr_id,
+                            impact_depth,
+                            ncr_id,
+                            quality_selections,
+                            object_focus,
+                            meeting_planning_brief_id,
+                        )
+                    )
+                    or allow_discussion
+                    or include_supplier_notices
+                ):
+                    raise ConversationError("私人产品会话不使用项目或会议办理参数")
+                return save(
+                    c,
+                    context,
+                    conversation,
+                    request_id=request_id,
+                    expected_context_version=expected_context_version,
+                    body=body,
+                    attachment_ids=attachment_ids,
+                    attachment_selections=attachment_selections,
+                    product_sources=product_sources or [],
+                    matrix_selection=matrix_selection,
+                )
+            if product_sources or matrix_selection is not None or attachment_selections is not None:
+                raise ConversationError("项目会话不混用产品研究来源")
+            if conversation["visibility"] == "project" and action not in {"note", "project_query"}:
+                raise ConversationError(
+                    "专业办理请从原业务页面继续；共享会话支持项目问答和补充资料"
+                )
             signature = digest(
                 _plain(
                     dict(
@@ -254,7 +366,7 @@ class ConversationService:
                 .one_or_none()
             )
             if old is not None:
-                if old["request_digest"] != signature:
+                if old["request_digest"] != signature or old["author_user_id"] != context.user.id:
                     raise ConversationError("本消息号已提交不同内容，请核对原回执")
                 if old.get("object_focus"):
                     fixed = old["object_focus"]
@@ -418,7 +530,10 @@ class ConversationService:
             )
             history = []
             for prior in reversed(earlier):
-                history.append("用户说明：" + prior["body"])
+                history.append(
+                    f"成员 {prior['author_user_id']} 的说明（不构成当前操作者授权）："
+                    + prior["body"]
+                )
             dispatch_input = (
                 (
                     "最近会话记录（仅供理解请求，不是本轮事实依据）：\n"
@@ -494,7 +609,7 @@ class ConversationService:
                 select(tables.agent_runs).where(
                     tables.agent_runs.c.tenant_id == context.tenant.id,
                     tables.agent_runs.c.project_id == message["project_id"],
-                    tables.agent_runs.c.requested_by_user_id == context.user.id,
+                    tables.agent_runs.c.requested_by_user_id == message["author_user_id"],
                     tables.agent_runs.c.agent_key
                     == (
                         "ai_chat"
@@ -570,11 +685,9 @@ class ConversationService:
                 raise ConversationError("原请求与保存消息不一致，请核对回执")
         return run
 
-    def dispatch(
+    def _dispatch_inputs(
         self, *, context: AuthContext, conversation_id: UUID, message_id: UUID
-    ) -> dict[str, Any]:
-        if self.gateway is None:
-            raise ConversationError("本次未配置运行服务")
+    ) -> tuple[Any, Any, tuple[UUID, ...]]:
         with self.engine.connect() as c:
             conversation = self._conversation(c, context, conversation_id)
             message = (
@@ -588,13 +701,73 @@ class ConversationService:
                 .mappings()
                 .one_or_none()
             )
-            if message is None:
-                raise ConversationAccessError("消息不属于本会话")
+            if message is None or message["author_user_id"] != context.user.id:
+                raise ConversationAccessError("只能运行本人提交的消息")
             attachment_ids = self._attachment_ids(c, context, message_id)
             if conversation["archived_at"] is not None:
                 raise ConversationError("已归档会话不能继续运行")
+        return conversation, message, attachment_ids
+
+    @staticmethod
+    def _saved_note(
+        conversation: Any, message: Any, attachment_ids: tuple[UUID, ...]
+    ) -> dict[str, Any] | None:
         if message["action"] == "note":
+            if conversation["scope_kind"] != "project":
+                from app.domain.conversation_product_work import guidance_for
+
+                return {
+                    "status": "saved",
+                    "guidance": guidance_for(
+                        message["body"], conversation, attachment_ids=attachment_ids
+                    ),
+                }
             return {"status": "saved"}
+        return None
+
+    def saved_note_for_dispatch(
+        self, *, context: AuthContext, conversation_id: UUID, message_id: UUID
+    ) -> dict[str, Any] | None:
+        return self._saved_note(
+            *self._dispatch_inputs(
+                context=context, conversation_id=conversation_id, message_id=message_id
+            )
+        )
+
+    def dispatch(
+        self, *, context: AuthContext, conversation_id: UUID, message_id: UUID
+    ) -> dict[str, Any]:
+        conversation, message, attachment_ids = self._dispatch_inputs(
+            context=context, conversation_id=conversation_id, message_id=message_id
+        )
+        saved_note = self._saved_note(conversation, message, attachment_ids)
+        if saved_note is not None:
+            return saved_note
+        if self.gateway is None:
+            raise ConversationError("本次未配置运行服务")
+        if conversation["scope_kind"] != "project":
+            from app.ai.product_matrix_runs import ProductMatrixRuns
+            from app.ai.product_work_runs import ProductWorkRuns
+            from app.domain.conversation_product_work import (
+                is_matrix,
+                product_run,
+                run_request,
+            )
+
+            with self.engine.connect() as c:
+                self._conversation(c, context, conversation_id)
+                product_run(c, context, conversation, message)
+            if is_matrix(message["product_work_request"]):
+                return ProductMatrixRuns(self.engine, gateway=self.gateway).create(
+                    context=context,
+                    space_id=conversation["market_space_id"],
+                    request=run_request(message),
+                ) | {"runtime": "product_matrix"}
+            return ProductWorkRuns(self.engine, gateway=self.gateway).create(
+                context=context,
+                space_id=conversation["market_space_id"],
+                request=run_request(message),
+            ) | {"runtime": "product_work"}
         if message["action"] == "project_query":
             from app.ai.chat_queue import ChatQueue
             from app.domain.conversation_attachments import attachment_evidence
@@ -695,6 +868,10 @@ class ConversationService:
             c.begin(),
         ):
             conversation = self._conversation(c, context, conversation_id)
+            if conversation["scope_kind"] != "project":
+                from app.domain.conversation_product_work import get
+
+                return get(c, context, conversation, before_sequence)
             query = select(tables.conversation_messages).where(
                 tables.conversation_messages.c.tenant_id == context.tenant.id,
                 tables.conversation_messages.c.conversation_id == conversation_id,
@@ -838,7 +1015,12 @@ class ConversationService:
                     from app.ai.chat import read_chat_result
 
                     receipt["result"] = read_chat_result(
-                        self.engine, context=context, row=run
+                        self.engine,
+                        context=context,
+                        row=run,
+                        shared_message_id=message["id"]
+                        if conversation["visibility"] == "project"
+                        else None,
                     ).model_dump(mode="json")
                 elif message["action"] == "meeting_planning":
                     receipt = planning_receipts[message["id"]]
@@ -867,6 +1049,7 @@ class ConversationService:
                 {
                     "id": str(message["id"]),
                     "sequence": message["sequence"],
+                    "author_user_id": str(message["author_user_id"]),
                     "body": message["body"],
                     "action": message["action"],
                     "created_at": message["created_at"],
@@ -922,6 +1105,8 @@ class ConversationService:
     ) -> dict[str, Any]:
         with self.engine.begin() as c:
             row = self._conversation(c, context, conversation_id, lock=True)
+            if row["created_by_user_id"] != context.user.id:
+                raise ConversationAccessError("仅会话创建者可归档或恢复")
             c.execute(
                 tables.conversations.update()
                 .where(tables.conversations.c.id == row["id"])

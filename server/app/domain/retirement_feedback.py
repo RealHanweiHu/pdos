@@ -10,6 +10,7 @@ from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.contracts.common_objects import Contract, Digest, SourceRef, Text
 from app.db.schema import tables
+from app.domain.definition_inheritance import expand_definition
 from app.domain.experiment_feedback import TargetKind, field_values
 from app.domain.product_catalog import _node_row
 from app.domain.product_evidence import evidence_quality
@@ -144,7 +145,7 @@ def prepared(
         )
         if d is None:
             raise ProductWorkError("定义须属于原退市对象，并在该次退市前已发布")
-        linked["definition"] = _plain(d)
+        linked["definition"] = _plain(expand_definition(c, d))
         for kind, table, identity in (("strategy", tables.product_strategies, d["strategy_id"]),):
             row = (
                 c.execute(

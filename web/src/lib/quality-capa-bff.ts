@@ -31,8 +31,8 @@ function allowedPath(method: "GET" | "POST", segments: string[]) {
   }
   if (segments[0] === "fmea") {
     return method === "GET"
-      ? segments.length === 1 || segments.length === 2 && (["sources", "coverage"].includes(segments[1]) || isUuid(segments[1]))
-      : segments.length === 2 && segments[1] === "versions" || segments.length === 3 && isUuid(segments[1]) && segments[2] === "publish";
+      ? segments.length === 1 || segments.length === 2 && (["sources", "coverage"].includes(segments[1]) || isUuid(segments[1])) || segments.length === 3 && isUuid(segments[1]) && segments[2] === "design-rules"
+      : segments.length === 2 && segments[1] === "versions" || segments.length === 3 && isUuid(segments[1]) && ["publish", "design-rules"].includes(segments[2]);
   }
   if (method === "GET") {
     return (

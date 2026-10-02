@@ -1,5 +1,6 @@
 "use client";
 import { RetirementFeedback } from "./retirement-feedback";
+import { ProductMasterReferences } from "./product-master-references";
 import { WorkResponsibility } from "./work-responsibility";
 
 import { useRef, useState, type ReactNode } from "react";
@@ -14,9 +15,10 @@ const accessLabels: Record<string, string> = { viewer: "只读", contributor: "�
 const lines = (value: FormDataEntryValue | null) => String(value ?? "").split("\n").map((item) => item.trim()).filter(Boolean);
 type Act = (work: () => Promise<unknown>) => Promise<void>;
 
-export function ProductTree({ catalog, workspace, base, busy, act, refresh, onResponsibilityLock, evidence = [] }: { evidence?: Evidence[]; catalog: ProductCatalog; workspace: Workspace; base: string; busy: boolean; act: Act; refresh: () => Promise<void>; onResponsibilityLock: (value: boolean) => void }) {
+export function ProductTree({ catalog, workspace, base, busy, act, refresh, onResponsibilityLock, onMasterPendingChange, onAuthorityLost, evidence = [] }: { onMasterPendingChange?: (pending: boolean) => void; onAuthorityLost?: (message: string) => void; evidence?: Evidence[]; catalog: ProductCatalog; workspace: Workspace; base: string; busy: boolean; act: Act; refresh: () => Promise<void>; onResponsibilityLock: (value: boolean) => void }) {
   const [ownerLock, setOwnerLock] = useState<string | null>(null);
-  const working = busy || !!ownerLock;
+  const [referenceLock, setReferenceLock] = useState<string | null>(null);
+  const working = busy || !!ownerLock || !!referenceLock;
   const [createParent, setCreateParent] = useState<ProductNode | "root" | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const creation = useRef({ body: "", id: "" });
@@ -28,7 +30,7 @@ export function ProductTree({ catalog, workspace, base, busy, act, refresh, onRe
     return children.length ? <ul className={parentId ? "ml-3 space-y-2 border-l pl-3 sm:ml-5" : "space-y-3"}>{children.map((node) => <li key={node.id} className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border p-3"><div><p className="font-medium">{node.name} <span className="text-xs text-muted-foreground">{node.code}</span></p><p className="text-xs text-muted-foreground">{levels[node.level]} · {life[node.lifecycle]} · {workspace.members.find((member) => member.id === node.owner_user_id)?.display_name ?? "负责人当前不可用"} · v{node.version}</p>{(node.regions.length > 0 || node.channels.length > 0) && <p className="text-xs">地区：{node.regions.join("、") || "待定义"} · 渠道：{node.channels.join("、") || "待定义"}</p>}</div>
         {catalog.line_access[node.product_line_id]?.can_manage && <div className="flex gap-2"><Button size="sm" variant="outline" disabled={working} onClick={() => setEditing(editing === node.id ? null : node.id)}>编辑</Button>{nextLevel[node.level] && node.lifecycle !== "retired" && <Button size="sm" variant="outline" disabled={working} onClick={() => setCreateParent(node)}>新增{levels[nextLevel[node.level]]}</Button>}</div>}
-      </div><WorkResponsibility spaceId={workspace.space.id} kind="node" recordId={node.id} disabled={busy || !!editing || !!createParent || (!!ownerLock && ownerLock !== node.id)} onLock={value => { setOwnerLock(value ? node.id : null); onResponsibilityLock(value); }} onChanged={refresh}/><RetirementFeedback base={base} productId={node.id} evidence={evidence} disabled={working}/>{renderBranch(node.id)}
+      </div><WorkResponsibility spaceId={workspace.space.id} kind="node" recordId={node.id} disabled={busy || !!editing || !!createParent || !!referenceLock || (!!ownerLock && ownerLock !== node.id)} onLock={value => { setOwnerLock(value ? node.id : null); onResponsibilityLock(value); }} onChanged={refresh}/><RetirementFeedback base={base} productId={node.id} evidence={evidence} disabled={working}/>{["model", "variant"].includes(node.level) && <ProductMasterReferences base={base} productId={node.id} canManage={catalog.line_access[node.product_line_id]?.can_manage === true} evidence={evidence} disabled={busy || !!editing || !!createParent || !!ownerLock || (!!referenceLock && referenceLock !== node.id)} onAuthorityLost={onAuthorityLost} onPendingChange={value => { setReferenceLock(current => value ? node.id : current === node.id ? null : current); onMasterPendingChange?.(value); }}/>}{renderBranch(node.id)}
     </li>)}</ul> : null;
   };
   return <section className="space-y-4">
@@ -42,7 +44,7 @@ export function ProductTree({ catalog, workspace, base, busy, act, refresh, onRe
       void act(async () => { await request(`${base}/products`, "POST", { ...body, request_id: creation.current.id }); setCreateParent(null); });
     }}>
       <h4 className="font-medium sm:col-span-2">{createParent === "root" ? "新建产品线" : `为 ${createParent.name} 新增${levels[nextLevel[createParent.level]]}`}</h4>
-      <label className="text-sm">产品编号<input name="code" required maxLength={128} pattern="[a-zA-Z0-9_.:-]+" className={field} /></label><label className="text-sm">名称<input name="name" required maxLength={2048} className={field} /></label>
+      <label className="text-sm">产品编号<input name="code" required maxLength={128} pattern={"[a-zA-Z0-9_.:\\-]+"} className={field} /></label><label className="text-sm">名称<input name="name" required maxLength={2048} className={field} /></label>
       <label className="text-sm">负责人<select name="owner" required className={field} defaultValue={workspace.current_user_id}><option value="">请选择</option>{ownerMembers(createParent === "root" ? null : createParent.product_line_id).map((member) => <option key={member.id} value={member.id}>{member.display_name}</option>)}</select></label>
       <p className="self-center text-xs text-muted-foreground">新产品线会为创建者和负责人登记管理权限。其余成员需另行加入产品线。</p>
       <label className="text-sm">地区代码（每行一项，如 CN）<textarea name="regions" className={field} /></label><label className="text-sm">渠道代码（每行一项，如 retail）<textarea name="channels" className={field} /></label>

@@ -212,6 +212,14 @@ def _delivery(
 def calculate(
     data: dict[str, Any], schedule: dict[str, Any], command: CoverageSelection
 ) -> dict[str, Any]:
+    with localcontext() as arithmetic:
+        arithmetic.prec = 2048
+        return _calculate(data, schedule, command)
+
+
+def _calculate(
+    data: dict[str, Any], schedule: dict[str, Any], command: CoverageSelection
+) -> dict[str, Any]:
     selected = schedule["times"].get(command.time_kind, {})
     need_date = (
         date.fromisoformat(selected["local_start_date"])
@@ -367,6 +375,11 @@ def calculate(
             group["issues"].append("allocated_source_unknown")
         group["unallocated_on_hand"] = available_on_hand
         group["unallocated_before_date"] = available_before_date
+        group["allocated_on_hand_gap"] = max(
+            group["required"] - group["allocated_on_hand"] - group["qualified_issued"],
+            Decimal(0),
+        )
+        group["on_hand_ready"] = group["allocated_on_hand_gap"] == 0
         group["allocated_date_gap"] = (
             max(
                 group["required"]
@@ -450,6 +463,19 @@ def calculate(
         "pool_limit_reached": data["pool_limit_reached"],
         "materials": rows,
     }
+    required_rows = [row for row in rows if Decimal(row["required"]) > 0]
+    critical_rows = [row for row in required_rows if any(line["critical"] for line in row["lines"])]
+    kit = {
+        "material_count": len(required_rows),
+        "ready_count": sum(row["on_hand_ready"] for row in required_rows),
+        "critical_count": len(critical_rows),
+        "critical_ready_count": sum(row["on_hand_ready"] for row in critical_rows),
+        "ready": bool(required_rows) and all(row["on_hand_ready"] for row in required_rows),
+        "critical_ready": all(row["on_hand_ready"] for row in critical_rows)
+        if critical_rows else None,
+        "basis": "本批次明确分配的合格现货及领用时合格净领料；未分配与预计供给不计齐套",
+    }
+    basis["kit"] = kit
     return {
         "digest": digest(basis),
         "as_of": data["as_of"],

@@ -33,7 +33,10 @@ def rows(table: Table) -> list[RowMapping]:
 
 @pytest.fixture
 def waiting_plan(
-    scenario: PlanScenario, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    scenario: PlanScenario,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> WaitingPlan:
     output: dict[str, object] = {
         **deepcopy(READY),
@@ -46,7 +49,9 @@ def waiting_plan(
             for item in deepcopy(READY["changes"])
         ],
     }
-    environment, calls, snapshots = factory(get_engine(), tmp_path, monkeypatch, output=output)
+    environment, calls, snapshots = factory(
+        get_engine(), tmp_path, monkeypatch, request=request, output=output
+    )
     request_id = str(uuid4())
     finding = get_finding(scenario, suggest(scenario, request_id=request_id))
     return scenario, output, calls, snapshots, finding, request_id, environment

@@ -118,7 +118,9 @@ def domain(
                     .values(method="Changed source test procedure")
                 )
 
-    _, calls, _ = api_factory.factory(get_engine(), tmp_path, monkeypatch, output=output)
+    _, calls, _ = api_factory.factory(
+        get_engine(), tmp_path, monkeypatch, request=request, output=output
+    )
     return invoke, change, calls
 
 
@@ -248,7 +250,10 @@ def test_actual_domain_request_expiry_is_visible_and_never_calls_model(
 
 
 def test_database_rejects_finding_if_service_skips_owner_binding(
-    scenario: Scenario, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    scenario: Scenario,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
     from app.ai import test_plan_suggestions
 
@@ -262,7 +267,9 @@ def test_database_rejects_finding_if_service_skips_owner_binding(
             for item in READY["changes"]
         ],
     }
-    _, calls, _ = api_factory.factory(get_engine(), tmp_path, monkeypatch, output=output)
+    _, calls, _ = api_factory.factory(
+        get_engine(), tmp_path, monkeypatch, request=request, output=output
+    )
     monkeypatch.setattr(test_plan_suggestions, "bind_write", lambda *a, **kw: None)
     result = suggest(scenario)
     assert result.status_code == 200, result.text

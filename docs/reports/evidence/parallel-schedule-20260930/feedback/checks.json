@@ -1,0 +1,75 @@
+{
+  "candidate": "parallel-schedule-20260930-feedback-r1",
+  "candidate_digest": "68cbf6e2c12ea7f756ff19a0750ad83e97bf6055918255540083092d200123f4",
+  "checks": [
+    {
+      "check": "Backend affected pure/memory regression",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "34 pure/memory cases, no database",
+      "log": "output/parallel-schedule-20260930/feedback/final-unit.log",
+      "log_sha256": "4e40040d5a6cd60f32e96e8e07c0b15f9904960629f95c52f65e5c25aa423276"
+    },
+    {
+      "check": "Component interaction",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "11 DOM cases; America/Los_Angeles; not browser verification",
+      "log": "output/parallel-schedule-20260930/feedback/components.log",
+      "log_sha256": "515aa54a0935647f8bfcbd671e7a46d0620936223f7a0e50117ab72625ddd959"
+    },
+    {
+      "check": "Affected Python lint",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "8 files incl. PostgreSQL test",
+      "log": "output/parallel-schedule-20260930/feedback/final-backend-lint.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "check": "Affected Python typing",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "8 files, follow-imports=silent; not whole repository",
+      "log": "output/parallel-schedule-20260930/feedback/final-backend-types.log",
+      "log_sha256": "157a09cfcdfdfb5977479c5a1c08345149263a3e990a2ec976ef28aaeec9cae6"
+    },
+    {
+      "check": "Affected frontend lint",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "5 component/test files",
+      "log": "output/parallel-schedule-20260930/feedback/frontend-lint.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "Frontend typing",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "tsc --noEmit --incremental false; no build",
+      "log": "output/parallel-schedule-20260930/feedback/frontend-types.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "PostgreSQL test syntax",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "AST/compile only, no imports or pytest collection",
+      "log": "output/parallel-schedule-20260930/feedback/postgres-static.log",
+      "log_sha256": "a5696cff0fd18a3779c3e86f4fe4690a1a3e9edf36a0171072142316f799dd6e"
+    },
+    {
+      "check": "Diff whitespace",
+      "result": "passed",
+      "exit_code": 0,
+      "coverage": "9 modified source files; untracked additions linted separately",
+      "log": "output/parallel-schedule-20260930/feedback/diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "database_execution": "not run",
+  "limitations": [
+    "Real feedback SQL fixtures and transaction scenarios pending coordinator",
+    "No build, HTTP/browser, migration, model or formal Exit verification"
+  ]
+}

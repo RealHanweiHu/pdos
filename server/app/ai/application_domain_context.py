@@ -21,6 +21,24 @@ def json_value(value: Any) -> Any:
 
 
 def contract(purpose: str, *, prompt_version: str | None = None) -> tuple[dict[str, Any], Any]:
+    if purpose == "product_evaluation":
+        from app.ai.product_matrix_preparation import PROMPT as MATRIX_PROMPT
+        from app.ai.product_work_context import contract as product_contract
+        from app.contracts.product_matrix_explanation import ProductMatrixExplanation
+
+        if prompt_version == MATRIX_PROMPT.version:
+            return MATRIX_PROMPT.model_dump(mode="json"), ProductMatrixExplanation
+        if prompt_version is None:
+            raise BudgetLedgerError("PRODUCT_EVALUATION_CONTRACT_REQUIRED")
+        evaluation_prompt, evaluation_output = product_contract(prompt_version)
+        return evaluation_prompt.model_dump(mode="json"), evaluation_output
+    if purpose == "event_issue":
+        from app.ai.issue_event_proposal import PROMPT as ISSUE_PROMPT
+        from app.ai.issue_event_proposal import IssueEventProposal
+
+        if prompt_version not in {None, ISSUE_PROMPT.version}:
+            raise BudgetLedgerError("EVENT_ISSUE_CONTRACT_CHANGED")
+        return ISSUE_PROMPT.model_dump(mode="json"), IssueEventProposal
     if purpose == "meeting_planning":
         from app.ai.meeting_planning_context import PROMPT as PLANNING_PROMPT
         from app.contracts.meeting_plan import MeetingAssessment
@@ -56,6 +74,11 @@ def contract(purpose: str, *, prompt_version: str | None = None) -> tuple[dict[s
         from app.ai.change_discussion_contract import DiscussionTurn
 
         return DISCUSSION_PROMPT.model_dump(mode="json"), DiscussionTurn
+    if purpose == "product_work":
+        from app.ai.product_work_context import contract as product_contract
+
+        product_prompt, product_output = product_contract(prompt_version)
+        return product_prompt.model_dump(mode="json"), product_output
     if purpose == "product_matrix":
         from app.ai.product_matrix_preparation import PROMPT as MATRIX_PROMPT
         from app.contracts.product_matrix_explanation import ProductMatrixExplanation
@@ -158,7 +181,7 @@ def contract(purpose: str, *, prompt_version: str | None = None) -> tuple[dict[s
         from app.ai.risk_suggestions import RISK_PROMPT
 
         return RISK_PROMPT.model_dump(mode="json"), AgentAssessment
-    if purpose == "test_plan_suggestion":
+    if purpose in {"test_plan_suggestion", "event_issue"}:
         from app.ai.test_plan_versions import contract as version_contract
 
         return version_contract(prompt_version)
@@ -174,6 +197,11 @@ def bundle(purpose: str, *, prompt_version: str | None = None) -> dict[str, Any]
 
     prompt, output_type = contract(purpose, prompt_version=prompt_version)
     base = chat_bundle()
+    reader = purpose + "-source-adapter.v1"
+    if purpose == "product_work":
+        from app.ai.product_work_context import MODEL_CONTEXT_VERSION
+
+        reader = MODEL_CONTEXT_VERSION
     service_tools = {}
     if purpose == "change_discussion" and prompt_version == "discussion-research-v1":
         from app.ai.discussion_research_loop import TOOLSET as RESEARCH_TOOLSET
@@ -198,7 +226,7 @@ def bundle(purpose: str, *, prompt_version: str | None = None) -> dict[str, Any]
             **base["compiled"],
             "prompt": prompt,
             "schema": output_type.model_json_schema(),
-            "reader": purpose + "-source-adapter.v1",
+            "reader": reader,
             "purpose": purpose,
             **service_tools,
         },
@@ -251,6 +279,22 @@ def record(
     from app.ai.test_plan_versions import version_from_run
 
     prompt_version = None
+    if purpose == "product_evaluation":
+        with engine.connect() as original_connection:
+            prompt_version = original_connection.execute(
+                select(tables.agent_runs.c.run_context).where(
+                    tables.agent_runs.c.tenant_id == tenant_id,
+                    tables.agent_runs.c.id == run_id,
+                )
+            ).scalar_one()["evaluation_prompt_version"]
+    if purpose == "product_work":
+        with engine.connect() as original_connection:
+            prompt_version = original_connection.execute(
+                select(tables.agent_runs.c.run_context).where(
+                    tables.agent_runs.c.tenant_id == tenant_id,
+                    tables.agent_runs.c.id == run_id,
+                )
+            ).scalar_one()["product_work_prompt_version"]
     if purpose == "product_matrix":
         from app.ai.product_matrix_preparation import version as matrix_version
 
@@ -464,6 +508,20 @@ def record(
             shown = total = len(snapshot["references"])
             status = "partial" if snapshot["projection"]["missing"] else "complete"
             continuation = "请核对本席位明确缺项" if status == "partial" else None
+        elif purpose == "product_evaluation":
+            sources = [source("market_space", UUID(snapshot["market_space_id"]), snapshot)]
+            if "references" in snapshot:
+                shown = total = len(snapshot["references"])
+            else:
+                shown = len(snapshot["model_context"]["references"])
+                total = shown + len(snapshot["model_context"]["omitted_references"])
+            status = "partial" if snapshot.get("warnings") or shown < total else "complete"
+            continuation = "影子评测保留原来源缺项与覆盖限制" if status == "partial" else None
+        elif purpose == "product_work":
+            sources = [source("market_space", UUID(snapshot["market_space_id"]), snapshot)]
+            shown = total = len(snapshot["references"])
+            status = "partial" if snapshot["warnings"] else "complete"
+            continuation = "请核对本次来源缺项与覆盖限制" if status == "partial" else None
         elif purpose == "product_matrix":
             sources = [
                 source("product_matrix_record", UUID(snapshot["selection"]["record_id"]), snapshot)
@@ -513,6 +571,11 @@ def record(
             continuation = (
                 "原费用明细有省略或来源变化，须回原计算核对" if status == "partial" else None
             )
+        elif purpose == "event_issue":
+            sources = [source("event_issue_source", UUID(snapshot["entity_id"]), snapshot)]
+            shown = total = len(snapshot["context"]["references"])
+            status = "complete"
+            continuation = None
         elif purpose == "supplier_recovery":
             sources = [source("supplier_recovery_snapshot", UUID(snapshot["project_id"]), snapshot)]
             refs = snapshot["model_context"]["references"]
@@ -774,6 +837,50 @@ def sources_current(
                 },
             )
             return bool(discussion_current["digest"] == snapshot["source"]["digest"])
+        if purpose == "product_evaluation":
+            from app.ai.product_shadow_evaluation import current as shadow_current
+
+            try:
+                return bool(snapshot == run["run_context"]["evaluation_source"]
+                            and shadow_current(c, run, invocation))
+            except (ValueError, LookupError, PermissionError):
+                return False
+        if purpose == "product_work":
+            from app.ai.product_work_context import contract as product_contract
+            from app.ai.product_work_context import model_context as product_context
+            from app.ai.product_work_context import rebuild as product_state
+            from app.ai.product_work_runs import authorize as product_authorize
+            from app.ai.project_discussion_sources import actor
+            from app.contracts.product_work_ai import ProductWorkSelection
+
+            try:
+                selected = ProductWorkSelection.model_validate(snapshot["selection"])
+                current_actor = actor(c, invocation.tenant_id, run["requested_by_user_id"])
+                product_authorize(
+                    c, current_actor, run["market_space_id"], selected.product_line_id, write=True
+                )
+                return bool(
+                    run["scope_kind"] == "market_space"
+                    and run["project_id"] is None
+                    and invocation.project_id is None
+                    and str(run["market_space_id"]) == snapshot["market_space_id"]
+                    and snapshot == run["run_context"]["product_work_source"]
+                    and invocation.prompt_version
+                    == product_contract(run["run_context"]["product_work_prompt_version"])[
+                        0
+                    ].version
+                    and product_state(c, invocation.tenant_id, snapshot)["digest"]
+                    == snapshot["digest"]
+                    and invocation.context
+                    == product_context(
+                        snapshot,
+                        run["run_context"].get("product_work_user_instruction", ""),
+                        prompt_version=invocation.prompt_version,
+                        tenant_id=invocation.tenant_id,
+                    )
+                )
+            except (ValueError, LookupError, PermissionError):
+                return False
         if purpose == "product_matrix":
             from app.ai.product_matrix_preparation import (
                 model_context as matrix_context,
@@ -849,6 +956,28 @@ def sources_current(
             except (ValueError, LookupError, PermissionError):
                 return False
             return bool(current_cost["digest"] == snapshot["digest"])
+        if purpose == "event_issue":
+            from app.ai.issue_event_proposal import PROMPT as ISSUE_PROMPT
+            from app.ai.issue_event_runs import RUN_VERSION, rebuild
+            from app.ai.issue_event_runs import model_context as event_issue_model_context
+            from app.ai.issue_event_trigger_runs import require_current as require_issue_event
+            from app.ai.project_discussion_sources import actor
+
+            try:
+                if (
+                    run["agent_key"] != "quality_intelligence"
+                    or run["context_version"] != RUN_VERSION
+                    or run["project_id"] != invocation.project_id
+                    or snapshot != run["run_context"].get("issue_event_source")
+                    or invocation.prompt_version != ISSUE_PROMPT.version
+                ):
+                    return False
+                current_actor = actor(c, invocation.tenant_id, run["requested_by_user_id"])
+                require_issue_event(c, run)
+                rebuild(c, current_actor, invocation.project_id, snapshot, write=True)
+                return bool(invocation.context == event_issue_model_context(snapshot))
+            except (ValueError, LookupError, PermissionError):
+                return False
         if purpose == "supplier_recovery":
             from app.ai.supplier_recovery_preparation import Selection
             from app.ai.supplier_recovery_preparation import source_state as supply_state
@@ -911,10 +1040,12 @@ def sources_current(
             "meeting_decisions",
             "meeting_business",
         }:
+            from app.ai.meeting_event_runs import require_current as require_meeting_event
             from app.ai.meeting_reading import source_state
             from app.domain.meetings import MeetingNotFoundError, MeetingStateError
 
             try:
+                require_meeting_event(c, run)
                 current_source = source_state(
                     c,
                     invocation.tenant_id,
@@ -926,7 +1057,7 @@ def sources_current(
                     include_decisions=purpose == "meeting_decisions",
                     include_business=purpose == "meeting_business",
                 )
-            except (MeetingNotFoundError, MeetingStateError):
+            except (MeetingNotFoundError, MeetingStateError, PermissionError):
                 return False
             return current_source == snapshot
         if purpose == "risk_suggestion":

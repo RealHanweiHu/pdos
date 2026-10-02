@@ -28,6 +28,7 @@ from app.domain.process_template_reminders import (
     project_policy,
 )
 from app.domain.project_write_lock import lock_project_write_scope
+from app.domain.xiaopai_reminders import visible as xiaopai_visible
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 OPEN_TASK_STATUSES = ("todo", "in_progress", "blocked", "pending_approval")
@@ -275,6 +276,7 @@ def _active_specs(
             tables.issues.c.tenant_id == tenant_id,
             tables.issues.c.project_id == project_id,
             tables.issues.c.status != "closed",
+            tables.issues.c.withdrawn_at.is_(None),
         )
     ).all()
     for row in issues:
@@ -296,7 +298,34 @@ def _active_specs(
     if policy_source is not None:
         specs = [replace(spec, policy_source=policy_source) for spec in specs]
     specs.extend(discussion_specs(connection, tenant_id, project_id, as_of))
-    return specs
+    from app.domain.xiaopai_reminders import specs as xiaopai_specs
+
+    pai = xiaopai_specs(connection, tenant_id, project_id, as_of)
+    # Keep the original deadline and future ladder; combine currently due notifications
+    # into the one durable follow-up for the same recipient and task.
+    grouped = {(s.target_entity_id, s.recipient_user_id, s.escalation_level): s for s in pai}
+    merged: dict[str, list[dict[str, Any]]] = {}
+    retained = []
+    for spec in specs:
+        followup = grouped.get(
+            (spec.target_entity_id, spec.recipient_user_id, spec.escalation_level)
+        )
+        if followup and spec.policy_key.startswith("task_due_") and spec.fire_at <= as_of:
+            merged.setdefault(followup.dedupe_key, []).append(
+                {
+                    "policy_key": spec.policy_key,
+                    "fire_at": spec.fire_at.isoformat(),
+                    "policy_source": spec.policy_source,
+                }
+            )
+        else:
+            retained.append(spec)
+    return retained + [
+        replace(s, policy_source={"merged_due_rules": merged[s.dedupe_key]})
+        if s.dedupe_key in merged
+        else s
+        for s in pai
+    ]
 
 
 def _versioned_key(spec: ReminderSpec) -> str:
@@ -600,6 +629,7 @@ class ReminderService:
                     tables.reminders.c.tenant_id == tenant_id,
                     tables.reminders.c.recipient_user_id == recipient_user_id,
                     notification_visible(),
+                    xiaopai_visible(),
                     tables.reminders.c.status.in_(("fired", "acknowledged")),
                 )
                 .order_by(tables.reminders.c.fired_at.desc(), tables.reminders.c.id.desc())
@@ -611,6 +641,7 @@ class ReminderService:
                     tables.reminders.c.tenant_id == tenant_id,
                     tables.reminders.c.recipient_user_id == recipient_user_id,
                     notification_visible(),
+                    xiaopai_visible(),
                     tables.reminders.c.status == "fired",
                 )
                 .group_by(tables.reminders.c.policy_key)
@@ -634,6 +665,7 @@ class ReminderService:
                         tables.reminders.c.id == reminder_id,
                         tables.reminders.c.recipient_user_id == recipient_user_id,
                         notification_visible(),
+                        xiaopai_visible(),
                     )
                 )
             ).one_or_none()

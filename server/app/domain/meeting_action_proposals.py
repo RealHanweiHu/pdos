@@ -313,6 +313,18 @@ def persist_actions(
                 },
             ),
         )
+        from app.domain.ai_meeting_drafts import capture_minutes_draft
+
+        capture_minutes_draft(
+            connection,
+            row=row,
+            finding_id=finding_id,
+            payload=payload,
+            snapshot=snapshot,
+            invocation_id=invocation_id,
+            now=created_at,
+            kind="actions",
+        )
         result.append(str(finding_id))
     return result
 
@@ -333,6 +345,11 @@ def apply_action(
         connection, tenant_id=finding.tenant_id, project_id=finding.project_id
     ):
         raise MeetingActionProposalError("项目已不可用")
+    from app.domain.ai_meeting_draft_content import require_unpublished_origin
+
+    require_unpublished_origin(
+        connection, finding.tenant_id, finding.project_id, finding.finding_type, finding.origin_key
+    )
     validate_action(connection, finding, payload)
     duplicate = connection.execute(
         select(tables.findings.c.applied_entity_id).where(

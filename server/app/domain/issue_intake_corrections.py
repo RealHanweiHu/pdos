@@ -206,7 +206,9 @@ class IssueIntakeCorrections:
                 else None
             )
             if body.action == "reassign" and (
-                after is None or after["updated_at"] != body.expected_target_updated_at
+                after is None
+                or after.get("withdrawn_at") is not None
+                or after["updated_at"] != body.expected_target_updated_at
             ):
                 raise ConversationError("新关联问题已变化或不可用，请重新读取并核对")
             receipt = (

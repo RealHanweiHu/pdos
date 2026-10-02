@@ -1,0 +1,4 @@
+{
+  "server/app/domain/product_catalog.py": "62e02d455f74877a5bbc2e1be8ae93fdd16ba0d067803637b16f9206673814a3",
+  "server/tests/test_product_derivation_scope_api.py": "081ee5a89fccd0116cfc5ab722fe13b06c1275785e0cae0340a87a4aade2ed4b"
+}

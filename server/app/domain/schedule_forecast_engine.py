@@ -14,6 +14,21 @@ from app.domain.working_time import CalendarDefinition, WorkingTime, ceil_minute
 ALGORITHM_VERSION = "project_forecast.actual_remaining.v6"
 MATERIAL_ALGORITHM_VERSION = "project_forecast.actual_remaining.material.v7"
 TOOLING_ALGORITHM_VERSION = "project_forecast.actual_remaining.tooling.v8"
+FEEDBACK_ALGORITHM_VERSION = "project_forecast.actual_remaining.feedback.v9"
+
+
+def algorithm_version(tasks: dict[str, dict[str, Any]]) -> str:
+    if any(
+        task.get("resource_conditions") or task.get("node_kind") == "test_run"
+        for task in tasks.values()
+    ):
+        return FEEDBACK_ALGORITHM_VERSION
+    if any(task.get("tooling_conditions") for task in tasks.values()):
+        return TOOLING_ALGORITHM_VERSION
+    if any(task.get("material_conditions") for task in tasks.values()):
+        return MATERIAL_ALGORITHM_VERSION
+    return ALGORITHM_VERSION
+
 
 ResourcePlacer = Callable[
     [str, WorkingTime, datetime, int, int, datetime | None],
@@ -187,12 +202,62 @@ def _calculate(
                 (warnings if historical else unknown).append(
                     note + "实际可用待核对或预计日期已失效"
                 )
+        resource_bounds: list[datetime] = []
+        resource_ends: list[datetime] = []
+        future_windows: dict[str, list[datetime]] = {}
+        for condition in task.get("resource_conditions", []):
+            blockers = list(condition["blockers"])
+            if not blockers:
+                left, right = instant(condition["window_start"]), instant(condition["window_end"])
+                valid_from, valid_until = (
+                    instant(condition["policy_valid_from"]),
+                    instant(condition["policy_valid_until"]),
+                )
+                if (
+                    condition["policy_status"] != "active"
+                    or valid_from is None
+                    or valid_until is None
+                    or not valid_from <= as_of < valid_until
+                ):
+                    blockers.append("预约优先级已暂停或过期")
+                assert left is not None and right is not None
+                if right > as_of:
+                    future_windows.setdefault(condition["resource_id"], []).append(left)
+                    resource_ends.append(right)
+                elif not any(
+                    other.get("resource_id") == condition["resource_id"]
+                    and (instant(other["window_end"]) or as_of) > as_of
+                    for other in task["resource_conditions"]
+                    if not other["blockers"]
+                ):
+                    blockers.append("正式预约窗口已结束，剩余资源输入需重新核对")
+            (warnings if actual_finish else unknown).extend(blockers)
+        resource_bounds = [min(windows) for windows in future_windows.values()]
+        expected_finish = instant(task.get("expected_completion_at"))
+        ongoing_test = (
+            task.get("node_kind") == "test_run"
+            and task.get("source_status") == "in_progress"
+            and actual_start is not None
+            and estimate is None
+            and expected_finish is not None
+        )
         origin = "explicit_remaining" if estimate else "approved_initial_estimate"
         if actual_finish is not None:
             start = actual_start
             finish = actual_finish
             origin = "actual"
             unknown = []
+        elif ongoing_test:
+            assert expected_finish is not None
+            start, finish = actual_start, None
+            origin = "business_expected_completion"
+            if expected_finish <= as_of:
+                unknown.append("在途测试预计完成已过期，请更新原测试预计时间或明确剩余工作")
+            if any(bound > expected_finish for bound in [*resource_bounds, *material_bounds]):
+                unknown.append("当前恢复或预约窗口晚于测试预计完成，请核对原测试预计时间")
+            if not unknown:
+                finish = max([ceil_minute(expected_finish), *finish_bounds])
+            warnings.append("预计完成来自在途测试记录；尚未实际结束，剩余资源工时仍需核对")
         else:
             if task["status"] == "skipped":
                 unknown.append("节点已跳过，尚无获批计划变更或实际完成记录")
@@ -218,9 +283,14 @@ def _calculate(
                 hours is None or Decimal(hours) != 0 or waiting != 0
             ):
                 unknown.append("里程碑是零时长检查点，实际工作和等待须放在前置业务节点")
-            release = instant(estimate.get("not_before")) if estimate else allocation.not_before
+            release = instant(estimate.get("not_before")) if estimate else None
             earliest = max(
-                now, release or now, *material_bounds, *(start_bounds if not actual_start else [])
+                now,
+                release or now,
+                allocation.not_before or now,
+                *material_bounds,
+                *resource_bounds,
+                *(start_bounds if not actual_start else []),
             )
             start = actual_start
             finish = None
@@ -263,6 +333,13 @@ def _calculate(
                 }
             elif not actual_start:
                 start = None
+        if (
+            finish is not None
+            and actual_finish is None
+            and resource_ends
+            and finish > min(resource_ends)
+        ):
+            warnings.append("预计完成超出部分正式预约窗口；须核对剩余资源时段，预测不代表容量通过")
         if resource_placer is not None and key in residuals:
             profile = residuals[key]
             placed, placed_finish, reasons = resource_placer(
@@ -297,6 +374,8 @@ def _calculate(
             "unknown_reasons": list(dict.fromkeys(unknown)),
             "warnings": warnings,
             "estimate": estimate,
+            "resource_conditions": task.get("resource_conditions", []),
+            "expected_completion_at": task.get("expected_completion_at"),
             "status": task["status"],
             **(
                 {"tooling_conditions": task["tooling_conditions"]}
@@ -313,6 +392,10 @@ def _calculate(
     float_status = (
         "unknown_schedule"
         if not complete
+        else "remaining_work_unknown"
+        if any(key not in residuals and not row["actual_finish"] for key, row in results.items())
+        else "resource_window_not_rechecked"
+        if any(task.get("resource_conditions") for task in tasks.values())
         else "actual_constraint_conflict"
         if any(row["warnings"] for row in results.values())
         else "calculated"
@@ -443,11 +526,7 @@ def _calculate(
         "external_dependencies": external_dependencies,
         "critical_node_keys": [key for key in order if results[key]["critical"]],
         "critical_edges": critical_edges,
-        "algorithm_version": TOOLING_ALGORITHM_VERSION
-        if any(task.get("tooling_conditions") for task in tasks.values())
-        else MATERIAL_ALGORITHM_VERSION
-        if any(task.get("material_conditions") for task in tasks.values())
-        else ALGORITHM_VERSION,
+        "algorithm_version": algorithm_version(tasks),
         "as_of": as_of.isoformat(),
         "complete": complete,
         "project_finish": max(row["finish"] for row in results.values()).isoformat()

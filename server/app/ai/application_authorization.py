@@ -16,7 +16,10 @@ from app.contracts.runtime_records import AuthorizationEnvelope
 from app.db.schema import tables
 
 PURPOSE_ACTIONS = {
+    "event_issue": Action.WORK_ITEM_EDIT,
     "product_matrix": Action.PRODUCT_WORK_CONTRIBUTE,
+    "product_work": Action.PRODUCT_WORK_CONTRIBUTE,
+    "product_evaluation": Action.MODEL_GOVERNANCE_MANAGE,
     "portfolio_explanation": Action.PROJECT_EDIT,
     "executive_brief": Action.PROJECT_EDIT,
     "cost_reduction": Action.PRODUCT_ENGINEERING_EDIT,
@@ -100,7 +103,11 @@ def issue_application_authorization(
     deadline = link.absolute_deadline
     membership = None
     delegation = None
-    if purpose != "product_matrix" and user["role"] not in {Role.OWNER, Role.ADMIN}:
+    market_purposes = {"product_matrix", "product_work", "product_evaluation"}
+    if purpose not in market_purposes and user["role"] not in {
+        Role.OWNER,
+        Role.ADMIN,
+    }:
         membership = (
             connection.execute(
                 select(tables.project_members).where(
@@ -163,7 +170,66 @@ def issue_application_authorization(
             digest=digest(pins),
         )
     ]
-    if purpose == "product_matrix":
+    if purpose == "product_evaluation":
+        from app.ai.product_shadow_evaluation import RUN_VERSION, current
+
+        if (
+            run["context_version"] != RUN_VERSION
+            or run["requested_by_user_id"] != actor_user_id
+            or run["agent_key"] != "product_management_intelligence"
+            or not current(connection, run)
+        ):
+            raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+        snapshot = run["run_context"]["evaluation_source"]
+        scope = dict(kind="market_space", ref_id=run["market_space_id"])
+        sources = [dict(tenant_id=tenant_id, project_id=None, kind="market_space",
+                        ref_id=run["market_space_id"], as_of=run["created_at"],
+                        digest=snapshot["digest"])]
+    elif purpose == "product_work":
+        from app.ai.product_work_context import readable, rebuild
+        from app.ai.product_work_runs import authorize as product_authorize
+        from app.ai.project_discussion_sources import actor
+        from app.contracts.product_work_ai import ProductWorkSelection
+
+        if (
+            run["scope_kind"] != "market_space"
+            or run["project_id"] is not None
+            or run["market_space_id"] is None
+            or run["requested_by_user_id"] != actor_user_id
+            or run["agent_key"] != "product_management_intelligence"
+            or run["context_version"] != "product-work-request-v1"
+        ):
+            raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+        original_context = actor(connection, tenant_id, actor_user_id)
+        snapshot = run["run_context"]["product_work_source"]
+        selection = ProductWorkSelection.model_validate(
+            run["run_context"]["product_work_selection"]
+        )
+        readable(connection, original_context, snapshot)
+        product_authorize(
+            connection,
+            original_context,
+            run["market_space_id"],
+            selection.product_line_id,
+            write=True,
+        )
+        if (
+            snapshot["market_space_id"] != str(run["market_space_id"])
+            or rebuild(connection, tenant_id, snapshot)["digest"] != snapshot["digest"]
+        ):
+            raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+        scope = dict(kind="market_space", ref_id=run["market_space_id"])
+        sources = [
+            dict(
+                tenant_id=tenant_id,
+                project_id=None,
+                kind="market_space",
+                ref_id=run["market_space_id"],
+                as_of=run["created_at"],
+                digest=snapshot["digest"],
+            )
+        ]
+    elif purpose == "product_matrix":
         from app.ai.product_matrix_preparation import readable
         from app.ai.product_matrix_runs import authorize
         from app.ai.project_discussion_sources import actor

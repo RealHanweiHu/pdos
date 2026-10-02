@@ -1,0 +1,73 @@
+{
+  "method": "Execute current pure source functions with TypeScript transpilation; no network, model or database access",
+  "hashes": {
+    "web/src/components/ai/conversation-work-focus.tsx": "022c9479094647b99e69340a3dd287740c0aa1db4200c2320518375a02228c34",
+    "web/src/components/ai/xiaopai-page-context.ts": "78bf93e6c67aecf2ec419c2b1ad633f00642eb27593d4c86709fee1b3879ef12"
+  },
+  "probes": [
+    {
+      "label": "current issue link",
+      "params": {
+        "project": "10000000-0000-4000-8000-000000000001",
+        "tab": "work-items",
+        "view": "issues",
+        "entity_id": "20000000-0000-4000-8000-000000000001"
+      },
+      "result": {
+        "href": "/projects?project=10000000-0000-4000-8000-000000000001&tab=work-items&view=issues&entity_id=20000000-0000-4000-8000-000000000001",
+        "label": "项目",
+        "projectId": "10000000-0000-4000-8000-000000000001",
+        "spaceId": ""
+      }
+    },
+    {
+      "label": "current stage link",
+      "params": {
+        "project": "10000000-0000-4000-8000-000000000001",
+        "tab": "work-items",
+        "entity_id": "20000000-0000-4000-8000-000000000001"
+      },
+      "result": {
+        "href": "/projects?project=10000000-0000-4000-8000-000000000001&tab=work-items&entity_id=20000000-0000-4000-8000-000000000001",
+        "label": "项目",
+        "projectId": "10000000-0000-4000-8000-000000000001",
+        "spaceId": ""
+      }
+    },
+    {
+      "label": "recognized legacy issue link",
+      "params": {
+        "project": "10000000-0000-4000-8000-000000000001",
+        "issue": "20000000-0000-4000-8000-000000000001"
+      },
+      "result": {
+        "href": "/projects?project=10000000-0000-4000-8000-000000000001&issue=20000000-0000-4000-8000-000000000001",
+        "label": "项目",
+        "projectId": "10000000-0000-4000-8000-000000000001",
+        "spaceId": "",
+        "focus": {
+          "kind": "issue",
+          "id": "20000000-0000-4000-8000-000000000001"
+        }
+      }
+    },
+    {
+      "label": "explicit typed focus link",
+      "params": {
+        "project": "10000000-0000-4000-8000-000000000001",
+        "focus_kind": "issue",
+        "focus_id": "20000000-0000-4000-8000-000000000001"
+      },
+      "result": {
+        "href": "/projects?project=10000000-0000-4000-8000-000000000001&focus_kind=issue&focus_id=20000000-0000-4000-8000-000000000001",
+        "label": "项目",
+        "projectId": "10000000-0000-4000-8000-000000000001",
+        "spaceId": "",
+        "focus": {
+          "kind": "issue",
+          "id": "20000000-0000-4000-8000-000000000001"
+        }
+      }
+    }
+  ]
+}

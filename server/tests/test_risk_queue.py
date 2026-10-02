@@ -37,6 +37,7 @@ def queued_risk(
     isolated_ai_api_database: str,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> QueuedRisk:
     client, _, _ = api_context
     tenant, _, headers = setup_owner(client)
@@ -46,6 +47,7 @@ def queued_risk(
         get_engine(),
         tmp_path,
         monkeypatch,
+        request=request,
         output=dict(
             disposition="human_review_candidate",
             candidate_type="risk_suggestion",

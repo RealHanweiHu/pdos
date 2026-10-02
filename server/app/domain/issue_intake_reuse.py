@@ -95,7 +95,9 @@ def project_issue_options(
     if (before_updated_at is None) != (before_id is None):
         raise ConversationError("分页位置不完整，请重新查询")
     t = tables.issues
-    query = select(t).where(t.c.tenant_id == tenant, t.c.project_id == project)
+    query = select(t).where(
+        t.c.tenant_id == tenant, t.c.project_id == project, t.c.withdrawn_at.is_(None)
+    )
     if issue_id is not None:
         row = c.execute(query.where(t.c.id == issue_id)).mappings().one_or_none()
         if row is None:

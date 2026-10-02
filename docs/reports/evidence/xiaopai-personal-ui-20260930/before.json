@@ -1,0 +1,11 @@
+{
+  "snapshot": "/private/tmp/pdos-personal-ui-before",
+  "files": [
+    "web/next.config.ts",
+    "web/src/components/ai/xiaopai-provider.tsx",
+    "web/src/components/ai/project-conversation.tsx",
+    "web/src/components/ai/xiaopai-provider.test.tsx",
+    "web/src/app/ask/page.tsx",
+    "web/src/components/ai/ask-workspace.tsx"
+  ]
+}

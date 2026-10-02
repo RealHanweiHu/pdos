@@ -1,0 +1,9 @@
+{
+  "snapshot": "/private/tmp/pdos-stage-entry-before",
+  "files": [
+    "web/src/components/projects/project-workspace-view.tsx",
+    "web/src/components/projects/project-workspace.tsx",
+    "web/src/components/projects/project-overview.tsx",
+    "web/src/components/projects/project-workspace.test.tsx"
+  ]
+}

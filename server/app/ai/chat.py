@@ -173,6 +173,14 @@ class ChatEvidenceRepository:
                     question=question,
                 )
             )
+            if actor_user_id is not None:
+                from app.domain.xiaopai_memory import evidence as working_memory_evidence
+
+                evidence.extend(
+                    working_memory_evidence(
+                        connection, tenant_id, project_id, actor_user_id, question
+                    )
+                )
         if self._embedding_gateway is not None:
             evidence.extend(
                 self._memory_evidence(
@@ -338,6 +346,7 @@ class ChatEvidenceRepository:
             rows = connection.execute(
                 select(table.c.id, *columns)
                 .where(table.c.tenant_id == tenant_id, table.c.project_id == project_id)
+                .where(*([table.c.withdrawn_at.is_(None)] if entity == "issue" else []))
                 .order_by(desc(timestamp_column))
                 .limit(10)
             ).mappings()
@@ -671,11 +680,43 @@ def authorize_chat(engine: Engine, context: AuthContext, project_id: UUID) -> No
     )
 
 
-def read_chat_result(engine: Engine, *, context: AuthContext, row: RowMapping) -> ChatResult:
+def read_chat_result(
+    engine: Engine,
+    *,
+    context: AuthContext,
+    row: RowMapping,
+    shared_message_id: UUID | None = None,
+) -> ChatResult:
     """Revalidate saved output without constructing or invoking any model gateway."""
     tenant_id, project_id = row["tenant_id"], row["project_id"]
-    if tenant_id != context.tenant.id or row["requested_by_user_id"] != context.user.id:
+    if tenant_id != context.tenant.id:
         raise ObjectPermissionDeniedError
+    if row["requested_by_user_id"] != context.user.id:
+        from app.domain.conversations import ConversationService
+
+        with engine.connect() as connection:
+            message = (
+                connection.execute(
+                    select(tables.conversation_messages).where(
+                        tables.conversation_messages.c.tenant_id == tenant_id,
+                        tables.conversation_messages.c.id == shared_message_id,
+                        tables.conversation_messages.c.project_id == project_id,
+                        tables.conversation_messages.c.author_user_id
+                        == row["requested_by_user_id"],
+                        tables.conversation_messages.c.operation_request_id == row["request_id"],
+                        tables.conversation_messages.c.action == "project_query",
+                    )
+                )
+                .mappings()
+                .one_or_none()
+            )
+            if message is None:
+                raise ObjectPermissionDeniedError
+            conversation = ConversationService(engine)._conversation(
+                connection, context, message["conversation_id"]
+            )
+            if conversation["visibility"] != "project":
+                raise ObjectPermissionDeniedError
     question = row["run_context"]["chat_question"]
     repository = ChatEvidenceRepository(engine)
     result = ChatResult.model_validate(

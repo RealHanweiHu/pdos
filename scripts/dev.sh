@@ -19,11 +19,11 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-(cd "$repository_root/server" && exec uv run --python 3.12 uvicorn app.main:app --reload) &
+(cd "$repository_root/server" && exec uv run --env-file ../.env --python 3.12 uvicorn app.main:app --reload --reload-dir app) &
 api_pid="$!"
 (cd "$repository_root/web" && exec "$repository_root/scripts/pnpm.sh" dev) &
 web_pid="$!"
-(cd "$repository_root/server" && exec uv run --python 3.12 python -m scripts.run_reminder_scheduler) &
+(cd "$repository_root/server" && exec uv run --env-file ../.env --python 3.12 python -m scripts.run_reminder_scheduler) &
 reminders_pid="$!"
 
 printf 'PDOS API pid: %s\n' "$api_pid"

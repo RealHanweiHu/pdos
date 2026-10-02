@@ -95,7 +95,7 @@ export function DingTalkIntegration() {
   }
   if (state === "forbidden") {
     return (
-      <WorkspaceShell active="dingtalk-integration" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
+      <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
         <section className="mx-auto max-w-lg rounded-lg border bg-card p-6 text-center">
           <LockKeyIcon aria-hidden="true" className="mx-auto size-9 text-muted-foreground" />
           <h1 className="mt-3 text-lg font-semibold">当前角色不可访问</h1>

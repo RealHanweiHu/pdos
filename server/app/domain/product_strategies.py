@@ -36,6 +36,7 @@ from app.domain.product_workspace import (
 COST_INTERPRETATION = (
     "模块每台目标成本之和；NRE为一次性预算，不计入单台目标。预算、售价目标及周期均不是实际结果。"
 )
+MANUFACTURING_DISCIPLINES = frozenset({"ie", "pie"})
 
 
 class BudgetValue(Contract):
@@ -255,9 +256,11 @@ def publication_readiness(
         if not route["modules"]:
             issues.append("每条比较路线须分解子系统或模块目标成本，未知成本可明示")
     disciplines = {item["discipline"].lower() for item in row["professional_constraints"]}
-    for discipline in ("dqe", "sqe", "ie"):
+    for discipline in ("dqe", "sqe"):
         if discipline not in disciplines:
             issues.append(f"尚未记录{discipline.upper()}约束或明确适用性处置")
+    if disciplines.isdisjoint(MANUFACTURING_DISCIPLINES):
+        issues.append("尚未记录PIE（产品导入/工艺/工业工程）约束或明确适用性处置")
     for constraint in row["professional_constraints"]:
         if not constraint["work_item_id"] and not constraint["disposition"]:
             issues.append(f"专业约束 {constraint['discipline']} 尚无评审任务或明确处置")
@@ -336,6 +339,114 @@ def _strategy(
     }
 
 
+def create_strategy_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: StrategyDraft,
+    *,
+    source_finding_id: UUID | None = None,
+    source_finding_position: int | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    opportunity = ProductStrategyService._opportunity(
+        connection, context, space_id, draft.opportunity_id
+    )
+    _line(
+        connection,
+        context,
+        space_id,
+        opportunity["product_line_id"],
+        access="contributor",
+        writable=True,
+    )
+    table = tables.product_strategies
+    fingerprint = digest(draft.model_dump(mode="json"))
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.created_by_user_id == context.user.id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同策略")
+        return _strategy(connection, context, existing, opportunity)
+    if opportunity["state"] == "closed":
+        raise ProductWorkError("已关闭机会不能新建开发策略")
+    node_id = uuid4()
+    series_id, revision = node_id, 1
+    if draft.supersedes_id:
+        previous = (
+            connection.execute(
+                select(table).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space_id,
+                    table.c.id == draft.supersedes_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if previous is None or previous["state"] != "published":
+            raise ProductWorkError("新修订须基于已发布策略")
+        prior_opportunity = ProductStrategyService._opportunity(
+            connection, context, space_id, previous["opportunity_id"]
+        )
+        if prior_opportunity["series_id"] != opportunity["series_id"]:
+            raise ProductWorkError("策略修订须来自同一机会系列")
+        if connection.execute(
+            select(table.c.id).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.supersedes_id == previous["id"],
+            )
+        ).first():
+            raise ProductWorkError("已存在后续策略修订，请打开该修订")
+        series_id, revision = previous["series_id"], previous["revision_number"] + 1
+    values = _facts(
+        connection,
+        context,
+        space_id,
+        opportunity["product_line_id"],
+        draft.content,
+        opportunity,
+    )
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **values,
+                id=node_id,
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=opportunity["product_line_id"],
+                opportunity_id=opportunity["id"],
+                created_by_user_id=context.user.id,
+                series_id=series_id,
+                supersedes_id=draft.supersedes_id,
+                revision_number=revision,
+                request_id=draft.request_id,
+                request_digest=fingerprint,
+                source_finding_id=source_finding_id,
+                source_finding_position=source_finding_position,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    result = _strategy(connection, context, row, opportunity)
+    _emit(connection, context, space_id, "product_strategy", "created", row)
+    return result
+
+
 class ProductStrategyService:
     def __init__(self, engine: Engine) -> None:
         self.engine = engine
@@ -404,8 +515,9 @@ class ProductStrategyService:
             )
             return item
 
+    @staticmethod
     def _opportunity(
-        self, connection: Connection, context: AuthContext, space_id: UUID, opportunity_id: UUID
+        connection: Connection, context: AuthContext, space_id: UUID, opportunity_id: UUID
     ) -> Any:
         row = (
             connection.execute(
@@ -424,100 +536,8 @@ class ProductStrategyService:
         return row
 
     def create(self, context: AuthContext, space_id: UUID, draft: StrategyDraft) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            opportunity = self._opportunity(connection, context, space_id, draft.opportunity_id)
-            _line(
-                connection,
-                context,
-                space_id,
-                opportunity["product_line_id"],
-                access="contributor",
-                writable=True,
-            )
-            table = tables.product_strategies
-            fingerprint = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.created_by_user_id == context.user.id,
-                        table.c.request_id == draft.request_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if existing:
-                if existing["request_digest"] != fingerprint:
-                    raise ProductWorkError("同一请求编号不能用于不同策略")
-                return _strategy(connection, context, existing, opportunity)
-            if opportunity["state"] == "closed":
-                raise ProductWorkError("已关闭机会不能新建开发策略")
-            node_id = uuid4()
-            series_id, revision = node_id, 1
-            if draft.supersedes_id:
-                previous = (
-                    connection.execute(
-                        select(table).where(
-                            table.c.tenant_id == context.tenant.id,
-                            table.c.market_space_id == space_id,
-                            table.c.id == draft.supersedes_id,
-                        )
-                    )
-                    .mappings()
-                    .one_or_none()
-                )
-                if previous is None or previous["state"] != "published":
-                    raise ProductWorkError("新修订须基于已发布策略")
-                prior_opportunity = self._opportunity(
-                    connection, context, space_id, previous["opportunity_id"]
-                )
-                if prior_opportunity["series_id"] != opportunity["series_id"]:
-                    raise ProductWorkError("策略修订须来自同一机会系列")
-                if connection.execute(
-                    select(table.c.id).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.supersedes_id == previous["id"],
-                    )
-                ).first():
-                    raise ProductWorkError("已存在后续策略修订，请打开该修订")
-                series_id, revision = previous["series_id"], previous["revision_number"] + 1
-            values = _facts(
-                connection,
-                context,
-                space_id,
-                opportunity["product_line_id"],
-                draft.content,
-                opportunity,
-            )
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        **values,
-                        id=node_id,
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=opportunity["product_line_id"],
-                        opportunity_id=opportunity["id"],
-                        created_by_user_id=context.user.id,
-                        series_id=series_id,
-                        supersedes_id=draft.supersedes_id,
-                        revision_number=revision,
-                        request_id=draft.request_id,
-                        request_digest=fingerprint,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
-            )
-            result = _strategy(connection, context, row, opportunity)
-            _emit(connection, context, space_id, "product_strategy", "created", row)
-            return result
+            return create_strategy_in_connection(connection, context, space_id, draft)
 
     def change(
         self,

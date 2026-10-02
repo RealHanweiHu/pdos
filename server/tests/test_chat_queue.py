@@ -36,6 +36,7 @@ def queued_chat(
     isolated_ai_api_database: str,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> QueuedChat:
     client, _, _ = api_context
     tenant, _, headers = setup_owner(client)
@@ -45,6 +46,7 @@ def queued_chat(
         get_engine(),
         tmp_path,
         monkeypatch,
+        request=request,
         output={
             "disposition": "answered",
             "claims": [

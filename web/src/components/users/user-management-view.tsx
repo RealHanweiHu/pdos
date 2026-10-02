@@ -1,5 +1,6 @@
 import { CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react/ssr";
 
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 
@@ -43,11 +44,12 @@ export function UserManagementView({
 }) {
   return (
     <WorkspaceShell
-      active="user-management"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={onLogout}
     >
+      <SettingsNav current="user-management" identity={identity}>
       <div className="border-b pb-4">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           Governance
@@ -83,6 +85,7 @@ export function UserManagementView({
           users={users}
         />
       </div>
+      </SettingsNav>
     </WorkspaceShell>
   );
 }

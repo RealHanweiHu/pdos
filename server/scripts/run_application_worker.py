@@ -14,6 +14,8 @@ from app.ai.change_discussion_queue import ChangeDiscussionQueue
 from app.ai.chat_queue import ChatQueue
 from app.ai.discussion_followup_queue import DiscussionFollowupQueue
 from app.ai.embeddings import EmbeddingError, configured_embedding_gateway
+from app.ai.issue_event_queue import IssueEventQueue
+from app.ai.meeting_event_queue import MeetingEventQueue
 from app.ai.report_import_queue import ReportImportQueue
 from app.ai.risk_queue import RiskQueue
 from app.ai.test_plan_queue import TestPlanQueue
@@ -41,7 +43,15 @@ def main() -> int:
                     embedding = None
                 with engine.begin() as c:
                     c.execute(text("SELECT cehub_ai.expire_application_runs(100)"))
+                meeting_queue = MeetingEventQueue(engine, gateway=gateway)
+                meeting_dispatch = meeting_queue.dispatch_once()
+                meeting_worked = meeting_queue.execute_next()
+                issue_queue = IssueEventQueue(engine, gateway=gateway)
+                issue_dispatch = issue_queue.dispatch_once()
+                issue_worked = issue_queue.execute_next()
                 worked = ChatQueue(engine, gateway=gateway).run_next(embedding_gateway=embedding)
+                worked = meeting_worked or meeting_dispatch.queued_count > 0 or worked
+                worked = issue_worked or issue_dispatch.queued_count > 0 or worked
                 worked = ChangeDiscussionQueue(engine, gateway=gateway).run_next() or worked
                 worked = DiscussionFollowupQueue(engine, gateway=gateway).run_next() or worked
                 worked = RiskQueue(engine, gateway=gateway).run_next() or worked

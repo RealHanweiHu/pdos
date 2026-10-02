@@ -226,6 +226,8 @@ def preview(
             if command.target_kind == "ecr"
             else {"open", "analysis", "action", "verification"}
         )
+        if command.target_kind == "issue" and existing.get("withdrawn_at") is not None:
+            raise ProductWorkError("原问题已撤回，不能新增供方通告关联")
         if existing["status"] not in allowed:
             raise ProductWorkError("原办理已结束或进入批准，请回原记录核对；不改写已有结论")
     if prior and (

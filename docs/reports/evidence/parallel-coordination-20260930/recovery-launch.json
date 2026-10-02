@@ -1,0 +1,86 @@
+{
+  "recorded_at_utc": "2026-09-30T16:23:19.460292+00:00",
+  "authorization": "user accepted recommended supply recovery and schedule feedback parallel continuation",
+  "migration_head_read_only": "0409_product_master_references",
+  "threads": [
+    {
+      "title": "推进物料供应与成本反馈闭环",
+      "thread_id": "01a0f2b5-01c6-7910-b51d-1559f90eef85",
+      "turn_id": "01a0f31e-d702-7131-bf46-1004021cddd8",
+      "status": "active",
+      "scope": "supply shortage, partial arrivals, snapshot reconciliation, recovery and named original Issue review"
+    },
+    {
+      "title": "推进排程与资源调整闭环",
+      "thread_id": "01a0f2b4-4698-75e1-8cfa-e4103a33af6d",
+      "turn_id": "01a0f31e-e662-7803-9e4c-80ba8b72d7ea",
+      "status": "active",
+      "scope": "actual progress/corrections, consecutive Forecast, resource feedback and forecast deviation"
+    }
+  ],
+  "cross_domain_bridge_owner": "coordinator",
+  "database_allocated_to_leaf_threads": false,
+  "database_accessed": false,
+  "checks_run": false,
+  "baseline_files": [
+    {
+      "path": "server/app/domain/material_schedule.py",
+      "sha256": "a1316ffe2deee45b1df77ad18baef12160e6b633d7cc114eca007b616f711801"
+    },
+    {
+      "path": "server/app/domain/material_exceptions.py",
+      "sha256": "2f5a858040005ce98c7b1deb1a1a62fc6fbcf3616dec2413d3030c59a796529e"
+    },
+    {
+      "path": "server/app/domain/schedule_forecasts.py",
+      "sha256": "4196c56516263512666ddefc617f41d831cc93c01be725164250633f09749449"
+    },
+    {
+      "path": "server/app/domain/schedule_nodes.py",
+      "sha256": "9f2c000acf1d5e2a200edcc5e2117c0d99d69db4f7f98c80bae0939bd28e6a26"
+    },
+    {
+      "path": "server/app/api/npi_execution.py",
+      "sha256": "bf17ba40606403c6882e93217b7e7aff449bb1631c42281c61f15d9576e60ddf"
+    },
+    {
+      "path": "server/app/api/plan_scenarios.py",
+      "sha256": "44c5344447368deb62153a9917ca84e3f1a157770f7345f01a3de1790c7b39e5"
+    }
+  ],
+  "formal_completion_claimed": false,
+  "seam_audit": {
+    "recorded_at_utc": "2026-09-30T16:27:03.775336+00:00",
+    "mode": "read-only source audit; no code edits, tests or database access",
+    "findings": [
+      {
+        "subject": "applied current resource reservations missing from Forecast basis",
+        "paths": [
+          "server/app/domain/schedule_forecasts.py:97",
+          "server/app/domain/resource_reallocations.py:595"
+        ],
+        "owner": "schedule thread; shared migration coordinated separately",
+        "minimum_case": "only reservation moves one week; old Forecast must be stale and new window be consumed or explicitly unknown"
+      },
+      {
+        "subject": "original Issue recovery closure lacks typed current exception/review/source binding",
+        "paths": [
+          "server/app/domain/issues.py:829",
+          "server/app/domain/material_exceptions.py:443"
+        ],
+        "owner": "coordinator common guard, supply thread review inputs and page",
+        "minimum_case": "recovery preview then stock frozen or returned; stale closure denied with zero Issue/event/audit writes"
+      },
+      {
+        "subject": "unresolved material bindings may disappear after formal baseline node replacement",
+        "paths": [
+          "server/app/domain/material_schedule.py:129",
+          "server/app/domain/schedule_forecasts.py:85"
+        ],
+        "owner": "coordinator material bridge; schedule thread projection",
+        "minimum_case": "B2 removes B1 shortage node; new Forecast retains unresolved source-bound impact until explicit rebind/release"
+      }
+    ],
+    "validated_in_runtime": false
+  }
+}

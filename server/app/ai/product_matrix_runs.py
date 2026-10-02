@@ -176,7 +176,12 @@ class ProductMatrixRuns:
             for row in values[:20]:
                 original = row["run_context"]["matrix_source"]
                 readable(c, context, original)
-                selection_key = digest(original["selection"])
+                selection_key = digest(
+                    {
+                        "selection": original["selection"],
+                        "projection_version": original["projection_version"],
+                    }
+                )
                 if selection_key not in digest_cache:
                     try:
                         digest_cache[selection_key] = rebuild(c, context.tenant.id, original)[
@@ -407,7 +412,7 @@ class ProductMatrixRuns:
                         tables.model_invocations.c.run_id == row["id"],
                         tables.model_invocations.c.id == invocation_id,
                         tables.model_invocations.c.status == "succeeded",
-                        tables.model_invocations.c.model_call_id == call_id,
+                        tables.model_invocations.c.budget_call_id == call_id,
                         tables.model_invocations.c.agent_key == "product_management_intelligence",
                     )
                 ).first()

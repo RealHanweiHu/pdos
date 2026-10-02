@@ -161,6 +161,8 @@ def sources(
             row = NpiExecutionService._row(
                 c, table, tenant_id=tenant, project_id=project, record_id=identity
             )
+            if key == "issue_id" and row.get("withdrawn_at") is not None:
+                raise ProductWorkError("原问题已撤回，不能新增供方工程关联")
             result[key] = _plain(dict(row))
     return result
 
@@ -260,6 +262,7 @@ class SupplierEngineeringService:
                         .where(
                             table.c.tenant_id == context.tenant.id,
                             table.c.project_id == project,
+                            *([table.c.withdrawn_at.is_(None)] if name == "issues" else []),
                         )
                         .order_by(table.c.created_at.desc())
                         .limit(200)
@@ -340,6 +343,20 @@ class SupplierEngineeringService:
         record: UUID,
         command: EngineeringApply,
     ) -> dict[str, Any]:
+        with self.engine.begin() as c:
+            return self.apply_in_connection(c, context, project, supplier, record, command)
+
+    @staticmethod
+    def apply_in_connection(
+        c: Connection,
+        context: AuthContext,
+        project: UUID,
+        supplier: UUID,
+        record: UUID,
+        command: EngineeringApply,
+        *,
+        supplier_reply: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         signature = digest(
             {
                 "project": str(project),
@@ -348,71 +365,72 @@ class SupplierEngineeringService:
                 "command": command.model_dump(mode="json"),
             }
         )
-        with self.engine.begin() as c:
-            NpiExecutionService._project(
-                c, tenant_id=context.tenant.id, project_id=project, lock=True
-            )
-            BuildMaterialService._authorize(c, context, project, write=True)
-            t = tables.supplier_engineering_records
-            prior = (
-                c.execute(
-                    select(t).where(
-                        t.c.tenant_id == context.tenant.id,
-                        t.c.created_by_user_id == context.user.id,
-                        t.c.request_id == command.request_id,
-                    )
+        NpiExecutionService._project(
+            c, tenant_id=context.tenant.id, project_id=project, lock=True
+        )
+        BuildMaterialService._authorize(c, context, project, write=True)
+        t = tables.supplier_engineering_records
+        prior = (
+            c.execute(
+                select(t).where(
+                    t.c.tenant_id == context.tenant.id,
+                    t.c.created_by_user_id == context.user.id,
+                    t.c.request_id == command.request_id,
                 )
-                .mappings()
-                .one_or_none()
             )
-            if prior:
-                if prior["request_digest"] != signature:
-                    raise ProductWorkError("原请求已用于不同供方工程记录")
-                return _plain(dict(prior))
-            observed = preview(c, context, project, supplier, record, command)
-            if (
-                observed["digest"] != command.expected_digest
-                or observed["basis"]["previous_version"] != command.expected_version
-            ):
-                raise ProductWorkError("原记录、供方或证据已变化，请重新预览")
-            saved = (
-                c.execute(
-                    t.insert()
-                    .values(
-                        id=uuid4(),
-                        tenant_id=context.tenant.id,
-                        project_id=project,
-                        supplier_id=supplier,
-                        record_id=record,
-                        version=command.expected_version + 1,
-                        kind=command.kind,
-                        source_reference=command.source_reference,
-                        status=command.status,
-                        payload=command.model_dump(
-                            mode="json",
-                            exclude={"expected_version", "expected_digest", "request_id"},
-                        ),
-                        snapshot=observed["basis"],
-                        evidence_id=command.evidence_id,
-                        reason=command.reason,
-                        created_by_user_id=context.user.id,
-                        request_id=command.request_id,
-                        request_digest=signature,
-                    )
-                    .returning(t)
+            .mappings()
+            .one_or_none()
+        )
+        if prior:
+            if prior["request_digest"] != signature:
+                raise ProductWorkError("原请求已用于不同供方工程记录")
+            return _plain(dict(prior))
+        observed = preview(c, context, project, supplier, record, command)
+        if (
+            observed["digest"] != command.expected_digest
+            or observed["basis"]["previous_version"] != command.expected_version
+        ):
+            raise ProductWorkError("原记录、供方或证据已变化，请重新预览")
+        if supplier_reply is not None:
+            observed["basis"]["supplier_reply"] = supplier_reply
+        saved = (
+            c.execute(
+                t.insert()
+                .values(
+                    id=uuid4(),
+                    tenant_id=context.tenant.id,
+                    project_id=project,
+                    supplier_id=supplier,
+                    record_id=record,
+                    version=command.expected_version + 1,
+                    kind=command.kind,
+                    source_reference=command.source_reference,
+                    status=command.status,
+                    payload=command.model_dump(
+                        mode="json",
+                        exclude={"expected_version", "expected_digest", "request_id"},
+                    ),
+                    snapshot=observed["basis"],
+                    evidence_id=command.evidence_id,
+                    reason=command.reason,
+                    created_by_user_id=context.user.id,
+                    request_id=command.request_id,
+                    request_digest=signature,
                 )
-                .mappings()
-                .one()
+                .returning(t)
             )
-            NpiExecutionService._record_change(
-                c,
-                tenant_id=context.tenant.id,
-                project_id=project,
-                actor_user_id=context.user.id,
-                record_id=record,
-                record_type="supplier_engineering_record",
-                action=command.status,
-                before=None,
-                after=_plain(dict(saved)),
-            )
-            return _plain(dict(saved))
+            .mappings()
+            .one()
+        )
+        NpiExecutionService._record_change(
+            c,
+            tenant_id=context.tenant.id,
+            project_id=project,
+            actor_user_id=context.user.id,
+            record_id=record,
+            record_type="supplier_engineering_record",
+            action=command.status,
+            before=None,
+            after=_plain(dict(saved)),
+        )
+        return _plain(dict(saved))

@@ -10,7 +10,7 @@ from typing import Any, Literal
 from uuid import UUID, uuid4, uuid5
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from sqlalchemy import Connection, Engine, RowMapping, exists, func, select
+from sqlalchemy import Connection, Engine, RowMapping, String, cast, exists, func, select
 from sqlalchemy.dialects.postgresql import insert
 
 from app.auth.repository import AuthContext
@@ -236,7 +236,7 @@ def capture(
     event_row_id: int | None = None,
 ) -> RowMapping | None:
     current = packet(c, tenant, project, issue_id)
-    if current["reason"] == "covered":
+    if current["issue"].get("withdrawn_at") is not None or current["reason"] == "covered":
         return None
     t = tables.fmea_revision_candidates
     fingerprint = digest(current)
@@ -277,6 +277,68 @@ def capture(
     )
 
 
+def _trusted_ai_creation(
+    c: Connection, tenant: UUID, project: UUID, issue_id: UUID, event_row_id: int
+) -> bool:
+    """Match the persisted author, original audit and immutable generated result.
+
+    This runs inside EventAuditWriter before the application receipt is inserted.
+    Unknown or human authors retain the normal FMEA observation path.
+    """
+    i, e, a, r = tables.issues, tables.events, tables.audit_log, tables.ai_issue_event_results
+    query = (
+        select(r.c.id)
+        .select_from(
+            e.join(
+                a,
+                (a.c.tenant_id == e.c.tenant_id)
+                & (a.c.project_id == e.c.project_id)
+                & (a.c.event_id == e.c.event_id)
+                & (a.c.entity == e.c.entity)
+                & (a.c.entity_id == e.c.entity_id)
+                & (a.c.timestamp == e.c.timestamp),
+            )
+            .join(
+                i,
+                (i.c.tenant_id == e.c.tenant_id)
+                & (i.c.project_id == e.c.project_id)
+                & (i.c.id == e.c.entity_id),
+            )
+            .join(
+                r,
+                (r.c.tenant_id == i.c.tenant_id)
+                & (r.c.project_id == i.c.project_id)
+                & (cast(r.c.id, String) == a.c.context["result_id"].as_string()),
+            )
+        )
+        .where(
+            e.c.tenant_id == tenant,
+            e.c.project_id == project,
+            e.c.id == event_row_id,
+            e.c.entity_id == issue_id,
+            e.c.event_type == "ISSUE_CREATED",
+            e.c.entity == "issue",
+            e.c.source == "issue_service",
+            a.c.action == "issue.create",
+            a.c.actor_user_id.is_(None),
+            a.c.context["origin"].as_string() == "ai",
+            i.c.reported_by_user_id.is_(None),
+            i.c.created_by_ai_principal_id.is_not(None),
+            cast(i.c.created_by_ai_principal_id, String)
+            == a.c.context["writer_principal_id"].as_string(),
+            cast(r.c.run_id, String) == a.c.context["run_id"].as_string(),
+            cast(r.c.model_invocation_id, String) == a.c.context["model_invocation_id"].as_string(),
+            cast(r.c.event_row_id, String) == a.c.context["source_event_row_id"].as_string(),
+            r.c.proposal["disposition"].as_string() == "create_issue",
+            r.c.proposal["title"].as_string() == i.c.title,
+            r.c.proposal["description"].as_string() == i.c.description,
+            r.c.proposal["severity"].as_string() == i.c.severity,
+        )
+        .limit(1)
+    )
+    return c.execute(query).scalar_one_or_none() is not None
+
+
 def observe(
     c: Connection,
     tenant: UUID,
@@ -288,6 +350,12 @@ def observe(
 ) -> None:
     """Called after the original business write, in its transaction; no new business facts."""
     if event_type not in TRIGGERS:
+        return
+    if (
+        event_type == "ISSUE_CREATED"
+        and actor is None
+        and _trusted_ai_creation(c, tenant, project, entity_id, event_row_id)
+    ):
         return
     issue_ids: set[UUID] = set()
     ncr_id: UUID | None = None
@@ -460,7 +528,11 @@ def scan(
             raise ProductWorkError("项目不可用")
         fmea.authorize(c, context, project, Action.CAPA_EXECUTE)
         t = tables.issues
-        query = select(t.c.id).where(t.c.tenant_id == context.tenant.id, t.c.project_id == project)
+        query = select(t.c.id).where(
+            t.c.tenant_id == context.tenant.id,
+            t.c.project_id == project,
+            t.c.withdrawn_at.is_(None),
+        )
         if after_issue_id:
             query = query.where(t.c.id > after_issue_id)
         ids = c.execute(query.order_by(t.c.id).limit(31)).scalars().all()

@@ -40,6 +40,12 @@ export type ProjectTask = {
 
 export type IssueStatus = "open" | "analysis" | "action" | "verification" | "closed";
 
+export type MaterialClosureReference = {
+  exception_id: string;
+  review_id: string;
+  source_digest: string;
+};
+
 export type IssueType = "engineering" | "quality" | "supplier" | "test_failure" | "certification";
 
 export type ProjectIssue = {
@@ -50,7 +56,11 @@ export type ProjectIssue = {
   stage_id: string | null;
   owner_user_id: string | null;
   verifier_user_id: string | null;
-  reported_by_user_id: string;
+  reported_by_user_id: string | null;
+  created_by_ai_principal_id?: string | null;
+  ai_writer_name?: string | null;
+  withdrawn_at?: string | null;
+  ai_withdrawal_id?: string | null;
   title: string;
   description: string | null;
   issue_type: IssueType;

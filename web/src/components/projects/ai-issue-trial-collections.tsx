@@ -1,0 +1,94 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { isRecord, responseBody } from "@/components/workspace-api";
+
+const countLabels = {
+  total_runs: "全部原请求", succeeded_runs: "生成成功", failed_runs: "失败或未完成", pending_runs: "尚在运行", proposal_runs: "有建议结果", insufficient_runs: "资料不足待补证", unhandled_proposals: "建议尚未办理", declined_runs: "当前不采纳", reopened_runs: "当前重新考虑", created_issues: "本运行新建问题", reused_issues: "本运行复用问题", same_source_applied_runs: "同源其他运行已办理", withdrawn_issues: "已撤回的新建问题", human_edited_issues: "人工修改的问题", trial_candidates: "生成时试运行候选", evidence_only_runs: "仅保留建议证据", unrecorded_bindings: "生成时依据未留存",
+};
+const formulaLabels = { handled: "办理数", confirmation: "确认比例", retained_original: "保持原稿口径", withdrawal: "撤回比例", same_source: "同源办理", sampling: "持续抽检" };
+type Counts = Record<keyof typeof countLabels, number>;
+type Reason = { code: string; message: string };
+type Summary = { id: string; created_at: string; actor_name: string; as_of: string; total_runs: number; matching_runs: number };
+type Criterion = { numerator: number; denominator: number; basis_points: number | null; required: number; met: boolean | null };
+type Sample = { run_id: string; created_at: string; status: string; source_title: string; source_href: string | null; disposition: string | null; binding_kind: string; review_state: string; application_kind: string | null; same_source_applied: boolean; withdrawn: boolean; human_edited: boolean; match: { matches_protocol: boolean; reasons: Reason[]; followup_complete: boolean }; provenance: { provenance_verified: boolean; reasons: Reason[] } };
+type Collection = Summary & { window_start: string; window_end: string; counts: Counts; matching_counts: Counts; criteria: { minimum_handled_runs: { actual: number; required: number; met: boolean }; followup_complete: boolean; confirmation: Criterion; withdrawal: Criterion }; blockers: Reason[]; operational_requirements: Reason[]; formula: { label: string; value: string }[]; items: Sample[]; notice: string };
+type History = { items: Summary[]; next_before_id: string | null; can_collect: boolean };
+type Command = { request_id: string };
+const statuses: Record<string, string> = { queued: "等待运行", running: "运行中", succeeded: "生成成功", failed: "运行失败", degraded: "本次未完成", waiting_input: "等待补充资料", cancelled: "已停止" };
+const dispositions: Record<string, string> = { create_issue: "建议新建", reuse_issue: "建议沿用", insufficient_evidence: "资料不足" };
+const bindings: Record<string, string> = { trial_candidate: "生成时试运行候选", evidence_only: "仅保留建议证据", not_recorded: "生成时依据未留存" };
+const reviews: Record<string, string> = { unreviewed: "未处置", declined: "不采纳", reopened: "重新考虑" };
+function record(value: unknown): Record<string, unknown> { if (!isRecord(value)) throw new Error("采集资料不完整，请重新核对"); return value; }
+function text(value: unknown): string { if (typeof value !== "string") throw new Error("采集资料不完整，请重新核对"); return value; }
+function count(value: unknown): number { if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) throw new Error("采集数值不完整，请重新核对"); return value; }
+function flag(value: unknown): boolean { if (typeof value !== "boolean") throw new Error("采集状态不完整，请重新核对"); return value; }
+function stamp(value: unknown): string { const result = text(value); if (!Number.isFinite(Date.parse(result))) throw new Error("采集时间不完整，请重新核对"); return result; }
+function reasons(value: unknown): Reason[] { if (!Array.isArray(value)) throw new Error("采集核对原因不完整"); return value.map(item => { const row = record(item); return { code: text(row.code), message: text(row.message) }; }); }
+function href(value: unknown): string | null { if (value === null) return null; const path = text(value); if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) return null; try { return new URL(path, "https://pdos.invalid").origin === "https://pdos.invalid" ? path : null; } catch { return null; } }
+function summary(value: unknown): Summary { const row = record(value); if (row.qualification_granted !== false) throw new Error("采集回执不授予资格，请重新核对原件"); const total = count(row.total_runs), matching = count(row.matching_runs); if (matching > total) throw new Error("匹配样本数不完整"); return { id: text(row.id), created_at: stamp(row.created_at), actor_name: text(row.actor_name), as_of: stamp(row.as_of), total_runs: total, matching_runs: matching }; }
+function history(value: unknown): History { const row = record(value); if (!Array.isArray(row.items)) throw new Error("采集历史不完整"); return { items: row.items.map(summary), next_before_id: row.next_before_id === null ? null : text(row.next_before_id), can_collect: flag(row.can_collect) }; }
+function counts(value: unknown): Counts { const row = record(value); return Object.fromEntries(Object.keys(countLabels).map(key => [key, count(row[key])])) as Counts; }
+function rate(value: unknown): number { const result = count(value); if (result > 10000) throw new Error("采集比率不完整"); return result; }
+function criterion(value: unknown): Criterion { const row = record(value); return { numerator: count(row.numerator), denominator: count(row.denominator), basis_points: row.basis_points === null ? null : rate(row.basis_points), required: rate(row.required), met: row.met === null ? null : flag(row.met) }; }
+function collection(value: unknown): Collection {
+  const row = record(value), head = summary(row), all = counts(row.counts), matching = counts(row.matching_counts), criteria = record(row.criteria), minimum = record(criteria.minimum_handled_runs);
+  if (!Array.isArray(row.items) || row.items.length > 5000 || row.items.length !== head.total_runs || all.total_runs !== head.total_runs || matching.total_runs !== head.matching_runs) throw new Error("采集样本或统计口径不完整；不会展示截断结果");
+  const items = row.items.map(value => {
+    const item = record(value), match = record(item.match), provenance = record(item.provenance);
+    if (provenance.provider_verified !== false) throw new Error("服务商调用核验口径不匹配，请重新读取原件");
+    return { run_id: text(item.run_id), created_at: stamp(item.created_at), status: text(item.status), source_title: text(item.source_title), source_href: href(item.source_href), disposition: item.disposition === null ? null : text(item.disposition), binding_kind: text(item.binding_kind), review_state: text(item.review_state), application_kind: item.application_kind === null ? null : text(item.application_kind), same_source_applied: flag(item.same_source_applied), withdrawn: flag(item.withdrawn), human_edited: flag(item.human_edited), match: { matches_protocol: flag(match.matches_protocol), reasons: reasons(match.reasons), followup_complete: flag(match.followup_complete) }, provenance: { provenance_verified: flag(provenance.provenance_verified), reasons: reasons(provenance.reasons) } };
+  });
+  if (items.filter(item => item.match.matches_protocol).length !== head.matching_runs) throw new Error("匹配样本不完整；不会展示截断结果");
+  return { ...head, window_start: stamp(row.window_start), window_end: stamp(row.window_end), counts: all, matching_counts: matching, criteria: { minimum_handled_runs: { actual: count(minimum.actual), required: count(minimum.required), met: flag(minimum.met) }, followup_complete: flag(criteria.followup_complete), confirmation: criterion(criteria.confirmation), withdrawal: criterion(criteria.withdrawal) }, blockers: reasons(row.blockers), operational_requirements: row.operational_requirements === undefined ? [] : reasons(row.operational_requirements), formula: row.formula === undefined ? [] : Object.entries(formulaLabels).map(([key, label]) => ({ label, value: text(record(row.formula)[key]) })), items, notice: text(row.notice) };
+}
+class RequestError extends Error { constructor(message: string, readonly status: number, readonly code: string | null) { super(message); } }
+async function request(path: string, command?: Command): Promise<unknown> {
+  const response = await fetch(path, { method: command ? "POST" : "GET", cache: "no-store", headers: command ? { "Content-Type": "application/json" } : undefined, body: command ? JSON.stringify(command) : undefined });
+  const value: unknown = await responseBody(response).catch(() => null);
+  if (!response.ok) throw new RequestError(isRecord(value) && typeof value.detail === "string" ? value.detail : isRecord(value) && isRecord(value.detail) && typeof value.detail.message === "string" ? value.detail.message : "采集结果暂不可用，请核对原请求", response.status, isRecord(value) && isRecord(value.detail) && typeof value.detail.code === "string" ? value.detail.code : null);
+  return value;
+}
+function time(value: string) { return new Date(value).toLocaleString("zh-CN"); }
+function percent(value: number | null) { return value === null ? "—" : `${value / 100}%`; }
+function met(value: boolean | null) { return value === null ? "无法判断" : value ? "达到原登记要求" : "尚未达到原登记要求"; }
+function ReasonList({ items }: { items: Reason[] }) { return <ul className="space-y-1 text-primary">{items.map((item, index) => <li key={`${item.code}-${index}`}>{item.message}</li>)}</ul>; }
+function Detail({ value }: { value: Collection }) {
+  const [page, setPage] = useState(0), pages = Math.max(1, Math.ceil(value.total_runs / 20));
+  return <section aria-label="原登记采集详情" className="space-y-3 border-t pt-3"><p className="font-medium">{value.actor_name} 保存的原登记采集</p><p className="text-muted-foreground">原窗口：{time(value.window_start)} 至 {time(value.window_end)}（不含结束时刻）</p><p className="text-muted-foreground">采集截至：{time(value.as_of)} · 保存于 {time(value.created_at)}</p><p className="leading-5 text-muted-foreground">{value.notice}</p>
+    <details><summary className="cursor-pointer font-medium text-primary">全窗口 {value.total_runs} 个原请求 · 匹配原登记 {value.matching_runs} 个</summary><div className="mt-3 overflow-x-auto"><table className="w-full text-left"><thead><tr><th className="py-2 font-medium">统计项目</th><th className="px-2 font-medium">全窗口</th><th className="px-2 font-medium">匹配版本</th></tr></thead><tbody>{(Object.keys(countLabels) as (keyof Counts)[]).map(key => <tr key={key} className="border-t"><th className="py-2 font-normal text-muted-foreground">{countLabels[key]}</th><td className="px-2 tabular-nums">{value.counts[key]}</td><td className="px-2 tabular-nums">{value.matching_counts[key]}</td></tr>)}</tbody></table></div></details>
+    <p className="text-muted-foreground">以下要求只核对匹配原登记的运行；同来源的不同运行分别保留，其他运行办理不重复计本次确认。</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="font-medium">最小办理数</p><p>{value.criteria.minimum_handled_runs.actual} / {value.criteria.minimum_handled_runs.required} · {met(value.criteria.minimum_handled_runs.met)}</p></div><div><p className="font-medium">跟踪时长</p><p>{value.criteria.followup_complete ? "已完成原登记跟踪时长" : "尚未完成原登记跟踪时长"}</p></div>{(["confirmation", "withdrawal"] as const).map(key => { const item = value.criteria[key]; return <div key={key}><p className="font-medium">{key === "confirmation" ? "确认比例" : "撤回比例"}</p><p className="mt-1 text-base tabular-nums">{percent(item.basis_points)}</p><p className="leading-5 text-muted-foreground">{item.numerator} / {item.denominator} · 原要求{key === "confirmation" ? "不低于" : "不高于"} {percent(item.required)} · {met(item.met)}</p></div>; })}</div>
+    {value.formula.length > 0 && <details><summary className="cursor-pointer font-medium text-primary">原采集统计口径</summary><dl className="mt-3 space-y-2">{value.formula.map(item => <div key={item.label}><dt className="font-medium">{item.label}</dt><dd className="mt-1 leading-5 text-muted-foreground">{item.value}</dd></div>)}</dl></details>}
+    <ReasonList items={value.blockers} />{value.operational_requirements.length > 0 && <section aria-label="自动写入后的运行要求" className="space-y-2 border-t pt-3"><h4 className="font-medium">自动写入后的运行要求</h4><p className="leading-5 text-muted-foreground">这些要求用于后续自动写入运行，不作为逐次确认办理的前置条件。</p><ReasonList items={value.operational_requirements} /></section>}<p className="leading-5 text-primary">采集不授予自动写入资格。模拟记录、版本匹配和溯源核对均不等于真实模型成绩；服务商调用真实性尚未核验。</p>
+    <div className="space-y-2"><p className="font-medium">全窗口样本 · 共 {value.total_runs} 条，当前第 {page + 1} / {pages} 页（每页 20 条）</p>{!value.items.length && <p className="text-muted-foreground">原窗口没有运行记录。</p>}<ol className="divide-y">{value.items.slice(page * 20, (page + 1) * 20).map(item => <li className="space-y-1.5 py-3" key={item.run_id}><p className="break-words font-medium">{item.source_title}</p><p className="text-muted-foreground">{time(item.created_at)} · {statuses[item.status] ?? "运行状态待核对"} · {item.disposition ? dispositions[item.disposition] ?? "建议类型待核对" : "尚无建议结果"}</p><p>{bindings[item.binding_kind] ?? "生成依据待核对"} · {reviews[item.review_state] ?? "处置待核对"} · {item.application_kind === "created" ? "本运行已新建问题" : item.application_kind === "reused" ? "本运行已复用问题" : "本运行未应用"}</p><p className={item.match.matches_protocol ? "text-muted-foreground" : "text-primary"}>{item.match.matches_protocol ? "匹配原登记版本" : "未匹配原登记版本"} · {item.match.followup_complete ? "跟踪时长已完成" : "跟踪时长未完成"}</p><ReasonList items={item.match.reasons} /><p className="text-muted-foreground">{item.provenance.provenance_verified ? "原生成资料溯源已核对" : "原生成资料溯源尚未核实"}</p><ReasonList items={item.provenance.reasons} />{item.same_source_applied && <p className="text-muted-foreground">同源其他运行已办理，本运行不重复计确认。</p>}{item.withdrawn && <p className="text-primary">原问题已撤回，历史保留。</p>}{item.human_edited && <p>原问题已有人工修改。</p>}{item.source_href && <a className="inline-block text-primary underline underline-offset-2" href={item.source_href}>查看来源记录</a>}</li>)}</ol>{pages > 1 && <div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(value => value - 1)}>上一页采集样本</Button><Button size="sm" variant="outline" disabled={page + 1 === pages} onClick={() => setPage(value => value + 1)}>下一页采集样本</Button></div>}</div>
+  </section>;
+}
+
+export function AiIssueTrialCollections({ projectId, protocolId }: { projectId: string; protocolId: string }) { return <Collections key={`${projectId}:${protocolId}`} projectId={projectId} protocolId={protocolId} />; }
+function Collections({ projectId, protocolId }: { projectId: string; protocolId: string }) {
+  const [data, setData] = useState<History | null>(null), [selected, setSelected] = useState<Collection | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState<string | null>(null), [pending, setPending] = useState<Command | null>(null), [notice, setNotice] = useState<string | null>(null);
+  const active = useRef(true), locked = useRef(false);
+  useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
+  const base = `/api/projects/${encodeURIComponent(projectId)}/ai-issue-trials/${encodeURIComponent(protocolId)}/collections`;
+  function fail(error: unknown) { setError(error instanceof Error ? error.message : "采集记录读取失败"); if (error instanceof RequestError && [401, 403].includes(error.status)) { setData(null); setSelected(null); } }
+  async function load(older = false) {
+    if (locked.current) return; locked.current = true; setBusy(true); setError(null);
+    try { const page = history(await request(`${base}?limit=20${older && data?.next_before_id ? `&before_id=${encodeURIComponent(data.next_before_id)}` : ""}`)); if (active.current) setData(old => older && old ? { ...page, items: [...old.items, ...page.items.filter(item => !old.items.some(previous => previous.id === item.id))] } : page); }
+    catch (error) { if (active.current) fail(error); }
+    finally { locked.current = false; if (active.current) setBusy(false); }
+  }
+  async function open(id: string) {
+    if (locked.current) return; locked.current = true; setBusy(true); setSelected(null); setError(null);
+    try { const value = collection(await request(`${base}/${encodeURIComponent(id)}`)); if (value.id !== id) throw new Error("原采集记录不匹配，请重新读取"); if (active.current) setSelected(value); }
+    catch (error) { if (active.current) fail(error); }
+    finally { locked.current = false; if (active.current) setBusy(false); }
+  }
+  async function save(command = { request_id: crypto.randomUUID() }) {
+    if (locked.current || (!pending && !data?.can_collect)) return; locked.current = true; setBusy(true); setError(null); setPending(command); setNotice(null);
+    try { const result = record(await request(base, command)), value = collection(result.collection); if (typeof result.replayed !== "boolean") throw new Error("采集回执尚未完整核对，请沿原请求重试"); if (active.current) { setSelected(value); setPending(null); setNotice(result.replayed ? "已核对原采集回执，没有重复保存。" : "已保存本次采集，原窗口和全部样本可回查。采集不授予资格。"); setData(old => old ? { ...old, items: [value, ...old.items.filter(item => item.id !== value.id)] } : old); } }
+    catch (error) { if (active.current) { fail(error); if (error instanceof RequestError && error.status >= 400 && error.status < 500 && !error.code?.endsWith("_RETRY")) setPending(null); } }
+    finally { locked.current = false; if (active.current) setBusy(false); }
+  }
+  return <details className="min-w-0 border-t pt-3" onToggle={event => { if (event.target === event.currentTarget && event.currentTarget.open && !data && !busy && !pending) void load(); }}><summary className="cursor-pointer text-sm font-medium text-primary">按原登记采集</summary><div className="mt-3 space-y-3 text-xs"><p className="leading-5 text-muted-foreground">窗口结束后，按服务器当前时点固定原窗口全部运行，并单列匹配原登记的版本。超过 5000 条会明确拒绝保存，不留部分结果。</p><div className="flex flex-wrap gap-2"><Button size="sm" disabled={busy || !!pending || !data?.can_collect} onClick={() => void save()}>采集当前记录</Button><Button size="sm" variant="outline" disabled={busy || !!pending} onClick={() => void load()}>刷新采集历史</Button></div>{data && !data.can_collect && <p className="text-muted-foreground">当前仅可回查采集记录；采集须具备办理权限，并符合原登记窗口要求。</p>}{busy && <p role="status">正在核对采集记录…</p>}{error && <p role="alert" className="text-destructive">{error}</p>}{notice && <p role="status" className="text-muted-foreground">{notice}</p>}{pending && !busy && <div className="space-y-2"><p className="text-primary">采集结果尚未明确，沿原请求核对，不另存一次采集。</p><Button size="sm" onClick={() => void save(pending)}>沿原请求核对采集结果</Button></div>}{data?.items.length === 0 && <p className="text-muted-foreground">尚无原登记采集记录。</p>}{data?.items.map(item => <div className="flex flex-wrap items-center justify-between gap-2 border-b py-2" key={item.id}><div className="min-w-0 space-y-1"><p>{time(item.created_at)} · {item.actor_name}</p><p className="text-muted-foreground">全窗口 {item.total_runs} 个 · 匹配原登记 {item.matching_runs} 个 · 截至 {time(item.as_of)}</p></div><Button size="sm" variant="outline" disabled={busy || !!pending} onClick={() => void open(item.id)}>查看原采集</Button></div>)}{data?.next_before_id && <Button size="sm" variant="outline" disabled={busy || !!pending} onClick={() => void load(true)}>更早的采集记录</Button>}{selected && <Detail key={selected.id} value={selected} />}</div></details>;
+}

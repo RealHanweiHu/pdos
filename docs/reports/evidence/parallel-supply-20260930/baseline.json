@@ -1,0 +1,391 @@
+{
+  "head": "9fab424c4a3dfc4909499aea11862b3cb0bc50ba",
+  "files": [
+    {
+      "path": "server/app/api/npi_execution.py",
+      "sha256": "c0e4c7c714bbec5a0226f7cf1c459294be9aa7b9c4c443cb973aa10fdd3d82a1",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/build_material_changes.py",
+      "sha256": "1454176ef2440788ae63357f08f95b1b9b8e90382bd4221f234951415d76b965",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/build_materials.py",
+      "sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_alternatives.py",
+      "sha256": "84ba61cad9112be7a8d86b020c9ebf9c1c99f1701ca1162582566fb14a2b082d",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_backtests.py",
+      "sha256": "5cab7d5a53891b10b34e4003721e8ae48c32278b650a27bdb445f611e94c4159",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_definition_feedback.py",
+      "sha256": "57656d288a232f4ebfaf723e38681d5a22e0f038c60361ef5902a8f599be9485",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_freezes.py",
+      "sha256": "2f623c30395a2ee89141e938ef3e7f6e9ea41cb34d9fff05f60f2cf807dbee71",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_gaps.py",
+      "sha256": "8e98227118a6688ae7a2128c67457a3275b5451093409f680dabaf28b6299816",
+      "git_status": "M server/app/domain/cost_gaps.py"
+    },
+    {
+      "path": "server/app/domain/cost_imports.py",
+      "sha256": "97ee824938d5f40efbcd692097fe47b478f818fecf0cdf0984386a8a4b8aa8cd",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_inputs.py",
+      "sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_reduction_findings.py",
+      "sha256": "25f55164c9ea19fa370dac2f1026af504c4621740ee9b04e0cc1f16a2d34c7fc",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_rollups.py",
+      "sha256": "2245b67937b38bd660c94b34462f0f02559c1c0a1ceae60c00951399589a07a8",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_admission.py",
+      "sha256": "b975c40872b2be24ef3c99db4e011c0189165c896fab57bfd701f389f7edc39c",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_allocations.py",
+      "sha256": "2c67610c02938500cda6d86ed36a837728d5876785802d6aa5900a2d31a95de1",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_corrections.py",
+      "sha256": "e0475e19e30ffc5720a2f86d3b57d8b99457085c07c250066f7887206a3285d5",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_coverage.py",
+      "sha256": "17fe10649689a43f8e5bb66f118d7190afc69bcb9bc48700fa3f4323160468a8",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_exceptions.py",
+      "sha256": "2f5a858040005ce98c7b1deb1a1a62fc6fbcf3616dec2413d3030c59a796529e",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_exposure.py",
+      "sha256": "61dff75310a7ee3f5d80805f18f466e2cfa48a38afb0a3c01289c52ebf53a1b6",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_movements.py",
+      "sha256": "76706d0ea18b7fb8aec2f86dc204e228321d0fefbfcb6ff45783508b361d583c",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_schedule.py",
+      "sha256": "a1316ffe2deee45b1df77ad18baef12160e6b633d7cc114eca007b616f711801",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_supply_pools.py",
+      "sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/portfolio_materials.py",
+      "sha256": "112310488404f4874b1be384edfb37f14b88e5b88545e09d4abf292e8342a5e1",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/portfolio_suppliers.py",
+      "sha256": "e261897f1a06ed8929a05272157aaa4172958c6be36c27f9a7cabfc220008e95",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_compliance.py",
+      "sha256": "a3f568d69ad877b6879669d2743eec8437a77cd5e02202d94786226fcf1fdda8",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_engineering.py",
+      "sha256": "ff4fd5facd7d551429dcc73b5b51a27daafa209b7d0b5a9aeea440d4dab8daef",
+      "git_status": "M server/app/domain/supplier_engineering.py"
+    },
+    {
+      "path": "server/app/domain/supplier_notice_applications.py",
+      "sha256": "b99ce8478e7356bc3eb33f64f24635db5a3303a7faf4737bf819cabaa573cced",
+      "git_status": "M server/app/domain/supplier_notice_applications.py"
+    },
+    {
+      "path": "server/app/domain/supplier_notice_dispatches.py",
+      "sha256": "cc08f59a1416ee607619e48ee31962843355739c692e0d5a8b798a19fd81898b",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_notice_impact.py",
+      "sha256": "c3b5b18bf25005acaa02f489c700353ec17bfa423dd2c96666f968fc65a3cba9",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_notice_matching.py",
+      "sha256": "49a90d6579810a184fc650bbc28ef73ba6c1f01625f4eeadedbb95a60acb8378",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_notice_reviews.py",
+      "sha256": "1c2362cd540587c8ef3250c02f7eb3e255f97602f0bef0d2d2a7af2d1fea81de",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_notice_scans.py",
+      "sha256": "708b14d3bd39b509bf737d6c52afbc2fa41223326bb6971cb0eab79478b954e2",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_notice_watches.py",
+      "sha256": "49839789001ee5726691c063620e0d3f34af07facb4d257122974819cafeeb84",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_recovery_findings.py",
+      "sha256": "00b9bae555e4021f96f62bcbd57bf12ac28c756fd0b62ad71cff9a5ff283bd52",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_recovery_results.py",
+      "sha256": "72780d72b2838b6d61ba4d555443ca82761f12baee420ea39e51c6b9351f6635",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_recovery_reviews.py",
+      "sha256": "b5505c9fb868775d4e5486ebaf8ef7a39769626c5c68eeabadf6a3431c1c589e",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supply_imports.py",
+      "sha256": "49c107029d95164b31ca6e26f2c953b58dbcb50bb33f51dd1c311c35b1883021",
+      "git_status": ""
+    },
+    {
+      "path": "server/app/domain/supply_sharing.py",
+      "sha256": "dd74c3c40e29d5e0ffc011b1b25007a7a7447787e00e2cac990cece79ce1ecbb",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/ai/cost-reduction-proposal.tsx",
+      "sha256": "c6060a6bce69691373d64aed614543b67c0ef3292395a9848aefa90b2b2bb319",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/ai/supplier-recovery-proposal.tsx",
+      "sha256": "be43c7ee9f5aff1d2098ead71058b82e625978e1d4f5bf8855a31effd8dd5c62",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/portfolio/portfolio-materials.tsx",
+      "sha256": "1424e0f567dfd91252070fe6ea6998d86341a9c94eecee36fe59c0898500a7a8",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/portfolio/portfolio-suppliers.tsx",
+      "sha256": "e76b29d2bf7386699360bdb02329cfeac7704d9fd26504bf216fde9a4ece79cc",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/build-material-coverage.tsx",
+      "sha256": "66fa20e187413d55792f0133b1d4bf47d4f26db3c8254e694efaeb644c906858",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/build-materials.tsx",
+      "sha256": "b37afc47891cabf15629fc042363e2cd0cb17edbd7bc784a14e76929c053bbe1",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/build-supply-allocation.tsx",
+      "sha256": "f9a476a356757cab3db506462391475f919f2947eaa090a0341db901efae69b4",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-alternatives.tsx",
+      "sha256": "ef2017f0692098163d2517f355d250c5f1823629a7a7158e52aee9917a980581",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-backtests.tsx",
+      "sha256": "3d130ec453c612cd17049ccc8f1db99a41fff2a391633ba0844ba3210e72a6be",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-definition-feedback.tsx",
+      "sha256": "5ee0a6570d0136e0d8bd0769ce8bb729df57b5165d0d19a73a8105f53db88dd6",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-freeze-landing.tsx",
+      "sha256": "eca9c4877e7e9e4398986db877366344f702617842acc88ddc4b7b6a309d63c2",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-freezes.tsx",
+      "sha256": "0caae602057e665663fff18d8bbe31ff7ef3bb60b89a1a282d50fa05c3e29530",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-gaps.tsx",
+      "sha256": "8158740d52bb55ff27f7c7055da086e39170ff57c11e3c232e31dfda4a387bbc",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-imports.tsx",
+      "sha256": "4b3c4079bb7b6b5b920e14bad46fe7cb8064749b5232f68af1e7c7f15592d724",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-inputs.tsx",
+      "sha256": "e2548cec5b5278e65d85b051527120596458650645e24f0204c1401d590e9182",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-reduction-runs.tsx",
+      "sha256": "009bac1d70d859ee6ae59c711f7c307b4c855ac0ab2fcc67bbc9c9c27093f3ba",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-rollup-result.tsx",
+      "sha256": "def5f85791eb57ace3c635299f43323998faa079a4c973a7adce36cc3b20f8a1",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/cost-rollups.tsx",
+      "sha256": "cdd03e18678baca134e1194430670fc637163814fb1248363cc638d015f62b31",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/material-admission-control.tsx",
+      "sha256": "11605846e00a1eac21b80cf66720400f412672f34659f85d2112be41eda7d31d",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/material-exceptions.tsx",
+      "sha256": "dfef3ff3a68a31adbab5ec58d25bfdd40848ad43d91cd652d6a59e062b89fbb5",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/material-exposure.tsx",
+      "sha256": "5eac1f572887bc759a16c6b07ba6be93eecef00616071a8d5b7fb161640946b0",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/material-movements.tsx",
+      "sha256": "c7d93081c92235de7a5c4e35d6b69c6d2ca58c26b83baeab5c8f9efaec61c49f",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/material-schedule-binding.tsx",
+      "sha256": "690608696d00bab453b23829f0c1f515c73243a752e6c46290adbf7bf973a13e",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/material-supplier-attribution.tsx",
+      "sha256": "5f5215bc4e4eb1a1651d2232d1e35b633f7b0fbaf3a7bcb02a5ddd89292ad0e5",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-compliance.tsx",
+      "sha256": "c0f6cea79ce0738a9a57a3edf8df5dd42309848ac26f774107133ee600921e20",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-engineering.tsx",
+      "sha256": "8dea36660295ec5a0c6d34241cc378cb6e59fdbc0133779b13d39bf32423e8a1",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-analysis.tsx",
+      "sha256": "dd80e99ac94fdb5f37238d9e34dc83da69819d406d41559e3a0a92d4c791d560",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-applications.tsx",
+      "sha256": "2ac033a17944d5cf576329affc9dedb0a1bdf5cfe4d2693bc2ac70bb3e0f4017",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-dispatches.tsx",
+      "sha256": "34f8ef042a2b30f76c84a66819aec715adbe8cd330c6b159830a9cd02c8f223d",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-impact.tsx",
+      "sha256": "61b655e3622415ed4f1c8c23185b47d912ba5379bcb1d07c92f5097f878c6078",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-links.tsx",
+      "sha256": "731029c4b30acb66205003828bd0408783d458a8dad91b09029ca206c80b78e1",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-reviews.tsx",
+      "sha256": "b689120b4497773316a4245dbb82edf1c10c2a736f857b80f81704d16de934d0",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-scans.tsx",
+      "sha256": "bc49c5c3341b957a33c793ab424459c7b57164e1c74da510bc62a72c11cd5b03",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-notice-watches.tsx",
+      "sha256": "5528862a9c74fc63990aaa201450b5944c6362d6d3a65518fa3a414327b76bb1",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-recovery-preparation.tsx",
+      "sha256": "81c564cf23190e108f2fbcc577e10c9580235a670d0a119b3bc4e190a6fa2538",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-recovery-results.tsx",
+      "sha256": "a5dfbd44e32696ec718e6d9b929a8569a352517b3db74f91b6dc1f893089a4cc",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-recovery-review.tsx",
+      "sha256": "535d16a699ebe63b2e66797c03995890d9d8acb3bde30ca76a1c96ca987175b8",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-recovery-runs.tsx",
+      "sha256": "9f84945ccf4a2e31cbe8713d02d289814d7786f584edb81b411547e56e938919",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supply-imports.tsx",
+      "sha256": "18a7c7a8cc1fa4ae02880c8c0d24603c84f0d2ef68fbcefe886209e96dd79118",
+      "git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supply-sharing.tsx",
+      "sha256": "5b669a1d43919f1ae92657a2d1e629b403eec807ab6e391b56e5115a7bee734f",
+      "git_status": ""
+    }
+  ],
+  "note": "Read-only baseline of assigned supply/cost files before this session edits; existing modifications preserved."
+}

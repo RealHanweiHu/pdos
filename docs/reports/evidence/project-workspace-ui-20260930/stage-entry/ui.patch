@@ -1,0 +1,268 @@
+--- a/web/src/components/projects/project-workspace-view.tsx
++++ b/web/src/components/projects/project-workspace-view.tsx
+@@ -31,6 +31,7 @@
+ import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form";
+ import { ProjectList, projectStatusLabels } from "./project-list";
+ import { ProjectOverview } from "./project-overview";
++import { ProjectStatusActions } from "./project-status-actions";
+ import { ProjectProcessGuide } from "./project-process-guide";
+ import { ProjectTimeline } from "./project-timeline";
+ import { ProjectStageBoard } from "./project-stage-board";
+@@ -85,12 +86,12 @@
+ const ProjectNpiPanel = withDeferredPanelBoundary(dynamic(() => import("./project-npi-panel").then(module => module.ProjectNpiPanel), { loading: DeferredPanelLoading }));
+ 
+ /**
+- * Project workspace tabs (D9/D31): nine manufacturing business domains rather
+- * than one tab per database table. Links minted before this regrouping still
+- * work through LEGACY_TAB_ALIASES.
++ * Project workspace tabs (D9/D31) group business domains and project management.
++ * Stages have their own entry; old activity links still open the overview.
+  */
+ export type ProjectWorkspaceTab =
+   | "overview"
++  | "stages"
+   | "plan"
+   | "work-items"
+   | "materials"
+@@ -102,7 +103,7 @@
+   | "management";
+ 
+ export const LEGACY_TAB_ALIASES: Record<string, ProjectWorkspaceTab> = {
+-  timeline: "overview",
++  timeline: "stages",
+   "ai-chat": "overview",
+   tasks: "work-items",
+   issues: "work-items",
+@@ -111,6 +112,7 @@
+ };
+ 
+ export function resolveTab(raw: string | null, search?: URLSearchParams, hash = ""): ProjectWorkspaceTab | null {
++  if (raw === "timeline" && (search?.get("event_id") || search?.get("entity_id") || /^#event-\d+$/.test(hash))) return "overview";
+   // Old receipts and shared links keep their original object selectors.
+   // An explicit different business tab always wins over these legacy hints.
+   if ((raw === null || raw === "overview") && (
+@@ -141,6 +143,7 @@
+ 
+ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[] = [
+   { key: "overview", label: "总览" },
++  { key: "stages", label: "项目阶段" },
+   { key: "plan", label: "计划·资源", internalOnly: true },
+   { key: "work-items", label: "工作项", internalOnly: true },
+   { key: "materials", label: "物料·供应", internalOnly: true },
+@@ -356,14 +359,12 @@
+             role="tabpanel"
+           >
+             {workItemError ? <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{workItemError}</p> : null}
+-            {activeTab === "overview" && canViewWorkItems && workItemState === "error" ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
++            {["overview", "stages"].includes(activeTab) && canViewWorkItems && workItemState === "error" ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
+             {activeTab === "overview" ? (
+               <ProjectOverview
+                 canEdit={canEdit}
+                 canViewWorkItems={canViewWorkItems}
+                 key={`ProjectOverview:${selectedProject.id}`}
+-                onStageTransition={(stageId) => onStageTransition(selectedProject, stageId)}
+-                onStatusTransition={(status) => onStatusTransition(selectedProject, status)}
+                 onUpdate={(values) => onUpdate(selectedProject, values)}
+                 project={selectedProject}
+                 saving={saving}
+@@ -371,11 +372,15 @@
+               />
+             ) : null}
+             {activeTab === "overview" && <div className="mt-5 space-y-5">
+-              <ProjectStageBoard project={selectedProject} workItems={workItemState === "ready" ? workItems : null} canViewWorkItems={canViewWorkItems} loading={workItemState === "loading" || workItemState === "idle"} onPlan={() => onTabChange("plan")}/>
+               {canViewWorkItems ? <>
+-                <details className="border-t pt-3"><summary className="cursor-pointer py-2 text-sm font-medium">阶段指南与辅助查阅</summary><div className="mt-3 space-y-4"><ProjectProcessGuide project={selectedProject} onOpen={onTabChange}/><ContextKnowledge key={`ContextKnowledge:${selectedProject.id}`} projectId={selectedProject.id} contextKind="project_kickoff" entityId={selectedProject.id}/><ProjectAiChat key={`ProjectAiChat:${selectedProject.id}`} projectId={selectedProject.id}/></div></details>
+                 <ProjectTimeline activities={activities} activityError={activityError} loading={activityLoading} onRetry={onRetryActivity} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject}/>
++                <details className="border-t pt-3"><summary className="cursor-pointer py-2 text-sm font-medium">项目辅助查阅</summary><div className="mt-3 space-y-4"><ContextKnowledge key={`ContextKnowledge:${selectedProject.id}`} projectId={selectedProject.id} contextKind="project_kickoff" entityId={selectedProject.id}/><ProjectAiChat key={`ProjectAiChat:${selectedProject.id}`} projectId={selectedProject.id}/></div></details>
+               </> : <ProjectManagementPanel external project={selectedProject} userId={identity.user.id} canManage={false}/>}
++            </div>}
++            {activeTab === "stages" && <div className="space-y-5">
++              <ProjectStageBoard key={selectedProject.id} project={selectedProject} workItems={workItemState === "ready" ? workItems : null} canViewWorkItems={canViewWorkItems} loading={workItemState === "loading" || workItemState === "idle"} onPlan={() => onTabChange("plan")}/>
++              {canEdit && <details className="border-t pt-3 text-sm"><summary className="cursor-pointer py-2 font-medium">项目状态与阶段操作</summary><div className="max-w-xl"><p className="mt-2 text-xs text-muted-foreground">当前状态：{projectStatusLabels[selectedProject.status]}。阶段推进仍须满足原有评审条件。</p><ProjectStatusActions busy={saving} onStageTransition={stageId => onStageTransition(selectedProject, stageId)} onStatusTransition={status => onStatusTransition(selectedProject, status)} project={selectedProject}/></div></details>}
++              {canViewWorkItems && <details className="border-t pt-3"><summary className="cursor-pointer py-2 text-sm font-medium">阶段指南</summary><div className="mt-3"><ProjectProcessGuide project={selectedProject} onOpen={onTabChange}/></div></details>}
+             </div>}
+             {activeTab === "management" && canViewWorkItems && <ProjectManagementPanel key={selectedProject.id} project={selectedProject} userId={identity.user.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)}/>}
+             {activeTab === "plan" && canViewWorkItems && <ProjectPlanPanel key={selectedProject.id} projectId={selectedProject.id} userId={identity.user.id}/>}
+--- a/web/src/components/projects/project-workspace.tsx
++++ b/web/src/components/projects/project-workspace.tsx
+@@ -468,7 +468,7 @@
+ 
+   /** Each domain loads its own data the first time it is opened. */
+   function loadTabData(tab: ProjectWorkspaceTab, projectId: string, force = false) {
+-    if (["overview", "work-items"].includes(tab) && canViewWorkItems && (force || workItemState === "idle")) {
++    if (["overview", "stages", "work-items"].includes(tab) && canViewWorkItems && (force || workItemState === "idle")) {
+       void loadWorkItems(projectId);
+     }
+     if (tab === "overview" && canViewWorkItems && (force || (!activityLoading && !activityLoaded))) {
+@@ -526,9 +526,8 @@
+       handledLocation.current = `${window.location.search}${window.location.hash}`;
+     }
+     actions.selectProject(project);
+-    const tab = canViewWorkItems
+-      ? resolveTab(params.get("tab"), params, window.location.hash) ?? "overview"
+-      : "overview";
++    const requestedTab = resolveTab(params.get("tab"), params, window.location.hash) ?? "overview";
++    const tab = canViewWorkItems || requestedTab === "stages" ? requestedTab : "overview";
+     setActiveTab(tab);
+     const eventId = Number(params.get("event_id"));
+     setHighlightedEventId(Number.isSafeInteger(eventId) && eventId > 0 ? eventId : null);
+--- a/web/src/components/projects/project-overview.tsx
++++ b/web/src/components/projects/project-overview.tsx
+@@ -5,16 +5,12 @@
+ import { Button } from "@/components/ui/button";
+ 
+ import { ProjectForm, type ProjectFormValues, type ProjectSubmissionResult } from "./project-form";
+-import { ProjectStatusActions } from "./project-status-actions";
+-import { projectStatusLabels } from "./project-list";
+ import type { Project } from "./project-types";
+ import type { ProjectWorkItems } from "./project-work-item-types";
+ 
+ export function ProjectOverview({
+   canEdit,
+   canViewWorkItems,
+-  onStageTransition,
+-  onStatusTransition,
+   onUpdate,
+   project,
+   saving,
+@@ -22,8 +18,6 @@
+ }: {
+   canEdit: boolean;
+   canViewWorkItems: boolean;
+-  onStageTransition: (stageId: string) => void;
+-  onStatusTransition: (status: Project["status"]) => void;
+   onUpdate: (values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
+   project: Project;
+   saving: boolean;
+@@ -45,7 +39,6 @@
+         {canViewWorkItems && <><div><dt className="inline text-muted-foreground">未完成任务</dt><dd className="ml-2 inline font-medium" data-metric="task">{activeTasks ?? "—"}</dd></div><div><dt className="inline text-muted-foreground">开放问题</dt><dd className="ml-2 inline font-medium" data-metric="issue">{openIssues ?? "—"}</dd></div><div><dt className="inline text-muted-foreground">开放风险</dt><dd className="ml-2 inline font-medium" data-metric="risk">{openRisks ?? "—"}</dd></div></>}
+       </dl>
+       {editing && canEdit && <div className="rounded-lg border bg-card p-4"><ProjectForm busy={saving} key={project.id} onCancel={() => setEditing(false)} onSubmit={async values => { const result = await onUpdate(values); if (result.ok) setEditing(false); return result; }} project={project}/></div>}
+-      {canEdit && <details className="text-xs"><summary className="inline-flex min-h-8 cursor-pointer items-center text-muted-foreground">项目状态与阶段操作</summary><div className="max-w-xl"><p className="mt-2 text-muted-foreground">当前状态：{projectStatusLabels[project.status]}。阶段推进仍须满足原有评审条件。</p><ProjectStatusActions busy={saving} onStageTransition={onStageTransition} onStatusTransition={onStatusTransition} project={project}/></div></details>}
+       {!canViewWorkItems && <p className="text-xs text-muted-foreground">外部成员仅可查看已授权的项目概览与阶段。</p>}
+     </section>
+   );
+--- a/web/src/components/projects/project-workspace.test.tsx
++++ b/web/src/components/projects/project-workspace.test.tsx
+@@ -397,9 +397,12 @@
+ 
+     expect(window.location.search).toBe("?project=project-1&tab=overview");
+     expect(screen.queryByLabelText("项目名称")).not.toBeInTheDocument();
+-    // The timeline is part of the control tower now, not a tab of its own.
++    expect(screen.queryByRole("region", { name: "项目阶段 Timeline" })).not.toBeInTheDocument();
++    await user.click(screen.getByRole("tab", { name: "项目阶段" }));
++    expect(window.location.search).toBe("?project=project-1&tab=stages");
+     expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
+     for (const stage of stages) expect(screen.getAllByText(stage.name).length).toBeGreaterThan(0);
++    await user.click(screen.getByRole("tab", { name: "总览" }));
+     await user.click(screen.getByRole("button", { name: "编辑项目" }));
+     const name = screen.getByLabelText("项目名称");
+     await user.clear(name);
+@@ -436,6 +439,7 @@
+ 
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
++    await user.click(screen.getByRole("tab", { name: "项目阶段" }));
+     await user.click(screen.getByText("项目状态与阶段操作"));
+     await user.click(screen.getByRole("button", { name: "提交立项" }));
+ 
+@@ -471,12 +475,13 @@
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+ 
++    await user.click(screen.getByRole("tab", { name: "项目阶段" }));
+     expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
+     expect(screen.queryByRole("heading", { name: "编辑项目" })).not.toBeInTheDocument();
+     expect(screen.queryByRole("button", { name: "提交立项" })).not.toBeInTheDocument();
+   });
+ 
+-  it("opens the implemented planning domain from the overview without loading unrelated work", async () => {
++  it("opens the implemented planning domain from project stages without loading unrelated work", async () => {
+     const user = userEvent.setup();
+     fetchMock.mockImplementation(async (input) => {
+       const path = String(input);
+@@ -488,6 +493,7 @@
+     });
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
++    await user.click(screen.getByRole("tab", { name: "项目阶段" }));
+     expect(screen.queryByRole("region", { name: "计划与资源办理" })).not.toBeInTheDocument();
+     await user.click(screen.getByRole("button", { name: "办理计划与资源" }));
+     // The plan panel is a deferred dynamic import; allow extra time under
+@@ -565,6 +571,8 @@
+     expect(resolveTab("overview", new URLSearchParams(), "#schedule-forecasts")).toBe("plan");
+     expect(resolveTab("overview", new URLSearchParams("intake_proposal=x"))).toBe("management");
+     expect(resolveTab("timeline", new URLSearchParams("event_id=1"))).toBe("overview");
++    expect(resolveTab("timeline")).toBe("stages");
++    expect(resolveTab("stages")).toBe("stages");
+     expect(resolveTab("unrecognized", new URLSearchParams("forecast=x"))).toBeNull();
+   });
+ 
+@@ -582,8 +590,8 @@
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+ 
+-    // D9/D31: the nine manufacturing domains plus a separate project-management surface.
+-    expect(await screen.findAllByRole("tab")).toHaveLength(10);
++    // Stages and management are independently reachable beside the business domains.
++    expect(await screen.findAllByRole("tab")).toHaveLength(11);
+     expect(screen.getByRole("tab", { name: "计划·资源" })).toBeInTheDocument();
+     expect(screen.getByRole("tab", { name: "工程·变更" })).toBeInTheDocument();
+     expect(screen.getByRole("tab", { name: "试制·测试·质量" })).toBeInTheDocument();
+@@ -985,7 +993,9 @@
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+ 
+-    expect(screen.getAllByRole("tab")).toHaveLength(1);
++    expect(screen.getAllByRole("tab")).toHaveLength(2);
++    await user.click(screen.getByRole("tab", { name: "项目阶段" }));
++    expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
+     expect(screen.queryByRole("tab", { name: "工作项" })).not.toBeInTheDocument();
+     expect(fetchMock.mock.calls.some(([input]) => /\/(tasks|issues|risks)$/.test(String(input)) || String(input).includes("product-engineering"))).toBe(false);
+   });
+@@ -1088,7 +1098,44 @@
+     });
+     render(<ProjectWorkspace />);
+     expect(await screen.findByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true");
+-    expect(screen.getAllByRole("tab")).toHaveLength(1);
++    expect(screen.getAllByRole("tab")).toHaveLength(2);
++    expect(fetchMock).toHaveBeenCalledTimes(2);
++  });
++
++  it("restores a direct stages link, loads its work items, and only loads activity when overview opens", async () => {
++    window.history.replaceState({}, "", "/projects?project=project-1&tab=stages");
++    fetchMock.mockImplementation(async input => {
++      const path = String(input);
++      if (path === "/api/session/me") return jsonResponse(identity);
++      if (path === "/api/projects") return jsonResponse({ items: [project] });
++      if (path.endsWith("/activity")) return jsonResponse({ items: [] });
++      return workItemResponse(path) ?? jsonResponse({ items: [] });
++    });
++    render(<ProjectWorkspace />);
++    expect(await screen.findByRole("tab", { name: "项目阶段" })).toHaveAttribute("aria-selected", "true");
++    expect(await screen.findByRole("link", { name: "打开任务：Integrate validation fixture" })).toBeVisible();
++    expect(screen.queryByRole("region", { name: "项目概览" })).not.toBeInTheDocument();
++    expect(screen.queryByRole("region", { name: "项目动态" })).not.toBeInTheDocument();
++    expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/activity"))).toBe(false);
++    await userEvent.click(screen.getByRole("tab", { name: "总览" }));
++    expect(await screen.findByText("还没有项目活动。")).toBeInTheDocument();
++    expect(screen.queryByRole("region", { name: "项目阶段 Timeline" })).not.toBeInTheDocument();
++    expect(screen.queryByText("项目状态与阶段操作")).not.toBeInTheDocument();
++    expect(fetchMock.mock.calls.filter(([input]) => /\/(tasks|issues|risks)$/.test(String(input)))).toHaveLength(3);
++  });
++
++  it("restores the permitted stages link for an external member without internal reads or controls", async () => {
++    window.history.replaceState({}, "", "/projects?project=project-1&tab=stages");
++    fetchMock.mockImplementation(async input => {
++      if (String(input) === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role: "supplier" } });
++      if (String(input) === "/api/projects") return jsonResponse({ items: [project] });
++      throw new Error(`unexpected internal request: ${String(input)}`);
++    });
++    render(<ProjectWorkspace />);
++    expect(await screen.findByRole("tab", { name: "项目阶段" })).toHaveAttribute("aria-selected", "true");
++    expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
++    expect(screen.queryByText("项目状态与阶段操作")).not.toBeInTheDocument();
++    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+     expect(fetchMock).toHaveBeenCalledTimes(2);
+   });
+ 

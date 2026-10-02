@@ -458,6 +458,8 @@ class ProjectIntakeService:
             authorize(c, ctx, project)
             t = {"issue": tables.issues, "risk": tables.risks, "decision": tables.decisions}[kind]
             query = select(t).where(t.c.tenant_id == ctx.tenant.id, t.c.project_id == project)
+            if kind == "issue":
+                query = query.where(t.c.withdrawn_at.is_(None))
             if kind == "risk":
                 query = query.where(t.c.draft_state == "confirmed")
             if target_id is not None:

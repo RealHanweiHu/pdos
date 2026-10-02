@@ -3,43 +3,42 @@
 import {
   BookOpenTextIcon,
   CameraIcon,
+  MagnifyingGlassIcon,
+  ChatCircleTextIcon,
   ClipboardTextIcon,
   FolderOpenIcon,
   GaugeIcon,
   GearSixIcon,
   KanbanIcon,
   ListIcon,
-  MagnifyingGlassIcon,
   ListChecksIcon,
-  LockKeyIcon,
-  PulseIcon,
-  PlugsConnectedIcon,
+  PackageIcon,
   SignOutIcon,
+  SquaresFourIcon,
   TrayIcon,
-  UsersThreeIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRef, useState, type ReactNode } from "react";
 
+import { XiaopaiIdentity } from "@/components/ai/xiaopai-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
 
 /**
- * D31 two-layer information architecture: ten global domains on top, the
- * project workspace's nine business tabs inside a project. A domain groups the
- * surfaces that already exist; domains whose own data plane arrives in a later
- * phase point at the surface that carries that work today.
+ * Global navigation (D31, regrouped 2026-09-28): five groups instead of ten
+ * mostly single-entry domains. The sidebar carries only daily destinations;
+ * search and field capture are reached from the top bar or source records, and rarely opened governance/integration/account
+ * pages sit in the pinned 设置 group above the user card. Project-scoped work
+ * (engineering, quality, gates) is reached through the project workspace's own
+ * tab bar, not through duplicate sidebar deep-links.
  */
 const domains = [
   {
-    domain: "Home",
-    label: "工作台",
+    domain: "Work",
+    label: "工作",
     items: [
-      { href: "/", label: "驾驶舱", icon: GaugeIcon, key: "dashboard" },
-      { href: "/capture", label: "现场采集", icon: CameraIcon, key: "capture", internalOnly: true },
-      { href: "/search", label: "搜索", icon: MagnifyingGlassIcon, key: "search", internalOnly: true },
       {
         href: "/my-work",
         label: "我的工作",
@@ -47,16 +46,18 @@ const domains = [
         key: "my-work",
         internalOnly: true,
       },
+      { href: "/", label: "驾驶舱", icon: GaugeIcon, key: "dashboard" },
     ],
   },
   {
-    domain: "Portfolio",
-    label: "项目组合",
+    domain: "Projects",
+    label: "项目",
     items: [
+      { href: "/projects", label: "项目工作区", icon: KanbanIcon, key: "projects" },
       {
         href: "/portfolio",
         label: "组合与阻塞",
-        icon: GaugeIcon,
+        icon: SquaresFourIcon,
         key: "portfolio",
         internalOnly: true,
       },
@@ -66,73 +67,23 @@ const domains = [
     domain: "Products",
     label: "产品",
     items: [
-      { href: "/product-work", label: "产品管理工作台", icon: ClipboardTextIcon, key: "product-work", internalOnly: true },
+      {
+        href: "/product-work",
+        label: "产品管理工作台",
+        icon: PackageIcon,
+        key: "product-work",
+        internalOnly: true,
+      },
       { href: "/requirements", label: "需求池", icon: ClipboardTextIcon, key: "requirements" },
       { href: "/cases", label: "开发案例", icon: FolderOpenIcon, key: "cases" },
     ],
   },
   {
-    domain: "Projects",
-    label: "项目",
-    items: [{ href: "/projects", label: "项目工作区", icon: KanbanIcon, key: "projects" }],
-  },
-  {
-    domain: "Engineering",
-    label: "工程",
+    domain: "AI & Knowledge",
+    label: "AI 与知识",
     items: [
-      {
-        href: "/projects?tab=engineering",
-        label: "工程·变更",
-        icon: ClipboardTextIcon,
-        key: "engineering",
-        internalOnly: true,
-      },
-    ],
-  },
-  {
-    domain: "Quality",
-    label: "质量",
-    items: [
-      {
-        href: "/projects?tab=quality",
-        label: "试制·测试·质量",
-        icon: ListChecksIcon,
-        key: "quality",
-        internalOnly: true,
-      },
-    ],
-  },
-  {
-    domain: "Delivery",
-    label: "交付",
-    items: [
-      {
-        href: "/projects?tab=gates",
-        label: "Gate·交付物",
-        icon: FolderOpenIcon,
-        key: "delivery",
-        internalOnly: true,
-      },
-      {
-        href: "/settings/integrations/dingtalk",
-        label: "钉钉集成",
-        icon: PlugsConnectedIcon,
-        key: "dingtalk-integration",
-        internalOnly: true,
-      },
-      {
-        href: "/settings/integrations/tencent-meeting",
-        label: "腾讯会议集成",
-        icon: PlugsConnectedIcon,
-        key: "tencent-meeting-integration",
-        internalOnly: true,
-      },
-    ],
-  },
-  {
-    domain: "Knowledge",
-    label: "知识",
-    items: [
+      { href: "/ask", label: "小Pai", icon: ChatCircleTextIcon, key: "ask", internalOnly: true },
+      { href: "/ai-review", label: "Review 收件箱", icon: TrayIcon, key: "ai-review", internalOnly: true },
       {
         href: "/knowledge",
         label: "知识库",
@@ -142,51 +93,51 @@ const domains = [
       },
     ],
   },
-  {
-    domain: "AI Workbench",
-    label: "AI 工作台",
-    items: [
-      { href: "/ask", label: "Ask PDOS", icon: TrayIcon, key: "ask", internalOnly: true },
-      { href: "/ai-review", label: "Review 收件箱", icon: TrayIcon, key: "ai-review", internalOnly: true },
-      {
-        href: "/governance/ai",
-        label: "AI 治理",
-        icon: PulseIcon,
-        key: "ai-governance",
-        adminOnly: true,
-      },
-    ],
-  },
-  {
-    domain: "Admin",
-    label: "管理",
-    items: [
-      { href: "/events", label: "事件流", icon: PulseIcon, key: "events", adminOnly: true },
-      {
-        href: "/governance/models",
-        label: "模型治理",
-        icon: GearSixIcon,
-        key: "model-governance",
-        adminOnly: true,
-      },
-      {
-        href: "/governance/users",
-        label: "成员与角色",
-        icon: UsersThreeIcon,
-        key: "user-management",
-        adminOnly: true,
-      },
-      {
-        href: "/governance/organization",
-        label: "组织与代理",
-        icon: UsersThreeIcon,
-        key: "organization",
-        adminOnly: true,
-      },
-      { href: "/settings/security", label: "账户安全", icon: LockKeyIcon, key: "account-security" },
-    ],
-  },
 ] as const;
+
+/**
+ * One pinned settings entry, Linear-style. The account, integration and
+ * governance pages behind it are classified by SettingsNav inside the
+ * settings area instead of occupying flat sidebar entries.
+ */
+const settingsEntry = {
+  href: "/settings/security",
+  label: "设置",
+  icon: GearSixIcon,
+  key: "settings",
+} as const;
+
+type NavigationItem = (typeof domains)[number]["items"][number];
+type NavigationGroup = { domain: string; label: string; items: readonly NavigationItem[] };
+
+// Settings-area pages highlight the single settings entry; field capture and
+// global search keep the shell without a sidebar entry to light up.
+type WorkspaceView = NavigationItem["key"] | typeof settingsEntry.key | "capture" | "search";
+
+function DomainSection({ active, group }: { active: WorkspaceView; group: NavigationGroup }) {
+  return (
+    <div className="pb-4">
+      <p className="px-2 pb-1 text-[11px] font-medium text-muted-foreground">{group.label}</p>
+      <ul className="space-y-0.5" role="list">
+        {group.items.map(({ href, icon: Icon, key, label }) => (
+          <li key={key}>
+            <Link
+              aria-current={active === key ? "page" : undefined}
+              className={cn(
+                "flex min-h-11 items-center gap-2 rounded-md px-2 text-[13px] text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30 lg:min-h-8",
+                active === key && "bg-sidebar-accent text-sidebar-accent-foreground",
+              )}
+              href={href}
+            >
+              <Icon aria-hidden="true" className="size-4" weight="regular" />
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export function WorkspaceShell({
   active,
@@ -195,30 +146,7 @@ export function WorkspaceShell({
   loggingOut,
   onLogout,
 }: {
-  active:
-    | "dashboard"
-    | "search"
-    | "capture"
-    | "my-work"
-    | "portfolio"
-    | "requirements"
-    | "cases"
-    | "product-work"
-    | "projects"
-    | "engineering"
-    | "quality"
-    | "delivery"
-    | "knowledge"
-    | "ai-review"
-    | "ask"
-    | "events"
-    | "model-governance"
-    | "ai-governance"
-    | "user-management"
-    | "organization"
-    | "account-security"
-    | "dingtalk-integration"
-    | "tencent-meeting-integration";
+  active: WorkspaceView;
   children: ReactNode;
   identity: WorkspaceIdentity;
   loggingOut: boolean;
@@ -228,7 +156,7 @@ export function WorkspaceShell({
   const mobileNavigationToggle = useRef<HTMLButtonElement>(null);
   const isAdmin = ["owner", "admin"].includes(identity.user.role);
   const isExternal = ["supplier", "customer"].includes(identity.user.role);
-  const visibleDomains = domains
+  const visibleDomains: NavigationGroup[] = domains
     .map((group) => ({
       ...group,
       items: group.items.filter(
@@ -237,18 +165,19 @@ export function WorkspaceShell({
       ),
     }))
     .filter((group) => group.items.length > 0);
-  const visibleNavigation = visibleDomains.flatMap((group) => group.items);
+  const visibleNavigation = [...visibleDomains.flatMap((group) => group.items), settingsEntry];
   const currentNavigation = visibleNavigation.find((item) => item.key === active);
   return (
     <div className="min-h-svh bg-background lg:grid lg:grid-cols-[224px_1fr]">
+      <XiaopaiIdentity identity={identity} />
       <a
         className="fixed left-4 top-4 z-50 inline-flex min-h-11 -translate-y-20 items-center rounded-lg bg-primary px-3 py-2 font-medium text-primary-foreground transition-transform focus:translate-y-0"
         href="#main-content"
       >
         跳到主要内容
       </a>
-      <aside className="hidden border-r border-sidebar-border bg-sidebar lg:flex lg:flex-col">
-        <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
+      <aside className="hidden border-r border-sidebar-border bg-sidebar lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
+        <div className="flex h-12 items-center gap-2 border-b border-sidebar-border px-4">
           <span
             aria-hidden="true"
             className="flex size-6 items-center justify-center rounded-lg bg-primary font-mono text-xs font-bold text-primary-foreground"
@@ -257,34 +186,25 @@ export function WorkspaceShell({
           </span>
           <span className="font-semibold tracking-tight">PDOS</span>
         </div>
-        <nav aria-label="主导航" className="px-3 py-4">
+        <nav aria-label="主导航" className="min-h-0 flex-1 overflow-y-auto px-2.5 py-3">
           {visibleDomains.map((group) => (
-          <div className="pb-3" key={group.domain}>
-          <p className="px-2 pb-1.5 text-[11px] font-semibold text-muted-foreground">
-            {group.label}
-          </p>
-          <ul className="space-y-1" role="list">
-            {group.items.map(({ href, icon: Icon, key, label }) => (
-              <li key={key}>
-                <Link
-                  aria-current={active === key ? "page" : undefined}
-                  className={cn(
-                    "flex min-h-11 items-center gap-2 rounded-lg px-2.5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30",
-                    active === key &&
-                      "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-[inset_2px_0_0_var(--sidebar-primary)]",
-                  )}
-                  href={href}
-                >
-                  <Icon aria-hidden="true" weight="regular" />
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          </div>
+            <DomainSection active={active} group={group} key={group.domain} />
           ))}
         </nav>
-        <div className="mt-auto border-t border-sidebar-border px-4 py-4">
+        <div className="border-t border-sidebar-border px-2.5 py-2">
+          <Link
+            aria-current={active === settingsEntry.key ? "page" : undefined}
+            className={cn(
+              "flex min-h-11 items-center gap-2 rounded-md px-2 text-[13px] text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/30 lg:min-h-8",
+              active === settingsEntry.key && "bg-sidebar-accent text-sidebar-accent-foreground",
+            )}
+            href={settingsEntry.href}
+          >
+            <GearSixIcon aria-hidden="true" className="size-4" weight="regular" />
+            {settingsEntry.label}
+          </Link>
+        </div>
+        <div className="border-t border-sidebar-border px-4 py-3">
           <p className="truncate text-xs font-medium text-sidebar-accent-foreground">
             {identity.user.display_name}
           </p>
@@ -295,7 +215,7 @@ export function WorkspaceShell({
       </aside>
 
       <div className="min-w-0">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 sm:px-6">
+        <header className="flex h-12 items-center gap-4 border-b bg-background px-4 sm:px-6">
           <div className="flex items-center gap-2 lg:hidden">
             <span
               aria-hidden="true"
@@ -309,6 +229,14 @@ export function WorkspaceShell({
             {identity.tenant.name} · {identity.user.display_name}
           </p>
           <div className="ml-auto flex items-center gap-1">
+            {!isExternal && <>
+              <Link aria-current={active === "search" ? "page" : undefined} aria-label="搜索" title="搜索" href="/search" className="flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 sm:size-8">
+                <MagnifyingGlassIcon aria-hidden="true" className="size-4" />
+              </Link>
+              <Link aria-current={active === "capture" ? "page" : undefined} aria-label="现场采集" title="现场采集" href="/capture" className="flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 sm:size-8">
+                <CameraIcon aria-hidden="true" className="size-4" />
+              </Link>
+            </>}
             <ThemeToggle />
             <Button
               aria-label="退出登录"
@@ -325,7 +253,7 @@ export function WorkspaceShell({
         </header>
         <nav
           aria-label="移动端主导航"
-          className="border-b bg-card px-4 lg:hidden"
+          className="border-b bg-background px-4 lg:hidden"
           onKeyDown={(event) => {
             if (event.key === "Escape" && mobileNavigationExpanded) {
               event.preventDefault();

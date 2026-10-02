@@ -1,9 +1,8 @@
 import dynamic from "next/dynamic";
 import { DeferredPanelLoading, withDeferredPanelBoundary } from "@/components/deferred-panel-loading";
 
-import { ContextKnowledge } from "@/components/knowledge/context-knowledge";
-
 import { useRef, useState } from "react";
+import { Gear } from "@phosphor-icons/react";
 
 import { WorkspaceShell } from "@/components/workspace-shell";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
@@ -30,16 +29,11 @@ import type {
 
 import type { ProjectFormValues, ProjectSubmissionResult } from "./project-form";
 import { ProjectList, projectStatusLabels } from "./project-list";
-import { ProjectIntake } from "./project-intake";
-import { OpenApiAccess } from "./open-api-access";
-import { ProjectWebhooks } from "./project-webhooks";
-import { ValueMeasurement } from "./value-measurement";
-import { AuditEvidenceExports } from "./audit-evidence-exports";
-import { CustomerReportPackages } from "./customer-report-packages";
-import { ProjectReportExports } from "./project-report-exports";
 import { ProjectOverview } from "./project-overview";
-import { ProjectProcessGuide } from "./project-process-guide";
+import { ProjectStatusActions } from "./project-status-actions";
 import { ProjectTimeline } from "./project-timeline";
+import { ProjectStageBoard } from "./project-stage-board";
+import { ProjectManagementPanel } from "./project-management-panel";
 import type { Project } from "./project-types";
 import type { ProjectActivity } from "./project-activity";
 
@@ -49,11 +43,9 @@ import { ProjectIdDesign } from "./project-id-design";
 import { IdHandoffLanding } from "./id-handoff-landing";
 import { IdFreezeRequestLanding } from "./id-freeze-request-landing";
 
-import { ProjectTemplatePanel } from "./project-template-panel";
-import { ProjectCompletionPanel } from "./project-completion-panel";
 
 import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
-import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
+import { ProjectWorkQueue, type ProjectWorkKind } from "./project-work-queue";
 import type {
   IssueCreateInput,
   IssueStatus,
@@ -92,12 +84,12 @@ const ProjectPlanPanel = withDeferredPanelBoundary(dynamic(() => import("./proje
 const ProjectNpiPanel = withDeferredPanelBoundary(dynamic(() => import("./project-npi-panel").then(module => module.ProjectNpiPanel), { loading: DeferredPanelLoading }));
 
 /**
- * Project workspace tabs (D9/D31): nine manufacturing business domains rather
- * than one tab per database table. Links minted before this regrouping still
- * work through LEGACY_TAB_ALIASES.
+ * Daily navigation follows the project workflow. Domain routes remain stable
+ * for object receipts and contextual work; background services aren't tabs.
  */
 export type ProjectWorkspaceTab =
   | "overview"
+  | "stages"
   | "plan"
   | "work-items"
   | "materials"
@@ -105,11 +97,13 @@ export type ProjectWorkspaceTab =
   | "decisions"
   | "gates"
   | "quality"
-  | "documents";
+  | "documents"
+  | "management"
+  | "conversation";
 
 export const LEGACY_TAB_ALIASES: Record<string, ProjectWorkspaceTab> = {
-  timeline: "overview",
-  "ai-chat": "overview",
+  timeline: "stages",
+  "ai-chat": "conversation",
   tasks: "work-items",
   issues: "work-items",
   risks: "work-items",
@@ -117,6 +111,7 @@ export const LEGACY_TAB_ALIASES: Record<string, ProjectWorkspaceTab> = {
 };
 
 export function resolveTab(raw: string | null, search?: URLSearchParams, hash = ""): ProjectWorkspaceTab | null {
+  if (raw === "timeline" && (search?.get("event_id") || search?.get("entity_id") || /^#event-\d+$/.test(hash))) return "overview";
   // Old receipts and shared links keep their original object selectors.
   // An explicit different business tab always wins over these legacy hints.
   if ((raw === null || raw === "overview") && (
@@ -125,6 +120,8 @@ export function resolveTab(raw: string | null, search?: URLSearchParams, hash = 
     (["execution", "baseline", "commitment"].includes(search?.get("approval_policy_kind") ?? "") && !!search?.get("approval_policy_id")) ||
     ["#schedule-forecasts", "#schedule-commitments", "#resource-reservations", "#cross-proposal-landing"].includes(hash) || /^#reservation-[0-9a-f-]{36}$/i.test(hash)
   )) return "plan";
+  if ((raw === null || raw === "overview") && ["completion_item", "intake_proposal", "intake_decision"].some(key => !!search?.get(key))) return "management";
+  if ((raw === null || raw === "overview") && ["id_handoff", "id_freeze_request", "id_revision", "specification_owner_id"].some(key => !!search?.get(key))) return "engineering";
   if (raw === null) return null;
   if (TAB_KEYS.has(raw as ProjectWorkspaceTab)) return raw as ProjectWorkspaceTab;
   return LEGACY_TAB_ALIASES[raw] ?? null;
@@ -144,18 +141,31 @@ type ProductEngineeringWorkspaceProps = {
 };
 
 const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[] = [
-  { key: "overview", label: "概览·控制塔" },
-  { key: "plan", label: "计划·资源", internalOnly: true },
+  { key: "overview", label: "总览" },
+  { key: "stages", label: "项目阶段" },
   { key: "work-items", label: "工作项", internalOnly: true },
-  { key: "materials", label: "物料·供应", internalOnly: true },
-  { key: "engineering", label: "工程·变更", internalOnly: true },
-  { key: "decisions", label: "例会·决策", internalOnly: true },
-  { key: "gates", label: "Gate·交付物", internalOnly: true },
-  { key: "quality", label: "试制·测试·质量", internalOnly: true },
-  { key: "documents", label: "文档·知识", internalOnly: true },
+  { key: "plan", label: "计划", internalOnly: true },
+  { key: "gates", label: "评审与交付", internalOnly: true },
+  { key: "documents", label: "资料与协作", internalOnly: true },
 ];
 
-const TAB_KEYS = new Set<ProjectWorkspaceTab>(tabs.map((tab) => tab.key));
+const workViews: { key: ProjectWorkspaceTab; label: string }[] = [
+  { key: "work-items", label: "工作清单" },
+  { key: "engineering", label: "工程·变更" },
+  { key: "quality", label: "试制·测试·质量" },
+  { key: "materials", label: "物料·供应" },
+];
+const collaborationViews: { key: ProjectWorkspaceTab; label: string }[] = [
+  { key: "documents", label: "项目资料" },
+  { key: "decisions", label: "例会与决策" },
+];
+const TAB_KEYS = new Set<ProjectWorkspaceTab>([...tabs.map(tab => tab.key), "materials", "engineering", "quality", "decisions", "management", "conversation"]);
+
+export function primaryProjectTab(tab: ProjectWorkspaceTab): ProjectWorkspaceTab | null {
+  if (workViews.some(view => view.key === tab)) return "work-items";
+  if (collaborationViews.some(view => view.key === tab)) return "documents";
+  return tab === "management" || tab === "conversation" ? null : tab;
+}
 
 /**
  * Mirrors the server's CHANGE_APPROVE grant. Deciding an ECR is separate from
@@ -194,6 +204,7 @@ export function ProjectWorkspaceView({
   identity,
   loggingOut,
   onCreateIssue,
+  onIssueChanged,
   onCreateRisk,
   onCreateTask,
   onLogout,
@@ -218,6 +229,7 @@ export function ProjectWorkspaceView({
   workItemError,
   workItemState,
   workItems,
+  workKind,
 }: {
   activeTab: ProjectWorkspaceTab;
   activities: ProjectActivity[];
@@ -232,6 +244,7 @@ export function ProjectWorkspaceView({
   identity: WorkspaceIdentity;
   loggingOut: boolean;
   onCreateIssue: (input: IssueCreateInput) => Promise<boolean>;
+  onIssueChanged?: () => Promise<void>;
   onCreateRisk: (input: RiskCreateInput) => Promise<boolean>;
   onCreateTask: (input: TaskCreateInput) => Promise<boolean>;
   onLogout: () => void;
@@ -257,7 +270,7 @@ export function ProjectWorkspaceView({
     error: string | null;
     gates: ProjectGate[] | null;
     loadState: WorkItemLoadState;
-    onNavigate: (tab: ProjectWorkspaceTab) => void;
+    onNavigate: (tab: ProjectWorkspaceTab, kind?: ProjectWorkKind) => void;
     onOpenRound: (gate: ProjectGate) => void;
     onRetry: () => void;
     onSignoff: (gate: ProjectGate, slot: "product" | "engineering" | "quality") => void;
@@ -294,68 +307,40 @@ export function ProjectWorkspaceView({
   workItemError: string | null;
   workItemState: WorkItemLoadState;
   workItems: ProjectWorkItems | null;
+  workKind?: ProjectWorkKind;
 }) {
   const [projectListExpanded, setProjectListExpanded] = useState(false);
   const tabButtons = useRef<Partial<Record<ProjectWorkspaceTab, HTMLButtonElement | null>>>({});
   const visibleTabs = tabs.filter((tab) => !tab.internalOnly || canViewWorkItems);
   const workItemUnavailable = canViewWorkItems && workItemState !== "ready";
-  const currentStageProgress = selectedProject
-    ? Math.round((selectedProject.current_stage.sequence / selectedProject.workflow.stages.length) * 100)
-    : 0;
+  const primaryTab = primaryProjectTab(activeTab);
+  const contextViews = primaryTab === "work-items" ? workViews : primaryTab === "documents" ? collaborationViews : [];
 
   return (
     <WorkspaceShell active="projects" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
       {statusMessage ? <p className="mb-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success" role="status">{statusMessage}</p> : null}
       {errorMessage ? <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{errorMessage}</p> : null}
-      <div className="border-b pb-4">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Execution</p>
-        <h1 className="mt-1 text-lg font-semibold">项目工作区</h1>
-        <p className="mt-1 text-sm text-muted-foreground">项目上下文、七阶段 Timeline 与可执行工作项在同一工作区闭环。</p>
+      <div className="flex flex-wrap items-start justify-between gap-3 pb-5">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs text-muted-foreground">项目工作区{selectedProject && <> / {selectedProject.code}</>}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-3"><h1 className="min-w-0 break-words text-xl font-semibold tracking-tight">{selectedProject?.name ?? "项目工作区"}</h1>{selectedProject && <><span className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">{projectStatusLabels[selectedProject.status]}</span><span className="rounded-md bg-accent px-2 py-1 text-xs text-primary">{selectedProject.current_stage.name}</span></>}</div>
+          {!selectedProject && <p className="mt-2 text-sm text-muted-foreground">选择一个项目，查看阶段进展和待办工作。</p>}
+        </div>
+        {selectedProject && <div className="flex items-center gap-2"><Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded(current => !current)} variant="outline">{projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}</Button><Button className="min-h-11 min-w-11" aria-label={canViewWorkItems ? "项目设置" : "项目服务"} aria-pressed={activeTab === "management"} onClick={() => onTabChange("management")} size="icon" variant="ghost"><Gear aria-hidden="true" size={18}/></Button></div>}
       </div>
-
-      <div className="mt-6">
-        {selectedProject ? (
-          <div className="flex items-center justify-between gap-3 rounded-lg border bg-card px-4 py-2">
-            <span className="truncate text-sm"><span className="mr-2 font-mono text-xs text-muted-foreground">{selectedProject.code}</span>{selectedProject.name}</span>
-            <Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded((current) => !current)} variant="outline">
-              {projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}
-            </Button>
-          </div>
-        ) : null}
-        {!selectedProject || projectListExpanded ? (
-          <div className={selectedProject ? "mt-2" : undefined} id="project-list-panel">
-            <ProjectList onSelect={(project) => { setProjectListExpanded(false); onSelect(project); }} projects={projects} selectedId={selectedProject?.id ?? null} />
-          </div>
-        ) : null}
-      </div>
+      {(!selectedProject || projectListExpanded) && <div className="mb-5" id="project-list-panel"><ProjectList onSelect={project => { setProjectListExpanded(false); onSelect(project); }} projects={projects} selectedId={selectedProject?.id ?? null}/></div>}
 
       {selectedProject ? (
-        <section aria-label="项目详情" className="mt-6 min-w-0 overflow-hidden rounded-lg border bg-card">
-          <div className="px-4 pt-4 sm:px-5">
-            <div className="flex flex-wrap items-start gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="font-mono text-[11px] text-primary">{selectedProject.code}</p>
-                <h2 className="mt-1 truncate text-lg font-semibold">{selectedProject.name}</h2>
-              </div>
-              <span className="rounded-full border bg-muted px-2 py-1 text-[11px] text-muted-foreground">{projectStatusLabels[selectedProject.status]}</span>
-              <span className="rounded-full border bg-muted px-2 py-1 text-[11px] text-muted-foreground">{selectedProject.current_stage.name}</span>
-            </div>
-            <div className="mt-4 flex items-center gap-3">
-              <div aria-label={`阶段进度 ${currentStageProgress}%`} className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuemax={100} aria-valuemin={0} aria-valuenow={currentStageProgress}>
-                <span className="block h-full rounded-full bg-primary" style={{ width: `${currentStageProgress}%` }} />
-              </div>
-              <span className="font-mono text-[11px] text-muted-foreground">P{selectedProject.current_stage.sequence}/{selectedProject.workflow.stages.length}</span>
-            </div>
-          </div>
-          <div className="mt-4 overflow-x-auto border-t" role="tablist" aria-label="项目工作区标签">
-            <div className="flex min-w-max px-2 sm:px-4">
+        <section aria-label="项目详情" className="min-w-0">
+          <div className="sticky top-12 z-20 overflow-x-auto border-b border-t bg-background" role="tablist" aria-label="项目工作区标签">
+            <div className="flex min-w-max">
               {visibleTabs.map((tab, index) => (
                 <button
                   aria-controls={`project-panel-${tab.key}`}
-                  aria-selected={activeTab === tab.key}
+                  aria-selected={primaryTab === tab.key}
                   className={cn(
                     "min-h-11 border-b-2 border-transparent px-3 text-sm text-muted-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/20",
-                    activeTab === tab.key && "border-primary font-medium text-primary",
+                    primaryTab === tab.key && "border-primary font-medium text-primary",
                   )}
                   id={`project-tab-${tab.key}`}
                   key={tab.key}
@@ -373,7 +358,7 @@ export function ProjectWorkspaceView({
                   }}
                   ref={(element) => { tabButtons.current[tab.key] = element; }}
                   role="tab"
-                  tabIndex={activeTab === tab.key ? 0 : -1}
+                  tabIndex={primaryTab === tab.key || primaryTab === null && index === 0 ? 0 : -1}
                   type="button"
                 >
                   {tab.label}
@@ -382,70 +367,39 @@ export function ProjectWorkspaceView({
             </div>
           </div>
           <div
-            aria-labelledby={`project-tab-${activeTab}`}
-            className="min-w-0 bg-background p-4 sm:p-5"
-            id={`project-panel-${activeTab}`}
-            role="tabpanel"
+            aria-labelledby={primaryTab ? `project-tab-${primaryTab}` : undefined}
+            aria-label={primaryTab ? undefined : activeTab === "management" ? "项目设置" : "项目对话"}
+            className="min-w-0 bg-background py-5"
+            id={`project-panel-${primaryTab ?? activeTab}`}
+            role={primaryTab ? "tabpanel" : "region"}
           >
+            {contextViews.length > 0 && canViewWorkItems && <nav aria-label={primaryTab === "work-items" ? "工作视图" : "协作视图"} className="mb-5 flex flex-wrap gap-x-4 gap-y-1 border-b pb-3">{contextViews.map(view => <button aria-current={activeTab === view.key ? "page" : undefined} className={cn("min-h-11 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", activeTab === view.key && "font-medium text-foreground")} key={view.key} onClick={() => onTabChange(view.key)} type="button">{view.label}</button>)}</nav>}
             {workItemError ? <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{workItemError}</p> : null}
-            {activeTab === "overview" && canViewWorkItems && workItemState === "error" ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
+            {["overview", "stages"].includes(activeTab) && canViewWorkItems && workItemState === "error" ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "overview" ? (
               <ProjectOverview
                 canEdit={canEdit}
                 canViewWorkItems={canViewWorkItems}
                 key={`ProjectOverview:${selectedProject.id}`}
-                onStageTransition={(stageId) => onStageTransition(selectedProject, stageId)}
-                onStatusTransition={(status) => onStatusTransition(selectedProject, status)}
                 onUpdate={(values) => onUpdate(selectedProject, values)}
                 project={selectedProject}
                 saving={saving}
-                workItems={workItems}
+                workItems={workItemState === "ready" ? workItems : null}
               />
             ) : null}
-            {activeTab === "overview" && canViewWorkItems && <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4"><div><h3 className="font-semibold">计划与资源</h3><p className="mt-1 text-sm text-muted-foreground">正式计划、实际进展、预测、承诺与资源预约集中办理。</p></div><Button type="button" variant="outline" onClick={() => onTabChange("plan")}>办理计划与资源</Button></section>}
-            {activeTab === "overview" && <ProjectReportExports key={`ProjectReportExports:${selectedProject.id}`} projectId={selectedProject.id}/>}
-            {activeTab === "overview" && <CustomerReportPackages key={`CustomerReportPackages:${selectedProject.id}`} projectId={selectedProject.id}/>}
-            {activeTab === "overview" && <AuditEvidenceExports key={`AuditEvidenceExports:${selectedProject.id}`} projectId={selectedProject.id}/>}
-            {activeTab === "overview" && <OpenApiAccess key={`OpenApiAccess:${selectedProject.id}`} projectId={selectedProject.id}/>}
-            {activeTab === "overview" && <ProjectWebhooks key={`ProjectWebhooks:${selectedProject.id}`} projectId={selectedProject.id}/>}
-            {activeTab === "overview" && canViewWorkItems && <ValueMeasurement key={`ValueMeasurement:${selectedProject.id}`} projectId={selectedProject.id}/>}
-            {activeTab === "overview" && canViewWorkItems && <ContextKnowledge key={`ContextKnowledge:${selectedProject.id}`} projectId={selectedProject.id} contextKind="project_kickoff" entityId={selectedProject.id} />}
-            {activeTab === "overview" && canViewWorkItems ? (
-              <>
-                <ProjectIntake key={`intake:${selectedProject.id}`} projectId={selectedProject.id} />
-                <ProjectTemplatePanel key={`template:${selectedProject.id}`} projectId={selectedProject.id} stageCode={selectedProject.current_stage.code} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)} />
-                <IdHandoffLanding projectId={selectedProject.id} />
-                <IdFreezeRequestLanding projectId={selectedProject.id} />
-                <ProjectIdDesign key={`id-design:${selectedProject.id}`} projectId={selectedProject.id} />
-                <SpecificationResponsibilityLanding projectId={selectedProject.id}/>
-                <ProjectCompletionPanel key={`ProjectCompletionPanel:${selectedProject.id}`} projectId={selectedProject.id} userId={identity.user.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)} />
-                <div className="mt-6">
-                  <ProjectProcessGuide project={selectedProject} onOpen={onTabChange} />
-                </div>
-                <div className="mt-6 border-t pt-6">
-                  <ProjectTimeline
-                    activities={activities}
-                    activityError={activityError}
-                    loading={activityLoading}
-                    onRetry={onRetryActivity}
-                    highlightedEntityId={highlightedEntityId}
-                    highlightedEventId={highlightedEventId}
-                    project={selectedProject}
-                  />
-                </div>
-                <div className="mt-6 border-t pt-6">
-                  <ProjectAiChat key={`ProjectAiChat:${selectedProject.id}`} projectId={selectedProject.id} />
-                </div>
-              </>
-            ) : null}
+            {activeTab === "overview" && <div className="mt-5 space-y-5">
+              {canViewWorkItems && <ProjectTimeline activities={activities} activityError={activityError} loading={activityLoading} onRetry={onRetryActivity} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject}/>}
+            </div>}
+            {activeTab === "stages" && <div className="space-y-5">
+              <ProjectStageBoard key={selectedProject.id} project={selectedProject} workItems={workItemState === "ready" ? workItems : null} canViewWorkItems={canViewWorkItems} loading={workItemState === "loading" || workItemState === "idle"} onPlan={() => onTabChange("plan")}/>
+              {canEdit && <details className="border-t pt-3 text-sm"><summary className="cursor-pointer py-2 font-medium">项目状态与阶段操作</summary><div className="max-w-xl"><p className="mt-2 text-xs text-muted-foreground">当前状态：{projectStatusLabels[selectedProject.status]}。阶段推进仍须满足原有评审条件。</p><ProjectStatusActions busy={saving} onStageTransition={stageId => onStageTransition(selectedProject, stageId)} onStatusTransition={status => onStatusTransition(selectedProject, status)} project={selectedProject}/></div></details>}
+            </div>}
+            {activeTab === "management" && <ProjectManagementPanel key={selectedProject.id} external={!canViewWorkItems} project={selectedProject} userId={identity.user.id} canManage={canViewWorkItems && ["owner", "admin", "project_manager"].includes(identity.user.role)}/>}
+            {activeTab === "conversation" && canViewWorkItems && <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id}/>}
             {activeTab === "plan" && canViewWorkItems && <ProjectPlanPanel key={selectedProject.id} projectId={selectedProject.id} userId={identity.user.id}/>}
             {activeTab === "work-items" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "work-items" && workItems ? (
-              <div className="space-y-6">
-                <TaskPanel key={`${selectedProject.id}:${highlightedEntityId ?? ""}`} busy={workItemBusy} focusedTaskId={highlightedEntityId} onCreate={onCreateTask} onTransition={onTransitionTask} stages={selectedProject.workflow.stages} tasks={workItems.tasks} />
-                <IssuePanel busy={workItemBusy} issues={workItems.issues} focusedIssueId={highlightedEntityId} onCreate={onCreateIssue} onTransition={onTransitionIssue} />
-                <RiskPanel busy={workItemBusy} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks} />
-              </div>
+              <ProjectWorkQueue key={`${selectedProject.id}:${highlightedEntityId ?? ""}:${workKind ?? ""}`} project={selectedProject} workItems={workItems} focusedEntityId={highlightedEntityId} initialKind={workKind} busy={workItemBusy} onCreateTask={onCreateTask} onCreateIssue={onCreateIssue} onCreateRisk={onCreateRisk} onTransitionTask={onTransitionTask} onTransitionIssue={onTransitionIssue} onTransitionRisk={onTransitionRisk} onIssueChanged={onIssueChanged}/>
             ) : null}
             {activeTab === "materials" ? (
               <>
@@ -463,6 +417,7 @@ export function ProjectWorkspaceView({
             ) : null}
             {activeTab === "engineering" ? (
               <div className="space-y-8">
+                <IdHandoffLanding projectId={selectedProject.id}/><IdFreezeRequestLanding projectId={selectedProject.id}/><ProjectIdDesign key={`id-design:${selectedProject.id}`} projectId={selectedProject.id}/><SpecificationResponsibilityLanding projectId={selectedProject.id}/>
                 <EngineeringReviewPackages key={`EngineeringReviewPackages:${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
                 <ProductEngineeringPanel {...productEngineering} />
                 {/* The tab is named 「工程·变更」; the ECR chain had been in the

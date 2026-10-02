@@ -144,6 +144,8 @@ def source_options(
     _authorize(engine, context, project_id, edit=False)
     t = _table(kind)
     q = select(t.c.id).where(t.c.tenant_id == context.tenant.id, t.c.project_id == project_id)
+    if kind == "issue":
+        q = q.where(t.c.withdrawn_at.is_(None))
     if after_id:
         q = q.where(t.c.id > after_id)
     with engine.connect() as c:
@@ -293,6 +295,8 @@ def save(
         sources = []
         for ref in draft.sources:
             current = _source(c, context.tenant.id, project_id, ref.kind, ref.id)
+            if ref.kind == "issue" and current.get("withdrawn_at") is not None:
+                raise FirmwarePackageError("原问题已撤回，不能新增固件关联")
             if digest(current) != ref.expected_digest:
                 raise FirmwarePackageError("所选问题或测试来源已变化，请刷新后核对")
             if ref.use == "regression" and current["draft_state"] != "confirmed":

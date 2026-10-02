@@ -95,12 +95,14 @@ def project_options(
         raise ConversationError("分页位置不完整，请重新查询")
     if target_id is not None:
         row = read_target(c, tenant, project, kind, target_id)
-        if row is None:
-            raise ConversationError("所选记录当前不属于本项目或已不可读取")
+        if row is None or (kind == "issue" and row.get("withdrawn_at") is not None):
+            raise ConversationError("所选记录当前不属于本项目、已撤回或已不可读取")
         value = snapshot(row, kind)
         return {"target": value | {"digest": digest(value)}}
     t = tables.decisions if kind == "decision" else tables.issues
     query = select(t).where(t.c.tenant_id == tenant, t.c.project_id == project)
+    if kind == "issue":
+        query = query.where(t.c.withdrawn_at.is_(None))
     if word := search.strip():
         try:
             identity = UUID(word)

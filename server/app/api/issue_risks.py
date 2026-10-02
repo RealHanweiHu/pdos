@@ -38,6 +38,10 @@ from app.domain.issues import (
     IssueTerminalError,
     IssueUpdate,
 )
+from app.domain.knowledge_push import KnowledgeAccessError
+from app.domain.material_allocations import MaterialAllocationError
+from app.domain.material_exceptions import MaterialClosureReference
+from app.domain.material_issue_closure import read_issue_material_closure
 from app.domain.process_template_fields import (
     TemplateFieldConflictError,
     TemplateFieldError,
@@ -70,7 +74,11 @@ class IssueResponse(BaseModel):
     owner_user_id: UUID | None
     verifier_user_id: UUID | None
     sample_id: UUID | None
-    reported_by_user_id: UUID
+    reported_by_user_id: UUID | None
+    created_by_ai_principal_id: UUID | None = None
+    ai_writer_name: str | None = None
+    withdrawn_at: datetime | None = None
+    ai_withdrawal_id: UUID | None = None
     title: str
     description: str | None
     issue_type: str
@@ -186,6 +194,7 @@ class IssueTransitionRequest(BaseModel):
     to_status: str = Field(pattern=r"^(analysis|action|verification|closed)$")
     comment: str | None = Field(default=None, max_length=2_000)
     closure_evidence_ref: str | None = Field(default=None, max_length=2_000)
+    material_closures: list[MaterialClosureReference] | None = Field(default=None, max_length=200)
 
     @field_validator("comment", "closure_evidence_ref", mode="before")
     @classmethod
@@ -314,6 +323,15 @@ def risk_response(record: RiskRecord) -> RiskResponse:
 
 
 def issue_error(error: Exception) -> HTTPException:
+    if isinstance(error, KnowledgeAccessError):
+        return HTTPException(
+            403,
+            detail={"code": "ISSUE_MATERIAL_ACCESS_DENIED", "message": "当前无权核对原物料异常"},
+        )
+    if isinstance(error, MaterialAllocationError):
+        return HTTPException(
+            409, detail={"code": "ISSUE_MATERIAL_SOURCE_CHANGED", "message": str(error)}
+        )
     if isinstance(error, (TemplateFieldError, TemplateFieldConflictError)):
         return HTTPException(
             status_code=409 if isinstance(error, TemplateFieldConflictError) else 422,
@@ -343,7 +361,10 @@ def issue_error(error: Exception) -> HTTPException:
     if isinstance(error, IssueTerminalError):
         return HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail={"code": "ISSUE_TERMINAL", "message": "Closed Issue cannot be edited"},
+            detail={
+                "code": "ISSUE_TERMINAL",
+                "message": "Closed or withdrawn Issue cannot be edited",
+            },
         )
     if isinstance(error, IssueAssignmentIncompleteError):
         return HTTPException(
@@ -624,6 +645,7 @@ def transition_issue(
                 comment=body.comment,
                 closure_evidence_ref=body.closure_evidence_ref,
                 expected_updated_at=body.expected_updated_at,
+                material_closures=body.material_closures,
             )
         )
     except Exception as error:
@@ -1274,7 +1296,7 @@ def personal_work_card(
         ):
             try:
                 require_access(engine=engine, context=context, project_id=project_id, action=action)
-                permissions[key] = True
+                permissions[key] = not (collection == "issues" and item.get("withdrawn_at"))
             except HTTPException as error:
                 if error.status_code != 403:
                     raise
@@ -1299,12 +1321,18 @@ def personal_work_card(
                 .mappings()
                 .one()
             )
+            material_closure = (
+                read_issue_material_closure(c, context, project_id, item_id)
+                if collection == "issues"
+                else None
+            )
         return {
             "item": item,
             "permissions": permissions,
             "people": people,
             "actor_id": str(context.user.id),
             "verification_policy": dict(policy),
+            **({"material_closure": material_closure} if collection == "issues" else {}),
         }
     except HTTPException:
         raise

@@ -589,6 +589,7 @@ class RunContextBuilder:
                 tables.issues.c.tenant_id == tenant_id,
                 tables.issues.c.project_id == project_id,
                 tables.issues.c.status != "closed",
+                tables.issues.c.withdrawn_at.is_(None),
             )
         ).scalar_one()
         recent_issue_count = connection.execute(
@@ -598,6 +599,7 @@ class RunContextBuilder:
                 tables.issues.c.tenant_id == tenant_id,
                 tables.issues.c.project_id == project_id,
                 tables.issues.c.created_at >= seven_days_ago,
+                tables.issues.c.withdrawn_at.is_(None),
                 tables.issues.c.created_at <= now,
             )
         ).scalar_one()

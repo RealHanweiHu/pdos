@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   createIssue,
+  isProjectIssue,
   createRisk,
   createTask,
   requestProjectWorkItems,
@@ -107,6 +108,39 @@ describe("project work-item API", () => {
       "/api/projects/project%2Fwith%20spaces/issues",
       "/api/projects/project%2Fwith%20spaces/risks",
     ]);
+    vi.unstubAllGlobals();
+  });
+
+  it("accepts independent AI authorship and keeps legacy human issues compatible", async () => {
+    const ai = { ...issue, reported_by_user_id: null, created_by_ai_principal_id: "55555555-5555-4555-8555-555555555555", ai_writer_name: "PDOS Agent" };
+    expect(isProjectIssue(issue)).toBe(true);
+    expect(isProjectIssue({ ...issue, created_by_ai_principal_id: null, ai_writer_name: null })).toBe(true);
+    expect(isProjectIssue(ai)).toBe(true);
+    expect(isProjectIssue({ ...ai, ai_writer_name: null })).toBe(true);
+    vi.stubGlobal("fetch", vi.fn<typeof fetch>(async input => String(input).endsWith("/issues") ? jsonResponse({ items: [ai, issue] }) : jsonResponse({ items: [] })));
+    expect((await requestProjectWorkItems("project-1")).issues).toEqual([ai, issue]);
+    vi.unstubAllGlobals();
+  });
+
+  it("accepts complete AI withdrawal identity and rejects partial or human withdrawal markers", () => {
+    const withdrawn = { ...issue, reported_by_user_id: null, created_by_ai_principal_id: "55555555-5555-4555-8555-555555555555", withdrawn_at: "2026-09-27T16:00:00Z", ai_withdrawal_id: "88888888-8888-4888-8888-888888888888" };
+    expect(isProjectIssue(withdrawn)).toBe(true);
+    expect(isProjectIssue({ ...withdrawn, ai_withdrawal_id: null })).toBe(false);
+    expect(isProjectIssue({ ...withdrawn, withdrawn_at: "invalid" })).toBe(false);
+    expect(isProjectIssue({ ...withdrawn, reported_by_user_id: "human", created_by_ai_principal_id: null })).toBe(false);
+  });
+  it.each([
+    { reported_by_user_id: "user-1", created_by_ai_principal_id: "55555555-5555-4555-8555-555555555555", ai_writer_name: "PDOS Agent" },
+    { reported_by_user_id: null },
+    { reported_by_user_id: "" },
+    { reported_by_user_id: null, created_by_ai_principal_id: null },
+    { reported_by_user_id: null, created_by_ai_principal_id: "not-a-principal" },
+    { reported_by_user_id: "user-1", ai_writer_name: "PDOS Agent" },
+  ])("rejects conflicting or missing issue creation identity %#", async overrides => {
+    const malformed = { ...issue, ...overrides };
+    expect(isProjectIssue(malformed)).toBe(false);
+    vi.stubGlobal("fetch", vi.fn<typeof fetch>(async input => String(input).endsWith("/issues") ? jsonResponse({ items: [malformed] }) : jsonResponse({ items: [] })));
+    await expect(requestProjectWorkItems("project-1")).rejects.toThrow("invalid Issue list response");
     vi.unstubAllGlobals();
   });
 

@@ -126,6 +126,44 @@ def latest_bindings(c: Connection, tenant_id: UUID, project_id: UUID) -> list[di
     ]
 
 
+def binding_scope(
+    binding: dict[str, Any] | None, formal: dict[str, Any] | None
+) -> dict[str, Any]:
+    current_baseline = str(formal["baseline_id"]) if formal else None
+    original_baseline = binding["snapshot"].get("baseline_id") if binding else None
+    missing = (
+        sorted(set(binding["node_ids"]) - {str(node["id"]) for node in formal["nodes"]})
+        if binding and formal and binding["mode"] != "released"
+        else sorted(binding["node_ids"])
+        if binding and binding["mode"] != "released"
+        else []
+    )
+    reasons = (
+        [
+            "原物料影响的节点已不在当前正式计划中，请核对当前异常后明确重新绑定或解除；"
+            "供给恢复不会自动解除原影响。"
+            if formal
+            else "当前没有正式计划，请恢复正式计划后重新绑定，或核对当前异常后明确解除原影响。"
+        ]
+        if missing
+        else []
+    )
+    return {
+        "status": "not_registered"
+        if binding is None
+        else "released"
+        if binding["mode"] == "released"
+        else "rebind_required"
+        if missing
+        else "current",
+        "binding_id": str(binding["id"]) if binding else None,
+        "bound_baseline_id": original_baseline,
+        "current_baseline_id": current_baseline,
+        "missing_node_ids": missing,
+        "reasons": reasons,
+    }
+
+
 def conditions(
     c: Connection, tenant_id: UUID, project_id: UUID
 ) -> dict[UUID, list[dict[str, Any]]]:
@@ -145,10 +183,12 @@ def conditions(
         ).mappings()
     ]
     current = observations(c, tenant_id, project_id, entries)
+    formal = current_plan(c, tenant_id, project_id)
     issue_ids = {entry["id"]: entry["issue_id"] for entry in entries}
     result: dict[UUID, list[dict[str, Any]]] = {}
     for binding in active:
         state = current[binding["exception_id"]]
+        scope = binding_scope(binding, formal)
         same_revision = binding["snapshot"]["source"]["revision_id"] == state["core"]["revision_id"]
         if state["supply_ready"] and same_revision:
             status = "ready"
@@ -173,7 +213,19 @@ def conditions(
             }
         )
         for identity in binding["node_ids"]:
-            result.setdefault(UUID(identity), []).append(value)
+            condition = (
+                {
+                    **value,
+                    "status": "rebind_required",
+                    "ready_at": None,
+                    "reason": scope["reasons"][0],
+                    "bound_baseline_id": scope["bound_baseline_id"],
+                    "current_baseline_id": scope["current_baseline_id"],
+                }
+                if identity in scope["missing_node_ids"]
+                else value
+            )
+            result.setdefault(UUID(identity), []).append(condition)
     return result
 
 
@@ -197,6 +249,7 @@ def meeting_summary(
         return {}
     current = observations(c, tenant_id, project_id, entries)
     bindings = {row["exception_id"]: row for row in latest_bindings(c, tenant_id, project_id)}
+    formal = current_plan(c, tenant_id, project_id) if bindings else None
     builds = tables.build_batches
     codes = {
         row.id: row.code
@@ -212,6 +265,7 @@ def meeting_summary(
         value = current[entry["id"]]
         material = value["material"]
         binding = bindings.get(entry["id"])
+        scope = binding_scope(binding, formal)
         summary = [
             f"物料异常：{entry['material_reference'] or '物料引用待补'}；"
             f"批次 {codes.get(entry['build_id'], entry['build_id'])}。",
@@ -241,6 +295,7 @@ def meeting_summary(
                 summary.append("原排程影响的供给来源已变化，须重新登记预测依据或明确解除。")
             elif binding["ready_at"] and binding["ready_at"] <= datetime.now(UTC):
                 summary.append("原预计可用时间已过，预测恢复时间须重新核对。")
+        summary.extend(scope["reasons"])
         summary.append("供给齐备不等于原问题或会议行动已关闭，需沿原业务核对。")
         result[entry["issue_id"]] = {
             "summary": summary,
@@ -326,6 +381,7 @@ class MaterialScheduleService:
                 "history": history,
                 "current": observation,
                 "baseline_id": str(formal["baseline_id"]) if formal else None,
+                "scope": binding_scope(history[0] if history else None, formal),
             }
 
     def apply(

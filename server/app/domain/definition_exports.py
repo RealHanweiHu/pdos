@@ -13,7 +13,16 @@ from app.contracts.common_objects import Contract, Digest, SourceRef, Text
 from app.db.schema import tables
 from app.domain.product_definitions import _release, _row
 from app.domain.product_evidence import evidence_quality
-from app.domain.product_workspace import ProductWorkError, _emit, _plain, _sources, _space, digest
+from app.domain.product_workspace import (
+    ProductWorkAccessError,
+    ProductWorkError,
+    _emit,
+    _line,
+    _plain,
+    _sources,
+    _space,
+    digest,
+)
 from app.exports.definition_documents import MIMES, VERSION, Format, render, sections
 
 
@@ -56,6 +65,121 @@ def references(content: Any) -> tuple[SourceRef, ...]:
 
     visit(content)
     return tuple(refs.values())
+
+
+def parent_reference_status(reference: SourceRef, release: Any) -> str:
+    if release is None:
+        return "no_current_release"
+    if release["action"] == "withdraw":
+        return "withdrawn"
+    return "current" if str(release["definition_id"]) == str(reference.ref_id) else "superseded"
+
+
+def lineage(
+    c: Connection, context: AuthContext, space: UUID, definition: dict[str, Any]
+) -> tuple[dict[str, Any], list[str]]:
+    """Authorize locked business references separately from research snapshots."""
+    result: dict[str, Any] = {}
+    warnings: list[str] = []
+    if definition.get("strategy_ref") is not None:
+        ref = SourceRef.model_validate(definition["strategy_ref"])
+        if (
+            ref.tenant_id != context.tenant.id
+            or ref.project_id is not None
+            or not isinstance(ref.ref_id, UUID)
+            or ref.kind != "product_strategy"
+        ):
+            raise ProductWorkAccessError("策略来源不可访问")
+        table = tables.product_strategies
+        strategy = (
+            c.execute(
+                select(
+                    table.c.id,
+                    table.c.title,
+                    table.c.series_id,
+                    table.c.product_line_id,
+                    table.c.revision_number,
+                    table.c.version,
+                    table.c.approval,
+                    table.c.state,
+                ).where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space,
+                    table.c.id == ref.ref_id,
+                )
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if strategy is None:
+            raise ProductWorkAccessError("策略来源不可访问")
+        _line(c, context, space, strategy["product_line_id"])
+        approval = strategy["approval"] or {}
+        valid = (
+            strategy["state"] == "published"
+            and strategy["version"] == ref.version
+            and approval.get("payload_digest") == ref.digest
+        )
+        latest = (
+            c.execute(
+                select(table.c.id, table.c.revision_number)
+                .where(
+                    table.c.tenant_id == context.tenant.id,
+                    table.c.market_space_id == space,
+                    table.c.series_id == strategy["series_id"],
+                    table.c.state == "published",
+                )
+                .order_by(table.c.revision_number.desc())
+                .limit(1)
+            )
+            .mappings()
+            .one_or_none()
+        )
+        status = (
+            "unavailable"
+            if not valid
+            else "superseded"
+            if latest and latest["id"] != strategy["id"]
+            else "current"
+        )
+        result["strategy"] = {
+            "reference": ref.model_dump(mode="json"),
+            "title": strategy["title"],
+            "revision_number": strategy["revision_number"],
+            "status": status,
+        }
+        if status == "unavailable":
+            warnings.append("锁定策略的发布或版本状态不匹配，请核对固定引用；未以其他策略替换。")
+        elif status == "superseded":
+            warnings.append("锁定策略已有同系列发布修订；本定义仍沿用所记录的策略版本。")
+    if definition.get("base_definition_ref") is not None:
+        ref = SourceRef.model_validate(definition["base_definition_ref"])
+        if (
+            ref.tenant_id != context.tenant.id
+            or ref.project_id is not None
+            or not isinstance(ref.ref_id, UUID)
+            or ref.kind != "product_definition"
+        ):
+            raise ProductWorkAccessError("父定义来源不可访问")
+        parent = _row(c, context, space, ref.ref_id)
+        released = _release(c, context, parent["product_id"])
+        status = parent_reference_status(ref, released)
+        if parent["version"] != ref.version or parent["review_digest"] != ref.digest:
+            status = "unavailable"
+        result["parent_definition"] = {
+            "reference": ref.model_dump(mode="json"),
+            "status": status,
+            "current_release": _plain(released) if released else None,
+        }
+        messages = {
+            "withdrawn": "父产品当前发布已撤回；锁定父版引用与本地覆盖保留，不代表父版当前有效。",
+            "superseded": "锁定父定义已被新版发布替代；本定义未自动接受父版更新。",
+            "no_current_release": "父产品当前没有发布记录；请核对锁定父版来源。",
+            "unavailable": "锁定父定义版本或摘要不匹配，请核对来源；未替换本定义正文。",
+        }
+        if status in messages:
+            warnings.append(messages[status])
+    return result, warnings
 
 
 def source(c: Connection, context: AuthContext, space: UUID, identity: UUID) -> dict[str, Any]:
@@ -122,6 +246,8 @@ def source(c: Connection, context: AuthContext, space: UUID, identity: UUID) -> 
             "id",
             "title",
             "product_id",
+            "strategy_id",
+            "strategy_ref",
             "series_id",
             "revision_number",
             "version",
@@ -133,6 +259,11 @@ def source(c: Connection, context: AuthContext, space: UUID, identity: UUID) -> 
             "content",
         )
     }
+    if d.get("base_definition_id") is not None:
+        definition.update(
+            base_definition_ref=d["base_definition_ref"], parent_updates=d["parent_updates"]
+        )
+    locked_sources, lineage_warnings = lineage(c, context, space, definition)
     body = {
         "definition": definition,
         "product": _plain(product),
@@ -141,10 +272,11 @@ def source(c: Connection, context: AuthContext, space: UUID, identity: UUID) -> 
         "releases": [_plain(v) for v in releases],
         "current_release": _plain(latest) if latest else None,
         "sources": resolved,
-        "warnings": evidence_quality(c, context, resolved),
+        "lineage": locked_sources,
+        "warnings": [*evidence_quality(c, context, resolved), *lineage_warnings],
         "template_version": VERSION,
         "audience": "internal",
-        "source_policy": "definition-export.v1",
+        "source_policy": "definition-export.v2",
     }
     return {**body, "digest": digest(body)}
 
@@ -250,6 +382,7 @@ class DefinitionExportService:
                     context,
                     tuple(SourceRef.model_validate(v) for v in old["snapshot"]["sources"]),
                 )
+                lineage(c, context, space, old["snapshot"]["definition"])
                 return metadata(old)
             value = preview(c, context, space, command)
             if value["digest"] != command.expected_digest:
@@ -359,6 +492,7 @@ class DefinitionExportService:
             _sources(
                 c, context, tuple(SourceRef.model_validate(v) for v in row["snapshot"]["sources"])
             )
+            lineage(c, context, space, row["snapshot"]["definition"])
             if row["snapshot"]["sources"]:
                 from app.domain.product_workspace import _role
 

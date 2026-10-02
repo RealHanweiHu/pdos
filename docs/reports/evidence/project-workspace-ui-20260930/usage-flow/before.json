@@ -1,0 +1,45 @@
+{
+  "snapshot": "/private/tmp/pdos-workspace-usage-flow-before",
+  "files": [
+    {
+      "path": "web/src/components/projects/project-workspace-view.tsx",
+      "sha256": "6bfabd8488fcd307fb7cad63bb21e65f9569cd094e7b1aa4438186a8d91e2b3e"
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.tsx",
+      "sha256": "7248a6135f29ff3576294f0da30dbcaccdd7d7f199bae190cc32bd1840781a6a"
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.test.tsx",
+      "sha256": "8cf3d906bc6fc2f8367168d9c967181136bbe5edda3f5aa96346109588305485"
+    },
+    {
+      "path": "web/src/components/projects/project-management-panel.tsx",
+      "sha256": "17887447000ab3f8989938b0ec281e48c97f43ac757f007a8e8668f49d0367fb"
+    },
+    {
+      "path": "web/src/components/projects/project-gate-panel.tsx",
+      "sha256": "f88f7a177c7570621a45ea6b05f6fd4131b3d318f1d85179a2c141f1a0177c42"
+    },
+    {
+      "path": "web/src/components/projects/project-overview.tsx",
+      "sha256": "4f843aa891a1be9ee100eb09ea53d7e39b96892c01fe1d5cf62f6364bdc991fa"
+    },
+    {
+      "path": "web/src/components/projects/project-timeline.tsx",
+      "sha256": "fbe80b87584406b6b1e71f5392d1fe08adf5507d7da7da4499fb30fae071af3f"
+    },
+    {
+      "path": "web/src/components/projects/project-work-items.tsx",
+      "sha256": "25e662fd3e84abd6222f6d35463b55c90d041762ab60f144a1be9895a4dff42b"
+    },
+    {
+      "path": "web/src/components/projects/ai-issue-event-sources.test.tsx",
+      "sha256": "1f324a3aed124800a3f7ce94a17e94b49e20a13aabc238e7edadae960057518e"
+    },
+    {
+      "path": "web/src/components/projects/project-stage-board.tsx",
+      "sha256": "1918c49af6cc89d336f6bbd3bf1d9ece85c9897285be2684f0e6ab0d1df22597"
+    }
+  ]
+}

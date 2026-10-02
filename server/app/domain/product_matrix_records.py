@@ -202,6 +202,16 @@ class ProductMatrixRecordService:
                     else None
                 )
                 if previous:
+                    old_policy = previous["inputs"].get("scoring_policy")
+                    new_policy = command.calculation.scoring_policy
+                    if (
+                        old_policy is not None
+                        and new_policy is not None
+                        and old_policy["policy_key"] == new_policy.policy_key
+                        and old_policy != new_policy.model_dump(mode="json")
+                        and new_policy.policy_version <= old_policy["policy_version"]
+                    ):
+                        raise ProductWorkError("本对照评分政策已修改，请增加政策版本后重新计算保存")
                     if c.execute(
                         select(t.c.id).where(
                             t.c.tenant_id == context.tenant.id, t.c.supersedes_id == previous["id"]
@@ -379,6 +389,7 @@ class ProductMatrixRecordService:
             "prepared": prepared,
             "choices": [item.model_dump(mode="json") for item in choices],
             "criteria": row["inputs"]["criteria"],
+            "scoring_policy": row["inputs"].get("scoring_policy"),
             "notice": (
                 "已读取当前市场与发布定义；旧判据与条目对应只作为草稿，请逐项重核后重新计算保存"
             ),

@@ -37,6 +37,14 @@ def _payload_schema(**required_properties: str) -> dict[str, Any]:
 
 _DEFINITIONS = (
     EventDefinition(
+        event_type="AI_WRITE_AUTOMATIC_STOPPED",
+        version=1,
+        entity="ai_write_runtime_stop",
+        producer="ai_meeting_write_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(stop_id="string", operation_key="string"),
+    ),
+    EventDefinition(
         event_type="RESEARCH_WORKPACK_RECORDED",
         version=1,
         entity="research_workpack",
@@ -499,6 +507,22 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(record_id="string"),
     ),
     EventDefinition(
+        event_type="RESOURCE_PRIORITY_PUBLISHED",
+        version=1,
+        entity="resource_priority",
+        producer="planning_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(record_id="string"),
+    ),
+    EventDefinition(
+        event_type="RESOURCE_REALLOCATION_RECORDED",
+        version=1,
+        entity="resource_reallocation",
+        producer="planning_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(allocation_id="string", action="string"),
+    ),
+    EventDefinition(
         event_type="PLAN_CAPACITY_CHECKED",
         version=1,
         entity="planning_resource",
@@ -649,6 +673,22 @@ _DEFINITIONS = (
         producer="project_service",
         consumers=("timeline_projection", "agent_dispatcher"),
         payload_schema=_payload_schema(from_status="string", to_status="string"),
+    ),
+    EventDefinition(
+        event_type="PROJECT_MEMBER_ADDED",
+        version=1,
+        entity="project",
+        producer="project_service",
+        consumers=("security_audit", "timeline_projection"),
+        payload_schema=_payload_schema(member_user_id="string"),
+    ),
+    EventDefinition(
+        event_type="PROJECT_MEMBER_REMOVED",
+        version=1,
+        entity="project",
+        producer="project_service",
+        consumers=("security_audit", "timeline_projection"),
+        payload_schema=_payload_schema(member_user_id="string"),
     ),
     EventDefinition(
         event_type="SPECIFICATION_CREATED",
@@ -1220,6 +1260,139 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(decision_kind="string", outcome="string"),
     ),
     EventDefinition(
+        event_type="AI_MINUTES_RUN_WITHDRAWN",
+        version=1,
+        entity="ai_minutes_run",
+        producer="ai_minutes_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(request_digest="string", items="array"),
+    ),
+    EventDefinition(
+        event_type="AI_WRITE_SCOPE_REVISED",
+        version=1,
+        entity="ai_write_scope",
+        producer="ai_minutes_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            operation_key="string", revision="integer", enabled="boolean"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_TRIAL_COLLECTED",
+        version=1,
+        entity="ai_issue_trial_collection",
+        producer="ai_issue_trial_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            collection_id="string",
+            collection_digest="string",
+            protocol_id="string",
+            total_runs="integer",
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_SAMPLE_REVIEWED",
+        version=1,
+        entity="ai_issue_sample_review",
+        producer="ai_issue_sample_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            review_id="string", application_id="string", issue_id="string", verdict="string"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_TRIAL_REGISTERED",
+        version=1,
+        entity="ai_issue_trial_protocol",
+        producer="ai_issue_trial_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            protocol_id="string", protocol_digest="string", evidence_kind="string"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_OBSERVATION_SAVED",
+        version=1,
+        entity="ai_issue_observation",
+        producer="ai_issue_observation_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            observation_id="string", observation_digest="string", total_runs="integer"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_PROPOSAL_REVIEW_RECORDED",
+        version=1,
+        entity="ai_issue_proposal_review",
+        producer="ai_issue_review_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            review_id="string", result_id="string", action="string", version="integer"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_WITHDRAWAL_RECORDED",
+        version=1,
+        entity="ai_issue_withdrawal",
+        producer="ai_issue_withdrawal_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(withdrawal_id="string", run_id="string", items="array"),
+    ),
+    EventDefinition(
+        event_type="AI_ISSUE_APPLICATION_RECORDED",
+        version=1,
+        entity="ai_issue_application",
+        producer="ai_issue_application_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            application_id="string", issue_id="string", disposition="string"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_MINUTES_DRAFT_CREATED",
+        version=1,
+        entity="ai_minutes_draft",
+        producer="ai_minutes_service",
+        consumers=("ai_runtime",),
+        payload_schema=_payload_schema(draft_id="string", principal_id="string", run_id="string"),
+    ),
+    EventDefinition(
+        event_type="AI_MINUTES_DRAFT_CHANGED",
+        version=1,
+        entity="ai_minutes_draft",
+        producer="ai_minutes_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(action="string", revision="integer", draft_id="string"),
+    ),
+    EventDefinition(
+        event_type="AI_WRITE_TRIAL_REGISTERED",
+        version=1,
+        entity="ai_write_trial_protocol",
+        producer="ai_write_trial_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            protocol_id="string", protocol_digest="string", operation_key="string"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_WRITE_TRIAL_COLLECTED",
+        version=1,
+        entity="ai_write_trial_receipt",
+        producer="ai_write_trial_service",
+        consumers=("security_audit",),
+        payload_schema=_payload_schema(
+            protocol_id="string", receipt_id="string", receipt_digest="string"
+        ),
+    ),
+    EventDefinition(
+        event_type="AI_WRITE_POLICY_REVISED",
+        version=1,
+        entity="ai_write_policy",
+        producer="ai_write_policy_service",
+        consumers=("security_audit", "ai_runtime"),
+        payload_schema=_payload_schema(revision="integer", mode="string", principal_id="string"),
+    ),
+    EventDefinition(
         event_type="TENANT_MODEL_SETTINGS_UPDATED",
         version=1,
         entity="tenant_model_settings",
@@ -1290,9 +1463,9 @@ _DEFINITIONS = (
         version=1,
         entity="meeting",
         producer="meeting_service",
-        # No agent consumes meeting state yet; V2-5 adds the dispatcher route
-        # when the `meeting_minutes` capability exists to receive it.
-        consumers=("timeline_projection", "notification_center"),
+        # Dedicated application consumer preserves each meeting/transcript and
+        # the actor's source authority; no generic project debounce route.
+        consumers=("timeline_projection", "notification_center", "meeting_aftercare"),
         payload_schema=_payload_schema(
             meeting_id="string",
             meeting_type="string",

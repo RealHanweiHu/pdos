@@ -3,19 +3,38 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { obj, rows, text, field, type Row } from "@/components/quality/fmea-sources";
-import { request } from "./product-work-api";
+import { ProductRequestError, request } from "./product-work-api";
 
 const formats = { docx: "Word 文档", xlsx: "Excel 工作簿", pptx: "PowerPoint 演示文稿", pdf: "PDF 规格书" };
 const states: Record<string, string> = { draft: "草稿", in_review: "协审中", published: "已发布（以当前生效状态为准）" };
 
 export function DefinitionExports({ base, initialDefinitionId = "" }: { base: string; initialDefinitionId?: string }) {
+  return <DefinitionExportPanel key={JSON.stringify([base, initialDefinitionId])} base={base} initialDefinitionId={initialDefinitionId}/>;
+}
+
+function DefinitionExportPanel({ base, initialDefinitionId }: { base: string; initialDefinitionId: string }) {
   const [options, setOptions] = useState<Row | null>(null), [definition, setDefinition] = useState(initialDefinitionId);
   const [search, setSearch] = useState(""), [loadedSearch, setLoadedSearch] = useState("");
   const [format, setFormat] = useState<keyof typeof formats>("docx"), [reason, setReason] = useState("");
   const [preview, setPreview] = useState<Row | null>(null), [history, setHistory] = useState<Row | null>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
+  const [receipt, setReceipt] = useState<Row | null>(null);
+  const running = useRef(false);
   const attempt = useRef<{ key: string; id: string } | null>(null);
-  async function act(work: () => Promise<void>) { setBusy(true); setError(""); try { await work(); } catch (failure) { setError(failure instanceof Error ? failure.message : "导出暂不可用"); } finally { setBusy(false); } }
+  async function act(work: () => Promise<void>) {
+    if (running.current) return;
+    running.current = true; setBusy(true); setError("");
+    try { await work(); } catch (failure) {
+      if (failure instanceof ProductRequestError && [401, 403].includes(failure.status)) {
+        setOptions(null); setPreview(null); setHistory(null); setReceipt(null); setNotice(""); attempt.current = null;
+      }
+      setError(failure instanceof Error ? failure.message : "导出暂不可用");
+    } finally { running.current = false; setBusy(false); }
+  }
+  async function loadPreview() {
+    setPreview(null); setNotice("");
+    setPreview(await request<Row>(base + "/definition-export-preview", "POST", { definition_id: definition, format, reason }));
+  }
   async function loadOptions(before?: string) {
     const query = before ? loadedSearch : search;
     const value = await request<Row>(base + "/definition-export-options", "POST", { search: query, before_id: before ?? null });
@@ -28,13 +47,24 @@ export function DefinitionExports({ base, initialDefinitionId = "" }: { base: st
   async function save() {
     const body = { definition_id: definition, format, reason, expected_digest: preview?.digest };
     const key = JSON.stringify(body); if (attempt.current?.key !== key) attempt.current = { key, id: crypto.randomUUID() };
-    const saved = await request<Row>(base + "/definition-export-save", "POST", { ...body, request_id: attempt.current.id }); attempt.current = null;
-    setNotice("文件已生成并保存原回执，可在历史中下载。文件编号：" + text(saved.id)); setPreview(null); await loadHistory();
+    let saved: Row;
+    try { saved = await request<Row>(base + "/definition-export-save", "POST", { ...body, request_id: attempt.current.id }); }
+    catch (failure) {
+      if (failure instanceof ProductRequestError && failure.status === 409) { setPreview(null); attempt.current = null; }
+      throw failure;
+    }
+    attempt.current = null; setReceipt(saved);
+    setNotice("文件已生成并保存原回执。文件编号：" + text(saved.id)); setPreview(null);
+    try { await loadHistory(); } catch (failure) {
+      if (failure instanceof ProductRequestError && [401, 403].includes(failure.status)) throw failure;
+      setError("文件已保存，生成历史暂未读到。可以下载本次已保存文件，或重新查看已生成文件，无需再次生成。");
+    }
   }
   return <section className="space-y-4 rounded-lg border p-4 text-sm"><header><h3 className="text-lg font-semibold">导出中心 · 内部产品规格书</h3><p className="mt-1 text-muted-foreground">选择真实定义版本并核对内容，生成内部使用的文件。文件保留当时状态、原引用和协审历史，草稿与历史版会明确标识。</p></header>
     {error && <p role="alert" className="text-destructive">{error}</p>}{notice && <p role="status">{notice}</p>}
-    <form className="space-y-3" onSubmit={event => { event.preventDefault(); void act(async () => { setPreview(await request<Row>(base + "/definition-export-preview", "POST", { definition_id: definition, format, reason })); }); }}><fieldset disabled={busy} className="space-y-3">
-      {!initialDefinitionId && <><label className="block">查找产品定义<input className={field} maxLength={128} value={search} onChange={event => setSearch(event.target.value)}/></label><Button type="button" size="sm" variant="outline" onClick={() => void act(() => loadOptions())}>查找实际版本</Button><label className="block">明确选择定义版本<select className={field} required value={definition} onChange={event => { setDefinition(event.target.value); setPreview(null); setHistory(null); setNotice(""); }}><option value="">请选择</option>{rows(options?.items).map(value => <option key={text(value.id)} value={text(value.id)}>{text(value.title)} · 修订 {text(value.revision_number)} / 内容 {text(value.version)} · {states[text(value.state)]}</option>)}</select></label>{options?.next_before_id != null && <Button type="button" size="sm" variant="outline" onClick={() => void act(() => loadOptions(text(options.next_before_id)))}>更多版本</Button>}</>}
+    {receipt && <a className="inline-flex min-h-11 items-center underline" href={"/api/product-work/" + base + "/definition-exports/" + text(receipt.id) + "/download"}>下载本次已保存文件</a>}
+    <form className="space-y-3" onSubmit={event => { event.preventDefault(); void act(loadPreview); }}><fieldset disabled={busy} className="space-y-3">
+      {!initialDefinitionId && <><label className="block">查找产品定义<input className={field} maxLength={128} value={search} onChange={event => setSearch(event.target.value)}/></label><Button type="button" size="sm" variant="outline" onClick={() => void act(() => loadOptions())}>查找实际版本</Button><label className="block">明确选择定义版本<select className={field} required value={definition} onChange={event => { setDefinition(event.target.value); setPreview(null); setHistory(null); setReceipt(null); setNotice(""); attempt.current = null; }}><option value="">请选择</option>{rows(options?.items).map(value => <option key={text(value.id)} value={text(value.id)}>{text(value.title)} · 修订 {text(value.revision_number)} / 内容 {text(value.version)} · {states[text(value.state)]}</option>)}</select></label>{options?.next_before_id != null && <Button type="button" size="sm" variant="outline" onClick={() => void act(() => loadOptions(text(options.next_before_id)))}>更多版本</Button>}</>}
       <label className="block">文件格式<select className={field} value={format} onChange={event => { setFormat(event.target.value as keyof typeof formats); setPreview(null); }}>{Object.entries(formats).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       <label className="block">内部用途与版本选择说明<textarea className={field} required maxLength={2048} value={reason} onChange={event => { setReason(event.target.value); setPreview(null); }}/></label><div className="flex flex-wrap gap-2"><Button disabled={!definition}>预览内容与状态</Button><Button type="button" variant="outline" disabled={!definition} onClick={() => void act(() => loadHistory())}>查看已生成文件</Button></div>
     </fieldset></form>

@@ -10,29 +10,29 @@ import { FindingAppliedReceipt, FindingDraftDiff, FindingProposal, PayloadEditor
 
 const statusLabels = { pending_review: "待审阅", accepted: "已接受，待应用", applied: "已应用", rejected: "已拒绝", archived: "已归档" };
 
-export function ConversationFinding({ findingId, onRecorded, showUndo = true }: { findingId: string; onRecorded?: (finding: AiFinding) => void; showUndo?: boolean }) {
-  const [finding, setFinding] = useState<AiFinding | null>(null);
+export function ConversationFinding({ findingId, onRecorded, onLoaded, onUnconfirmed, initialFinding, showUndo = true }: { findingId: string; onRecorded?: (finding: AiFinding) => void; onLoaded?: (finding: AiFinding) => void; onUnconfirmed?: () => void; initialFinding?: AiFinding; showUndo?: boolean }) {
+  const [finding, setFinding] = useState<AiFinding | null>(initialFinding ?? null);
   const [draft, setDraft] = useState<Record<string, unknown> | null>(null);
   const [undoVersion, setUndoVersion] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [reason, setReason] = useState("");
-  const [loaded, setLoaded] = useState(false), [busy, setBusy] = useState(false), [stale, setStale] = useState(false);
+  const [loaded, setLoaded] = useState(!!initialFinding), [busy, setBusy] = useState(false), [stale, setStale] = useState(false);
   const [error, setError] = useState<string | null>(null);
   async function refresh() {
     setLoaded(true); setBusy(true); setError(null); setConfirming(false);
-    try { setFinding(await requestFinding(findingId)); setStale(false); }
-    catch (e) { setFinding(null); setStale(true); setError(e instanceof Error ? e.message : "当前无法读取候选"); }
+    try { const current = await requestFinding(findingId); setFinding(current); onLoaded?.(current); setStale(false); }
+    catch (e) { setFinding(null); setStale(true); onUnconfirmed?.(); setError(e instanceof Error ? e.message : "当前无法读取候选"); }
     finally { setBusy(false); }
   }
   async function record(work: () => Promise<AiFinding>) {
     setBusy(true); setError(null);
     try { const result = await work(); setFinding(result); setUndoVersion(["accepted", "rejected"].includes(result.status) ? result.updated_at : null); setDraft(null); setConfirming(false); onRecorded?.(result); }
-    catch (e) { setStale(true); setConfirming(false); setError(e instanceof Error ? e.message : "办理结果未确认，请刷新当前裁决后核对"); }
+    catch (e) { setStale(true); setConfirming(false); onUnconfirmed?.(); setError(e instanceof Error ? e.message : "办理结果未确认，请刷新当前裁决后核对"); }
     finally { setBusy(false); }
   }
   const payload = finding?.status === "pending_review" ? draft ?? finding.proposed_payload : finding?.accepted_payload ?? finding?.proposed_payload ?? {};
   const locked = busy || stale;
-  return <details className="rounded-lg border bg-background p-3" onToggle={e => { if (e.currentTarget.open && !loaded && !busy) void refresh(); }}>
+  return <details className="rounded-lg border bg-background p-3" onToggle={e => { if (e.target === e.currentTarget && e.currentTarget.open && !loaded && !busy) void refresh(); }}>
     <summary className="cursor-pointer text-sm font-medium">{finding?.title ?? "打开建议、依据与办理"}{finding && <span className="ml-2 text-xs">{statusLabels[finding.status]}</span>}</summary>
     <div className="mt-3 space-y-3">
       <Button size="sm" variant="outline" disabled={busy} onClick={() => void refresh()}>刷新当前裁决</Button>

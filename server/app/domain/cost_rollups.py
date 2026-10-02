@@ -256,6 +256,8 @@ def _calculate(command: RollupDraft, fixed: dict[str, Any]) -> dict[str, Any]:
                 selected_items.add(identity)
             quantity = quantities[identity]
             order_quantity = quantity * command.product_quantity
+            if price.unit != items[identity]["unit"]:
+                missing.append("计价单位与Cost BOM用量单位不一致，未假定换算关系")
         else:
             if price.category == "material":
                 raise ProductWorkError("物料计价须对应实际Cost BOM项")

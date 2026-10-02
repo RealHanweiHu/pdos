@@ -1,0 +1,10 @@
+{
+  "server/tests/test_product_work_runs_api.py": "932094a738068fe1a4744e3830cc72947b337cb5215897bf8bfca2d87b1ad1b1",
+  "server/tests/test_product_evidence_findings_api.py": "13f4d846ce75fe380527360e2006b5d50a5a06dc5f11cc46b0e0e0a1d252b237",
+  "server/tests/test_product_discovery_findings_api.py": "49375d7f7a47f203e718c5e2f9b16899ead95490d13dc25515cdc31fa3b6b838",
+  "server/tests/test_product_planning_findings_api.py": "f1ccee2cc02a6c15a46a36074e306f31f150fdc66037a2c4045ff8782c1866e3",
+  "server/tests/test_product_rfq_requirements_api.py": "4e961454da0d7aabebe3a00d4ab5a1fe59107082cc1c30d004b59db127ec550f",
+  "server/app/ai/product_work_context.py": "0ed273856c328af27a1eaa912ee11ca2f827a765960dcbdc0927354f3a566449",
+  "server/app/ai/application_domain_context.py": "f4f4b21dae67404da7938f844cdb05b8686f7c85efea1253aa8296139591daf0",
+  "docs/reports/evidence/pm-loop-20260929/wire-context.md": "b8811ba95feef3930a82970a291226c083290c79806a2dd6543468276ad4e73e"
+}

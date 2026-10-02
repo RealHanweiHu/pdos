@@ -25,6 +25,7 @@ from app.ai.budget_adoption import (
 )
 from app.ai.embeddings import EmbeddingResult
 from app.ai.executor import (
+    PROMPT_VERSIONS,
     AgentAssessment,
     AgentLoopStep,
     GatewayAgentModelInvoker,
@@ -39,6 +40,7 @@ from app.ai.loop_policy import (
     LoopQualification,
     configured_loop_binding,
     loop_contract_digest,
+    loop_contract_sources,
 )
 from app.ai.model_catalog import ProviderName
 from app.ai.run_store import ClaimedAgentRun
@@ -166,6 +168,13 @@ def loop_setup(
         }
     )
     return owner, worker, agent, ids, env, calls, replies
+
+
+def test_loop_contract_binds_the_prompts_the_executor_loads() -> None:
+    # A fixed *_v1 glob kept hashing retired prompts after the v2 and v3 bumps.
+    loaded = {f"prompts/{version.replace('-', '_')}.json" for version in PROMPT_VERSIONS.values()}
+    prompts = {key for key in loop_contract_sources() if key.startswith("prompts/")}
+    assert prompts == loaded
 
 
 def test_actual_loop_executes_requested_page_then_uses_observation_to_finish(

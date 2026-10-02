@@ -1,10 +1,16 @@
 """Private conversation boundaries; client messages never authorize business writes."""
 
-from typing import Annotated, Any, Literal
+from contextlib import AsyncExitStack
+from types import SimpleNamespace
+from typing import Annotated, Any, Literal, cast
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, Response
+from fastapi.concurrency import run_in_threadpool
+from fastapi.dependencies.utils import get_dependant, solve_dependencies
+from fastapi.exceptions import RequestValidationError
+from fastapi.routing import APIRoute
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import Engine
 
 from app.ai.application_gateway import ApplicationModelGateway
@@ -16,6 +22,8 @@ from app.api.ai import get_application_gateway
 from app.api.auth import current_context, no_store
 from app.auth.errors import ObjectPermissionDeniedError
 from app.auth.repository import AuthContext
+from app.contracts.product_matrix_explanation import MatrixExplanationSelection
+from app.contracts.product_work_ai import ProductPrivateAttachmentSelection, ProductSourceSelection
 from app.db.engine import get_engine
 from app.domain.conversation_attachments import ConversationAttachmentService
 from app.domain.conversation_email_parts import (
@@ -55,9 +63,13 @@ router = APIRouter(prefix="/api/conversations", tags=["conversations"])
 
 class ConversationCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    project_id: UUID
+    project_id: UUID | None = None
+    scope_kind: Literal["project", "personal", "market_space", "product_line"] = "project"
+    market_space_id: UUID | None = None
+    product_line_id: UUID | None = None
     meeting_id: UUID | None = None
     request_id: UUID
+    visibility: Literal["private", "project"] = "private"
 
 
 class MessageCreate(BaseModel):
@@ -89,6 +101,11 @@ class MessageCreate(BaseModel):
     expected_digest: str | None = Field(default=None, pattern="^[0-9a-f]{64}$")
     expected_minutes_version: int | None = Field(default=None, ge=0)
     attachment_ids: tuple[UUID, ...] = Field(default=(), max_length=6)
+    attachment_selections: list[ProductPrivateAttachmentSelection] | None = Field(
+        default=None, max_length=6
+    )
+    product_sources: list[ProductSourceSelection] = Field(default_factory=list, max_length=20)
+    matrix_selection: MatrixExplanationSelection | None = None
 
 
 class ArchiveRequest(BaseModel):
@@ -97,6 +114,14 @@ class ArchiveRequest(BaseModel):
 
 
 def error_response(error: Exception) -> HTTPException:
+    if isinstance(error, ValidationError):
+        return HTTPException(
+            422,
+            detail={
+                "code": "CONVERSATION_INPUT_INVALID",
+                "message": "会话范围或产品来源不完整，请核对当前页面与所选资料",
+            },
+        )
     if isinstance(error, NcrNotFoundError):
         return HTTPException(
             404, detail={"code": "QUALITY_SOURCE_NOT_FOUND", "message": "原 NCR 当前不可用"}
@@ -119,7 +144,7 @@ def error_response(error: Exception) -> HTTPException:
             403,
             detail={
                 "code": "CONVERSATION_ACCESS_DENIED",
-                "message": "当前无法访问此私人会话或其来源",
+                "message": "当前无法访问此会话或其来源",
             },
         )
     if isinstance(
@@ -150,17 +175,25 @@ def error_response(error: Exception) -> HTTPException:
 
 @router.get("")
 def list_conversations(
-    project_id: UUID,
     response: Response,
     context: Annotated[AuthContext, Depends(current_context)],
     engine: Annotated[Engine, Depends(get_engine)],
     meeting_id: UUID | None = None,
+    project_id: UUID | None = None,
+    scope_kind: Literal["project", "personal", "market_space", "product_line"] = "project",
+    market_space_id: UUID | None = None,
+    product_line_id: UUID | None = None,
 ) -> dict[str, Any]:
     no_store(response)
     try:
         return {
             "items": ConversationService(engine).list(
-                context=context, project_id=project_id, meeting_id=meeting_id
+                context=context,
+                project_id=project_id,
+                meeting_id=meeting_id,
+                scope_kind=scope_kind,
+                market_space_id=market_space_id,
+                product_line_id=product_line_id,
             )
         }
     except Exception as error:
@@ -218,6 +251,25 @@ def work_context(
         raise error_response(error) from error
 
 
+@router.get("/{conversation_id}/matrix-options")
+def conversation_matrix_options(
+    conversation_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+    before_id: UUID | None = None,
+) -> dict[str, Any]:
+    from app.domain.conversation_matrix import options
+
+    no_store(response)
+    try:
+        with engine.connect() as c:
+            conversation = ConversationService(engine)._conversation(c, context, conversation_id)
+            return options(c, context, conversation, before_id)
+    except Exception as error:
+        raise error_response(error) from error
+
+
 @router.post("/{conversation_id}/messages")
 def save_conversation_message(
     conversation_id: UUID,
@@ -235,19 +287,64 @@ def save_conversation_message(
         raise error_response(error) from error
 
 
+def _dispatch_gateway_dependency(
+    gateway: Annotated[ApplicationModelGateway, Depends(get_application_gateway)],
+) -> ApplicationModelGateway:
+    return gateway
+
+
+async def _resolve_dispatch_gateway(
+    request: Request, response: Response, background_tasks: BackgroundTasks, engine: Engine
+) -> ApplicationModelGateway:
+    # Resolve the original dependency only after the authorized note preflight.
+    # FastAPI owns overrides, nested dependencies and generator cleanup on the
+    # current request stacks; the already-injected engine keeps the same scope.
+    overrides = dict(request.app.dependency_overrides)
+    overrides[get_engine] = lambda: engine
+    stack = request.scope.get("fastapi_inner_astack")
+    if not isinstance(stack, AsyncExitStack):
+        raise RuntimeError("Conversation dispatch request dependency stack is unavailable")
+    route = cast(APIRoute, request.scope["route"])
+    solved = await solve_dependencies(
+        request=request,
+        dependant=get_dependant(path=route.path_format, call=_dispatch_gateway_dependency),
+        response=response,
+        background_tasks=background_tasks,
+        dependency_overrides_provider=SimpleNamespace(dependency_overrides=overrides),
+        async_exit_stack=stack,
+        embed_body_fields=False,
+    )
+    if solved.errors:
+        raise RequestValidationError(solved.errors)
+    return cast(ApplicationModelGateway, solved.values["gateway"])
+
+
 @router.post("/{conversation_id}/messages/{message_id}/run")
-def dispatch_conversation_message(
+async def dispatch_conversation_message(
     conversation_id: UUID,
     message_id: UUID,
+    request: Request,
     response: Response,
+    background_tasks: BackgroundTasks,
     context: Annotated[AuthContext, Depends(current_context)],
     engine: Annotated[Engine, Depends(get_engine)],
-    gateway: Annotated[ApplicationModelGateway, Depends(get_application_gateway)],
 ) -> dict[str, Any]:
     no_store(response)
     try:
-        return ConversationService(engine, gateway=gateway).dispatch(
-            context=context, conversation_id=conversation_id, message_id=message_id
+        saved_note = await run_in_threadpool(
+            ConversationService(engine).saved_note_for_dispatch,
+            context=context,
+            conversation_id=conversation_id,
+            message_id=message_id,
+        )
+        if saved_note is not None:
+            return saved_note
+        gateway = await _resolve_dispatch_gateway(request, response, background_tasks, engine)
+        return await run_in_threadpool(
+            ConversationService(engine, gateway=gateway).dispatch,
+            context=context,
+            conversation_id=conversation_id,
+            message_id=message_id,
         )
     except Exception as error:
         raise error_response(error) from error

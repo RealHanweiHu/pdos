@@ -344,6 +344,7 @@ def source(
                 .where(
                     table.c.tenant_id == context.tenant.id,
                     table.c.project_id == project,
+                    *([table.c.withdrawn_at.is_(None)] if table is tables.issues else []),
                     or_(
                         table.c.id.in_(identities),
                         table.c.status.not_in(["done", "closed", "cancelled", "skipped"]),

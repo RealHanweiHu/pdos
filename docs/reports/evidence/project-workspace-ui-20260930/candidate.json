@@ -1,0 +1,41 @@
+{
+  "scope": "项目工作区UI重组；不包含其他会话的领域建设",
+  "baseline_snapshot": "/private/tmp/pdos-workspace-ui-before",
+  "files": [
+    {
+      "path": "web/src/components/projects/project-workspace-view.tsx",
+      "sha256": "36430c8847dd32da6b379099ba6c83b14782f76942792485e41cd2fc026c7b6f",
+      "baseline_sha256": "4609930690ebe6ea11b992097ff0abd84a49c6c5aa38380f8b053985218e096e"
+    },
+    {
+      "path": "web/src/components/projects/project-overview.tsx",
+      "sha256": "039e79bb6c4d0a212f5ef78413d324c26f26371333a345b9c1d995ab114e98ce",
+      "baseline_sha256": "328eab2681af51bfc0392ec3a086c2cc838c39069fb9ec62d9007047b00a1afb"
+    },
+    {
+      "path": "web/src/components/projects/project-timeline.tsx",
+      "sha256": "fbe80b87584406b6b1e71f5392d1fe08adf5507d7da7da4499fb30fae071af3f",
+      "baseline_sha256": "b5047dd4bc2bf57c80ef4e90d8a056fb142955b6e3a8d5a5d0b87e6c314662bd"
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.test.tsx",
+      "sha256": "360275124f3d89d753408cda63be0620be7da1cd57e7a0b85b8c5d7a7f82c8d3",
+      "baseline_sha256": "dacb77fa32a3f807fd2c23146a8d194b7c3a4e19856d4412471c1a90da23c30f"
+    },
+    {
+      "path": "web/src/components/projects/project-stage-board.tsx",
+      "sha256": "1918c49af6cc89d336f6bbd3bf1d9ece85c9897285be2684f0e6ab0d1df22597",
+      "baseline_sha256": null
+    },
+    {
+      "path": "web/src/components/projects/project-stage-board.test.tsx",
+      "sha256": "cf41e4d3dd0efd496673534b5badb338f1e4241bf5a30daa3c026c5225c56734",
+      "baseline_sha256": null
+    },
+    {
+      "path": "web/src/components/projects/project-management-panel.tsx",
+      "sha256": "17887447000ab3f8989938b0ec281e48c97f43ac757f007a8e8668f49d0367fb",
+      "baseline_sha256": null
+    }
+  ]
+}

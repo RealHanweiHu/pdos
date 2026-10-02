@@ -129,6 +129,7 @@ from app.domain.material_movements import (
     MovementApply,
     MovementDraft,
     ReconciliationDraft,
+    ReconciliationSelection,
 )
 from app.domain.material_schedule import BindingDraft, MaterialScheduleService
 from app.domain.npi_execution import (
@@ -195,6 +196,7 @@ from app.domain.supplier_recovery_reviews import (
 from app.domain.supplier_recovery_reviews import (
     SupplierRecoveryReviews,
 )
+from app.domain.supplier_replies import ReplyConfirm, ReplyDraft, SupplierReplyService
 from app.domain.supply_imports import (
     InspectSupply,
     SupplyImportConfirm,
@@ -1024,6 +1026,22 @@ def material_movement_reconciliation(
         raise _error(error) from error
 
 
+@router.post("/material-movements/{movement_id}/reconcile/preview")
+def preview_material_reconciliation(
+    project_id: UUID,
+    movement_id: UUID,
+    body: ReconciliationSelection,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return MaterialReconciliationService(engine).preview(context, project_id, movement_id, body)
+    except Exception as error:
+        raise _error(error) from error
+
+
 @router.post("/material-movements/{movement_id}/reconcile")
 def reconcile_material_movements(
     project_id: UUID,
@@ -1307,6 +1325,44 @@ def apply_supplier_engineering_record(
     no_store(response)
     try:
         return SupplierEngineeringService(engine).apply(
+            context, project_id, supplier_id, record_id, body
+        )
+    except Exception as error:
+        raise _error(error) from error
+
+
+@router.post("/supplier-replies/{supplier_id}/{record_id}/preview")
+def preview_supplier_reply(
+    project_id: UUID,
+    supplier_id: UUID,
+    record_id: UUID,
+    body: ReplyDraft,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return SupplierReplyService(engine).preview(
+            context, project_id, supplier_id, record_id, body
+        )
+    except Exception as error:
+        raise _error(error) from error
+
+
+@router.post("/supplier-replies/{supplier_id}/{record_id}/confirm")
+def confirm_supplier_reply(
+    project_id: UUID,
+    supplier_id: UUID,
+    record_id: UUID,
+    body: ReplyConfirm,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return SupplierReplyService(engine).confirm(
             context, project_id, supplier_id, record_id, body
         )
     except Exception as error:

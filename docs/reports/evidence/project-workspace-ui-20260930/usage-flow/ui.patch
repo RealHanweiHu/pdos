@@ -1,0 +1,888 @@
+--- a/web/src/components/projects/project-workspace-view.tsx
++++ b/web/src/components/projects/project-workspace-view.tsx
+@@ -1,9 +1,8 @@
+ import dynamic from "next/dynamic";
+ import { DeferredPanelLoading, withDeferredPanelBoundary } from "@/components/deferred-panel-loading";
+ 
+-import { ContextKnowledge } from "@/components/knowledge/context-knowledge";
+-
+ import { useRef, useState } from "react";
++import { Gear } from "@phosphor-icons/react";
+ 
+ import { WorkspaceShell } from "@/components/workspace-shell";
+ import type { WorkspaceIdentity } from "@/components/workspace-types";
+@@ -32,7 +31,6 @@
+ import { ProjectList, projectStatusLabels } from "./project-list";
+ import { ProjectOverview } from "./project-overview";
+ import { ProjectStatusActions } from "./project-status-actions";
+-import { ProjectProcessGuide } from "./project-process-guide";
+ import { ProjectTimeline } from "./project-timeline";
+ import { ProjectStageBoard } from "./project-stage-board";
+ import { ProjectManagementPanel } from "./project-management-panel";
+@@ -47,7 +45,7 @@
+ 
+ 
+ import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
+-import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
++import { ProjectWorkQueue, type ProjectWorkKind } from "./project-work-queue";
+ import type {
+   IssueCreateInput,
+   IssueStatus,
+@@ -86,8 +84,8 @@
+ const ProjectNpiPanel = withDeferredPanelBoundary(dynamic(() => import("./project-npi-panel").then(module => module.ProjectNpiPanel), { loading: DeferredPanelLoading }));
+ 
+ /**
+- * Project workspace tabs (D9/D31) group business domains and project management.
+- * Stages have their own entry; old activity links still open the overview.
++ * Daily navigation follows the project workflow. Domain routes remain stable
++ * for object receipts and contextual work; background services aren't tabs.
+  */
+ export type ProjectWorkspaceTab =
+   | "overview"
+@@ -100,11 +98,12 @@
+   | "gates"
+   | "quality"
+   | "documents"
+-  | "management";
++  | "management"
++  | "conversation";
+ 
+ export const LEGACY_TAB_ALIASES: Record<string, ProjectWorkspaceTab> = {
+   timeline: "stages",
+-  "ai-chat": "overview",
++  "ai-chat": "conversation",
+   tasks: "work-items",
+   issues: "work-items",
+   risks: "work-items",
+@@ -144,18 +143,29 @@
+ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[] = [
+   { key: "overview", label: "总览" },
+   { key: "stages", label: "项目阶段" },
+-  { key: "plan", label: "计划·资源", internalOnly: true },
+   { key: "work-items", label: "工作项", internalOnly: true },
+-  { key: "materials", label: "物料·供应", internalOnly: true },
+-  { key: "engineering", label: "工程·变更", internalOnly: true },
+-  { key: "decisions", label: "例会·决策", internalOnly: true },
+-  { key: "gates", label: "Gate·交付物", internalOnly: true },
+-  { key: "quality", label: "试制·测试·质量", internalOnly: true },
+-  { key: "documents", label: "文档·知识", internalOnly: true },
+-  { key: "management", label: "项目管理", internalOnly: true },
++  { key: "plan", label: "计划", internalOnly: true },
++  { key: "gates", label: "评审与交付", internalOnly: true },
++  { key: "documents", label: "资料与协作", internalOnly: true },
+ ];
+ 
+-const TAB_KEYS = new Set<ProjectWorkspaceTab>(tabs.map((tab) => tab.key));
++const workViews: { key: ProjectWorkspaceTab; label: string }[] = [
++  { key: "work-items", label: "工作清单" },
++  { key: "engineering", label: "工程·变更" },
++  { key: "quality", label: "试制·测试·质量" },
++  { key: "materials", label: "物料·供应" },
++];
++const collaborationViews: { key: ProjectWorkspaceTab; label: string }[] = [
++  { key: "documents", label: "项目资料" },
++  { key: "decisions", label: "例会与决策" },
++];
++const TAB_KEYS = new Set<ProjectWorkspaceTab>([...tabs.map(tab => tab.key), "materials", "engineering", "quality", "decisions", "management", "conversation"]);
++
++export function primaryProjectTab(tab: ProjectWorkspaceTab): ProjectWorkspaceTab | null {
++  if (workViews.some(view => view.key === tab)) return "work-items";
++  if (collaborationViews.some(view => view.key === tab)) return "documents";
++  return tab === "management" || tab === "conversation" ? null : tab;
++}
+ 
+ /**
+  * Mirrors the server's CHANGE_APPROVE grant. Deciding an ECR is separate from
+@@ -219,6 +229,7 @@
+   workItemError,
+   workItemState,
+   workItems,
++  workKind,
+ }: {
+   activeTab: ProjectWorkspaceTab;
+   activities: ProjectActivity[];
+@@ -259,7 +270,7 @@
+     error: string | null;
+     gates: ProjectGate[] | null;
+     loadState: WorkItemLoadState;
+-    onNavigate: (tab: ProjectWorkspaceTab) => void;
++    onNavigate: (tab: ProjectWorkspaceTab, kind?: ProjectWorkKind) => void;
+     onOpenRound: (gate: ProjectGate) => void;
+     onRetry: () => void;
+     onSignoff: (gate: ProjectGate, slot: "product" | "engineering" | "quality") => void;
+@@ -296,11 +307,14 @@
+   workItemError: string | null;
+   workItemState: WorkItemLoadState;
+   workItems: ProjectWorkItems | null;
++  workKind?: ProjectWorkKind;
+ }) {
+   const [projectListExpanded, setProjectListExpanded] = useState(false);
+   const tabButtons = useRef<Partial<Record<ProjectWorkspaceTab, HTMLButtonElement | null>>>({});
+   const visibleTabs = tabs.filter((tab) => !tab.internalOnly || canViewWorkItems);
+   const workItemUnavailable = canViewWorkItems && workItemState !== "ready";
++  const primaryTab = primaryProjectTab(activeTab);
++  const contextViews = primaryTab === "work-items" ? workViews : primaryTab === "documents" ? collaborationViews : [];
+ 
+   return (
+     <WorkspaceShell active="projects" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
+@@ -312,7 +326,7 @@
+           <div className="mt-2 flex flex-wrap items-center gap-3"><h1 className="min-w-0 break-words text-xl font-semibold tracking-tight">{selectedProject?.name ?? "项目工作区"}</h1>{selectedProject && <><span className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">{projectStatusLabels[selectedProject.status]}</span><span className="rounded-md bg-accent px-2 py-1 text-xs text-primary">{selectedProject.current_stage.name}</span></>}</div>
+           {!selectedProject && <p className="mt-2 text-sm text-muted-foreground">选择一个项目，查看阶段进展和待办工作。</p>}
+         </div>
+-        {selectedProject && <Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded(current => !current)} variant="outline">{projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}</Button>}
++        {selectedProject && <div className="flex items-center gap-2"><Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded(current => !current)} variant="outline">{projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}</Button><Button className="min-h-11 min-w-11" aria-label={canViewWorkItems ? "项目设置" : "项目服务"} aria-pressed={activeTab === "management"} onClick={() => onTabChange("management")} size="icon" variant="ghost"><Gear aria-hidden="true" size={18}/></Button></div>}
+       </div>
+       {(!selectedProject || projectListExpanded) && <div className="mb-5" id="project-list-panel"><ProjectList onSelect={project => { setProjectListExpanded(false); onSelect(project); }} projects={projects} selectedId={selectedProject?.id ?? null}/></div>}
+ 
+@@ -323,10 +337,10 @@
+               {visibleTabs.map((tab, index) => (
+                 <button
+                   aria-controls={`project-panel-${tab.key}`}
+-                  aria-selected={activeTab === tab.key}
++                  aria-selected={primaryTab === tab.key}
+                   className={cn(
+                     "min-h-11 border-b-2 border-transparent px-3 text-sm text-muted-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/20",
+-                    activeTab === tab.key && "border-primary font-medium text-primary",
++                    primaryTab === tab.key && "border-primary font-medium text-primary",
+                   )}
+                   id={`project-tab-${tab.key}`}
+                   key={tab.key}
+@@ -344,7 +358,7 @@
+                   }}
+                   ref={(element) => { tabButtons.current[tab.key] = element; }}
+                   role="tab"
+-                  tabIndex={activeTab === tab.key ? 0 : -1}
++                  tabIndex={primaryTab === tab.key || primaryTab === null && index === 0 ? 0 : -1}
+                   type="button"
+                 >
+                   {tab.label}
+@@ -353,11 +367,13 @@
+             </div>
+           </div>
+           <div
+-            aria-labelledby={`project-tab-${activeTab}`}
++            aria-labelledby={primaryTab ? `project-tab-${primaryTab}` : undefined}
++            aria-label={primaryTab ? undefined : activeTab === "management" ? "项目设置" : "项目对话"}
+             className="min-w-0 bg-background py-5"
+-            id={`project-panel-${activeTab}`}
+-            role="tabpanel"
++            id={`project-panel-${primaryTab ?? activeTab}`}
++            role={primaryTab ? "tabpanel" : "region"}
+           >
++            {contextViews.length > 0 && canViewWorkItems && <nav aria-label={primaryTab === "work-items" ? "工作视图" : "协作视图"} className="mb-5 flex flex-wrap gap-x-4 gap-y-1 border-b pb-3">{contextViews.map(view => <button aria-current={activeTab === view.key ? "page" : undefined} className={cn("min-h-11 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", activeTab === view.key && "font-medium text-foreground")} key={view.key} onClick={() => onTabChange(view.key)} type="button">{view.label}</button>)}</nav>}
+             {workItemError ? <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{workItemError}</p> : null}
+             {["overview", "stages"].includes(activeTab) && canViewWorkItems && workItemState === "error" ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
+             {activeTab === "overview" ? (
+@@ -372,25 +388,18 @@
+               />
+             ) : null}
+             {activeTab === "overview" && <div className="mt-5 space-y-5">
+-              {canViewWorkItems ? <>
+-                <ProjectTimeline activities={activities} activityError={activityError} loading={activityLoading} onRetry={onRetryActivity} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject}/>
+-                <details className="border-t pt-3"><summary className="cursor-pointer py-2 text-sm font-medium">项目辅助查阅</summary><div className="mt-3 space-y-4"><ContextKnowledge key={`ContextKnowledge:${selectedProject.id}`} projectId={selectedProject.id} contextKind="project_kickoff" entityId={selectedProject.id}/><ProjectAiChat key={`ProjectAiChat:${selectedProject.id}`} projectId={selectedProject.id}/></div></details>
+-              </> : <ProjectManagementPanel external project={selectedProject} userId={identity.user.id} canManage={false}/>}
++              {canViewWorkItems && <ProjectTimeline activities={activities} activityError={activityError} loading={activityLoading} onRetry={onRetryActivity} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject}/>}
+             </div>}
+             {activeTab === "stages" && <div className="space-y-5">
+               <ProjectStageBoard key={selectedProject.id} project={selectedProject} workItems={workItemState === "ready" ? workItems : null} canViewWorkItems={canViewWorkItems} loading={workItemState === "loading" || workItemState === "idle"} onPlan={() => onTabChange("plan")}/>
+               {canEdit && <details className="border-t pt-3 text-sm"><summary className="cursor-pointer py-2 font-medium">项目状态与阶段操作</summary><div className="max-w-xl"><p className="mt-2 text-xs text-muted-foreground">当前状态：{projectStatusLabels[selectedProject.status]}。阶段推进仍须满足原有评审条件。</p><ProjectStatusActions busy={saving} onStageTransition={stageId => onStageTransition(selectedProject, stageId)} onStatusTransition={status => onStatusTransition(selectedProject, status)} project={selectedProject}/></div></details>}
+-              {canViewWorkItems && <details className="border-t pt-3"><summary className="cursor-pointer py-2 text-sm font-medium">阶段指南</summary><div className="mt-3"><ProjectProcessGuide project={selectedProject} onOpen={onTabChange}/></div></details>}
+             </div>}
+-            {activeTab === "management" && canViewWorkItems && <ProjectManagementPanel key={selectedProject.id} project={selectedProject} userId={identity.user.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)}/>}
++            {activeTab === "management" && <ProjectManagementPanel key={selectedProject.id} external={!canViewWorkItems} project={selectedProject} userId={identity.user.id} canManage={canViewWorkItems && ["owner", "admin", "project_manager"].includes(identity.user.role)}/>}
++            {activeTab === "conversation" && canViewWorkItems && <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id}/>}
+             {activeTab === "plan" && canViewWorkItems && <ProjectPlanPanel key={selectedProject.id} projectId={selectedProject.id} userId={identity.user.id}/>}
+             {activeTab === "work-items" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
+             {activeTab === "work-items" && workItems ? (
+-              <div className="space-y-6">
+-                <TaskPanel key={`${selectedProject.id}:${highlightedEntityId ?? ""}`} busy={workItemBusy} focusedTaskId={highlightedEntityId} onCreate={onCreateTask} onTransition={onTransitionTask} stages={selectedProject.workflow.stages} tasks={workItems.tasks} />
+-                <IssuePanel projectId={selectedProject.id} busy={workItemBusy} issues={workItems.issues} focusedIssueId={highlightedEntityId} onCreate={onCreateIssue} onTransition={onTransitionIssue} onIssueChanged={onIssueChanged} />
+-                <RiskPanel busy={workItemBusy} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks} />
+-              </div>
++              <ProjectWorkQueue key={`${selectedProject.id}:${highlightedEntityId ?? ""}:${workKind ?? ""}`} project={selectedProject} workItems={workItems} focusedEntityId={highlightedEntityId} initialKind={workKind} busy={workItemBusy} onCreateTask={onCreateTask} onCreateIssue={onCreateIssue} onCreateRisk={onCreateRisk} onTransitionTask={onTransitionTask} onTransitionIssue={onTransitionIssue} onTransitionRisk={onTransitionRisk} onIssueChanged={onIssueChanged}/>
+             ) : null}
+             {activeTab === "materials" ? (
+               <>
+--- a/web/src/components/projects/project-workspace.tsx
++++ b/web/src/components/projects/project-workspace.tsx
+@@ -71,6 +71,7 @@
+   type WorkItemLoadState,
+ } from "./project-workspace-view";
+ import type { Project } from "./project-types";
++import type { ProjectWorkKind } from "./project-work-queue";
+ import { useProjectActions } from "./use-project-actions";
+ 
+ type LoadState = "loading" | "ready" | "error" | "redirecting";
+@@ -80,10 +81,11 @@
+   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
+ }
+ 
+-function pushProjectLocation(projectId: string, tab: ProjectWorkspaceTab) {
++function pushProjectLocation(projectId: string, tab: ProjectWorkspaceTab, workKind?: ProjectWorkKind) {
+   const params = new URLSearchParams();
+   params.set("project", projectId);
+   params.set("tab", tab);
++  if (tab === "work-items" && workKind) params.set("view", workKind);
+   const target = `/projects?${params.toString()}`;
+   if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== target) {
+     window.history.pushState(null, "", target);
+@@ -113,6 +115,7 @@
+   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);
+   const [loggingOut, setLoggingOut] = useState(false);
+   const [activeTab, setActiveTab] = useState<ProjectWorkspaceTab>("overview");
++  const [workKind, setWorkKind] = useState<ProjectWorkKind>();
+   const [workItemState, setWorkItemState] = useState<WorkItemLoadState>("idle");
+   const [workItems, setWorkItems] = useState<ProjectWorkItems | null>(null);
+   const [workItemBusy, setWorkItemBusy] = useState(false);
+@@ -488,13 +491,14 @@
+     }
+   }
+ 
+-  function changeTab(tab: ProjectWorkspaceTab) {
+-    if (tab === activeTab) return;
++  function changeTab(tab: ProjectWorkspaceTab, workKind?: ProjectWorkKind) {
++    if (tab === activeTab && !workKind) return;
+     setActiveTab(tab);
++    setWorkKind(workKind);
+     setHighlightedEventId(null);
+     setHighlightedEntityId(null);
+     if (actions.selectedProject) {
+-      handledLocation.current = pushProjectLocation(actions.selectedProject.id, tab);
++      handledLocation.current = pushProjectLocation(actions.selectedProject.id, tab, workKind);
+       loadTabData(tab, actions.selectedProject.id);
+     }
+   }
+@@ -527,8 +531,10 @@
+     }
+     actions.selectProject(project);
+     const requestedTab = resolveTab(params.get("tab"), params, window.location.hash) ?? "overview";
+-    const tab = canViewWorkItems || requestedTab === "stages" ? requestedTab : "overview";
++    const tab = canViewWorkItems || requestedTab === "stages" || requestedTab === "management" ? requestedTab : "overview";
+     setActiveTab(tab);
++    const requestedWorkKind = params.get("view") ?? ({ tasks: "tasks", issues: "issues", risks: "risks" } as Record<string, string>)[params.get("tab") ?? ""];
++    setWorkKind(["tasks", "issues", "risks"].includes(requestedWorkKind) ? requestedWorkKind as ProjectWorkKind : undefined);
+     const eventId = Number(params.get("event_id"));
+     setHighlightedEventId(Number.isSafeInteger(eventId) && eventId > 0 ? eventId : null);
+     setHighlightedEntityId(params.get("entity_id"));
+@@ -697,6 +703,7 @@
+     <ProjectWorkspaceView
+       key={navigationRevision}
+       activeTab={activeTab}
++      workKind={workKind}
+       activities={activities}
+       activityError={activityError}
+       activityLoading={activityLoading}
+--- a/web/src/components/projects/project-workspace.test.tsx
++++ b/web/src/components/projects/project-workspace.test.tsx
+@@ -3,7 +3,8 @@
+ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+ 
+ import { ProjectWorkspace } from "./project-workspace";
+-import { resolveTab } from "./project-workspace-view";
++import { primaryProjectTab, resolveTab } from "./project-workspace-view";
++import { ProjectTimeline } from "./project-timeline";
+ 
+ const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
+ 
+@@ -501,7 +502,7 @@
+     expect(
+       await screen.findByRole("region", { name: "计划与资源办理" }, { timeout: 5000 }),
+     ).toBeInTheDocument();
+-    expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true");
++    expect(screen.getByRole("tab", { name: "计划" })).toHaveAttribute("aria-selected", "true");
+     expect(screen.getByRole("heading", { name: "滚动预测与预测偏差" })).toBeInTheDocument();
+     expect(screen.getByRole("heading", { name: "四时间对照与独立承诺" })).toBeInTheDocument();
+     expect(screen.queryByText(/本域的数据面将在/)).not.toBeInTheDocument();
+@@ -519,19 +520,19 @@
+       return workItemResponse(path) ?? jsonResponse({ items: [] });
+     });
+     render(<ProjectWorkspace />);
+-    await userEvent.click(await screen.findByRole("tab", { name: "计划·资源" }));
++    await userEvent.click(await screen.findByRole("tab", { name: "计划" }));
+     expect(window.location.search).toBe("?project=project-1&tab=plan");
+     await userEvent.click(screen.getByRole("button", { name: "切换项目（2）" }));
+     await userEvent.click(screen.getByRole("button", { name: "打开项目 PRJ-002" }));
+     expect(await screen.findByRole("heading", { name: "Second project" })).toBeInTheDocument();
+     await act(async () => { window.history.back(); });
+-    await waitFor(() => expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true"));
++    await waitFor(() => expect(screen.getByRole("tab", { name: "计划" })).toHaveAttribute("aria-selected", "true"));
+     expect(screen.getByRole("heading", { name: project.name })).toBeInTheDocument();
+     await act(async () => { window.history.back(); });
+     await waitFor(() => expect(screen.getByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true"));
+     expect(new URLSearchParams(window.location.search).get("event_id")).toBe("41");
+     await act(async () => { window.history.forward(); });
+-    await waitFor(() => expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true"));
++    await waitFor(() => expect(screen.getByRole("tab", { name: "计划" })).toHaveAttribute("aria-selected", "true"));
+     expect(fetchMock.mock.calls.filter(([input]) => String(input) === "/api/projects")).toHaveLength(1);
+   });
+ 
+@@ -553,7 +554,7 @@
+     expect(await screen.findByText("完成验证治具集成，并记录接口与验收结果。")).toBeVisible();
+     window.history.pushState(null, "", "/projects?tab=plan");
+     view.rerender(<ProjectWorkspace />);
+-    await waitFor(() => expect(screen.getByRole("tab", { name: "计划·资源" })).toHaveAttribute("aria-selected", "true"));
++    await waitFor(() => expect(screen.getByRole("tab", { name: "计划" })).toHaveAttribute("aria-selected", "true"));
+     expect(new URLSearchParams(window.location.search).get("project")).toBe(project.id);
+     window.history.pushState(null, "", "/projects?project=unavailable&tab=work-items");
+     view.rerender(<ProjectWorkspace />);
+@@ -573,6 +574,7 @@
+     expect(resolveTab("timeline", new URLSearchParams("event_id=1"))).toBe("overview");
+     expect(resolveTab("timeline")).toBe("stages");
+     expect(resolveTab("stages")).toBe("stages");
++    expect(resolveTab("ai-chat")).toBe("conversation");
+     expect(resolveTab("unrecognized", new URLSearchParams("forecast=x"))).toBeNull();
+   });
+ 
+@@ -590,12 +592,15 @@
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+ 
+-    // Stages and management are independently reachable beside the business domains.
+-    expect(await screen.findAllByRole("tab")).toHaveLength(11);
+-    expect(screen.getByRole("tab", { name: "计划·资源" })).toBeInTheDocument();
+-    expect(screen.getByRole("tab", { name: "工程·变更" })).toBeInTheDocument();
+-    expect(screen.getByRole("tab", { name: "试制·测试·质量" })).toBeInTheDocument();
++    // Only everyday project views are primary navigation.
++    expect(await screen.findAllByRole("tab")).toHaveLength(6);
++    expect(screen.getByRole("tab", { name: "计划" })).toBeInTheDocument();
++    expect(screen.queryByRole("tab", { name: "工程·变更" })).not.toBeInTheDocument();
++    expect(screen.queryByRole("tab", { name: "试制·测试·质量" })).not.toBeInTheDocument();
++    expect(screen.getByRole("button", { name: "项目设置" })).toBeInTheDocument();
+     expect(screen.getByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true");
++    expect(screen.queryByText("项目辅助查阅")).not.toBeInTheDocument();
++    expect(fetchMock.mock.calls.some(([input]) => /knowledge-prepared|knowledge-push|\/conversations/.test(String(input)))).toBe(false);
+     expect(screen.getByText("1", { selector: "[data-metric='task']" })).toBeInTheDocument();
+ 
+     await user.click(screen.getByRole("tab", { name: "工作项" }));
+@@ -629,7 +634,7 @@
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+     expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/gates"))).toBe(false);
+ 
+-    await user.click(screen.getByRole("tab", { name: "Gate·交付物" }));
++    await user.click(screen.getByRole("tab", { name: "评审与交付" }));
+     expect(await screen.findByRole("heading", { name: "2 个例外需要处理" })).toBeInTheDocument();
+     expect(screen.getByText("确认概念评审材料")).toBeInTheDocument();
+     expect(screen.getByText("交付检查项")).toBeInTheDocument();
+@@ -640,10 +645,14 @@
+     expect(screen.getByText("高风险")).toBeVisible();
+     await user.click(screen.getByRole("button", { name: "查看风险" }));
+     expect(screen.getByRole("tab", { name: "工作项" })).toHaveAttribute("aria-selected", "true");
+-
+-    await user.click(screen.getByRole("tab", { name: "Gate·交付物" }));
+-
+-    await user.click(screen.getByRole("tab", { name: "文档·知识" }));
++    expect(screen.getByRole("button", { name: "风险，1项" })).toHaveAttribute("aria-pressed", "true");
++    expect(screen.getByText("Supplier slip")).toBeVisible();
++    expect(screen.queryByLabelText("任务标题")).not.toBeInTheDocument();
++    expect(window.location.search).toBe("?project=project-1&tab=work-items&view=risks");
++
++    await user.click(screen.getByRole("tab", { name: "评审与交付" }));
++
++    await user.click(screen.getByRole("tab", { name: "资料与协作" }));
+     expect(await screen.findByText("concept-review.pdf")).toBeInTheDocument();
+     expect(screen.getByText(/已抽取/)).toBeInTheDocument();
+     expect(screen.queryByText(/object_key/)).not.toBeInTheDocument();
+@@ -690,7 +699,7 @@
+ 
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+-    await user.click(screen.getByRole("tab", { name: "Gate·交付物" }));
++    await user.click(screen.getByRole("tab", { name: "评审与交付" }));
+     await user.click(await screen.findByRole("button", { name: "开启签核轮次" }));
+ 
+     expect(fetchMock).toHaveBeenCalledWith(
+@@ -715,7 +724,7 @@
+     });
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+-    await user.click(screen.getByRole("tab", { name: "Gate·交付物" }));
++    await user.click(screen.getByRole("tab", { name: "评审与交付" }));
+     expect(await screen.findByRole("heading", { name: "Gate 就绪度暂不可用" })).toBeInTheDocument();
+     expect(screen.queryByText("尚未实例化 Gate")).not.toBeInTheDocument();
+     unavailable = false;
+@@ -752,7 +761,8 @@
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+     expect(fetchMock.mock.calls.some(([input]) => String(input).includes("/quality/"))).toBe(false);
+ 
+-    await user.click(screen.getByRole("tab", { name: "试制·测试·质量" }));
++    await user.click(screen.getByRole("tab", { name: "工作项" }));
++    await user.click(screen.getByRole("button", { name: "试制·测试·质量" }));
+     expect(await screen.findByText("测试计划与用例")).toBeInTheDocument();
+     await user.click(await screen.findByRole("button", { name: /CMP-C4S/ }));
+ 
+@@ -785,7 +795,8 @@
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+     expect(fetchMock.mock.calls.some(([input]) => String(input).includes("product-engineering"))).toBe(false);
+ 
+-    await user.click(screen.getByRole("tab", { name: "工程·变更" }));
++    await user.click(screen.getByRole("tab", { name: "工作项" }));
++    await user.click(screen.getByRole("button", { name: "工程·变更" }));
+     expect(await screen.findByRole("heading", { name: "尚未建立产品规格" })).toBeInTheDocument();
+     expect(screen.getByRole("heading", { name: "尚未建立开发 BOM" })).toBeInTheDocument();
+     expect(screen.getByRole("option", { name: "EBOM" })).toBeInTheDocument();
+@@ -853,7 +864,8 @@
+ 
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+-    await user.click(screen.getByRole("tab", { name: "工程·变更" }));
++    await user.click(screen.getByRole("tab", { name: "工作项" }));
++    await user.click(screen.getByRole("button", { name: "工程·变更" }));
+ 
+     expect(await screen.findByText("C4s performance specification")).toBeInTheDocument();
+     expect(screen.getByText("C4s engineering BOM")).toBeInTheDocument();
+@@ -877,7 +889,8 @@
+ 
+     render(<ProjectWorkspace />);
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+-    await user.click(screen.getByRole("tab", { name: "工程·变更" }));
++    await user.click(screen.getByRole("tab", { name: "工作项" }));
++    await user.click(screen.getByRole("button", { name: "工程·变更" }));
+     expect(await screen.findByRole("heading", { name: "产品工程数据暂不可用" })).toBeInTheDocument();
+     expect(screen.queryByRole("heading", { name: "尚未建立产品规格" })).not.toBeInTheDocument();
+ 
+@@ -907,6 +920,7 @@
+     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+     await screen.findByRole("tab", { name: "工作项" });
+     await user.click(screen.getByRole("tab", { name: "工作项" }));
++    await user.click(screen.getByText("新建任务", { exact: true }));
+     await user.type(screen.getByLabelText("任务标题"), "Review DVT report");
+     await user.click(screen.getByText("补充任务详情（说明、阶段、日期与前置任务）"));
+     await user.type(screen.getByLabelText("任务说明"), "核对 DVT 报告结论与遗留项。");
+@@ -931,6 +945,7 @@
+     );
+ 
+     await user.click(screen.getByRole("tab", { name: "工作项" }));
++    await user.click(screen.getByRole("button", { name: "问题，1项" }));
+     await user.click(screen.getByRole("button", { name: "进入分析" }));
+     expect(fetchMock).toHaveBeenCalledWith(
+       "/api/projects/project-1/issues/issue-1/transitions",
+@@ -1085,7 +1100,7 @@
+     });
+     render(<ProjectWorkspace />);
+     expect(await screen.findByRole("region", { name: "项目详情" })).toBeInTheDocument();
+-    expect(document.querySelector(`#project-tab-${tab}`)).toHaveAttribute("aria-selected", "true");
++    expect(document.querySelector(`#project-tab-${primaryProjectTab(tab as Parameters<typeof primaryProjectTab>[0])}`)).toHaveAttribute("aria-selected", "true");
+     expect(fetchMock.mock.calls.filter(([input]) => /\/(activity|tasks|issues|risks)$/.test(String(input)))).toHaveLength(0);
+   });
+ 
+@@ -1116,6 +1131,7 @@
+     expect(await screen.findByRole("link", { name: "打开任务：Integrate validation fixture" })).toBeVisible();
+     expect(screen.queryByRole("region", { name: "项目概览" })).not.toBeInTheDocument();
+     expect(screen.queryByRole("region", { name: "项目动态" })).not.toBeInTheDocument();
++    expect(screen.queryByText("阶段指南")).not.toBeInTheDocument();
+     expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/activity"))).toBe(false);
+     await userEvent.click(screen.getByRole("tab", { name: "总览" }));
+     expect(await screen.findByText("还没有项目活动。")).toBeInTheDocument();
+@@ -1136,6 +1152,83 @@
+     expect(screen.getByRole("region", { name: "项目阶段 Timeline" })).toBeInTheDocument();
+     expect(screen.queryByText("项目状态与阶段操作")).not.toBeInTheDocument();
+     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
++    expect(fetchMock).toHaveBeenCalledTimes(2);
++  });
++
++  it.each(["tab=risks", "tab=work-items&view=risks"])("restores the matching risk list from %s without showing unrelated task forms", async query => {
++    window.history.replaceState({}, "", `/projects?project=project-1&${query}`);
++    fetchMock.mockImplementation(async input => {
++      const path = String(input);
++      if (path === "/api/session/me") return jsonResponse(identity);
++      if (path === "/api/projects") return jsonResponse({ items: [project] });
++      return workItemResponse(path) ?? jsonResponse({ items: [] });
++    });
++    render(<ProjectWorkspace/>);
++    expect(await screen.findByRole("button", { name: "风险，1项" })).toHaveAttribute("aria-pressed", "true");
++    expect(screen.getByText("Supplier slip")).toBeVisible();
++    expect(screen.queryByLabelText("任务标题")).not.toBeInTheDocument();
++    expect(screen.queryByRole("region", { name: "项目问题" })).not.toBeInTheDocument();
++  });
++
++  it("keeps reminder bookkeeping out of the default feed but preserves the full record and direct receipts", async () => {
++    const activities = [{ id: 42, event_type: "REMINDER_STATE_CHANGED", entity: "reminder", entity_id: "reminder-1", timestamp: "2026-09-28T01:00:00Z" }, { id: 41, event_type: "TEST_FAILED", entity: "test_report", entity_id: "report-1", timestamp: "2026-09-27T01:00:00Z" }];
++    const props = { activities, activityError: false, loading: false, onRetry: vi.fn(), highlightedEntityId: null, highlightedEventId: null, project: { ...project, status: "draft" as const } };
++    const view = render(<ProjectTimeline {...props}/>);
++    expect(screen.getByText("测试未通过")).toBeVisible();
++    expect(screen.queryByText("提醒状态变更")).not.toBeInTheDocument();
++    await userEvent.click(screen.getByRole("button", { name: "展开全部 2 条记录" }));
++    expect(screen.getByText("提醒状态变更")).toBeVisible();
++    view.unmount();
++    render(<ProjectTimeline {...props} highlightedEventId={42}/>);
++    expect(screen.getByText("提醒状态变更").closest("li")).toHaveAttribute("aria-current", "true");
++  });
++
++  it("links pending overview work to its actual record without presenting completed work as pending", async () => {
++    window.history.replaceState({}, "", "/projects?project=project-1&tab=overview");
++    fetchMock.mockImplementation(async input => {
++      const path = String(input);
++      if (path === "/api/session/me") return jsonResponse(identity);
++      if (path === "/api/projects") return jsonResponse({ items: [project] });
++      if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask, { ...foundationTask, status: "done", readiness: "complete" }] });
++      return workItemResponse(path) ?? jsonResponse({ items: [] });
++    });
++    render(<ProjectWorkspace/>);
++    const pending = await screen.findByRole("region", { name: "待推进事项" });
++    expect(within(pending).getByRole("link", { name: "处理问题：Thermal drift" })).toHaveAttribute("href", "/projects?project=project-1&tab=work-items&entity_id=issue-1");
++    expect(within(pending).getByText("等待前置")).toBeVisible();
++    expect(within(pending).queryByText("Prepare motor validation fixture")).not.toBeInTheDocument();
++  });
++
++  it("restores a cold withdrawn Issue receipt even though it is absent from the current lists", async () => {
++    window.history.replaceState({}, "", "/projects?project=project-1&tab=work-items&entity_id=issue-1");
++    fetchMock.mockImplementation(async input => {
++      const path = String(input);
++      if (path === "/api/session/me") return jsonResponse(identity);
++      if (path === "/api/projects") return jsonResponse({ items: [project] });
++      if (path.endsWith("/issues")) return jsonResponse({ items: [] });
++      if (path.endsWith("/issues/issue-1")) return jsonResponse({ ...openIssue, reported_by_user_id: null, created_by_ai_principal_id: "55555555-5555-4555-8555-555555555555", ai_writer_name: "PDOS Agent", withdrawn_at: "2026-09-27T16:00:00Z", ai_withdrawal_id: "88888888-8888-4888-8888-888888888888" });
++      return workItemResponse(path) ?? jsonResponse({ items: [] });
++    });
++    render(<ProjectWorkspace/>);
++    expect(await screen.findByText("原问题历史 · 不计入当前问题数")).toBeVisible();
++    expect(screen.getByRole("button", { name: "问题，0项" })).toHaveAttribute("aria-pressed", "true");
++    expect(await screen.findByText("Thermal drift")).toBeVisible();
++    expect(screen.queryByRole("button", { name: "进入分析" })).not.toBeInTheDocument();
++    expect(screen.queryByLabelText("任务标题")).not.toBeInTheDocument();
++  });
++
++  it("keeps internal settings unavailable from an external services deep link", async () => {
++    window.history.replaceState({}, "", "/projects?project=project-1&tab=management&section=workflow");
++    fetchMock.mockImplementation(async input => {
++      const path = String(input);
++      if (path === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role: "supplier" } });
++      if (path === "/api/projects") return jsonResponse({ items: [project] });
++      throw new Error(`unexpected internal request: ${path}`);
++    });
++    render(<ProjectWorkspace/>);
++    expect(await screen.findByRole("navigation", { name: "项目服务分类" })).toBeInTheDocument();
++    expect(screen.queryByRole("link", { name: "成员与权限" })).not.toBeInTheDocument();
++    expect(screen.queryByRole("link", { name: "流程与资料导入" })).not.toBeInTheDocument();
+     expect(fetchMock).toHaveBeenCalledTimes(2);
+   });
+ 
+--- a/web/src/components/projects/project-management-panel.tsx
++++ b/web/src/components/projects/project-management-panel.tsx
+@@ -16,8 +16,8 @@
+ import { ValueMeasurement } from "./value-measurement";
+ 
+ const sections = [
+-  { key: "people", label: "成员与协作", description: "核对项目成员、负责人及项目内访问权限。" },
+-  { key: "workflow", label: "流程与初始化", description: "维护项目模板，核对在途资料与初始化记录。" },
++  { key: "people", label: "成员与权限", description: "管理项目成员、负责人及项目内访问权限。" },
++  { key: "workflow", label: "流程与资料导入", description: "维护项目流程，核对历史资料导入记录。" },
+   { key: "reports", label: "报告与导出", description: "整理内部报告、客户报告与审核证据包。" },
+   { key: "connections", label: "接口与测量", description: "管理受控接口、事件通知与活动测量。" },
+   { key: "completion", label: "结项与交接", description: "核对配置、原件、残余问题与具名交接。" },
+@@ -30,17 +30,17 @@
+   // Old links to completion/intake keep the relevant group visible after
+   // moving those tools out of the overview. Explicit section links win.
+   const selected = query.get("section") ?? (query.has("completion_item") ? "completion" : query.has("intake_proposal") || query.has("intake_decision") ? "workflow" : "people");
+-  const current = sections.find(section => section.key === selected) ?? sections[0];
+-  if (external) return <details className="border-t pt-4"><summary className="cursor-pointer text-sm">其他项目服务</summary><div className="mt-4 space-y-4"><Reports projectId={project.id}/><OpenApiAccess projectId={project.id}/><ProjectWebhooks projectId={project.id}/></div></details>;
+-  return <section aria-label="项目管理" className="space-y-5">
+-    <nav aria-label="项目管理分类" className="flex flex-wrap gap-1 border-b pb-3">{sections.map(section => <Link prefetch={false} key={section.key} aria-current={current.key === section.key ? "page" : undefined} className={cn("inline-flex min-h-11 items-center rounded-md px-3 text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", current.key === section.key ? "bg-muted font-medium text-foreground" : "text-muted-foreground")} href={`/projects?${new URLSearchParams({ project: project.id, tab: "management", section: section.key })}`}>{section.label}</Link>)}</nav>
++  const available = external ? sections.filter(section => ["reports", "connections"].includes(section.key)) : sections;
++  const current = available.find(section => section.key === selected) ?? available[0];
++  return <section aria-label={external ? "项目服务" : "项目设置内容"} className="space-y-5">
++    <nav aria-label={external ? "项目服务分类" : "项目设置分类"} className="flex flex-wrap gap-1 border-b pb-3">{available.map(section => <Link prefetch={false} key={section.key} aria-current={current.key === section.key ? "page" : undefined} className={cn("inline-flex min-h-11 items-center rounded-md px-3 text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", current.key === section.key ? "bg-muted font-medium text-foreground" : "text-muted-foreground")} href={`/projects?${new URLSearchParams({ project: project.id, tab: "management", section: section.key })}`}>{section.label}</Link>)}</nav>
+     <div><h2 className="text-base font-semibold">{current.label}</h2><p className="mt-1 text-sm text-muted-foreground">{current.description}</p></div>
+     <div className="space-y-4">
+-      {current.key === "people" && <ProjectMembers projectId={project.id} userId={userId}/>}
+-      {current.key === "workflow" && <><ProjectTemplatePanel projectId={project.id} stageCode={project.current_stage.code} canManage={canManage}/><ProjectIntake projectId={project.id}/></>}
++      {!external && current.key === "people" && <ProjectMembers projectId={project.id} userId={userId}/>}
++      {!external && current.key === "workflow" && <><ProjectTemplatePanel projectId={project.id} stageCode={project.current_stage.code} canManage={canManage}/><ProjectIntake projectId={project.id}/></>}
+       {current.key === "reports" && <Reports projectId={project.id}/>}
+-      {current.key === "connections" && <><OpenApiAccess projectId={project.id}/><ProjectWebhooks projectId={project.id}/><ValueMeasurement projectId={project.id}/></>}
+-      {current.key === "completion" && <ProjectCompletionPanel projectId={project.id} userId={userId} canManage={canManage}/>}
++      {current.key === "connections" && <><OpenApiAccess projectId={project.id}/><ProjectWebhooks projectId={project.id}/>{!external && <ValueMeasurement projectId={project.id}/>}</>}
++      {!external && current.key === "completion" && <ProjectCompletionPanel projectId={project.id} userId={userId} canManage={canManage}/>}
+     </div>
+   </section>;
+ }
+--- a/web/src/components/projects/project-gate-panel.tsx
++++ b/web/src/components/projects/project-gate-panel.tsx
+@@ -13,6 +13,7 @@
+ import { ProjectGateDecisionForm } from "./project-gate-decision-form";
+ import type { ProjectGate } from "./project-gate-document-types";
+ import type { ProjectWorkspaceTab, WorkItemLoadState } from "./project-workspace-view";
++import type { ProjectWorkKind } from "./project-work-queue";
+ 
+ const statusLabels: Record<string, string> = {
+   preparing: "准备中",
+@@ -48,10 +49,10 @@
+   quality: ["quality"],
+ };
+ 
+-const recoveryTabs: Partial<Record<string, { tab: ProjectWorkspaceTab; label: string }>> = {
+-  task: { tab: "work-items", label: "查看任务" },
+-  issue: { tab: "work-items", label: "查看问题" },
+-  risk: { tab: "work-items", label: "查看风险" },
++const recoveryTabs: Partial<Record<string, { tab: ProjectWorkspaceTab; label: string; workKind?: ProjectWorkKind }>> = {
++  task: { tab: "work-items", label: "查看任务", workKind: "tasks" },
++  issue: { tab: "work-items", label: "查看问题", workKind: "issues" },
++  risk: { tab: "work-items", label: "查看风险", workKind: "risks" },
+   deliverable_check: { tab: "documents", label: "查看文档" },
+   build: { tab: "engineering", label: "查看产品工程" },
+   sample: { tab: "engineering", label: "查看产品工程" },
+@@ -109,7 +110,7 @@
+   canManage: boolean;
+   error: string | null;
+   gates: ProjectGate[] | null;
+-  onNavigate: (tab: ProjectWorkspaceTab) => void;
++  onNavigate: (tab: ProjectWorkspaceTab, kind?: ProjectWorkKind) => void;
+   onOpenRound: (gate: ProjectGate) => void;
+   onRetry: () => void;
+   onSignoff: (gate: ProjectGate, slot: "product" | "engineering" | "quality") => void;
+@@ -155,7 +156,7 @@
+           </Button>
+         ) : null}
+         {recovery ? (
+-          <Button disabled={busy} onClick={() => onNavigate(recovery.tab)} size="sm" variant="outline">
++          <Button disabled={busy} onClick={() => onNavigate(recovery.tab, recovery.workKind)} size="sm" variant="outline">
+             {recovery.label}
+           </Button>
+         ) : null}
+--- a/web/src/components/projects/project-overview.tsx
++++ b/web/src/components/projects/project-overview.tsx
+@@ -1,6 +1,8 @@
+ "use client";
+ 
+ import { useState } from "react";
++import Link from "next/link";
++import { ArrowUpRight } from "@phosphor-icons/react";
+ 
+ import { Button } from "@/components/ui/button";
+ 
+@@ -27,6 +29,11 @@
+   const activeTasks = workItems?.tasks.filter((task) => !["done", "skipped"].includes(task.status)).length;
+   const openIssues = workItems?.issues.filter((issue) => issue.status !== "closed").length;
+   const openRisks = workItems?.risks.filter((risk) => risk.status !== "closed").length;
++  const pending = workItems ? [
++    ...workItems.tasks.filter(task => !["done", "skipped"].includes(task.status)).map(task => ({ id: task.id, title: task.title, kind: "任务", date: task.due_date, attention: ["blocked", "waiting_approval"].includes(task.readiness) ? 1 : 0, state: task.readiness === "waiting" ? "等待前置" : task.readiness === "blocked" ? "已阻塞" : task.readiness === "waiting_approval" ? "待批准" : task.status === "in_progress" ? "进行中" : "待开始" })),
++    ...workItems.issues.filter(issue => issue.status !== "closed").map(issue => ({ id: issue.id, title: issue.title, kind: "问题", date: issue.target_date, attention: ["critical", "high"].includes(issue.severity) ? 1 : 0, state: ({ open: "待分析", analysis: "分析中", action: "整改中", verification: "待验证", closed: "已关闭" })[issue.status] })),
++    ...workItems.risks.filter(risk => ["open", "mitigating"].includes(risk.status)).map(risk => ({ id: risk.id, title: risk.title, kind: "风险", date: risk.target_date, attention: risk.score >= 15 ? 1 : 0, state: risk.status === "mitigating" ? "应对中" : "待处理" })),
++  ].sort((a, b) => b.attention - a.attention || (a.date ?? "9999").localeCompare(b.date ?? "9999") || a.title.localeCompare(b.title)) : [];
+   return (
+     <section aria-label="项目概览" className="space-y-3 border-b pb-5">
+       <div className="flex flex-wrap items-start justify-between gap-3">
+@@ -39,6 +46,10 @@
+         {canViewWorkItems && <><div><dt className="inline text-muted-foreground">未完成任务</dt><dd className="ml-2 inline font-medium" data-metric="task">{activeTasks ?? "—"}</dd></div><div><dt className="inline text-muted-foreground">开放问题</dt><dd className="ml-2 inline font-medium" data-metric="issue">{openIssues ?? "—"}</dd></div><div><dt className="inline text-muted-foreground">开放风险</dt><dd className="ml-2 inline font-medium" data-metric="risk">{openRisks ?? "—"}</dd></div></>}
+       </dl>
+       {editing && canEdit && <div className="rounded-lg border bg-card p-4"><ProjectForm busy={saving} key={project.id} onCancel={() => setEditing(false)} onSubmit={async values => { const result = await onUpdate(values); if (result.ok) setEditing(false); return result; }} project={project}/></div>}
++      {canViewWorkItems && workItems && <section aria-label="待推进事项" className="pt-5">
++        <div className="mb-2 flex items-baseline justify-between gap-3"><h2 className="text-sm font-semibold">待推进事项</h2><span className="text-xs text-muted-foreground">{pending.length} 项</span></div>
++        {pending.length === 0 ? <p className="py-3 text-sm text-muted-foreground">当前没有待推进事项。</p> : <ul className="divide-y">{pending.slice(0, 6).map(item => <li key={`${item.kind}:${item.id}`}><Link aria-label={`处理${item.kind}：${item.title}`} className="group flex min-h-14 flex-wrap items-center gap-x-4 gap-y-1 rounded-md px-2 py-3 text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/projects?${new URLSearchParams({ project: project.id, tab: "work-items", entity_id: item.id })}`} prefetch={false}><span className="min-w-0 flex-1"><span className="mr-2 text-xs text-muted-foreground">{item.kind}</span><span className="break-words font-medium">{item.title}</span></span><span className="text-xs text-muted-foreground">{item.state}{item.date && <span className="ml-3">{item.date}</span>}</span><ArrowUpRight aria-hidden="true" className="size-4 shrink-0 text-muted-foreground group-hover:text-foreground"/></Link></li>)}</ul>}
++      </section>}
+       {!canViewWorkItems && <p className="text-xs text-muted-foreground">外部成员仅可查看已授权的项目概览与阶段。</p>}
+     </section>
+   );
+--- a/web/src/components/projects/project-timeline.tsx
++++ b/web/src/components/projects/project-timeline.tsx
+@@ -14,18 +14,21 @@
+ export function ProjectTimeline({ activities, activityError, loading, onRetry, highlightedEntityId, highlightedEventId }: { activities: ProjectActivity[]; activityError: boolean; loading: boolean; onRetry: () => void; highlightedEntityId: string | null; highlightedEventId: number | null; project: Project }) {
+   const [expanded, setExpanded] = useState(false);
+   const focused = activities.find(activity => activity.id === highlightedEventId || activity.entity_id === highlightedEntityId);
+-  const recent = activities.slice(0, 6);
++  // Reminder scheduling/acknowledgement is bookkeeping. Keep it in history
++  // and linked receipts, while the default feed focuses on project changes.
++  const recent = activities.filter(activity => activity.event_type !== "REMINDER_STATE_CHANGED").slice(0, 6);
+   const shown = expanded ? activities : focused && !recent.includes(focused) ? [...recent.slice(0, 5), focused] : recent;
+-  return <section aria-label="项目动态" className="space-y-3 border-t pt-5" data-state={loading ? "loading" : activityError ? "error" : "ready"}>
++  return <section aria-label="项目动态" className="space-y-3" data-state={loading ? "loading" : activityError ? "error" : "ready"}>
+     <div className="flex items-center justify-between gap-3"><h2 className="text-sm font-semibold">近期动态</h2>{!activityError && !loading && <span className="text-xs text-muted-foreground">{activities.length} 条记录</span>}</div>
+     {activityError && <div><p className="text-sm text-destructive" role="alert">项目活动暂不可用；证据不会被显示为不存在。</p><Button className="mt-2" onClick={onRetry} size="sm" variant="outline">重新加载项目活动</Button></div>}
+     {loading && <p className="text-sm text-muted-foreground" aria-busy="true">正在加载项目活动…</p>}
+     {!loading && !activityError && activities.length === 0 && <p className="py-3 text-sm text-muted-foreground">还没有项目活动。</p>}
++    {!loading && !activityError && activities.length > 0 && shown.length === 0 && <p className="py-3 text-sm text-muted-foreground">暂无新的项目进展。</p>}
+     {!activityError && shown.length > 0 && <ol className="divide-y" role="list" aria-label="近期活动记录">{shown.map(activity => {
+       const highlighted = activity.id === highlightedEventId || activity.entity_id === highlightedEntityId;
+       return <li aria-current={highlighted ? "true" : undefined} className={cn("flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-md px-2 py-2.5 text-xs", highlighted && "bg-accent")} id={`event-${activity.id}`} key={activity.id}><span className="flex items-center gap-2"><span className="size-1.5 rounded-full bg-muted-foreground/50" aria-hidden="true"/><span title={`#${activity.id} · ${activity.event_type}`}>{eventLabels[activity.event_type] ?? "项目记录更新"}</span></span><time className="text-muted-foreground" dateTime={activity.timestamp}>{formatTimestamp(activity.timestamp)}</time></li>;
+     })}</ol>}
+-    {!activityError && activities.length > 6 && <Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>{expanded ? "收起活动记录" : `展开全部 ${activities.length} 条记录`}</Button>}
++    {!activityError && (expanded || activities.length > shown.length) && <Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>{expanded ? "收起活动记录" : `展开全部 ${activities.length} 条记录`}</Button>}
+     {!activityError && expanded && <details className="text-xs text-muted-foreground"><summary className="cursor-pointer py-2">查看原始事件类型</summary><ul aria-label="原始事件记录" className="max-h-56 space-y-2 overflow-y-auto">{activities.map(activity => <li key={activity.id}>#{activity.id} · {activity.event_type} · {activity.entity}</li>)}</ul></details>}
+   </section>;
+ }
+--- a/web/src/components/projects/project-work-items.tsx
++++ b/web/src/components/projects/project-work-items.tsx
+@@ -154,8 +154,9 @@
+ 
+   return (
+     <section aria-label="项目任务" className="overflow-hidden rounded-lg border bg-card">
+-      <PanelHeader count={tasks.length} description="状态与 readiness 分开显示；等待前置不等于阻塞。" title="任务" />
+-      <form className="grid gap-3 border-b bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
++      <PanelHeader count={tasks.length} description="按优先级、前置依赖和截止日期推进任务。" title="任务" />
++      <details className="border-b"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-medium">新建任务</summary>
++      <form className="grid gap-3 bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
+         <label className="min-w-0 text-xs font-medium" htmlFor="task-title">
+           任务标题
+           <input className={`${controlClass} mt-1`} disabled={busy} id="task-title" maxLength={512} name="title" required />
+@@ -201,6 +202,7 @@
+           </div>
+         </details>
+       </form>
++      </details>
+       {tasks.length === 0 ? <EmptyRow>还没有任务。创建第一条可执行工作。</EmptyRow> : (
+         <ul className="divide-y" role="list">
+           {tasks.map((task) => {
+@@ -354,6 +356,8 @@
+   ) => Promise<boolean>;
+ }) {
+   const [historyRevision, setHistoryRevision] = useState(0);
++  const [expandedIssueId, setExpandedIssueId] = useState<string | null>(focusedIssueId);
++  const [showSources, setShowSources] = useState(Boolean(focusedIssueId));
+   async function refreshIssues() {
+     try { await onIssueChanged?.(); }
+     finally { setHistoryRevision(revision => revision + 1); }
+@@ -390,13 +394,14 @@
+ 
+   return (
+     <section aria-label="项目问题" className="overflow-hidden rounded-lg border bg-card">
+-      <PanelHeader count={issues.length} description="Open 可暂存；进入分析需完整分派；高/严重问题由验证人凭证据关闭。" title="问题" />
+-      <form className="grid gap-3 border-b bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
++      <PanelHeader count={issues.length} description="跟踪分析、整改和验证；关闭关键问题时核对责任人与证据。" title="问题" />
++      <details className="border-b"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-medium">新建问题</summary>
++      <form className="grid gap-3 bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
+         <label className="min-w-0 text-xs font-medium" htmlFor="issue-title">问题标题<input className={`${controlClass} mt-1`} disabled={busy} id="issue-title" maxLength={512} name="title" required /></label>
+         <label className="text-xs font-medium" htmlFor="issue-severity">严重度<select className={`${controlClass} mt-1`} defaultValue="medium" disabled={busy} id="issue-severity" name="severity"><PriorityOptions /></select></label>
+         <Button className="h-11" disabled={busy} type="submit">创建问题</Button>
+       </form>
+-      <div className="border-b p-4"><AiIssueEventSources projectId={projectId} onIssueChanged={refreshIssues} /></div>
++      </details>
+       {focusedIssueId && !issues.some(issue => issue.id === focusedIssueId) && <FocusedIssueHistory key={`${projectId}:${focusedIssueId}:${historyRevision}`} projectId={projectId} issueId={focusedIssueId} />}
+       {issues.length === 0 ? <EmptyRow>还没有问题。</EmptyRow> : (
+         <ul className="divide-y" role="list">
+@@ -407,7 +412,7 @@
+               <li className="flex flex-col gap-3 p-4 scroll-mt-6" id={`issue-${issue.id}`} key={issue.id}>
+                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                   <div className="min-w-0 flex-1">
+-                    <p className="font-medium">{issue.title}</p>{issue.created_by_ai_principal_id && <p className="mt-1 text-xs text-muted-foreground">{issue.ai_writer_name ?? "PDOS Agent"} · AI 创建{issue.withdrawn_at ? " · 已撤回" : ""}</p>}{issue.source_field_capture_id && <a className="block text-xs text-primary underline" href={`/capture?project=${issue.project_id}&capture=${issue.source_field_capture_id}`}>查看现场原件与人工核对记录</a>}{issue.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${issue.source_finding_id}`}>查看会议建议与人审回执</a>}
++                    <button aria-controls={`issue-detail-${issue.id}`} aria-expanded={expandedIssueId === issue.id} aria-label={`查看问题详情 ${issue.title}`} className="min-h-11 text-left font-medium hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => setExpandedIssueId(current => current === issue.id ? null : issue.id)} type="button">{issue.title}</button>{issue.created_by_ai_principal_id && <p className="mt-1 text-xs text-muted-foreground">{issue.ai_writer_name ?? "PDOS Agent"} · AI 创建{issue.withdrawn_at ? " · 已撤回" : ""}</p>}{issue.source_field_capture_id && <a className="block text-xs text-primary underline" href={`/capture?project=${issue.project_id}&capture=${issue.source_field_capture_id}`}>查看现场原件与人工核对记录</a>}{issue.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${issue.source_finding_id}`}>查看会议建议与人审回执</a>}
+                     <div className="mt-2 flex flex-wrap gap-1.5">
+                       <Badge tone={issue.status === "closed" ? "ok" : "pending"}>{issueStatusLabels[issue.status]}</Badge>
+                       <Badge tone={issue.severity === "critical" ? "bad" : "neutral"}>{priorityLabels[issue.severity]}</Badge>
+@@ -498,17 +503,21 @@
+                     </div>
+                   </form>
+                 ) : null}
++                {expandedIssueId === issue.id && <div id={`issue-detail-${issue.id}`} className="space-y-3 border-t pt-3">
++                {issue.description && <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">{issue.description}</p>}
+                 <IssueIntakeSource projectId={issue.project_id} issueId={issue.id}/>
+                 <MaterialExceptions projectId={issue.project_id} issueId={issue.id}/>
+                 <DecisionSourceRows projectId={issue.project_id} issueId={issue.id}/>
+                 <SupplierNoticeLinks projectId={issue.project_id} targetKind="issue" targetId={issue.id}/><CostGaps projectId={issue.project_id} issueId={issue.id}/>
+                 {!issue.withdrawn_at && <IssueTemplateFields projectId={issue.project_id} issueId={issue.id} currentStatus={issue.status} currentVersion={issue.updated_at}/>}
+                 <IssueQualityLinks key={`quality:${issue.id}`} projectId={issue.project_id} issueId={issue.id}/>
++                </div>}
+               </li>
+             );
+           })}
+         </ul>
+       )}
++      <div className="border-t p-4"><Button aria-expanded={showSources} onClick={() => setShowSources(current => !current)} size="sm" variant="ghost">{showSources ? "收起异常处理记录" : "查看异常处理记录"}</Button>{showSources && <div className="mt-3"><AiIssueEventSources projectId={projectId} onIssueChanged={refreshIssues}/></div>}</div>
+     </section>
+   );
+ }
+@@ -520,12 +529,14 @@
+   return [];
+ }
+ 
+-export function RiskPanel({ busy, onCreate, onTransition, risks }: {
++export function RiskPanel({ busy, onCreate, onTransition, risks, focusedRiskId = null }: {
+   busy: boolean;
+   onCreate: (input: RiskCreateInput) => Promise<boolean>;
+   onTransition: (risk: ProjectRisk, toStatus: RiskStatus) => Promise<boolean>;
+   risks: ProjectRisk[];
++  focusedRiskId?: string | null;
+ }) {
++  const [expandedRiskId, setExpandedRiskId] = useState<string | null>(focusedRiskId);
+   async function submit(event: FormEvent<HTMLFormElement>) {
+     event.preventDefault();
+     const form = event.currentTarget;
+@@ -540,22 +551,23 @@
+   const scoreOptions = [1, 2, 3, 4, 5];
+   return (
+     <section aria-label="项目风险" className="overflow-hidden rounded-lg border bg-card">
+-      <PanelHeader count={risks.length} description="暴露分值由服务端稳定计算：likelihood × impact。" title="风险" />
+-      <form className="grid gap-3 border-b bg-muted/25 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_112px_112px_auto] lg:items-end" onSubmit={submit}>
++      <PanelHeader count={risks.length} description="关注高暴露风险，跟踪应对措施与结果。" title="风险" />
++      <details className="border-b"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-medium">新建风险</summary>
++      <form className="grid gap-3 bg-muted/25 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_112px_112px_auto] lg:items-end" onSubmit={submit}>
+         <label className="min-w-0 text-xs font-medium sm:col-span-2 lg:col-span-1" htmlFor="risk-title">风险标题<input className={`${controlClass} mt-1`} disabled={busy} id="risk-title" maxLength={512} name="title" required /></label>
+         <label className="text-xs font-medium" htmlFor="risk-likelihood">可能性<select className={`${controlClass} mt-1`} defaultValue="1" disabled={busy} id="risk-likelihood" name="likelihood">{scoreOptions.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+         <label className="text-xs font-medium" htmlFor="risk-impact">影响<select className={`${controlClass} mt-1`} defaultValue="1" disabled={busy} id="risk-impact" name="impact">{scoreOptions.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+         <Button className="h-11" disabled={busy} type="submit">创建风险</Button>
+       </form>
++      </details>
+       {risks.length === 0 ? <EmptyRow>还没有风险。</EmptyRow> : (
+         <ul className="divide-y" role="list">
+           {risks.map((risk) => (
+             <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center" key={risk.id}>
+               <div className="min-w-0 flex-1">
+-                <RiskTemplateFields projectId={risk.project_id} riskId={risk.id} currentStatus={risk.status} currentVersion={risk.updated_at}/>
+-                <RiskBusinessReferences projectId={risk.project_id} riskId={risk.id} />
+-                <p className="font-medium">{risk.title}</p>{risk.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${risk.source_finding_id}`}>查看会议建议与人审回执</a>}
++                <button aria-controls={`risk-detail-${risk.id}`} aria-expanded={expandedRiskId === risk.id} aria-label={`查看风险详情 ${risk.title}`} className="min-h-11 text-left font-medium hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => setExpandedRiskId(current => current === risk.id ? null : risk.id)} type="button">{risk.title}</button>{risk.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${risk.source_finding_id}`}>查看会议建议与人审回执</a>}
+                 <div className="mt-2 flex flex-wrap gap-1.5"><Badge tone={risk.status === "closed" ? "ok" : risk.score >= 15 ? "bad" : "pending"}>{riskStatusLabels[risk.status]}</Badge><Badge tone={risk.score >= 15 ? "bad" : "neutral"}>暴露 {risk.score}</Badge><Badge>{risk.likelihood} × {risk.impact}</Badge></div>
++                {expandedRiskId === risk.id && <div id={`risk-detail-${risk.id}`} className="mt-3 space-y-3 border-t pt-3">{risk.description && <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">{risk.description}</p>}<RiskTemplateFields projectId={risk.project_id} riskId={risk.id} currentStatus={risk.status} currentVersion={risk.updated_at}/><RiskBusinessReferences projectId={risk.project_id} riskId={risk.id}/></div>}
+               </div>
+               <div className="flex flex-wrap gap-2">{riskActions(risk.status).map((action) => <Button className="h-11 sm:h-8" disabled={busy} key={action.to} onClick={() => void onTransition(risk, action.to)} variant={action.variant}>{action.label}</Button>)}</div>
+             </li>
+--- a/web/src/components/projects/ai-issue-event-sources.test.tsx
++++ b/web/src/components/projects/ai-issue-event-sources.test.tsx
+@@ -15,7 +15,8 @@
+     vi.stubGlobal("fetch", fetcher);
+     render(<IssuePanel projectId="project" busy={false} issues={[]} onCreate={async () => false} onTransition={async () => false} />);
+     expect(screen.getByText("还没有问题。")).toBeVisible();
+-    expect(fetcher).not.toHaveBeenCalled(); open();
++    expect(fetcher).not.toHaveBeenCalled();
++    fireEvent.click(screen.getByRole("button", { name: "查看异常处理记录" })); open();
+     expect(await screen.findByText("样机耐久测试失败")).toBeVisible();
+     expect(fetcher.mock.calls[0][0]).toBe(base);
+     expect(screen.getByRole("link", { name: "继续办理已有问题：耐久问题" })).toHaveAttribute("href", "/projects?project=project&tab=work-items&entity_id=issue");
+--- a/web/src/components/projects/project-stage-board.tsx
++++ b/web/src/components/projects/project-stage-board.tsx
+@@ -47,6 +47,6 @@
+     {canViewWorkItems && <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground"><p>横向看阶段，纵向看工作类型</p><label className="inline-flex min-h-8 cursor-pointer items-center gap-2"><input type="checkbox" checked={activeOnly} onChange={e => setActiveOnly(e.target.checked)}/>仅未完成</label><label className="inline-flex min-h-8 cursor-pointer items-center gap-2"><input type="checkbox" checked={dependencies} onChange={e => setDependencies(e.target.checked)}/>显示前置关系</label></div>}
+     {view === "lanes" ? <div className="max-h-[560px] overflow-auto rounded-lg border bg-card" tabIndex={0} aria-label="可滚动的阶段泳道"><table className="w-full border-collapse text-left" style={{ minWidth: canViewWorkItems ? 120 + columns.length * 190 : stages.length * 190 }}><caption className="sr-only">真实项目阶段与按归属划分的任务、行动、问题；阶段位置不代表任务完成率。</caption><thead className="sticky top-0 z-20 bg-card"><tr>{canViewWorkItems && <th scope="col" className="sticky left-0 z-30 w-28 border-b border-r bg-card p-3 text-xs font-medium text-muted-foreground">工作类型</th>}{columns.map(column => <th key={column.id} scope="col" className={cn("min-w-44 border-b border-r p-4 last:border-r-0", column.stage?.id === project.current_stage.id && "bg-accent")}><span className="flex items-center justify-between gap-2"><span className="text-sm font-semibold">{column.name}</span>{column.stage && <span className={cn("shrink-0 text-[11px] font-normal", column.stage.id === project.current_stage.id ? "text-primary" : "text-muted-foreground")}>{stageState(project, column.stage)}</span>}</span>{column.stage?.description && <span className="mt-2 block max-w-64 truncate text-xs font-normal text-muted-foreground" title={column.stage.description}>{column.stage.description}</span>}</th>)}</tr></thead>{canViewWorkItems && <tbody>{!workItems ? <tr><td colSpan={columns.length + 1} className="p-8 text-center text-sm text-muted-foreground">{loading ? "正在读取阶段工作项…" : "工作项尚未读取，不能据此判断任务或问题数量。"}</td></tr> : lanes.map(lane => <tr key={lane.key}><th scope="row" className="sticky left-0 z-10 w-28 border-r border-t bg-card p-3 align-top"><span className="block text-xs font-medium">{lane.label}</span><span className="mt-1 block text-[11px] font-normal leading-5 text-muted-foreground">{lane.caption}</span></th>{columns.map(column => { const rows = cellItems(column.id, lane.key); return <td key={column.id} className={cn("border-r border-t p-3 align-top last:border-r-0", column.stage?.id === project.current_stage.id && "bg-accent/30")}><ul className="max-h-64 space-y-2 overflow-y-auto">{rows.map(renderItem)}</ul>{rows.length === 0 && <p className="py-3 text-xs text-muted-foreground">{activeOnly ? "无未完成事项" : "暂无事项"}</p>}</td>; })}</tr>)}</tbody>}</table></div> : <ol className="divide-y rounded-lg border bg-card">{columns.map(column => <li key={column.id} className={cn("flex flex-wrap items-start justify-between gap-3 px-4 py-4", column.stage?.id === project.current_stage.id && "bg-accent")}><div><p className="text-sm font-medium">{column.name}{column.stage && <span className="ml-3 text-xs font-normal text-muted-foreground">{stageState(project, column.stage)}</span>}</p>{column.stage?.description && <p className="mt-1 text-xs text-muted-foreground">{column.stage.description}</p>}</div>{canViewWorkItems && <span className="text-xs text-muted-foreground">{workItems ? `${cellItems(column.id).length} ${activeOnly ? "项未完成" : "项工作"}` : "数量未读取"}</span>}</li>)}</ol>}
+     {canViewWorkItems && workItems && <div className="flex flex-wrap items-start gap-x-4 gap-y-2 border-b pb-3 text-xs"><span className="shrink-0 font-medium">跨阶段风险</span>{risks.length === 0 ? <span className="text-muted-foreground">当前无开放风险</span> : <><span className="text-muted-foreground">{risks.length} 项开放</span>{risks.slice(0, 3).map(risk => <Link prefetch={false} key={risk.id} className="max-w-full truncate text-primary underline-offset-4 hover:underline" href={`/projects?${new URLSearchParams({ project: project.id, tab: "work-items", entity_id: risk.id })}`}>{risk.title}</Link>)}</>}</div>}
+-    <p className="text-xs text-muted-foreground">按真实归属展示；阶段位置不代表完成率。具体排期与资源安排在“计划·资源”中查看。</p>
++    <p className="text-xs text-muted-foreground">按真实归属展示；阶段位置不代表完成率。具体排期与资源安排在“计划”中查看。</p>
+   </section>;
+ }
+--- /dev/null
++++ b/web/src/components/projects/project-work-queue.tsx
+@@ -0,0 +1,36 @@
++"use client";
++
++import { useState } from "react";
++import { cn } from "@/lib/utils";
++import type { Project } from "./project-types";
++import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
++import type { IssueCreateInput, IssueStatus, ProjectIssue, ProjectRisk, ProjectTask, ProjectWorkItems, RiskCreateInput, RiskStatus, TaskCreateInput, TaskTransitionInput } from "./project-work-item-types";
++
++export type ProjectWorkKind = "tasks" | "issues" | "risks";
++
++export function ProjectWorkQueue({ project, workItems, focusedEntityId, initialKind, busy, onCreateTask, onCreateIssue, onCreateRisk, onTransitionTask, onTransitionIssue, onTransitionRisk, onIssueChanged }: {
++  project: Project;
++  workItems: ProjectWorkItems;
++  focusedEntityId: string | null;
++  initialKind?: ProjectWorkKind;
++  busy: boolean;
++  onCreateTask: (input: TaskCreateInput) => Promise<boolean>;
++  onCreateIssue: (input: IssueCreateInput) => Promise<boolean>;
++  onCreateRisk: (input: RiskCreateInput) => Promise<boolean>;
++  onTransitionTask: (task: ProjectTask, input: TaskTransitionInput) => Promise<boolean>;
++  onTransitionIssue: (issue: ProjectIssue, status: IssueStatus, extra?: { comment?: string; closure_evidence_ref?: string }) => Promise<boolean>;
++  onTransitionRisk: (risk: ProjectRisk, status: RiskStatus) => Promise<boolean>;
++  onIssueChanged?: () => Promise<void>;
++}) {
++  // A receipt or swimlane link opens the matching list without another choice.
++  // Withdrawn Issues leave the current list. Their history reader verifies a
++  // receipt ID with the server and quietly rejects IDs belonging to other kinds.
++  const [kind, setKind] = useState<ProjectWorkKind>(() => workItems.issues.some(item => item.id === focusedEntityId) ? "issues" : workItems.risks.some(item => item.id === focusedEntityId) ? "risks" : workItems.tasks.some(item => item.id === focusedEntityId) ? "tasks" : initialKind ?? (focusedEntityId ? "issues" : "tasks"));
++  const views: { key: ProjectWorkKind; label: string }[] = [{ key: "tasks", label: "任务" }, { key: "issues", label: "问题" }, { key: "risks", label: "风险" }];
++  return <div className="space-y-4">
++    <div aria-label="工作项类型" className="flex flex-wrap gap-1" role="group">{views.map(view => <button aria-label={`${view.label}，${workItems[view.key].length}项`} aria-pressed={kind === view.key} className={cn("min-h-11 rounded-md px-3 text-sm text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", kind === view.key && "bg-muted font-medium text-foreground")} key={view.key} onClick={() => setKind(view.key)} type="button">{view.label}<span className="ml-2 tabular-nums">{workItems[view.key].length}</span></button>)}</div>
++    {kind === "tasks" && <TaskPanel busy={busy} focusedTaskId={focusedEntityId} onCreate={onCreateTask} onTransition={onTransitionTask} stages={project.workflow.stages} tasks={workItems.tasks}/>}
++    {kind === "issues" && <IssuePanel projectId={project.id} busy={busy} issues={workItems.issues} focusedIssueId={focusedEntityId} onCreate={onCreateIssue} onTransition={onTransitionIssue} onIssueChanged={onIssueChanged}/>}
++    {kind === "risks" && <RiskPanel busy={busy} focusedRiskId={focusedEntityId} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks}/>}
++  </div>;
++}

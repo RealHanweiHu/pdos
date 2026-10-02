@@ -6,7 +6,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from pydantic import AwareDatetime, Field
-from sqlalchemy import Connection, Engine, func, select, true
+from sqlalchemy import Connection, Engine, Select, func, select, true, tuple_
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, is_allowed
@@ -27,9 +27,7 @@ from app.domain.plan_scheduling import NodeAllocation
 from app.domain.product_workspace import ProductWorkError, _plain, _role, digest
 from app.domain.resource_reservations import _project
 from app.domain.schedule_forecast_engine import (
-    ALGORITHM_VERSION,
-    MATERIAL_ALGORITHM_VERSION,
-    TOOLING_ALGORITHM_VERSION,
+    algorithm_version,
     calculate_forecast,
 )
 from app.domain.schedule_source_errors import correction_error_views
@@ -85,9 +83,21 @@ def capture_local_basis(
     from app.domain.material_schedule import conditions as material_conditions
 
     material = material_conditions(connection, tenant_id, project_id)
+    current_nodes = {UUID(state["node_id"]) for state in states}
+    unmapped_material = [
+        {**condition, "node_id": str(node_id)}
+        for node_id, conditions in material.items()
+        if node_id not in current_nodes
+        for condition in conditions
+    ]
     for state in states:
         if material.get(UUID(state["node_id"])):
             state["material_conditions"] = material[UUID(state["node_id"])]
+        if any(condition["status"] != "ready" for condition in unmapped_material):
+            state["input_unknown"] = [
+                *state.get("input_unknown", []),
+                "项目仍有未接入当前正式计划的物料影响，请明确重新绑定或解除原影响",
+            ]
     from app.domain.tooling_schedule import conditions as tooling_conditions
 
     tooling = tooling_conditions(connection, tenant_id, project_id)
@@ -95,6 +105,19 @@ def capture_local_basis(
         if tooling.get(UUID(state["node_id"])):
             state["tooling_conditions"] = tooling[UUID(state["node_id"])]
     allocations = formal["allocations"]
+    from app.domain.schedule_resource_feedback import capture_resources, reservation_conditions
+
+    resource_basis = capture_resources(
+        connection, tenant_id, project_id, [UUID(state["node_id"]) for state in states]
+    )
+    for state in states:
+        state["resource_conditions"] = reservation_conditions(
+            resource_basis["reservations"],
+            resource_basis["resources"],
+            resource_basis["capacities"],
+            resource_basis["policies"],
+            node_id=state["node_id"],
+        )
     calendars = {
         str(row["id"]): row["definition"]
         for row in connection.execute(
@@ -113,6 +136,19 @@ def capture_local_basis(
         "allocations": allocations,
         "calendars": calendars,
         "tasks": states,
+        "resource_basis": resource_basis,
+        "unmapped_material_conditions": unmapped_material,
+        # A deadline can expire with no business write. Old Forecast must then
+        # fail current-basis checks while explicit human quantities remain usable.
+        "test_expectation_validity": {
+            state["node_id"]: datetime.fromisoformat(state["expected_completion_at"])
+            > datetime.now(UTC)
+            for state in states
+            if state.get("node_kind") == "test_run"
+            and state.get("source_status") == "in_progress"
+            and not state.get("actual_finish")
+            and state.get("expected_completion_at")
+        },
     }
     return {"basis": basis, "basis_digest": digest(basis), "titles": titles}
 
@@ -142,6 +178,25 @@ def capture_basis(connection: Connection, tenant_id: UUID, project_id: UUID) -> 
     }
 
 
+def identify_forecast_nodes(result: dict[str, Any], states: list[dict[str, Any]]) -> dict[str, Any]:
+    """Bind persisted prediction nodes to the captured formal business identities."""
+    identities = {state["node_key"]: UUID(state["node_id"]) for state in states}
+    result_keys = [node["node_key"] for node in result["nodes"]]
+    if (
+        len(identities) != len(states)
+        or len(set(identities.values())) != len(states)
+        or len(set(result_keys)) != len(result_keys)
+        or set(result_keys) != set(identities)
+    ):
+        raise ProductWorkError("预测节点与当前正式业务依据的身份映射不完整")
+    return {
+        **result,
+        "nodes": [
+            {**node, "node_id": str(identities[node["node_key"]])} for node in result["nodes"]
+        ],
+    }
+
+
 def persist_forecast(
     connection: Connection,
     tenant_id: UUID,
@@ -152,6 +207,7 @@ def persist_forecast(
     *,
     as_of: datetime | None = None,
     trigger: str = "human",
+    estimate_source_record_id: UUID | None = None,
 ) -> dict[str, Any]:
     if trigger not in ("human", "automatic", "propagation") or (
         (actor_user_id is None) != (trigger == "propagation")
@@ -213,11 +269,9 @@ def persist_forecast(
         )
     except ValueError as error:
         result = {
-            "algorithm_version": TOOLING_ALGORITHM_VERSION
-            if any(item.get("tooling_conditions") for item in basis["tasks"])
-            else MATERIAL_ALGORITHM_VERSION
-            if any(item.get("material_conditions") for item in basis["tasks"])
-            else ALGORITHM_VERSION,
+            "algorithm_version": algorithm_version(
+                {item["node_key"]: item for item in basis["tasks"]}
+            ),
             "as_of": now.isoformat(),
             "complete": False,
             "project_finish": None,
@@ -242,6 +296,10 @@ def persist_forecast(
             ],
         }
 
+    result = identify_forecast_nodes(result, basis["tasks"])
+    result["unmapped_material_conditions"] = basis.get("unmapped_material_conditions", [])
+    if any(row["status"] != "ready" for row in result["unmapped_material_conditions"]):
+        result.update(complete=False, project_finish=None, float_status="unknown_schedule")
     records = tables.schedule_time_records
     version = (
         connection.execute(
@@ -309,6 +367,27 @@ def persist_forecast(
                     version=correction["version"],
                 )
             )
+    for reservation in basis.get("resource_basis", {}).get("reservations", []):
+        if reservation["state"] == "reserved":
+            sources.append(
+                SourceRef(
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    kind="resource_reservation",
+                    ref_id=UUID(reservation["id"]),
+                    version=reservation["version"],
+                )
+            )
+    for application in basis.get("resource_basis", {}).get("applications", []):
+        sources.append(
+            SourceRef(
+                tenant_id=tenant_id,
+                project_id=project_id,
+                kind="resource_reallocation_application",
+                ref_id=UUID(application["application_id"]),
+                version=1,
+            )
+        )
     contract = TimeRecord(
         id=record_id,
         tenant_id=tenant_id,
@@ -364,6 +443,9 @@ def persist_forecast(
                     "basis": basis,
                     "network": capture.get("network"),
                     "trigger": trigger,
+                    "estimate_source_record_id": str(estimate_source_record_id)
+                    if estimate_source_record_id
+                    else None,
                     "estimates": {
                         key: value.model_dump(mode="json")
                         for key, value in command.estimates.items()
@@ -421,18 +503,28 @@ def automatic_forecast(
     reason: str,
     now: datetime,
 ) -> None:
+    from app.domain.schedule_network import human_estimate_input, qualify_estimates
+
     capture = capture_basis(connection, tenant_id, project_id)
+    human = human_estimate_input(connection, tenant_id, project_id)
+    estimates = qualify_estimates(human["inputs"], capture["basis"]) if human else {}
     persist_forecast(
         connection,
         tenant_id,
         project_id,
         actor_user_id,
         ForecastDraft(
-            request_id=uuid4(), expected_basis_digest=capture["basis_digest"], reason=reason
+            request_id=uuid4(),
+            expected_basis_digest=capture["basis_digest"],
+            reason=reason,
+            estimates={
+                key: RemainingEstimate.model_validate(value) for key, value in estimates.items()
+            },
         ),
         capture,
         as_of=now,
         trigger="automatic",
+        estimate_source_record_id=human["record_id"] if human and estimates else None,
     )
 
 
@@ -512,35 +604,97 @@ def forecast_changes(before: dict[str, Any], after: dict[str, Any]) -> list[dict
     return changed
 
 
+def forecast_history_query(tenant_id: UUID, project_id: UUID) -> Select[Any]:
+    """Scope history and its real preceding version before applying page boundaries."""
+    records = tables.schedule_time_records
+    runs = tables.schedule_forecast_runs
+    previous_records = records.alias("previous_forecast_record")
+    previous_runs = runs.alias("previous_forecast_run")
+    previous = (
+        select(
+            previous_runs.c.record_id.label("previous_record_id"),
+            previous_records.c.version.label("previous_version"),
+            previous_runs.c.result.label("previous_result"),
+        )
+        .join(
+            previous_records,
+            (previous_records.c.tenant_id == previous_runs.c.tenant_id)
+            & (previous_records.c.id == previous_runs.c.record_id),
+        )
+        .where(
+            previous_runs.c.tenant_id == tenant_id,
+            previous_runs.c.project_id == project_id,
+            previous_records.c.version < records.c.version,
+        )
+        .order_by(previous_records.c.version.desc())
+        .limit(1)
+        .correlate(records)
+        .lateral("previous_forecast")
+    )
+    return (
+        select(runs, records.c.version, records.c.created_at, previous)
+        .join(
+            records,
+            (records.c.tenant_id == runs.c.tenant_id) & (records.c.id == runs.c.record_id),
+        )
+        .outerjoin(previous, true())
+        .where(runs.c.tenant_id == tenant_id, runs.c.project_id == project_id)
+    )
+
+
 class ScheduleForecastService:
     def __init__(self, engine: Engine):
         self.engine = engine
 
     def get(
-        self, context: AuthContext, project_id: UUID, *, record_id: UUID | None = None
+        self,
+        context: AuthContext,
+        project_id: UUID,
+        *,
+        record_id: UUID | None = None,
+        before: UUID | None = None,
+        limit: int = 50,
     ) -> dict[str, Any]:
+        if not 1 <= limit <= 50 or (record_id is not None and before is not None):
+            raise ProductWorkError("预测分页范围无效，指定版本不能同时使用历史游标")
         with self.engine.connect() as connection:
             _project(connection, context, project_id)
             capture = capture_basis(connection, context.tenant.id, project_id)
             records = tables.schedule_time_records
             runs = tables.schedule_forecast_runs
+            query = forecast_history_query(context.tenant.id, project_id)
+            if before is not None:
+                cursor = (
+                    connection.execute(
+                        select(records.c.created_at, records.c.id)
+                        .join(
+                            runs,
+                            (runs.c.tenant_id == records.c.tenant_id)
+                            & (runs.c.record_id == records.c.id),
+                        )
+                        .where(
+                            runs.c.tenant_id == context.tenant.id,
+                            runs.c.project_id == project_id,
+                            records.c.id == before,
+                        )
+                    )
+                    .mappings()
+                    .one_or_none()
+                )
+                if cursor is None:
+                    raise ProductWorkError("预测历史游标不存在于当前可访问项目中")
+                query = query.where(
+                    tuple_(records.c.created_at, records.c.id)
+                    < tuple_(cursor["created_at"], cursor["id"])
+                )
             history = list(
                 connection.execute(
-                    select(runs, records.c.version)
-                    .join(
-                        records,
-                        (records.c.tenant_id == runs.c.tenant_id)
-                        & (records.c.id == runs.c.record_id),
-                    )
-                    .where(
-                        runs.c.tenant_id == context.tenant.id,
-                        runs.c.project_id == project_id,
-                        runs.c.record_id == record_id if record_id else true(),
-                    )
-                    .order_by(records.c.version.desc())
-                    .limit(51)
+                    query.where(runs.c.record_id == record_id if record_id else true())
+                    .order_by(records.c.created_at.desc(), records.c.id.desc())
+                    .limit(limit + 1)
                 ).mappings()
             )
+            page = history[:limit]
             if record_id is not None and not history:
                 raise ProductWorkError("所选预测版本不存在于当前可访问项目中")
             errors = list(
@@ -550,7 +704,7 @@ class ScheduleForecastService:
                         tables.schedule_forecast_errors.c.tenant_id == context.tenant.id,
                         tables.schedule_forecast_errors.c.project_id == project_id,
                         tables.schedule_forecast_errors.c.forecast_record_id.in_(
-                            [row["record_id"] for row in history[:50]]
+                            [row["record_id"] for row in page]
                         ),
                     )
                     .order_by(tables.schedule_forecast_errors.c.observed_at.desc())
@@ -577,9 +731,7 @@ class ScheduleForecastService:
                     .where(
                         source_errors.c.tenant_id == context.tenant.id,
                         source_errors.c.project_id == project_id,
-                        source_errors.c.forecast_record_id.in_(
-                            [row["record_id"] for row in history[:50]]
-                        ),
+                        source_errors.c.forecast_record_id.in_([row["record_id"] for row in page]),
                     )
                     .order_by(
                         source_observations.c.observed_at.desc(),
@@ -609,9 +761,7 @@ class ScheduleForecastService:
                     .where(
                         revised.c.tenant_id == context.tenant.id,
                         revised.c.project_id == project_id,
-                        revised.c.forecast_record_id.in_(
-                            [row["record_id"] for row in history[:50]]
-                        ),
+                        revised.c.forecast_record_id.in_([row["record_id"] for row in page]),
                     )
                     .order_by(corrections.c.version.desc())
                 ).mappings()
@@ -627,22 +777,27 @@ class ScheduleForecastService:
                 ],
                 "items": [
                     {
-                        **public_forecast(row),
+                        **public_forecast(
+                            {key: value for key, value in row.items() if key != "previous_result"}
+                        ),
                         "basis_is_current": row["basis_digest"] == capture["basis_digest"],
-                        "changes": forecast_changes(history[index + 1]["result"], row["result"])
-                        if index + 1 < len(history)
+                        "changes": forecast_changes(row["previous_result"], row["result"])
+                        if row["previous_result"] is not None
                         else None,
                     }
-                    for index, row in enumerate(history[:50])
+                    for row in page
                 ],
-                "has_more": len(history) > 50,
+                "has_more": len(history) > limit,
+                "next_before": str(page[-1]["record_id"]) if len(history) > limit else None,
+                "page_size": limit,
                 "errors": [_plain(row) for row in errors],
                 "source_errors": [_plain(row) for row in business_errors],
                 "source_error_corrections": correction_error_views(
-                    connection, context.tenant.id, project_id, history[:50]
+                    connection, context.tenant.id, project_id, page
                 ),
                 "error_corrections": [_plain(row) for row in revisions],
                 "can_recalculate": record_id is None
+                and before is None
                 and is_allowed(context.user.role, Action.PROJECT_EDIT),
             }
 

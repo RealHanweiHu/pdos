@@ -46,14 +46,17 @@ class MovementApply(MovementDraft):
     expected_digest: Digest
 
 
-class ReconciliationDraft(Contract):
-    request_id: UUID
-    expected_version: int = Field(ge=0)
-    expected_digest: Digest
+class ReconciliationSelection(Contract):
     supply_snapshot_id: UUID
     outcome: Literal["confirmed", "withdrawn"]
     evidence_id: UUID
     reason: Text
+
+
+class ReconciliationDraft(ReconciliationSelection):
+    request_id: UUID
+    expected_version: int = Field(ge=0)
+    expected_digest: Digest
 
 
 def effective(m: Any) -> Any:
@@ -176,6 +179,25 @@ def last_reconciliation(c: Connection, tenant: UUID, movement_id: UUID) -> dict[
     return dict(row) if row else None
 
 
+def reconciliation_evidence_current(
+    c: Connection,
+    tenant: UUID,
+    record: dict[str, Any] | None,
+) -> bool:
+    if record is None:
+        return False
+    evidence = record["snapshot"].get("evidence", {})
+    d = tables.documents
+    current = c.execute(
+        select(d.c.sha256).where(
+            d.c.tenant_id == tenant,
+            d.c.id == record["evidence_id"],
+            d.c.project_id == record["project_id"],
+        )
+    ).scalar_one_or_none()
+    return bool(current and current == evidence.get("sha256"))
+
+
 def pending_issued(
     c: Connection, tenant: UUID, allocation_ids: list[UUID], source_id: UUID
 ) -> dict[str, Decimal]:
@@ -196,6 +218,7 @@ def pending_issued(
             and last["outcome"] == "confirmed"
             and last["supply_snapshot_id"] == source_id
             and last["snapshot"]["movement_ids"] == movement_ids
+            and reconciliation_evidence_current(c, tenant, last)
         )
         if not reflected:
             key = str(row["allocation_id"])
@@ -657,6 +680,8 @@ def reconciliation_preview(
         reasons.append("原领料登记已冲正，仅保留历史；如有更正登记须按新记录对账")
     if not observed["current"]:
         reasons.append("所选余额已不是当前来源版本")
+    if observed["state"] in {"stale", "source_changed"}:
+        reasons.append("余额快照已过期或原件摘要已变化，请取得当前授权快照后重新核对")
     if source["quantity"] is None or source["supply_kind"] != "on_hand":
         reasons.append("须选择有明确余额的实际现货快照")
     if datetime.fromisoformat(source["as_of"]) < max(value["occurred_at"] for value in movements):
@@ -677,6 +702,7 @@ def reconciliation_preview(
         and latest["outcome"] == "confirmed"
         and str(latest["supply_snapshot_id"]) == str(source_id)
         and latest["snapshot"]["movement_ids"] == basis["movement_ids"]
+        and reconciliation_evidence_current(c, context.tenant.id, latest)
     )
     return {
         "basis": basis,
@@ -688,9 +714,48 @@ def reconciliation_preview(
     }
 
 
+def confirmed_reconciliation_preview(
+    c: Connection,
+    context: AuthContext,
+    project: UUID,
+    movement: UUID,
+    command: ReconciliationSelection,
+) -> dict[str, Any]:
+    BuildMaterialService._authorize(c, context, project, write=True)
+    KnowledgeCorrectionService._authorize(
+        c, context.tenant.id, context.user.id, project, Action.GATE_MANAGE
+    )
+    observed = reconciliation_preview(c, context, project, movement, command.supply_snapshot_id)
+    selection = ReconciliationSelection.model_validate(
+        command.model_dump(include=set(ReconciliationSelection.model_fields))
+    )
+    basis = {
+        **observed["basis"],
+        "tenant_id": str(context.tenant.id),
+        "project_id": str(project),
+        "reviewer_user_id": str(context.user.id),
+        "command": selection.model_dump(mode="json"),
+        "evidence": metadata(document_row(c, context.tenant.id, project, command.evidence_id)),
+    }
+    return {**observed, "basis": basis, "digest": digest(basis)}
+
+
 class MaterialReconciliationService:
     def __init__(self, engine: Engine):
         self.engine = engine
+
+    def preview(
+        self,
+        context: AuthContext,
+        project: UUID,
+        movement: UUID,
+        command: ReconciliationSelection,
+    ) -> dict[str, Any]:
+        with (
+            self.engine.connect().execution_options(isolation_level="REPEATABLE READ") as c,
+            c.begin(),
+        ):
+            return confirmed_reconciliation_preview(c, context, project, movement, command)
 
     def get(
         self, context: AuthContext, project: UUID, source_id: UUID, after: UUID | None = None
@@ -809,9 +874,7 @@ class MaterialReconciliationService:
                 if prior["request_digest"] != signature:
                     raise _failure("原请求已用于其他余额核对")
                 return _plain(dict(prior))
-            preview = reconciliation_preview(
-                c, context, project, issue_id, command.supply_snapshot_id
-            )
+            preview = confirmed_reconciliation_preview(c, context, project, issue_id, command)
             if (
                 preview["digest"] != command.expected_digest
                 or preview["basis"]["previous_version"] != command.expected_version
@@ -821,8 +884,7 @@ class MaterialReconciliationService:
                 raise _failure("；".join(preview["reasons"]))
             if command.outcome == "withdrawn" and not preview["latest"]:
                 raise _failure("没有可撤回的原核对")
-            evidence = metadata(document_row(c, context.tenant.id, project, command.evidence_id))
-            snapshot = {**preview["basis"], "evidence": evidence}
+            snapshot = preview["basis"]
             saved = (
                 c.execute(
                     r.insert()

@@ -49,6 +49,8 @@ def statement(kind: Kind, tenant: UUID, project: UUID) -> Any:
         .select_from(t.outerjoin(u, (u.c.tenant_id == t.c.tenant_id) & (u.c.id == owner)))
         .where(t.c.tenant_id == tenant, t.c.project_id == project)
     )
+    if kind == "issue":
+        query = query.where(t.c.withdrawn_at.is_(None))
     return query.where(t.c.draft_state == "confirmed") if kind == "risk" else query
 
 

@@ -1,4 +1,8 @@
 "use client";
+import { isProjectIssue, type IssueTransitionExtra } from "./project-work-item-api";
+import { MaterialIssueClosureForm } from "./material-issue-closure-review";
+import { isRecord, responseBody } from "@/components/workspace-api";
+import { AiIssueEventSources } from "./ai-issue-event-sources";
 import { RiskTemplateFields } from "./risk-template-fields";
 import { RiskBusinessReferences } from "./risk-business-references";
 import { DecisionSourceRows } from "./decision-intake-source";
@@ -151,8 +155,9 @@ export function TaskPanel({
 
   return (
     <section aria-label="项目任务" className="overflow-hidden rounded-lg border bg-card">
-      <PanelHeader count={tasks.length} description="状态与 readiness 分开显示；等待前置不等于阻塞。" title="任务" />
-      <form className="grid gap-3 border-b bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
+      <PanelHeader count={tasks.length} description="按优先级、前置依赖和截止日期推进任务。" title="任务" />
+      <details className="border-b"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-medium">新建任务</summary>
+      <form className="grid gap-3 bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
         <label className="min-w-0 text-xs font-medium" htmlFor="task-title">
           任务标题
           <input className={`${controlClass} mt-1`} disabled={busy} id="task-title" maxLength={512} name="title" required />
@@ -198,6 +203,7 @@ export function TaskPanel({
           </div>
         </details>
       </form>
+      </details>
       {tasks.length === 0 ? <EmptyRow>还没有任务。创建第一条可执行工作。</EmptyRow> : (
         <ul className="divide-y" role="list">
           {tasks.map((task) => {
@@ -306,33 +312,71 @@ const issueTypeLabels: Record<string, string> = {
   certification: "认证",
 };
 
-export function IssuePanel({ busy, issues, onCreate, onTransition, focusedIssueId = null }: {
+function FocusedIssueHistory({ projectId, issueId }: { projectId: string; issueId: string }) {
+  const [issue, setIssue] = useState<ProjectIssue | null>(null), [error, setError] = useState<string | null>(null), [notAnIssue, setNotAnIssue] = useState(false);
+  const container = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      try {
+        const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/issues/${encodeURIComponent(issueId)}`, { cache: "no-store" });
+        if (response.status === 404) { if (active) setNotAnIssue(true); return; }
+        const body: unknown = await responseBody(response);
+        if (!response.ok) throw new Error(isRecord(body) && typeof body.detail === "string" ? body.detail : "原问题记录暂不可用，请核对当前项目与读取权限。");
+        if (!isProjectIssue(body) || body.project_id !== projectId || body.id !== issueId) throw new Error("原问题记录不完整，请重新核对。");
+        if (active) setIssue(body);
+      } catch (failure) { if (active) setError(failure instanceof Error ? failure.message : "原问题读取失败"); }
+    })();
+    return () => { active = false; };
+  }, [projectId, issueId]);
+  useEffect(() => { if (issue) container.current?.scrollIntoView?.({ block: "start" }); }, [issue]);
+  if (notAnIssue) return null;
+  return <div ref={container} id={`issue-${issueId}`} className="space-y-2 border-b p-4 text-sm scroll-mt-6" aria-label="原问题历史">
+    <p className="font-medium">原问题历史 · 不计入当前问题数</p>
+    {error ? <p role="alert" className="text-destructive">{error}</p> : !issue ? <p role="status">正在读取原问题…</p> : <>
+      <p className="font-medium">{issue.title}</p>
+      <p className="text-xs text-muted-foreground">{issue.created_by_ai_principal_id ? `${issue.ai_writer_name ?? "PDOS Agent"} · AI 创建` : "人工创建"}{issue.withdrawn_at ? " · 已撤回" : ""}</p>
+      {issue.withdrawn_at && <p className="text-xs text-primary">撤回时间：<time dateTime={issue.withdrawn_at}>{new Date(issue.withdrawn_at).toLocaleString("zh-CN")}</time>；原记录保留。</p>}
+      <p className="text-xs text-muted-foreground">原状态：{issueStatusLabels[issue.status]} · {priorityLabels[issue.severity]} · {issueTypeLabels[issue.issue_type]}</p>
+      {issue.description && <p className="whitespace-pre-wrap break-words">{issue.description}</p>}
+    </>}
+  </div>;
+}
+
+export function IssuePanel({ projectId, busy, issues, onCreate, onTransition, onIssueChanged, focusedIssueId = null }: {
+  projectId: string;
   busy: boolean;
   issues: ProjectIssue[];
   focusedIssueId?: string | null;
+  onIssueChanged?: () => Promise<void>;
   onCreate: (input: IssueCreateInput) => Promise<boolean>;
   onTransition: (
     issue: ProjectIssue,
     toStatus: IssueStatus,
-    extra?: { comment?: string; closure_evidence_ref?: string },
+    extra?: IssueTransitionExtra,
   ) => Promise<boolean>;
 }) {
+  const [historyRevision, setHistoryRevision] = useState(0);
+  const [expandedIssueId, setExpandedIssueId] = useState<string | null>(focusedIssueId);
+  const [showSources, setShowSources] = useState(Boolean(focusedIssueId));
+  async function refreshIssues() {
+    try { await onIssueChanged?.(); }
+    finally { setHistoryRevision(revision => revision + 1); }
+  }
   const [closingId, setClosingId] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
-  const [evidence, setEvidence] = useState("");
   const [rejectReason, setRejectReason] = useState("");
   const focused = useRef<string | null>(null);
   useEffect(() => {
     if (focusedIssueId && focused.current !== focusedIssueId && issues.some(i => i.id === focusedIssueId)) {
-      document.getElementById(`issue-${focusedIssueId}`)?.scrollIntoView({ block: "start" });
+      document.getElementById(`issue-${focusedIssueId}`)?.scrollIntoView?.({ block: "start" });
       focused.current = focusedIssueId;
     }
-  }, [focusedIssueId, issues]);
+  }, [focusedIssueId, issues, projectId]);
 
   function resetInline() {
     setClosingId(null);
     setRejectingId(null);
-    setEvidence("");
     setRejectReason("");
   }
 
@@ -349,22 +393,24 @@ export function IssuePanel({ busy, issues, onCreate, onTransition, focusedIssueI
 
   return (
     <section aria-label="项目问题" className="overflow-hidden rounded-lg border bg-card">
-      <PanelHeader count={issues.length} description="Open 可暂存；进入分析需完整分派；高/严重问题由验证人凭证据关闭。" title="问题" />
-      <form className="grid gap-3 border-b bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
+      <PanelHeader count={issues.length} description="跟踪分析、整改和验证；关闭关键问题时核对责任人与证据。" title="问题" />
+      <details className="border-b"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-medium">新建问题</summary>
+      <form className="grid gap-3 bg-muted/25 p-4 lg:grid-cols-[minmax(0,1fr)_140px_auto] lg:items-end" onSubmit={submit}>
         <label className="min-w-0 text-xs font-medium" htmlFor="issue-title">问题标题<input className={`${controlClass} mt-1`} disabled={busy} id="issue-title" maxLength={512} name="title" required /></label>
         <label className="text-xs font-medium" htmlFor="issue-severity">严重度<select className={`${controlClass} mt-1`} defaultValue="medium" disabled={busy} id="issue-severity" name="severity"><PriorityOptions /></select></label>
         <Button className="h-11" disabled={busy} type="submit">创建问题</Button>
       </form>
+      </details>
+      {focusedIssueId && !issues.some(issue => issue.id === focusedIssueId) && <FocusedIssueHistory key={`${projectId}:${focusedIssueId}:${historyRevision}`} projectId={projectId} issueId={focusedIssueId} />}
       {issues.length === 0 ? <EmptyRow>还没有问题。</EmptyRow> : (
         <ul className="divide-y" role="list">
           {issues.map((issue) => {
-            const forward = forwardIssueAction[issue.status];
-            const needsEvidence = issue.severity === "high" || issue.severity === "critical";
+            const forward = issue.withdrawn_at ? undefined : forwardIssueAction[issue.status];
             return (
               <li className="flex flex-col gap-3 p-4 scroll-mt-6" id={`issue-${issue.id}`} key={issue.id}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium">{issue.title}</p>{issue.source_field_capture_id && <a className="block text-xs text-primary underline" href={`/capture?project=${issue.project_id}&capture=${issue.source_field_capture_id}`}>查看现场原件与人工核对记录</a>}{issue.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${issue.source_finding_id}`}>查看会议建议与人审回执</a>}
+                    <button aria-controls={`issue-detail-${issue.id}`} aria-expanded={expandedIssueId === issue.id} aria-label={`查看问题详情 ${issue.title}`} className="min-h-11 text-left font-medium hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => setExpandedIssueId(current => current === issue.id ? null : issue.id)} type="button">{issue.title}</button>{issue.created_by_ai_principal_id && <p className="mt-1 text-xs text-muted-foreground">{issue.ai_writer_name ?? "PDOS Agent"} · AI 创建{issue.withdrawn_at ? " · 已撤回" : ""}</p>}{issue.source_field_capture_id && <a className="block text-xs text-primary underline" href={`/capture?project=${issue.project_id}&capture=${issue.source_field_capture_id}`}>查看现场原件与人工核对记录</a>}{issue.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${issue.source_finding_id}`}>查看会议建议与人审回执</a>}
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       <Badge tone={issue.status === "closed" ? "ok" : "pending"}>{issueStatusLabels[issue.status]}</Badge>
                       <Badge tone={issue.severity === "critical" ? "bad" : "neutral"}>{priorityLabels[issue.severity]}</Badge>
@@ -376,59 +422,27 @@ export function IssuePanel({ busy, issues, onCreate, onTransition, focusedIssueI
                     {forward ? (
                       <Button className="h-11 sm:h-8" disabled={busy} onClick={() => { resetInline(); void onTransition(issue, forward.to); }}>{forward.label}</Button>
                     ) : null}
-                    {issue.status === "verification" ? (
+                    {!issue.withdrawn_at && issue.status === "verification" ? (
                       <>
                         <Button
                           className="h-11 sm:h-8"
                           disabled={busy}
-                          onClick={() => {
-                            if (needsEvidence) {
-                              setRejectingId(null);
-                              setClosingId(issue.id);
-                            } else {
-                              resetInline();
-                              void onTransition(issue, "closed");
-                            }
-                          }}
+                          onClick={() => { setRejectingId(null); setClosingId(issue.id); }}
                         >
                           验证通过并关闭
                         </Button>
                         <Button className="h-11 sm:h-8" disabled={busy} onClick={() => { setClosingId(null); setRejectingId(issue.id); }} variant="destructive">退回行动</Button>
                       </>
                     ) : null}
-                    {issue.status === "closed" ? (
+                    {!issue.withdrawn_at && issue.status === "closed" ? (
                       <Button className="h-11 sm:h-8" disabled={busy} onClick={() => { resetInline(); void onTransition(issue, "action"); }} variant="outline">重开问题</Button>
                     ) : null}
                   </div>
                 </div>
-                {closingId === issue.id ? (
-                  <form
-                    className="grid gap-2 rounded-lg border border-success/30 bg-success/5 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
-                    onSubmit={async (event) => {
-                      event.preventDefault();
-                      if (await onTransition(issue, "closed", { closure_evidence_ref: evidence.trim() })) resetInline();
-                    }}
-                  >
-                    <label className="min-w-0 text-xs font-medium">
-                      关闭证据（高/严重问题必填）
-                      <input
-                        aria-label={`关闭证据 ${issue.title}`}
-                        className={`${controlClass} mt-1`}
-                        disabled={busy}
-                        maxLength={2_000}
-                        onChange={(event) => setEvidence(event.target.value)}
-                        placeholder="测试报告编号、验证记录链接等"
-                        required
-                        value={evidence}
-                      />
-                    </label>
-                    <div className="flex gap-1.5">
-                      <Button className="h-11" disabled={busy || !evidence.trim()} type="submit">确认关闭</Button>
-                      <Button className="h-11" disabled={busy} onClick={resetInline} type="button" variant="outline">取消</Button>
-                    </div>
-                  </form>
+                {!issue.withdrawn_at && closingId === issue.id ? (
+                  <MaterialIssueClosureForm key={`${projectId}:${issue.id}`} projectId={projectId} issue={issue} busy={busy} onSubmit={extra => onTransition(issue, "closed", extra)} onCancel={resetInline}/>
                 ) : null}
-                {rejectingId === issue.id ? (
+                {!issue.withdrawn_at && rejectingId === issue.id ? (
                   <form
                     className="grid gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
                     onSubmit={async (event) => {
@@ -455,17 +469,21 @@ export function IssuePanel({ busy, issues, onCreate, onTransition, focusedIssueI
                     </div>
                   </form>
                 ) : null}
+                {expandedIssueId === issue.id && <div id={`issue-detail-${issue.id}`} className="space-y-3 border-t pt-3">
+                {issue.description && <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">{issue.description}</p>}
                 <IssueIntakeSource projectId={issue.project_id} issueId={issue.id}/>
                 <MaterialExceptions projectId={issue.project_id} issueId={issue.id}/>
                 <DecisionSourceRows projectId={issue.project_id} issueId={issue.id}/>
                 <SupplierNoticeLinks projectId={issue.project_id} targetKind="issue" targetId={issue.id}/><CostGaps projectId={issue.project_id} issueId={issue.id}/>
-                <IssueTemplateFields projectId={issue.project_id} issueId={issue.id} currentStatus={issue.status} currentVersion={issue.updated_at}/>
+                {!issue.withdrawn_at && <IssueTemplateFields projectId={issue.project_id} issueId={issue.id} currentStatus={issue.status} currentVersion={issue.updated_at}/>}
                 <IssueQualityLinks key={`quality:${issue.id}`} projectId={issue.project_id} issueId={issue.id}/>
+                </div>}
               </li>
             );
           })}
         </ul>
       )}
+      <div className="border-t p-4"><Button aria-expanded={showSources} onClick={() => setShowSources(current => !current)} size="sm" variant="ghost">{showSources ? "收起异常处理记录" : "查看异常处理记录"}</Button>{showSources && <div className="mt-3"><AiIssueEventSources projectId={projectId} onIssueChanged={refreshIssues}/></div>}</div>
     </section>
   );
 }
@@ -477,12 +495,14 @@ function riskActions(status: RiskStatus): { label: string; to: RiskStatus; varia
   return [];
 }
 
-export function RiskPanel({ busy, onCreate, onTransition, risks }: {
+export function RiskPanel({ busy, onCreate, onTransition, risks, focusedRiskId = null }: {
   busy: boolean;
   onCreate: (input: RiskCreateInput) => Promise<boolean>;
   onTransition: (risk: ProjectRisk, toStatus: RiskStatus) => Promise<boolean>;
   risks: ProjectRisk[];
+  focusedRiskId?: string | null;
 }) {
+  const [expandedRiskId, setExpandedRiskId] = useState<string | null>(focusedRiskId);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -497,22 +517,23 @@ export function RiskPanel({ busy, onCreate, onTransition, risks }: {
   const scoreOptions = [1, 2, 3, 4, 5];
   return (
     <section aria-label="项目风险" className="overflow-hidden rounded-lg border bg-card">
-      <PanelHeader count={risks.length} description="暴露分值由服务端稳定计算：likelihood × impact。" title="风险" />
-      <form className="grid gap-3 border-b bg-muted/25 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_112px_112px_auto] lg:items-end" onSubmit={submit}>
+      <PanelHeader count={risks.length} description="关注高暴露风险，跟踪应对措施与结果。" title="风险" />
+      <details className="border-b"><summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-medium">新建风险</summary>
+      <form className="grid gap-3 bg-muted/25 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_112px_112px_auto] lg:items-end" onSubmit={submit}>
         <label className="min-w-0 text-xs font-medium sm:col-span-2 lg:col-span-1" htmlFor="risk-title">风险标题<input className={`${controlClass} mt-1`} disabled={busy} id="risk-title" maxLength={512} name="title" required /></label>
         <label className="text-xs font-medium" htmlFor="risk-likelihood">可能性<select className={`${controlClass} mt-1`} defaultValue="1" disabled={busy} id="risk-likelihood" name="likelihood">{scoreOptions.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
         <label className="text-xs font-medium" htmlFor="risk-impact">影响<select className={`${controlClass} mt-1`} defaultValue="1" disabled={busy} id="risk-impact" name="impact">{scoreOptions.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
         <Button className="h-11" disabled={busy} type="submit">创建风险</Button>
       </form>
+      </details>
       {risks.length === 0 ? <EmptyRow>还没有风险。</EmptyRow> : (
         <ul className="divide-y" role="list">
           {risks.map((risk) => (
             <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center" key={risk.id}>
               <div className="min-w-0 flex-1">
-                <RiskTemplateFields projectId={risk.project_id} riskId={risk.id} currentStatus={risk.status} currentVersion={risk.updated_at}/>
-                <RiskBusinessReferences projectId={risk.project_id} riskId={risk.id} />
-                <p className="font-medium">{risk.title}</p>{risk.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${risk.source_finding_id}`}>查看会议建议与人审回执</a>}
+                <button aria-controls={`risk-detail-${risk.id}`} aria-expanded={expandedRiskId === risk.id} aria-label={`查看风险详情 ${risk.title}`} className="min-h-11 text-left font-medium hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => setExpandedRiskId(current => current === risk.id ? null : risk.id)} type="button">{risk.title}</button>{risk.source_finding_id && <a className="text-xs text-primary underline" href={`/ai-review?finding=${risk.source_finding_id}`}>查看会议建议与人审回执</a>}
                 <div className="mt-2 flex flex-wrap gap-1.5"><Badge tone={risk.status === "closed" ? "ok" : risk.score >= 15 ? "bad" : "pending"}>{riskStatusLabels[risk.status]}</Badge><Badge tone={risk.score >= 15 ? "bad" : "neutral"}>暴露 {risk.score}</Badge><Badge>{risk.likelihood} × {risk.impact}</Badge></div>
+                {expandedRiskId === risk.id && <div id={`risk-detail-${risk.id}`} className="mt-3 space-y-3 border-t pt-3">{risk.description && <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">{risk.description}</p>}<RiskTemplateFields projectId={risk.project_id} riskId={risk.id} currentStatus={risk.status} currentVersion={risk.updated_at}/><RiskBusinessReferences projectId={risk.project_id} riskId={risk.id}/></div>}
               </div>
               <div className="flex flex-wrap gap-2">{riskActions(risk.status).map((action) => <Button className="h-11 sm:h-8" disabled={busy} key={action.to} onClick={() => void onTransition(risk, action.to)} variant={action.variant}>{action.label}</Button>)}</div>
             </li>

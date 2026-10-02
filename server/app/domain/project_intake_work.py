@@ -159,7 +159,12 @@ def freeze_context(
             .mappings()
             .one_or_none()
         )
-        if row is None or source.kind == "risk" and row["draft_state"] != "confirmed":
+        if (
+            row is None
+            or (source.kind == "issue" and row.get("withdrawn_at") is not None)
+            or source.kind == "risk"
+            and row["draft_state"] != "confirmed"
+        ):
             raise ConversationError("请选择本项目实际问题、已确认风险或决策")
         snapshot = business_snapshot(row, source.kind, c)
         if digest(snapshot) != source.expected_digest:

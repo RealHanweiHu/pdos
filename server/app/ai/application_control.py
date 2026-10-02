@@ -32,6 +32,7 @@ def cancel_application_run(
                 tables.agent_runs.c.project_id,
                 tables.agent_runs.c.scope_kind,
                 tables.agent_runs.c.market_space_id,
+                tables.agent_runs.c.context_version,
             )
             .outerjoin(
                 tables.application_authorizations,
@@ -60,10 +61,15 @@ def cancel_application_run(
     ):
         raise ObjectPermissionDeniedError
     if row.scope_kind == "market_space":
-        from app.ai.product_matrix_runs import run_row
+        from app.ai.product_matrix_runs import run_row as matrix_row
+        from app.ai.product_shadow_evaluation import RUN_VERSION
+        from app.ai.product_shadow_evaluation import run_row as evaluation_row
+        from app.ai.product_work_runs import run_row as product_row
 
         with engine.connect() as c:
-            run_row(c, current, row.market_space_id, run_id)
+            read = (evaluation_row if row.context_version == RUN_VERSION else product_row
+                    if row.context_version == "product-work-request-v1" else matrix_row)
+            read(c, current, row.market_space_id, run_id)
     elif row.scope_kind == "tenant":
         from app.domain.process_templates import authorize
 

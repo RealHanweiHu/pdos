@@ -50,9 +50,9 @@ export function PayloadEditor({
   if (finding.finding_type === "change_work_package") return <ChangeWorkPackageProposalView projectId={finding.project_id} payload={payload} onChange={onChange} />;
   if (finding.finding_type === "test_plan_change") return <TestPlanProposalView payload={payload} onChange={onChange} />;
   if (meetingBusinessTypes.includes(finding.finding_type)) return <MeetingBusinessProposalView projectId={finding.project_id} payload={payload} onChange={onChange} />;
-  if (finding.finding_type === "meeting_decision") return <MeetingDecisionProposalView projectId={finding.project_id} payload={payload} onChange={onChange} />;
-  if (finding.finding_type === "meeting_action") return <MeetingActionProposalView projectId={finding.project_id} payload={payload} onChange={onChange} />;
-  if (finding.finding_type === "meeting_minutes") return <MeetingMinutesProposalView projectId={finding.project_id} payload={payload} onChange={onChange} />;
+  if (finding.finding_type === "meeting_decision") return <MeetingDecisionProposalView draftOwned={Boolean(finding.ai_draft_id)} projectId={finding.project_id} payload={payload} onChange={onChange} />;
+  if (finding.finding_type === "meeting_action") return <MeetingActionProposalView draftOwned={Boolean(finding.ai_draft_id)} projectId={finding.project_id} payload={payload} onChange={onChange} />;
+  if (finding.finding_type === "meeting_minutes") return <MeetingMinutesProposalView draftOwned={Boolean(finding.ai_draft_id)} projectId={finding.project_id} payload={payload} onChange={onChange} />;
   const fields = finding.finding_type === "knowledge_draft"
     ? ["title", "draft_text", "applicability"]
     : [
@@ -105,9 +105,9 @@ export function FindingProposal({ finding, payload }: { finding: AiFinding; payl
   if (finding.finding_type === "capa_work_package") return <QualityWorkPackageProposalView projectId={finding.project_id} payload={payload}/>;
   if (finding.finding_type === "change_work_package") return <ChangeWorkPackageProposalView projectId={finding.project_id} payload={payload}/>;
   if (finding.finding_type === "test_plan_change") return <TestPlanProposalView payload={payload}/>;
-  if (finding.finding_type === "meeting_minutes") return <MeetingMinutesProposalView projectId={finding.project_id} payload={payload}/>;
-  if (finding.finding_type === "meeting_action") return <MeetingActionProposalView projectId={finding.project_id} payload={payload}/>;
-  if (finding.finding_type === "meeting_decision") return <MeetingDecisionProposalView projectId={finding.project_id} payload={payload}/>;
+  if (finding.finding_type === "meeting_minutes") return <MeetingMinutesProposalView draftOwned={Boolean(finding.ai_draft_id)} projectId={finding.project_id} payload={payload}/>;
+  if (finding.finding_type === "meeting_action") return <MeetingActionProposalView draftOwned={Boolean(finding.ai_draft_id)} projectId={finding.project_id} payload={payload}/>;
+  if (finding.finding_type === "meeting_decision") return <MeetingDecisionProposalView draftOwned={Boolean(finding.ai_draft_id)} projectId={finding.project_id} payload={payload}/>;
   if (meetingBusinessTypes.includes(finding.finding_type)) return <MeetingBusinessProposalView projectId={finding.project_id} payload={payload}/>;
   return <dl className="space-y-2 text-sm">{Object.entries(payload).map(([key, value]) => <div key={key}><dt className="font-medium">{fieldLabels[key] ?? key}</dt><dd className="whitespace-pre-wrap break-words">{typeof value === "string" ? value : value == null ? "未填写" : JSON.stringify(value)}</dd></div>)}</dl>;
 }

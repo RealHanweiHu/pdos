@@ -195,6 +195,96 @@ def _plan_values(
     }
 
 
+def create_experiment_in_connection(
+    connection: Connection,
+    context: AuthContext,
+    space_id: UUID,
+    draft: ExperimentDraft,
+    *,
+    source_finding_id: UUID | None = None,
+    source_finding_position: int | None = None,
+) -> dict[str, Any]:
+    _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
+    _space(connection, context, space_id, access="contributor", lock=True)
+    opportunity = (
+        connection.execute(
+            select(tables.opportunities).where(
+                tables.opportunities.c.tenant_id == context.tenant.id,
+                tables.opportunities.c.market_space_id == space_id,
+                tables.opportunities.c.id == draft.opportunity_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if opportunity is None:
+        raise ProductWorkAccessError("机会不存在或不可访问")
+    _line(
+        connection,
+        context,
+        space_id,
+        opportunity["product_line_id"],
+        access="contributor",
+        writable=True,
+    )
+    table = tables.experiments
+    fingerprint = digest(draft.model_dump(mode="json"))
+    existing = (
+        connection.execute(
+            select(table).where(
+                table.c.tenant_id == context.tenant.id,
+                table.c.market_space_id == space_id,
+                table.c.created_by_user_id == context.user.id,
+                table.c.request_id == draft.request_id,
+            )
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if existing:
+        if existing["request_digest"] != fingerprint:
+            raise ProductWorkError("同一请求编号不能用于不同实验")
+        return _experiment(connection, context, existing)
+    if (
+        opportunity["state"] == "closed"
+        or connection.execute(
+            select(tables.opportunities.c.id).where(
+                tables.opportunities.c.tenant_id == context.tenant.id,
+                tables.opportunities.c.supersedes_id == opportunity["id"],
+            )
+        ).first()
+    ):
+        raise ProductWorkError("新实验须从未关闭机会的最新版本建立")
+    if str(draft.solution_id) not in {item["id"] for item in opportunity["solutions"]}:
+        raise ProductWorkError("所选方案不属于此机会版本")
+    values = _plan_values(connection, context, space_id, opportunity["product_line_id"], draft.plan)
+    row = (
+        connection.execute(
+            table.insert()
+            .values(
+                **values,
+                id=uuid4(),
+                tenant_id=context.tenant.id,
+                market_space_id=space_id,
+                product_line_id=opportunity["product_line_id"],
+                opportunity_id=opportunity["id"],
+                solution_id=draft.solution_id,
+                created_by_user_id=context.user.id,
+                request_id=draft.request_id,
+                request_digest=fingerprint,
+                source_finding_id=source_finding_id,
+                source_finding_position=source_finding_position,
+            )
+            .returning(table)
+        )
+        .mappings()
+        .one()
+    )
+    result = _experiment(connection, context, row)
+    _emit(connection, context, space_id, "experiment", "created", row)
+    return result
+
+
 class ExperimentService:
     def __init__(self, engine: Engine) -> None:
         self.engine = engine
@@ -288,86 +378,8 @@ class ExperimentService:
     def create(
         self, context: AuthContext, space_id: UUID, draft: ExperimentDraft
     ) -> dict[str, Any]:
-        _role(context, Action.PRODUCT_WORK_CONTRIBUTE)
         with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="contributor", lock=True)
-            opportunity = (
-                connection.execute(
-                    select(tables.opportunities).where(
-                        tables.opportunities.c.tenant_id == context.tenant.id,
-                        tables.opportunities.c.market_space_id == space_id,
-                        tables.opportunities.c.id == draft.opportunity_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if opportunity is None:
-                raise ProductWorkAccessError("机会不存在或不可访问")
-            _line(
-                connection,
-                context,
-                space_id,
-                opportunity["product_line_id"],
-                access="contributor",
-                writable=True,
-            )
-            table = tables.experiments
-            fingerprint = digest(draft.model_dump(mode="json"))
-            existing = (
-                connection.execute(
-                    select(table).where(
-                        table.c.tenant_id == context.tenant.id,
-                        table.c.market_space_id == space_id,
-                        table.c.created_by_user_id == context.user.id,
-                        table.c.request_id == draft.request_id,
-                    )
-                )
-                .mappings()
-                .one_or_none()
-            )
-            if existing:
-                if existing["request_digest"] != fingerprint:
-                    raise ProductWorkError("同一请求编号不能用于不同实验")
-                return _experiment(connection, context, existing)
-            if (
-                opportunity["state"] == "closed"
-                or connection.execute(
-                    select(tables.opportunities.c.id).where(
-                        tables.opportunities.c.tenant_id == context.tenant.id,
-                        tables.opportunities.c.supersedes_id == opportunity["id"],
-                    )
-                ).first()
-            ):
-                raise ProductWorkError("新实验须从未关闭机会的最新版本建立")
-            if str(draft.solution_id) not in {item["id"] for item in opportunity["solutions"]}:
-                raise ProductWorkError("所选方案不属于此机会版本")
-            values = _plan_values(
-                connection, context, space_id, opportunity["product_line_id"], draft.plan
-            )
-            row = (
-                connection.execute(
-                    table.insert()
-                    .values(
-                        **values,
-                        id=uuid4(),
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=opportunity["product_line_id"],
-                        opportunity_id=opportunity["id"],
-                        solution_id=draft.solution_id,
-                        created_by_user_id=context.user.id,
-                        request_id=draft.request_id,
-                        request_digest=fingerprint,
-                    )
-                    .returning(table)
-                )
-                .mappings()
-                .one()
-            )
-            result = _experiment(connection, context, row)
-            _emit(connection, context, space_id, "experiment", "created", row)
-            return result
+            return create_experiment_in_connection(connection, context, space_id, draft)
 
     def change(
         self,

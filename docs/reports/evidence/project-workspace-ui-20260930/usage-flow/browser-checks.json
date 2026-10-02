@@ -1,0 +1,38 @@
+{
+  "project": "107f11c1-258a-4131-a941-37448826ec83",
+  "desktop": {
+    "viewport": 1440,
+    "page_width": 1440,
+    "primary_tabs": 6,
+    "pending_records": 3,
+    "old_auxiliary_and_guide": "absent",
+    "default_reminder_bookkeeping": "filtered; available in complete history",
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "work_list": {
+    "task_form": "collapsed until requested",
+    "issue_list": "zero expanded records by default",
+    "deep_issue": "matching list selected; only target detail expanded",
+    "deep_issue_refresh": "matching list retained",
+    "task_panel_on_issue_receipt": false
+  },
+  "mobile": {
+    "viewport": 390,
+    "page_width": 390,
+    "tab_strip_width": 358,
+    "tab_strip_scroll_width": 438,
+    "stage_task_loaded": true,
+    "stage_guide": "absent",
+    "keyboard_arrow": "overview to stages works"
+  },
+  "settings": "separate header control; original categorized settings retained",
+  "viewport_override": "reset",
+  "theme_after_check": "light",
+  "business_operations": "read-only; routine local sign-in used after session expiry",
+  "preview": "new deliverable tab retained after original preview connection failed",
+  "old_preview_cleanup": "failed: old tab 3 CDP focus command timed out; login tab remains",
+  "deliverable_tab": "4"
+}

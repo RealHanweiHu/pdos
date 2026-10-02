@@ -34,7 +34,7 @@ export function UserManagementForbidden({
 }) {
   return (
     <WorkspaceShell
-      active="user-management"
+      active="settings"
       identity={identity}
       loggingOut={loggingOut}
       onLogout={onLogout}

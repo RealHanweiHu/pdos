@@ -13,6 +13,7 @@ import { ProjectGateConditions } from "./project-gate-conditions";
 import { ProjectGateDecisionForm } from "./project-gate-decision-form";
 import type { ProjectGate } from "./project-gate-document-types";
 import type { ProjectWorkspaceTab, WorkItemLoadState } from "./project-workspace-view";
+import type { ProjectWorkKind } from "./project-work-queue";
 
 const statusLabels: Record<string, string> = {
   preparing: "准备中",
@@ -48,10 +49,10 @@ const roleSlots: Record<string, readonly (keyof typeof slotLabels)[]> = {
   quality: ["quality"],
 };
 
-const recoveryTabs: Partial<Record<string, { tab: ProjectWorkspaceTab; label: string }>> = {
-  task: { tab: "work-items", label: "查看任务" },
-  issue: { tab: "work-items", label: "查看问题" },
-  risk: { tab: "work-items", label: "查看风险" },
+const recoveryTabs: Partial<Record<string, { tab: ProjectWorkspaceTab; label: string; workKind?: ProjectWorkKind }>> = {
+  task: { tab: "work-items", label: "查看任务", workKind: "tasks" },
+  issue: { tab: "work-items", label: "查看问题", workKind: "issues" },
+  risk: { tab: "work-items", label: "查看风险", workKind: "risks" },
   deliverable_check: { tab: "documents", label: "查看文档" },
   build: { tab: "engineering", label: "查看产品工程" },
   sample: { tab: "engineering", label: "查看产品工程" },
@@ -109,7 +110,7 @@ export function ProjectGatePanel({
   canManage: boolean;
   error: string | null;
   gates: ProjectGate[] | null;
-  onNavigate: (tab: ProjectWorkspaceTab) => void;
+  onNavigate: (tab: ProjectWorkspaceTab, kind?: ProjectWorkKind) => void;
   onOpenRound: (gate: ProjectGate) => void;
   onRetry: () => void;
   onSignoff: (gate: ProjectGate, slot: "product" | "engineering" | "quality") => void;
@@ -155,7 +156,7 @@ export function ProjectGatePanel({
           </Button>
         ) : null}
         {recovery ? (
-          <Button disabled={busy} onClick={() => onNavigate(recovery.tab)} size="sm" variant="outline">
+          <Button disabled={busy} onClick={() => onNavigate(recovery.tab, recovery.workKind)} size="sm" variant="outline">
             {recovery.label}
           </Button>
         ) : null}

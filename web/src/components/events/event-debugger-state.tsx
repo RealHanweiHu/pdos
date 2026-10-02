@@ -33,7 +33,7 @@ export function EventDebuggerForbidden({
   onLogout: () => void;
 }) {
   return (
-    <WorkspaceShell active="events" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
+    <WorkspaceShell active="settings" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
       <section className="mx-auto max-w-lg rounded-lg border bg-card p-6 text-center">
         <LockKeyIcon aria-hidden="true" className="mx-auto size-9 text-muted-foreground" />
         <h1 className="mt-3 text-lg font-semibold">仅管理员可访问</h1>

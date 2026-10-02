@@ -252,6 +252,8 @@ def sources(
         _ecr(c, context.tenant.id, project_id, ecr_id)
         t = OBJECTS[kind]
         q = _query(kind, context.tenant.id, project_id)
+        if kind == "issue":
+            q = q.where(t.c.withdrawn_at.is_(None))
         if after_id is not None:
             q = q.where(t.c.id > after_id)
         rows = c.execute(q.order_by(t.c.id).limit(51)).mappings().all()
@@ -340,6 +342,8 @@ def save_connection(
     items = []
     for item in draft.items:
         value = source(c, tenant_id, project_id, item.kind, item.id)
+        if item.kind == "issue" and value.get("withdrawn_at") is not None:
+            raise ProductWorkError("原问题已撤回，不能新增变更范围引用")
         if digest(value) != item.expected_digest:
             raise ProductWorkError("范围对象已变化，请重新选取当前资料并核对")
         items.append({**item.model_dump(mode="json"), "snapshot": value})

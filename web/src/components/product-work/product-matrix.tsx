@@ -36,7 +36,9 @@ function FactValue({ fact, onRead }: { fact: Fact | null; onRead: (id: string) =
   return <div className="space-y-1"><p>{fact.text}</p><p className="text-xs text-muted-foreground">{kinds[fact.fact_kind]}{fact.derivation_version ? ` · 方法 ${fact.derivation_version}` : ""}{!fact.sources.length ? " · 无引用依据" : ""}</p>{fact.sources.map((ref, index) => <button type="button" key={`${ref.ref_id}:${index}`} className="mr-2 text-xs underline" onClick={() => onRead(ref.ref_id)}>依据 {index + 1}</button>)}</div>;
 }
 
-export function ProductMatrix({ base, catalog }: { base: string; catalog: ProductCatalog }) {
+type MatrixProps = { base: string; catalog: ProductCatalog; initialRecordId?: string; initialRunId?: string };
+export function ProductMatrix(props: MatrixProps) { return <ProductMatrixPanel key={props.base} {...props}/>; }
+function ProductMatrixPanel({ base, catalog, initialRecordId, initialRunId }: MatrixProps) {
   const [query, setQuery] = useState<Query>(initial);
   const [loaded, setLoaded] = useState<Query>(initial);
   const [page, setPage] = useState<Page | null>(null);
@@ -88,14 +90,14 @@ export function ProductMatrix({ base, catalog }: { base: string; catalog: Produc
   const fact = (value: Fact | null) => <FactValue fact={value} onRead={read} />;
   return <section className="space-y-4 rounded-lg border p-4">
     <header><h3 className="font-semibold">产品矩阵与上市窗口</h3><p className="mt-1 text-sm text-muted-foreground">从当前发布的产品定义比较定位与规格，尚未立项的产品也可加入。产品家族归属在下方维护。</p></header>
-    <fieldset disabled={busy} className="space-y-3"><form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" onSubmit={event => { event.preventDefault(); void load(query); }}>
+    <fieldset disabled={busy} className="min-w-0 space-y-3"><form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" onSubmit={event => { event.preventDefault(); void load(query); }}>
       <label className="text-sm">产品线<select className={field} value={query.product_line_id ?? ""} onChange={event => setQuery({ ...query, product_line_id: event.target.value || null, root_id: null })}><option value="">全部可访问产品线</option>{catalog.nodes.filter(node => node.level === "line").map(node => <option key={node.id} value={node.id}>{node.name}</option>)}</select></label>
       <label className="text-sm">家族 / 平台 / 系列范围<select className={field} value={query.root_id ?? ""} onChange={event => setQuery({ ...query, root_id: event.target.value || null })}><option value="">全部层级</option>{catalog.nodes.filter(node => (!query.product_line_id || node.product_line_id === query.product_line_id) && ["family", "platform", "series", "model"].includes(node.level)).map(node => <option key={node.id} value={node.id}>{levels[node.level]} · {node.code} · {node.name}</option>)}</select></label>
       <label className="text-sm">生命周期<select className={field} value={query.lifecycle ?? ""} onChange={event => setQuery({ ...query, lifecycle: event.target.value || null })}><option value="">全部状态</option>{Object.entries(lifecycles).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       <label className="text-sm">定义状态<select className={field} value={query.publication} onChange={event => setQuery({ ...query, publication: event.target.value })}><option value="all">全部（含缺项）</option>{Object.entries(publications).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       {([["region", "regions", "地区"], ["channel", "channels", "渠道"], ["scenario", "scenarios", "使用场景"]] as const).map(([key, facet, label]) => <label key={key} className="text-sm">{label}<select className={field} value={query[key]} onChange={event => setQuery({ ...query, [key]: event.target.value })}><option value="">全部</option>{Array.from(new Set([...(page?.facets[facet] ?? []), ...(query[key] ? [query[key]] : [])])).map(value => <option key={value} value={value}>{value}</option>)}</select></label>)}
       <label className="text-sm">名称 / 用户 / 价格定位 / 窗口<input className={field} maxLength={256} value={query.search} onChange={event => setQuery({ ...query, search: event.target.value })} /></label>
-      <div className="flex gap-2 sm:col-span-2 lg:col-span-4"><Button>查询 / 刷新</Button><Button type="button" variant="outline" onClick={() => { setQuery(initial); void load(initial); }}>重置筛选</Button><Button type="button" variant={view === "matrix" ? "secondary" : "ghost"} onClick={() => setView("matrix")}>矩阵</Button><Button type="button" variant={view === "windows" ? "secondary" : "ghost"} onClick={() => setView("windows")}>路线图 / 上市窗口</Button></div>
+      <div className="flex flex-wrap gap-2 sm:col-span-2 lg:col-span-4"><Button>查询 / 刷新</Button><Button type="button" variant="outline" onClick={() => { setQuery(initial); void load(initial); }}>重置筛选</Button><Button type="button" variant={view === "matrix" ? "secondary" : "ghost"} onClick={() => setView("matrix")}>矩阵</Button><Button type="button" variant={view === "windows" ? "secondary" : "ghost"} onClick={() => setView("windows")}>路线图 / 上市窗口</Button></div>
     </form></fieldset>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     {reading && <p role="status" className="text-sm">正在读取原依据…</p>}
@@ -109,7 +111,7 @@ export function ProductMatrix({ base, catalog }: { base: string; catalog: Produc
     {!page && <p className="text-sm">{error ? "矩阵尚未加载，可查询重试。" : "正在读取产品和发布版本…"}</p>}
     <div className="space-y-2 rounded-md bg-muted p-3"><p className="text-sm">跨页选择 2–8 项比较（已选 {selected.length}）。按产品编号区分同名型号与变体。</p><div className="flex flex-wrap gap-2">{selected.map(item => <Button variant="outline" size="sm" key={item.product_id} disabled={busy} onClick={() => { setSelected(old => old.filter(value => value.product_id !== item.product_id)); setComparison(null); }}>{item.name} · 移除</Button>)}</div><div className="flex gap-2"><Button disabled={busy || selected.length < 2} onClick={() => void compare()}>比较当前发布定义</Button><Button variant="ghost" disabled={busy || !selected.length} onClick={() => { setSelected([]); setComparison(null); }}>清空选择</Button></div></div>
     {comparison && <ComparisonView base={base} comparison={comparison} onRead={read} resume={resume} />}
-    <ProductMatrixHistory base={base} onRead={read} onResume={resumeRecord}/>
+    <ProductMatrixHistory initialRunId={initialRunId} initialRecordId={initialRecordId} base={base} onRead={read} onResume={resumeRecord}/>
   </section>;
 }
 

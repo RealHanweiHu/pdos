@@ -14,6 +14,7 @@ from app.ai.capability_contract import (
     UnknownCapabilityError,
     capability_for_finding,
 )
+from app.ai.finding_visibility import finding_attention_visibility
 from app.ai.runtime_contract import AgentKey
 from app.db.schema import tables
 
@@ -68,7 +69,24 @@ def employee_finding_visibility() -> ColumnElement[bool]:
         if contract.rollout is CapabilityRollout.LIVE
         for finding_type in contract.finding_types
     ]
-    return tables.findings.c.finding_type.not_in(("intake_organization", "meeting_plan")) & or_(
-        tables.findings.c.status == "applied",
-        tuple_(tables.findings.c.agent_key, tables.findings.c.finding_type).in_(live_pairs),
+    return (
+        tables.findings.c.finding_type.not_in(
+            (
+                "intake_organization",
+                "meeting_plan",
+                "product_research_plan",
+                "product_competitor_observations",
+                "product_market_segments",
+                "product_opportunities",
+                "product_experiments",
+                "product_strategy_drafts",
+                "product_definition_drafts",
+                "product_rfq_requirements",
+            )
+        )
+        & or_(
+            tables.findings.c.status == "applied",
+            tuple_(tables.findings.c.agent_key, tables.findings.c.finding_type).in_(live_pairs),
+        )
+        & finding_attention_visibility()
     )

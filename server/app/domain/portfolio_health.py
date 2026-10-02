@@ -168,6 +168,7 @@ def issues(c: Connection, context: AuthContext, project: UUID, quality: bool) ->
         .where(
             t.c.tenant_id == context.tenant.id,
             t.c.project_id == project,
+            t.c.withdrawn_at.is_(None),
             t.c.issue_type.in_(("quality", "test_failure") if quality else ("engineering",)),
         )
         .order_by(t.c.id),

@@ -17,7 +17,7 @@ from app.domain.knowledge_corrections import KnowledgeCorrectionService
 from app.domain.knowledge_push import KnowledgeAccessError
 from app.domain.material_allocations import MaterialAllocationError, MaterialAllocationService
 from app.domain.material_coverage import CoverageSelection, MaterialCoverageService
-from app.domain.material_supply_pools import lock_pools
+from app.domain.material_supply_pools import PoolKey, lock_pools
 from app.domain.npi_execution import NpiExecutionService
 from app.domain.product_workspace import _plain, digest
 
@@ -39,6 +39,12 @@ class ExceptionReview(Contract):
     selection: CoverageSelection
     disposition: Literal["follow_up", "supply_ready", "scope_changed"]
     reason: Text
+
+
+class MaterialClosureReference(Contract):
+    exception_id: UUID
+    review_id: UUID
+    source_digest: Digest
 
 
 def quantity_text(value: Any) -> str:
@@ -144,6 +150,118 @@ def _assessment(coverage: dict[str, Any], material_key: str) -> dict[str, Any]:
 def _lock_sources(c: Connection, context: AuthContext, project_id: UUID, build_id: UUID) -> None:
     current = MaterialAllocationService.read(c, context, project_id, build_id)
     lock_pools(c, context.tenant.id, [tuple(pool["pool_key"]) for pool in current["pools"]])
+
+
+def closure_readiness(assessment: dict[str, Any], latest: dict[str, Any]) -> dict[str, Any]:
+    """A retained named review must still match supply; forecast refresh is independent."""
+    from app.domain.material_schedule import source_core
+
+    review_current = digest(source_core(assessment)) == digest(source_core(latest["snapshot"]))
+    material = assessment["basis"]["material"]
+    ready = bool(
+        material is not None
+        and Decimal(material["required"]) > 0
+        and (
+            Decimal(material["allocated_on_hand"]) + Decimal(material.get("qualified_issued", "0"))
+        )
+        >= Decimal(material["required"])
+    )
+    disposition = latest["disposition"]
+    reasons = []
+    if assessment["basis"]["revision_id"] is None:
+        reasons.append("当前批次尚无固定需求版本")
+    if not review_current:
+        reasons.append("需求、供给、分配或领料依据已变化，请追加当前具名核对")
+    if disposition == "supply_ready" and not ready:
+        reasons.append("当前合格现货及有据净领料未覆盖全部固定需求")
+    elif disposition == "scope_changed" and material is not None:
+        reasons.append("该物料仍在当前固定需求中")
+    elif disposition == "follow_up":
+        reasons.append("原异常仍需跟进，尚未记录供给恢复或正式范围变化")
+    return {
+        "ready": not reasons,
+        "review_current": review_current,
+        "supply_ready": ready,
+        "disposition": disposition,
+        "reasons": reasons,
+        "source_digest": digest(source_core(assessment)),
+    }
+
+
+def validate_material_issue_closure(
+    c: Connection,
+    *,
+    tenant_id: UUID,
+    project_id: UUID,
+    issue_id: UUID,
+    actor_user_id: UUID,
+    expected_sources: list[MaterialClosureReference] | None = None,
+) -> dict[str, Any]:
+    """Canonical Issue transition calls this inside its locked transaction before close.
+
+    Does not close or create any Issue. Returns source references for the Issue audit.
+    """
+    from app.domain.material_allocations import read_material_state
+    from app.domain.material_schedule import observations
+
+    t = tables.material_exceptions
+    entries = [
+        dict(row)
+        for row in c.execute(
+            select(t).where(
+                t.c.tenant_id == tenant_id, t.c.project_id == project_id, t.c.issue_id == issue_id
+            )
+        ).mappings()
+    ]
+    if not entries:
+        if expected_sources:
+            raise MaterialAllocationError("所选物料恢复引用不属于此原问题")
+        return {"policy": "material.issue_closure.current_supply.v1", "sources": []}
+    references = {value.exception_id: value for value in expected_sources or []}
+    if len(references) != len(expected_sources or []) or set(references) != {
+        entry["id"] for entry in entries
+    }:
+        raise MaterialAllocationError("关闭原问题须选择其当前物料异常及具名复核版本")
+    for action in (Action.PRODUCT_ENGINEERING_VIEW, Action.WORK_ITEM_VIEW):
+        KnowledgeCorrectionService._authorize(c, tenant_id, actor_user_id, project_id, action)
+    keys: list[PoolKey] = []
+    for build in {entry["build_id"] for entry in entries}:
+        state = read_material_state(c, tenant_id, project_id, build)
+        keys.extend(
+            (pool["pool_key"][0], pool["pool_key"][1], pool["pool_key"][2])
+            for pool in state["pools"]
+        )
+    lock_pools(c, tenant_id, keys)
+    current = observations(c, tenant_id, project_id, entries)
+    sources = []
+    for entry in entries:
+        state = current[entry["id"]]
+        latest = state["latest_review"]
+        reference = references[entry["id"]]
+        valid_disposition = (latest["disposition"] == "supply_ready" and state["supply_ready"]) or (
+            latest["disposition"] == "scope_changed"
+            and state["material"] is None
+            and state["review_current"]
+        )
+        if (
+            not state["core"]["revision_id"]
+            or not valid_disposition
+            or UUID(latest["id"]) != reference.review_id
+            or state["source_digest"] != reference.source_digest
+        ):
+            raise MaterialAllocationError(
+                "原物料异常尚未按当前需求与供给具名复核恢复，不能关闭原问题"
+            )
+        sources.append(
+            {
+                "exception_id": str(entry["id"]),
+                "review_id": latest["id"],
+                "review_version": latest["version"],
+                "disposition": latest["disposition"],
+                "source_digest": state["source_digest"],
+            }
+        )
+    return {"policy": "material.issue_closure.current_supply.v1", "sources": sources}
 
 
 def _save_review(
@@ -322,6 +440,16 @@ class MaterialExceptionService:
                 .mappings()
                 .one()
             )
+            closure = closure_readiness(current, latest)
+            closure["reference"] = (
+                {
+                    "exception_id": str(exception_id),
+                    "review_id": str(latest["id"]),
+                    "source_digest": closure["source_digest"],
+                }
+                if closure["ready"]
+                else None
+            )
             return {
                 "exception": _plain(row),
                 "issue": _plain(dict(issue)),
@@ -331,6 +459,7 @@ class MaterialExceptionService:
                 "current": current,
                 "needs_recheck": current["digest"] != latest["basis_digest"],
                 "can_edit": _editable(c, context, project_id),
+                "closure": closure,
             }
 
     def create(

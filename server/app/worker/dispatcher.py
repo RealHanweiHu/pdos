@@ -16,6 +16,7 @@ from app.ai.loop_policy import LoopBinding
 from app.ai.rollout_guard import CapabilityUnavailableError, require_employee_agent
 from app.ai.runtime_contract import AgentKey, agents_for_event
 from app.db.schema import tables
+from app.domain.ai_issue_silent_events import is_silent_ai_issue_event
 
 DEFAULT_CONSUMER_KEY = "agent_dispatcher_v1"
 
@@ -111,6 +112,12 @@ class AgentDispatcher:
             for event in rows:
                 project_id = event["project_id"]
                 if project_id is None:
+                    continue
+                # The immutable application receipt proves this exact creation event.
+                # Keep it in the scan/cursor while avoiding success-generated work.
+                if event["event_type"] == "ISSUE_CREATED" and is_silent_ai_issue_event(
+                    connection, dict(event)
+                ):
                     continue
                 for agent_key in agents_for_event(str(event["event_type"])):
                     try:

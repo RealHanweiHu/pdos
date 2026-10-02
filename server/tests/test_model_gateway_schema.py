@@ -388,7 +388,7 @@ def test_cost_migration_preserves_legacy_trace_and_refuses_evidence_loss(
     tenant_id = uuid4()
     old = valid_invocation(tenant_id)
     try:
-        command.downgrade(config, "0058_ai_test_plan_changes")
+        migrate_test_database_in_steps(config, engine, "0058_ai_test_plan_changes")
         with engine.begin() as connection:
             connection.execute(
                 tables.tenants.insert(),
@@ -400,7 +400,7 @@ def test_cost_migration_preserves_legacy_trace_and_refuses_evidence_loss(
             )
             # Explicit columns support the prior schema without the new fields.
             connection.execute(tables.model_invocations.insert(), old)
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "head")
         with engine.connect() as connection:
             row = connection.execute(select(tables.model_invocations)).mappings().one()
             assert row["id"] == old["id"]
@@ -408,14 +408,22 @@ def test_cost_migration_preserves_legacy_trace_and_refuses_evidence_loss(
             assert row["cost_status"] == "legacy_unverified"
             assert row["rate_card_snapshot"] is None
         # With only old evidence the migration is reversible.
-        command.downgrade(config, "0058_ai_test_plan_changes")
-        command.upgrade(config, "head")
+        migrate_test_database_in_steps(config, engine, "0058_ai_test_plan_changes")
+        migrate_test_database_in_steps(config, engine, "head")
         new = valid_invocation(tenant_id)
         new.update(normalized_cost_microusd=None, cost_status="unknown")
         with engine.begin() as connection:
             connection.execute(tables.model_invocations.insert(), new)
+        # Bound the long historical walk; keep the refusal itself transactional
+        # at the revision that owns the cost evidence being protected.
+        migrate_test_database_in_steps(config, engine, "0059_invocation_cost_evidence")
         with pytest.raises(RuntimeError, match="refusing downgrade: cost evidence"):
             command.downgrade(config, "0058_ai_test_plan_changes")
+        with engine.connect() as connection:
+            assert connection.execute(
+                text("SELECT version_num FROM alembic_version")
+            ).scalar_one() == ("0059_invocation_cost_evidence")
+        migrate_test_database_in_steps(config, engine, "head")
         with engine.connect() as connection:
             assert (
                 connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
@@ -424,7 +432,10 @@ def test_cost_migration_preserves_legacy_trace_and_refuses_evidence_loss(
         with pytest.raises(DBAPIError, match="append-only"), engine.begin() as connection:
             connection.execute(update(tables.model_invocations).values(normalized_cost_microusd=0))
     finally:
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()
 
 
 @pytest.mark.parametrize(
@@ -494,8 +505,8 @@ def test_provider_admission_zero_cost_requires_zero_call_evidence(
     try:
         if invalid is None:
             # Empty upgrade/downgrade roundtrip must also preserve this constraint.
-            command.downgrade(config, "0060_budget_reservations")
-            command.upgrade(config, "head")
+            migrate_test_database_in_steps(config, engine, "0060_budget_reservations")
+            migrate_test_database_in_steps(config, engine, "head")
         with engine.begin() as connection:
             connection.execute(
                 tables.tenants.insert(),
@@ -515,10 +526,16 @@ def test_provider_admission_zero_cost_requires_zero_call_evidence(
         else:
             with engine.begin() as connection:
                 connection.execute(tables.model_invocations.insert(), record)
+            migrate_test_database_in_steps(config, engine, "0061_provider_admission")
             with pytest.raises(
                 RuntimeError, match="refusing downgrade: provider admission evidence"
             ):
                 command.downgrade(config, "0060_budget_reservations")
+            with engine.connect() as connection:
+                assert connection.execute(
+                    text("SELECT version_num FROM alembic_version")
+                ).scalar_one() == ("0061_provider_admission")
+            migrate_test_database_in_steps(config, engine, "head")
             with engine.connect() as connection:
                 assert (
                     connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
@@ -528,4 +545,7 @@ def test_provider_admission_zero_cost_requires_zero_call_evidence(
                 assert persisted["id"] == record["id"]
                 assert persisted["cost_status"] == "not_invoked"
     finally:
-        engine.dispose()
+        try:
+            migrate_test_database_in_steps(config, engine, "head")
+        finally:
+            engine.dispose()

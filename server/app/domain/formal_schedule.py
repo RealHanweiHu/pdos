@@ -232,6 +232,12 @@ def current_states(
             if kind == "certification":
                 virtual["source_status"] = certification_status(source)
             state.update(additional_state(virtual))
+            if kind == "test_run":
+                state["expected_completion_at"] = (
+                    source["expected_completion_at"].isoformat()
+                    if source["expected_completion_at"]
+                    else None
+                )
             state["source_digest"] = digest(_plain(source)) if source else digest(_plain(node))
             if observation:
                 state["actual_observation"] = {
