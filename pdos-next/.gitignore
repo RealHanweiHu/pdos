@@ -1,0 +1,12 @@
+.local/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+web/node_modules/
+web/.next/
+web/.next-dev/
+web/*.tsbuildinfo
+**/.env
+**/.env.local
+server/openapi.json

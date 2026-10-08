@@ -1,0 +1,407 @@
+from typing import Literal
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+class StrictModel(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+
+class SourceRead(StrictModel):
+    artifact_id: UUID
+    expected_revision: int = Field(ge=1)
+
+
+class Command(StrictModel):
+    command_id: UUID
+    idempotency_key: str = Field(min_length=8, max_length=160)
+    operation: str = Field(min_length=1, max_length=80)
+    product_id: UUID
+    expected_revision: int = Field(ge=1)
+    source_read_set: list[SourceRead] = Field(default_factory=list, max_length=20)
+    payload: dict
+
+
+class ArtifactPayload(StrictModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=False)
+    title: str = Field(min_length=1, max_length=200)
+    content: str = Field(min_length=1, max_length=200_000)
+    visibility: Literal["private", "product"] = "private"
+    source_label: str = Field(min_length=1, max_length=200)
+
+    @field_validator("content")
+    @classmethod
+    def safe_text(cls, value):
+        try:
+            size = len(value.encode("utf-8"))
+        except UnicodeEncodeError as exc:
+            raise ValueError("UTF-8 text required") from exc
+        if "\x00" in value or size > 200_000 or not value.strip():
+            raise ValueError("Nonempty UTF-8 text under 200KB required")
+        return value
+
+
+class ClaimPayload(StrictModel):
+    artifact_id: UUID
+    line: int = Field(ge=1)
+    quote: str = Field(min_length=1, max_length=4000)
+    statement: str = Field(min_length=1, max_length=4000)
+    nature: Literal["observed", "extracted", "inferred"] = "extracted"
+    availability: Literal["known", "unknown", "conflicted"] = "known"
+    visibility: Literal["private", "product"] = "private"
+
+
+class OutcomeSpec(StrictModel):
+    object_type: Literal["claim"] = "claim"
+    minimum_records: Literal[1] = 1
+    source_required: Literal[True] = True
+
+
+class WorkPayload(StrictModel):
+    goal: str = Field(min_length=3, max_length=2000)
+    artifact_id: UUID
+    source_revision: int = Field(ge=1)
+    outcome_spec: OutcomeSpec = Field(default_factory=OutcomeSpec)
+    max_actions: int = Field(default=1, ge=1, le=3)
+    stop_condition: Literal["one_sourced_claim_or_input_required"] = (
+        "one_sourced_claim_or_input_required"
+    )
+
+
+class RevertPayload(StrictModel):
+    receipt_id: UUID
+    confirmation_token: str = Field(min_length=20, max_length=128)
+
+
+class CancelPayload(StrictModel):
+    work_id: UUID
+    confirmation_token: str = Field(min_length=20, max_length=128)
+
+
+class OriginalScanInput(StrictModel):
+    expected_epoch: int = Field(ge=1)
+    idempotency_key: str = Field(min_length=8, max_length=160)
+
+
+class OriginalWithdrawPayload(StrictModel):
+    original_id: UUID
+    expected_epoch: int = Field(ge=1)
+    reason: str = Field(min_length=3, max_length=2000)
+    confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
+
+
+class UploadAbandonPayload(StrictModel):
+    object_id: UUID
+    expected_revision: int = Field(ge=1)
+    reason: str = Field(min_length=4, max_length=2000)
+    confirmation_token: str | None = Field(default=None, max_length=256)
+
+
+PAYLOADS = {
+    "evidence.lifecycle.upload.abandon": UploadAbandonPayload,
+    "evidence.original.withdraw": OriginalWithdrawPayload,
+    "evidence.artifact.register": ArtifactPayload,
+    "evidence.claim.record": ClaimPayload,
+    "ai.work.start": WorkPayload,
+    "ai.run.revert": RevertPayload,
+    "ai.run.cancel": CancelPayload,
+}
+
+
+class ProductInput(StrictModel):
+    name: str = Field(min_length=2, max_length=160)
+    purpose: str = Field(min_length=3, max_length=1000)
+    idempotency_key: str = Field(min_length=8, max_length=160)
+
+
+class UploadInput(StrictModel):
+    title: str = Field(min_length=1, max_length=200)
+    filename: str = Field(min_length=1, max_length=200)
+    source_label: str = Field(min_length=1, max_length=200)
+    visibility: Literal["private", "product"] = "private"
+    content_base64: str = Field(min_length=4, max_length=11_184_812)
+    idempotency_key: str = Field(min_length=8, max_length=160)
+    expected_revision: int = Field(ge=1)
+
+
+class ResumeInput(StrictModel):
+    idempotency_key: str = Field(min_length=8, max_length=160)
+
+
+from pdos_next.schemas.products.definitions import DefinitionDraftPayload  # noqa: E402
+
+PAYLOADS["product.definition.draft"] = DefinitionDraftPayload
+
+from pdos_next.domain.projects.schemas import (  # noqa: E402
+    PlanApplyPayload,
+    PlanProposePayload,
+    ProjectCreatePayload,
+)
+from pdos_next.model_gateway.reconciliation_schema import ReconciliationPayload  # noqa: E402
+from pdos_next.schemas.products.variants import (  # noqa: E402
+    VariantDerivePayload,
+    VariantRebasePayload,
+)
+
+PAYLOADS.update(
+    {
+        "product.variant.derive": VariantDerivePayload,
+        "product.variant.rebase": VariantRebasePayload,
+        "project.create": ProjectCreatePayload,
+        "work.plan.propose": PlanProposePayload,
+        "work.plan.apply": PlanApplyPayload,
+        "ai.model_call.reconcile": ReconciliationPayload,
+    }
+)
+
+from pdos_next.domain.builds.schemas import BuildCreatePayload, BuildReadinessPayload  # noqa: E402
+from pdos_next.domain.configurations.schemas import (  # noqa: E402
+    EngineeringBomRevisePayload,
+    EngineeringConfigurationCreatePayload,
+    NpiProcessRevisePayload,
+)
+
+PAYLOADS.update(
+    {
+        "engineering.bom.revise": EngineeringBomRevisePayload,
+        "engineering.configuration.create": EngineeringConfigurationCreatePayload,
+        "npi.process.revise": NpiProcessRevisePayload,
+        "build.create": BuildCreatePayload,
+        "build.readiness.compute": BuildReadinessPayload,
+    }
+)
+
+from pdos_next.domain.build_execution.schemas import (  # noqa: E402
+    ActualConfigurationPayload,
+    OutputPayload,
+    SampleAllocatePayload,
+)
+
+PAYLOADS.update(
+    {
+        "build.configuration.actual.record": ActualConfigurationPayload,
+        "build.output.record": OutputPayload,
+        "build.sample.allocate": SampleAllocatePayload,
+    }
+)
+
+from pdos_next.domain.supply_execution.schemas import (  # noqa: E402
+    KitComputePayload,
+    SnapshotRecordPayload,
+)
+
+# Manual source snapshot confirmation is an auxiliary operation; canonical kit stays T0.
+PAYLOADS.update(
+    {
+        "supply.snapshot.record": SnapshotRecordPayload,
+        "supply.kit.compute": KitComputePayload,
+    }
+)
+
+from pdos_next.domain.cost_execution.schemas import (  # noqa: E402
+    EstimateComputePayload,
+    InputsRecordPayload,
+)
+
+PAYLOADS.update(
+    {
+        "cost.inputs.record": InputsRecordPayload,
+        "cost.estimate.compute": EstimateComputePayload,
+    }
+)
+
+from pdos_next.domain.verification_execution.schemas import (  # noqa: E402
+    PreparationRecordPayload,
+)
+
+# Human preparation records do not grant professional or canonical execution qualification.
+PAYLOADS["verification.preparation.record"] = PreparationRecordPayload
+
+from pdos_next.domain.verification_front.schemas import (  # noqa: E402
+    MethodPreparePayload,
+    RequestCreatePayload,
+    ScheduleProposePayload,
+)
+
+PAYLOADS.update(
+    {
+        "verification.request.create": RequestCreatePayload,
+        "verification.method.prepare": MethodPreparePayload,
+        "verification.schedule.propose": ScheduleProposePayload,
+    }
+)
+
+from pdos_next.domain.original_lifecycle_execution.schemas import (  # noqa: E402
+    LifecycleCancelPayload,
+    LifecycleCommandPayload,
+    LifecycleProtectionPayload,
+)
+
+PAYLOADS.update(
+    {
+        "evidence.lifecycle.quarantine": LifecycleCommandPayload,
+        "evidence.lifecycle.restore": LifecycleCommandPayload,
+        "evidence.lifecycle.cancel": LifecycleCancelPayload,
+        "evidence.lifecycle.protection.record": LifecycleProtectionPayload,
+    }
+)
+
+from pdos_next.domain.build_start.schemas import (  # noqa: E402
+    BuildAuthorizationPayload,
+    BuildStartPayload,
+)
+
+PAYLOADS.update(
+    {
+        "build.engineering.authorize": BuildAuthorizationPayload,
+        "build.manufacturing.authorize": BuildAuthorizationPayload,
+        "build.start": BuildStartPayload,
+    }
+)
+
+from pdos_next.domain.sample_handoff.schemas import SampleReadinessPayload  # noqa: E402
+from pdos_next.domain.verification_handoff.schemas import (  # noqa: E402
+    AcceptPayload,
+    ActualMethodPreparePayload,
+    OfferPayload,
+    ReturnPayload,
+)
+
+PAYLOADS.update(
+    {
+        "build.sample.readiness.record": SampleReadinessPayload,
+        "verification.actual_method.prepare": ActualMethodPreparePayload,
+        "verification.handoff.offer": OfferPayload,
+        "verification.handoff.accept": AcceptPayload,
+        "verification.handoff.return": ReturnPayload,
+    }
+)
+
+from pdos_next.domain.verification_launch.schemas import (  # noqa: E402
+    PlanPayload as TestPlanPayload,
+)
+from pdos_next.domain.verification_launch.schemas import (  # noqa: E402
+    PromisePayload as TestPromisePayload,
+)
+from pdos_next.domain.verification_launch.schemas import (  # noqa: E402
+    StartPayload as TestStartPayload,
+)
+
+PAYLOADS.update(
+    {
+        "test.run.plan": TestPlanPayload,
+        "verification.schedule.promise": TestPromisePayload,
+        "test.run.start": TestStartPayload,
+    }
+)
+
+from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+    ComputePayload as TestComputePayload,
+)
+from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+    DispositionPayload as TestDispositionPayload,
+)
+from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+    ImportPayload as TestImportPayload,
+)
+from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+    ReviewPayload as TestReviewPayload,
+)
+
+PAYLOADS.update(
+    {
+        "test.results.import": TestImportPayload,
+        "test.result.compute": TestComputePayload,
+        "test.run.review": TestReviewPayload,
+        "test.disposition.decide": TestDispositionPayload,
+    }
+)
+
+from pdos_next.domain.change_execution.schemas import (  # noqa: E402
+    ChangeCreatePayload,
+    ImpactComputePayload,
+)
+from pdos_next.domain.quality_execution.schemas import (  # noqa: E402
+    CapaDraftPayload,
+    ContainmentPayload,
+    IssueCreatePayload,
+    IssueMergePayload,
+    IssueTriagePayload,
+)
+
+PAYLOADS.update(
+    {
+        "quality.issue.create": IssueCreatePayload,
+        "quality.issue.merge": IssueMergePayload,
+        "quality.issue.triage": IssueTriagePayload,
+        "quality.issue.containment.record": ContainmentPayload,
+        "quality.capa.draft": CapaDraftPayload,
+        "change.request.create": ChangeCreatePayload,
+        "change.impact.compute": ImpactComputePayload,
+    }
+)
+
+
+from pdos_next.domain.capa_verification.schemas import FollowupLinkPayload  # noqa: E402
+from pdos_next.domain.quality_followup.schemas import (  # noqa: E402
+    ActionsCompletePayload,
+    RootCausePayload,
+)
+
+PAYLOADS.update(
+    {
+        "quality.issue.root_cause.decide": RootCausePayload,
+        "quality.capa.actions.complete": ActionsCompletePayload,
+        "quality.capa.followup.link": FollowupLinkPayload,
+    }
+)
+
+from pdos_next.domain.capa_effectiveness.candidate_commands import (  # noqa: E402
+    CandidateRecordPayload,
+)
+
+PAYLOADS["quality.capa.verification.candidate.record"] = CandidateRecordPayload
+
+from pdos_next.domain.capa_effectiveness.fact_commands import (  # noqa: E402
+    NamedReviewPayload,
+    ObservationPayload,
+)
+
+PAYLOADS.update(
+    {
+        "quality.capa.observation.record": ObservationPayload,
+        "quality.capa.verification.review": NamedReviewPayload,
+    }
+)
+
+
+# Three existing canonical change operations; selection is an explicit auxiliary proposal.
+# The host-only policy publisher is deliberately absent from PAYLOADS.
+from pdos_next.change_command_schemas import (  # noqa: E402
+    ImplementationPayload,
+    OrderApprovePayload,
+    OrderPreparePayload,
+)
+from pdos_next.change_controlled_schemas import SelectionPayload  # noqa: E402
+
+PAYLOADS.update(
+    {
+        "change.order.prepare": OrderPreparePayload,
+        "change.order.approve": OrderApprovePayload,
+        "change.implementation.record": ImplementationPayload,
+        "change.selection.decide": SelectionPayload,
+    }
+)
+
+from pdos_next.domain.manufacturing_baseline.schemas import (  # noqa: E402
+    BaselinePayload,
+    ControlPlanPayload,
+    InstructionPayload,
+)
+
+PAYLOADS.update({
+    "npi.work_instruction.record": InstructionPayload,
+    "npi.control_plan.record": ControlPlanPayload,
+    "npi.manufacturing_baseline.record": BaselinePayload,
+})

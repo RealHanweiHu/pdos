@@ -1,0 +1,338 @@
+from copy import deepcopy
+from typing import TYPE_CHECKING
+from uuid import uuid4
+
+from sqlalchemy import func, select
+
+from pdos_next.errors import DomainError
+from pdos_next.models import Artifact, Grant, Principal, now
+from pdos_next.schemas.products.definitions import DefinitionDraftPayload
+
+from .models import DefinitionRevision, DefinitionSource, DefinitionSpecRow
+
+if TYPE_CHECKING:
+    from pdos_next.contracts import Command
+    from pdos_next.service import Context
+
+
+def semantic(payload: DefinitionDraftPayload) -> dict:
+    """Server validation retains exact pinned sources and parent, independent of request key."""
+    value = payload.model_dump(mode="json")
+    value["sources"] = sorted(
+        value["sources"], key=lambda r: (r["artifact_id"], r["line"], r["quote"])
+    )
+    value["specs"] = sorted(value["specs"], key=lambda spec: spec["key"])
+    for spec in value["specs"]:
+        spec["sources"] = sorted(
+            spec["sources"], key=lambda r: (r["artifact_id"], r["line"], r["quote"])
+        )
+    return value
+
+
+def validate(s, ctx: "Context", command: "Command", product, payload: DefinitionDraftPayload):
+    from pdos_next.service import require_access, source_for
+
+    require_access(s, ctx, product.id, write=True, lock=True)
+    actor = s.get(Principal, ctx.actor_id)
+    if (
+        ctx.run_id is not None
+        or ctx.actor_id != ctx.requester_id
+        or not actor
+        or actor.kind != "human"
+    ):
+        raise DomainError("NAMED_DECISION_REQUIRED", "本轮定义草稿仅支持本人手工保存。", 403)
+    if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
+        raise DomainError("FORBIDDEN_SCOPE", "定义不在当前产品范围。", 403)
+    if command.expected_revision != product.revision:
+        raise DomainError("VERSION_CONFLICT", "产品范围版本已变化，请重新读取。")
+    reads = {r.artifact_id: r.expected_revision for r in command.source_read_set}
+    for reference in payload.sources:
+        if reads.get(reference.artifact_id) != reference.expected_revision:
+            raise DomainError("MISSING_REQUIRED_EVIDENCE", "定义需要全部来源的明确版本。")
+        source = source_for(s, ctx, product.id, reference.artifact_id, reference.expected_revision)
+        lines = source.content.splitlines()
+        if reference.line > len(lines) or reference.quote not in lines[reference.line - 1]:
+            raise DomainError("MISSING_REQUIRED_EVIDENCE", "定义引用必须在指定原文行精确定位。")
+        if source.visibility == "private" and payload.visibility != "private":
+            raise DomainError("FORBIDDEN_SCOPE", "私人原件不能用于共享定义。", 403)
+    for spec in payload.specs:
+        if spec.owner_id is not None:
+            owner = s.get(Principal, spec.owner_id)
+            grant = s.scalar(
+                select(Grant)
+                .where(
+                    Grant.tenant_id == ctx.tenant_id,
+                    Grant.product_id == product.id,
+                    Grant.principal_id == spec.owner_id,
+                    Grant.can_write.is_(True),
+                    Grant.expires_at > now(),
+                )
+                .with_for_update()
+            )
+            if (
+                not owner
+                or owner.tenant_id != ctx.tenant_id
+                or owner.kind != "human"
+                or not owner.active
+                or not grant
+            ):
+                raise DomainError("FORBIDDEN_SCOPE", "规格负责人须为当前产品内有效人类成员。", 403)
+    if payload.parent_definition_id is not None:
+        parent = s.scalar(
+            select(DefinitionRevision).where(
+                DefinitionRevision.tenant_id == ctx.tenant_id,
+                DefinitionRevision.product_id == product.id,
+                DefinitionRevision.id == payload.parent_definition_id,
+            )
+        )
+        if not parent or (parent.visibility == "private" and parent.owner_id != ctx.requester_id):
+            raise DomainError("FORBIDDEN_SCOPE", "父定义不在当前授权范围。", 403)
+        if parent.revision != payload.expected_parent_revision:
+            raise DomainError("VERSION_CONFLICT", "父定义版本与所选固定版本不一致。")
+        if parent.visibility == "private" and payload.visibility != "private":
+            raise DomainError("FORBIDDEN_SCOPE", "私人父定义不能通过续版扩大受众。", 403)
+        # Retaining a parent never permits inheriting withdrawn or inaccessible source material.
+        for reference in s.scalars(
+            select(DefinitionSource).where(
+                DefinitionSource.tenant_id == ctx.tenant_id,
+                DefinitionSource.definition_id == parent.id,
+            )
+        ):
+            source_for(s, ctx, product.id, reference.artifact_id, reference.source_revision)
+
+
+def apply_draft(s, ctx, command, product, payload: DefinitionDraftPayload):
+    validate(s, ctx, command, product, payload)
+    latest = s.scalar(
+        select(DefinitionRevision)
+        .where(
+            DefinitionRevision.tenant_id == ctx.tenant_id,
+            DefinitionRevision.product_id == product.id,
+            (DefinitionRevision.visibility == "product")
+            | (DefinitionRevision.owner_id == ctx.requester_id),
+        )
+        .order_by(DefinitionRevision.revision.desc())
+        .limit(1)
+    )
+    if latest and latest.id != payload.parent_definition_id:
+        raise DomainError(
+            "VERSION_CONFLICT", "当前已有新定义草稿，请读取最新可见版本并核对差异后续版。"
+        )
+    revision = (
+        s.scalar(
+            select(func.max(DefinitionRevision.revision)).where(
+                DefinitionRevision.tenant_id == ctx.tenant_id,
+                DefinitionRevision.product_id == product.id,
+            )
+        )
+        or 0
+    ) + 1
+    subject = DefinitionRevision(
+        id=uuid4(),
+        tenant_id=ctx.tenant_id,
+        product_id=product.id,
+        owner_id=ctx.requester_id,
+        revision=revision,
+        status="draft",
+        **payload.model_dump(exclude={"sources", "specs", "expected_parent_revision"}),
+    )
+    s.add(subject)
+    s.flush()
+    for spec in payload.specs:
+        s.add(
+            DefinitionSpecRow(
+                id=uuid4(),
+                tenant_id=ctx.tenant_id,
+                product_id=product.id,
+                definition_id=subject.id,
+                **spec.model_dump(exclude={"sources"}),
+            )
+        )
+    for reference in payload.sources:
+        key = reference.model_dump(mode="json")
+        s.add(
+            DefinitionSource(
+                id=uuid4(),
+                tenant_id=ctx.tenant_id,
+                product_id=product.id,
+                definition_id=subject.id,
+                artifact_id=reference.artifact_id,
+                source_revision=reference.expected_revision,
+                line=reference.line,
+                quote=reference.quote,
+                spec_keys=[
+                    spec.key
+                    for spec in payload.specs
+                    if key in [r.model_dump(mode="json") for r in spec.sources]
+                ],
+            )
+        )
+    s.flush()
+    return subject, "definition_revision", subject.visibility
+
+
+def difference(previous: dict, current: dict) -> list[dict]:
+    """Stable specification keys preserve precise before/after without inherited decisions."""
+    old_specs = {item["key"]: item for item in previous.get("specs", [])}
+    new_specs = {item["key"]: item for item in current.get("specs", [])}
+    result = [
+        {"path": name, "before": deepcopy(previous.get(name)), "after": deepcopy(current.get(name))}
+        for name in (
+            "title",
+            "purpose",
+            "use_cases",
+            "requirements",
+            "constraints",
+            "unknowns",
+            "exclusions",
+            "visibility",
+            "sources",
+        )
+        if previous.get(name) != current.get(name)
+    ]
+    result.extend(
+        {
+            "path": f"specs/{key}",
+            "before": deepcopy(old_specs.get(key)),
+            "after": deepcopy(new_specs.get(key)),
+        }
+        for key in sorted(old_specs.keys() | new_specs.keys())
+        if old_specs.get(key) != new_specs.get(key)
+    )
+    return result
+
+
+def definition_view(s, ctx, row) -> dict:
+    from pdos_next.original_security import source_status
+
+    refs = list(
+        s.scalars(
+            select(DefinitionSource)
+            .where(
+                DefinitionSource.tenant_id == ctx.tenant_id,
+                DefinitionSource.definition_id == row.id,
+            )
+            .order_by(DefinitionSource.artifact_id, DefinitionSource.line)
+        )
+    )
+    sources = []
+    for ref in refs:
+        source = s.get(Artifact, ref.artifact_id)
+        readable = bool(
+            source
+            and source.tenant_id == ctx.tenant_id
+            and (source.visibility != "private" or source.owner_id == ctx.requester_id)
+        )
+        sources.append(
+            {
+                "artifact_id": str(ref.artifact_id),
+                "expected_revision": ref.source_revision,
+                "line": ref.line,
+                "quote": ref.quote if readable else None,
+                "title": source.title if readable else "来源权限需重核",
+                "status": "unavailable"
+                if not readable
+                else "stale"
+                if source.revision != ref.source_revision
+                else source_status(s, source),
+                "spec_keys": ref.spec_keys,
+            }
+        )
+    if any(source["status"] == "unavailable" for source in sources):
+        raise DomainError(
+            "SOURCE_UNAVAILABLE", "此定义引用权限已变化，重新核对前不展示派生内容。", 403
+        )
+    specs = []
+    for spec in s.scalars(
+        select(DefinitionSpecRow)
+        .where(
+            DefinitionSpecRow.tenant_id == ctx.tenant_id,
+            DefinitionSpecRow.definition_id == row.id,
+        )
+        .order_by(DefinitionSpecRow.key)
+    ):
+        data = {
+            column.name: getattr(spec, column.name)
+            for column in spec.__table__.columns
+            if column.name not in {"id", "tenant_id", "product_id", "definition_id", "created_at"}
+        }
+        for name in ("value", "lower", "upper", "tolerance", "owner_id"):
+            if data[name] is not None:
+                data[name] = str(data[name])
+        data["sources"] = [
+            {
+                k: value
+                for k, value in source.items()
+                if k in {"artifact_id", "expected_revision", "line", "quote"}
+            }
+            for source in sources
+            if spec.key in source["spec_keys"]
+        ]
+        specs.append(data)
+    return {
+        "id": str(row.id),
+        "product_id": str(row.product_id),
+        "owner_id": str(row.owner_id),
+        "parent_definition_id": str(row.parent_definition_id) if row.parent_definition_id else None,
+        "revision": row.revision,
+        "status": row.status,
+        "visibility": row.visibility,
+        "title": row.title,
+        "purpose": row.purpose,
+        "use_cases": row.use_cases,
+        "requirements": row.requirements,
+        "constraints": row.constraints,
+        "unknowns": row.unknowns,
+        "exclusions": row.exclusions,
+        "change_reason": row.change_reason,
+        "sources": sources,
+        "specs": specs,
+        "created_at": row.created_at.isoformat(),
+        "source_status": "current"
+        if all(source["status"] == "active" for source in sources)
+        else "needs_recheck",
+    }
+
+
+def list_definitions(s, ctx, product_id):
+    from pdos_next.service import require_access
+
+    require_access(s, ctx, product_id)
+    rows = s.scalars(
+        select(DefinitionRevision)
+        .where(
+            DefinitionRevision.tenant_id == ctx.tenant_id,
+            DefinitionRevision.product_id == product_id,
+            (DefinitionRevision.visibility == "product")
+            | (DefinitionRevision.owner_id == ctx.requester_id),
+        )
+        .order_by(DefinitionRevision.revision.desc())
+        .limit(101)
+    ).all()
+    items = []
+    unavailable_count = 0
+    for row in rows[:100]:
+        try:
+            items.append(definition_view(s, ctx, row))
+        except DomainError as error:
+            if error.code != "SOURCE_UNAVAILABLE":
+                raise
+            unavailable_count += 1
+    by_id = {item["id"]: item for item in items}
+    for item in items:
+        previous = by_id.get(item["parent_definition_id"])
+        if previous is None and item["parent_definition_id"]:
+            parent = s.get(DefinitionRevision, item["parent_definition_id"])
+            if (
+                parent
+                and parent.tenant_id == ctx.tenant_id
+                and parent.product_id == product_id
+                and (parent.visibility == "product" or parent.owner_id == ctx.requester_id)
+            ):
+                try:
+                    previous = definition_view(s, ctx, parent)
+                except DomainError as error:
+                    if error.code != "SOURCE_UNAVAILABLE":
+                        raise
+        item["differences"] = difference(previous, item) if previous else []
+    return {"items": items, "has_more": len(rows) > 100, "unavailable_count": unavailable_count}

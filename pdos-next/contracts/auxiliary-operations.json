@@ -1,0 +1,230 @@
+{
+  "schema_version": "pdos-next.auxiliary-operations.v1",
+  "scope": "Implemented host orchestration helpers; canonical source catalog and AI qualification unchanged",
+  "items": [
+    {
+      "operation": "supply.snapshot.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "supply.snapshot_recorded",
+      "purpose": "Confirm a prepared immutable snapshot of existing external supply observations. Does not issue supplier commitments, inventory availability, quality release or Build authorization.",
+      "canonical_policy_preserved": [
+        "supply.commitment.record:T0",
+        "supply.kit.compute:T0",
+        "supply.alternate.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "cost.inputs.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "cost.inputs_recorded",
+      "purpose": "Confirm prepared immutable cost scope, quotations, direct exchange rates and manufacturing consumption assumptions with their exact source evidence. No purchase, financial approval or proven savings.",
+      "canonical_policy_preserved": [
+        "cost.estimate.compute:T0"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "verification.preparation.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "verification.preparation_recorded",
+      "purpose": "Confirm an immutable human preparation draft with exact requirements, method/document candidates, expected and tentative times. Does not establish quality/test roles or qualifications, physical handoff, acceptance, reservation, TestRun or results.",
+      "canonical_policy_preserved": [
+        "verification.request.create:T0",
+        "verification.schedule.propose:T0",
+        "verification.handoff.offer:T1",
+        "verification.handoff.accept:T1",
+        "test.results.import:T1",
+        "test.result.compute:T0",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "evidence.original.withdraw",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "original.withdrawn",
+      "purpose": "Confirm withdrawal of current original-source use while preserving immutable bytes and historical decisions. Does not delete objects, qualify scanners or restore permission.",
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "evidence.lifecycle.upload.abandon",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "original.upload_abandoned",
+      "purpose": "Named positive termination of an incomplete upload. Retains bytes and prevents late registration; exceptions never prove abandonment.",
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "evidence.lifecycle.quarantine",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "original.lifecycle_requested",
+      "purpose": "Confirm a current exact orphan candidate for reversible access isolation. Registered, retained, held, referenced or unknown originals stay protected. Bytes stay in place.",
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "evidence.lifecycle.restore",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "original.lifecycle_requested",
+      "purpose": "Confirm restoration of access to exact retained bytes under current authority. Does not change scan result, source withdrawal or authorization.",
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "evidence.lifecycle.cancel",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "original.lifecycle_cancelled",
+      "purpose": "Cancel an unattempted pending lifecycle intent. Attempted or unknown effects require observation, not cancellation or retry.",
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "evidence.lifecycle.protection.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "original.protection_recorded",
+      "purpose": "Record named hold and retention facts. Does not grant eligibility, consume references, delete bytes or approve production policy.",
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "verification.method.prepare",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "verification.method_prepared",
+      "purpose": "Record current qualified quality reviewer applicability for each fixed planned-configuration test item. Does not accept physical samples, authorize actual-configuration reuse, reserve resources or start tests. Unknown and inapplicable scope stay explicit.",
+      "canonical_policy_preserved": [
+        "verification.request.create:T0",
+        "verification.schedule.propose:T0",
+        "verification.handoff.offer:T1",
+        "verification.handoff.accept:T1",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "build.engineering.authorize",
+      "write_tier": "T2",
+      "executor": "named_qualified_engineering",
+      "event": "build.engineering_authorization_decided",
+      "purpose": "Named scoped internal manufacturing approval/revocation bound to exact current assessment, typed professional applicability, explicit controls and validity. Does not publish engineering or manufacturing baselines, qualify samples, start tests or authorize external delivery.",
+      "canonical_policy_preserved": [
+        "build.readiness.compute:T0",
+        "build.start:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "build.manufacturing.authorize",
+      "write_tier": "T2",
+      "executor": "named_qualified_manufacturing",
+      "event": "build.manufacturing_authorization_decided",
+      "purpose": "Named scoped internal manufacturing approval/revocation bound to exact current assessment, typed professional applicability, explicit controls and validity. Does not publish engineering or manufacturing baselines, qualify samples, start tests or authorize external delivery.",
+      "canonical_policy_preserved": [
+        "build.readiness.compute:T0",
+        "build.start:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "build.sample.readiness.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_manufacturing",
+      "event": "sample.readiness_recorded",
+      "purpose": "Record a source-bound actual readiness or hold event for an existing SampleUnit, fixed actual configuration and precise purpose. Does not create sample identity, test qualification, quality acceptance or reservations.",
+      "canonical_policy_preserved": [
+        "verification.handoff.offer:T1",
+        "verification.handoff.accept:T1",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "verification.actual_method.prepare",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "verification.actual_method_prepared",
+      "purpose": "Record current applicability of fixed test methods to exact sample/item pairs and actual configuration versions. Planned applicability is not inherited; unknown scope does not grant acceptance or testing.",
+      "canonical_policy_preserved": [
+        "verification.handoff.offer:T1",
+        "verification.handoff.accept:T1",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "verification.handoff.return",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "handoff.returned",
+      "purpose": "Return exact unaccepted sample/item pairs with source-bound event time, gaps, reasons and a currently accountable next owner. Does not fabricate acceptance, test start or disposal.",
+      "canonical_policy_preserved": [
+        "verification.handoff.offer:T1",
+        "verification.handoff.accept:T1",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "test.run.plan",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "test.run_planned",
+      "purpose": "Fix one Run covering every accepted sample/item pair and complete trusted resource window. Does not occupy resources, consume samples, start testing or grant qualification.",
+      "canonical_policy_preserved": [
+        "test.results.import:T1",
+        "test.result.compute:T0",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "verification.schedule.promise",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "verification.start_promised",
+      "purpose": "Save a named quality promise for the fixed Run window from its exact event source. Promise and actual start remain separate; no occupancy, sample use or testing occurs.",
+      "canonical_policy_preserved": [
+        "test.results.import:T1",
+        "test.result.compute:T0",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "test.run.start",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "test.run_started",
+      "purpose": "Save the named actual start of a fixed Run and, in the same caller transaction, its exact formal resource occupancy and physical sample use. Does not import measurement results, decide professional conclusions, release manufacturing or dispose samples.",
+      "canonical_policy_preserved": [
+        "test.results.import:T1",
+        "test.result.compute:T0",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    }
+  ]
+}

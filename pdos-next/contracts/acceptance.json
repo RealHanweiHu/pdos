@@ -1,0 +1,346 @@
+{
+  "provenance": {
+    "kind": "derived_from_consolidated_markdown",
+    "source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+    "sha256": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+    "original_contract_package_received": false
+  },
+  "items": [
+    {
+      "id": "AT-01",
+      "scenario": "无项目产品研究",
+      "expected": "可形成真实定义和来源，不要求虚拟Project。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-02",
+      "scenario": "标准品匹配不建虚假研发",
+      "expected": "没有真实开发活动则不建立虚拟项目。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-03",
+      "scenario": "OEM导入定义",
+      "expected": "客户设计包产生导入定义，不强迫重做市场策略。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-04",
+      "scenario": "派生父版改变",
+      "expected": "显示三方差异，子版和父版均不被静默覆盖。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-05",
+      "scenario": "跨客户平台复用",
+      "expected": "只复用授权且适用内容，私人来源不泄漏。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-06",
+      "scenario": "规格缺少单位或条件",
+      "expected": "未知项可见，正式发布按适用规则阻断。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-07",
+      "scenario": "计划与实际配置不同",
+      "expected": "建立实际配置/偏差，不覆写计划历史。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-08",
+      "scenario": "一个Build多批不同配置",
+      "expected": "批次或单件配置明确，不平均掉差异。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-09",
+      "scenario": "测试中途改固件",
+      "expected": "按允许分段或新Run记录，不改变原测试含义。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-10",
+      "scenario": "旧证据复用到新版本",
+      "expected": "显式判断适用性，语义相似不等于覆盖。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-11",
+      "scenario": "样件破坏性冲突",
+      "expected": "已消耗/冲突样件不能重复有效分配。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-12",
+      "scenario": "试模前验证策划",
+      "expected": "品质方法和资源前置准备，未知明确。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-13",
+      "scenario": "样件就绪资料未齐",
+      "expected": "样件时间和可接收时间分开。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-14",
+      "scenario": "品质部分接收",
+      "expected": "只确认实际接受范围，缺项和责任保留。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-15",
+      "scenario": "部分检测先返回",
+      "expected": "覆盖范围明确，不宣称整体通过。",
+      "stage": "G2",
+      "definition_only": true
+    },
+    {
+      "id": "AT-16",
+      "scenario": "首次通过与最终合格",
+      "expected": "分母和范围固定，不重复计数。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-17",
+      "scenario": "治具未验收",
+      "expected": "硬阻塞不被其他高分抵消。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-18",
+      "scenario": "未知估时排程",
+      "expected": "显示区间/未知，不虚构精确交期。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-19",
+      "scenario": "预测变化不改承诺",
+      "expected": "四时间分开，已承诺日期不被覆盖。",
+      "stage": "G1",
+      "definition_only": true
+    },
+    {
+      "id": "AT-20",
+      "scenario": "供应承诺不是到货",
+      "expected": "声称和实际可用分开，齐套不误判。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-21",
+      "scenario": "参数近似替料",
+      "expected": "未有适用验证和具名批准不得替代。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-22",
+      "scenario": "成本假设不完整",
+      "expected": "缺项和来源清楚，估算不冒充正式核算。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-23",
+      "scenario": "同源测试失败重复事件",
+      "expected": "同意图只建立一次有效Issue。",
+      "stage": "G3",
+      "definition_only": true
+    },
+    {
+      "id": "AT-24",
+      "scenario": "产品变更穿透制造",
+      "expected": "显示工序、治具、SOP及试产影响。",
+      "stage": "G3",
+      "definition_only": true
+    },
+    {
+      "id": "AT-25",
+      "scenario": "根因草稿非有效性结论",
+      "expected": "AI假设不充当专业判断。",
+      "stage": "G3",
+      "definition_only": true
+    },
+    {
+      "id": "AT-26",
+      "scenario": "放行状态分离",
+      "expected": "工程、制造、客户承认分别有范围。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-27",
+      "scenario": "限定条件过期",
+      "expected": "阻止新不适用执行，历史决定保留。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-28",
+      "scenario": "客户样品配置",
+      "expected": "绑定真实样件/配置和外发范围。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-29",
+      "scenario": "HTTP成功不等于生效",
+      "expected": "按业务接收/生效语义对账。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-30",
+      "scenario": "远端发送超时",
+      "expected": "进入结果未知，不盲目重发。",
+      "stage": "G4",
+      "definition_only": true
+    },
+    {
+      "id": "AT-31",
+      "scenario": "T0真实写入且低打扰",
+      "expected": "落库与回执可查，正常成功不新增审批。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-32",
+      "scenario": "T1原子组选择",
+      "expected": "只操作所选独立组，组内依赖完整。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-33",
+      "scenario": "T1期间目标变化",
+      "expected": "返回实质版本差异，不覆盖新数据。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-34",
+      "scenario": "人员分派不等于承诺",
+      "expected": "负责人承接和日期承诺分别成立。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-35",
+      "scenario": "人工锁定字段",
+      "expected": "AI不静默覆盖人工维护字段。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-36",
+      "scenario": "提示注入伪造批准",
+      "expected": "拒绝AI取得T2决定身份。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-37",
+      "scenario": "私人信息进入记忆",
+      "expected": "检索/缓存/输出不得突破来源受众。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-38",
+      "scenario": "运行期间权限撤销",
+      "expected": "后续命令重验并停止越权动作。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-39",
+      "scenario": "共同信封伪造tenant",
+      "expected": "拒绝客户端提供可信上下文替代身份。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-40",
+      "scenario": "相同幂等键不同载荷",
+      "expected": "返回冲突而不是覆盖原意图。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-41",
+      "scenario": "取消与命令并发",
+      "expected": "提交前检查cancel_epoch，已发生动作如实列明。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-42",
+      "scenario": "撤回遇人工编辑/下游消费",
+      "expected": "安全项补偿，受保护项列明不级联删除。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-43",
+      "scenario": "自动触发风暴",
+      "expected": "去重/冷却/级联上限，原关注项聚合。",
+      "stage": "G5",
+      "definition_only": true
+    },
+    {
+      "id": "AT-44",
+      "scenario": "Worker重启恢复",
+      "expected": "同一工作恢复不重复业务意图。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-45",
+      "scenario": "模型失能",
+      "expected": "人工/确定性业务可用，AI明确失能。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-46",
+      "scenario": "来源撤回传播",
+      "expected": "相关结果/后续动作重新判断适用性。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-47",
+      "scenario": "备份恢复重放",
+      "expected": "配置到交接链可核对，不重复外发。",
+      "stage": "G0",
+      "definition_only": true
+    },
+    {
+      "id": "AT-48",
+      "scenario": "合成验证非真实资格",
+      "expected": "目录/模拟通过不宣称真实模型或生产资格。",
+      "stage": "G0",
+      "definition_only": true
+    }
+  ]
+}

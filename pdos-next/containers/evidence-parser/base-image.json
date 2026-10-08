@@ -1,0 +1,15 @@
+{
+  "repository": "docker.io/library/python",
+  "tag": "3.12-slim",
+  "platform": "linux/arm64/v8",
+  "index_digest": "sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016",
+  "manifest_digest": "sha256:18d23907c5d7ef2ca1b0ea8b4a73fe4a6ae47114c257a1afed8bc66c3886f8cb",
+  "image_id": "sha256:04e0b4721883a7b878e91662548cd04ddbc2f256cfa86f43920b92557198c1c3",
+  "layer_digests": [
+    "sha256:bd36565c0fdebaf0f3af5c3b4ce610ca085ced32e9e9da850d95912f5f18f47b",
+    "sha256:bd52add1124e6215f0397d7f29ec8de44d5689b13c1445fc072db18079d2343d",
+    "sha256:50a64a4cd155959e7a3ac95351be73becf56d98fc496a7d1dd4f2f8e5876c098",
+    "sha256:aadd712613b67e03507e67bcdcd78607aa7f5cc935cadcb0b412abf686baee2c"
+  ],
+  "transport": "anonymous_official_https_digest_verified_docker_load"
+}

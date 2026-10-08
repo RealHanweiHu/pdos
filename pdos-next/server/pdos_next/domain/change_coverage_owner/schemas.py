@@ -1,0 +1,100 @@
+"""Fixed original declarations; no DTO proves authority or completeness."""
+
+from typing import Literal, get_args
+from uuid import UUID
+
+from pydantic import AwareDatetime, Field, model_validator
+
+from pdos_next.change_controlled_schemas import Exact, UnitBinding
+from pdos_next.schemas.change_control.contracts import Facet, Ref
+from pdos_next.schemas.verification.contracts import Scope, SourceRef, Text
+
+OPERATION = "change.coverage.import"
+EVENT = "change.coverage_imported"
+FAMILY = "change_coverage_fact"
+FACETS = get_args(Facet)
+MAX_NODES = 250
+
+
+class FacetClosure(Exact):
+    facet: Facet
+    # Explicit fixed enumeration from the approved whole original, never SELECT=0.
+    nodes: tuple[Ref, ...] = Field(min_length=1, max_length=MAX_NODES)
+    statement: Text
+
+
+class CoverageMaterial(Exact):
+    schema_version: Literal["pdos-controlled-change-coverage-v1"]
+    scope: Scope
+    purpose: Text
+    change_id: UUID
+    origin_version_id: UUID
+    origin_revision: int = Field(strict=True, ge=1)
+    owner_id: UUID
+    visibility: Literal["private", "product"]
+    publisher_id: UUID
+    roots: tuple[Ref, ...] = Field(min_length=1, max_length=100)
+    nodes: tuple[Ref, ...] = Field(min_length=1, max_length=MAX_NODES)
+    units: tuple[UnitBinding, ...] = Field(min_length=1, max_length=MAX_NODES)
+    facets: tuple[FacetClosure, ...] = Field(min_length=8, max_length=8)
+    closure_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+    valid_from: AwareDatetime
+    valid_until: AwareDatetime
+    nature: Literal["real", "synthetic"]
+
+    @model_validator(mode="after")
+    def closed(self):
+        nodes = {r.identity for r in self.nodes}
+        if len(nodes) != len(self.nodes):
+            raise ValueError("Fixed nodes must be unique")
+        roots = {r.identity for r in self.roots}
+        if len(roots) != len(self.roots) or not roots <= nodes:
+            raise ValueError("Fixed roots must belong to the declared closure")
+        if {v.facet for v in self.facets} != set(FACETS):
+            raise ValueError("All eight canonical facets need their own fixed original declaration")
+        for facet in self.facets:
+            values = [v.identity for v in facet.nodes]
+            if len(values) != len(set(values)) or set(values) != nodes:
+                raise ValueError("Every facet must explicitly enumerate the exact bounded nodes")
+        units = [v.unit for v in self.units]
+        if len(set(units)) != len(units) or any(
+            v.object_identity not in nodes or v.unit != f"object:{v.object_identity}"
+            for v in self.units
+        ):
+            raise ValueError(
+                "Only exact object units are integrated; batch/serial need real owners"
+            )
+        if {v.object_identity for v in self.units} != nodes or len(self.units) != len(nodes):
+            raise ValueError("Every declared node needs its own exact object unit")
+        if self.valid_until <= self.valid_from:
+            raise ValueError("Original validity must be an actual nonempty interval")
+        return self
+
+
+class OriginalApproval(Exact):
+    """Startup-only host pin, not an import request field or model instruction."""
+
+    source: SourceRef
+    material_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def native(self):
+        if self.source.kind != "artifact":
+            raise ValueError("Coverage requires an actual fixed original artifact line")
+        return self
+
+
+class CoverageImport(Exact):
+    project_id: UUID
+    change_id: UUID
+    purpose: Text
+    source: SourceRef
+    expected_previous_id: UUID | None = None
+    expected_previous_revision: int | None = Field(default=None, strict=True, ge=1)
+    reason: Text
+
+    @model_validator(mode="after")
+    def previous(self):
+        if (self.expected_previous_id is None) != (self.expected_previous_revision is None):
+            raise ValueError("Previous coverage needs exact identity and revision together")
+        return self

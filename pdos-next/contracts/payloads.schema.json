@@ -1,0 +1,7167 @@
+{
+  "command_envelope": {
+    "$defs": {
+      "SourceRead": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "format": "uuid",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "expected_revision": {
+            "minimum": 1,
+            "title": "Expected Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "expected_revision"
+        ],
+        "title": "SourceRead",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "command_id": {
+        "format": "uuid",
+        "title": "Command Id",
+        "type": "string"
+      },
+      "idempotency_key": {
+        "maxLength": 160,
+        "minLength": 8,
+        "title": "Idempotency Key",
+        "type": "string"
+      },
+      "operation": {
+        "maxLength": 80,
+        "minLength": 1,
+        "title": "Operation",
+        "type": "string"
+      },
+      "product_id": {
+        "format": "uuid",
+        "title": "Product Id",
+        "type": "string"
+      },
+      "expected_revision": {
+        "minimum": 1,
+        "title": "Expected Revision",
+        "type": "integer"
+      },
+      "source_read_set": {
+        "items": {
+          "$ref": "#/$defs/SourceRead"
+        },
+        "maxItems": 20,
+        "title": "Source Read Set",
+        "type": "array"
+      },
+      "payload": {
+        "additionalProperties": true,
+        "title": "Payload",
+        "type": "object"
+      }
+    },
+    "required": [
+      "command_id",
+      "idempotency_key",
+      "operation",
+      "product_id",
+      "expected_revision",
+      "payload"
+    ],
+    "title": "Command",
+    "type": "object"
+  },
+  "operation_payloads": {
+    "evidence.lifecycle.upload.abandon": {
+      "additionalProperties": false,
+      "properties": {
+        "object_id": {
+          "format": "uuid",
+          "title": "Object Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 4,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "object_id",
+        "expected_revision",
+        "reason"
+      ],
+      "title": "UploadAbandonPayload",
+      "type": "object"
+    },
+    "evidence.original.withdraw": {
+      "additionalProperties": false,
+      "properties": {
+        "original_id": {
+          "format": "uuid",
+          "title": "Original Id",
+          "type": "string"
+        },
+        "expected_epoch": {
+          "minimum": 1,
+          "title": "Expected Epoch",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "original_id",
+        "expected_epoch",
+        "reason"
+      ],
+      "title": "OriginalWithdrawPayload",
+      "type": "object"
+    },
+    "evidence.artifact.register": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "content": {
+          "maxLength": 200000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "source_label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Source Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "content",
+        "source_label"
+      ],
+      "title": "ArtifactPayload",
+      "type": "object"
+    },
+    "evidence.claim.record": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "format": "uuid",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "line": {
+          "minimum": 1,
+          "title": "Line",
+          "type": "integer"
+        },
+        "quote": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        },
+        "statement": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "nature": {
+          "default": "extracted",
+          "enum": [
+            "observed",
+            "extracted",
+            "inferred"
+          ],
+          "title": "Nature",
+          "type": "string"
+        },
+        "availability": {
+          "default": "known",
+          "enum": [
+            "known",
+            "unknown",
+            "conflicted"
+          ],
+          "title": "Availability",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "line",
+        "quote",
+        "statement"
+      ],
+      "title": "ClaimPayload",
+      "type": "object"
+    },
+    "ai.work.start": {
+      "$defs": {
+        "OutcomeSpec": {
+          "additionalProperties": false,
+          "properties": {
+            "object_type": {
+              "const": "claim",
+              "default": "claim",
+              "title": "Object Type",
+              "type": "string"
+            },
+            "minimum_records": {
+              "const": 1,
+              "default": 1,
+              "title": "Minimum Records",
+              "type": "integer"
+            },
+            "source_required": {
+              "const": true,
+              "default": true,
+              "title": "Source Required",
+              "type": "boolean"
+            }
+          },
+          "title": "OutcomeSpec",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "goal": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Goal",
+          "type": "string"
+        },
+        "artifact_id": {
+          "format": "uuid",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "source_revision": {
+          "minimum": 1,
+          "title": "Source Revision",
+          "type": "integer"
+        },
+        "outcome_spec": {
+          "$ref": "#/$defs/OutcomeSpec"
+        },
+        "max_actions": {
+          "default": 1,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Max Actions",
+          "type": "integer"
+        },
+        "stop_condition": {
+          "const": "one_sourced_claim_or_input_required",
+          "default": "one_sourced_claim_or_input_required",
+          "title": "Stop Condition",
+          "type": "string"
+        }
+      },
+      "required": [
+        "goal",
+        "artifact_id",
+        "source_revision"
+      ],
+      "title": "WorkPayload",
+      "type": "object"
+    },
+    "ai.run.revert": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt_id": {
+          "format": "uuid",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "maxLength": 128,
+          "minLength": 20,
+          "title": "Confirmation Token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "confirmation_token"
+      ],
+      "title": "RevertPayload",
+      "type": "object"
+    },
+    "ai.run.cancel": {
+      "additionalProperties": false,
+      "properties": {
+        "work_id": {
+          "format": "uuid",
+          "title": "Work Id",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "maxLength": 128,
+          "minLength": 20,
+          "title": "Confirmation Token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "work_id",
+        "confirmation_token"
+      ],
+      "title": "CancelPayload",
+      "type": "object"
+    },
+    "product.definition.draft": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "DefinitionSpec": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "parameter": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Parameter",
+              "type": "string"
+            },
+            "value_type": {
+              "enum": [
+                "number",
+                "range",
+                "text"
+              ],
+              "title": "Value Type",
+              "type": "string"
+            },
+            "availability": {
+              "default": "unknown",
+              "enum": [
+                "known",
+                "unknown",
+                "conflicted",
+                "not_applicable"
+              ],
+              "title": "Availability",
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Value"
+            },
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "text": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Text"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "tolerance": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tolerance"
+            },
+            "test_conditions": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 30,
+              "title": "Test Conditions",
+              "type": "array"
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Method"
+            },
+            "acceptance_criterion": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Acceptance Criterion"
+            },
+            "nature": {
+              "default": "extracted",
+              "enum": [
+                "observed",
+                "extracted",
+                "computed",
+                "inferred",
+                "decided"
+              ],
+              "title": "Nature",
+              "type": "string"
+            },
+            "state": {
+              "default": "needs_confirmation",
+              "enum": [
+                "proposed",
+                "needs_confirmation"
+              ],
+              "title": "State",
+              "type": "string"
+            },
+            "owner_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Owner Id"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "parameter",
+            "value_type",
+            "reason",
+            "sources"
+          ],
+          "title": "DefinitionSpec",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "parent_definition_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Definition Id"
+        },
+        "expected_parent_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Parent Revision"
+        },
+        "use_cases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "Use Cases",
+          "type": "array"
+        },
+        "requirements": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Requirements",
+          "type": "array"
+        },
+        "constraints": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Constraints",
+          "type": "array"
+        },
+        "unknowns": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Unknowns",
+          "type": "array"
+        },
+        "exclusions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Exclusions",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "specs": {
+          "items": {
+            "$ref": "#/$defs/DefinitionSpec"
+          },
+          "maxItems": 100,
+          "title": "Specs",
+          "type": "array"
+        },
+        "change_reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Change Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "purpose",
+        "use_cases",
+        "sources",
+        "change_reason"
+      ],
+      "title": "DefinitionDraftPayload",
+      "type": "object"
+    },
+    "product.variant.derive": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "VariantOverrides": {
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 2,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Title"
+            },
+            "purpose": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 3,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Purpose"
+            },
+            "use_cases": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 50,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Use Cases"
+            },
+            "requirements": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Requirements"
+            },
+            "constraints": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Constraints"
+            },
+            "unknowns": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unknowns"
+            },
+            "exclusions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Exclusions"
+            },
+            "specs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VariantSpecOverride"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Specs"
+            }
+          },
+          "title": "VariantOverrides",
+          "type": "object"
+        },
+        "VariantSpecOverride": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "parameter": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Parameter",
+              "type": "string"
+            },
+            "value_type": {
+              "enum": [
+                "number",
+                "range",
+                "text"
+              ],
+              "title": "Value Type",
+              "type": "string"
+            },
+            "availability": {
+              "default": "unknown",
+              "enum": [
+                "known",
+                "unknown",
+                "conflicted",
+                "not_applicable"
+              ],
+              "title": "Availability",
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Value"
+            },
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "text": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Text"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "tolerance": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tolerance"
+            },
+            "test_conditions": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 30,
+              "title": "Test Conditions",
+              "type": "array"
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Method"
+            },
+            "acceptance_criterion": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Acceptance Criterion"
+            },
+            "nature": {
+              "default": "extracted",
+              "enum": [
+                "observed",
+                "extracted",
+                "computed",
+                "inferred",
+                "decided"
+              ],
+              "title": "Nature",
+              "type": "string"
+            },
+            "state": {
+              "default": "needs_confirmation",
+              "enum": [
+                "proposed",
+                "needs_confirmation"
+              ],
+              "title": "State",
+              "type": "string"
+            },
+            "owner_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Owner Id"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "parameter",
+            "value_type",
+            "reason",
+            "sources"
+          ],
+          "title": "VariantSpecOverride",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 160,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "customer",
+            "region",
+            "configuration"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "applicability": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "minItems": 1,
+          "title": "Applicability",
+          "type": "array"
+        },
+        "parent_definition_id": {
+          "format": "uuid",
+          "title": "Parent Definition Id",
+          "type": "string"
+        },
+        "expected_parent_revision": {
+          "minimum": 1,
+          "title": "Expected Parent Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "overrides": {
+          "$ref": "#/$defs/VariantOverrides"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "name",
+        "kind",
+        "applicability",
+        "parent_definition_id",
+        "expected_parent_revision",
+        "sources",
+        "reason"
+      ],
+      "title": "VariantDerivePayload",
+      "type": "object"
+    },
+    "product.variant.rebase": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "RebaseChoice": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "maxLength": 100,
+              "minLength": 3,
+              "pattern": "^(title|purpose|use_cases|requirements|constraints|unknowns|exclusions|specs/[a-zA-Z0-9_-]+)$",
+              "title": "Path",
+              "type": "string"
+            },
+            "selection": {
+              "enum": [
+                "parent",
+                "child"
+              ],
+              "title": "Selection",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 3,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "selection",
+            "reason"
+          ],
+          "title": "RebaseChoice",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "variant_id": {
+          "format": "uuid",
+          "title": "Variant Id",
+          "type": "string"
+        },
+        "expected_variant_revision": {
+          "minimum": 1,
+          "title": "Expected Variant Revision",
+          "type": "integer"
+        },
+        "parent_definition_id": {
+          "format": "uuid",
+          "title": "Parent Definition Id",
+          "type": "string"
+        },
+        "expected_parent_revision": {
+          "minimum": 1,
+          "title": "Expected Parent Revision",
+          "type": "integer"
+        },
+        "choices": {
+          "items": {
+            "$ref": "#/$defs/RebaseChoice"
+          },
+          "maxItems": 200,
+          "title": "Choices",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "variant_id",
+        "expected_variant_revision",
+        "parent_definition_id",
+        "expected_parent_revision",
+        "sources",
+        "reason"
+      ],
+      "title": "VariantRebasePayload",
+      "type": "object"
+    },
+    "project.create": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 160,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "scope": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Scope",
+          "type": "string"
+        },
+        "definition_id": {
+          "format": "uuid",
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "expected_definition_revision": {
+          "minimum": 1,
+          "title": "Expected Definition Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "name",
+        "purpose",
+        "scope",
+        "definition_id",
+        "expected_definition_revision"
+      ],
+      "title": "ProjectCreatePayload",
+      "type": "object"
+    },
+    "work.plan.propose": {
+      "$defs": {
+        "Calendar": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "default": "default",
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            },
+            "timezone": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Timezone",
+              "type": "string"
+            },
+            "working_weekdays": {
+              "items": {
+                "maximum": 6,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "maxItems": 7,
+              "minItems": 1,
+              "title": "Working Weekdays",
+              "type": "array"
+            },
+            "intervals": {
+              "items": {
+                "$ref": "#/$defs/WorkInterval"
+              },
+              "maxItems": 12,
+              "minItems": 1,
+              "title": "Intervals",
+              "type": "array"
+            },
+            "holidays": {
+              "default": [],
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "maxItems": 3660,
+              "title": "Holidays",
+              "type": "array"
+            },
+            "timezone_rules_sha256": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Timezone Rules Sha256"
+            }
+          },
+          "required": [
+            "version",
+            "timezone",
+            "working_weekdays",
+            "intervals"
+          ],
+          "title": "Calendar",
+          "type": "object"
+        },
+        "PlanTask": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "discipline": {
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Discipline",
+              "type": "string"
+            },
+            "depends_on": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "title": "Depends On",
+              "type": "array"
+            },
+            "duration_min_minutes": {
+              "anyOf": [
+                {
+                  "maximum": 525600,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Duration Min Minutes"
+            },
+            "duration_max_minutes": {
+              "anyOf": [
+                {
+                  "maximum": 525600,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Duration Max Minutes"
+            },
+            "estimate_source": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Estimate Source"
+            }
+          },
+          "required": [
+            "key",
+            "title",
+            "discipline"
+          ],
+          "title": "PlanTask",
+          "type": "object"
+        },
+        "ScheduleInput": {
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "format": "date-time",
+              "title": "Start",
+              "type": "string"
+            },
+            "calendar": {
+              "$ref": "#/$defs/Calendar"
+            },
+            "tasks": {
+              "items": {
+                "$ref": "#/$defs/PlanTask"
+              },
+              "maxItems": 500,
+              "minItems": 1,
+              "title": "Tasks",
+              "type": "array"
+            }
+          },
+          "required": [
+            "start",
+            "calendar",
+            "tasks"
+          ],
+          "title": "ScheduleInput",
+          "type": "object"
+        },
+        "WorkInterval": {
+          "additionalProperties": false,
+          "properties": {
+            "start_minute": {
+              "exclusiveMaximum": 1440,
+              "minimum": 0,
+              "title": "Start Minute",
+              "type": "integer"
+            },
+            "end_minute": {
+              "exclusiveMinimum": 0,
+              "maximum": 1440,
+              "title": "End Minute",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "start_minute",
+            "end_minute"
+          ],
+          "title": "WorkInterval",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "schedule": {
+          "$ref": "#/$defs/ScheduleInput"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "schedule",
+        "reason"
+      ],
+      "title": "PlanProposePayload",
+      "type": "object"
+    },
+    "work.plan.apply": {
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "proposal_id",
+        "expected_project_revision"
+      ],
+      "title": "PlanApplyPayload",
+      "type": "object"
+    },
+    "ai.model_call.reconcile": {
+      "$defs": {
+        "NormalizedUsage": {
+          "additionalProperties": false,
+          "properties": {
+            "input_tokens": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "title": "Input Tokens",
+              "type": "integer"
+            },
+            "output_tokens": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "title": "Output Tokens",
+              "type": "integer"
+            },
+            "cache_read_tokens": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Cache Read Tokens",
+              "type": "integer"
+            },
+            "cache_creation_tokens": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Cache Creation Tokens",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "input_tokens",
+            "output_tokens"
+          ],
+          "title": "NormalizedUsage",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "call_id": {
+          "format": "uuid",
+          "title": "Call Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "resolution": {
+          "enum": [
+            "known",
+            "unknown"
+          ],
+          "title": "Resolution",
+          "type": "string"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NormalizedUsage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "request_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9:_.-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Request Id"
+        },
+        "reason_code": {
+          "enum": [
+            "provider_usage_verified",
+            "provider_usage_unavailable"
+          ],
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "evidence_ref": {
+          "maxLength": 200,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]+$",
+          "title": "Evidence Ref",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "call_id",
+        "expected_revision",
+        "resolution",
+        "reason_code",
+        "evidence_ref"
+      ],
+      "title": "ReconciliationPayload",
+      "type": "object"
+    },
+    "engineering.bom.revise": {
+      "$defs": {
+        "BomLineInput": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "part_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Part Id"
+            },
+            "expected_part_revision": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Expected Part Revision"
+            },
+            "part": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/PartDraft"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "quantity": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "decimal_places": 8,
+                  "gt": 0,
+                  "max_digits": 24
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "loss_rate": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "decimal_places": 8,
+                  "ge": 0,
+                  "le": 1,
+                  "max_digits": 9
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Loss Rate"
+            },
+            "critical": {
+              "default": false,
+              "title": "Critical",
+              "type": "boolean"
+            },
+            "notes": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Notes"
+            }
+          },
+          "required": [
+            "key"
+          ],
+          "title": "BomLineInput",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ExternalDesignReference": {
+          "additionalProperties": false,
+          "properties": {
+            "system": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "System",
+              "type": "string"
+            },
+            "external_id": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "External Id",
+              "type": "string"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Revision"
+            },
+            "as_of": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "As Of"
+            },
+            "content_sha256": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Sha256"
+            },
+            "basis": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "system",
+            "external_id"
+          ],
+          "title": "ExternalDesignReference",
+          "type": "object"
+        },
+        "PartDraft": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "internal_number": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Internal Number"
+            },
+            "erp_number": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Erp Number"
+            },
+            "customer_number": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Customer Number"
+            },
+            "mapping_version": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Mapping Version"
+            },
+            "external_design_refs": {
+              "items": {
+                "$ref": "#/$defs/ExternalDesignReference"
+              },
+              "maxItems": 20,
+              "title": "External Design Refs",
+              "type": "array"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "PartDraft",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/BomLineInput"
+          },
+          "maxItems": 500,
+          "minItems": 1,
+          "title": "Lines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "reason",
+        "sources",
+        "lines"
+      ],
+      "title": "EngineeringBomRevisePayload",
+      "type": "object"
+    },
+    "engineering.configuration.create": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ExternalDesignReference": {
+          "additionalProperties": false,
+          "properties": {
+            "system": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "System",
+              "type": "string"
+            },
+            "external_id": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "External Id",
+              "type": "string"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Revision"
+            },
+            "as_of": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "As Of"
+            },
+            "content_sha256": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Sha256"
+            },
+            "basis": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "system",
+            "external_id"
+          ],
+          "title": "ExternalDesignReference",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "definition_id": {
+          "format": "uuid",
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "expected_definition_revision": {
+          "minimum": 1,
+          "title": "Expected Definition Revision",
+          "type": "integer"
+        },
+        "bom_id": {
+          "format": "uuid",
+          "title": "Bom Id",
+          "type": "string"
+        },
+        "expected_bom_revision": {
+          "minimum": 1,
+          "title": "Expected Bom Revision",
+          "type": "integer"
+        },
+        "mechanical": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExternalDesignReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "electronic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExternalDesignReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "firmware": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExternalDesignReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "name",
+        "reason",
+        "sources",
+        "definition_id",
+        "expected_definition_revision",
+        "bom_id",
+        "expected_bom_revision"
+      ],
+      "title": "EngineeringConfigurationCreatePayload",
+      "type": "object"
+    },
+    "npi.process.revise": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ExternalDesignReference": {
+          "additionalProperties": false,
+          "properties": {
+            "system": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "System",
+              "type": "string"
+            },
+            "external_id": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "External Id",
+              "type": "string"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Revision"
+            },
+            "as_of": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "As Of"
+            },
+            "content_sha256": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Content Sha256"
+            },
+            "basis": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "system",
+            "external_id"
+          ],
+          "title": "ExternalDesignReference",
+          "type": "object"
+        },
+        "ProcessOperation": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "name": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "assembly",
+                "inspection",
+                "test",
+                "packaging",
+                "other"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "depends_on": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "title": "Depends On",
+              "type": "array"
+            },
+            "bom_line_keys": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "title": "Bom Line Keys",
+              "type": "array"
+            },
+            "sop": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ExternalDesignReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "resource_requirements": {
+              "items": {
+                "$ref": "#/$defs/ResourceRequirement"
+              },
+              "maxItems": 50,
+              "title": "Resource Requirements",
+              "type": "array"
+            },
+            "cycle_time_minutes": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "decimal_places": 8,
+                  "gt": 0,
+                  "max_digits": 24
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cycle Time Minutes"
+            },
+            "acceptance_criterion": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Acceptance Criterion"
+            },
+            "notes": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Notes"
+            }
+          },
+          "required": [
+            "key",
+            "name",
+            "kind"
+          ],
+          "title": "ProcessOperation",
+          "type": "object"
+        },
+        "ResourceRequirement": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "person",
+                "equipment",
+                "tooling",
+                "station",
+                "other"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "name": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "external_id": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "External Id"
+            },
+            "qualification": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Qualification"
+            }
+          },
+          "required": [
+            "kind",
+            "name"
+          ],
+          "title": "ResourceRequirement",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "product"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "engineering_configuration_id": {
+          "format": "uuid",
+          "title": "Engineering Configuration Id",
+          "type": "string"
+        },
+        "expected_engineering_revision": {
+          "minimum": 1,
+          "title": "Expected Engineering Revision",
+          "type": "integer"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site"
+        },
+        "line": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/ProcessOperation"
+          },
+          "maxItems": 500,
+          "minItems": 1,
+          "title": "Operations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "reason",
+        "sources",
+        "engineering_configuration_id",
+        "expected_engineering_revision",
+        "operations"
+      ],
+      "title": "NpiProcessRevisePayload",
+      "type": "object"
+    },
+    "build.create": {
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "engineering_configuration_id": {
+          "format": "uuid",
+          "title": "Engineering Configuration Id",
+          "type": "string"
+        },
+        "manufacturing_configuration_id": {
+          "format": "uuid",
+          "title": "Manufacturing Configuration Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 160,
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "prototype",
+            "tool_trial",
+            "pilot"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "planned_quantity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "decimal_places": 8,
+          "gt": 0,
+          "max_digits": 24,
+          "title": "Planned Quantity"
+        },
+        "unit": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "planned_start": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Planned Start"
+        },
+        "planned_end": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Planned End"
+        },
+        "verification_objectives": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Verification Objectives",
+          "type": "string"
+        },
+        "disposition_plan": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Disposition Plan",
+          "type": "string"
+        },
+        "previous_build_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Build Id"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "engineering_configuration_id",
+        "manufacturing_configuration_id",
+        "name",
+        "type",
+        "purpose",
+        "planned_quantity",
+        "unit",
+        "verification_objectives",
+        "disposition_plan"
+      ],
+      "title": "BuildCreatePayload",
+      "type": "object"
+    },
+    "build.readiness.compute": {
+      "$defs": {
+        "BuildExecutionScope": {
+          "additionalProperties": false,
+          "properties": {
+            "purpose": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "quantity": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "decimal_places": 8,
+              "gt": 0,
+              "max_digits": 24,
+              "title": "Quantity"
+            },
+            "unit": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Unit",
+              "type": "string"
+            },
+            "site": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Site",
+              "type": "string"
+            },
+            "window_start": {
+              "format": "date-time",
+              "title": "Window Start",
+              "type": "string"
+            },
+            "window_end": {
+              "format": "date-time",
+              "title": "Window End",
+              "type": "string"
+            },
+            "window_timezone": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Window Timezone",
+              "type": "string"
+            }
+          },
+          "required": [
+            "purpose",
+            "quantity",
+            "unit",
+            "site",
+            "window_start",
+            "window_end",
+            "window_timezone"
+          ],
+          "title": "BuildExecutionScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "execution_scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BuildExecutionScope"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "previous_assessment_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Assessment Id"
+        },
+        "expected_previous_revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Expected Previous Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "build_id",
+        "expected_build_revision"
+      ],
+      "title": "BuildReadinessPayload",
+      "type": "object"
+    },
+    "build.configuration.actual.record": {
+      "$defs": {
+        "ConfigurationDifference": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Path",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 3,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "path",
+            "reason",
+            "sources"
+          ],
+          "title": "ConfigurationDifference",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "actual_engineering_configuration_id": {
+          "format": "uuid",
+          "title": "Actual Engineering Configuration Id",
+          "type": "string"
+        },
+        "expected_actual_engineering_revision": {
+          "minimum": 1,
+          "title": "Expected Actual Engineering Revision",
+          "type": "integer"
+        },
+        "actual_manufacturing_configuration_id": {
+          "format": "uuid",
+          "title": "Actual Manufacturing Configuration Id",
+          "type": "string"
+        },
+        "expected_actual_manufacturing_revision": {
+          "minimum": 1,
+          "title": "Expected Actual Manufacturing Revision",
+          "type": "integer"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "differences": {
+          "items": {
+            "$ref": "#/$defs/ConfigurationDifference"
+          },
+          "maxItems": 3000,
+          "title": "Differences",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reason",
+        "sources",
+        "build_id",
+        "expected_build_revision",
+        "actual_engineering_configuration_id",
+        "expected_actual_engineering_revision",
+        "actual_manufacturing_configuration_id",
+        "expected_actual_manufacturing_revision",
+        "observed_at"
+      ],
+      "title": "ActualConfigurationPayload",
+      "type": "object"
+    },
+    "build.output.record": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ExternalObservation": {
+          "additionalProperties": false,
+          "properties": {
+            "system": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "System",
+              "type": "string"
+            },
+            "external_id": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "External Id",
+              "type": "string"
+            },
+            "nature": {
+              "enum": [
+                "real",
+                "synthetic"
+              ],
+              "title": "Nature",
+              "type": "string"
+            },
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "system",
+            "external_id",
+            "nature",
+            "occurred_at"
+          ],
+          "title": "ExternalObservation",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "actual_configuration_id": {
+          "format": "uuid",
+          "title": "Actual Configuration Id",
+          "type": "string"
+        },
+        "expected_actual_configuration_revision": {
+          "minimum": 1,
+          "title": "Expected Actual Configuration Revision",
+          "type": "integer"
+        },
+        "lot_label": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Lot Label",
+          "type": "string"
+        },
+        "observed_unit_count": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Observed Unit Count",
+          "type": "integer"
+        },
+        "unit": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "observation": {
+          "$ref": "#/$defs/ExternalObservation"
+        }
+      },
+      "required": [
+        "reason",
+        "sources",
+        "build_id",
+        "expected_build_revision",
+        "actual_configuration_id",
+        "expected_actual_configuration_revision",
+        "lot_label",
+        "observed_unit_count",
+        "unit",
+        "observation"
+      ],
+      "title": "OutputPayload",
+      "type": "object"
+    },
+    "build.sample.allocate": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "SampleIdentity": {
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Label",
+              "type": "string"
+            },
+            "operation_key": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Operation Key"
+            },
+            "cavity": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cavity"
+            },
+            "custodian_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Custodian Id"
+            },
+            "custodian_label": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Custodian Label"
+            },
+            "location": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Location"
+            },
+            "destination": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Destination"
+            },
+            "availability": {
+              "default": "unknown",
+              "enum": [
+                "unknown",
+                "hold"
+              ],
+              "title": "Availability",
+              "type": "string"
+            }
+          },
+          "required": [
+            "label"
+          ],
+          "title": "SampleIdentity",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "lot_id": {
+          "format": "uuid",
+          "title": "Lot Id",
+          "type": "string"
+        },
+        "expected_lot_revision": {
+          "minimum": 1,
+          "title": "Expected Lot Revision",
+          "type": "integer"
+        },
+        "samples": {
+          "items": {
+            "$ref": "#/$defs/SampleIdentity"
+          },
+          "maxItems": 500,
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reason",
+        "sources",
+        "lot_id",
+        "expected_lot_revision",
+        "samples"
+      ],
+      "title": "SampleAllocatePayload",
+      "type": "object"
+    },
+    "supply.snapshot.record": {
+      "additionalProperties": false,
+      "properties": {
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "capture_id": {
+          "format": "uuid",
+          "title": "Capture Id",
+          "type": "string"
+        },
+        "expected_capture_revision": {
+          "minimum": 1,
+          "title": "Expected Capture Revision",
+          "type": "integer"
+        },
+        "expected_previous_snapshot_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Snapshot Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "build_id",
+        "expected_build_revision",
+        "capture_id",
+        "expected_capture_revision",
+        "reason"
+      ],
+      "title": "SnapshotRecordPayload",
+      "type": "object"
+    },
+    "supply.kit.compute": {
+      "additionalProperties": false,
+      "properties": {
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "supply_snapshot_id": {
+          "format": "uuid",
+          "title": "Supply Snapshot Id",
+          "type": "string"
+        },
+        "expected_supply_revision": {
+          "minimum": 1,
+          "title": "Expected Supply Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "build_id",
+        "expected_build_revision",
+        "supply_snapshot_id",
+        "expected_supply_revision"
+      ],
+      "title": "KitComputePayload",
+      "type": "object"
+    },
+    "cost.inputs.record": {
+      "additionalProperties": false,
+      "properties": {
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "capture_id": {
+          "format": "uuid",
+          "title": "Capture Id",
+          "type": "string"
+        },
+        "expected_capture_revision": {
+          "minimum": 1,
+          "title": "Expected Capture Revision",
+          "type": "integer"
+        },
+        "expected_previous_input_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Input Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "build_id",
+        "expected_build_revision",
+        "capture_id",
+        "expected_capture_revision",
+        "reason"
+      ],
+      "title": "InputsRecordPayload",
+      "type": "object"
+    },
+    "cost.estimate.compute": {
+      "additionalProperties": false,
+      "properties": {
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "cost_input_id": {
+          "format": "uuid",
+          "title": "Cost Input Id",
+          "type": "string"
+        },
+        "expected_cost_input_revision": {
+          "minimum": 1,
+          "title": "Expected Cost Input Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "build_id",
+        "expected_build_revision",
+        "cost_input_id",
+        "expected_cost_input_revision"
+      ],
+      "title": "EstimateComputePayload",
+      "type": "object"
+    },
+    "verification.preparation.record": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "PreparationCriterion": {
+          "additionalProperties": false,
+          "properties": {
+            "lower": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                      "type": "string"
+                    }
+                  ],
+                  "decimal_places": 12,
+                  "max_digits": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                      "type": "string"
+                    }
+                  ],
+                  "decimal_places": 12,
+                  "max_digits": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "source": {
+              "$ref": "#/$defs/DefinitionReference"
+            }
+          },
+          "required": [
+            "source"
+          ],
+          "title": "PreparationCriterion",
+          "type": "object"
+        },
+        "PreparationDocument": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Id",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "item_ids": {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "title": "Item Ids",
+              "type": "array"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "required": {
+              "default": true,
+              "title": "Required",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "item_ids"
+          ],
+          "title": "PreparationDocument",
+          "type": "object"
+        },
+        "PreparationItem": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Id",
+              "type": "string"
+            },
+            "feature": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Feature",
+              "type": "string"
+            },
+            "drawing": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/PreparationCriterion"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion_text": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Criterion Text"
+            },
+            "criterion_source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DefinitionReference"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "conditions": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Conditions"
+            },
+            "material": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Material"
+            },
+            "sample_count": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "cavities": {
+              "default": [],
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 1000,
+              "title": "Cavities",
+              "type": "array"
+            },
+            "destructive": {
+              "default": false,
+              "title": "Destructive",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "feature",
+            "sample_count"
+          ],
+          "title": "PreparationItem",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 0,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "title": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "return_form": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Return Form",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/PreparationItem"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        },
+        "documents": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PreparationDocument"
+          },
+          "maxItems": 100,
+          "title": "Documents",
+          "type": "array"
+        },
+        "expected_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected At"
+        },
+        "expected_timezone": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Timezone"
+        },
+        "tentative_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tentative At"
+        },
+        "tentative_timezone": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tentative Timezone"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "build_id",
+        "expected_build_revision",
+        "title",
+        "purpose",
+        "return_form",
+        "items",
+        "sources",
+        "reason"
+      ],
+      "title": "PreparationRecordPayload",
+      "type": "object"
+    },
+    "verification.request.create": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "preparation_id": {
+          "format": "uuid",
+          "title": "Preparation Id",
+          "type": "string"
+        },
+        "expected_preparation_revision": {
+          "minimum": 1,
+          "title": "Expected Preparation Revision",
+          "type": "integer"
+        },
+        "preparation_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Preparation Sha256",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "preparation_id",
+        "expected_preparation_revision",
+        "preparation_sha256",
+        "reason"
+      ],
+      "title": "RequestCreatePayload",
+      "type": "object"
+    },
+    "verification.method.prepare": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ItemAssessment": {
+          "additionalProperties": false,
+          "properties": {
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "applicable",
+                "not_applicable",
+                "unknown"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "conditions": {
+              "default": [],
+              "items": {
+                "maxLength": 2000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Conditions",
+              "type": "array"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "item_id",
+            "status",
+            "reason"
+          ],
+          "title": "ItemAssessment",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "assessments": {
+          "items": {
+            "$ref": "#/$defs/ItemAssessment"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Assessments",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "assessments",
+        "reason"
+      ],
+      "title": "MethodPreparePayload",
+      "type": "object"
+    },
+    "verification.schedule.propose": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ResourceIntent": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "equipment",
+                "fixture",
+                "person",
+                "line",
+                "tooling"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "label": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Label",
+              "type": "string"
+            },
+            "resource_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Resource Id"
+            },
+            "expected_revision": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Expected Revision"
+            },
+            "units": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "maximum": 1000.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,25}0*$)\\d{0,12}\\.\\d{0,12}0*$)",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Units"
+            }
+          },
+          "required": [
+            "kind",
+            "label"
+          ],
+          "title": "ResourceIntent",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "finish": {
+          "format": "date-time",
+          "title": "Finish",
+          "type": "string"
+        },
+        "original_timezone": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Original Timezone",
+          "type": "string"
+        },
+        "resource_intents": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ResourceIntent"
+          },
+          "maxItems": 100,
+          "title": "Resource Intents",
+          "type": "array"
+        },
+        "duration_basis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "calendar_source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefinitionReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "start",
+        "finish",
+        "original_timezone",
+        "reason"
+      ],
+      "title": "ScheduleProposePayload",
+      "type": "object"
+    },
+    "evidence.lifecycle.quarantine": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "format": "uuid",
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "digest",
+        "reason"
+      ],
+      "title": "LifecycleCommandPayload",
+      "type": "object"
+    },
+    "evidence.lifecycle.restore": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "format": "uuid",
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "digest",
+        "reason"
+      ],
+      "title": "LifecycleCommandPayload",
+      "type": "object"
+    },
+    "evidence.lifecycle.cancel": {
+      "additionalProperties": false,
+      "properties": {
+        "intent_id": {
+          "format": "uuid",
+          "title": "Intent Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "intent_id",
+        "expected_revision",
+        "reason"
+      ],
+      "title": "LifecycleCancelPayload",
+      "type": "object"
+    },
+    "evidence.lifecycle.protection.record": {
+      "additionalProperties": false,
+      "properties": {
+        "object_id": {
+          "format": "uuid",
+          "title": "Object Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "manual_hold": {
+          "title": "Manual Hold",
+          "type": "boolean"
+        },
+        "retention_until": {
+          "format": "date-time",
+          "title": "Retention Until",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "object_id",
+        "expected_revision",
+        "manual_hold",
+        "retention_until",
+        "reason"
+      ],
+      "title": "LifecycleProtectionPayload",
+      "type": "object"
+    },
+    "build.engineering.authorize": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ProfessionalApplicability": {
+          "additionalProperties": false,
+          "properties": {
+            "rule_id": {
+              "enum": [
+                "product_definition_applicability",
+                "verification_objective_applicability",
+                "process_configuration_applicability",
+                "output_disposition_applicability"
+              ],
+              "title": "Rule Id",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "applicable",
+                "unknown",
+                "blocked"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "title": "Sources",
+              "type": "array"
+            },
+            "valid_until": {
+              "format": "date-time",
+              "title": "Valid Until",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "rule_id",
+            "status",
+            "valid_until",
+            "reason"
+          ],
+          "title": "ProfessionalApplicability",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "assessment_id": {
+          "format": "uuid",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "expected_assessment_revision": {
+          "minimum": 1,
+          "title": "Expected Assessment Revision",
+          "type": "integer"
+        },
+        "expected_assessment_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Assessment Sha256",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "approve",
+            "revoke"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "previous_decision_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Decision Id"
+        },
+        "expected_previous_revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Expected Previous Revision",
+          "type": "integer"
+        },
+        "valid_until": {
+          "format": "date-time",
+          "title": "Valid Until",
+          "type": "string"
+        },
+        "professional_assessments": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ProfessionalApplicability"
+          },
+          "maxItems": 4,
+          "title": "Professional Assessments",
+          "type": "array"
+        },
+        "accepted_controls": {
+          "default": [],
+          "items": {
+            "enum": [
+              "no_test_run_or_sample_qualification",
+              "no_external_delivery",
+              "retain_traceable_outputs",
+              "stop_on_configuration_deviation"
+            ],
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Accepted Controls",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "expected_assessment_revision",
+        "expected_assessment_sha256",
+        "action",
+        "valid_until",
+        "sources",
+        "reason"
+      ],
+      "title": "BuildAuthorizationPayload",
+      "type": "object"
+    },
+    "build.manufacturing.authorize": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ProfessionalApplicability": {
+          "additionalProperties": false,
+          "properties": {
+            "rule_id": {
+              "enum": [
+                "product_definition_applicability",
+                "verification_objective_applicability",
+                "process_configuration_applicability",
+                "output_disposition_applicability"
+              ],
+              "title": "Rule Id",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "applicable",
+                "unknown",
+                "blocked"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "title": "Sources",
+              "type": "array"
+            },
+            "valid_until": {
+              "format": "date-time",
+              "title": "Valid Until",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "rule_id",
+            "status",
+            "valid_until",
+            "reason"
+          ],
+          "title": "ProfessionalApplicability",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "assessment_id": {
+          "format": "uuid",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "expected_assessment_revision": {
+          "minimum": 1,
+          "title": "Expected Assessment Revision",
+          "type": "integer"
+        },
+        "expected_assessment_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Assessment Sha256",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "approve",
+            "revoke"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "previous_decision_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Decision Id"
+        },
+        "expected_previous_revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Expected Previous Revision",
+          "type": "integer"
+        },
+        "valid_until": {
+          "format": "date-time",
+          "title": "Valid Until",
+          "type": "string"
+        },
+        "professional_assessments": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ProfessionalApplicability"
+          },
+          "maxItems": 4,
+          "title": "Professional Assessments",
+          "type": "array"
+        },
+        "accepted_controls": {
+          "default": [],
+          "items": {
+            "enum": [
+              "no_test_run_or_sample_qualification",
+              "no_external_delivery",
+              "retain_traceable_outputs",
+              "stop_on_configuration_deviation"
+            ],
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Accepted Controls",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "expected_assessment_revision",
+        "expected_assessment_sha256",
+        "action",
+        "valid_until",
+        "sources",
+        "reason"
+      ],
+      "title": "BuildAuthorizationPayload",
+      "type": "object"
+    },
+    "build.start": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "assessment_id": {
+          "format": "uuid",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "expected_assessment_revision": {
+          "minimum": 1,
+          "title": "Expected Assessment Revision",
+          "type": "integer"
+        },
+        "expected_assessment_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Assessment Sha256",
+          "type": "string"
+        },
+        "engineering_authorization_id": {
+          "format": "uuid",
+          "title": "Engineering Authorization Id",
+          "type": "string"
+        },
+        "expected_engineering_authorization_revision": {
+          "minimum": 1,
+          "title": "Expected Engineering Authorization Revision",
+          "type": "integer"
+        },
+        "manufacturing_authorization_id": {
+          "format": "uuid",
+          "title": "Manufacturing Authorization Id",
+          "type": "string"
+        },
+        "expected_manufacturing_authorization_revision": {
+          "minimum": 1,
+          "title": "Expected Manufacturing Authorization Revision",
+          "type": "integer"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "occurred_timezone": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Occurred Timezone",
+          "type": "string"
+        },
+        "event_source": {
+          "$ref": "#/$defs/DefinitionReference"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "expected_assessment_revision",
+        "expected_assessment_sha256",
+        "engineering_authorization_id",
+        "expected_engineering_authorization_revision",
+        "manufacturing_authorization_id",
+        "expected_manufacturing_authorization_revision",
+        "occurred_at",
+        "occurred_timezone",
+        "event_source",
+        "reason"
+      ],
+      "title": "BuildStartPayload",
+      "type": "object"
+    },
+    "build.sample.readiness.record": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "sample_id": {
+          "format": "uuid",
+          "title": "Sample Id",
+          "type": "string"
+        },
+        "expected_sample_revision": {
+          "minimum": 1,
+          "title": "Expected Sample Revision",
+          "type": "integer"
+        },
+        "previous_readiness_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Readiness Id"
+        },
+        "expected_previous_revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Expected Previous Revision",
+          "type": "integer"
+        },
+        "state": {
+          "enum": [
+            "ready",
+            "hold"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "occurred_timezone": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Occurred Timezone",
+          "type": "string"
+        },
+        "event_source": {
+          "$ref": "#/$defs/DefinitionReference"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "sample_id",
+        "expected_sample_revision",
+        "state",
+        "purpose",
+        "occurred_at",
+        "occurred_timezone",
+        "event_source",
+        "sources",
+        "reason"
+      ],
+      "title": "SampleReadinessPayload",
+      "type": "object"
+    },
+    "verification.actual_method.prepare": {
+      "$defs": {
+        "ActualItemAssessment": {
+          "additionalProperties": false,
+          "properties": {
+            "sample": {
+              "$ref": "#/$defs/SampleRef"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            },
+            "expected_assessment_revision": {
+              "minimum": 0,
+              "title": "Expected Assessment Revision",
+              "type": "integer"
+            },
+            "status": {
+              "enum": [
+                "applicable",
+                "not_applicable",
+                "unknown"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "conditions": {
+              "default": [],
+              "items": {
+                "maxLength": 2000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Conditions",
+              "type": "array"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "maxItems": 20,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "sample",
+            "item_id",
+            "expected_assessment_revision",
+            "status",
+            "reason"
+          ],
+          "title": "ActualItemAssessment",
+          "type": "object"
+        },
+        "ConfigurationRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ConfigurationRef",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "SampleRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "build_id": {
+              "format": "uuid",
+              "title": "Build Id",
+              "type": "string"
+            },
+            "actual_configuration": {
+              "$ref": "#/$defs/ConfigurationRef"
+            },
+            "cavity": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cavity"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "build_id",
+            "actual_configuration"
+          ],
+          "title": "SampleRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "assessments": {
+          "items": {
+            "$ref": "#/$defs/ActualItemAssessment"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Assessments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "assessments"
+      ],
+      "title": "ActualMethodPreparePayload",
+      "type": "object"
+    },
+    "verification.handoff.offer": {
+      "$defs": {
+        "ConfigurationRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ConfigurationRef",
+          "type": "object"
+        },
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SampleRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "build_id": {
+              "format": "uuid",
+              "title": "Build Id",
+              "type": "string"
+            },
+            "actual_configuration": {
+              "$ref": "#/$defs/ConfigurationRef"
+            },
+            "cavity": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cavity"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "build_id",
+            "actual_configuration"
+          ],
+          "title": "SampleRef",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "samples": {
+          "items": {
+            "$ref": "#/$defs/SampleRef"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "samples",
+        "coverage",
+        "at"
+      ],
+      "title": "OfferPayload",
+      "type": "object"
+    },
+    "verification.handoff.accept": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "returned_coverage": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "title": "Returned Coverage",
+          "type": "array"
+        },
+        "next_owner_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Owner Id"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "coverage",
+        "at"
+      ],
+      "title": "AcceptPayload",
+      "type": "object"
+    },
+    "verification.handoff.return": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "next_owner_id": {
+          "format": "uuid",
+          "title": "Next Owner Id",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "coverage",
+        "next_owner_id",
+        "at"
+      ],
+      "title": "ReturnPayload",
+      "type": "object"
+    },
+    "test.run.plan": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ExecutionPlan": {
+          "additionalProperties": false,
+          "properties": {
+            "window": {
+              "$ref": "#/$defs/ExecutionWindow"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            },
+            "equipment": {
+              "$ref": "#/$defs/DefinitionReference"
+            },
+            "calibration": {
+              "$ref": "#/$defs/DefinitionReference"
+            },
+            "environment": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "conditions": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Conditions",
+              "type": "string"
+            },
+            "resource_fact_id": {
+              "format": "uuid",
+              "title": "Resource Fact Id",
+              "type": "string"
+            },
+            "expected_resource_fact_revision": {
+              "minimum": 1,
+              "title": "Expected Resource Fact Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "window",
+            "executor_id",
+            "equipment",
+            "calibration",
+            "environment",
+            "conditions",
+            "resource_fact_id",
+            "expected_resource_fact_revision"
+          ],
+          "title": "ExecutionPlan",
+          "type": "object"
+        },
+        "ExecutionWindow": {
+          "additionalProperties": false,
+          "description": "UTC [start, finish); never an Actual fact or forecast promise.",
+          "properties": {
+            "start": {
+              "format": "date-time",
+              "title": "Start",
+              "type": "string"
+            },
+            "finish": {
+              "format": "date-time",
+              "title": "Finish",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            }
+          },
+          "required": [
+            "start",
+            "finish",
+            "original_timezone"
+          ],
+          "title": "ExecutionWindow",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "execution_plan": {
+          "$ref": "#/$defs/ExecutionPlan"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "run_id",
+        "coverage",
+        "execution_plan"
+      ],
+      "title": "PlanPayload",
+      "type": "object"
+    },
+    "verification.schedule.promise": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "expected_run_revision": {
+          "minimum": 1,
+          "title": "Expected Run Revision",
+          "type": "integer"
+        },
+        "expected_plan_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Plan Sha256",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "run_id",
+        "expected_run_revision",
+        "expected_plan_sha256",
+        "at"
+      ],
+      "title": "PromisePayload",
+      "type": "object"
+    },
+    "test.run.start": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Execution conditions are loaded from the fixed plan, never changed by Start.",
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "maxItems": 20,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "expected_run_revision": {
+          "minimum": 1,
+          "title": "Expected Run Revision",
+          "type": "integer"
+        },
+        "expected_plan_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Plan Sha256",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "reason",
+        "run_id",
+        "expected_run_revision",
+        "expected_plan_sha256",
+        "at"
+      ],
+      "title": "StartPayload",
+      "type": "object"
+    }
+  },
+  "scope": "implemented local domain slices; real AI qualification and formal exits are separate"
+}

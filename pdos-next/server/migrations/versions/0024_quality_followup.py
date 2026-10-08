@@ -1,0 +1,672 @@
+"""Atomic quality followup; Root allocated the verified next_0023 successor."""
+
+# ruff: noqa: E501
+from alembic import op
+from sqlalchemy import text
+
+from migrations.schema_0023 import FUNCTIONS as HEAD23_FUNCTIONS
+
+revision = "next_0024"
+down_revision = "next_0023"
+branch_labels = None
+depends_on = None
+
+NEW_EVENTS = {
+    "quality.issue.root_cause.decide": "issue.root_cause_decided",
+    "quality.capa.actions.complete": "capa.actions_completed",
+    "quality.capa.followup.link": "capa.followup_linked",
+}
+TABLES = ("capa_remediation_links", "capa_verification_evidence")
+
+PROOF_SQL = r"""
+CREATE FUNCTION assert_quality_followup_proof(tid uuid, pid uuid, actor uuid,
+  op_name text, proof jsonb, saved_at timestamptz) RETURNS confirmations LANGUAGE plpgsql AS $$
+DECLARE c confirmations%ROWTYPE; expected_tier text; uses integer;
+BEGIN
+  expected_tier := CASE op_name WHEN 'quality.issue.root_cause.decide' THEN 'T2'
+    WHEN 'quality.capa.actions.complete' THEN 'T1' WHEN 'quality.capa.followup.link' THEN 'T1' END;
+  IF expected_tier IS NULL OR NOT COALESCE(proof->>'tier'=expected_tier AND
+    proof->>'id' ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',false) THEN
+    RAISE EXCEPTION 'Followup requires its exact shared proof tier and identity'; END IF;
+  SELECT * INTO c FROM confirmations WHERE tenant_id=tid AND id=(proof->>'id')::uuid;
+  IF c.id IS NULL OR ROW(c.product_id,c.subject_id,c.actor_id,c.operation)
+    IS DISTINCT FROM ROW(pid,pid,actor,op_name) OR c.consumed IS DISTINCT FROM true
+    OR c.revision IS DISTINCT FROM (SELECT revision FROM products WHERE tenant_id=tid AND id=pid)
+    OR c.expires_at<=saved_at OR c.created_at>saved_at
+    OR NOT COALESCE(c.payload_digest ~ '^[0-9a-f]{64}$' AND c.token_hash ~ '^[0-9a-f]{64}$'
+      AND jsonb_typeof(c.snapshot)='object',false)
+    OR NOT EXISTS (SELECT 1 FROM principals WHERE tenant_id=tid AND id=actor AND kind='human' AND active) THEN
+    RAISE EXCEPTION 'Followup requires a consumed current Product proof by the named human'; END IF;
+  SELECT count(*) INTO uses FROM (
+    SELECT id FROM quality_issue_versions WHERE tenant_id=tid AND operation IN
+      ('quality.issue.root_cause.decide','quality.capa.actions.complete')
+      AND source_basis->'shared_proof'->>'id'=c.id::text
+    UNION ALL SELECT id FROM capa_remediation_links WHERE tenant_id=tid
+      AND input_snapshot->'shared_proof'->>'id'=c.id::text
+  ) u;
+  IF uses<>1 THEN RAISE EXCEPTION 'One consumed proof must bind exactly one new followup target'; END IF;
+  -- The reciprocal deferred transition guard and immutable consumed rows pair
+  -- this target with a real False->True transition in the same UOW. No xmin/top
+  -- xid assumption is used, so a legitimate SAVEPOINT remains supported.
+  -- Python canonical material/token digests and runtime freshness still require
+  -- quality_followup_host's actual marker; JSONB text hashing is not equivalent.
+  RETURN c;
+END $$;
+
+CREATE FUNCTION assert_quality_followup_receipt(tid uuid, pid uuid, sid uuid, rev integer,
+  op_name text, subject_name text, actor uuid, audience text, expected_status text)
+RETURNS action_receipts LANGUAGE plpgsql AS $$
+DECLARE r action_receipts%ROWTYPE;
+BEGIN
+  PERFORM assert_quality_change_receipt(tid,pid,sid,rev,op_name,subject_name,actor,audience);
+  SELECT * INTO r FROM action_receipts WHERE tenant_id=tid AND product_id=pid AND subject_id=sid
+    AND subject_revision=rev AND operation=op_name AND subject_type=subject_name;
+  IF NOT COALESCE(r.result->>'id'=sid::text AND (r.result->>'revision')::integer=rev
+    AND r.result->>'status'=expected_status,false)
+    OR (SELECT count(*) FROM request_keys WHERE tenant_id=tid AND receipt_id=r.id)<>1
+    OR NOT EXISTS (SELECT 1 FROM request_keys WHERE tenant_id=tid AND receipt_id=r.id
+      AND actor_id=actor AND digest=r.request_digest) THEN
+    RAISE EXCEPTION 'Followup requires its exact result and one initial request-key receipt group'; END IF;
+  RETURN r;
+END $$;
+"""
+
+CONFIRMATION_SQL = r"""
+CREATE FUNCTION protect_quality_followup_confirmation() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE old_scoped boolean := false; new_scoped boolean := false;
+BEGIN
+  IF TG_OP<>'INSERT' THEN old_scoped := OLD.operation IN
+    ('quality.issue.root_cause.decide','quality.capa.actions.complete','quality.capa.followup.link'); END IF;
+  IF TG_OP<>'DELETE' THEN new_scoped := NEW.operation IN
+    ('quality.issue.root_cause.decide','quality.capa.actions.complete','quality.capa.followup.link'); END IF;
+  IF NOT (old_scoped OR new_scoped) THEN
+    IF TG_OP='DELETE' THEN RETURN OLD; ELSE RETURN NEW; END IF;
+  END IF;
+  IF TG_OP='INSERT' THEN
+    IF NEW.consumed IS DISTINCT FROM false THEN
+      RAISE EXCEPTION 'Followup proof must be created unconsumed'; END IF;
+    RETURN NEW;
+  ELSIF TG_OP='DELETE' THEN
+    IF OLD.consumed IS DISTINCT FROM false THEN
+      RAISE EXCEPTION 'Consumed followup proof must be retained'; END IF;
+    RETURN OLD;
+  END IF;
+  IF NOT (old_scoped AND new_scoped) OR OLD.consumed IS DISTINCT FROM false
+    OR NEW.consumed IS DISTINCT FROM true
+    OR (to_jsonb(NEW)-'consumed') IS DISTINCT FROM (to_jsonb(OLD)-'consumed') THEN
+    RAISE EXCEPTION 'Followup proof only permits the exact unconsumed to consumed transition'; END IF;
+  RETURN NEW;
+END $$;
+
+CREATE FUNCTION require_quality_followup_consumption_atom() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE c confirmations%ROWTYPE; uses integer; matched integer;
+BEGIN
+  IF NEW.operation NOT IN
+    ('quality.issue.root_cause.decide','quality.capa.actions.complete','quality.capa.followup.link') THEN
+    RETURN NULL; END IF;
+  IF OLD.consumed IS DISTINCT FROM false OR NEW.consumed IS DISTINCT FROM true THEN
+    RAISE EXCEPTION 'Followup proof requires an actual consumption transition'; END IF;
+  SELECT * INTO c FROM confirmations WHERE tenant_id=NEW.tenant_id AND id=NEW.id;
+  IF c.id IS NULL OR to_jsonb(c) IS DISTINCT FROM to_jsonb(NEW) THEN
+    RAISE EXCEPTION 'Consumed followup proof cannot disappear or change before commit'; END IF;
+  SELECT count(*),count(*) FILTER (WHERE product_id=c.product_id AND writer_id=c.actor_id
+    AND operation=c.operation) INTO uses,matched FROM (
+    SELECT product_id,writer_id,operation FROM quality_issue_versions WHERE tenant_id=c.tenant_id
+      AND operation IN ('quality.issue.root_cause.decide','quality.capa.actions.complete')
+      AND source_basis->'shared_proof'->>'id'=c.id::text
+    UNION ALL SELECT product_id,writer_id,'quality.capa.followup.link'::text AS operation
+      FROM capa_remediation_links WHERE tenant_id=c.tenant_id
+      AND input_snapshot->'shared_proof'->>'id'=c.id::text
+  ) u;
+  IF uses<>1 OR matched<>1 THEN
+    RAISE EXCEPTION 'Consumed followup proof must commit exactly one matching target atom'; END IF;
+  -- The upgrade rejects legacy consumed three-op proofs. Thereafter every
+  -- consumption must have one retained target, and every target must have one
+  -- consumed proof. Reusing an old proof creates a second target and is rejected.
+  -- Trigger events participate in SAVEPOINT rollback without top-xid guessing.
+  RETURN NULL;
+END $$;
+"""
+
+ISSUE_SQL = r"""
+CREATE FUNCTION require_quality_followup_atom() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE prior quality_issue_versions%ROWTYPE; c confirmations%ROWTYPE; r action_receipts%ROWTYPE;
+  normalized jsonb; old_action jsonb; new_action jsonb; supplied jsonb; observation jsonb; assessment jsonb;
+  submitted integer; actual_changed integer := 0; final_status text; basis jsonb;
+BEGIN
+  IF NEW.operation NOT IN ('quality.issue.root_cause.decide','quality.capa.actions.complete') THEN RETURN NULL; END IF;
+  SELECT * INTO prior FROM quality_issue_versions WHERE tenant_id=NEW.tenant_id
+    AND id=NEW.previous_issue_version_id;
+  IF prior.id IS NULL OR NEW.previous_revision IS DISTINCT FROM prior.revision
+    OR NEW.revision IS DISTINCT FROM prior.revision+1 OR prior.status<>'actioning'
+    OR ROW(prior.product_id,prior.project_id,prior.issue_id,prior.owner_id,prior.visibility,prior.purpose)
+      IS DISTINCT FROM ROW(NEW.product_id,NEW.project_id,NEW.issue_id,NEW.owner_id,NEW.visibility,NEW.purpose)
+    OR NOT COALESCE(jsonb_typeof(NEW.required_source_read_set)='array'
+      AND jsonb_array_length(NEW.required_source_read_set) BETWEEN 1 AND 20
+      AND NEW.required_source_read_set @> prior.required_source_read_set
+      AND NEW.required_source_read_set @> (NEW.authority_snapshot->'required_source_read_set')
+      AND NEW.required_source_read_set @> (NEW.policy_snapshot->'required_source_read_set')
+      AND jsonb_typeof(NEW.source_basis->'artifact_sources')='array',false)
+    OR NOT COALESCE(NEW.input_snapshot->>'issue_id'=NEW.issue_id::text
+      AND (NEW.input_snapshot->>'expected_issue_revision')::integer=prior.revision,false)
+    OR NEW.input_snapshot ? 'approval_token' OR NEW.input_snapshot ? 'confirmation_token'
+    OR NOT EXISTS (SELECT 1 FROM quality_current_issues WHERE tenant_id=NEW.tenant_id
+      AND product_id=NEW.product_id AND project_id=NEW.project_id AND issue_id=NEW.issue_id
+      AND issue_version_id=NEW.id AND issue_revision=NEW.revision) THEN
+    RAISE EXCEPTION 'Followup must append the exact current actioning Issue predecessor'; END IF;
+  c := assert_quality_followup_proof(NEW.tenant_id,NEW.product_id,NEW.writer_id,NEW.operation,
+    NEW.source_basis->'shared_proof',NEW.created_at);
+  r := assert_quality_followup_receipt(NEW.tenant_id,NEW.product_id,NEW.id,NEW.revision,
+    NEW.operation,'quality_issue',NEW.writer_id,NEW.visibility,NEW.status);
+  IF NOT COALESCE(NEW.authority_snapshot->>'subject_id'=NEW.writer_id::text
+    AND NEW.authority_snapshot->>'operation'=NEW.operation
+    AND NEW.authority_snapshot->>'purpose'=NEW.purpose
+    AND NEW.authority_snapshot->'scope'->>'tenant_id'=NEW.tenant_id::text
+    AND NEW.authority_snapshot->'scope'->>'product_id'=NEW.product_id::text
+    AND NEW.authority_snapshot->'scope'->>'project_id'=NEW.project_id::text
+    AND NEW.authority_snapshot->'authorized'='true'::jsonb
+    AND NEW.authority_snapshot->'qualified'='true'::jsonb
+    AND (NEW.authority_snapshot->>'valid_until')::timestamptz>NEW.created_at
+    AND (NEW.policy_snapshot->>'valid_until')::timestamptz>NEW.created_at,false)
+    OR NOT COALESCE(jsonb_typeof(prior.issue_snapshot->'history')='array'
+      AND jsonb_typeof(NEW.issue_snapshot->'history')='array'
+      AND jsonb_array_length(NEW.issue_snapshot->'history')=jsonb_array_length(prior.issue_snapshot->'history')+1,false)
+    OR (NEW.issue_snapshot->'history' - (jsonb_array_length(NEW.issue_snapshot->'history')-1))
+      IS DISTINCT FROM prior.issue_snapshot->'history'
+    OR NOT COALESCE(NEW.issue_snapshot->'history'->-1->>'command_id'=r.command_id::text
+      AND NEW.issue_snapshot->'history'->-1->>'operation'=NEW.operation
+      AND NEW.issue_snapshot->'history'->-1->>'actor_id'=NEW.writer_id::text
+      AND NEW.issue_snapshot->'history'->-1->>'actor_kind'='human'
+      AND (NEW.issue_snapshot->'history'->-1->>'at')::timestamptz<=NEW.created_at,false)
+    OR (EXISTS (SELECT 1 FROM jsonb_array_elements(NEW.source_basis->'artifact_sources') x
+      WHERE x->>'visibility'='private') AND NEW.visibility<>'private') THEN
+    RAISE EXCEPTION 'Followup must retain old history and one exact named command history'; END IF;
+  normalized := jsonb_set(NEW.issue_snapshot,
+    ARRAY['history',(jsonb_array_length(NEW.issue_snapshot->'history')-1)::text,'at'],'null'::jsonb,false);
+  IF NEW.operation='quality.issue.root_cause.decide' THEN
+    IF prior.issue_snapshot->'root_cause' IS DISTINCT FROM 'null'::jsonb
+      OR NEW.status<>'actioning'
+      OR (NEW.issue_snapshot-ARRAY['revision','history','root_cause'])
+        IS DISTINCT FROM (prior.issue_snapshot-ARRAY['revision','history','root_cause'])
+      OR NOT COALESCE(NEW.issue_snapshot->'root_cause'->>'actor_id'=NEW.writer_id::text
+        AND NEW.issue_snapshot->'root_cause'->>'text'=NEW.input_snapshot->>'text'
+        AND NEW.issue_snapshot->'root_cause'->'sources'=NEW.input_snapshot->'sources'
+        AND jsonb_typeof(NEW.issue_snapshot->'root_cause'->'at')='string'
+        AND (NEW.issue_snapshot->'root_cause'->>'at')::timestamptz<=NEW.created_at,false) THEN
+      RAISE EXCEPTION 'Root cause adds one named conclusion and never changes earlier CAPA or failures'; END IF;
+    normalized := jsonb_set(normalized,ARRAY['root_cause','at'],'null'::jsonb,false);
+  ELSE
+    IF jsonb_typeof(prior.issue_snapshot->'capa') IS DISTINCT FROM 'object'
+      OR (NEW.issue_snapshot-ARRAY['revision','history','capa','status'])
+        IS DISTINCT FROM (prior.issue_snapshot-ARRAY['revision','history','capa','status'])
+      OR (NEW.issue_snapshot->'capa'-'actions') IS DISTINCT FROM (prior.issue_snapshot->'capa'-'actions')
+      OR jsonb_typeof(NEW.input_snapshot->'completions') IS DISTINCT FROM 'array'
+      OR COALESCE(jsonb_array_length(NEW.input_snapshot->'completions'),0) NOT BETWEEN 1 AND 1000
+      OR jsonb_typeof(NEW.issue_snapshot->'capa'->'actions') IS DISTINCT FROM 'array'
+      OR jsonb_array_length(NEW.issue_snapshot->'capa'->'actions')
+        IS DISTINCT FROM jsonb_array_length(prior.issue_snapshot->'capa'->'actions') THEN
+      RAISE EXCEPTION 'Completion only appends actual completions to the original CAPA actions'; END IF;
+    submitted := jsonb_array_length(NEW.input_snapshot->'completions');
+    IF (SELECT count(DISTINCT x->>'id') FROM jsonb_array_elements(NEW.input_snapshot->'completions') x)<>submitted
+      OR NOT COALESCE(jsonb_typeof(NEW.source_basis->'completion_observations')='array'
+        AND jsonb_array_length(NEW.source_basis->'completion_observations')=submitted
+        AND jsonb_typeof(NEW.source_basis->'completion_assessments')='array'
+        AND jsonb_array_length(NEW.source_basis->'completion_assessments')=submitted,false)
+      OR (SELECT count(DISTINCT x->'fact'->>'action_id')
+        FROM jsonb_array_elements(NEW.source_basis->'completion_observations') x)<>submitted
+      OR (SELECT count(DISTINCT x->>'action_id')
+        FROM jsonb_array_elements(NEW.source_basis->'completion_assessments') x)<>submitted THEN
+      RAISE EXCEPTION 'Every completion must have one unique actual fact and host assessment'; END IF;
+    FOR old_action,new_action IN SELECT o.value,n.value FROM
+      jsonb_array_elements(prior.issue_snapshot->'capa'->'actions') WITH ORDINALITY o(value,ord)
+      JOIN jsonb_array_elements(NEW.issue_snapshot->'capa'->'actions') WITH ORDINALITY n(value,ord) USING (ord)
+    LOOP
+      IF (old_action-'completion') IS DISTINCT FROM (new_action-'completion') THEN
+        RAISE EXCEPTION 'Completion cannot change action identity, executor, text or ordering'; END IF;
+      SELECT x INTO supplied FROM jsonb_array_elements(NEW.input_snapshot->'completions') x
+        WHERE x->>'id'=old_action->>'id';
+      IF supplied IS NULL THEN
+        IF old_action->'completion' IS DISTINCT FROM new_action->'completion' THEN
+          RAISE EXCEPTION 'Unselected original action completion cannot change'; END IF;
+      ELSE
+        actual_changed := actual_changed+1;
+        IF old_action->'completion' IS DISTINCT FROM 'null'::jsonb
+          OR new_action->'completion' IS DISTINCT FROM supplied
+          OR supplied->>'executor_id' IS DISTINCT FROM NEW.writer_id::text
+          OR old_action->>'executor_id' IS DISTINCT FROM NEW.writer_id::text
+          OR NOT COALESCE(jsonb_typeof(supplied->'evidence')='array'
+            AND jsonb_array_length(supplied->'evidence') BETWEEN 1 AND 20
+            AND (supplied->'evidence') @> jsonb_build_array(supplied->'at'->'source'),false)
+          OR (supplied->'at'->>'occurred_at')::timestamptz>NEW.created_at THEN
+          RAISE EXCEPTION 'Completion requires original executor, exact event evidence and an already observed clock'; END IF;
+        SELECT x INTO observation FROM jsonb_array_elements(NEW.source_basis->'completion_observations') x
+          WHERE x->'fact'->>'action_id'=old_action->>'id';
+        IF NOT COALESCE(observation->'fact'->>'issue_id'=NEW.issue_id::text
+          AND observation->'fact'->>'capa_id'=NEW.issue_snapshot->'capa'->>'id'
+          AND observation->'fact'->>'executor_id'=NEW.writer_id::text
+          AND observation->'fact'->>'operation'=NEW.operation
+          AND observation->'fact'->>'purpose'=NEW.purpose
+          AND observation->'fact'->>'text'=supplied->>'text'
+          AND observation->'fact'->>'original_timezone'=supplied->'at'->>'original_timezone'
+          AND (observation->'fact'->>'occurred_at')::timestamptz=(supplied->'at'->>'occurred_at')::timestamptz
+          AND jsonb_typeof(observation->'received_at')='string'
+          AND (observation->>'received_at')::timestamptz<=NEW.created_at
+          AND (observation->>'received_at')::timestamptz>=(supplied->'at'->>'occurred_at')::timestamptz,false) THEN
+          RAISE EXCEPTION 'Saved completion must bind the exact separately received structured fact'; END IF;
+        SELECT x INTO assessment FROM jsonb_array_elements(NEW.source_basis->'completion_assessments') x
+          WHERE x->>'action_id'=old_action->>'id';
+        IF NOT COALESCE(assessment->>'issue_id'=NEW.issue_id::text
+          AND assessment->>'capa_id'=NEW.issue_snapshot->'capa'->>'id'
+          AND assessment->>'executor_id'=NEW.writer_id::text
+          AND assessment->>'purpose'=NEW.purpose
+          AND assessment->'scope'->>'tenant_id'=NEW.tenant_id::text
+          AND assessment->'scope'->>'product_id'=NEW.product_id::text
+          AND assessment->'scope'->>'project_id'=NEW.project_id::text
+          AND assessment->>'basis_sha256'=NEW.source_basis->'followup_basis'->>'basis_sha256'
+          AND assessment->>'nature'=NEW.source_basis->'followup_basis'->>'nature'
+          AND assessment->'event_source'=supplied->'at'->'source'
+          AND assessment->'allowed'='true'::jsonb AND assessment->'current'='true'::jsonb
+          AND assessment->>'classification' IN ('investigation','formal_change')
+          AND (assessment->>'valid_until')::timestamptz>NEW.created_at
+          AND NEW.required_source_read_set @> (assessment->'required_source_read_set')
+          AND (assessment->>'classification'<>'formal_change'
+            OR (jsonb_typeof(assessment->'owner_proofs')='array'
+              AND jsonb_array_length(assessment->'owner_proofs')>0)),false) THEN
+          RAISE EXCEPTION 'Completion must retain its exact positive host binding and formal owner proof shape'; END IF;
+      END IF;
+    END LOOP;
+    IF actual_changed<>submitted THEN RAISE EXCEPTION 'Every submitted completion must belong to an original action'; END IF;
+    final_status := CASE WHEN EXISTS (SELECT 1 FROM jsonb_array_elements(NEW.issue_snapshot->'capa'->'actions') x
+      WHERE x->'completion'='null'::jsonb) THEN 'actioning' ELSE 'awaiting_verification' END;
+    IF NEW.status<>final_status THEN RAISE EXCEPTION 'Complete CAPA changes to awaiting verification only, never effectiveness or closed'; END IF;
+    IF c.snapshot->'completion_assessments' IS DISTINCT FROM NEW.source_basis->'completion_assessments'
+      OR c.snapshot->'completion_observations' IS DISTINCT FROM (SELECT jsonb_agg(x->'fact' ORDER BY ord)
+        FROM jsonb_array_elements(NEW.source_basis->'completion_observations') WITH ORDINALITY v(x,ord)) THEN
+      RAISE EXCEPTION 'Completion actual facts and host assessments must match the consumed review'; END IF;
+  END IF;
+  basis := NEW.source_basis-'shared_proof'-'completion_observations';
+  IF c.snapshot->'before'->(NEW.issue_id::text) IS DISTINCT FROM prior.issue_snapshot
+    OR c.snapshot->'after'->(NEW.issue_id::text) IS DISTINCT FROM normalized
+    OR c.snapshot->'read_basis'->'authority' IS DISTINCT FROM NEW.authority_snapshot
+    OR c.snapshot->'read_basis'->'policy' IS DISTINCT FROM NEW.policy_snapshot
+    OR c.snapshot->'read_basis'->'source_basis' IS DISTINCT FROM basis
+    OR c.snapshot->'read_basis'->'read_set' IS DISTINCT FROM NEW.required_source_read_set
+    OR c.snapshot->>'event_effect' IS DISTINCT FROM (CASE NEW.operation
+      WHEN 'quality.issue.root_cause.decide' THEN 'issue.root_cause_decided' ELSE 'capa.actions_completed' END)
+    OR c.snapshot->>'clock_basis' IS DISTINCT FROM 'server_on_save' THEN
+    RAISE EXCEPTION 'Issue successor, exact evidence and consumed material review must match'; END IF;
+  RETURN NULL;
+END $$;
+"""
+LINK_SQL = r"""
+CREATE FUNCTION require_capa_link_atom() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE parent quality_issue_versions%ROWTYPE; c confirmations%ROWTYPE; r action_receipts%ROWTYPE;
+  action jsonb; binding jsonb; refs jsonb;
+BEGIN
+  SELECT * INTO parent FROM quality_issue_versions WHERE tenant_id=NEW.tenant_id
+    AND product_id=NEW.product_id AND project_id=NEW.project_id AND issue_id=NEW.issue_id
+    AND id=NEW.issue_version_id AND revision=NEW.issue_revision;
+  IF parent.id IS NULL OR NEW.owner_id IS DISTINCT FROM NEW.writer_id
+    OR parent.purpose IS DISTINCT FROM NEW.purpose
+    OR parent.issue_snapshot->'capa'->>'id' IS DISTINCT FROM NEW.capa_id::text
+    OR NOT EXISTS (SELECT 1 FROM quality_current_issues WHERE tenant_id=NEW.tenant_id
+      AND product_id=NEW.product_id AND project_id=NEW.project_id AND issue_id=NEW.issue_id
+      AND issue_version_id=NEW.issue_version_id AND issue_revision=NEW.issue_revision)
+    OR (SELECT count(*) FROM jsonb_array_elements(parent.issue_snapshot->'capa'->'actions') x
+      WHERE x->>'id'=NEW.action_id::text)<>1
+    OR jsonb_typeof(NEW.basis_snapshot->'actions') IS DISTINCT FROM 'array'
+    OR (SELECT count(*) FROM jsonb_array_elements(NEW.basis_snapshot->'actions') x
+      WHERE x->>'action_id'=NEW.action_id::text)<>1 THEN
+    RAISE EXCEPTION 'CAPA link requires the exact current Issue, CAPA and original action'; END IF;
+  SELECT x INTO action FROM jsonb_array_elements(parent.issue_snapshot->'capa'->'actions') x
+    WHERE x->>'id'=NEW.action_id::text;
+  SELECT x INTO binding FROM jsonb_array_elements(NEW.basis_snapshot->'actions') x
+    WHERE x->>'action_id'=NEW.action_id::text;
+  IF binding->>'executor_id' IS DISTINCT FROM action->>'executor_id'
+    OR NEW.basis_snapshot->>'owner_id' IS DISTINCT FROM parent.owner_id::text
+    OR NEW.basis_snapshot->>'visibility' IS DISTINCT FROM parent.visibility
+    OR NEW.basis_snapshot->'requirement' IS DISTINCT FROM parent.issue_snapshot->'capa'->'requirement'
+    OR NEW.basis_snapshot->>'basis_sha256' IS DISTINCT FROM NEW.basis_sha256
+    OR NEW.output_snapshot->'basis' IS DISTINCT FROM NEW.basis_snapshot
+    OR NEW.output_snapshot->'action_fulfilled' IS DISTINCT FROM 'null'::jsonb
+    OR NEW.output_snapshot->>'owner_id' IS DISTINCT FROM NEW.owner_id::text
+    OR (NEW.output_snapshot->>'visibility'='private' AND NEW.visibility<>'private')
+    OR NOT COALESCE(jsonb_typeof(NEW.output_snapshot->'outputs')='array'
+      AND jsonb_array_length(NEW.output_snapshot->'outputs') BETWEEN 1 AND 20,false)
+    OR NOT COALESCE(NEW.input_snapshot->>'issue_id'=NEW.issue_id::text
+      AND (NEW.input_snapshot->>'expected_issue_revision')::integer=NEW.issue_revision
+      AND NEW.input_snapshot->>'capa_id'=NEW.capa_id::text
+      AND NEW.input_snapshot->>'action_id'=NEW.action_id::text
+      AND NEW.input_snapshot->>'reason'=NEW.reason
+      AND NEW.required_source_read_set @> parent.required_source_read_set
+      AND NEW.required_source_read_set @> (NEW.basis_snapshot->'required_source_read_set')
+      AND NEW.required_source_read_set @> (NEW.output_snapshot->'required_source_read_set')
+      AND NEW.required_source_read_set @> (NEW.authority_snapshot->'required_source_read_set')
+      AND NEW.required_source_read_set @> (NEW.policy_snapshot->'required_source_read_set')
+      AND jsonb_typeof(NEW.source_basis->'artifact_sources')='array',false) THEN
+    RAISE EXCEPTION 'CAPA link must retain exact basis, action and unknown fulfillment'; END IF;
+  SELECT jsonb_agg(x->'ref' ORDER BY ord) INTO refs
+    FROM jsonb_array_elements(NEW.output_snapshot->'outputs') WITH ORDINALITY v(x,ord);
+  IF refs IS DISTINCT FROM NEW.input_snapshot->'output_refs'
+    OR (SELECT count(DISTINCT x->'ref') FROM jsonb_array_elements(NEW.output_snapshot->'outputs') x)
+      <>jsonb_array_length(NEW.output_snapshot->'outputs')
+    OR EXISTS (SELECT 1 FROM jsonb_array_elements(NEW.output_snapshot->'outputs') x WHERE NOT COALESCE(
+      x->'ref'->>'kind' IN ('definition','bom','engineering_configuration','manufacturing_configuration',
+        'build','actual_configuration','build_lot','sample','verification_preparation',
+        'verification_request','verification_run')
+      AND x->'ref'->>'id' ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+      AND (x->'ref'->>'revision')::integer>0
+      AND x->>'meaning' IN ('draft','planned','observed','performed')
+      AND x->>'visibility' IN ('private','product')
+      AND (x->'ref'->'key'='null'::jsonb OR x->'ref'->>'kind' IN ('bom','manufacturing_configuration')),false))
+    OR ((parent.visibility='private' OR NEW.policy_snapshot->'private'='true'::jsonb
+      OR EXISTS (SELECT 1 FROM jsonb_array_elements(NEW.source_basis->'artifact_sources') x
+        WHERE x->>'visibility'='private')
+      OR EXISTS (SELECT 1 FROM jsonb_array_elements(NEW.output_snapshot->'outputs') x
+        WHERE x->>'visibility'='private')) AND NEW.visibility<>'private') THEN
+    RAISE EXCEPTION 'CAPA output references must be exact, ordered, unique and preserve private scope'; END IF;
+  c := assert_quality_followup_proof(NEW.tenant_id,NEW.product_id,NEW.writer_id,
+    'quality.capa.followup.link',NEW.input_snapshot->'shared_proof',NEW.created_at);
+  r := assert_quality_followup_receipt(NEW.tenant_id,NEW.product_id,NEW.id,NEW.revision,
+    'quality.capa.followup.link','capa_remediation_link',NEW.writer_id,NEW.visibility,NEW.status);
+  IF NOT COALESCE(NEW.authority_snapshot->>'subject_id'=NEW.writer_id::text
+    AND NEW.authority_snapshot->>'operation'='quality.capa.followup.link'
+    AND NEW.authority_snapshot->>'purpose'=NEW.purpose
+    AND NEW.authority_snapshot->'scope'->>'tenant_id'=NEW.tenant_id::text
+    AND NEW.authority_snapshot->'scope'->>'product_id'=NEW.product_id::text
+    AND NEW.authority_snapshot->'scope'->>'project_id'=NEW.project_id::text
+    AND NEW.authority_snapshot->'authorized'='true'::jsonb
+    AND NEW.authority_snapshot->'qualified'='true'::jsonb
+    AND (NEW.authority_snapshot->>'valid_until')::timestamptz>NEW.created_at
+    AND (NEW.policy_snapshot->>'valid_until')::timestamptz>NEW.created_at,false)
+    OR c.snapshot->>'operation' IS DISTINCT FROM 'quality.capa.followup.link'
+    OR c.snapshot->'before' IS DISTINCT FROM 'null'::jsonb
+    OR c.snapshot->'after'->'id' IS DISTINCT FROM 'null'::jsonb
+    OR c.snapshot->'after'->'revision' IS DISTINCT FROM '1'::jsonb
+    OR c.snapshot->'after'->>'issue_id' IS DISTINCT FROM NEW.issue_id::text
+    OR (c.snapshot->'after'->>'issue_revision')::integer IS DISTINCT FROM NEW.issue_revision
+    OR c.snapshot->'after'->>'capa_id' IS DISTINCT FROM NEW.capa_id::text
+    OR c.snapshot->'after'->>'action_id' IS DISTINCT FROM NEW.action_id::text
+    OR c.snapshot->'after'->'resolution' IS DISTINCT FROM NEW.output_snapshot
+    OR c.snapshot->'after'->>'visibility' IS DISTINCT FROM NEW.visibility
+    OR c.snapshot->'after'->>'received_at' IS DISTINCT FROM 'server_on_save'
+    OR c.snapshot->'after'->'action_fulfilled' IS DISTINCT FROM 'null'::jsonb
+    OR c.snapshot->'authority' IS DISTINCT FROM NEW.authority_snapshot
+    OR c.snapshot->'policy' IS DISTINCT FROM NEW.policy_snapshot
+    OR c.snapshot->'required_source_read_set' IS DISTINCT FROM NEW.required_source_read_set
+    OR c.snapshot->>'reason' IS DISTINCT FROM NEW.reason THEN
+    RAISE EXCEPTION 'CAPA link and consumed material review must match'; END IF;
+  -- Output owner rows, current source bytes/issuer epochs, action and basis
+  -- canonical SHA256s are verified by host owner ports, not JSONB text hashes.
+  RETURN NULL;
+END $$;
+"""
+CATALOG_COLUMNS = {
+    "capa_remediation_links": (
+        "action_id",
+        "output_snapshot",
+        "resolution_sha256",
+        "authority_snapshot",
+        "policy_snapshot",
+        "status",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "issue_version_id",
+        "issue_revision",
+        "capa_id",
+        "owner_id",
+        "writer_id",
+        "visibility",
+        "purpose",
+        "nature",
+        "revision",
+        "basis_snapshot",
+        "basis_sha256",
+        "sources",
+        "required_source_read_set",
+        "source_basis",
+        "input_snapshot",
+        "intent_digest",
+        "reason",
+        "id",
+        "tenant_id",
+        "created_at",
+    ),
+    "capa_verification_evidence": (
+        "remediation_link_id",
+        "candidate_binding",
+        "binding_sha256",
+        "candidate_snapshot",
+        "inspection_sha256",
+        "status",
+        "result",
+        "applicable",
+        "independently_verified",
+        "observation_complete",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "issue_version_id",
+        "issue_revision",
+        "capa_id",
+        "owner_id",
+        "writer_id",
+        "visibility",
+        "purpose",
+        "nature",
+        "revision",
+        "basis_snapshot",
+        "basis_sha256",
+        "sources",
+        "required_source_read_set",
+        "source_basis",
+        "input_snapshot",
+        "intent_digest",
+        "reason",
+        "id",
+        "tenant_id",
+        "created_at",
+    ),
+}
+DDL = (
+    "\nCREATE TABLE capa_remediation_links (\n\taction_id UUID NOT NULL, \n\toutput_snapshot JSONB NOT NULL, \n\tresolution_sha256 VARCHAR(64) NOT NULL, \n\tauthority_snapshot JSONB NOT NULL, \n\tpolicy_snapshot JSONB NOT NULL, \n\tstatus VARCHAR(16) NOT NULL, \n\tproduct_id UUID NOT NULL, \n\tproject_id UUID NOT NULL, \n\tissue_id UUID NOT NULL, \n\tissue_version_id UUID NOT NULL, \n\tissue_revision INTEGER NOT NULL, \n\tcapa_id UUID NOT NULL, \n\towner_id UUID NOT NULL, \n\twriter_id UUID NOT NULL, \n\tvisibility VARCHAR(16) NOT NULL, \n\tpurpose TEXT NOT NULL, \n\tnature VARCHAR(16) NOT NULL, \n\trevision INTEGER NOT NULL, \n\tbasis_snapshot JSONB NOT NULL, \n\tbasis_sha256 VARCHAR(64) NOT NULL, \n\tsources JSONB NOT NULL, \n\trequired_source_read_set JSONB NOT NULL, \n\tsource_basis JSONB NOT NULL, \n\tinput_snapshot JSONB NOT NULL, \n\tintent_digest VARCHAR(64) NOT NULL, \n\treason TEXT NOT NULL, \n\tid UUID NOT NULL, \n\ttenant_id UUID NOT NULL, \n\tcreated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (tenant_id, product_id, id), \n\tUNIQUE (tenant_id, product_id, project_id, issue_id, capa_id, id), \n\tUNIQUE (tenant_id, product_id, owner_id, intent_digest), \n\tFOREIGN KEY(tenant_id, product_id, project_id, issue_id, issue_version_id, issue_revision) REFERENCES quality_issue_versions (tenant_id, product_id, project_id, issue_id, id, revision), \n\tFOREIGN KEY(tenant_id, owner_id) REFERENCES principals (tenant_id, id), \n\tFOREIGN KEY(tenant_id, writer_id) REFERENCES principals (tenant_id, id), \n\tCHECK (revision=1 AND issue_revision>0 AND visibility IN ('private','product')), \n\tCHECK (nature IN ('real','synthetic')), \n\tCHECK (COALESCE(jsonb_typeof(required_source_read_set)='array' AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20,false)), \n\tCHECK (COALESCE(basis_snapshot->>'issue_id'=issue_id::text AND basis_snapshot->>'issue_version_id'=issue_version_id::text AND (basis_snapshot->>'issue_revision')::integer=issue_revision AND basis_snapshot->>'capa_id'=capa_id::text AND basis_snapshot->>'purpose'=purpose AND basis_snapshot->>'nature'=nature AND basis_snapshot->'scope'->>'tenant_id'=tenant_id::text AND basis_snapshot->'scope'->>'product_id'=product_id::text AND basis_snapshot->'scope'->>'project_id'=project_id::text,false)), \n\tCHECK (status='recorded'), \n\tCHECK (COALESCE(input_snapshot->'shared_proof'->>'tier'='T1' AND input_snapshot->'shared_proof'->>'id' ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',false) AND NOT (input_snapshot ? 'confirmation_token') AND NOT (input_snapshot ? 'approval_token')), \n\tCHECK (COALESCE(output_snapshot->>'action_id'=action_id::text AND output_snapshot->>'resolution_sha256'=resolution_sha256,false))\n)\n\n",
+    "CREATE INDEX ix_capa_remediation_links_tenant_id ON capa_remediation_links (tenant_id)",
+    "\nCREATE TABLE capa_verification_evidence (\n\tremediation_link_id UUID, \n\tcandidate_binding JSONB NOT NULL, \n\tbinding_sha256 VARCHAR(64) NOT NULL, \n\tcandidate_snapshot JSONB NOT NULL, \n\tinspection_sha256 VARCHAR(64) NOT NULL, \n\tstatus VARCHAR(16) NOT NULL, \n\tresult VARCHAR(24) NOT NULL, \n\tapplicable BOOLEAN, \n\tindependently_verified BOOLEAN, \n\tobservation_complete BOOLEAN, \n\tproduct_id UUID NOT NULL, \n\tproject_id UUID NOT NULL, \n\tissue_id UUID NOT NULL, \n\tissue_version_id UUID NOT NULL, \n\tissue_revision INTEGER NOT NULL, \n\tcapa_id UUID NOT NULL, \n\towner_id UUID NOT NULL, \n\twriter_id UUID NOT NULL, \n\tvisibility VARCHAR(16) NOT NULL, \n\tpurpose TEXT NOT NULL, \n\tnature VARCHAR(16) NOT NULL, \n\trevision INTEGER NOT NULL, \n\tbasis_snapshot JSONB NOT NULL, \n\tbasis_sha256 VARCHAR(64) NOT NULL, \n\tsources JSONB NOT NULL, \n\trequired_source_read_set JSONB NOT NULL, \n\tsource_basis JSONB NOT NULL, \n\tinput_snapshot JSONB NOT NULL, \n\tintent_digest VARCHAR(64) NOT NULL, \n\treason TEXT NOT NULL, \n\tid UUID NOT NULL, \n\ttenant_id UUID NOT NULL, \n\tcreated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (tenant_id, product_id, id), \n\tUNIQUE (tenant_id, product_id, project_id, issue_id, capa_id, id), \n\tUNIQUE (tenant_id, product_id, owner_id, intent_digest), \n\tFOREIGN KEY(tenant_id, product_id, project_id, issue_id, issue_version_id, issue_revision) REFERENCES quality_issue_versions (tenant_id, product_id, project_id, issue_id, id, revision), \n\tFOREIGN KEY(tenant_id, owner_id) REFERENCES principals (tenant_id, id), \n\tFOREIGN KEY(tenant_id, writer_id) REFERENCES principals (tenant_id, id), \n\tCHECK (revision=1 AND issue_revision>0 AND visibility IN ('private','product')), \n\tCHECK (nature IN ('real','synthetic')), \n\tCHECK (COALESCE(jsonb_typeof(required_source_read_set)='array' AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20,false)), \n\tCHECK (COALESCE(basis_snapshot->>'issue_id'=issue_id::text AND basis_snapshot->>'issue_version_id'=issue_version_id::text AND (basis_snapshot->>'issue_revision')::integer=issue_revision AND basis_snapshot->>'capa_id'=capa_id::text AND basis_snapshot->>'purpose'=purpose AND basis_snapshot->>'nature'=nature AND basis_snapshot->'scope'->>'tenant_id'=tenant_id::text AND basis_snapshot->'scope'->>'product_id'=product_id::text AND basis_snapshot->'scope'->>'project_id'=project_id::text,false)), \n\tFOREIGN KEY(tenant_id, product_id, project_id, issue_id, capa_id, remediation_link_id) REFERENCES capa_remediation_links (tenant_id, product_id, project_id, issue_id, capa_id, id), \n\tCHECK (status='candidate' AND result='indeterminate' AND applicable IS NULL AND independently_verified IS NULL AND observation_complete IS NULL), \n\tCHECK (COALESCE(candidate_snapshot->>'result'='indeterminate' AND candidate_snapshot->'applicable'='null'::jsonb AND candidate_snapshot->'independently_verified'='null'::jsonb AND candidate_snapshot->'observation_complete'='null'::jsonb,false))\n)\n\n",
+    "CREATE INDEX ix_capa_verification_evidence_tenant_id ON capa_verification_evidence (tenant_id)",
+)
+
+
+OLD_STATUS = ("open", "triaged", "actioning")
+NEW_STATUS = (*OLD_STATUS, "awaiting_verification")
+OLD_OPERATIONS = (
+    "quality.issue.create",
+    "quality.issue.merge",
+    "quality.issue.triage",
+    "quality.issue.containment.record",
+    "quality.capa.draft",
+)
+NEW_OPERATIONS = (
+    *OLD_OPERATIONS,
+    "quality.issue.root_cause.decide",
+    "quality.capa.actions.complete",
+)
+HEAD23_RECEIPT_SHA256 = "8918094f488256d9f3e886ac887ed39f7de1846079cefb436f7aabfff37ed3aa"
+
+
+def _ensure_allocated():
+    if revision == "ROOT_MUST_ALLOCATE_MONOTONIC_REVISION":
+        raise RuntimeError(
+            "Unapplied proposal: Root must allocate the actual next revision after checking head"
+        )
+
+
+def _head_receipt_sql():
+    from hashlib import sha256
+
+    sql = HEAD23_FUNCTIONS["assert_quality_change_receipt"]
+    if sha256(sql.encode()).hexdigest() != HEAD23_RECEIPT_SHA256:
+        raise RuntimeError(
+            "Frozen head23 receipt helper changed; review the proposal against the actual head"
+        )
+    return sql.replace("CREATE FUNCTION ", "CREATE OR REPLACE FUNCTION ", 1)
+
+
+def _extended_receipt_sql():
+    sql = _head_receipt_sql()
+    anchor = "    WHEN 'change.impact.compute' THEN 'change.impact_created' END;"
+    if sql.count(anchor) != 1:
+        raise RuntimeError("Head23 event CASE anchor is not unique")
+    additions = "\n".join(f"    WHEN '{name}' THEN '{event}'" for name, event in NEW_EVENTS.items())
+    # Only the CASE gains three branches. Every old receipt/audit/outbox check
+    # and require_quality_change_atom(), including merge and change, is retained.
+    return sql.replace(anchor, anchor.removesuffix(" END;") + "\n" + additions + " END;", 1)
+
+
+def _function_statements(sql):
+    # Send one CREATE FUNCTION per execute; no multi-statement protocol reliance.
+    chunks = sql.split("\nEND $$;")
+    if chunks[-1].strip():
+        raise RuntimeError("Unexpected reviewed PL/pgSQL function boundary")
+    return tuple(chunk.strip() + "\nEND $$;" for chunk in chunks[:-1])
+
+
+def _replace_issue_check(column, expected_values, desired_values):
+    import re
+
+    if column not in {"status", "operation"}:
+        raise RuntimeError("Unexpected Issue CHECK target")
+    candidates = list(
+        op.get_bind()
+        .execute(
+            text("""
+      SELECT c.conname,pg_get_constraintdef(c.oid) AS definition
+      FROM pg_constraint c JOIN pg_attribute a ON a.attrelid=c.conrelid
+      WHERE c.conrelid='quality_issue_versions'::regclass AND c.contype='c'
+        AND a.attname=:column AND c.conkey=ARRAY[a.attnum]::smallint[]
+    """),
+            {"column": column},
+        )
+        .mappings()
+    )
+    if len(candidates) != 1 or set(re.findall(r"'([^']+)'", candidates[0]["definition"])) != set(
+        expected_values
+    ):
+        raise RuntimeError(f"Actual {column} CHECK does not match the reviewed head")
+    # Base has no naming convention; use the actual server constraint identity,
+    # not an invented autogenerated name. Root metadata must change identically.
+    op.drop_constraint(candidates[0]["conname"], "quality_issue_versions", type_="check")
+    values = ",".join(f"'{value}'" for value in desired_values)
+    op.create_check_constraint(None, "quality_issue_versions", f"{column} IN ({values})")
+
+
+def _has_retained_followup():
+    bind = op.get_bind()
+    for table in TABLES:
+        if bind.scalar(text(f'SELECT count(*) FROM "{table}"')):
+            return True
+    for statement in (
+        "SELECT count(*) FROM quality_issue_versions WHERE operation IN "
+        "('quality.issue.root_cause.decide','quality.capa.actions.complete')",
+        "SELECT count(*) FROM action_receipts WHERE operation IN "
+        "('quality.issue.root_cause.decide','quality.capa.actions.complete','quality.capa.followup.link')",
+        "SELECT count(*) FROM confirmations WHERE consumed IS TRUE AND operation IN "
+        "('quality.issue.root_cause.decide','quality.capa.actions.complete','quality.capa.followup.link')",
+    ):
+        if bind.scalar(text(statement)):
+            return True
+    return False
+
+
+def upgrade():
+    _ensure_allocated()
+    # This precondition establishes the bidirectional proof invariant; do not
+    # silently adopt an old consumed three-op proof without its target atom.
+    # Existing unconsumed previews may remain, subject to the normal host guards.
+    op.execute("LOCK TABLE confirmations IN SHARE ROW EXCLUSIVE MODE")
+    if op.get_bind().scalar(
+        text(
+            "SELECT count(*) FROM confirmations WHERE consumed IS TRUE AND operation IN "
+            "('quality.issue.root_cause.decide','quality.capa.actions.complete','quality.capa.followup.link')"
+        )
+    ):
+        raise RuntimeError(
+            "Preexisting consumed followup proof requires explicit investigation; migration will not rewrite it"
+        )
+    _replace_issue_check("status", OLD_STATUS, NEW_STATUS)
+    _replace_issue_check("operation", OLD_OPERATIONS, NEW_OPERATIONS)
+    for statement in DDL:
+        op.execute(statement)
+    op.execute(_extended_receipt_sql())
+    # Do not replace require_quality_change_atom or its old table triggers.
+    for batch in (PROOF_SQL, CONFIRMATION_SQL, ISSUE_SQL, LINK_SQL):
+        for statement in _function_statements(batch):
+            op.execute(statement)
+    op.execute(
+        "CREATE TRIGGER quality_followup_proof_transition BEFORE INSERT OR UPDATE OR DELETE ON confirmations "
+        "FOR EACH ROW EXECUTE FUNCTION protect_quality_followup_confirmation()"
+    )
+    op.execute(
+        "CREATE CONSTRAINT TRIGGER quality_followup_proof_required AFTER UPDATE ON confirmations "
+        "DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION require_quality_followup_consumption_atom()"
+    )
+    op.execute(
+        "CREATE CONSTRAINT TRIGGER quality_followup_required AFTER INSERT ON quality_issue_versions "
+        "DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION require_quality_followup_atom()"
+    )
+    op.execute(
+        "CREATE CONSTRAINT TRIGGER capa_link_required AFTER INSERT ON capa_remediation_links "
+        "DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION require_capa_link_atom()"
+    )
+    for table in TABLES:
+        op.execute(f'ALTER TABLE "{table}" ENABLE ROW LEVEL SECURITY')
+        op.execute(f'ALTER TABLE "{table}" FORCE ROW LEVEL SECURITY')
+        op.execute(
+            f'CREATE POLICY tenant_scope ON "{table}" '
+            "USING (tenant_id=nullif(current_setting('pdos.tenant_id',true),'')::uuid) "
+            "WITH CHECK (tenant_id=nullif(current_setting('pdos.tenant_id',true),'')::uuid)"
+        )
+        op.execute(f'REVOKE ALL ON "{table}" FROM PUBLIC,pdos_next_app,pdos_agent')
+        permissions = "SELECT,INSERT" if table == "capa_remediation_links" else "SELECT"
+        op.execute(f'GRANT {permissions} ON "{table}" TO pdos_next_app')
+        op.execute(
+            f'CREATE TRIGGER lifecycle_reference BEFORE INSERT OR UPDATE OR DELETE ON "{table}" '
+            "FOR EACH ROW EXECUTE FUNCTION lifecycle_reference_gate()"
+        )
+        op.execute(
+            f'CREATE TRIGGER retained_record BEFORE UPDATE OR DELETE ON "{table}" '
+            "FOR EACH ROW EXECUTE FUNCTION protect_next_snapshot()"
+        )
+    op.execute("REVOKE ALL ON ALL TABLES IN SCHEMA public FROM pdos_agent")
+    # CATALOG_COLUMNS is the exact 29/33-column publication contract, not a SQL
+    # registry. Root must register both covered/guarded tables in lifecycle_catalog
+    # and import both models. Never mark them NON_CONSUMING or claim coverage here.
+
+
+def downgrade():
+    _ensure_allocated()
+    op.execute(
+        "LOCK TABLE confirmations,quality_issue_versions,capa_remediation_links,"
+        "capa_verification_evidence,action_receipts IN SHARE ROW EXCLUSIVE MODE"
+    )
+    if _has_retained_followup():
+        raise RuntimeError("Retained followup history prevents destructive downgrade")
+    # Remove only this proposal's extra guards. Old quality/merge/change atoms stay.
+    op.execute("DROP TRIGGER quality_followup_required ON quality_issue_versions")
+    op.execute("DROP TRIGGER capa_link_required ON capa_remediation_links")
+    op.execute("DROP TRIGGER quality_followup_proof_required ON confirmations")
+    op.execute("DROP TRIGGER quality_followup_proof_transition ON confirmations")
+    for signature in (
+        "require_capa_link_atom()",
+        "require_quality_followup_atom()",
+        "require_quality_followup_consumption_atom()",
+        "protect_quality_followup_confirmation()",
+        "assert_quality_followup_receipt(uuid,uuid,uuid,integer,text,text,uuid,text,text)",
+        "assert_quality_followup_proof(uuid,uuid,uuid,text,jsonb,timestamptz)",
+    ):
+        op.execute(f"DROP FUNCTION {signature}")
+    for table in reversed(TABLES):
+        op.drop_table(table)
+    op.execute(_head_receipt_sql())
+    _replace_issue_check("operation", NEW_OPERATIONS, OLD_OPERATIONS)
+    _replace_issue_check("status", NEW_STATUS, OLD_STATUS)
