@@ -93,6 +93,7 @@
 
 | 文档 | 状态 |
 |---|---|
+| [2026-10-08-pdos-next-s0-refactoring-plan.md](2026-10-08-pdos-next-s0-refactoring-plan.md) | **已按审阅意见修订（2026-10-08），待批准开始 B0**。M1/S0 整体重构：B0 限时基线（慢路径引用旧证据、短路径实测）、B1–B8 分批与回归、迁移链一次性重置不留兼容层（决策 P1）、建项目过渡入口（P2）、性能分档（P3）、品类为第一键的 RLS、施工合同整体标为已取代。代码未开始。 |
 | [2026-10-07-xiaopai-single-agent-runtime-plan.md](2026-10-07-xiaopai-single-agent-runtime-plan.md) | **已被设计确认稿与 v1.1 取代（2026-10-08）**，保留作决策记录。单 Agent 小Pai、工具/MCP（§4.3）、技能包（§5.1）等内容已并入 v1.1 §06；其施工清单（§11、§14）以原工程为对象，不再执行。 |
 | [2026-10-07-xiaopai-product-execution-plan.md](2026-10-07-xiaopai-product-execution-plan.md) | **已按 v1.1 改写（2026-10-08）**。pdos-next 的里程碑排序：M0 停用与冻结 → M1 S0 整体重构 → M2 小Pai 内核与公开研究 → M3 品类到立项闭环 → 后续。活动状态以唯一清单为准。 |
 | [2026-10-08-pdos-next-design-confirmation.md](2026-10-08-pdos-next-design-confirmation.md) | **已全部确认（2026-10-08）**。原工程停用、主线改为 pdos-next 后的设计冻结前确认稿：已定决定 K1–K9；待拍板 C1–C14（范围根、提案/定义关系、研究类对象去留、第一闭环、一致性与性能规则、形式化收敛、Agent 拓扑写回、试点资格、出站、术语、派生、数据迁移、复用范围、文档清理）；原工程复用清单与停用步骤 S1–S7。全部确认后并入目标架构 v1.1 冻结。 |

@@ -9,11 +9,12 @@
     "stage_note": "Build stages renamed G0-G5 -> S0-S5 (same order); G0/G1 are now business gates (G0 立项评审, G1 计划基线)."
   },
   "pending_code_alignment": [
-    "project.create: T1 -> T2 (created only via proposal.g0.decide); update command_handlers tier registry",
+    "project.create: target T2 via proposal.g0.decide; S0–M3 keep a human T1 transitional entry marked in receipts, tighten after G0 (confirmation P2)",
     "ai.loop.activate/pause renamed to ai.automation.activate/pause",
     "product.research.start removed; research results become research.snapshot.register / category knowledge / proposal content",
     "All product-scoped commands gain category scope (category_id) per v1.1 §02.2 / I21",
-    "Error codes converge to ~15 classes with detail (v1.1 §08.7)"
+    "Error codes converge to ~15 classes with detail (v1.1 §08.7)",
+    "Migration chain reset once in S0 (confirmation P1): archive next_0001–next_0032, new chain from empty DB, no legacy compatibility layers"
   ],
   "items": [
     {
