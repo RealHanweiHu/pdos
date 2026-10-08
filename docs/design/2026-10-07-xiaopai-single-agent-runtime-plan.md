@@ -1,3 +1,5 @@
+> **已被取代（2026-10-08）**：本方案的决定已并入[设计确认稿](2026-10-08-pdos-next-design-confirmation.md)与[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §06；本文保留作决策记录。§11、§14 以原工程为对象的施工清单不再执行。
+
 # 小Pai 单 Agent 运行时方案：在 LangGraph + Temporal 之上接工具与 Skill
 
 日期：2026-10-07。

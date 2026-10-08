@@ -1,17 +1,27 @@
 {
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
-    "source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
-    "sha256": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
-    "original_contract_package_received": false
+    "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
+    "sha256": "9e7dfbf6711f26c41beb00e513271d1479c8f244d67d6341ba08b473f70ddda7",
+    "original_contract_package_received": false,
+    "revision": "v1.1 (approved 2026-10-08)",
+    "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+    "stage_note": "Build stages renamed G0-G5 -> S0-S5 (same order); G0/G1 are now business gates (G0 立项评审, G1 计划基线)."
   },
+  "pending_code_alignment": [
+    "project.create: T1 -> T2 (created only via proposal.g0.decide); update command_handlers tier registry",
+    "ai.loop.activate/pause renamed to ai.automation.activate/pause",
+    "product.research.start removed; research results become research.snapshot.register / category knowledge / proposal content",
+    "All product-scoped commands gain category scope (category_id) per v1.1 §02.2 / I21",
+    "Error codes converge to ~15 classes with detail (v1.1 §08.7)"
+  ],
   "items": [
     {
       "operation": "evidence.artifact.register",
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "artifact.registered",
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -20,7 +30,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "claim.recorded",
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -29,7 +39,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "evidence.linked",
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "not_implemented"
     },
     {
@@ -37,15 +47,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "source.withdrawn",
-      "stage": "G0",
-      "implementation": "not_implemented"
-    },
-    {
-      "operation": "product.research.start",
-      "write_tier": "T0",
-      "ai_execution": "需资格与授权",
-      "event": "research.started",
-      "stage": "G1",
+      "stage": "S0",
       "implementation": "not_implemented"
     },
     {
@@ -53,7 +55,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "definition.draft_created",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -62,7 +64,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "definition.updated",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -70,24 +72,25 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "definition.published",
-      "stage": "G1",
-      "implementation": "not_implemented"
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "note": "= 规格冻结（T2）"
     },
     {
       "operation": "product.variant.derive",
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "variant.derived",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "project.create",
-      "write_tier": "T1",
-      "ai_execution": "一次确认后",
+      "write_tier": "T2",
+      "ai_execution": "随 proposal.g0.decide，仅准备/不可代决定",
       "event": "project.created",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -96,7 +99,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "task.created",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -104,7 +107,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "task.assigned",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -112,7 +115,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "commitment.accepted",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -120,7 +123,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "plan.proposed",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -129,7 +132,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "plan.applied",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -138,7 +141,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "baseline.approved",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -146,7 +149,7 @@
       "write_tier": "T0",
       "ai_execution": "确定性引擎",
       "event": "forecast.refreshed",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -154,7 +157,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "external_wait.recorded",
-      "stage": "G1",
+      "stage": "S1",
       "implementation": "not_implemented"
     },
     {
@@ -162,7 +165,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "configuration.created",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -171,7 +174,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "interface.updated",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "not_implemented"
     },
     {
@@ -179,7 +182,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "bom.revised",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -188,7 +191,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "build.created",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -197,7 +200,7 @@
       "write_tier": "T0",
       "ai_execution": "确定性引擎",
       "event": "readiness.computed",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -206,7 +209,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "build.started",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -215,7 +218,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "build.output_recorded",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -224,7 +227,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "sample.allocated",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -233,7 +236,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "actual_configuration.recorded",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -242,7 +245,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "verification.requested",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -251,7 +254,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "handoff.offered",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -260,7 +263,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "handoff.accepted",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -269,7 +272,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "verification.schedule_proposed",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -278,7 +281,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "test.results_imported",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "not_implemented"
     },
     {
@@ -286,7 +289,7 @@
       "write_tier": "T0",
       "ai_execution": "确定性引擎",
       "event": "test.result_computed",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "not_implemented"
     },
     {
@@ -294,7 +297,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "test.disposition_decided",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "not_implemented"
     },
     {
@@ -302,7 +305,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "issue.created",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -310,7 +313,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "issues.merged",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -318,7 +321,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "capa.drafted",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -326,7 +329,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "capa.effectiveness_decided",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -334,7 +337,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "process.revised",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -343,7 +346,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "tooltrial.created",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "not_implemented"
     },
     {
@@ -351,7 +354,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "fixture.accepted",
-      "stage": "G2",
+      "stage": "S2",
       "implementation": "not_implemented"
     },
     {
@@ -359,7 +362,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "pilot.created",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -367,7 +370,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "pilot.results_recorded",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -375,7 +378,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "change.requested",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -383,7 +386,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "change.impact_created",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -391,7 +394,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "change.approved",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -399,7 +402,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "change.implementation_recorded",
-      "stage": "G3",
+      "stage": "S3",
       "implementation": "not_implemented"
     },
     {
@@ -407,7 +410,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "release.package_assembled",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -415,7 +418,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "release.engineering_approved",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -423,7 +426,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "release.manufacturing_approved",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -431,7 +434,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "customer.sample_send_authorized",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -439,7 +442,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "customer.acceptance_recorded",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -447,7 +450,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "supply.commitment_recorded",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -455,7 +458,7 @@
       "write_tier": "T0",
       "ai_execution": "确定性引擎",
       "event": "kit.computed",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -464,7 +467,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "alternate.approved",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -472,7 +475,7 @@
       "write_tier": "T0",
       "ai_execution": "确定性引擎",
       "event": "cost.estimated",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -481,7 +484,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "external_handoff.authorized",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -489,7 +492,7 @@
       "write_tier": "T0",
       "ai_execution": "可信连接器",
       "event": "external_receipt.recorded",
-      "stage": "G4",
+      "stage": "S4",
       "implementation": "not_implemented"
     },
     {
@@ -497,7 +500,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "knowledge.candidate_created",
-      "stage": "G5",
+      "stage": "S5",
       "implementation": "not_implemented"
     },
     {
@@ -505,7 +508,7 @@
       "write_tier": "T2",
       "ai_execution": "仅准备/不可代决定",
       "event": "knowledge.rule_published",
-      "stage": "G5",
+      "stage": "S5",
       "implementation": "not_implemented"
     },
     {
@@ -513,7 +516,7 @@
       "write_tier": "T0",
       "ai_execution": "需资格与授权",
       "event": "ai.work_started",
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -522,7 +525,7 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "ai.run_cancelled",
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
@@ -531,24 +534,24 @@
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "ai.run_reverted",
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json"
     },
     {
-      "operation": "ai.loop.activate",
+      "operation": "ai.automation.activate",
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "ai.automation_activated",
-      "stage": "G5",
+      "stage": "S5",
       "implementation": "not_implemented"
     },
     {
-      "operation": "ai.loop.pause",
+      "operation": "ai.automation.pause",
       "write_tier": "T1",
       "ai_execution": "一次确认后",
       "event": "ai.automation_paused",
-      "stage": "G5",
+      "stage": "S5",
       "implementation": "not_implemented"
     },
     {
@@ -556,8 +559,188 @@
       "write_tier": "READ",
       "ai_execution": "授权读取",
       "event": null,
-      "stage": "G0",
+      "stage": "S0",
       "implementation": "not_implemented"
+    },
+    {
+      "operation": "research.snapshot.register",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "research.snapshot_registered",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "category.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "category.created",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "category.member.grant",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "category.member_granted",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "category.knowledge.add",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权；AI 来源标 ai_draft",
+      "event": "category.knowledge_added",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "category.knowledge.promote",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后，须人工确认已去标识",
+      "event": "category.knowledge_promoted",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "category.knowledge.withdraw",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "category.knowledge_withdrawn",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "category.parameter.publish",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "category.parameter_published",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "proposal.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后；默认私有",
+      "event": "proposal.created",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "proposal.item.patch",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权；署 AI 名、可按运行撤回、不覆盖人工值",
+      "event": "proposal.item_patched",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "proposal.question.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "proposal.question_created",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "proposal.share",
+      "write_tier": "T1",
+      "ai_execution": "仅人工",
+      "event": "proposal.shared",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "write_tier": "T1",
+      "ai_execution": "仅提案负责人本人",
+      "event": "proposal.g0_submitted",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "proposal.g0.decide",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定；评审人不得为负责人",
+      "event": "proposal.g0_decided",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "platform.link.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "platform.linked",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "product.definition.item.patch",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权；署 AI 名、可撤回",
+      "event": "definition.item_patched",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "ai.skill.enable",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "ai.skill_enabled",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "ai.skill.qualify",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "ai.skill_qualified",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "provider.agreement.register",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "provider.agreement_registered",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "mcp.connector.allow",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "mcp.connector_allowed",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "mcp.tool.grant",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "mcp.tool_granted",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
     }
   ]
 }

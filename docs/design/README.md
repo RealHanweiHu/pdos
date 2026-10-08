@@ -5,9 +5,9 @@
 ## 最终方案速览（截至 2026-10-08）
 
 - **产品形态**：AI-native 研发项目管理系统（PDOS）。决策背景见[全量新建说明](2026-08-09-cehub-v32-convergence.md)：以 preview 定稿为唯一产品形态基准，老 CEHub 仅可选复用。
-- **双工程线并行、互不继承**：
-  - **原工程**（`server/` + `web/`）：按[整合执行计划](2026-09-09-ai-native-integrated-execution-plan.md)（N/P/Q 65 项）推进，领域基线是[完整设计合同 v1.1](2026-09-10-pdos-complete-design-contract.md)（DC-13 确认为唯一领域基线）。
-  - **新工程 pdos-next**（`pdos-next/`）：以[完整目标架构 v1](2026-10-02-pdos-complete-target-architecture-v1.md) + [执行方案](2026-10-02-pdos-next-execution-plan.md)（G0–G5）为目标权威；不以现有代码/合同为约束，旧工程纯运行框架可复用，业务模块与资格不继承。
+- **主线工程是 pdos-next（用户 2026-10-08 定）**：
+  - **pdos-next**（`pdos-next/`）：以[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)（2026-10-08 批准并冻结）为设计依据，决策背景见[设计确认稿](2026-10-08-pdos-next-design-confirmation.md)；建设顺序：S0 整体重构 → S1 品类研究到立项 + 小Pai 内核。
+  - **原工程**（`server/` + `web/`）：2026-10-08 停用归档（标签 `original-final-2026-10-08`），数据备份不迁移；N/P/Q 与 Q0–Q6 随之归档。原工程的执行计划、完整设计合同等仅作历史对照与复用来源。
 - **固定技术栈与 Agent 运行架构**（AGENTS.md 不可协商项 6）：Next.js + FastAPI + PostgreSQL + LangGraph(Python) + Temporal + shadcn/ui。所有 Agent 完整能力经 Temporal 工作流与 Activity 调 LangGraph，模型网关不得绕过注册执行图；统一规则见[Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md)（已实施，两线共用）。
 - **AI 写入分级**：[DC-11 T0/T1/T2 政策](2026-09-20-ai-direct-write-tier-policy.md)（已批准，实施中）。AI 身份经受控领域服务写入，`pdos_agent` 对业务表零直接写权限，永不取得 T2 执行权。
 - **现行方向**：[DC-13 设计方向整合](2026-09-28-pdos-design-direction-integration.md)——原合同是领域基线，V2 设计包仅作体验层来源；AI 默认模式为"AI 先完成、引擎校验、人管例外"。执行顺序上产品经理开发第一（覆盖 DC-13 原 D14-04 先行顺序）。
@@ -24,7 +24,7 @@
 | [2026-09-20-ai-direct-write-tier-policy.md](2026-09-20-ai-direct-write-tier-policy.md) | DC-11 AI 直接写入分级政策（T0/T1/T2） |
 | [2026-09-28-pdos-design-direction-integration.md](2026-09-28-pdos-design-direction-integration.md) | DC-13 设计方向整合（V2 仅体验层来源） |
 | [2026-09-28-xiaopai-conversational-agent.md](2026-09-28-xiaopai-conversational-agent.md) | DC-12 小Pai 对话式 Agent 与项目持续跟进 |
-| [2026-10-02-pdos-complete-target-architecture-v1.md](2026-10-02-pdos-complete-target-architecture-v1.md) | pdos-next 完整目标架构 v1（12 分册、66 操作、65 事件、AT-01~48） |
+| [2026-10-02-pdos-complete-target-architecture-v1.md](2026-10-02-pdos-complete-target-architecture-v1.md) | **已被 v1.1 取代（2026-10-08）**，保留作历史对照。 |
 | [2026-10-02-pdos-next-execution-plan.md](2026-10-02-pdos-next-execution-plan.md) | pdos-next 执行方案（G0–G5 切片与加速规则） |
 | [2026-10-07-agent-runtime-convergence.md](2026-10-07-agent-runtime-convergence.md) | Agent 运行架构收口合同（LangGraph + Temporal，已实施，两线共用） |
 
@@ -93,10 +93,10 @@
 
 | 文档 | 状态 |
 |---|---|
-| [2026-10-07-xiaopai-single-agent-runtime-plan.md](2026-10-07-xiaopai-single-agent-runtime-plan.md) | **候选，部分已定**。**Agent 拓扑已定（用户 2026-10-07）**：对话助手收敛为单 Agent 加渐进披露的技能包，以 Linear Agent 为参照样本，技能包三要素是工具、数据语义、使用原则，按上下文预载并可在运行中自加载（§5.1）。**2026-10-08 补充确认**：只有一个 Agent，即小Pai，通过工具、MCP 连接器（§4.3）和技能包完成工作；不再按原工程六领域 Agent + PMI 的方式组织，AgentKey 退出运行时概念；完整设计合同中按六领域组织 AI 的表述在拓扑上被取代，27 项能力的业务语义保留为需求来源。已写入 AGENTS.md 不可协商项 6。LangGraph + Temporal 外层边界已定。**主线工程已定（用户 2026-10-08）：按 pdos-next 来**；原工程过渡期处置、pdos-next 第一个业务闭环待定（§15）。主线工程、计量、出站、试点资格等仍待用户逐项确定（§13）。 |
-| 小Pai 产品蓝图（`2026-10-07-xiaopai-product-blueprint.md`） | **计划中，尚未落盘**。基于小Pai（单 Agent + Skill）的完整产品蓝图：六类能力、Skill 三层体系、五个交互入口、P0–P4 分阶段落地。[执行计划](2026-10-07-xiaopai-product-execution-plan.md)以其为上位文档（P0–P4 编号源自蓝图），文件本体待写作后补登；前置仍是单 Agent 方案批准（B2）。 |
-| [2026-10-07-xiaopai-product-execution-plan.md](2026-10-07-xiaopai-product-execution-plan.md) | **候选，随 B2 生效**。蓝图落地执行计划：拍板台账、里程碑 M0–M8、产品层分解 P1-1~P4-4；运行时细目引用单 Agent 方案 A1–G5 编号，不复制。**2026-10-08 策略前提（用户明确）：无用户期先把产品做好**——可靠性（M1 止血）、速度（D6 时延）、可演示性优先，真实试点（M7 P3-2/3）与生态外联（M8）后置到有试点对象；拍板台账中 B3（Temporal 固定栈）、B4（单 Agent 拓扑）已定，B2 待批。 |
-| [2026-10-08-pdos-next-design-confirmation.md](2026-10-08-pdos-next-design-confirmation.md) | **待用户逐项确认（2026-10-08）**。原工程停用、主线改为 pdos-next 后的设计冻结前确认稿：已定决定 K1–K9；待拍板 C1–C14（范围根、提案/定义关系、研究类对象去留、第一闭环、一致性与性能规则、形式化收敛、Agent 拓扑写回、试点资格、出站、术语、派生、数据迁移、复用范围、文档清理）；原工程复用清单与停用步骤 S1–S7。全部确认后并入目标架构 v1.1 冻结。 |
+| [2026-10-07-xiaopai-single-agent-runtime-plan.md](2026-10-07-xiaopai-single-agent-runtime-plan.md) | **已被设计确认稿与 v1.1 取代（2026-10-08）**，保留作决策记录。单 Agent 小Pai、工具/MCP（§4.3）、技能包（§5.1）等内容已并入 v1.1 §06；其施工清单（§11、§14）以原工程为对象，不再执行。 |
+| [2026-10-07-xiaopai-product-execution-plan.md](2026-10-07-xiaopai-product-execution-plan.md) | **已按 v1.1 改写（2026-10-08）**。pdos-next 的里程碑排序：M0 停用与冻结 → M1 S0 整体重构 → M2 小Pai 内核与公开研究 → M3 品类到立项闭环 → 后续。活动状态以唯一清单为准。 |
+| [2026-10-08-pdos-next-design-confirmation.md](2026-10-08-pdos-next-design-confirmation.md) | **已全部确认（2026-10-08）**。原工程停用、主线改为 pdos-next 后的设计冻结前确认稿：已定决定 K1–K9；待拍板 C1–C14（范围根、提案/定义关系、研究类对象去留、第一闭环、一致性与性能规则、形式化收敛、Agent 拓扑写回、试点资格、出站、术语、派生、数据迁移、复用范围、文档清理）；原工程复用清单与停用步骤 S1–S7。全部确认后并入目标架构 v1.1 冻结。 |
+| [2026-10-08-pdos-complete-target-architecture-v1.1.md](2026-10-08-pdos-complete-target-architecture-v1.1.md) | **已批准并冻结（2026-10-08），pdos-next 现行设计依据**。完整目标架构 v1.1：并入设计确认稿 K1–K9、C1–C14（品类为范围根、立项提案与 G0、规格字典与共用规格条目、研究方法改技能包、§06 单 Agent 小Pai 整体改写、§08.11 一致性与性能规则、错误码收敛、服务商数据协议、试点资格、术语 S0–S5/ConfirmationBatch/AutomationRule、建设顺序）；新增不变量 I21–I24、ADR A21–A30、操作与验收 AT-49–63。取代 v1.0。 |
 
 ## 四、已被取代（仅供追溯，勿作依据）
 

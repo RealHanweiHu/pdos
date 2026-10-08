@@ -1,6 +1,6 @@
 # Agent 运行架构统一：LangGraph + Temporal
 
-2026-10-07 用户明确所有 Agent 必须遵循 LangGraph + Temporal。本合同补充完整目标架构的执行边界；业务职责、主协调者目标、T0/T1/T2、独立身份、资格与原人工出口保持。
+2026-10-07 用户明确所有 Agent 必须遵循 LangGraph + Temporal。本合同补充完整目标架构的执行边界；业务职责、T0/T1/T2、独立身份与资格保持。Agent 拓扑以[目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §06 为准：唯一 Agent 小Pai，经工具、MCP 与技能包完成工作（2026-10-08 补注）。
 
 ```mermaid
 flowchart LR

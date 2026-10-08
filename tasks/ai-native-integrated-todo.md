@@ -6,7 +6,24 @@
 
 <a id="current-queue"></a>
 
-## 当前队列（2026-10-05 续接）
+## 当前队列（2026-10-08 起：pdos-next 主线）
+
+**依据**：[完整目标架构 v1.1](../docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md)（用户 2026-10-08 批准并冻结）、[设计确认稿](../docs/design/2026-10-08-pdos-next-design-confirmation.md)（K1–K9、C1–C14 已全部确认）、[执行计划](../docs/design/2026-10-07-xiaopai-product-execution-plan.md)。原工程（`server/` + `web/`）已停用归档（标签 `original-final-2026-10-08`），原 N/P/Q 65 项、Sprint、原版生产与 Q0–Q6 人工出口随之归档，下方 N/P/Q 条目只作历史记录。
+
+| 里程碑 | 状态 | 说明 |
+|---|---|---|
+| M0 停用与冻结 | 进行中 | S1 代码归档、S2 数据备份、S3 停服务、S4 删除数据库容器已完成；S5 生产下线待用户按[下线手册](../docs/runbooks/original-production-decommission.md)执行；S6 义务归档、S7 外部服务已定。v1.1 已批准；AGENTS.md、DC-11 §6、设计索引、执行计划、整理稿已同步；契约 JSON 同步后提交 |
+| M1 S0 整体重构 | 待开始 | 品类范围根迁移、v1.1 §08.11 一致性与性能规则、错误码收敛、术语改名、三方差异只留一套；验收：已有路径回归通过，已知慢路径交互命令 p95 秒级，保留计时对比 |
+| M2 小Pai 内核与公开研究 | 待开始 | 真实模型（原生工具调用）、Agent 图、工具注册表、技能包、公开研究台账、服务商数据协议、MCP 准入 |
+| M3 品类研究到立项（S1 第一个闭环） | 待开始 | v1.1 §09.2 路径 A；附录 B 适用场景 |
+
+**环境**：保留共用运行时状态库 `pdos-agent-state-b5181f4c` 与 Temporal 开发服务、`pdos-searxng-1`；pdos-next 合成环境已删除，按需由 `pdos-next/tools/` 重建。原工程数据备份在 `~/pdos-preview-backups/2026-10-08-original-final/`。
+
+**待用户处理**：S5 生产下线；仓库仍在 iCloud"桌面"同步范围内（同步冲突副本会反复出现），建议迁出；服务商数据协议中哪些服务商已签约。
+
+<a id="queue-history-20261005"></a>
+
+## 历史队列（2026-10-05 续接；2026-10-08 停用前，只读）
 
 **Agent 执行架构统一（2026-10-07 用户明确）**：所有 Agent 采用 LangGraph + Temporal，原工程 31 个完整入口及委托定时跟进已接共同纯运行框架；普通对话以判断/研究图执行，正式网关拒绝绕行，业务权限/来源、原租约及未知调用防重放保持。Next API/ASGI 默认使用持久队列，Worker 已接独立模型工厂，缺条件时显式等待；新旧业务、状态凭据和资格不混用。本地独立状态服务与 Worker 在线；核心36项、事件/租约22项及9项定向复查、Next166项通过，失败及范围见[架构合同](../docs/design/2026-10-07-agent-runtime-convergence.md)与[收口证据](../docs/reports/evidence/agent-runtime-convergence-20261007/result.md)。剩余为 Next 真实模型/资格/出站接口、生产 Temporal PG、G5完整协调器/Skills/长期记忆及原人工出口；未保存图结果的不确定动作仍需业务回执对账，不宣称全部逐工具自动恢复或真实资格启用。原其他业务队列与批准状态保持。
 

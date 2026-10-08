@@ -1,6 +1,9 @@
 # PDOS-next 架构设计整理稿
 
-日期：2026-10-08。性质：**导读整理稿**。本文不改写、不取代任何权威文档；与上游文档冲突时以上游为准。权威链：[完整目标架构 v1](2026-10-02-pdos-complete-target-architecture-v1.md) + [pdos-next 执行方案](2026-10-02-pdos-next-execution-plan.md) + [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md)（均已生效）。实现与验收的**活动状态唯一来源**是[唯一清单 pdos-next 队列](../../tasks/ai-native-integrated-todo.md#pdos-next-queue)，本文 §7 只是 2026-10-05 队列的快照。
+> **v1.1 更新（2026-10-08）**：目标架构已修订为 [v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)（用户批准并冻结），决策见[设计确认稿](2026-10-08-pdos-next-design-confirmation.md)。主要变化：主线是 pdos-next，原工程已停用归档；品类为权限范围根；立项前只交立项提案，唯一业务关卡 G0；规格字典与共用规格条目；研究方法改为技能包，不再有机会/实验/策略对象；唯一 Agent 小Pai（工具、MCP、技能包，§06 改写）；§08.11 一致性与性能规则；错误码约 15 类；建设阶段改称 S0–S5，先整体重构再做“品类研究到立项”。本整理稿下文按 v1.0 编写的部分，与 v1.1 冲突时以 v1.1 为准；§7 是 2026-10-05 的历史快照。
+
+
+日期：2026-10-08。性质：**导读整理稿**。本文不改写、不取代任何权威文档；与上游文档冲突时以上游为准。权威链：[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)（v1.0 已被取代） + [pdos-next 执行方案](2026-10-02-pdos-next-execution-plan.md) + [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md)（均已生效）。实现与验收的**活动状态唯一来源**是[唯一清单 pdos-next 队列](../../tasks/ai-native-integrated-todo.md#pdos-next-queue)，本文 §7 只是 2026-10-05 队列的快照。
 
 ## 0. PDOS-next 是什么
 
@@ -126,16 +129,16 @@ DefinitionRevision、WorkRequest、Task、Build、VerificationRequest、TestRun�
 
 ### 4.2 执行模型
 
-- **主协调执行者**：一个 WorkRequest 一个主协调者，按需调用产品/工程/品质/NPI/供应/管理能力；不默认构造自主 Agent 群聊，专业 Agent 不拥有独立事实库、不投票形成质量结论。运行主线：意图→范围/授权→结果标准→上下文→计划→Skill/工具→输出验证→政策→领域命令→结果核对→等待/继续→效果复查。
+- **唯一 Agent 小Pai（v1.1）**：对话、页面、事件、定时都由小Pai 执行，经工具（由命令登记表生成）、MCP 连接器和渐进加载的技能包完成工作；不设领域 Agent，不构造 Agent 群聊。
 - **SkillVersion 契约**：key/version/purpose/输入输出 Schema/allowed_operations/evidence_policy/failure_policy/budget/模型能力要求/评测套件/owner；Skill 不是提示词文本。
-- **AutomationRule（Loop）**：trigger（domain_event/schedule/relative_milestone/manual）+ goal/stop_condition + 预算/冷却/去重/级联上限；触发风暴受控（AT-43）。
+- **AutomationRule**（v1.0 的 Loop 统一改称）：trigger（domain_event/schedule/relative_milestone/manual）+ goal/stop_condition + 预算/冷却/去重/级联上限；触发风暴受控（AT-43）。
 - **上下文与 Memory**：构建优先级为明确对象/版本→工作状态→显式关系→适用证据→授权检索→有效记忆；ContextSnapshot 记录读集并在写入前重验关键读集。Memory 五层（个人偏好/当前工作/项目事实/平台经验/正式规则），项目事实从领域查询重建，源权限贯穿检索、缓存、摘要与输出（I14、AT-37）。
 - **Run 与 ActionReceipt**：工具返回成功字符串不是完成证明，必须收到真实命令回执；业务写入与回执/Outbox 同事务；取消以领域 cancel_epoch 为准，已发出的外部副作用先对账（AT-41）。
 - **资格晋升链**：开发→离线评估→影子比对→T1 真实试用→限定 T0→持续监测；资格绑定能力/操作/版本/场景，不是模型全局授权；模型自报置信度不作放行条件。
 
-### 4.3 待用户裁决：单 Agent + 技能包（2026-10-07 候选）
+### 4.3 单 Agent + 技能包（v1.1 已定）
 
-[小Pai 单 Agent 运行方案](2026-10-07-xiaopai-single-agent-runtime-plan.md)及[产品蓝图](2026-10-07-xiaopai-product-blueprint.md)、[落地执行计划](2026-10-07-xiaopai-product-execution-plan.md)为候选。**Agent 拓扑已定（用户 2026-10-07）**：对话助手收敛为单 Agent + 渐进披露技能包（参照 Linear Agent）；技能包三要素=工具、数据语义、使用原则，按上下文预载并可运行中自加载；六领域 Agent + PMI 保留为业务职责划分即技能包分组。主线工程、计量、出站、试点资格等仍待逐项确定，蓝图与执行计划随裁决生效。
+见 [v1.1 §06](2026-10-08-pdos-complete-target-architecture-v1.1.md)：唯一 Agent 小Pai；技能包三要素（工具、数据语义、使用原则），版本化配置文件、渐进加载；工具由命令登记表生成；MCP 管理员准入、逐项授权、外部写入按 T2；公开研究子任务与不可信内容隔离；试点租户以本人审阅记录作为草稿类技能包 T0 资格。
 
 ## 5. 技术架构
 
@@ -178,7 +181,7 @@ UI：shadcn/ui + Tailwind v4 + Geist + Phosphor，橙 `#c2410c`/`#fb923c`，8px 
 
 ## 6. 交付切片与验收
 
-### 6.1 G0–G5 纵向切片
+### 6.1 纵向切片（v1.0 编号 G0–G5；v1.1 改称 S0–S5，顺序为 S0 整体重构 → S1 品类研究到立项 + 小Pai 内核 → S2–S5）
 
 | 阶段 | 交付结果 |
 |---|---|
@@ -225,15 +228,15 @@ UI：shadcn/ui + Tailwind v4 + Geist + Phosphor，橙 `#c2410c`/`#fb923c`，8px 
 
 | 文档 | 作用域 |
 |---|---|
-| [完整目标架构 v1](2026-10-02-pdos-complete-target-architecture-v1.md) | pdos-next 目标权威：12 分册、领域/状态契约、体验/技术/集成、66 操作、65 事件、AT-01～48 |
+| [完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)（v1.0 已被取代） | pdos-next 目标权威：12 分册、领域/状态契约、体验/技术/集成、66 操作、65 事件、AT-01～48 |
 | [pdos-next 执行方案](2026-10-02-pdos-next-execution-plan.md) | G0–G5 切片、依赖、验收映射与 §3.1 收口规则；§4 首轮窄路径、§8–13 各波施工前合同 |
 | [复用与并行方案](2026-10-02-pdos-next-reuse-and-parallel-plan.md) | 新旧工程复用矩阵：可复制资产/可抽取算法 vs 不继承的表/状态机/资格 |
 | wave14–18 冻结实施合同 | 结果返回、品质闭环、品质整改后续、CAPA 有效性首段、专业事实（具名复核） |
 | [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md) | LangGraph + Temporal 边界，已实施，两线共用 |
-| [小Pai 单 Agent 方案](2026-10-07-xiaopai-single-agent-runtime-plan.md) / [蓝图](2026-10-07-xiaopai-product-blueprint.md) / [执行计划](2026-10-07-xiaopai-product-execution-plan.md)（候选） | 拓扑已定（单 Agent + 技能包）；主线工程等待用户逐项裁决 |
+| [设计确认稿](2026-10-08-pdos-next-design-confirmation.md) / [执行计划](2026-10-07-xiaopai-product-execution-plan.md) | v1.1 的决策记录（K1–K9、C1–C14）与 pdos-next 里程碑；[单 Agent 方案](2026-10-07-xiaopai-single-agent-runtime-plan.md) 已被取代，仅作决策记录 |
 | [DC-11 T0/T1/T2 政策](2026-09-20-ai-direct-write-tier-policy.md) | AI 写入分级的原批准政策（两线共同遵循） |
 | [完整设计合同 v1.1](2026-09-10-pdos-complete-design-contract.md) | 原工程领域基线，非 pdos-next 约束（术语与领域背景可参照） |
 | [对象合同 `docs/contracts/pdos-v1/`](../../contracts/pdos-v1/) 与 [运行政策 `docs/contracts/pdos-runtime-v1/`](../../contracts/pdos-runtime-v1/) | 原工程冻结合同与 DC 冻结登记台账 |
 | [唯一清单 pdos-next 队列](../../tasks/ai-native-integrated-todo.md#pdos-next-queue) | 活动状态唯一来源；wave2–25 详情在只读留存 |
 
-注：[立项前改造](2026-10-05-preproject-redesign.md)（品类/活提案/AI 先起草/小Pai 入口）实施于**原工程** `server/`+`web/`，不属于 pdos-next 工程范围；其"立项前轻、AI 先干"的产品方向与 pdos-next 目标架构兼容并存。
+注：[立项前改造](2026-10-05-preproject-redesign.md)（品类/立项提案/AI 先起草/小Pai 入口）原在原工程实施；v1.1 已把这些决定并入 pdos-next 设计（§02.3a、§03.14、§05），原工程实现只作复用参考。
