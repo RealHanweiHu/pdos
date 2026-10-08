@@ -1,0 +1,20 @@
+{
+  "exit_codes": {
+    "pure": 0,
+    "postgres-3": 0,
+    "postgres-2": 0,
+    "postgres-1": 0,
+    "lifecycle-isolated": 0
+  },
+  "passed_by_group": {
+    "pure": 689,
+    "postgres-1": 164,
+    "postgres-2": 149,
+    "postgres-3": 125,
+    "lifecycle-isolated": 24
+  },
+  "total_passed": 1151,
+  "elapsed_seconds": 1212.67,
+  "same_frozen_candidate": true,
+  "schema_mutation_tests_ran_without_other_test_processes": true
+}

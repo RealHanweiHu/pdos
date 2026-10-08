@@ -1,0 +1,11 @@
+{
+  "files": {
+    "facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "test_facts.py": "0e7351bf6edc93c23005e9b352545b32eb1679c6f6e297e33b216618b251f94f",
+    "facts-contract.md": "1e0e393fcc86466737b0f20bd4352bc77106943b0dff03d7756b5e893c6dcb0f"
+  },
+  "pure_checks": 88,
+  "review_sha256": "0c2b3a72bf7f0a039b3095e0a361314895efa4a30118420c9a350e5b1df4fc31",
+  "publicly_mounted": false,
+  "scope": "Three staged facts files and v2 UOW repair only"
+}

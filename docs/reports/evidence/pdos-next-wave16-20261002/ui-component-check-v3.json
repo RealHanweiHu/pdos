@@ -1,0 +1,90 @@
+{
+  "candidate": "Wave16 owned UI v3; permission-revocation privacy repair",
+  "recorded_at": "2026-10-03T08:05:11.948476+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "7e162684371d1127fccd21816b86c1b6b3cde918b830d541e7ec03ae84e89c31"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c1bf9bad3a2d2d27605fcaa969d283d9c604b2900146a69a9e65db5054029ba7"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "b3a089884e2c53ef4e0e4e7711fd4f3765405ecd7854a2b523e1c9fc512f8b74"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "00693636cc32fcea7a1ae5acb0cc5ebdae4ca2d0dbaf0f71baf5b3d72c69c6ef",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v2-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "89c39e5a70dbb648e858a2e5d83b2bbf20bac8b7b4aef5c15d19b9b9e8710406",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v2-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "520cf807f82b9fd28fd256f7557924d1b4a51fec186d60334973ef88d58a88ee",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v2-source/build-quality-followup-view.test.ts"
+    }
+  ],
+  "delta_file": "ui-v2-to-v3.diff",
+  "public_138_paths_changed": false,
+  "public_patches_modified": false,
+  "helper_checks": {
+    "tests": 40,
+    "passed": 40,
+    "failed": 0,
+    "exit_code": 0,
+    "raw_output": "ui-helper-v3-checks.log",
+    "prepare_command": "node /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/prepare-tests.cjs",
+    "command": "node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/build-quality-followup-view.test.js",
+    "transpiled_only_to_tmp": [
+      "product-view.ts",
+      "build-quality-followup-view.ts",
+      "build-quality-followup-view.test.ts"
+    ],
+    "no_src_javascript_created": true
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/tsconfig.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "raw_output": "ui-type-v3-check.log",
+    "configuration": "ui-local-v3-type-config.json"
+  },
+  "lint": {
+    "command": "node_modules/.bin/eslint src/components/builds/build-quality-followup.tsx src/lib/build-quality-followup-view.ts src/lib/build-quality-followup-view.test.ts --format json --output-file /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/lint-result.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 0,
+    "raw_output": "ui-lint-v3-result.json"
+  },
+  "changes": [
+    "After known commit, 401/403 clears private context, source selection, preview, inputs and all local drafts/storage; successful receipt notice remains and pending command stays null.",
+    "Known commit followed by read failure is never reclassified as unknown write; unknown original command recovery remains for genuine unconfirmed writes."
+  ],
+  "new_meaningful_checks": [
+    "401/403 after known commit require scope cleanup but remain saved_read_failed",
+    "Statusless/500/503 after known commit remain saved_read_failed",
+    "401/403 before known commit discard private recovery; genuine unconfirmed network uncertainty preserves original request"
+  ],
+  "preserved_evidence": [
+    "ui-component-check-v2.json",
+    "ui-source-v2-manifest.json",
+    "ui-v2-source-manifest.json",
+    "ui-v2-source/*",
+    "ui-public-integration-proposal.patch"
+  ],
+  "boundaries": {
+    "db_http_browser_public_build_run": false,
+    "shared_api_bff_parent_modified": false,
+    "backend_migration_modified": false,
+    "effectiveness_close_formal_release_enabled": false
+  }
+}

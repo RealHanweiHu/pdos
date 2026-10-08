@@ -1,0 +1,30 @@
+{
+  "status": "PASS_saved_plan_expired_not_started",
+  "recorded_at": "2026-10-04T00:45:54.546930+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "generation": "19ee5abb-ec6d-47f4-a46f-9ea74af05d23",
+  "run_id": "ccba4377-c158-5d34-a554-958652296f64",
+  "current_run_version_id": "9c6bf54b-f232-4287-9314-4a331d0100e8",
+  "current_run_revision": 1,
+  "status_raw": "planned",
+  "actual_start": null,
+  "fixed_window": {
+    "start": "2026-10-03T19:49:52.958567Z",
+    "finish": "2026-10-03T20:09:52.958567Z",
+    "original_timezone": "UTC"
+  },
+  "actual_start_versions": 0,
+  "occupancy_count": 0,
+  "sample_usage_count": 0,
+  "source_count": 10,
+  "plan_and_promise_receipts_retained": true,
+  "original_checkpoint_sha256": "06e9728df2d234f5d5b98781b10a6fb8eba0af3a437665ac0186f15bbcba9afa",
+  "last_previous_clock_observation": "2026-10-03T19:48:25Z",
+  "next_observed_clock": "2026-10-04T00:43:37Z",
+  "elapsed_clock_gap_cause_unknown": true,
+  "automatic_start_or_replan": false,
+  "business_writes": 0,
+  "read_only_transaction_rolled_back": true,
+  "new_formal_request_and_independent_run_required": true
+}

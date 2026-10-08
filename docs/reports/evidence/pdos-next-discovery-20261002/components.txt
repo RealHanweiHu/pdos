@@ -1,0 +1,19 @@
+✔ source reading separates raw values, origin, correspondence and maturity (5.200459ms)
+✔ permission-drift reading takes redacted input and reveals no raw text (0.306625ms)
+✔ missing completeness policy cannot imply complete OEM inputs (0.613583ms)
+✔ missing ports or binding visibly disable each action (7.156375ms)
+✔ empty authorized source list is explicit and cannot save (1.194167ms)
+✔ start callback sends no tenant/product/project authority (23.62425ms)
+✔ import callback preserves decimal text and exact pinned citation (1.5065ms)
+✔ selection sends one group to the existing preview callback and no confirmation (9.540167ms)
+✔ failed callbacks retain input and render an actionable error (0.438333ms)
+✔ selection validation and reserved keys cannot add accidental groups (0.219792ms)
+✔ candidate reading shows unresolved values, provenance and no fake completion (0.792041ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1846.934209

@@ -1,0 +1,27 @@
+{
+  "head": "next_0021",
+  "business_tables": 95,
+  "agent_direct_write_tables": [],
+  "new_forced_rls": [
+    [
+      "measurement_import_captures",
+      true,
+      true
+    ],
+    [
+      "test_measurements",
+      true,
+      true
+    ],
+    [
+      "test_result_projections",
+      true,
+      true
+    ],
+    [
+      "test_result_actions",
+      true,
+      true
+    ]
+  ]
+}

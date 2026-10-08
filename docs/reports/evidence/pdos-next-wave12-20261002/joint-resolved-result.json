@@ -1,0 +1,39 @@
+{
+  "result": "passed_after_test_only_repair",
+  "initial_result": "joint-result.json",
+  "initial_passed": 1483,
+  "initial_failed": 1,
+  "initial_failed_group": "verification_handoff-3",
+  "total_passed": 1484,
+  "elapsed_seconds": 975.8,
+  "elapsed_seconds_scope": "initial joint run only; recheck times recorded separately",
+  "test_only_recheck": {
+    "path": "pdos-next/server/tests/verification_handoff/test_transactions.py",
+    "before_sha256": "a1a457aad0dffa83a544ef7397f71b101ce5374585f2e61c1d63cc1b6a17c123",
+    "after_sha256": "b0370ecb212588cf98cb91e652c5f8750ab476f5b54627974e5424b2f198968e",
+    "runtime_source_changed": false,
+    "reason": "Common exact-source validation correctly rejects withdrawn source before downstream sample guard; expect SOURCE_UNAVAILABLE and assert unchanged facts, receipt counts and unconsumed confirmation.",
+    "nodes": [
+      "tests/verification_handoff/test_transactions.py::test_withdrawn_new_same_plan_actual_observation_blocks_acceptance"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 105.54,
+    "log": "test-only-recheck.log"
+  },
+  "structural_recheck": {
+    "exit_code": 0,
+    "elapsed_seconds": 66.63,
+    "passed": 24,
+    "selection": [
+      "tests/test_original_lifecycle_integration.py"
+    ],
+    "log": "lifecycle-isolated-recheck.log",
+    "other_test_processes_at_start": 0,
+    "reason": "Repeat in isolation after the targeted test-only recheck overlapped the end of the initial structural group."
+  },
+  "structural_tests_isolated": true,
+  "runtime_source_changed_after_initial_candidate": false,
+  "duplicate_rechecks_not_counted": true,
+  "candidate_manifest": "candidate.json",
+  "initial_candidate_manifest": "candidate-before-test-only-repair.json"
+}

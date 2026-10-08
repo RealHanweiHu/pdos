@@ -22,6 +22,7 @@ from app.domain.project_write_lock import lock_project_write_scope
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 if TYPE_CHECKING:
+    from app.domain.cost_issue_closure import CostClosureReference
     from app.domain.material_exceptions import MaterialClosureReference
 
 
@@ -357,7 +358,7 @@ class IssueService:
                 tables.project_members.c.project_id == project_id,
                 tables.project_members.c.user_id == user_id,
                 tables.users.c.role.in_(
-                    {"owner", "admin", "project_manager", "engineer", "quality"}
+                    {"owner", "admin", "product_manager", "project_manager", "engineer", "quality"}
                 ),
             )
         ).scalar_one_or_none()
@@ -842,6 +843,7 @@ class IssueService:
         closure_evidence_ref: str | None = None,
         expected_updated_at: datetime | None = None,
         material_closures: Sequence[MaterialClosureReference] | None = None,
+        cost_closures: Sequence[CostClosureReference] | None = None,
     ) -> IssueRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
@@ -905,6 +907,20 @@ class IssueService:
             if comment is not None:
                 audit_context["comment"] = comment
             if to_status == "closed":
+                from app.domain.cost_issue_closure import validate_cost_issue_closure
+
+                cost_context = validate_cost_issue_closure(
+                    connection,
+                    tenant_id=tenant_id,
+                    project_id=project_id,
+                    issue_id=issue_id,
+                    actor_user_id=actor_user_id,
+                    expected_sources=list(cost_closures) if cost_closures is not None else None,
+                )
+                if cost_context["sources"]:
+                    if expected_updated_at is None:
+                        raise TemplateFieldConflictError("请先刷新原问题并核对其当前版本再关闭")
+                    audit_context["cost_closure"] = cost_context
                 # Import locally: material exceptions create their original Issue.
                 from app.domain.material_exceptions import validate_material_issue_closure
 

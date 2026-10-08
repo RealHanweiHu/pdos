@@ -25,7 +25,7 @@ import { ConversationFinding } from "./conversation-finding";
 import { ReviewInboxExtras } from "./review-inbox-extras";
 
 type LoadState = "loading" | "ready" | "forbidden" | "error" | "redirecting";
-const internalRoles = new Set(["owner", "admin", "project_manager", "engineer", "quality"]);
+const internalRoles = new Set(["owner", "admin", "product_manager", "project_manager", "engineer", "quality"]);
 
 function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "操作失败，请稍后重试。";

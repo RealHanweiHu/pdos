@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "http_status": 200,
+  "response": {
+    "status": "ok",
+    "model_available": false,
+    "slice": "wave1-source-definition",
+    "durable_queue_enabled": true
+  }
+}

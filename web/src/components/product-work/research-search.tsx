@@ -7,14 +7,14 @@ import { ProductRequestError, request, type SearchObservation } from "./product-
 const field = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
 const statuses: Record<string, string> = { running: "搜索中 / 等待结果", completed: "已返回候选", partial: "结果不完整", no_results: "本次查询无命中", unavailable: "来源暂不可用", not_configured: "搜索未配置", denied: "查询被拒绝", failed: "搜索未完成" };
 
-type ResearchSearchProps = { base: string; lineId: string | null; configured: boolean | null; canSearch: boolean; onPick: (url: string, title: string) => void };
+type ResearchSearchProps = { base: string; lineId: string | null; configured: boolean | null; canSearch: boolean; provider?: string | null; onPick: (url: string, title: string) => void };
 
 export function ResearchSearch(props: ResearchSearchProps) {
   // Scope changes discard request identities and pending responses together with visible evidence.
   return <ScopedResearchSearch key={JSON.stringify([props.base, props.lineId])} {...props} />;
 }
 
-function ScopedResearchSearch({ base, lineId, configured, canSearch, onPick }: ResearchSearchProps) {
+function ScopedResearchSearch({ base, lineId, configured, canSearch, provider = null, onPick }: ResearchSearchProps) {
   const [history, setHistory] = useState<SearchObservation[]>([]);
   const [selected, setSelected] = useState<SearchObservation | null>(null);
   const [busy, setBusy] = useState(false);
@@ -64,7 +64,9 @@ function ScopedResearchSearch({ base, lineId, configured, canSearch, onPick }: R
     finally { setBusy(false); }
   };
   const visible = history.filter((item) => item.product_line_id === lineId);
-  return <section className="space-y-3 rounded-md border p-3"><h4 className="font-medium">搜索研究来源</h4><p className="text-xs text-muted-foreground">{configured === null ? "搜索服务配置尚未确认。" : configured ? "搜索服务已配置。" : "尚未配置搜索服务，可直接采集已知公开页面。"}查询词会发送给搜索服务；候选摘要仅作线索，采集为快照后才能用于研究引用。</p>
+  const providerLabel = provider === "local-index" ? "本地研究索引（站内爬取快照）" : provider === "tavily" ? "Tavily 网络搜索" : provider === "firecrawl" ? "Firecrawl 网络搜索" : provider === "searxng" ? "SearXNG 备用搜索" : null;
+  const queryNotice = provider === "local-index" ? "优先查询本租户快照；无命中时，公开关键词会发送给已配置的网络搜索服务；" : "公开关键词会发送给搜索服务，失败或无命中时尝试已配置的备用服务；";
+  return <section className="space-y-3 rounded-md border p-3"><h4 className="font-medium">搜索研究来源</h4><p className="text-xs text-muted-foreground">{configured === null ? "搜索服务配置尚未确认。" : configured ? `搜索服务已配置${providerLabel ? `，当前检索来源：${providerLabel}。` : "。"}` : "尚未配置搜索服务，可直接采集已知公开页面。"}{queryNotice}候选摘要仅作线索，采集为快照后才能用于研究引用。</p>
     {canSearch && <form className="grid gap-2 sm:grid-cols-2" onSubmit={(event) => { event.preventDefault(); void submit(new FormData(event.currentTarget)); }}><label className="text-sm sm:col-span-2">研究问题 / 关键词<input required name="query" maxLength={512} className={field} placeholder="请输入适合公开搜索的关键词" /></label><label className="text-sm">结果语言<select name="language" className={field}><option value="auto">搜索服务默认</option><option value="zh-CN">中文</option><option value="en">英文</option></select></label><label className="text-sm">时间范围<select name="time_range" className={field}><option value="">不限</option><option value="day">近一天</option><option value="month">近一月</option><option value="year">近一年</option></select></label><Button disabled={busy || !configured} className="justify-self-start">{busy ? "正在搜索…" : "搜索来源"}</Button></form>}
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     <div className="flex flex-wrap items-center gap-2"><label className="min-w-0 flex-1 text-sm">此范围的近期查询<select value={selected?.id ?? ""} className={field} onChange={(event) => setSelected(visible.find((item) => item.id === event.target.value) ?? null)}><option value="">选择一条查询</option>{visible.map((item) => <option key={item.id} value={item.id}>{new Date(item.started_at).toLocaleString()} · {item.query} · {statuses[item.status]}</option>)}</select></label><Button size="sm" variant="outline" disabled={busy} onClick={() => { setBusy(true); setError(null); void load().then(({ items, recovered }) => { if (selected && !recovered) setSelected(items.find((item) => item.id === selected.id) ?? null); }).catch((failure) => failed(failure)).finally(() => setBusy(false)); }}>刷新结果</Button></div>

@@ -8,7 +8,7 @@ import type { ProjectIssue } from "./project-work-item-types";
 const issue: ProjectIssue = { id: "issue", project_id: "project", title: "样机物料不足", description: null, stage_id: null, owner_user_id: "owner", verifier_user_id: "verifier", reported_by_user_id: "owner", issue_type: "supplier", status: "verification", severity: "high", root_cause: null, resolution: "已到料并复核", closure_criteria: "齐备后复核", closure_evidence_ref: null, reopen_count: 0, target_date: "2026-09-30", closed_at: null, created_at: "2026-09-27T10:00:00Z", updated_at: "2026-09-27T10:00:00Z" };
 const ref = { exception_id: "exception", review_id: "review-1", source_digest: "digest-1" };
 const context = { required: true, ready: true, items: [{ exception_id: ref.exception_id, title: "控制器物料恢复", closure: { ready: true, reasons: [], reference: ref } }] };
-const card = { item: issue, permissions: { verify: true }, actor_id: "verifier", verification_policy: {}, material_closure: context };
+const card = { item: issue, permissions: { verify: true }, actor_id: "verifier", verification_policy: {}, cost_closure: { required: false, ready: true, items: [] }, material_closure: context };
 const choice = "我已核对以上全部来源，引用本次物料恢复记录";
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); window.history.replaceState(null, "", "/"); });
 

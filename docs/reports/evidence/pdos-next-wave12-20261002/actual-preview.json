@@ -1,0 +1,91 @@
+{
+  "schema_head": "next_0015",
+  "business_tables": 82,
+  "agent_direct_writes": 0,
+  "new_tables_forced_rls": {
+    "sample_readiness_facts": [
+      true,
+      true
+    ],
+    "sample_current_readiness": [
+      true,
+      true
+    ],
+    "verification_actual_method_batches": [
+      true,
+      true
+    ],
+    "verification_actual_method_applicabilities": [
+      true,
+      true
+    ],
+    "verification_current_actual_methods": [
+      true,
+      true
+    ],
+    "verification_handoff_facts": [
+      true,
+      true
+    ]
+  },
+  "model_calls": 0,
+  "nature": "synthetic",
+  "request_id": "0c20460b-cb95-492a-98b6-2780bb752f9e",
+  "build_id": "506efa65-e39c-470f-b041-b53977f42a1f",
+  "formal_versions": 5,
+  "status": "accepted",
+  "offered_pairs": 2,
+  "accepted_pairs": 1,
+  "returned_scopes": 2,
+  "remaining_gaps": [
+    {
+      "code": "PARTIAL_SAMPLE_COUNT",
+      "detail": "已覆盖 1/3 件",
+      "item_id": "dimension",
+      "sample_id": null
+    },
+    {
+      "code": "UNCOVERED_CAVITY",
+      "detail": "未覆盖模穴 B",
+      "item_id": "dimension",
+      "sample_id": null
+    },
+    {
+      "code": "UNCOVERED_CAVITY",
+      "detail": "未覆盖模穴 C",
+      "item_id": "dimension",
+      "sample_id": null
+    }
+  ],
+  "readiness_states": [
+    "ready",
+    "hold"
+  ],
+  "immutable_sample_states": [
+    "unknown",
+    "unknown"
+  ],
+  "actual_method_states": [
+    "applicable",
+    "unknown"
+  ],
+  "test_runs": 0,
+  "test_occupancy": 0,
+  "receipt_audit_outbox_each": 6,
+  "old_request_versions_unchanged": 3,
+  "old_build_sample_and_preparation_history_unchanged": true,
+  "old_start_fixed_record_unchanged": true,
+  "old_start_current_qualification": "needs_recheck_after_added_authority_facts",
+  "successor_build_current_qualification": "limited_current",
+  "real_qualification": false,
+  "formal_exit": false,
+  "expired_synthetic_rounds_preserved": 1,
+  "browser_method_renewal": {
+    "sample": "B",
+    "revision": 2,
+    "status": "unknown",
+    "one_additional_receipt_audit_outbox": true,
+    "formal_version_unchanged": 5,
+    "accepted_a_unchanged": true
+  }
+}

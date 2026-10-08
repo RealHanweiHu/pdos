@@ -1,0 +1,112 @@
+{
+  "scope": "Static tool-only receipt reference revision correction; no DB/HTTP/pytest/private checkpoint writes",
+  "tool": "pdos-next/tools/wave15_seed.py",
+  "before_sha256": "c9afc6cc536f3604a1b2f1d5e4d39feb0673d02b3b178959d5d53f29b914455c",
+  "after_sha256": "29ab0a4e70c5920e0066a4d685ef57f7b5fcbdfff249f466df4d238c9dcae8b2",
+  "root_observed_failure": {
+    "code": "VERSION_CONFLICT",
+    "definition_receipt_revision": 4,
+    "project_saved_reference_before": 1,
+    "project_receipt_request_key_confirmation_counts": [
+      0,
+      0,
+      0
+    ]
+  },
+  "root_checkpoint_repair_evidence": "docs/reports/evidence/pdos-next-wave15-20261002/demo-unsubmitted-reference-repair.json",
+  "source_rules": [
+    {
+      "file": "pdos-next/server/pdos_next/domain/products/definitions.py",
+      "line": 121,
+      "rule": "Definition revision is max existing Product Definition revision plus one; independent new definition does not imply revision one"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/configurations/service.py",
+      "line": 435,
+      "rule": "BOM/engineering/manufacturing fresh series starts at one; references now use actual creation receipt revision rather than assume it"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/service.py",
+      "line": 181,
+      "rule": "Common Receipt exports subject_revision alongside subject_id"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/build_execution/service.py",
+      "line": 704,
+      "rule": "Actual/Lot/allocation fresh immutable objects currently revision one; references use receipt/server view nonetheless"
+    }
+  ],
+  "changed_reference_sources": [
+    "Project and EngineeringConfiguration Definition references: exact Definition receipt",
+    "Engineering BOM / Manufacturing engineering / Build Project references: each exact creation receipt",
+    "Build readiness, operational binding and physical/preparation Build references: exact Build receipt",
+    "Build engineering/manufacturing authorization references: each exact T2 receipt",
+    "Actual engineering/manufacturing, Lot actual configuration, Allocation Lot: exact creation receipt",
+    "Sample readiness: exact server SampleUnit view revision",
+    "Native evidence references and EventTime references: exact Artifact receipt",
+    "Test-resource plan fact ID and revision: exact import receipt",
+    "Capture final import: exact server capture revision"
+  ],
+  "unchanged_initial_contracts": {
+    "outer_command_upload_capture_product_revision_one": "Current preview Product contract; this is not Definition/created subject revision",
+    "new_material_and_resource_identity_version_one": "Trusted new physical mirror identities and fresh fact series, no existing asset reused",
+    "initial_resource_plan_placeholder_revision_one": "New fact initial shape only; overwritten with real imported fact receipt before domain command",
+    "preparation_initial_expected_request_zero": "New logical request CAS, not a source version",
+    "actual_method_initial_expected_assessment_zero": "New pair CAS, not a source version",
+    "original_start_run_version_two": "Explicit retained execution contract selects immutable original actual Start rev2"
+  },
+  "remaining_initial_revision_literals": [
+    {
+      "line": 338,
+      "field": "expected_revision",
+      "value": 1
+    },
+    {
+      "line": 865,
+      "field": "revision",
+      "value": 1
+    },
+    {
+      "line": 1119,
+      "field": "expected_request_revision",
+      "value": 0
+    },
+    {
+      "line": 1568,
+      "field": "expected_product_revision",
+      "value": 1
+    },
+    {
+      "line": 1306,
+      "field": "expected_resource_fact_revision",
+      "value": 1
+    },
+    {
+      "line": 1523,
+      "field": "expected_revision",
+      "value": 1
+    },
+    {
+      "line": 1221,
+      "field": "expected_assessment_revision",
+      "value": 0
+    }
+  ],
+  "recovery": {
+    "automatic_saved_payload_rewrite": false,
+    "private_checkpoint_modified_by_this_agent": false,
+    "command_id_or_key_changed": false,
+    "domain_objects_recreated": false,
+    "existing_returned_commands_and_tokens_preserved": true,
+    "root_verified_only_project_unsubmitted_reference_repaired": true
+  },
+  "validation": {
+    "ruff": "passed",
+    "ast_compile": "passed",
+    "pure_receipt_revision_four": "passed",
+    "malformed_receipt_revision_negative_checks": 6,
+    "database_http_pytest": "not run"
+  },
+  "old_static_evidence": "docs/reports/evidence/pdos-next-wave15-20261002/demo-seed-static.md retained unchanged; this report records the delta",
+  "runtime_status": "Tool may resume from root-repaired project command; further actual stages remain root validation responsibility"
+}

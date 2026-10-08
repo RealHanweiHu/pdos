@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-04T01:18:28.601312+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "generation": "37c270ad-521a-44ad-b186-3447a94906c1",
+  "original": {
+    "id": "926c79a5-78a8-4ec5-88cb-fe68a6e82625",
+    "status": "parsed",
+    "parse_code": null,
+    "scan_status": "clean",
+    "revision": 2,
+    "content_hash": "58f90d5b8e42e95bb9b92de626147163880a5093e6e3e1fb2acfa9392a8580ea",
+    "byte_count": 1252
+  },
+  "security": {
+    "epoch": 2,
+    "source_state": "active",
+    "disposition": "active",
+    "current_request_id": "efa52d5e-51a6-4d98-909d-dad685be3532"
+  },
+  "real_scanner_result": {
+    "status": "clean",
+    "result": {
+      "status": "clean",
+      "binding": {
+        "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+        "object_ref": {
+          "id": "926c79a5-78a8-4ec5-88cb-fe68a6e82625",
+          "version": 1,
+          "media_type": "text/plain",
+          "size_bytes": 1252,
+          "content_sha256": "58f90d5b8e42e95bb9b92de626147163880a5093e6e3e1fb2acfa9392a8580ea",
+          "server_storage_key": "originals/926c79a578a84ec588cbfe68a6e82625/v1/58f90d5b8e42e95bb9b92de626147163880a5093e6e3e1fb2acfa9392a8580ea"
+        },
+        "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+        "requester_id": "a8e4a921-15e6-4420-bc9e-51ed2242f2bf",
+        "source_active": true,
+        "access_revision": "4d1a1697f78e4f83cf9af78d87f77b91dd349b6eaebb181539a36f10f8dd8e6e",
+        "audience_revision": "903e91bbf7118e6a06d8e460f8c5836fc141a00e9b547d7fe8a03c02120b8b93",
+        "original_revision": 2
+      },
+      "scanner": {
+        "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+        "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+        "engine_version": "1.5.4"
+      },
+      "error_code": null,
+      "request_id": "efa52d5e-51a6-4d98-909d-dad685be3532",
+      "started_at": "2026-10-04T01:10:34.590438+00:00",
+      "completed_at": "2026-10-04T01:10:44.466842+00:00",
+      "policy_digest": "1de52d2a2e2fa703b94abea2c60a7c651333feeefa5da27b59b1de134fc521a7"
+    }
+  },
+  "original_report_sha256": "58f90d5b8e42e95bb9b92de626147163880a5093e6e3e1fb2acfa9392a8580ea",
+  "whole_synthetic_original_preserved": true,
+  "read_only_rollback": true,
+  "no_mock_clean_or_parse": true,
+  "model_calls": 0
+}

@@ -11,7 +11,7 @@ const evidence: Evidence = { id: ref.ref_id, name: "受限市场资料", url: "h
 const props = { base: "spaces/old", workspace: { can_contribute: true } as Workspace, catalog: { nodes: [], line_access: {} } as unknown as ProductCatalog, evidence: [evidence] };
 const body = (content = "原范围客户正文") => ({ snapshot_id: ref.ref_id, content_digest: ref.digest, content });
 function deferred<T>() { let resolve!: (value: T) => void; const promise = new Promise<T>(done => { resolve = done; }); return { promise, resolve }; }
-async function openDetails() { await screen.findByText("原空间细分 · v1"); fireEvent.click(screen.getByText("查看用户、目标和计算依据")); }
+async function openDetails() { fireEvent.click(await screen.findByRole("button", { name: /原空间细分/ })); fireEvent.click(screen.getByText("查看用户、目标和计算依据")); }
 async function read() { await openDetails(); fireEvent.click(screen.getByRole("button", { name: "查看正文" })); }
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 it.each(["space", "scope"])("clears visible original text and ignores a late read after changing %s", async kind => {
@@ -47,9 +47,9 @@ it("does not restore cards from an older initial list after refresh has denied a
 });
 it.each(["save", "calculate"])("does not apply an unmounted form's %s response to a new space", async kind => {
   const pending = deferred<Response>(); const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json({ items: [segment] })).mockReturnValueOnce(pending.promise).mockResolvedValueOnce(Response.json({ items: [{ ...segment, title: "新页面市场" }] }));
-  vi.stubGlobal("fetch", fetcher); const view = render(<MarketSegments {...props}/>); await screen.findByText("原空间细分 · v1"); fireEvent.click(screen.getByRole("button", { name: "追加修订" }));
+  vi.stubGlobal("fetch", fetcher); const view = render(<MarketSegments {...props}/>); fireEvent.click(await screen.findByRole("button", { name: /原空间细分/ })); fireEvent.click(screen.getByRole("button", { name: "追加修订" }));
   if (kind === "save") fireEvent.submit(screen.getByLabelText("细分名称").closest("form")!); else fireEvent.click(screen.getByRole("button", { name: "预览当前参数计算结果" }));
-  view.rerender(<MarketSegments {...props} base="spaces/new"/>); await screen.findByText("新页面市场 · v1"); fireEvent.click(screen.getByRole("button", { name: "追加修订" }));
+  view.rerender(<MarketSegments {...props} base="spaces/new"/>); fireEvent.click(await screen.findByRole("button", { name: /新页面市场/ })); fireEvent.click(screen.getByRole("button", { name: "追加修订" }));
   await act(async () => pending.resolve(Response.json(kind === "save" ? segment : { ...sizing, interpretation: "旧空间计算回执" })));
   expect(screen.getByLabelText("细分名称")).toHaveValue("新页面市场"); expect(screen.queryByText("旧空间计算回执")).not.toBeInTheDocument(); expect(screen.queryByText("尚未保存 · 此处只计算输入参数")).not.toBeInTheDocument(); expect(fetcher).toHaveBeenCalledTimes(3);
 });

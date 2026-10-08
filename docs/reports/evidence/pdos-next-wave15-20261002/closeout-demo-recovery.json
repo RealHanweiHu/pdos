@@ -1,0 +1,18 @@
+{
+  "failed_records": [
+    "demo-closure.failed-20261003T073954293898Z.json",
+    "demo-closure.failed-20261003T074152046287Z.json",
+    "demo-closure.failed-20261003T074249136795Z.json"
+  ],
+  "causes": [
+    "Receipt common semantic digest and domain replay digest use different schemas; neither changed, each now recomputed from immutable saved payload.",
+    "Physical immutable OriginalObject revision stays 1 while current UploadedOriginal access/parse row advances to 2; now checks full ObjectRef and current ACL/safety/unchanged-after-IO.",
+    "New ObjectRef comparison used wrong attribute names; corrected to actual content_sha256/size_bytes."
+  ],
+  "passed_record": "demo-closure.json",
+  "passed_sha256": "9181115c74b0dc0d5ec18f0c63ad32759595987b484835c5d97bddb5faa13be0",
+  "tool": "pdos-next/tools/wave15_closeout.py",
+  "tool_sha256": "91dd5330d777a330b7e8cb826b082c3c6bb23d69dc8c757001e04a162e01aa05",
+  "business_source_mutated_for_recovery": false,
+  "raw_failed_evidence_preserved": true
+}

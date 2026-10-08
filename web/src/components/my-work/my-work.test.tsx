@@ -6,7 +6,7 @@ import { MyWork } from "./my-work";
 
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: routerReplace }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useRouter: () => ({ replace: routerReplace }) }));
 
 function jsonResponse(body: object, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -113,10 +113,23 @@ describe("MyWork", () => {
 
   afterEach(() => {
     cleanup();
+    window.history.replaceState(null, "", "/my-work");
     vi.unstubAllGlobals();
   });
 
   const emptyNotifications = { items: [], unread_count: 0, digest: [] };
+
+  async function selectScenario(name: string) {
+    const scenarios = await screen.findByRole("group", { name: "办理场景" });
+    await userEvent.click(within(scenarios).getByRole("button", { name: new RegExp(`^${name}`) }));
+  }
+
+  async function openWorkTools() {
+    const summary = (await screen.findByText("查找、提醒与批量办理")).closest("summary")!;
+    const tools = summary.closest("details")!;
+    if (!tools.open) await userEvent.click(summary);
+    expect(tools).toHaveAttribute("open");
+  }
 
   function mockApis(work: object, workStatus = 200, notifications: object = emptyNotifications) {
     fetchMock.mockImplementation(async (input, init) => {
@@ -130,12 +143,45 @@ describe("MyWork", () => {
     });
   }
 
+  it("automatically adds concurrent modules while preserving the person's full task queue", async () => {
+    fetchMock.mockImplementation(async input => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, work_modules: ["product", "quality", "supply"] } });
+      if (path === "/api/me/work") return jsonResponse(populatedWork);
+      if (path === "/api/me/notifications") return jsonResponse(emptyNotifications);
+      if (path === "/api/product-work/my-work") return jsonResponse({ research: [], work_items: [], experiments: [], strategies: [], definitions: [] });
+      return jsonResponse({ items: [] });
+    });
+    render(<MyWork />);
+    await screen.findByRole("heading", { name: "Engineer的工程工作台" });
+    const modules = await screen.findByRole("region", { name: "我的角色模块" });
+    for (const label of ["工程设计", "产品工作", "测试与品质", "供应协作"]) expect(within(modules).getByRole("heading", { name: label })).toBeInTheDocument();
+    expect(within(modules).getByRole("link", { name: "进入试制测试与质量" })).toHaveAttribute("href", "/projects?module=quality&tab=quality");
+    expect(within(modules).getByRole("link", { name: "进入物料与供应" })).toHaveAttribute("href", "/projects?module=supply&tab=materials");
+    await selectScenario("全部");
+    expect(screen.getByRole("region", { name: "任务" })).toHaveTextContent("Verify motor sample");
+    expect(screen.getByRole("region", { name: "Gate 待我签核" })).toHaveTextContent("DVT Exit");
+    expect(screen.queryByRole("combobox", { name: /工作视角/ })).not.toBeInTheDocument();
+  });
+
   it("renders assigned sections with exact deep links, priority anchors, badges, and loaded counts", async () => {
     mockApis(populatedWork);
 
     render(<MyWork />);
 
-    expect(await screen.findByRole("heading", { name: "今天由我负责什么" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Engineer的工程工作台" })).toBeInTheDocument();
+    const scenarios = screen.getByRole("group", { name: "办理场景" });
+    expect(within(scenarios).getByRole("button", { name: /^执行与整改/ })).toHaveAttribute("aria-pressed", "true");
+    expect(within(scenarios).getByRole("button", { name: /^全部办理/ })).toHaveTextContent("6");
+    expect(within(scenarios).getByRole("button", { name: /^执行与整改/ })).toHaveTextContent("4");
+    const priorityIndex = screen.getByRole("region", { name: "工作优先事项" });
+    await userEvent.click(within(priorityIndex).getByRole("link", { name: /DVT Exit/ }));
+    expect(within(scenarios).getByRole("button", { name: /^验证与接收/ })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("region", { name: "Gate 待我签核" })).toBeVisible();
+    await userEvent.click(within(priorityIndex).getByRole("link", { name: /Register delivery risk/ }));
+    expect(within(scenarios).getByRole("button", { name: /^AI 建议/ })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("region", { name: "AI 建议待审／待应用" })).toBeVisible();
+    await selectScenario("全部办理");
     const taskLink = within(screen.getByRole("region", { name: "任务" })).getByRole("link", { name: /Verify motor sample/ });
     expect(taskLink).toHaveAttribute("href", "/projects?project=project-2&tab=work-items&entity_id=task-1");
     expect(taskLink).toHaveTextContent("逾期");
@@ -207,6 +253,7 @@ describe("MyWork", () => {
 
     render(<MyWork />);
 
+    await openWorkTools();
     await userEvent.click(await screen.findByRole("button", { name: "展开通知" }));
     expect(await screen.findByText("任务已逾期 3 天：Verify motor sample")).toBeInTheDocument();
     expect(screen.getByText("未读 1")).toBeInTheDocument();
@@ -242,7 +289,9 @@ describe("MyWork", () => {
     expect(screen.queryByTestId("my-work-ready")).not.toBeInTheDocument();
     await act(async () => { resolveWork(jsonResponse(populatedWork)); });
     expect(within(await screen.findByRole("region", { name: "任务" })).getByRole("link", { name: /Verify motor sample/ })).toBeInTheDocument();
-    expect(screen.getByText("正在加载站内通知…")).toBeInTheDocument();
+    expect(screen.getByText("提醒读取中")).toBeVisible();
+    await openWorkTools();
+    expect(screen.getByText("正在加载站内通知…")).toBeVisible();
     await act(async () => { resolveNotifications(jsonResponse(emptyNotifications)); });
     expect(screen.queryByText("正在加载站内通知…")).not.toBeInTheDocument();
   });
@@ -258,7 +307,8 @@ describe("MyWork", () => {
     });
     render(<MyWork />);
     expect(within(await screen.findByRole("region", { name: "任务" })).getByRole("link", { name: /Verify motor sample/ })).toBeInTheDocument();
-    expect(screen.getByRole("alert")).toHaveTextContent("站内通知暂不可用");
+    await openWorkTools();
+    expect(await screen.findByRole("alert")).toHaveTextContent("站内通知暂不可用");
     unavailable = false;
     await userEvent.click(screen.getByRole("button", { name: "重新加载通知" }));
     await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
@@ -288,6 +338,9 @@ describe("MyWork", () => {
     });
     render(<MyWork />);
     expect(within(await screen.findByRole("region", { name: "任务" })).getByRole("link", { name: /Verify motor sample/ })).toBeInTheDocument();
+    expect(await screen.findByText("提醒 200")).toBeVisible();
+    expect(screen.getByText("未读 200")).not.toBeVisible();
+    await openWorkTools();
     expect(screen.getByText("未读 200")).toBeInTheDocument();
     expect(screen.queryByText("提醒 0")).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "展开通知" }));
@@ -312,6 +365,7 @@ describe("MyWork", () => {
     render(<MyWork />);
     await userEvent.click(await screen.findByRole("button", { name: "重新加载" }));
     expect(within(await screen.findByRole("region", { name: "任务" })).getByRole("link", { name: /Verify motor sample/ })).toBeInTheDocument();
+    await openWorkTools();
     await act(async () => {
       resolveOldNotifications(lateResult === "failure" ? jsonResponse({}, 503) : jsonResponse({ items: [], unread_count: 99, digest: [] }));
     });

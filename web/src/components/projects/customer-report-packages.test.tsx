@@ -2,7 +2,7 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { CustomerReportPackages } from "./customer-report-packages";
 const routing = vi.hoisted(() => ({ id: "report-1" }));
-vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams({customer_report:routing.id}) }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useSearchParams: () => new URLSearchParams({customer_report:routing.id}) }));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 it("opens a requested report and removes its old body when a new location cannot be read", async () => {
   const fetcher = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {

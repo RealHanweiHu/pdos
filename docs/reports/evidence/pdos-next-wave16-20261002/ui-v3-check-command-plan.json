@@ -1,0 +1,7 @@
+{
+  "temporary_directory": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1",
+  "helper_command": "node /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/prepare-tests.cjs followed by node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/build-quality-followup-view.test.js",
+  "type_command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/tsconfig.json",
+  "lint_command": "node_modules/.bin/eslint src/components/builds/build-quality-followup.tsx src/lib/build-quality-followup-view.ts src/lib/build-quality-followup-view.test.ts --format json --output-file /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v3-e1zjhqr1/lint-result.json",
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web"
+}

@@ -46,6 +46,40 @@ def expire(engine: Engine, run: UUID) -> None:
         )
 
 
+@pytest.mark.parametrize("case", ["original", "forged_owner", "expired"])
+def test_durable_activity_attaches_only_the_original_current_lease(
+    ledger_db: LedgerFixture, factory_setup: FactoryFixture, case: str
+) -> None:
+    from app.ai.budget_ledger import BudgetLedgerError
+
+    engine, tenant, _ = ledger_db
+    environment, _, _ = factory_setup
+    actor, project = identity(engine)
+    with application_gateway.configured_application_gateway(engine, environment) as gateway:
+        row, _ = start(engine, gateway, tenant, actor, project)
+        original = records(engine, tables.application_run_leases)[0]
+        reference = {
+            "tenant_id": str(tenant),
+            "run_id": str(row["id"]),
+            "owner_id": str(original["owner_id"]),
+            "token": str(original["id"]),
+        }
+        if case == "forged_owner":
+            reference["owner_id"] = str(uuid4())
+        elif case == "expired":
+            expire(engine, row["id"])
+        with ApplicationLeaseKeeper(engine) as activity_keeper:
+            if case == "original":
+                activity_keeper.attach_existing(reference)
+                assert activity_keeper.owner_id == original["owner_id"]
+                assert activity_keeper.token(tenant, row["id"]) == original["id"]
+            else:
+                with pytest.raises(BudgetLedgerError, match="APPLICATION_RUN_LEASE_LOST"):
+                    activity_keeper.attach_existing(reference)
+                assert activity_keeper.token(tenant, row["id"]) is None
+        assert len(records(engine, tables.application_run_leases)) == 1
+
+
 def test_actual_heartbeat_renews_same_token_and_terminal_run_releases_it(
     ledger_db: LedgerFixture, factory_setup: FactoryFixture, monkeypatch: pytest.MonkeyPatch
 ) -> None:

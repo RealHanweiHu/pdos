@@ -31,7 +31,7 @@ export function UserCreateForm({
   }
 
   return (
-    <form className="rounded-lg border bg-card p-5" onSubmit={(event) => void submit(event)}>
+    <form className="min-w-0 rounded-lg border bg-card p-5" onSubmit={(event) => void submit(event)}>
       <div className="flex items-start gap-3">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
           <UserPlusIcon aria-hidden="true" className="size-5" />
@@ -45,11 +45,11 @@ export function UserCreateForm({
       </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-1.5 text-xs font-medium">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium">
           用户名
           <input
             autoComplete="off"
-            className="h-11 rounded-lg border bg-background px-3 font-mono text-sm"
+            className="h-11 w-full min-w-0 rounded-lg border bg-background px-3 font-mono text-sm"
             maxLength={64}
             minLength={3}
             name="username"
@@ -57,41 +57,41 @@ export function UserCreateForm({
             required
           />
         </label>
-        <label className="grid gap-1.5 text-xs font-medium">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium">
           显示名称
           <input
             autoComplete="name"
-            className="h-11 rounded-lg border bg-background px-3 text-sm"
+            className="h-11 w-full min-w-0 rounded-lg border bg-background px-3 text-sm"
             maxLength={256}
             name="display_name"
             required
           />
         </label>
-        <label className="grid gap-1.5 text-xs font-medium">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium">
           邮箱（可选）
           <input
             autoComplete="email"
-            className="h-11 rounded-lg border bg-background px-3 text-sm"
+            className="h-11 w-full min-w-0 rounded-lg border bg-background px-3 text-sm"
             maxLength={320}
             name="email"
             type="email"
           />
         </label>
-        <label className="grid gap-1.5 text-xs font-medium">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium">
           角色
           <select
-            className="h-11 rounded-lg border bg-background px-3 text-sm"
+            className="h-11 w-full min-w-0 rounded-lg border bg-background px-3 text-sm"
             defaultValue="engineer"
             name="role"
           >
             {roles.map((role) => <option key={role} value={role}>{ROLE_LABELS[role]}</option>)}
           </select>
         </label>
-        <label className="grid gap-1.5 text-xs font-medium sm:col-span-2">
+        <label className="grid min-w-0 gap-1.5 text-xs font-medium sm:col-span-2">
           临时密码
           <input
             autoComplete="new-password"
-            className="h-11 rounded-lg border bg-background px-3 text-sm"
+            className="h-11 w-full min-w-0 rounded-lg border bg-background px-3 text-sm"
             maxLength={128}
             minLength={12}
             name="password"

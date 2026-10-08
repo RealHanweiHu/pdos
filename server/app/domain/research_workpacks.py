@@ -699,7 +699,16 @@ class ResearchWorkpackService:
                     m.c.market_space_id == space,
                     m.c.access.in_(("contributor", "manager")),
                     u.c.is_active.is_(True),
-                    u.c.role.in_(("owner", "admin", "project_manager", "engineer", "quality")),
+                    u.c.role.in_(
+                        (
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        )
+                    ),
                 ]
                 if line:
                     conditions.append(

@@ -1,0 +1,325 @@
+exit_code=1
+E501 Line too long (102 > 100)
+  --> pdos_next/engines/supply_cost/bom.py:28:101
+   |
+26 |         problems.append(issue("build_quantity_unknown", "build", "Build quantity is unknown"))
+27 |     if UNITS.get(basis.build.product_unit or "", (None,))[0] != "count":
+28 |         problems.append(issue("product_unit_unsupported", "build", "Build unit must be a count unit"))
+   |                                                                                                     ^^
+29 |     items = {}
+30 |     duplicate = set()
+   |
+
+E501 Line too long (101 > 100)
+  --> pdos_next/engines/supply_cost/bom.py:57:101
+   |
+55 |                 if UNITS.get(node.unit or "", (None,))[0] != "count":
+56 |                     row_issues.append(issue("parent_unit_unsupported", current,
+57 |                                             "Parent-relative multiplication needs count assemblies"))
+   |                                                                                                     ^
+58 |                 if node.supply_required and item.supply_required:
+59 |                     row_issues.append(issue("overlapping_material_demand", item.item_id,
+   |
+
+E501 Line too long (102 > 100)
+  --> pdos_next/engines/supply_cost/bom.py:65:101
+   |
+63 |                 row_issues.append(issue("bom_quantity_unknown", current, "BOM quantity is unknown"))
+64 |             if node.loss_rate is None:
+65 |                 row_issues.append(issue("loss_unknown", current, "Loss uplift assumption is unknown"))
+   |                                                                                                     ^^
+66 |             if node.quantity_per_parent is not None and node.loss_rate is not None:
+67 |                 quantity *= node.quantity_per_parent * (1 + node.loss_rate)
+   |
+
+E501 Line too long (101 > 100)
+  --> pdos_next/engines/supply_cost/bom.py:70:101
+   |
+68 |             current = node.parent_item_id
+69 |         if item.unit not in UNITS:
+70 |             row_issues.append(issue("unit_unsupported", item.item_id, "Missing or unsupported unit"))
+   |                                                                                                     ^
+71 |         # Material mapping is checked by coverage, not cost package hierarchy expansion.
+72 |         known = not row_issues
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/engines/supply_cost/common.py:3:1
+   |
+ 1 |   """Local, side-effect-free contracts for fixed supply/cost calculations."""
+ 2 |
+ 3 | / import hashlib
+ 4 | | import json
+ 5 | | from datetime import UTC, datetime
+ 6 | | from decimal import Context, Decimal, ROUND_HALF_EVEN, localcontext
+ 7 | | from typing import Annotated, Any, Literal
+ 8 | |
+ 9 | | from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+   | |___________________________________________________________________________________^
+10 |
+11 |   Text = Annotated[str, Field(min_length=1, max_length=500)]
+   |
+help: Organize imports
+  |
+5 | from datetime import UTC, datetime
+  - from decimal import Context, Decimal, ROUND_HALF_EVEN, localcontext
+6 + from decimal import ROUND_HALF_EVEN, Context, Decimal, localcontext
+7 | from typing import Annotated, Any, Literal
+  |
+
+E501 Line too long (104 > 100)
+  --> pdos_next/engines/supply_cost/costs.py:50:101
+   |
+48 |             notes.extend(source_issues(price.ref, request.as_of, f"price:{price.price_id}"))
+49 |             if price_id in price_conflicts:
+50 |                 notes.append(issue("price_conflict", line_id, "Conflicting price versions", "conflict"))
+   |                                                                                                     ^^^^
+51 |             if price.basis != ("nre" if category == "nre" else "unit"):
+52 |                 notes.append(issue("price_basis_mismatch", line_id,
+   |
+
+E501 Line too long (104 > 100)
+  --> pdos_next/engines/supply_cost/costs.py:95:101
+   |
+93 |             if price.freight_basis != request.scope.freight_basis:
+94 |                 notes.append(issue("freight_basis_mismatch", line_id,
+95 |                                    "Freight basis is unknown or differs; unpriced freight is not zero"))
+   |                                                                                                     ^^^^
+96 |             rate = None
+97 |             if price.currency is not None and price.currency != request.scope.currency:
+   |
+
+E501 Line too long (101 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:101:101
+    |
+ 99 |                 if len(candidates) != 1:
+100 |                     notes.append(issue("exchange_rate_missing_or_ambiguous", line_id,
+101 |                                        "Select one explicit direct exchange rate for this currency"))
+    |                                                                                                     ^
+102 |                 else:
+103 |                     rate = candidates[0]
+    |
+
+E501 Line too long (104 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:115:101
+    |
+113 |                     notes.extend(rate_notes)
+114 |                     sensitive.append(issue("exchange_rate", line_id,
+115 |                                            f"Uses {rate.rate_id} ({rate.purpose}) at fixed source time",
+    |                                                                                                     ^^^^
+116 |                                            "sensitivity"))
+117 |             if not notes:
+    |
+
+E501 Line too long (102 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:154:101
+    |
+152 |         notes = list(demand.issues) if demand else []
+153 |         if demand is None:
+154 |             notes.append(issue("cost_bom_item_missing", identity, "Selected item is absent from BOM"))
+    |                                                                                                     ^^
+155 |         if selection_counts[identity] > 1:
+156 |             notes.append(issue("duplicate_material_price", identity,
+    |
+
+E501 Line too long (102 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:179:101
+    |
+177 |             lines.append(price_line(f"material:{identity}", "material", None,
+178 |                                     demands[identity].quantity_per_product,
+179 |                                     demands[identity].required_quantity, items[identity].unit, notes))
+    |                                                                                                     ^^
+180 |
+181 |     if request.scope.coverage == "materials_and_process":
+    |
+
+E501 Line too long (104 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:183:101
+    |
+181 |     if request.scope.coverage == "materials_and_process":
+182 |         if request.process is None or not request.process.operations:
+183 |             problems.append(issue("process_missing", "process", "Required process snapshot is missing"))
+    |                                                                                                     ^^^^
+184 |         else:
+185 |             operations, operation_conflicts, notes = _unique(
+    |
+
+E501 Line too long (102 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:203:101
+    |
+201 |                 if operation.loss_rate:
+202 |                     sensitive.append(issue("process_loss_uplift", identity,
+203 |                                            "Uses explicit per-good-product quantity times (1 + loss)",
+    |                                                                                                     ^^
+204 |                                            "sensitivity"))
+205 |                 lines.append(price_line(
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:212:101
+    |
+210 |     elif request.process is not None:
+211 |         problems.append(issue("process_outside_scope", "process",
+212 |                               "A process snapshot was supplied to materials-only scope", "conflict"))
+    |                                                                                                     ^
+213 |
+214 |     if request.scope.nre_policy == "excluded":
+    |
+
+E501 Line too long (103 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:221:101
+    |
+219 |     else:
+220 |         if not request.nre_price_ids:
+221 |             problems.append(issue("nre_missing", "nre", "NRE was requested but no price was selected"))
+    |                                                                                                     ^^^
+222 |         counts = Counter(request.nre_price_ids)
+223 |         for identity in sorted(counts):
+    |
+
+E501 Line too long (106 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:232:101
+    |
+230 |         if request.scope.nre_policy == "amortize":
+231 |             if request.scope.nre_volume is None:
+232 |                 problems.append(issue("nre_volume_missing", "nre", "Explicit allocation volume required"))
+    |                                                                                                     ^^^^^^
+233 |             sensitive.append(issue("nre_volume", "nre", "Allocation volume changes unit estimate",
+234 |                                    "sensitivity"))
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos_next/engines/supply_cost/costs.py:259:101
+    |
+257 |         including_amortized_nre=unit_total + nre_subtotal / request.scope.nre_volume
+258 |         if complete and request.scope.nre_policy == "amortize" else None,
+259 |         lines=tuple(lines), issues=sorted_issues(problems), sensitive_items=sorted_issues(sensitive),
+    |                                                                                                     ^
+260 |     )
+    |
+
+E501 Line too long (101 > 100)
+  --> pdos_next/engines/supply_cost/coverage.py:32:101
+   |
+30 |             conflicts.add(identity)
+31 |             problems.append(issue("conflicting_snapshot", path,
+32 |                                   "One identity has conflicting observations; excluded", "conflict"))
+   |                                                                                                     ^
+33 |     return unique, conflicts, problems
+   |
+
+E501 Line too long (101 > 100)
+   --> pdos_next/engines/supply_cost/coverage.py:202:101
+    |
+200 |         notes = list(demand.issues)
+201 |         if demand.material_id is None:
+202 |             notes.append(issue("material_mapping_unknown", demand.item_id, "Material ID is unknown"))
+    |                                                                                                     ^
+203 |         unknown = (not request.supply_scope_complete or bool(supply_issues)
+204 |                    or bool(notes))
+    |
+
+B023 Function definition does not bind loop variable `required`
+   --> pdos_next/engines/supply_cost/coverage.py:248:16
+    |
+246 |                                           qualification_id=qualification_id))
+247 |         def gap(known):
+248 |             if required is None:
+    |                ^^^^^^^^
+249 |                 return None
+250 |             if known >= required:
+    |
+
+B023 Function definition does not bind loop variable `required`
+   --> pdos_next/engines/supply_cost/coverage.py:250:25
+    |
+248 |             if required is None:
+249 |                 return None
+250 |             if known >= required:
+    |                         ^^^^^^^^
+251 |                 return ZERO
+252 |             return None if unknown else required - known
+    |
+
+B023 Function definition does not bind loop variable `unknown`
+   --> pdos_next/engines/supply_cost/coverage.py:252:28
+    |
+250 |             if known >= required:
+251 |                 return ZERO
+252 |             return None if unknown else required - known
+    |                            ^^^^^^^
+253 |
+254 |         secured_gap, potential_gap = gap(secured), gap(potential)
+    |
+
+B023 Function definition does not bind loop variable `required`
+   --> pdos_next/engines/supply_cost/coverage.py:252:41
+    |
+250 |             if known >= required:
+251 |                 return ZERO
+252 |             return None if unknown else required - known
+    |                                         ^^^^^^^^
+253 |
+254 |         secured_gap, potential_gap = gap(secured), gap(potential)
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos_next/engines/supply_cost/dto.py:275:101
+    |
+273 |     decimal_precision: Literal[38] = 38
+274 |     rounding: str = "ROUND_HALF_EVEN at precision 38; no currency display quantization"
+275 |     notice: str = "Selected-scope estimate candidate; not ERP actual cost, approval or proven saving"
+    |                                                                                                     ^
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/supply_cost_engine/test_contract.py:1:1
+   |
+ 1 | / from copy import deepcopy
+ 2 | | from decimal import Decimal, ROUND_DOWN, localcontext
+ 3 | |
+ 4 | | import pytest
+ 5 | | from conftest import bom_item
+ 6 | | from pydantic import ValidationError
+ 7 | |
+ 8 | | from pdos_next.engines.supply_cost import (
+ 9 | |     CostRequest,
+10 | |     CostResult,
+11 | |     CoverageRequest,
+12 | |     CoverageResult,
+13 | |     calculate_cost,
+14 | |     calculate_coverage,
+15 | |     expand_bom,
+16 | | )
+   | |_^
+help: Organize imports
+  |
+1 | from copy import deepcopy
+  - from decimal import Decimal, ROUND_DOWN, localcontext
+2 + from decimal import ROUND_DOWN, Decimal, localcontext
+3 |
+  |
+
+E501 Line too long (103 > 100)
+  --> tests/supply_cost_engine/test_contract.py:21:101
+   |
+19 | @pytest.mark.parametrize("request_type,fixture_name", [(CostRequest, "cost"),
+20 |                                                       (CoverageRequest, "coverage")])
+21 | def test_float_naive_time_unknown_field_and_mutation_are_rejected(request, request_type, fixture_name):
+   |                                                                                                     ^^^
+22 |     payload = request.getfixturevalue(fixture_name)
+23 |     changed = deepcopy(payload)
+   |
+
+E501 Line too long (103 > 100)
+  --> tests/supply_cost_engine/test_contract.py:77:101
+   |
+75 |         payload["basis"]["bom"]["items"][0]["quantity_per_parent"] = "1234567890123456.12345678"
+76 |     unchanged = deepcopy(cost)
+77 |     cost_dto, coverage_dto = CostRequest.model_validate(cost), CoverageRequest.model_validate(coverage)
+   |                                                                                                     ^^^
+78 |     with localcontext() as ctx:
+79 |         ctx.prec = 5
+   |
+
+Found 27 errors.
+[*] 2 fixable with the `--fix` option.

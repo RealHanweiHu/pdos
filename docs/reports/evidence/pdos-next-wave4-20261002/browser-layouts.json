@@ -1,0 +1,38 @@
+[
+  {
+    "height": 1000,
+    "scrollWidth": 1440,
+    "theme": "light",
+    "width": 1440
+  },
+  {
+    "height": 1000,
+    "scrollWidth": 1440,
+    "theme": "dark",
+    "width": 1440
+  },
+  {
+    "height": 844,
+    "scrollWidth": 390,
+    "theme": "dark",
+    "width": 390
+  },
+  {
+    "height": 844,
+    "scrollWidth": 390,
+    "theme": "light",
+    "width": 390
+  },
+  {
+    "height": 844,
+    "scrollWidth": 320,
+    "theme": "light",
+    "width": 320
+  },
+  {
+    "height": 844,
+    "scrollWidth": 320,
+    "theme": "dark",
+    "width": 320
+  }
+]

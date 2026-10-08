@@ -1,0 +1,31 @@
+{
+  "status": "PASS_REAL_BFF_MANUFACTURING_CONTINUATION_AND_REPLAY",
+  "synthetic_only": true,
+  "same_original_command_key_and_token_replayed": true,
+  "replay_counts_identical": true,
+  "baseline_original_fixed_body_preserved_and_needs_recheck": true,
+  "old_WI_history_preserved": true,
+  "before": {
+    "manufacturing_preparation_versions": 3,
+    "manufacturing_preparation_currents": 3,
+    "manufacturing_baseline_document_links": 2,
+    "action_receipts": 13,
+    "audit_entries": 13,
+    "outbox_events": 13,
+    "request_keys": 13,
+    "confirmations": 7
+  },
+  "after": {
+    "manufacturing_preparation_versions": 4,
+    "manufacturing_preparation_currents": 3,
+    "manufacturing_baseline_document_links": 2,
+    "action_receipts": 14,
+    "audit_entries": 14,
+    "outbox_events": 14,
+    "request_keys": 14,
+    "confirmations": 8
+  },
+  "receipt_id": "e6d246be-ad4f-410a-880c-95bc23a6dd12",
+  "gui_pass_claimed": false,
+  "local_http_trust_env": false
+}

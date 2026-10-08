@@ -1,0 +1,17 @@
+{
+  "pdos-next/server/pdos_next/domain/products/models.py": "5a6157bfdf4d1ddf4731a1a4bf4d65c2d57c7f2dd1bd9d7cf8de99cce33be92a",
+  "pdos-next/server/pdos_next/domain/products/definitions.py": "aa79500071117d72d7c6e338b8966716f4bbf2403c00dfb69f3b210de8ecb0f1",
+  "pdos-next/server/pdos_next/schemas/products/definitions.py": "591c8e070a1d36e146da212cb266e055ed51de553183b1e6364af372b5f57424",
+  "pdos-next/server/pdos_next/contracts.py": "bd8f1c09c2ecf880aa962f39e02ca632c932455a41ccb9e978845612baf1d864",
+  "pdos-next/server/pdos_next/models.py": "c556c52964f1a83204c56143f5f52e79f5d6b1500dfbb91a3c44fddc5f27a48a",
+  "pdos-next/server/pdos_next/service.py": "7ffb1ba2740e6bd2f075c576404722947eaa117812c82ca31abb73c77c49c1c6",
+  "pdos-next/server/pdos_next/originals.py": "ec0d67dc50d4bf841820d70f712080dfbaecbc8aeee9edb2b878adc79e69f37b",
+  "pdos-next/server/pdos_next/evidence_processing/types.py": "3bdb7eec20948def3f0ddec45cbf41ec21a37b6333d7b8247edbe4d6811b7e10",
+  "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+  "pdos-next/web/src/lib/utils.ts": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+  "pdos-next/web/src/lib/original-location.ts": "f86e63ed13b39d1a0a2f929d61c4ff01708d2889cc08bd613cf4b6b7ee703fd3",
+  "pdos-next/web/tsconfig.json": "ce638cf8d45d1b4718fa3943a514811886830e0f9d9f14e9f4ebcdfa15e93f3e",
+  "pdos-next/web/package.json": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8",
+  "pdos-next/server/pyproject.toml": "1c2edea2464fc3260b1ceda3a701c0f2308ec68fe01ff28c6db4b8044d0573b3",
+  "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6"
+}

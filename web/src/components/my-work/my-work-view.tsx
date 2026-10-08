@@ -10,6 +10,7 @@ import { DeferredPanelLoading, withDeferredPanelBoundary } from "@/components/de
 import {
   ArrowSquareOutIcon,
   BellRingingIcon,
+  CaretDownIcon,
   CheckFatIcon,
   ClipboardTextIcon,
   FlagIcon,
@@ -19,15 +20,17 @@ import {
   WrenchIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useState, type ComponentType, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 
 import { FindingReviewUndo } from "@/components/ai/finding-review-undo";
 import { FindingBatchReview } from "@/components/ai/finding-batch-review";
 import { ConversationFinding } from "@/components/ai/conversation-finding";
 import { FindingAppliedReceipt } from "@/components/ai/finding-proposal";
+import { openXiaopai } from "@/components/ai/xiaopai-launcher";
 import type { AiFinding } from "@/components/ai/ai-types";
 import { WorkPriorityIndex, workCardAnchor } from "./work-priority-index";
 import { WorkCardConversation } from "./work-card-conversation";
+import { collectionForWorkAnchor, myWorkScenarios, preferredWorkScenario, scenarioCount, scenarioForCollection, scenarioHasCollection, type MyWorkScenario } from "./my-work-scenario";
 
 
 
@@ -45,6 +48,7 @@ import { useMyWorkQueue } from "./use-my-work-queue";
 
 import { Button } from "@/components/ui/button";
 import { WorkspaceShell } from "@/components/workspace-shell";
+import { useWorkPerspective, workModuleHref } from "@/components/workspace-experience";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
 
@@ -128,6 +132,7 @@ function DueBadge({ due, today }: { due: string | null; today: string }) {
 }
 
 function Section({
+  hidden,
   onLoadMore,
   onRefresh,
   loading,
@@ -137,6 +142,7 @@ function Section({
   items,
   title,
 }: {
+  hidden?: boolean;
   onLoadMore?: () => void;
   onRefresh?: () => void;
   loading?: boolean;
@@ -148,7 +154,7 @@ function Section({
 }) {
   if (count === 0) return null;
   return (
-    <section aria-label={title} className="overflow-hidden rounded-lg border bg-card">
+    <section aria-label={title} hidden={hidden} className={cn("overflow-hidden rounded-lg border bg-card", hidden && "hidden")}>
       <header className="flex items-center gap-2 border-b px-4 py-3">
         <Icon aria-hidden className="size-4 text-primary" />
         <h2 className="font-semibold">{title}</h2>
@@ -182,7 +188,7 @@ function Row({
   title: string;
 }) {
   return (
-    <li id={id} className="scroll-mt-6">
+    <li id={id} className="scroll-mt-28" tabIndex={-1}>
       <Link
         className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25"
         href={href}
@@ -232,6 +238,44 @@ export function MyWorkView({
   const [taskNotice, setTaskNotice] = useState<string | null>(null);
   const queue = useMyWorkQueue(initialWork);
   const work = queue.work;
+  const { perspective, available } = useWorkPerspective(identity);
+  const productHome = available.some(module => module.id === "product");
+  const homeLabel = ({ product: "产品工作台", project: "项目工作台", engineering: "工程工作台", quality: "品质工作台", portfolio: "管理工作台", administration: "系统工作台" } as Partial<Record<typeof perspective.id, string>>)[perspective.id] ?? "工作台";
+  const [scenario, setScenario] = useState<MyWorkScenario>(() => preferredWorkScenario(initialWork, today));
+  const scrollFrame = useRef<number | null>(null);
+  const navigateToCard = useCallback((collection: MyWorkCollection, anchor: string, updateHash = true) => {
+    setScenario(current => scenarioHasCollection(current, collection) ? current : scenarioForCollection(collection));
+    if (updateHash && window.location.hash !== `#${anchor}`) window.history.pushState(null, "", `#${anchor}`);
+    if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
+    scrollFrame.current = requestAnimationFrame(() => {
+      const card = document.getElementById(anchor);
+      if (card) {
+        card.tabIndex = -1;
+        card.scrollIntoView?.({ block: "start" });
+        card.focus({ preventScroll: true });
+      }
+      scrollFrame.current = null;
+    });
+  }, []);
+  useEffect(() => {
+    const locate = () => {
+      let anchor = window.location.hash.slice(1);
+      try { anchor = decodeURIComponent(anchor); } catch { return; }
+      const collection = collectionForWorkAnchor(anchor);
+      if (collection) navigateToCard(collection, anchor, false);
+    };
+    // After hydration, an old bookmark reveals its actual collection before
+    // scrolling. No role or page title is used to infer professional duties.
+    const initialFrame = requestAnimationFrame(locate);
+    window.addEventListener("hashchange", locate);
+    window.addEventListener("popstate", locate);
+    return () => {
+      cancelAnimationFrame(initialFrame);
+      if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
+      window.removeEventListener("hashchange", locate);
+      window.removeEventListener("popstate", locate);
+    };
+  }, [navigateToCard]);
   const [discussionFocus, setDiscussionFocus] = useState<{ projectId: string; runId: string } | null>(null);
   const [executionFocus,setExecutionFocus]=useState<MyWorkChangeExecution|null>(null);
   const [costFreezeFocus, setCostFreezeFocus] = useState<MyWorkCostFreeze | null>(null);
@@ -242,6 +286,7 @@ export function MyWorkView({
   function paging(name: MyWorkCollection) {
     return {
       onLoadMore: queue.work.pages?.[name]?.next_offset != null ? () => void queue.loadMore(name) : undefined,
+      hidden: !scenarioHasCollection(scenario, name),
       onRefresh: () => void queue.refresh(name),
       loading: queue.busy === name,
       disabled: queue.busy !== null,
@@ -255,50 +300,74 @@ export function MyWorkView({
   const actionable =
     counts.tasks + counts.issues + counts.risks + counts.capa_actions + counts.gate_signoffs + crossCount + (counts.id_design_actions ?? 0) + (counts.change_execution_confirmations ?? 0) + (counts.risk_followup_actions ?? 0) + (counts.task_takeover_actions ?? 0) + (counts.cost_freeze_approvals ?? 0);
   const isPortfolioRole = ["owner", "admin", "project_manager"].includes(identity.user.role);
+  const selectedScenario = myWorkScenarios.find(item => item.key === scenario)!;
+  const selectedCount = scenarioCount(scenario, counts);
+  const preprojectVisible = productHome || scenario === "all" || scenario === "preproject";
+  const preprojectContent = <div id="my-work-preproject-content" hidden={!preprojectVisible} className={cn(!preprojectVisible && "hidden")}><PreProjectWork /></div>;
 
   return (
     <WorkspaceShell active="my-work" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
       <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-4">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-            My Work
-          </p>
-          <h1 className="mt-1 text-lg font-semibold" data-testid="my-work-ready">今天由我负责什么</h1>
+          <h1 className="text-lg font-semibold tracking-tight" data-testid="my-work-ready">{identity.user.display_name}的{homeLabel}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            聚合分派给 {identity.user.display_name} 的项目执行与立项前工作、待验证及待签核事项。
+            {perspective.description} 本人的待办、协作与签核按当前责任列示。
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
           <Button variant="outline" disabled={queue.busy !== null} onClick={() => void queue.refresh()}>{queue.busy === "refresh" ? "正在刷新…" : "刷新待办"}</Button>
           {isPortfolioRole ? (
-            <Link className="inline-flex min-h-11 items-center text-sm font-medium text-primary" href="/">
+            <Link className="inline-flex min-h-11 items-center text-sm font-medium text-primary" href="/portfolio">
               切换到组合视图
             </Link>
           ) : null}
-          <dl className="flex overflow-hidden rounded-lg border bg-card text-center">
-            <div className="min-w-24 px-3 py-2">
+          <dl className="flex w-full overflow-hidden rounded-lg border bg-card text-center sm:w-auto">
+            <div className="min-w-24 flex-1 px-3 py-2">
               <dt className="text-[10px] text-muted-foreground">项目待办</dt>
               <dd className="mt-0.5 font-mono text-base font-semibold">{actionable}</dd>
             </div>
-            <div className="min-w-24 border-l px-3 py-2">
+            <div className="min-w-24 flex-1 border-l px-3 py-2">
               <dt className="text-[10px] text-muted-foreground">AI 待办理</dt>
               <dd className="mt-0.5 font-mono text-base font-semibold">{counts.findings}</dd>
             </div>
           </dl>
         </div>
       </div>
-      <WorkSearch today={today} handoffs={work.id_design_actions ?? []} onChanged={refreshIdWork}/>
-      {actionable + counts.findings > 0 && <WorkPriorityIndex today={today} work={work}/>}
-      <PreProjectWork />
+      <nav aria-label="我的常用工作" className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+        <Button className="min-h-11" onClick={() => openXiaopai()} variant="outline">交给小Pai</Button>
+        {perspective.priorityRoutes.filter(href => href !== "/my-work" && href !== "/ask").slice(0, 3).map(href => <Link key={href} className="inline-flex min-h-11 items-center font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md" href={href}>{perspective.actionLabels[href]}</Link>)}
+      </nav>
+      {available.length > 1 && <section aria-label="我的角色模块" className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {available.map(module => <article key={module.id} className="min-w-0 rounded-lg border bg-card p-4">
+          <div className="flex items-center justify-between gap-2"><h2 className="text-sm font-semibold">{module.label}</h2><span className="text-xs text-muted-foreground">{module.id === perspective.id ? "主角色" : "兼任"}</span></div>
+          <p className="mt-2 text-xs leading-5 text-muted-foreground">{module.description}</p>
+          <div className="mt-2 flex flex-col items-start">
+            {module.priorityRoutes.filter(href => href !== "/my-work" && href !== "/ask").slice(0, 3).map(href => <Link key={href} href={workModuleHref(module, href)} className="inline-flex min-h-11 items-center rounded-md text-sm font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{module.actionLabels[href]}</Link>)}
+          </div>
+        </article>)}
+      </section>}
+      {productHome && preprojectContent}
+      <div className="mt-4 flex flex-wrap gap-1 border-b pb-3" role="group" aria-label="办理场景">
+        {myWorkScenarios.map(item => {
+          const count = scenarioCount(item.key, counts);
+          return <button type="button" key={item.key} aria-pressed={scenario === item.key} aria-controls={item.key === "preproject" ? "my-work-preproject-content" : item.key === "all" ? "my-work-project-content my-work-preproject-content" : "my-work-project-content"} className={cn("inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", scenario === item.key && "bg-muted font-medium text-foreground")} onClick={() => setScenario(item.key)}><span>{item.label}</span>{count !== null ? <span className="font-mono text-xs">{count}</span> : <span className="text-[11px]">另列</span>}</button>;
+        })}
+      </div>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">{selectedScenario.description}</p>
+      {counts.issues > 0 && <p className="mt-1 text-xs text-muted-foreground">问题处理与验证共用同一清单，场景数量有重合。</p>}
+      {actionable + counts.findings > 0 && <WorkPriorityIndex today={today} work={work} onNavigate={navigateToCard}/>}
+      {!productHome && preprojectContent}
+      {!productHome && scenario !== "all" && scenario !== "preproject" && <div className="mt-4 flex flex-wrap items-center gap-2 border-b pb-3 text-xs text-muted-foreground"><span>研究、专业协审与产品定义另列，项目待办数量不包含这些工作。</span><Button variant="ghost" size="sm" onClick={() => setScenario("preproject")}>核对立项前工作</Button></div>}
       {findingReceipt && ["accepted", "rejected"].includes(findingReceipt.status) && <FindingReviewUndo key={findingReceipt.updated_at} items={[findingReceipt]} onRecorded={result => { setFindingReceipt(result.items[0] ?? null); setTaskNotice("已记录撤销裁决，正在刷新当前待办。"); void refreshIdWork(); }}/>}
       {findingReceipt?.status === "applied" && <div className="mt-3"><FindingAppliedReceipt finding={findingReceipt}/></div>}
       {taskNotice && <p role="status" className="mt-3 rounded-md border bg-muted/20 p-3 text-sm">{taskNotice}</p>}
 
+      <details className="group/work-tools mt-5 border-b pb-3">
+        <summary className="flex min-h-11 cursor-pointer list-none flex-wrap items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden"><CaretDownIcon aria-hidden="true" className="size-4 shrink-0 -rotate-90 transition-transform duration-150 group-open/work-tools:rotate-0 motion-reduce:transition-none"/><span className="font-medium">查找、提醒与批量办理</span>{notifications && notifications.unread_count > 0 && <span className="font-mono text-xs text-pending">提醒 {notifications.unread_count}</span>}{notificationState === "error" && <span className="text-xs text-destructive">提醒待重试</span>}{notificationState === "loading" && <span className="text-xs text-muted-foreground">提醒读取中</span>}</summary>
+        <div className="min-w-0 space-y-4 pt-2">
+      <WorkSearch today={today} handoffs={work.id_design_actions ?? []} onChanged={refreshIdWork}/>
       <FindingBatchReview projectNames={new Map([...work.tasks, ...work.issues, ...work.findings].map(item => [item.project.id, item.project.name]))} onRecorded={() => void refreshIdWork()}/>
       <ReminderPreferences/>
-      {costFreezeFocus && <section className="space-y-2 rounded-md border p-3" aria-label="成本冻结待办办理"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-semibold">成本冻结待批 · {costFreezeFocus.title}</h2><Button type="button" size="sm" variant="ghost" onClick={() => setCostFreezeFocus(null)}>关闭办理</Button></div><CostFreezes key={costFreezeFocus.id} canEdit calculation={null} initialRequestId={costFreezeFocus.id} projectId={costFreezeFocus.project.id} onChanged={() => void queue.refresh()}/></section>}
-      {takeoverFocus && <section className="space-y-2 rounded-md border p-3" aria-label="任务交接待办办理"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-semibold">{takeoverFocus.mode === "review" ? "交接待本人接收" : "交接待补齐"} · {takeoverFocus.title}</h2><Button type="button" size="sm" variant="ghost" onClick={() => setTakeoverFocus(null)}>关闭办理</Button></div><Link className="text-sm text-primary underline" href={`/projects?project=${takeoverFocus.project.id}&tab=work-items&entity_id=${takeoverFocus.task_id}`}>打开原任务与接手资料</Link><TaskTakeover key={takeoverFocus.task_id} initiallyOpen projectId={takeoverFocus.project.id} taskId={takeoverFocus.task_id} onChanged={() => void queue.refresh()}/></section>}
-      {riskResultFocus && <RiskFollowupWork key={riskResultFocus.task_id} item={riskResultFocus} onClose={() => setRiskResultFocus(null)} onRecorded={() => void queue.refresh()}/>}
       {notificationState === "loading" ? <p className="mt-4 text-sm text-muted-foreground" aria-busy="true">正在加载站内通知…</p> : null}
       {notificationState === "error" ? (
         <section aria-label="通知加载状态" className="mt-4 rounded-lg border border-destructive/30 p-4" role="alert">
@@ -349,11 +418,19 @@ export function MyWorkView({
         </section>
       ) : null}
 
+        </div>
+      </details>
+
       {queue.error && <p role="alert" className="my-3 rounded-md border border-destructive/30 p-3 text-sm text-destructive">{queue.error} 已打开的工作卡暂时保留，办理时仍会核对当前业务状态。</p>}
+      {costFreezeFocus && <section className="mt-5 space-y-2 rounded-lg border p-4" aria-label="成本冻结待办办理"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-semibold">成本冻结待批 · {costFreezeFocus.title}</h2><Button type="button" size="sm" variant="ghost" onClick={() => setCostFreezeFocus(null)}>关闭办理</Button></div><CostFreezes key={costFreezeFocus.id} canEdit calculation={null} initialRequestId={costFreezeFocus.id} projectId={costFreezeFocus.project.id} onChanged={() => void queue.refresh()}/></section>}
+      {takeoverFocus && <section className="mt-5 space-y-2 rounded-lg border p-4" aria-label="任务交接待办办理"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-semibold">{takeoverFocus.mode === "review" ? "交接待本人接收" : "交接待补齐"} · {takeoverFocus.title}</h2><Button type="button" size="sm" variant="ghost" onClick={() => setTakeoverFocus(null)}>关闭办理</Button></div><Link className="text-sm text-primary underline" href={`/projects?project=${takeoverFocus.project.id}&tab=work-items&entity_id=${takeoverFocus.task_id}`}>打开原任务与接手资料</Link><TaskTakeover key={takeoverFocus.task_id} initiallyOpen projectId={takeoverFocus.project.id} taskId={takeoverFocus.task_id} onChanged={() => void queue.refresh()}/></section>}
+      {riskResultFocus && <div className="mt-5"><RiskFollowupWork key={riskResultFocus.task_id} item={riskResultFocus} onClose={() => setRiskResultFocus(null)} onRecorded={() => void queue.refresh()}/></div>}
       {discussionFocus && <section className="space-y-3 rounded-md border p-3" aria-label="原讨论与摘要办理"><div className="flex items-center justify-between gap-2"><h2 className="font-semibold">原讨论与人工核对</h2><Button type="button" size="sm" variant="ghost" onClick={() => setDiscussionFocus(null)}>关闭办理</Button></div><MyWorkDiscussion key={discussionFocus.runId} projectId={discussionFocus.projectId} runId={discussionFocus.runId}/></section>}
       {executionFocus&&<section className="space-y-2 rounded-md border p-3" aria-label="变更执行结果待办办理"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-semibold">{executionFocus.ecr_code} · {executionFocus.title} · 结果 v{executionFocus.revision_number}</h2><div className="flex gap-2"><Button type="button" variant="outline" size="sm" onClick={()=>void refreshIdWork()}>刷新待办</Button><Button type="button" variant="ghost" size="sm" onClick={()=>setExecutionFocus(null)}>关闭办理</Button></div></div><Link className="text-sm text-primary underline" href={`/projects?project=${executionFocus.project.id}&tab=engineering&change_ecr_id=${executionFocus.ecr_id}&change_task_id=${executionFocus.task_id}#ecr-${executionFocus.ecr_id}`}>打开原变更、批准范围及执行任务</Link><ChangeExecutionResults key={executionFocus.id} projectId={executionFocus.project.id} bindingId={executionFocus.binding_id} initiallyOpen focusResultId={executionFocus.id} onChanged={refreshIdWork}/></section>}
       {idFocus && <section className="space-y-2" aria-label="ID设计待办办理"><div className="flex items-center justify-between"><h2 className="font-semibold">{idFocus.kind === "freeze" ? "ID冻结待我确认" : "ID交付待我接收"}</h2><Button type="button" variant="ghost" size="sm" onClick={() => setIdFocus(null)}>关闭办理</Button></div><MyWorkIdDesignAction key={`${idFocus.kind}:${idFocus.id}`} item={idFocus} onChanged={() => void refreshIdWork()} /></section>}
       {crossFocus && <section className="space-y-2" aria-label="跨项目依赖办理"><div className="flex items-center justify-between"><h2 className="font-semibold">跨项目依赖待我确认</h2><Button type="button" variant="ghost" size="sm" onClick={() => setCrossFocus(null)}>关闭办理</Button></div><ProjectCrossDependencies key={`${crossFocus.projectId}:${crossFocus.proposalId}`} projectId={crossFocus.projectId} focusProposalId={crossFocus.proposalId} onChanged={() => void refreshIdWork()} /></section>}
+      <div id="my-work-project-content" hidden={scenario === "preproject"} className={cn(scenario === "preproject" && "hidden")}>
+      {selectedCount === 0 && actionable + counts.findings > 0 && <section className="mt-5 border-b py-6 text-sm" aria-label="当前场景没有待办"><h2 className="font-semibold">当前场景没有项目待办</h2><p className="mt-1 text-muted-foreground">其他办理场景仍有 {actionable + counts.findings} 项。立项前工作另行核对。</p><Button className="mt-3" size="sm" variant="outline" onClick={() => setScenario("all")}>查看全部办理</Button></section>}
       {actionable + counts.findings === 0 ? (
         <section
           className="mt-5 flex min-h-72 flex-col items-center justify-center rounded-lg border border-dashed bg-card px-6 text-center"
@@ -486,12 +563,12 @@ export function MyWorkView({
               ><GateSignoffWorkCard item={signoff} onChanged={refreshIdWork} onNotice={setTaskNotice}/><WorkCardConversation projectId={signoff.project.id} kind="gate" id={signoff.gate_id}/></Row>
             ))}
           />
-          <Section {...paging("cost_freeze_approvals")} count={counts.cost_freeze_approvals ?? 0} icon={ShieldCheckIcon} title="成本冻结待我批准" items={(work.cost_freeze_approvals ?? []).map(item => <li id={workCardAnchor("cost-freeze", item.id)} className="scroll-mt-6" key={item.id}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setCostFreezeFocus(item)}><span>{item.title}</span><span className="text-xs text-muted-foreground">{item.project.code} · 待本人批准</span></button></li>)}/>
-          <Section {...paging("task_takeover_actions")} count={counts.task_takeover_actions ?? 0} icon={ClipboardTextIcon} title="任务交接待我办理" items={(work.task_takeover_actions ?? []).map(item => <li id={workCardAnchor("takeover", item.id)} className="scroll-mt-6" key={item.id}><button type="button" className="flex min-h-11 w-full flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setTakeoverFocus(item)}><span className="min-w-0 flex-1 break-words">{item.mode === "review" ? "待本人接收" : "退回／责任变化待补齐"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code} · 交接 v{item.revision}</span><DueBadge due={item.due_date} today={today}/></button></li>)}/>
-          <Section {...paging("risk_followup_actions")} count={counts.risk_followup_actions ?? 0} icon={ShieldCheckIcon} title="风险处理结果待我办理" items={(work.risk_followup_actions ?? []).map(item => <li id={workCardAnchor("risk-result", item.id)} className="scroll-mt-6" key={item.id}><button type="button" className="flex min-h-11 w-full flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setRiskResultFocus(item)}><span className="min-w-0 flex-1 break-words">{item.mode === "review" ? "待本人接收" : "待提交／补齐结果"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)}/>
-          <Section {...paging("change_execution_confirmations")} count={counts.change_execution_confirmations??0} icon={ShieldCheckIcon} title="变更执行结果待我确认" items={(work.change_execution_confirmations??[]).map(item=><li id={workCardAnchor("change", item.id)} className="scroll-mt-6" key={item.id}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={()=>setExecutionFocus(item)}><span>{{retest:"复验",rereview:"复审",recertification:"复认证",coordination:"协同"}[item.action]} · {item.ecr_code} · {item.title}<span className="ml-2 text-xs text-muted-foreground">结果 v{item.revision_number}</span></span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)}/>
-          <Section {...paging("id_design_actions")} count={counts.id_design_actions ?? 0} icon={ShieldCheckIcon} title="ID设计待我确认 / 接收" items={(work.id_design_actions ?? []).map((item) => <li id={workCardAnchor(`id-${item.kind}`, item.id)} className="scroll-mt-6" key={`${item.kind}:${item.id}`}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setIdFocus(item)}><span>{item.kind === "freeze" ? "冻结确认" : "逐项接收"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)} />
-          <Section {...paging("cross_schedule_approvals")} count={crossCount} icon={ShieldCheckIcon} title="跨项目依赖待我确认" items={(work.cross_schedule_approvals ?? []).map((item) => <li id={workCardAnchor("cross", item.id, item.project.id)} className="scroll-mt-6" key={`${item.project.id}:${item.id}`}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setCrossFocus({ projectId: item.project.id, proposalId: item.id })}><span>{item.operation === "remove" ? "解除依赖" : item.operation === "replace" ? "转接依赖" : "依赖确认"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)} />
+          <Section {...paging("cost_freeze_approvals")} count={counts.cost_freeze_approvals ?? 0} icon={ShieldCheckIcon} title="成本冻结待我批准" items={(work.cost_freeze_approvals ?? []).map(item => <li id={workCardAnchor("cost-freeze", item.id)} className="scroll-mt-28" tabIndex={-1} key={item.id}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setCostFreezeFocus(item)}><span>{item.title}</span><span className="text-xs text-muted-foreground">{item.project.code} · 待本人批准</span></button></li>)}/>
+          <Section {...paging("task_takeover_actions")} count={counts.task_takeover_actions ?? 0} icon={ClipboardTextIcon} title="任务交接待我办理" items={(work.task_takeover_actions ?? []).map(item => <li id={workCardAnchor("takeover", item.id)} className="scroll-mt-28" tabIndex={-1} key={item.id}><button type="button" className="flex min-h-11 w-full flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setTakeoverFocus(item)}><span className="min-w-0 flex-1 break-words">{item.mode === "review" ? "待本人接收" : "退回／责任变化待补齐"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code} · 交接 v{item.revision}</span><DueBadge due={item.due_date} today={today}/></button></li>)}/>
+          <Section {...paging("risk_followup_actions")} count={counts.risk_followup_actions ?? 0} icon={ShieldCheckIcon} title="风险处理结果待我办理" items={(work.risk_followup_actions ?? []).map(item => <li id={workCardAnchor("risk-result", item.id)} className="scroll-mt-28" tabIndex={-1} key={item.id}><button type="button" className="flex min-h-11 w-full flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setRiskResultFocus(item)}><span className="min-w-0 flex-1 break-words">{item.mode === "review" ? "待本人接收" : "待提交／补齐结果"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)}/>
+          <Section {...paging("change_execution_confirmations")} count={counts.change_execution_confirmations??0} icon={ShieldCheckIcon} title="变更执行结果待我确认" items={(work.change_execution_confirmations??[]).map(item=><li id={workCardAnchor("change", item.id)} className="scroll-mt-28" tabIndex={-1} key={item.id}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={()=>setExecutionFocus(item)}><span>{{retest:"复验",rereview:"复审",recertification:"复认证",coordination:"协同"}[item.action]} · {item.ecr_code} · {item.title}<span className="ml-2 text-xs text-muted-foreground">结果 v{item.revision_number}</span></span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)}/>
+          <Section {...paging("id_design_actions")} count={counts.id_design_actions ?? 0} icon={ShieldCheckIcon} title="ID设计待我确认 / 接收" items={(work.id_design_actions ?? []).map((item) => <li id={workCardAnchor(`id-${item.kind}`, item.id)} className="scroll-mt-28" tabIndex={-1} key={`${item.kind}:${item.id}`}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setIdFocus(item)}><span>{item.kind === "freeze" ? "冻结确认" : "逐项接收"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)} />
+          <Section {...paging("cross_schedule_approvals")} count={crossCount} icon={ShieldCheckIcon} title="跨项目依赖待我确认" items={(work.cross_schedule_approvals ?? []).map((item) => <li id={workCardAnchor("cross", item.id, item.project.id)} className="scroll-mt-28" tabIndex={-1} key={`${item.project.id}:${item.id}`}><button type="button" className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25" onClick={() => setCrossFocus({ projectId: item.project.id, proposalId: item.id })}><span>{item.operation === "remove" ? "解除依赖" : item.operation === "replace" ? "转接依赖" : "依赖确认"} · {item.title}</span><span className="text-xs text-muted-foreground">{item.project.code}</span></button></li>)} />
           <Section
             {...paging("findings")}
             count={counts.findings}
@@ -510,6 +587,7 @@ export function MyWorkView({
           />
         </div>
       )}
+      </div>
     </WorkspaceShell>
   );
 }

@@ -1,0 +1,32 @@
+{
+  "observed_at": "2026-10-03T11:10:20.751975+00:00",
+  "completed": {
+    "13": {
+      "exit_code": 0,
+      "source_stable": true,
+      "report_sha256": "bcf85162dc1c374b317267fd83ea111028ba6ad41600ff61d08407d63eef8298",
+      "report": "repair-v4-13-result.json"
+    },
+    "14": {
+      "exit_code": 0,
+      "source_stable": true,
+      "report_sha256": "789c31f643a72411db72ba9e719f99635355aff2f38ad6fd8c8142b0f51c8459",
+      "report": "repair-v4-14-result.json"
+    },
+    "15": {
+      "exit_code": 0,
+      "source_stable": true,
+      "report_sha256": "0643f1fc0faf49189477a3e01ba8c0884826d09d477744e0cfd2a57206f8a1b5",
+      "report": "repair-v4-15-result.json"
+    }
+  },
+  "awaiting_results": [
+    1,
+    8,
+    16,
+    17,
+    18,
+    19
+  ],
+  "complete_selection_passed": false
+}

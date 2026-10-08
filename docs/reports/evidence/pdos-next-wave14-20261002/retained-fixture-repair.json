@@ -1,0 +1,44 @@
+{
+  "status": "test_fixture_repaired_static_checks_only_pending_root_pg",
+  "test_file": "pdos-next/server/tests/test_retained_execution.py",
+  "nodeid": "tests/test_retained_execution.py::test_retained_proof_rejects_new_real_observation_of_configuration_deviation",
+  "initial_failure_evidence": "new-pg-15.log",
+  "initial_failure": {
+    "exception": "KeyError",
+    "missing_key": "engineering_payload",
+    "location": "alternate_configurations(work.setup, fixed)",
+    "reason": "The shared launch configuration fixture preserves exact saved identities but does not return the original engineering/process command payloads.",
+    "result": "1 failed in 815.68s; not hidden or declared passed"
+  },
+  "repair": {
+    "scope": "Only the failed test function's input construction",
+    "actual_saved_source": "GET /v1/products/{product_id}/configurations",
+    "selection": "Exact engineering/process IDs pinned by the existing Build fixture, not latest configurations",
+    "engineering_input": "Pinned Definition/BOM IDs and revisions, design_versions, source references and visibility",
+    "manufacturing_input": "Pinned engineering revision, site/line, fixed operations, source references and visibility",
+    "effects": "The existing helper creates distinct immutable drafts, server comparison supplies differences, the existing real command records the observed deviation, and the unchanged retained proof must reject it.",
+    "production_changes": false,
+    "shared_fixture_changes": false,
+    "retained_proof_mocked": false,
+    "original_planned_configuration_mutated": false,
+    "assertions_relaxed": false
+  },
+  "checks": {
+    "single_file_ruff_check": "passed",
+    "single_file_ruff_format_check": "passed",
+    "memory_only_syntax_compile": "passed",
+    "get_envelope_and_saved_field_read_alignment": "verified by source inspection",
+    "pytest_executed_by_subagent": false,
+    "database_accessed_by_subagent": false,
+    "pg_recheck": "pending_root_execution_of_same_failed_node"
+  },
+  "test_source_hashes": {
+    "before": "dde53c854bad71b6490e6744b838247197829144a088fd2c6acfb7f0ff3efc73",
+    "after": "83606215588721058133baff0a19220217e224e13aee13bd49ac46ec2fa07898"
+  },
+  "limits": [
+    "All fixtures and external observations remain synthetic.",
+    "This test repair does not prove real production qualification or Wave14 acceptance.",
+    "Initial evidence and earlier freeze records remain unchanged."
+  ]
+}

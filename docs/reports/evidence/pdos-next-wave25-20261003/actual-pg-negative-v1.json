@@ -1,0 +1,710 @@
+{
+  "status": "FAIL",
+  "head": "next_0028",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "target": "127.0.0.1:62513/pdos_test",
+  "source_qualifications_created": 0,
+  "business_facts_committed": 0,
+  "positive_professional_approval_or_manufacturing_attested": false,
+  "change": {
+    "schema_version": "wave25-change-pg-checks-v1",
+    "status": "FAIL",
+    "expected_head": "next_0028",
+    "cases": [
+      {
+        "name": "catalog_eight_exact_scope_permissions_triggers",
+        "status": "PASS"
+      },
+      {
+        "name": "agent_insert_change_order_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_order_records",
+          "message_sha256": "3ad2b7eb4f591e89c85cb35e2d5e3b219ab48f1fac919ad33b86058d0cc69d6c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_change_order_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_order_records",
+          "message_sha256": "3ad2b7eb4f591e89c85cb35e2d5e3b219ab48f1fac919ad33b86058d0cc69d6c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_order_records",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_change_approval_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_approval_records",
+          "message_sha256": "36b0c1b96b48830fc07f7200f9300f6a074040346392a584d52122b93e02e708",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_change_approval_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_approval_records",
+          "message_sha256": "36b0c1b96b48830fc07f7200f9300f6a074040346392a584d52122b93e02e708",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_approval_records",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_change_implementation_captures",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_implementation_captures",
+          "message_sha256": "613843728d3796505f7694957ff2ac00812c78d58debc6c2be230d8a7966e478",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_change_implementation_captures",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_implementation_captures",
+          "message_sha256": "613843728d3796505f7694957ff2ac00812c78d58debc6c2be230d8a7966e478",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_implementation_captures",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_change_implementation_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_implementation_records",
+          "message_sha256": "3b1115aa23a18cfd8f173b8ebb3fa8e85b07c33a600c956187e0a8cc67f13a73",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_change_implementation_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_implementation_records",
+          "message_sha256": "3b1115aa23a18cfd8f173b8ebb3fa8e85b07c33a600c956187e0a8cc67f13a73",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_implementation_records",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_controlled_change_policy_facts",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_policy_facts",
+          "message_sha256": "27f4ce8760ae78a5d102061d2feae3c2b56ff781baf31db71dca822c04e3390c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_controlled_change_policy_facts",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_policy_facts",
+          "message_sha256": "27f4ce8760ae78a5d102061d2feae3c2b56ff781baf31db71dca822c04e3390c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_policy_facts",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_controlled_change_policy_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_policy_currents",
+          "message_sha256": "25e990bb41fc117c263de2df0e72ab98a6fb27e33d07a82983531527ff191304",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_controlled_change_policy_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_policy_currents",
+          "message_sha256": "25e990bb41fc117c263de2df0e72ab98a6fb27e33d07a82983531527ff191304",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_policy_currents",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_controlled_change_selection_facts",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_selection_facts",
+          "message_sha256": "9c71d6b5f1a738dc4e3e9cd366b6980feae211764ac9f179d82e83e4fc2e537a",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_controlled_change_selection_facts",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_selection_facts",
+          "message_sha256": "9c71d6b5f1a738dc4e3e9cd366b6980feae211764ac9f179d82e83e4fc2e537a",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_selection_facts",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "agent_insert_controlled_change_selection_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_selection_currents",
+          "message_sha256": "47acfbbe5e7f41c81fe2dc11022161e01178154ff7f8bff77730f4458dfd63e4",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_update_controlled_change_selection_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_selection_currents",
+          "message_sha256": "47acfbbe5e7f41c81fe2dc11022161e01178154ff7f8bff77730f4458dfd63e4",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_selection_currents",
+        "status": "FAIL",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42601",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "f8321291a7eb8a4a3b74cb8a0808449c4ffc8f4c58adb3958365fd3201ef5f78",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        },
+        "reason": "wrong_sqlstate_constraint_guard_or_phase"
+      },
+      {
+        "name": "missing_parent_controlled_change_policy_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "P0002",
+          "message": "query returned no rows",
+          "message_sha256": "527c4efa961e0c68b6a15125871624edb1c2c3bfa0d22ab592a8559e0ec972f5",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "missing_parent_controlled_change_selection_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "P0002",
+          "message": "query returned no rows",
+          "message_sha256": "527c4efa961e0c68b6a15125871624edb1c2c3bfa0d22ab592a8559e0ec972f5",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "orphan_audit_entries",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "23503",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "53a2ff050d220771cb1f6934b93b9e5abdf7f19bd7c32cd6e5e4243bc8e3e576",
+          "constraint": "audit_entries_tenant_id_receipt_id_fkey",
+          "constraint_sha256": "cb359c5fc7101fcd6264ff3b361b5a53b4dd716190dbf28226cf4c0b15e1366d",
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "orphan_outbox_events",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "23503",
+          "message": "unrecognized diagnostic redacted",
+          "message_sha256": "9c5a7b5c83ded6d8e442dcddfa4e4a480b80aefc0ae4e7c3d55c5dde29d18120",
+          "constraint": "outbox_events_tenant_id_receipt_id_fkey",
+          "constraint_sha256": "f314503d8c1070b55e7447cd249e1aae6e6b5c901ad9c025db51b277f033b950",
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "preconsumed_change_order_prepare",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "P0001",
+          "message": "new proof cannot be pre-consumed",
+          "message_sha256": "076d13cc16e788e0c9163f42f56330070e10a4437876c316f02e6047bddbb29c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "unpaired_consumption_change_order_prepare",
+        "status": "PASS",
+        "expected_phase": "deferred",
+        "observed": {
+          "sqlstate": "23514",
+          "message": "consumed proof missing unique change atom",
+          "message_sha256": "0e8e029f940750866eae85951958812085ee7e288a41fc91d4a68a62cb0b61d8",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "deferred"
+        },
+        "fixture_origin": "sql_fixture_no_business_qualification"
+      },
+      {
+        "name": "preconsumed_change_order_approve",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "P0001",
+          "message": "new proof cannot be pre-consumed",
+          "message_sha256": "076d13cc16e788e0c9163f42f56330070e10a4437876c316f02e6047bddbb29c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "unpaired_consumption_change_order_approve",
+        "status": "PASS",
+        "expected_phase": "deferred",
+        "observed": {
+          "sqlstate": "23514",
+          "message": "consumed proof missing unique change atom",
+          "message_sha256": "0e8e029f940750866eae85951958812085ee7e288a41fc91d4a68a62cb0b61d8",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "deferred"
+        },
+        "fixture_origin": "sql_fixture_no_business_qualification"
+      },
+      {
+        "name": "preconsumed_change_implementation_record",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "P0001",
+          "message": "new proof cannot be pre-consumed",
+          "message_sha256": "076d13cc16e788e0c9163f42f56330070e10a4437876c316f02e6047bddbb29c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "unpaired_consumption_change_implementation_record",
+        "status": "PASS",
+        "expected_phase": "deferred",
+        "observed": {
+          "sqlstate": "23514",
+          "message": "consumed proof missing unique change atom",
+          "message_sha256": "0e8e029f940750866eae85951958812085ee7e288a41fc91d4a68a62cb0b61d8",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "deferred"
+        },
+        "fixture_origin": "sql_fixture_no_business_qualification"
+      },
+      {
+        "name": "preconsumed_change_selection_decide",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "P0001",
+          "message": "new proof cannot be pre-consumed",
+          "message_sha256": "076d13cc16e788e0c9163f42f56330070e10a4437876c316f02e6047bddbb29c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "unpaired_consumption_change_selection_decide",
+        "status": "PASS",
+        "expected_phase": "deferred",
+        "observed": {
+          "sqlstate": "P0001",
+          "message": "consumed selection proof needs exact atom",
+          "message_sha256": "e38b6de406e5c183f29f1a656be5ae5142aaf1d25dc8e0fe2944acba78be27c2",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "deferred"
+        },
+        "fixture_origin": "sql_fixture_no_business_qualification"
+      },
+      {
+        "name": "retained_and_rls_change_order_records",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_change_approval_records",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_change_implementation_captures",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_change_implementation_records",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_controlled_change_policy_facts",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_controlled_change_policy_currents",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_controlled_change_selection_facts",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "retained_and_rls_controlled_change_selection_currents",
+        "status": "PENDING",
+        "reason": "actual_saved_row_id_required"
+      },
+      {
+        "name": "atomic_change_order_records",
+        "status": "PENDING",
+        "reason": "actual_owner_or_explicit_sql_fixture_required"
+      },
+      {
+        "name": "atomic_controlled_change_policy_facts",
+        "status": "PENDING",
+        "reason": "actual_owner_or_explicit_sql_fixture_required"
+      },
+      {
+        "name": "atomic_controlled_change_selection_facts",
+        "status": "PENDING",
+        "reason": "actual_owner_or_explicit_sql_fixture_required"
+      },
+      {
+        "name": "atomic_change_approval_records",
+        "status": "PENDING",
+        "reason": "actual_owner_or_explicit_sql_fixture_required"
+      },
+      {
+        "name": "atomic_change_implementation_records",
+        "status": "PENDING",
+        "reason": "actual_owner_or_explicit_sql_fixture_required"
+      }
+    ],
+    "business_positive_attested": false,
+    "scope": {
+      "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+      "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+      "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+      "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f"
+    },
+    "qualification_created": false,
+    "retained_fingerprint_before": {
+      "change_order_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_approval_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_captures": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "confirmations": {
+        "count": 41,
+        "sha256": "4f91d6d58ff1291c0d7a4b955db6fcaa48cafbf50d65eb55ac7866f5fb9611e8"
+      },
+      "action_receipts": {
+        "count": 90,
+        "sha256": "0d67b01628c7ec6349606af9f0a423e20974b02ee50559ef9709d177570fa692"
+      },
+      "request_keys": {
+        "count": 373,
+        "sha256": "083b837c1b7041b7b6f6d3779bd0e483904631409cac5b4405c1350f7bf397a0"
+      },
+      "audit_entries": {
+        "count": 397,
+        "sha256": "a702abd793f3791e13492375bb1ba0e0a6f1c5a85165de71adffa833ea591891"
+      },
+      "outbox_events": {
+        "count": 397,
+        "sha256": "e60706b97d19c2a2f273cf961648ec4bbb539a61a23a45942bb04b86f4390631"
+      },
+      "products": {
+        "count": 4,
+        "sha256": "0fbc4c92801029930bcb8b5c336f403311e26dff4e04b0f2a835f35b0f659931"
+      },
+      "change_request_versions": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_request_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    },
+    "retained_fingerprint_after": {
+      "change_order_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_approval_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_captures": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "confirmations": {
+        "count": 41,
+        "sha256": "4f91d6d58ff1291c0d7a4b955db6fcaa48cafbf50d65eb55ac7866f5fb9611e8"
+      },
+      "action_receipts": {
+        "count": 90,
+        "sha256": "0d67b01628c7ec6349606af9f0a423e20974b02ee50559ef9709d177570fa692"
+      },
+      "request_keys": {
+        "count": 373,
+        "sha256": "083b837c1b7041b7b6f6d3779bd0e483904631409cac5b4405c1350f7bf397a0"
+      },
+      "audit_entries": {
+        "count": 397,
+        "sha256": "a702abd793f3791e13492375bb1ba0e0a6f1c5a85165de71adffa833ea591891"
+      },
+      "outbox_events": {
+        "count": 397,
+        "sha256": "e60706b97d19c2a2f273cf961648ec4bbb539a61a23a45942bb04b86f4390631"
+      },
+      "products": {
+        "count": 4,
+        "sha256": "0fbc4c92801029930bcb8b5c336f403311e26dff4e04b0f2a835f35b0f659931"
+      },
+      "change_request_versions": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_request_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    },
+    "catalog_table_count": 122,
+    "source_arrays_truncated": false,
+    "outer_rolled_back": true
+  },
+  "error_type": "AssertionError",
+  "error": ""
+}

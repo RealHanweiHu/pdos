@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "action": "rule",
+  "started_at": "2026-10-03T15:35:36.139633+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "model_calls": 0,
+  "steps": [],
+  "synthetic_only": true,
+  "review_writes": 0,
+  "effectiveness_writes": 0,
+  "close_writes": 0,
+  "error_type": "ProgrammingError",
+  "error_code": "f405",
+  "finished_at": "2026-10-03T15:36:58.222962+00:00"
+}

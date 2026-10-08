@@ -1,0 +1,11 @@
+{
+  "recorded_at": "2026-10-03T19:25:23.155414+00:00",
+  "scope": "observed full controller plan sequence after saved successful health; file completion time approximation, not instrumented per-endpoint benchmark",
+  "api_ready_at": "2026-10-03T19:16:13.467228+00:00",
+  "plan_preview_log_completion_at": "2026-10-03T19:16:49.716207+00:00",
+  "approx_controller_seconds": 36.249,
+  "old_window_start": "2026-10-03T19:16:49.891472+00:00",
+  "approximately_seconds_left_at_preview_return": 0.175,
+  "actual_prepared_proposal_unsubmitted": "test-unsubmitted-plan-readback-v1.json",
+  "correction": "Earlier internal estimate of >2 minute Plan latency is not supported; preceding Root host-registry failures/recovery and API startup used almost all initially frozen five-minute lead. Candidate performance work must use actual static or measured repeated traversals as evidence."
+}

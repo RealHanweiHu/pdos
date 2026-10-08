@@ -1,0 +1,40 @@
+{
+  "recorded_at": "2026-10-07T02:00:27.513228+00:00",
+  "status": "candidate_ready_for_named_review",
+  "bundle_path": "/Users/huhanwei/pdos-preview-config/input-metering/minimax-m3-20261006-candidate",
+  "candidate_sha256": "90ca2afe08e5ae67b9bc283830ecd999c56f2633540a4376452f445856f46b0e",
+  "evidence_sha256": "aa0fcab4bb363b0bcee278d73174d3033bb913b364d36bbf7228b876c1739c04",
+  "real_provider_calls": 4,
+  "automatic_retries": 0,
+  "actual_input_tokens": 16604,
+  "actual_output_tokens": 128,
+  "exact_input_matches": 4,
+  "input_hashes_reproduced": 4,
+  "evidence_schema_valid": true,
+  "assets_reverified": true,
+  "distinct_provider_request_ids": 4,
+  "observed_max_tokens_honored": true,
+  "output_limit_probe": 32,
+  "proposed_output_token_limit": 4000,
+  "higher_output_limit_empirically_tested": false,
+  "proposed_input_limit_including_margin": 17000,
+  "proposed_margin_tokens": 64,
+  "proposed_margin_percent": 5,
+  "proposed_validity_days": 7,
+  "missing_human_fields": [
+    "reviewed_by",
+    "valid_from",
+    "valid_until"
+  ],
+  "qualification_published": false,
+  "configuration_applied": false,
+  "tenant_admission_changed": false,
+  "supported_scope": "Current exact MiniMax-M3 endpoint, text-only ChatMessage; no native tools or multimodal inputs.",
+  "caveats": [
+    "Four exact sample matches do not establish a universal input error bound.",
+    "All responses stopped at 32 output tokens; this is metering evidence, not response quality validation.",
+    "4000 output tokens is a proposed deployment cap from the existing research profile; only max_tokens=32 was empirically tested.",
+    "The candidate has null reviewer and validity fields and is not loadable as a published qualification.",
+    "Publication, tenant draining/admission and local configuration adoption remain pending human review."
+  ]
+}

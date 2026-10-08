@@ -1,0 +1,42 @@
+{
+  "algorithm_version": "planning.minute_forecast.v2",
+  "dto_version": "planning.v1",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/__init__.py",
+      "sha256": "da41441ab73ff5c024f1f39095eab7f93f739728b2828d328be5b14a37e12364"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/calendar.py",
+      "sha256": "8d57a37a5137f2bbd058986d7220296c0c0a9da0613decc7e97c19808434d42d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/dto.py",
+      "sha256": "22acd27e207250208e86c37b9dcef4d79d31817948c125602c1d5c2ff5693a4f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/forecast.py",
+      "sha256": "d5f43e78b8b9cad59ad928e91d5a9d1d366fc0a50fbefdecd4ff1daf4cb8d7b1"
+    },
+    {
+      "path": "pdos-next/server/tests/planning_engine/test_calendar.py",
+      "sha256": "e6eb48e74c02ea0f9894d28d2ce83ef273652f76b5016c2098bbcf194e79dd7f"
+    },
+    {
+      "path": "pdos-next/server/tests/planning_engine/test_finish_windows.py",
+      "sha256": "4d70a4fb68bf8e4ea20a0ee04e05111c8bb8d13e07f229dc5087d3abf284be46"
+    },
+    {
+      "path": "pdos-next/server/tests/planning_engine/test_forecast.py",
+      "sha256": "93cbfe52a0350e7ee55b6c9b1f01b742f3c6226e1dd7f18ac213cc8cedb40014"
+    }
+  ],
+  "changed_paths": [
+    "pdos-next/server/pdos_next/engines/planning/forecast.py",
+    "pdos-next/server/tests/planning_engine/test_finish_windows.py",
+    "pdos-next/server/tests/planning_engine/test_forecast.py"
+  ],
+  "previous_candidate": "0901bc928a4fff028736e683920c4e18300de1745432962b2941b15c97e95115",
+  "scope": "Pure planning package only; business integration and stage Exit not claimed",
+  "package_candidate_sha256": "e5fc53608691da573a23899e575c0e7568c854d096f9d06d9f0e72c8274803cd"
+}

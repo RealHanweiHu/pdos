@@ -1,0 +1,52 @@
+{
+  "status": "PASS_RECORDED_ACTUAL_RESPONSE_ADAPTER",
+  "scope": "Offline frozen contract with actual response JSON; no current qualification claim",
+  "checks": [
+    {
+      "name": "frozen_fact-workflow-contract",
+      "passed": true
+    },
+    {
+      "name": "actual_unselected_host_shape",
+      "passed": true
+    },
+    {
+      "name": "actual_selected_host_shape",
+      "passed": true
+    },
+    {
+      "name": "no_guessed_default",
+      "passed": true
+    },
+    {
+      "name": "whole_actual_selected_ref",
+      "passed": true
+    },
+    {
+      "name": "unselected_cannot_represent_selected_request",
+      "passed": true
+    },
+    {
+      "name": "candidate_full_sha_drift_rejected",
+      "passed": true
+    },
+    {
+      "name": "both_negative_reviews_remain_disabled",
+      "passed": true
+    },
+    {
+      "name": "saved_history_remains_available",
+      "passed": true
+    }
+  ],
+  "sources": {
+    "fact-workflow-contract": "5de761366993a1f7ae381ad85dee1033a0e8462e0d316f6cc444b0c3230bdb3a",
+    "ui-contract": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+    "tool": "0e882c0c51071d0bd51eb32626b48d72ce439945288235b5b602d1a8a18469cd"
+  },
+  "responses": {
+    "docs/reports/evidence/pdos-next-wave19-20261003/ui-selection-source-manifest-v2.json": "55896ef070d80b47cda93ae6fe9e5b99bb339dbafe23464eb14a5d0b45908e43",
+    "pdos-next/.local/wave19-http-v2-unselected.json": "1e53d1077465f43db168fb0b0a2b2a2fa8519578cf5a8e167f649b7a2bb61bd3",
+    "pdos-next/.local/wave19-http-v2-selected-0.json": "9cf5b948645c83fc3d0fc1fa04b661ac1c96a5fb22ff0a94f92398c9d383635d"
+  }
+}

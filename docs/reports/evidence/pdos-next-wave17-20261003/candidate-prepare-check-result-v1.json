@@ -1,0 +1,124 @@
+{
+  "schema_version": "pdos-wave17-candidate-prepare-check-v1",
+  "created_at": "2026-10-03T12:15:01.721245+00:00",
+  "manifest": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-prepare-source-manifest-v1.json",
+  "manifest_sha256": "08094e96a3400bba4519bd46431e9ddd2bc2f4e704512671ce1e157a263a7066",
+  "source_files": {
+    "pdos-next/staging/wave17/candidate_prepare.py": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+    "pdos-next/staging/wave17/test_candidate_prepare.py": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa",
+    "pdos-next/staging/wave17/candidate-prepare-contract.md": "54f1750d3e43e0d8b9137f58f4d29e0c4fe1eef13b3eb5dfba2b2d974ec45172"
+  },
+  "checks": {
+    "owned_pure": {
+      "exit_code": 0,
+      "passed": 40,
+      "failed": 0,
+      "seconds": 3.27,
+      "log": "candidate-prepare-pure-final.log"
+    },
+    "ruff": {
+      "exit_code": 0,
+      "log": "candidate-prepare-ruff-final.log"
+    },
+    "format": {
+      "exit_code": 0,
+      "log": "candidate-prepare-format-final.log"
+    },
+    "in_memory_ast": {
+      "exit_code": 0,
+      "passed": 2,
+      "log": "candidate-prepare-ast-final.log"
+    }
+  },
+  "commands": [
+    "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_candidate_prepare.py -q",
+    "pdos-next/server/.venv/bin/ruff check pdos-next/staging/wave17/candidate_prepare.py pdos-next/staging/wave17/test_candidate_prepare.py",
+    "pdos-next/server/.venv/bin/ruff format --check pdos-next/staging/wave17/candidate_prepare.py pdos-next/staging/wave17/test_candidate_prepare.py",
+    "In-memory ast.parse of the two owned Python files; no compile output."
+  ],
+  "raw_logs": {
+    "candidate-prepare-pure-initial.log": "ddf170516415248edf69fce2d3e20d658fc6e7d6347b0a7ca0d59b7e416bbd38",
+    "candidate-prepare-pure-recheck-1.log": "01b46185ab1635c62170f5f6d57f63b27301d1b41721c3d5034794061888bace",
+    "candidate-prepare-pure-recheck-2.log": "23ca1d1210592645bda0c237746c6f15ec0316eb7c8337bd171f52e68e283fd1",
+    "candidate-prepare-pure-expanded.log": "36f4edce94a1cc624b8878b628c24137cb8d6851dfa9af1248c36c3246bea007",
+    "candidate-prepare-pure-material-check.log": "dd06333efdccee3aec23bf1f9007768c7d00c710736924ef3833734ce033cb9e",
+    "candidate-prepare-pure-final.log": "64054327d17bb85744973c0d055596d0ae27c19423329bad188311961ae89bc2",
+    "candidate-prepare-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "candidate-prepare-format-final.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "candidate-prepare-ast-final.log": "8ad0852f67846bfd9daba56eb0a16894f21f9b4899916f8f71a835a6f7a759f0"
+  },
+  "earlier_checks": [
+    {
+      "exit_code": 1,
+      "passed": 3,
+      "failed": 22,
+      "seconds": 3.07,
+      "log": "candidate-prepare-pure-initial.log",
+      "finding": "New synthetic bridge expected explicit write/event kwargs omitted by actual followup reader; successor test broke real pointer rather than declaring missing lineage owner."
+    },
+    {
+      "exit_code": 1,
+      "passed": 4,
+      "failed": 21,
+      "seconds": 2.85,
+      "log": "candidate-prepare-pure-recheck-1.log",
+      "finding": "Existing followup import-local source_basis alias needed explicit no-DB substitute, rather than an unintended Artifact SELECT."
+    },
+    {
+      "exit_code": 0,
+      "passed": 25,
+      "failed": 0,
+      "seconds": 2.39,
+      "log": "candidate-prepare-pure-recheck-2.log"
+    },
+    {
+      "exit_code": 0,
+      "passed": 38,
+      "failed": 0,
+      "seconds": 3.1,
+      "log": "candidate-prepare-pure-expanded.log"
+    },
+    {
+      "exit_code": 0,
+      "passed": 40,
+      "failed": 0,
+      "seconds": 3.21,
+      "log": "candidate-prepare-pure-material-check.log"
+    }
+  ],
+  "interfaces": {
+    "prepare": "prepare_candidate(s,ctx,product_id,payload,*,origin_ref)->PreparedCandidate",
+    "refresh": "require_prepared_candidate(s,ctx,product_id,payload,phase)->same originally registered phase; independent actual owner calls",
+    "review": "reviewed_candidate(phase)->dict",
+    "clock": "require_prepared_candidate_clock(s,ctx,product_id,payload,phase,at)->same phase; no IO, never substitutes full refresh",
+    "invalidate": "invalidate_prepared_candidate(phase)->None; before first writer s.add, not proof consumption",
+    "review_keys": [
+      "payload_semantic",
+      "stable_anchor",
+      "binding",
+      "inspection",
+      "raw_source_basis",
+      "required_source_read_set",
+      "sources",
+      "authority_snapshot",
+      "policy_snapshot",
+      "owner_id",
+      "visibility",
+      "current_issue_revision"
+    ]
+  },
+  "findings": {
+    "future_professional_activation": "Existing assessor expiry does not include future valid_from. This owner reads all exact selected fact refs within scope/subject/revision and adds the nearest future active boundary; final postIO clock enforced. No public assessor modified.",
+    "audience": "v1 current origin exact equality; inheritance of actual owner/visibility, request visibility exact or CANDIDATE_AUDIENCE_MISMATCH; private sources/Project remain blocked.",
+    "full_anchor": "First full anchor/failure proofs retained. Only three exact frozen evaluation paths ignored in freshness comparison; no new full SHA re-sealing.",
+    "closure": "Full user/inspection/anchor/professional/policy readset <=20; original Basis safety hash preserved and original Inspection hash validated before full closure expansion."
+  },
+  "limits": [
+    "No DB/HTTP/public checks, no writes/proof consumption/Receipt/qualification configuration.",
+    "Actual existing owner functions run against real unbound Session/Transaction/ORM and explicit SELECT/source/bridge/professional/policy substitutes. Connection attempts rejected; no real bytes or qualification claim.",
+    "Current candidate professional operation matrix missing: real default PROFESSIONAL_OPERATION_NOT_CONFIGURED/503, never old Link qualification.",
+    "Cross public preview/apply restoration of full first anchor from actual persistent Confirmation.snapshot still missing and must be Root trusted host seam; arbitrary DTO/Payload never accepted.",
+    "No seven gates/effectiveness/close authorization or complete VerificationEvidence; incomplete indeterminate and three NULL remain."
+  ],
+  "previous_segments_unchanged": true
+}

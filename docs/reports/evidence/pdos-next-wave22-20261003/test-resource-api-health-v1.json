@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T19:16:13.467228+00:00",
+  "pid": 25401,
+  "http_status": 200,
+  "response": {
+    "status": "ok",
+    "model_available": false,
+    "slice": "wave1-source-definition",
+    "durable_queue_enabled": true
+  },
+  "actual_profile_scope_counts": {
+    "professional": 2,
+    "operational": 2,
+    "test-resource": 2,
+    "quality": 2,
+    "quality-followup": 1,
+    "capa-facts": 1
+  }
+}

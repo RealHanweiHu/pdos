@@ -1,0 +1,11 @@
+{
+  "status": "APPLIED_PENDING_ACTUAL_VERIFICATION",
+  "baseline_sha256": "625b76771e354a9003e085d20074ba047c2adf6ef3d9fb7cf20aa8c97684b766",
+  "actual_service_sha256": "d30011368ba3ca03e0148ccd97e1402876fd54c19fc0123df1667390ace3f1d9",
+  "new_actual_test": "pdos-next/server/tests/manufacturing_preparation/test_definition_closure.py",
+  "new_actual_test_sha256": "c8d8397a79c4c8158f574be392bf8d35d68442cf513e319576819ba43f672bea",
+  "test_import_adaptation": "same 25 assertions and owner seams; direct actual runtime import, no stage module imported",
+  "stage_manifest_sha256": "0110c52cec0271bbf313440e823b9e82636c72fd9f6aea4cc66f30adf1916dda",
+  "authority_and_scope_unchanged": true,
+  "sql_and_web_unchanged": true
+}

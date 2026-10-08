@@ -1,0 +1,8 @@
+{
+  "source_path": "pdos-next/server/tests/test_launch_storage.py",
+  "sha256": "bdceaeaa13d3abdffeb633d77e72980b9870e3663b1a0154de22f07f0cd18ef0",
+  "archive_path": "docs/reports/evidence/pdos-next-wave13-20261002/storage-test-before-sentinel-order-repair/test_launch_storage.py",
+  "reason": "Immediate sample_usage_sentinels FK rejected wrong sample before the deferred exact physical sample-set assertion; same-UOW sentinel flush ordering repair follows.",
+  "failure_log": "../recheck-storage-real-window.log",
+  "postgres_revalidation": "root_pending"
+}

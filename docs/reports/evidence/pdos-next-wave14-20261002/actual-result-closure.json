@@ -1,0 +1,117 @@
+{
+  "passed": true,
+  "synthetic_only": true,
+  "run_revision": 6,
+  "request_revision": 9,
+  "result": "indeterminate",
+  "request_gaps_retained": true,
+  "original_start_sha256": "1813ada35cd06a3ca56bb3a0ff12020523ad1a4909416df90b86cb2176b19293",
+  "fixed_result_basis_unchanged": true,
+  "exact_old_history": {
+    "builds": {
+      "exact_old_rows": 4,
+      "unchanged": true
+    },
+    "actual_configurations": {
+      "exact_old_rows": 4,
+      "unchanged": true
+    },
+    "build_lots": {
+      "exact_old_rows": 4,
+      "unchanged": true
+    },
+    "sample_units": {
+      "exact_old_rows": 8,
+      "unchanged": true
+    },
+    "verification_preparations": {
+      "exact_old_rows": 5,
+      "unchanged": true
+    },
+    "verification_formal_requests": {
+      "exact_old_rows": 12,
+      "unchanged": true
+    },
+    "verification_actual_method_applicabilities": {
+      "exact_old_rows": 3,
+      "unchanged": true
+    },
+    "verification_handoff_facts": {
+      "exact_old_rows": 3,
+      "unchanged": true
+    },
+    "sample_readiness_facts": {
+      "exact_old_rows": 4,
+      "unchanged": true
+    },
+    "build_starts": {
+      "exact_old_rows": 3,
+      "unchanged": true
+    },
+    "operational_material_holds": {
+      "exact_old_rows": 3,
+      "unchanged": true
+    },
+    "operational_resource_occupancies": {
+      "exact_old_rows": 3,
+      "unchanged": true
+    }
+  },
+  "counts": {
+    "test_resource_reservations": 1,
+    "sample_run_usages": 1,
+    "test_measurements": 1,
+    "test_result_projections": 2,
+    "test_result_actions": 4,
+    "operational_resource_occupancies": 2
+  },
+  "receipts": [
+    {
+      "id": "8f0c4f61-9508-484f-813b-056d2fcb51b0",
+      "operation": "test.results.import",
+      "subject_id": "5aaa5baf-6adc-4885-9963-017142e1dad9",
+      "audit_entries": 1,
+      "outbox_events": 1
+    },
+    {
+      "id": "b1304660-b8f7-4237-a416-152ffacbb43c",
+      "operation": "test.disposition.decide",
+      "subject_id": "ff60811c-20aa-402e-acf6-730f562bc400",
+      "audit_entries": 1,
+      "outbox_events": 1
+    },
+    {
+      "id": "8bbcb476-fb18-4057-a78c-06991a0de283",
+      "operation": "test.results.import",
+      "subject_id": "a8a57bac-5322-423e-b83d-2619a98de587",
+      "audit_entries": 1,
+      "outbox_events": 1
+    },
+    {
+      "id": "50e2f385-f3bc-47c6-a4e1-6352eff56d49",
+      "operation": "test.run.review",
+      "subject_id": "59f79c46-fbe9-4ff7-a5ed-3723a36e2ffb",
+      "audit_entries": 1,
+      "outbox_events": 1
+    },
+    {
+      "id": "53e3b0b9-c64d-46bf-819c-ec5f731e10e3",
+      "operation": "test.result.compute",
+      "subject_id": "54ac47f8-af15-4ad6-abe8-96a60a50a48f",
+      "audit_entries": 1,
+      "outbox_events": 1
+    }
+  ],
+  "model_calls": 0,
+  "schema_head": "next_0022",
+  "business_tables": 95,
+  "agent_direct_writes": [],
+  "forced_rls": [
+    "measurement_import_captures",
+    "test_measurements",
+    "test_result_projections",
+    "test_result_actions"
+  ],
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c"
+}

@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "wave": "Wave16",
+  "scope": "new quality_followup_bootstrap.py and tests/quality_followup_bootstrap only",
+  "status": "owned_synthetic_classification_callback_pure_and_static_complete_public_integration_pending",
+  "source_file_count": 3,
+  "source_files": {
+    "pdos-next/server/pdos_next/quality_followup_bootstrap.py": "02cbc5c4f21000c597e3d4207f60744278ad2c0454d8e0148d5e6aee31ee403c",
+    "pdos-next/server/tests/quality_followup_bootstrap/__init__.py": "49129bb334038b3abd225b9df63af678accacbd3f9f37e1dec9a00ef7421aa01",
+    "pdos-next/server/tests/quality_followup_bootstrap/test_pure.py": "6c384f03bf3ed0e776498899ab9d1e40bf45f5ccb13e9b71aa1f1b29dea00d7b"
+  },
+  "source_manifest_sha256": "c9219edb549904279f7fe3abcb65078d09833edfbaefdd391e462178b4183a62",
+  "previous_frozen_sources": {
+    "quality-followup-freeze.json": {
+      "manifest_sha256": "21059f8c3a9169f0ef8203019c9dff35629b61147c78c36553883c5630528f1c",
+      "source_file_count": 9,
+      "hashes_match": true,
+      "changed": []
+    },
+    "quality-host-freeze.json": {
+      "manifest_sha256": "8469a5c7b6b21f87e9228e40c6c84b18a560080796a1a843f34f0859504bc30b",
+      "source_file_count": 3,
+      "hashes_match": true,
+      "changed": []
+    }
+  },
+  "evidence_files": {
+    "quality-bootstrap-contract.md": "6e0e0ff20902242553209601e91a7d77b3c47b26727ad1ae4a64cea5ae4a872d",
+    "quality-bootstrap-pure.log": "5ca58b0bb0151383450db286ceea72108a4b4ae9f930a8d6389649f2ae975a44"
+  },
+  "validation": {
+    "ruff": {
+      "command": ".venv/bin/ruff check pdos_next/quality_followup_bootstrap.py tests/quality_followup_bootstrap",
+      "result": "passed"
+    },
+    "ast_compile": {
+      "file_count": 3,
+      "result": "passed"
+    },
+    "owned_pure": {
+      "command": ".venv/bin/python -m pytest tests/quality_followup_bootstrap --noconftest -q",
+      "passed": 32,
+      "failed": 0,
+      "duration_seconds": 0.86,
+      "log": "quality-bootstrap-pure.log",
+      "log_kind": "completed_tool_result_transcript"
+    },
+    "database": "not_run",
+    "http": "not_run",
+    "public_checks": "not_run",
+    "browser": "not_run"
+  },
+  "exports": [
+    "configure_local_profile(engine,profile)->assess_callback",
+    "disable_local_profile(engine,*,tenant_id,product_id,project_id)",
+    "CompletionProfile",
+    "SyntheticCompletionAssessment"
+  ],
+  "callback_signature": "assess(s,ctx,product_id,basis,action,completion,*,policy_snapshot,observation,write=False)",
+  "proof": {
+    "full_subclass_fields_hashed": true,
+    "original_a_keeps_subclass": true,
+    "current_source_basis_included": true,
+    "profile_epoch_and_sha256_included": true,
+    "source_checked_twice_per_call": true,
+    "fixed_expiry_no_renewal": true
+  },
+  "source_publication_fields": [
+    "tenant_id",
+    "product_id",
+    "project_id",
+    "issue_id",
+    "capa_id",
+    "action_id",
+    "executor_id",
+    "purpose",
+    "action_sha256",
+    "classification",
+    "nature",
+    "valid_until"
+  ],
+  "boundaries": [
+    "Only investigation/synthetic closed host entries; verify_test_target is called by configure",
+    "Callback returned only, no Runtime/professional/policy install or public route",
+    "Classification source is a new native immutable text fact with actual registration provenance",
+    "Uploaded classification original requires dedicated physical-byte integration; current path explicitly fails closed",
+    "Classification does not replace real completion 9-field event or instrument measurement original",
+    "No formal_change/owner implementation authorization/effectiveness/closure",
+    "No Receipt/Confirmation/commit/DB writes; no production qualification or formal Exit claim"
+  ],
+  "remaining_root_work": [
+    "Explicit verified test-target/profile injection and actual native classification source publication",
+    "Public consume/append route/role/migration integration",
+    "Central PG current permission/CAS/RLS/rollback/receipt/issuer and source drift checks",
+    "HTTP/browser actual business close loop"
+  ]
+}

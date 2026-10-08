@@ -1,0 +1,104 @@
+{
+  "candidate": "Wave16 owned UI v2; public integration pending Root",
+  "recorded_at": "2026-10-03T07:20:30.463085+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "00693636cc32fcea7a1ae5acb0cc5ebdae4ca2d0dbaf0f71baf5b3d72c69c6ef"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "89c39e5a70dbb648e858a2e5d83b2bbf20bac8b7b4aef5c15d19b9b9e8710406"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "520cf807f82b9fd28fd256f7557924d1b4a51fec186d60334973ef88d58a88ee"
+    }
+  ],
+  "helper_checks": {
+    "tests": 37,
+    "passed": 37,
+    "failed": 0,
+    "exit_code": 0,
+    "raw_output": "ui-helper-v2-checks.log",
+    "execution": "Transpile product-view.ts + owned helper/test with bundled TypeScript.transpileModule ES2022/CommonJS/esModuleInterop only to /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v2-cldf55df; then process.execPath --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v2-cldf55df/build-quality-followup-view.test.js",
+    "temporary_directory": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v2-cldf55df",
+    "no_src_javascript_created": true
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v2-cldf55df/tsconfig.json",
+    "cwd": "pdos-next/web",
+    "exit_code": 0,
+    "raw_output": "ui-type-v2-check.log",
+    "configuration": "ui-local-v2-type-config.json"
+  },
+  "lint": {
+    "command": "node_modules/.bin/eslint src/components/builds/build-quality-followup.tsx src/lib/build-quality-followup-view.ts src/lib/build-quality-followup-view.test.ts --format json --output-file /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v2-cldf55df/lint-result.json",
+    "cwd": "pdos-next/web",
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 0,
+    "raw_output": "ui-lint-v2-result.json"
+  },
+  "delta": {
+    "before": [
+      {
+        "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+        "sha256": "caab169d65708b86031b7bd18eefb865374af566bfb8ee225065a2c860b6f570",
+        "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v1-source/build-quality-followup.tsx"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+        "sha256": "3b3dd97b4b1569497aef0b4127a7b93407d74b6dd7625eaed021033c250bd000",
+        "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v1-source/build-quality-followup-view.ts"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+        "sha256": "310e98928f534e6a86966d91d8ebc39ab1856060a81bc05d0240224b284ee9db",
+        "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v1-source/build-quality-followup-view.test.ts"
+      }
+    ],
+    "after": [
+      {
+        "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+        "sha256": "00693636cc32fcea7a1ae5acb0cc5ebdae4ca2d0dbaf0f71baf5b3d72c69c6ef"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+        "sha256": "89c39e5a70dbb648e858a2e5d83b2bbf20bac8b7b4aef5c15d19b9b9e8710406"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+        "sha256": "520cf807f82b9fd28fd256f7557924d1b4a51fec186d60334973ef88d58a88ee"
+      }
+    ],
+    "changes": [
+      "Explicit Build selector; blank scope loads Builds/workspace only; Build-only quality-execution index precedes single-Issue quality-followup",
+      "Build changes reuse current same-actor shared index, clear old deep result, preserve per-Issue draft and reject scope changes during pending original command",
+      "Legacy v1 draft awaits explicit Build; unknown prepared original command remains byte-for-byte recoverable",
+      "received_at server_on_save placeholder rendered as Chinese server-save record, never an actual event clock"
+    ],
+    "new_meaningful_checks": [
+      "blank Build does not query quality/followup",
+      "explicit Build scoped index before selected Issue",
+      "Build switch only reads scoped index, rejects unreturned Build",
+      "per-Issue draft and pending-command scope protection",
+      "legacy original command recovery",
+      "late Build response suppression and private denial"
+    ]
+  },
+  "preserved_v1_evidence": "ui-component-check.json, ui-helper-checks.log and ui-v1-source-manifest.json unchanged",
+  "boundaries": {
+    "existing_138_paths_modified": false,
+    "shared_api_bff_parent_modified": false,
+    "database_http_browser_public_build_run": false,
+    "effectiveness_close_formal_change_enabled": false,
+    "candidate_creation_api_invented": false
+  },
+  "pending_root_wiring": [
+    "public GET single-Issue adapter and public inputs dispatcher",
+    "BFF strict issue_id/revision allowlist + three command wait classification",
+    "existing quality navigation parent mount",
+    "backend migrations/host completion proof and centralized PG/browser/build verification"
+  ]
+}

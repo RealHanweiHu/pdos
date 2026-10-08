@@ -547,7 +547,14 @@ class MeetingFollowupService:
                             connection, tenant_id, project_id
                         )
                         if member["role"]
-                        in {"owner", "admin", "project_manager", "engineer", "quality"}
+                        in {
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        }
                     ],
                 }
             )

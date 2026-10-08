@@ -14,6 +14,7 @@ from sqlalchemy import Connection, Engine, RowMapping, desc, select
 from app.ai.application_gateway import ApplicationModelGateway
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.chat_runs import ChatRunStore
+from app.ai.durable import agent_entry
 from app.ai.embeddings import EmbeddingError, EmbeddingGateway
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
@@ -479,6 +480,7 @@ class ChatService:
     def _authorize(self, context: AuthContext, project_id: UUID) -> None:
         authorize_chat(self._engine, context, project_id)
 
+    @agent_entry
     def answer(
         self,
         *,

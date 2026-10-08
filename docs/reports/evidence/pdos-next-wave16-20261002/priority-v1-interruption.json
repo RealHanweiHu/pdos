@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-03T08:24:11.639567+00:00",
+  "reason": "Actual GET exposed unsupported paired Formal owner receipts; stop selected validation before changing its frozen source candidate.",
+  "cases": [
+    "priority-02",
+    "priority-01",
+    "priority-00",
+    "priority-03"
+  ],
+  "exit_codes": [
+    -15,
+    -15,
+    -15,
+    -15
+  ],
+  "business_verdict": "interrupted, no pass or domain failure claimed",
+  "original_candidate": "backend-candidate-source.json",
+  "history": "No database restore, deletion, or fixture cleanup; retained synthetic fixture facts remain isolated."
+}

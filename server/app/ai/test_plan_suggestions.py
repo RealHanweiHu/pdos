@@ -16,6 +16,7 @@ from app.ai.application_recovery import original_observation, try_resume
 from app.ai.application_waits import resume_wait, save_test_plan_wait
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
 from app.ai.quality import FindingQualityService
@@ -51,6 +52,7 @@ class TestPlanSuggestionService:
         self._engine = engine
         self._gateway = gateway
 
+    @agent_entry
     def create(
         self,
         *,

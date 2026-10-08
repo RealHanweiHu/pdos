@@ -1,0 +1,34 @@
+{
+  "candidate_sha256": "b1b3575db2dc45eeda10e8011513901c683575757664c1414b24718c1772ef4e",
+  "checks": [
+    {
+      "command": "./node_modules/.bin/tsc --project src/components/quality_issues/tsconfig.check.json --noEmit --incremental false",
+      "exit_code": 0,
+      "output": "ui-typecheck.log"
+    },
+    {
+      "command": "./node_modules/.bin/eslint src/components/quality_issues",
+      "exit_code": 0,
+      "output": "ui-eslint.log"
+    },
+    {
+      "command": "node --test src/components/quality_issues/render.test.mjs",
+      "exit_code": 0,
+      "passed": 25,
+      "failed": 0,
+      "output": "ui-tests.log"
+    }
+  ],
+  "test_inputs": "Explicit synthetic package-local inputs only",
+  "not_run": [
+    "DB",
+    "HTTP",
+    "real browser",
+    "shared .next",
+    "full build",
+    "real credentials",
+    "real model",
+    "business export"
+  ],
+  "prior_repaired_check": "ui-typecheck-attempt1.log records test fixture union narrowing diagnostic; repaired in package only."
+}

@@ -1,0 +1,98 @@
+{
+  "read_only": true,
+  "database": "localhost:57432/pdos",
+  "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+  "head": "0430_application_token_budget",
+  "mode": {
+    "mode": "budgeted",
+    "revision": 2
+  },
+  "token_budget_enforced": false,
+  "application_authorization_present": true,
+  "original_unknown_journal_digest": "f47638a90957ddc0b856935a707ac8ae7038062e4ffaa1065589bae09bf737ba",
+  "original_three_legacy_trace_digest": "e4d7abf1452a4aaae82b6613c55d3a9c70db8ad25400efecf77351026361e42f",
+  "model_calls": [
+    {
+      "id": "ef98c6f9-0a9d-4f0c-9760-72d02dccc2f8",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 928,
+      "output_tokens": 281,
+      "error_code": null,
+      "structured_attempts": 1
+    },
+    {
+      "id": "3596e47a-d0c0-4367-bf5e-a603e615758b",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 2569,
+      "output_tokens": 1493,
+      "error_code": null,
+      "structured_attempts": 1
+    }
+  ],
+  "actual_usage": {
+    "input_tokens": 3497,
+    "output_tokens": 1774
+  },
+  "budget_attempts": [
+    {
+      "attempt_id": "40ca9e4c-abc8-5f2d-818f-b8f29ef4150d",
+      "call_kind": "model",
+      "reservation_status": "settled",
+      "reserved_tokens": 5039,
+      "held_tokens": 0,
+      "charged_tokens": 1209
+    },
+    {
+      "attempt_id": "cf478acb-98b7-560e-91f7-e207e89d3be5",
+      "call_kind": "model",
+      "reservation_status": "settled",
+      "reserved_tokens": 6762,
+      "held_tokens": 0,
+      "charged_tokens": 4062
+    }
+  ],
+  "tools": [
+    {
+      "id": "3b4e860f-dda2-56be-8418-3bf0f434818e",
+      "tool": "search",
+      "target": "electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+      "status": "completed",
+      "pin": null
+    },
+    {
+      "id": "c08683de-65db-5471-8f14-a54e381ba049",
+      "tool": "read",
+      "target": "https://isupworld.com/top-3-electric-pumps",
+      "status": "partial",
+      "pin": {
+        "id": "a5f4c854-f50c-4b65-8b5e-68e4c3436753",
+        "url": "https://isupworld.com/top-3-electric-pumps/",
+        "taint": "untrusted_external",
+        "source_id": null,
+        "trust_tier": "unknown",
+        "captured_at": "2026-10-07 05:46:30.702688+00:00",
+        "conflict_note": null,
+        "content_digest": "bb7e0d74dc155cf21a3fc5af950907b6e38691dc66da0ad81543d3a89c14a112",
+        "superseded_by_id": null,
+        "conflicts_with_id": null,
+        "freshness_expires_at": null
+      }
+    },
+    {
+      "id": "84659d3f-de03-5d6a-a003-7c9192fcb755",
+      "tool": "read",
+      "target": "https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+      "status": "unavailable",
+      "pin": null
+    }
+  ],
+  "partial_source_coverage": true,
+  "official_brand_sources_complete": false,
+  "nonclosed_model_sessions": 0,
+  "category_or_proposal_confirmations": 0,
+  "completed_at": "2026-10-07T05:48:42.594235+00:00"
+}

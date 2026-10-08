@@ -14,6 +14,7 @@ from app.ai.application_gateway import ApplicationModelGateway
 from app.ai.application_leases import bind_write
 from app.ai.budget_ledger import BudgetLedger, BudgetLedgerError
 from app.ai.discussion_initiation import Initiation, validate_choice
+from app.ai.durable import agent_entry
 from app.ai.executor import PromptFile
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
@@ -266,6 +267,7 @@ def record_child(
     )
 
 
+@agent_entry
 def run(
     engine: Engine, gateway: ApplicationModelGateway, row: RowMapping, snapshot: dict[str, Any]
 ) -> None:

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_ACTUAL_PURE_AND_STATIC_CHECKPOINT",
+  "files": {
+    "server/pdos_next/domain/change_execution/service.py": "1be0da78584fa45dbc769bd2b38e3b00e40affa1c8d86d55c9a8cef81596dae8",
+    "server/tests/test_change_capture_deadline.py": "977747b8d2a8ddb1de0a4135c08e1d4853a428c40960d6e2bd6a1f24d73ea975"
+  },
+  "pure_checks_passed": 14,
+  "ruff_and_format_exit": 0,
+  "actual_prepare_capture_ast_sha256": "b4196dedf1c0c0e15e92c72ae828e550ce5728f2d493d4241bf9322f0b221b76",
+  "postgresql_capture_positive": false,
+  "scope": "New capture earliest coverage deadline; genuine proof reread; Current/clock/publisher/runtime/deadline after fullflush; historic captures not rewritten."
+}

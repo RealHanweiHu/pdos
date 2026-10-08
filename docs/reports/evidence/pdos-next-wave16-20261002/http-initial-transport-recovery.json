@@ -1,0 +1,10 @@
+{
+  "initial_error": "httpx.ReadTimeout",
+  "timeout_seconds": 240,
+  "trace_path": "httpcore/_sync/http_proxy.py",
+  "proxy_environment_present": false,
+  "initial_get_response_observed": false,
+  "initial_followup_commands_sent": 0,
+  "recovery": "Explicit trust_env=False for loopback HTTP client",
+  "not_claimed": "No measured API latency or API/domain failure from this attempt"
+}

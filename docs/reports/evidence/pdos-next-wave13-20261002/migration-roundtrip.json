@@ -1,0 +1,24 @@
+{
+  "result": "passed",
+  "steps": "next_0015 \u2192 next_0016 \u2192 next_0015 \u2192 next_0016",
+  "before_business_writes": true,
+  "old_history_hashes_unchanged": {
+    "builds": "7b9bde892da365f615acee6eabc985535a1b879239afa59b02867190de9ee256",
+    "actual_configurations": "7cad1f4f8cb7b64882eacd729cdb8367e360bf8c6535a75b215d75588e7ad820",
+    "build_lots": "84297d3b14fb2c448727032c31c3328339fc7baa3914252530e17d49feb7762b",
+    "sample_units": "18cfddc55dd640087706ac07b950a29ccabbcfbe0635becf5bb2a12414a6fca5",
+    "verification_preparations": "c783dfc5c00c58808b53114e2292b4ac535de0e8a311c8c45c7e5a1488dbd4ab",
+    "verification_formal_requests": "ff89d89ea9875611b978930e47ea354240eaba906f86d7a59cd3e1c74bb6cbd9",
+    "verification_actual_method_applicabilities": "5514bf638c36dfdec56fe9270b936fbe14c42443cde5aad3e971d75996ecba43",
+    "verification_handoff_facts": "c8a6b832d761b580bd9f9c4fd7599e0bcc1d7f8400e36bc9a9d32cf758e6c27b",
+    "sample_readiness_facts": "fe114f2f8055ca981c6497e6a4c066b8ce11e90a9e9ec9f0e6166b48d24c7c8c",
+    "build_starts": "1424c5684fe7842e15c648952b07d097b453dc9cfe99f2dba7c147bf3aee271b",
+    "operational_material_holds": "34aa6878684aa304a1540067e36ee31d79237e86aab371ecc4e3c6b83ecf187c",
+    "operational_resource_occupancies": "ff3ad07f2714698e580d408f0bc1521118966a024cf628bcdcb457c56a929c21"
+  },
+  "backup": "pdos-next/.local/pre-wave13-next_0015.dump",
+  "backup_mode": "0o600",
+  "backup_sha256": "395ced464f779d23076df106f72d7c2559ecb22119f2d4797a1f343bd7af8781",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "port": 62513
+}

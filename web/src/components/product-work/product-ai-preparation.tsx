@@ -84,10 +84,10 @@ function PreparationPanel({ base, capability, catalog, initialLine = "", initial
     <p className="mt-2 text-sm text-muted-foreground">选择本次问题与依据，核对原始内容和缺项。核对后可在下方查询分析记录，能力开放后再发起分析。</p>
     {error && <p role="alert" className="mt-2 text-sm text-destructive">{error}</p>}
     <fieldset disabled={busy || disabled} className="mt-3 space-y-3">
-      <label className="block text-sm">本次产品线<select disabled={denied} className={field} value={line} onChange={event => {
+      {!catalog.category_id && <label className="block text-sm">本次品类<select disabled={denied} className={field} value={line} onChange={event => {
         revision.current += 1; onLineChange?.(event.target.value); setLine(event.target.value); setQuestion(""); setQuery(""); setSelected([]); setOptions(null); setPrepared(null); setError("");
-      }}><option value="">市场空间共同研究</option>{!denied && currentCatalog.nodes.filter(node => node.level === "line").map(node => <option key={node.id} value={node.id}>{node.name}</option>)}</select></label>
-      {needsLine && !line && <p className="text-sm text-muted-foreground">机会、实验、策略及产品定义需要明确产品线；先在矩阵 / 路线图区登记产品线。</p>}
+      }}><option value="">品类共同研究</option>{!denied && currentCatalog.nodes.filter(node => node.level === "line").map(node => <option key={node.id} value={node.id}>{node.name}</option>)}</select></label>}
+      {needsLine && !line && <p className="text-sm text-muted-foreground">机会、实验、策略及产品定义需要明确品类；先在矩阵 / 路线图区登记品类。</p>}
       <label className="block text-sm">本次需要解决的问题<textarea disabled={denied} className={field} maxLength={5000} value={question} onChange={event => { setQuestion(event.target.value); setPrepared(null); }}/></label>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm">资料类型<select disabled={denied} className={field} value={kind} onChange={event => { setKind(event.target.value); setOptions(null); setPrepared(null); }}>{kinds.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>

@@ -1,0 +1,31 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T13:00:43.325887+00:00",
+  "steps": [
+    {
+      "step": "current-context",
+      "http_status": 403,
+      "duration_seconds": 0.142,
+      "response_sha256": "de540ee3d015b175f4f23c61040110d4896dbbb8980ef39614f564589fc3f36d",
+      "error_code": "FORBIDDEN_SCOPE"
+    }
+  ],
+  "source_manifest_sha256": "4b97337f85d50f803e9cecac2ab97739024f4484aeb4423117564db34d3aa1cc",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "model_calls": 0,
+  "exception_type": "AssertionError",
+  "diagnostic": "current-context_HTTP_REJECTED",
+  "frames": [
+    {
+      "file": "wave17_candidate_http.py",
+      "line": 97
+    },
+    {
+      "file": "wave17_candidate_http.py",
+      "line": 89
+    }
+  ],
+  "finished_at": "2026-10-03T13:00:44.306930+00:00",
+  "source_stable": true
+}

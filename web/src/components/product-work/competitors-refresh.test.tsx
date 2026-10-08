@@ -7,7 +7,7 @@ const rows: Observation[] = kinds.map((competitor_kind, index) => ({ id: `record
 const props = { base: "spaces/space", workspace: { can_contribute: false } as Workspace, catalog: { nodes: [], line_access: {} } as unknown as ProductCatalog, evidence: [] };
 function matrix(status = "comparable") { return { observations: rows.slice(0, 2), rows: [{ key: "pressure", label: "压力", kind: "metric", status, reasons: status === "review_needed" ? ["A v1已有后续修订，请重核参数"] : [], cells: rows.slice(0, 2).map(row => row.metrics[0]) }], note: "不自动排名", as_of: "2026-09-30T00:00:00Z" }; }
 function deferred<T>() { let resolve!: (value: T) => void; const promise = new Promise<T>(done => { resolve = done; }); return { promise, resolve }; }
-async function compare() { await screen.findByText("直接竞品 · 配置：同配置"); const boxes = screen.getAllByRole("checkbox"); fireEvent.click(boxes[1]); fireEvent.click(boxes[2]); fireEvent.click(screen.getByRole("button", { name: "比较所选 2 条观察" })); await screen.findByText("录入条件一致"); }
+async function compare() { await screen.findByText("直接竞品 · 配置：同配置"); fireEvent.click(screen.getByRole("button", { name: "列表" })); for (const row of rows) fireEvent.click(screen.getByRole("button", { name: new RegExp(`品牌 · ${row.model} ·`) })); const boxes = screen.getAllByRole("checkbox"); fireEvent.click(boxes[1]); fireEvent.click(boxes[2]); fireEvent.click(screen.getByRole("button", { name: "比较所选 2 条观察" })); await screen.findByText("录入条件一致"); }
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 it("refreshes the original historical matrix after an external parameter revision and preserves its values", async () => {
   const newer = { ...rows[0], id: "record-new", version: 2, metrics: [{ ...rows[0].metrics[0], number: "110" }] };

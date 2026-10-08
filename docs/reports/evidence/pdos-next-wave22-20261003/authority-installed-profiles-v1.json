@@ -1,0 +1,26 @@
+{
+  "status": "INSTALLED_RESTART_REQUIRED",
+  "recorded_at": "2026-10-03T18:33:17.251022+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "profiles": {
+    "professional": {
+      "selected_file": "pdos-next/.local/professional-synthetic-profiles.json",
+      "old_sha256": "6c5db0e49a17ab32b2b3efdeea9e777af62d4ddb21dbe97ecff9629d73ae71b5",
+      "new_sha256": "db48aee99d5fc44d678a2ce3f4d3ab3a2b1e77aa9119dc9d7a75ae15cb4459c0",
+      "old_scopes_preserved": true,
+      "configured_scopes": 2
+    },
+    "quality": {
+      "selected_file": "pdos-next/.local/quality-synthetic-profiles.json",
+      "old_sha256": "f817272c4ed51918b98ab83e661b6629c91788548392c7d39466da89d56c5932",
+      "new_sha256": "72c1580ea0f79f36e684d6743e78414a2783307bbb33e682bb797d4c2ad7411a",
+      "old_scopes_preserved": true,
+      "configured_scopes": 2
+    }
+  },
+  "stopped_verified_api_pid": 15369,
+  "professional_facts_saved": 12,
+  "quality_policy_saved": 1,
+  "production_qualification": false
+}

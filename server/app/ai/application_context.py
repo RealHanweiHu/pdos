@@ -246,6 +246,10 @@ def verify_chat_context(engine: Engine, invocation: Any, output_type: Any = None
     from app.ai.test_plan_versions import version_from_run
 
     expected_version = version_from_run(purpose, chat_run["run_context"])
+    if purpose == "xiaopai_reply":
+        from app.ai.conversation_reply import reply_prompt
+
+        expected_version = reply_prompt(chat_run["run_context"]["reply_source"])["version"]
     if purpose == "product_evaluation":
         expected_version = chat_run["run_context"]["evaluation_prompt_version"]
     if purpose == "product_work":

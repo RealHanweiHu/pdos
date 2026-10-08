@@ -1,0 +1,8 @@
+{
+  "nodes": [
+    "tests/quality_execution/test_transactions.py::test_one_result_event_with_two_failures_creates_two_then_merge_retains_recheck_block"
+  ],
+  "candidate": "backend-candidate-v2-source.json",
+  "queued_until_original_finished_groups": 8,
+  "total_pg_concurrency_limit": 6
+}

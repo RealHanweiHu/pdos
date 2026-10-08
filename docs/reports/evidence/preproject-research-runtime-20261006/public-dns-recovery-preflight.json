@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-10-07T02:27:30.122838+00:00",
+  "purpose": "public DNS recovery feasibility only",
+  "endpoint": "https://1.1.1.1/dns-query",
+  "target": "www.minimax.cn",
+  "llm_calls": 0,
+  "configuration_changed": false,
+  "http_status": 200,
+  "dns_status": 0,
+  "addresses": [
+    "8.130.45.254",
+    "8.130.49.194"
+  ],
+  "all_public": true
+}

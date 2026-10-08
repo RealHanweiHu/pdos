@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+    "-c",
+    "import ast; from pathlib import Path; [ast.parse(Path(p).read_text(), filename=p) for p in (\"wave22_shared_authority.py\",\"test_wave22_shared_authority.py\")]; import wave22_shared_authority; print(\"2 in-memory AST + cold import: PASS; no tool instantiation/configuration/execution\")"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.052,
+  "no_db_http": true
+}

@@ -46,6 +46,9 @@ import { IdFreezeRequestLanding } from "./id-freeze-request-landing";
 
 import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
 import { ProjectWorkQueue, type ProjectWorkKind } from "./project-work-queue";
+import { ProjectTaskWorkspace } from "./project-task-workspace";
+import { configuredProjectTab, useWorkPerspective } from "@/components/workspace-experience";
+import { ExternalProjectResponses } from "./external-project-responses";
 import type {
   IssueCreateInput,
   IssueStatus,
@@ -108,6 +111,7 @@ export const LEGACY_TAB_ALIASES: Record<string, ProjectWorkspaceTab> = {
   issues: "work-items",
   risks: "work-items",
   "product-engineering": "engineering",
+  npi: "quality",
 };
 
 export function resolveTab(raw: string | null, search?: URLSearchParams, hash = ""): ProjectWorkspaceTab | null {
@@ -145,10 +149,13 @@ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[
   { key: "stages", label: "项目阶段" },
   { key: "work-items", label: "工作项", internalOnly: true },
   { key: "plan", label: "计划", internalOnly: true },
+  { key: "engineering", label: "工程·变更", internalOnly: true },
+  { key: "quality", label: "试制·测试·质量", internalOnly: true },
+  { key: "materials", label: "物料·供应", internalOnly: true },
   { key: "gates", label: "评审与交付", internalOnly: true },
   { key: "documents", label: "资料与协作", internalOnly: true },
+  { key: "decisions", label: "例会与决策", internalOnly: true },
 ];
-
 const workViews: { key: ProjectWorkspaceTab; label: string }[] = [
   { key: "work-items", label: "工作清单" },
   { key: "engineering", label: "工程·变更" },
@@ -159,6 +166,17 @@ const collaborationViews: { key: ProjectWorkspaceTab; label: string }[] = [
   { key: "documents", label: "项目资料" },
   { key: "decisions", label: "例会与决策" },
 ];
+const perspectiveTabOrder: Record<string, ProjectWorkspaceTab[]> = {
+  personal: ["work-items", "overview", "stages", "gates", "documents", "plan"],
+  product: ["overview", "engineering", "gates", "work-items", "documents", "stages"],
+  project: ["overview", "stages", "plan", "work-items", "gates", "decisions"],
+  engineering: ["work-items", "engineering", "quality", "documents", "gates", "stages"],
+  quality: ["work-items", "quality", "gates", "engineering", "documents", "stages"],
+  introduction: ["work-items", "quality", "materials", "engineering", "documents", "gates"],
+  supply: ["materials", "work-items", "plan", "quality", "documents", "gates"],
+  portfolio: ["overview", "stages", "work-items", "plan", "gates", "documents"],
+  administration: ["overview", "stages", "documents", "work-items", "plan", "gates"],
+};
 const TAB_KEYS = new Set<ProjectWorkspaceTab>([...tabs.map(tab => tab.key), "materials", "engineering", "quality", "decisions", "management", "conversation"]);
 
 export function primaryProjectTab(tab: ProjectWorkspaceTab): ProjectWorkspaceTab | null {
@@ -249,10 +267,10 @@ export function ProjectWorkspaceView({
   onCreateTask: (input: TaskCreateInput) => Promise<boolean>;
   onLogout: () => void;
   onRetryWorkItems: () => void;
-  onSelect: (project: Project) => void;
+  onSelect: (project: Project, tab?: ProjectWorkspaceTab) => void;
   onStageTransition: (project: Project, stageId: string) => void;
   onStatusTransition: (project: Project, status: Project["status"]) => void;
-  onTabChange: (tab: ProjectWorkspaceTab) => void;
+  onTabChange: (tab: ProjectWorkspaceTab, workKind?: ProjectWorkKind) => void;
   onTransitionIssue: (
     issue: ProjectIssue,
     toStatus: IssueStatus,
@@ -311,10 +329,14 @@ export function ProjectWorkspaceView({
 }) {
   const [projectListExpanded, setProjectListExpanded] = useState(false);
   const tabButtons = useRef<Partial<Record<ProjectWorkspaceTab, HTMLButtonElement | null>>>({});
-  const visibleTabs = tabs.filter((tab) => !tab.internalOnly || canViewWorkItems);
+  const { perspective } = useWorkPerspective(identity);
+  const permittedTabs = tabs.filter(tab => !tab.internalOnly || canViewWorkItems);
+  const orderedKeys = perspectiveTabOrder[perspective.id] ?? perspectiveTabOrder.personal;
+  const preferredTabs = orderedKeys.flatMap(key => permittedTabs.filter(tab => tab.key === key));
+  const visibleTabs = canViewWorkItems ? [...preferredTabs, ...permittedTabs.filter(tab => tab.key === activeTab && !orderedKeys.includes(tab.key))] : permittedTabs;
+  const moreTabs = permittedTabs.filter(tab => !orderedKeys.includes(tab.key));
   const workItemUnavailable = canViewWorkItems && workItemState !== "ready";
-  const primaryTab = primaryProjectTab(activeTab);
-  const contextViews = primaryTab === "work-items" ? workViews : primaryTab === "documents" ? collaborationViews : [];
+  const primaryTab = permittedTabs.some(tab => tab.key === activeTab) ? activeTab : null;
 
   return (
     <WorkspaceShell active="projects" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
@@ -326,14 +348,14 @@ export function ProjectWorkspaceView({
           <div className="mt-2 flex flex-wrap items-center gap-3"><h1 className="min-w-0 break-words text-xl font-semibold tracking-tight">{selectedProject?.name ?? "项目工作区"}</h1>{selectedProject && <><span className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">{projectStatusLabels[selectedProject.status]}</span><span className="rounded-md bg-accent px-2 py-1 text-xs text-primary">{selectedProject.current_stage.name}</span></>}</div>
           {!selectedProject && <p className="mt-2 text-sm text-muted-foreground">选择一个项目，查看阶段进展和待办工作。</p>}
         </div>
-        {selectedProject && <div className="flex items-center gap-2"><Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded(current => !current)} variant="outline">{projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}</Button><Button className="min-h-11 min-w-11" aria-label={canViewWorkItems ? "项目设置" : "项目服务"} aria-pressed={activeTab === "management"} onClick={() => onTabChange("management")} size="icon" variant="ghost"><Gear aria-hidden="true" size={18}/></Button></div>}
+        {selectedProject && <div className="flex items-center gap-2"><Button aria-controls="project-list-panel" aria-expanded={projectListExpanded} onClick={() => setProjectListExpanded(current => !current)} variant="outline">{projectListExpanded ? "收起项目列表" : `切换项目（${projects.length}）`}</Button><Button className="min-h-11 min-w-11" aria-label={canViewWorkItems ? "项目设置" : "客户回应"} aria-pressed={activeTab === "management"} onClick={() => onTabChange("management")} size="icon" variant="ghost"><Gear aria-hidden="true" size={18}/></Button></div>}
       </div>
-      {(!selectedProject || projectListExpanded) && <div className="mb-5" id="project-list-panel"><ProjectList onSelect={project => { setProjectListExpanded(false); onSelect(project); }} projects={projects} selectedId={selectedProject?.id ?? null}/></div>}
+      {(!selectedProject || projectListExpanded) && <div className="mb-5" id="project-list-panel"><ProjectList onSelect={project => { setProjectListExpanded(false); const moduleTab = configuredProjectTab(identity, new URLSearchParams(window.location.search).get("module")); onSelect(project, canViewWorkItems ? moduleTab ?? perspective.primaryProjectTab : "overview"); }} projects={projects} selectedId={selectedProject?.id ?? null}/></div>}
 
       {selectedProject ? (
         <section aria-label="项目详情" className="min-w-0">
-          <div className="sticky top-12 z-20 overflow-x-auto border-b border-t bg-background" role="tablist" aria-label="项目工作区标签">
-            <div className="flex min-w-max">
+          <div className="sticky top-12 z-20 flex min-w-0 items-center gap-2 border-b border-t bg-background">
+            <div className="min-w-0 flex-1 overflow-x-auto" role="tablist" aria-label="项目工作区标签"><div className="flex min-w-max">
               {visibleTabs.map((tab, index) => (
                 <button
                   aria-controls={`project-panel-${tab.key}`}
@@ -364,7 +386,8 @@ export function ProjectWorkspaceView({
                   {tab.label}
                 </button>
               ))}
-            </div>
+            </div></div>
+            {canViewWorkItems && moreTabs.length > 0 && <label className="shrink-0 py-1 text-xs"><span className="sr-only">更多项目工作</span><select aria-label="更多项目工作" className="min-h-11 max-w-28 rounded-lg border bg-background px-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" value={moreTabs.some(tab => tab.key === activeTab) ? activeTab : ""} onChange={event => { if (event.target.value) onTabChange(event.target.value as ProjectWorkspaceTab); }}><option value="">更多工作</option>{moreTabs.map(tab => <option key={tab.key} value={tab.key}>{tab.label}</option>)}</select></label>}
           </div>
           <div
             aria-labelledby={primaryTab ? `project-tab-${primaryTab}` : undefined}
@@ -373,7 +396,6 @@ export function ProjectWorkspaceView({
             id={`project-panel-${primaryTab ?? activeTab}`}
             role={primaryTab ? "tabpanel" : "region"}
           >
-            {contextViews.length > 0 && canViewWorkItems && <nav aria-label={primaryTab === "work-items" ? "工作视图" : "协作视图"} className="mb-5 flex flex-wrap gap-x-4 gap-y-1 border-b pb-3">{contextViews.map(view => <button aria-current={activeTab === view.key ? "page" : undefined} className={cn("min-h-11 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", activeTab === view.key && "font-medium text-foreground")} key={view.key} onClick={() => onTabChange(view.key)} type="button">{view.label}</button>)}</nav>}
             {workItemError ? <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{workItemError}</p> : null}
             {["overview", "stages"].includes(activeTab) && canViewWorkItems && workItemState === "error" ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "overview" ? (
@@ -394,80 +416,47 @@ export function ProjectWorkspaceView({
               <ProjectStageBoard key={selectedProject.id} project={selectedProject} workItems={workItemState === "ready" ? workItems : null} canViewWorkItems={canViewWorkItems} loading={workItemState === "loading" || workItemState === "idle"} onPlan={() => onTabChange("plan")}/>
               {canEdit && <details className="border-t pt-3 text-sm"><summary className="cursor-pointer py-2 font-medium">项目状态与阶段操作</summary><div className="max-w-xl"><p className="mt-2 text-xs text-muted-foreground">当前状态：{projectStatusLabels[selectedProject.status]}。阶段推进仍须满足原有评审条件。</p><ProjectStatusActions busy={saving} onStageTransition={stageId => onStageTransition(selectedProject, stageId)} onStatusTransition={status => onStatusTransition(selectedProject, status)} project={selectedProject}/></div></details>}
             </div>}
-            {activeTab === "management" && <ProjectManagementPanel key={selectedProject.id} external={!canViewWorkItems} project={selectedProject} userId={identity.user.id} canManage={canViewWorkItems && ["owner", "admin", "project_manager"].includes(identity.user.role)}/>}
+            {activeTab === "management" && (canViewWorkItems ? <ProjectManagementPanel key={selectedProject.id} external={false} project={selectedProject} userId={identity.user.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)}/> : <ExternalProjectResponses key={selectedProject.id} projectId={selectedProject.id} role={identity.user.role}/>)}
             {activeTab === "conversation" && canViewWorkItems && <ProjectAiChat key={selectedProject.id} projectId={selectedProject.id}/>}
             {activeTab === "plan" && canViewWorkItems && <ProjectPlanPanel key={selectedProject.id} projectId={selectedProject.id} userId={identity.user.id}/>}
             {activeTab === "work-items" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "work-items" && workItems ? (
-              <ProjectWorkQueue key={`${selectedProject.id}:${highlightedEntityId ?? ""}:${workKind ?? ""}`} project={selectedProject} workItems={workItems} focusedEntityId={highlightedEntityId} initialKind={workKind} busy={workItemBusy} onCreateTask={onCreateTask} onCreateIssue={onCreateIssue} onCreateRisk={onCreateRisk} onTransitionTask={onTransitionTask} onTransitionIssue={onTransitionIssue} onTransitionRisk={onTransitionRisk} onIssueChanged={onIssueChanged}/>
+              <ProjectWorkQueue key={`${selectedProject.id}:${highlightedEntityId ?? ""}`} project={selectedProject} workItems={workItems} focusedEntityId={highlightedEntityId} initialKind={workKind} busy={workItemBusy} onCreateTask={onCreateTask} onCreateIssue={onCreateIssue} onCreateRisk={onCreateRisk} onTransitionTask={onTransitionTask} onTransitionIssue={onTransitionIssue} onTransitionRisk={onTransitionRisk} onIssueChanged={onIssueChanged} onKindChange={kind => onTabChange("work-items", kind)}/>
             ) : null}
             {activeTab === "materials" ? (
-              <>
-              <CostFreezeLanding projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <SupplyImports key={`SupplyImports:${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <CostImports key={`cost-import-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <CostInputs key={`cost-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <CostRollups key={`cost-rollup-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <SupplierEngineering key={`engineering-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <SupplierCompliance key={`compliance-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <ToolingRounds key={`tooling-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-              <SupplierRecoveryPreparation key={`supplier-recovery-${selectedProject.id}`} projectId={selectedProject.id} />
-              <SupplierNoticeWatches key={`supplier-notices-${selectedProject.id}`} projectId={selectedProject.id} />
-              </>
+              <ProjectTaskWorkspace label="物料与供应办理" sections={[
+                { id: "supply-readiness", title: "核对供给与齐套", description: "核对原件、库存快照和Build需求，查看实际短缺。", hashPrefixes: ["supply-", "material-"], children: <SupplyImports key={`SupplyImports:${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+                { id: "supplier-recovery-work", title: "办理短缺与恢复", description: "从异常核对恢复方案、实际到货和原问题复核。", hashPrefixes: ["supplier-recovery"], children: <SupplierRecoveryPreparation key={`supplier-recovery-${selectedProject.id}`} projectId={selectedProject.id} /> },
+                { id: "cost-import-work", title: "核对成本资料", description: "保留原成本依据，预览后按原确认规则录入。", hashPrefixes: ["cost-import"], children: <CostImports key={`cost-import-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+                { id: "cost-input-work", title: "维护成本输入", description: "核对计价单位、假设与有效输入。", hashPrefixes: ["cost-input"], children: <CostInputs key={`cost-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+                { id: "cost-control", title: "核对计算与冻结", description: "比较计算结果和正式版本，按当前具名授权办理冻结。", queryKeys: ["cost_freeze_request"], hashPrefixes: ["cost-rollup", "cost-freeze", "cost-"], children: <><CostFreezeLanding projectId={selectedProject.id} canEdit={productEngineering.canEdit} /><CostRollups key={`cost-rollup-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /></> },
+                { id: "supplier-coordination", title: "核对供方工程与回复", description: "核对供方能力、样件、工程资料与内部回复。", hashPrefixes: ["supplier-engineering"], children: <SupplierEngineering key={`engineering-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+                { id: "supplier-qualification", title: "核对准入与合规", description: "查看准入与合规依据，未知和待批准事项保留。", hashPrefixes: ["supplier-compliance"], children: <SupplierCompliance key={`compliance-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+                { id: "tooling-handoff", title: "跟进工装与试样", description: "核对工装轮次、样件和实际回执。", hashPrefixes: ["tooling-"], children: <ToolingRounds key={`tooling-${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+                { id: "supplier-notice-work", title: "跟进供方通知", description: "查看站内通知与当前跟进；外发仍按原边界办理。", hashPrefixes: ["supplier-notice"], children: <SupplierNoticeWatches key={`supplier-notices-${selectedProject.id}`} projectId={selectedProject.id} /> },
+              ]} />
             ) : null}
             {activeTab === "engineering" ? (
-              <div className="space-y-8">
-                <IdHandoffLanding projectId={selectedProject.id}/><IdFreezeRequestLanding projectId={selectedProject.id}/><ProjectIdDesign key={`id-design:${selectedProject.id}`} projectId={selectedProject.id}/><SpecificationResponsibilityLanding projectId={selectedProject.id}/>
-                <EngineeringReviewPackages key={`EngineeringReviewPackages:${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} />
-                <ProductEngineeringPanel {...productEngineering} />
-                {/* The tab is named 「工程·变更」; the ECR chain had been in the
-                    backend since V1 with no surface to reach it from. */}
-                <ProjectChangePanel
-                  key={`ProjectChangePanel:${selectedProject.id}`}
-                  canApprove={CHANGE_APPROVER_ROLES.has(identity.user.role)}
-                  canEdit={canEdit}
-                  projectId={selectedProject.id}
-                />
-                {/* A customer asking for a change and engineering deciding to
-                    change something are different events with different owners,
-                    so the CCR list stays its own section. */}
-                <ProjectCustomerChangePanel
-                  key={`ccr-${selectedProject.id}`}
-                  canApprove={CHANGE_APPROVER_ROLES.has(identity.user.role)}
-                  canEdit={canEdit}
-                  currentUserId={identity.user.id}
-                  projectId={selectedProject.id}
-                />
-              </div>
+              <ProjectTaskWorkspace label="设计与变更办理" defaultOpen={["engineering-specifications"]} sections={[
+                { id: "engineering-definition", title: "设计修订与交付", description: "查看ID设计版本、接口、冻结和具名交付接收。", queryKeys: ["id_handoff", "id_freeze_request", "id_revision"], hashPrefixes: ["id-"], children: <><IdHandoffLanding projectId={selectedProject.id}/><IdFreezeRequestLanding projectId={selectedProject.id}/><ProjectIdDesign key={`id-design:${selectedProject.id}`} projectId={selectedProject.id}/></> },
+                { id: "engineering-specifications", title: "规格与研发 BOM", description: "核对规格、研发物料和专业责任，不复制PLM正式真值。", queryKeys: ["specification_owner_id"], hashPrefixes: ["specification-", "development-bom"], children: <><SpecificationResponsibilityLanding projectId={selectedProject.id}/><ProductEngineeringPanel {...productEngineering} /></> },
+                { id: "engineering-changes", title: "工程变更与执行", description: "核对影响与有效批准，跟踪整改、复测和变更实施。", queryKeys: ["ecr"], hashPrefixes: ["ecr-", "change-"], children: <ProjectChangePanel key={`ProjectChangePanel:${selectedProject.id}`} canApprove={CHANGE_APPROVER_ROLES.has(identity.user.role)} canEdit={canEdit} projectId={selectedProject.id} /> },
+                { id: "customer-requirement-changes", title: "客户新要求与回复", description: "核对客户要求、回复及内部工程变更，分别办理相应确认。", queryKeys: ["ccr"], hashPrefixes: ["ccr-", "customer-change"], children: <ProjectCustomerChangePanel key={`ccr-${selectedProject.id}`} canApprove={CHANGE_APPROVER_ROLES.has(identity.user.role)} canEdit={canEdit} currentUserId={identity.user.id} projectId={selectedProject.id} /> },
+                { id: "engineering-reviews", title: "准备工程评审", description: "核对本轮资料包、输入版本和专业评审缺项。", queryKeys: ["engineering_review_id"], hashPrefixes: ["engineering-review"], children: <EngineeringReviewPackages key={`EngineeringReviewPackages:${selectedProject.id}`} projectId={selectedProject.id} canEdit={productEngineering.canEdit} /> },
+              ]} />
             ) : null}
             {activeTab === "decisions" ? (
-              <>
-                <MeetingRecurrences key={`recurrences:${selectedProject.id}`} projectId={selectedProject.id}/>
-                <MeetingRecurrenceRosterLanding projectId={selectedProject.id}/>
-                <ProjectMeetings key={`retrospectives:${selectedProject.id}`} projectId={selectedProject.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)} canUpload={["owner", "admin", "project_manager", "engineer", "quality"].includes(identity.user.role)} />
-              <ProjectDecisionPanel
-                key={`ProjectDecisionPanel:${selectedProject.id}`}
-                canEdit={canEdit}
-                projectId={selectedProject.id}
-              />
-              </>
+              <ProjectTaskWorkspace label="例会与决策办理" defaultOpen={["meeting-actions"]} sections={[
+                { id: "meeting-actions", title: "准备例会与跟进行动", description: "围绕本轮资料、参会责任与行动项办理，记录实际回执。", hashPrefixes: ["meeting-"], children: <ProjectMeetings key={`retrospectives:${selectedProject.id}`} projectId={selectedProject.id} canManage={["owner", "admin", "project_manager"].includes(identity.user.role)} canUpload={["owner", "admin", "product_manager", "project_manager", "engineer", "quality"].includes(identity.user.role)} /> },
+                { id: "decision-followup", title: "记录决策与核对依据", description: "核对决策依据、当前责任与后续动作，正式批准仍由具名授权办理。", hashPrefixes: ["decision-"], children: <ProjectDecisionPanel key={`ProjectDecisionPanel:${selectedProject.id}`} canEdit={canEdit} projectId={selectedProject.id} /> },
+                { id: "meeting-rhythm", title: "维护例会节奏与名单", description: "维护例会安排和参会责任，再回到当前轮次执行。", queryKeys: ["meeting_recurrence_id", "meeting_roster_id"], hashPrefixes: ["recurrence-", "meeting-roster"], children: <><MeetingRecurrences key={`recurrences:${selectedProject.id}`} projectId={selectedProject.id}/><MeetingRecurrenceRosterLanding projectId={selectedProject.id}/></> },
+              ]}/>
             ) : null}
             {activeTab === "gates" ? (
-              <div className="space-y-8">
-                <ProjectGatePanel
-                  {...gateSurface}
-                  actorUserId={identity.user.id}
-                  projectId={selectedProject.id}
-                  state={gateSurface.loadState}
-                />
-                {/* The other half of 「Gate·交付物」: the checklist the gate
-                    blockers refer to had no surface of its own. */}
-                <ProjectDeliverableCheckPanel
-                  key={`ProjectDeliverableCheckPanel:${selectedProject.id}`}
-                  canManage={gateSurface.canManage}
-                  projectId={selectedProject.id}
-                />
-              </div>
+              <ProjectTaskWorkspace label="评审与交付办理" sections={[
+                { id: "gate-review", title: "核对评审条件与办理签核", description: "查看当前轮次、实际阻塞和具名签核，依原批准条件办理。", queryKeys: ["gate_id", "gate_round_id", "gate_signoff_id"], hashPrefixes: ["gate-", "signoff-"], children: <ProjectGatePanel {...gateSurface} actorUserId={identity.user.id} projectId={selectedProject.id} state={gateSurface.loadState} /> },
+                { id: "deliverable-readiness", title: "准备交付物与核对缺项", description: "核对交付清单、实际资料与责任；评审结论另行办理。", queryKeys: ["deliverable_id", "check_item_id"], hashPrefixes: ["deliverable-", "check-item-"], children: <ProjectDeliverableCheckPanel key={`ProjectDeliverableCheckPanel:${selectedProject.id}`} canManage={gateSurface.canManage} projectId={selectedProject.id} /> },
+              ]}/>
             ) : null}
             {activeTab === "documents" ? (
               <ProjectDocumentPanel
@@ -483,21 +472,10 @@ export function ProjectWorkspaceView({
               />
             ) : null}
             {activeTab === "quality" ? (
-              <div className="space-y-8">
-                <ProjectNpiPanel
-                  key={`ProjectNpiPanel:${selectedProject.id}`}
-                  canEdit={canEdit}
-                  canRecordTests={["owner", "admin", "project_manager", "engineer", "quality"].includes(identity.user.role)}
-                  canEditMaterials={productEngineering.canEdit}
-                  projectId={selectedProject.id}
-                />
-                <QualityResponsibilityLanding projectId={selectedProject.id}/>
-                <QualityPanel
-                  {...qualitySurface}
-                  identityUserId={identity.user.id}
-                />
-                <LivingFmea key={`fmea:${selectedProject.id}`} projectId={selectedProject.id}/>
-              </div>
+              <ProjectNpiPanel key={`ProjectNpiPanel:${selectedProject.id}`} initialTask={perspective.id === "quality" ? "test-execution" : "trial-verification"} canEdit={canEdit} canRecordTests={["owner", "admin", "project_manager", "engineer", "quality"].includes(identity.user.role)} canEditMaterials={productEngineering.canEdit} projectId={selectedProject.id} additionalSections={[
+                { id: "quality-closure", title: "调查问题与验证整改", description: "核对质量来源、根因、CAPA和独立有效性验证。", queryKeys: ["quality_owner_id", "ncr"], hashPrefixes: ["ncr-", "complaint-", "capa-", "quality-"], children: <><QualityResponsibilityLanding projectId={selectedProject.id}/><QualityPanel {...qualitySurface} identityUserId={identity.user.id} /></> },
+                { id: "failure-prevention", title: "核对失效预防", description: "维护FMEA与风险控制依据，回查实施和验证证据。", hashPrefixes: ["fmea-"], children: <LivingFmea key={`fmea:${selectedProject.id}`} projectId={selectedProject.id}/> },
+              ]}/>
             ) : null}
 
           </div>

@@ -125,12 +125,49 @@
     @apply bg-background text-foreground antialiased;
     font-size: 13px;
     line-height: 1.55;
+    --workspace-sidebar-width: 224px;
   }
 
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  button, a, summary, select {
+    touch-action: manipulation;
+  }
+
+  :where(h1, h2, h3) {
+    text-wrap: balance;
+  }
+
+  .workspace-content :where([id]) {
+    scroll-margin-top: 7rem;
+  }
+}
+
+body:has(.workspace-shell[data-navigation-collapsed="true"]) {
+  --workspace-sidebar-width: 56px;
+}
+
+@media (min-width: 1024px) {
+  .xiaopai-full-panel {
+    left: var(--workspace-sidebar-width, 224px);
+  }
+}
+
+@media (max-width: 639px), (pointer: coarse) {
+  [data-slot="button"], .workspace-shell summary {
+    min-height: 44px;
+  }
+
+  [data-slot="button"][data-size^="icon"] {
+    min-width: 44px;
+  }
+}
+
+.workspace-content {
+  padding-bottom: max(5rem, env(safe-area-inset-bottom));
 }
 
 @media (prefers-reduced-motion: reduce) {

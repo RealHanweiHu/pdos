@@ -1,0 +1,96 @@
+{
+  "schema_version": "pdos-wave18-fact-ui-check-v2",
+  "scope": "owned four frontend files; no DB/HTTP/browser/public build",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-contract.ts",
+      "sha256": "06a42c79bae5a85e4f0dcfbfd55f472c823b0894615c85c7a08953156a229b73"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.ts",
+      "sha256": "748754be30a1fc7047877f1441ac7b60b6ed4849940e1bd0b8c81f25d75c9959"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow.tsx",
+      "sha256": "320fc294b79fd6043100945ecef256054df2d4b3f140af595edf25264c2825e1"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.test.ts",
+      "sha256": "49719be13e1218bddaae89351bad9cc6eecd7341ea156e698fd64c0d4010fed3"
+    }
+  ],
+  "checks": [
+    {
+      "name": "scoped_types",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-wave18-fact-ui-tsconfig.json --pretty false",
+      "config": "fact-ui-typecheck-config.json",
+      "log": "fact-ui-typecheck-v2.log",
+      "exit_code": 0
+    },
+    {
+      "name": "helper_compile",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-wave18-fact-tests.json --pretty false",
+      "config": "fact-ui-helper-compile-config.json",
+      "log": "fact-ui-helper-compile-v2.log",
+      "exit_code": 0
+    },
+    {
+      "name": "helper_tests",
+      "command": "node --test /tmp/pdos-wave18-fact-tests/fact-workflow-state.test.js",
+      "log": "fact-ui-helper-v2.log",
+      "exit_code": 0,
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "duration_ms": 143.928125
+    },
+    {
+      "name": "owned_eslint",
+      "cwd": "pdos-next/web",
+      "command": "./node_modules/.bin/eslint src/components/capa-effectiveness/fact-workflow-contract.ts src/components/capa-effectiveness/fact-workflow-state.ts src/components/capa-effectiveness/fact-workflow.tsx src/components/capa-effectiveness/fact-workflow-state.test.ts --format json",
+      "log": "fact-ui-lint-v2.json",
+      "exit_code": 0,
+      "files": 4,
+      "errors": 0,
+      "warnings": 0
+    }
+  ],
+  "dependency_readings": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_commands.py",
+      "sha256": "d66a57d57b180f0c465138f989ccb19ca519906d249c86c3100c9a85becd7749"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+      "sha256": "6abbbbcd7cf362a060cda7f53a10b58cf47d3f61bb6f249317e38997ee9e545e"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-contract.ts",
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b"
+    }
+  ],
+  "limits": [
+    "Root observed actual browser inputs/preview 200; this delta addresses comparison only, C did not operate browser/HTTP/DB.",
+    "24 current helper checks are not added to prior 22 checks; earlier logs/manifests remain.",
+    "Only contract and test files changed; state/component bytes remain v1.",
+    "Offline tool currently pins v1 manifest and must be explicitly bound to v2 before subsequent current-helper actual response checks."
+  ],
+  "previous_manifest_sha256": "ca2e88b13b57ea0335f4adfb94abc32d319c10a7cb91ce6c3dc98f09ab9c5c25",
+  "delta": [
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-contract.ts",
+      "before_sha256": "6afd9c9bf2d488486f7d67ee735cc56d523654d97dbd1321c858db9f9f5eda04",
+      "after_sha256": "06a42c79bae5a85e4f0dcfbfd55f472c823b0894615c85c7a08953156a229b73"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.test.ts",
+      "before_sha256": "b8a14c38c0e363372b9cff4c0a97d82b0794e44511bb77f7ef8915ab0f846bfb",
+      "after_sha256": "49719be13e1218bddaae89351bad9cc6eecd7341ea156e698fd64c0d4010fed3"
+    }
+  ],
+  "changes": [
+    "sameFactCommand keeps all nonpayload envelope fields exact and uses existing tokenless semantic comparison for only four declared microsecond clock paths.",
+    "Returned server command remains unchanged for submit and original-key recovery.",
+    "Two meaningful helper cases cover actual +00:00 to Z canonical preview and microsecond/source/quote-hash/raw-value/envelope drift rejection."
+  ]
+}

@@ -16,7 +16,6 @@ from app.db.schema import tables
 from tests.product_master_reference_fixtures import (
     master_reference_database_guard as master_reference_database_guard,
 )
-from tests.test_product_manager_loop_api import command
 from tests.test_product_work_preparation_api import space
 from tests.test_test_runs_api import PASSWORD, Scope, bearer_headers
 from tests.test_test_runs_api import client as client
@@ -121,19 +120,13 @@ def candidate(client: TestClient, isolated_test_run_database: str) -> Iterator[C
     try:
         headers = bearer_headers(client)
         sid = space(client, headers)
-        response = client.post(
+        response = client.get(
             f"/api/product-work/spaces/{sid}/products",
             headers=headers,
-            json={
-                "request_id": str(uuid4()),
-                "code": "PM-PRIVATE-LINE",
-                "name": "合成产品线",
-                "level": "line",
-                "owner_user_id": str(scope.owner_id),
-            },
         )
-        assert response.status_code == 201, response.text
-        yield Candidate(client, scope, headers, sid, dict(response.json()))
+        assert response.status_code == 200, response.text
+        category = next(row for row in response.json()["nodes"] if row["level"] == "line")
+        yield Candidate(client, scope, headers, sid, category)
     finally:
         scope.dispose()
 
@@ -156,10 +149,6 @@ def colleague(candidate: Candidate) -> tuple[UUID, dict[str, str]]:
         json={"access": "contributor"},
     )
     assert response.status_code == 204, response.text
-    candidate.post(
-        f"/api/product-work/spaces/{candidate.space_id}/products/{candidate.line['id']}/members",
-        {**command(candidate.line), "user_id": str(user), "access": "contributor"},
-    )
     login = candidate.client.post(
         "/api/auth/login",
         json={
@@ -240,7 +229,7 @@ def test_other_internal_member_cannot_read_private_history_or_attachments(
     assert listed.status_code == 200 and listed.json()["items"] == []
 
 
-def test_space_line_and_role_revocation_blocks_current_reads_and_original_replay_then_restores(
+def test_category_and_role_revocation_blocks_current_reads_and_original_replay_then_restores(
     candidate: Candidate,
 ) -> None:
     user, headers = colleague(candidate)
@@ -258,10 +247,10 @@ def test_space_line_and_role_revocation_blocks_current_reads_and_original_replay
     body = candidate.message(conversation)
     saved = candidate.save(conversation, body, headers=headers)
     original = candidate.stored(conversation)
-    for target in ("space", "line", "role"):
+    # Category membership is the canonical source for both space and line access.
+    for target in ("category", "role"):
         table = {
-            "space": tables.market_space_members,
-            "line": tables.product_line_members,
+            "category": tables.market_space_members,
             "role": tables.users,
         }[target]
         with candidate.scope.engine.begin() as c:
@@ -294,8 +283,6 @@ def test_space_line_and_role_revocation_blocks_current_reads_and_original_replay
                     "access": "contributor",
                     "added_by_user_id": candidate.scope.owner_id,
                 }
-                if target == "line":
-                    values["product_line_id"] = UUID(candidate.line["id"])
                 c.execute(table.insert().values(**values))
         assert candidate.read(conversation, headers=headers)["items"][0]["id"] == saved["id"]
         assert candidate.save(conversation, body, headers=headers)["id"] == saved["id"]

@@ -1,0 +1,12 @@
+{
+  "pdos-next/staging/wave17/fact_atom_storage.py": {
+    "tested_before_format_sha256": "1556ca4827f92119f7c474292e0ceb98cc3c0d1febda713e3285e9abad40e506",
+    "final_sha256": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "ast_unchanged": true
+  },
+  "pdos-next/staging/wave17/test_fact_atom_storage.py": {
+    "tested_before_format_sha256": "3161020f64902b0d54f2606a458a079bb0f3381e38ec161af0719c06df8b29d4",
+    "final_sha256": "3161020f64902b0d54f2606a458a079bb0f3381e38ec161af0719c06df8b29d4",
+    "ast_unchanged": true
+  }
+}

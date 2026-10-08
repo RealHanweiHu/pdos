@@ -13,6 +13,7 @@ from app.ai.application_recovery import try_resume
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.capability_contract import resolve_capability
+from app.ai.durable import agent_entry
 from app.ai.executor import PromptFile
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
@@ -188,6 +189,7 @@ class MeetingReadingService:
 
         return enqueue_event(connection, self.gateway, **values)
 
+    @agent_entry
     def execute_queued(self, run_id: UUID) -> dict[str, Any]:
         from app.ai.meeting_event_runs import execute_queued
 
@@ -364,6 +366,7 @@ class MeetingReadingService:
                 }
             )
 
+    @agent_entry
     def create(
         self,
         *,

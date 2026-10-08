@@ -1,0 +1,23 @@
+{
+  "status": "PASS_ACTUAL_V2_SQL_ATOM_ROLLBACK_AND_COMMITTED_RESPONSE_LOSS",
+  "synthetic_only": true,
+  "missing_common_group_rejected": true,
+  "wrong_complete_start_proof_rejected": true,
+  "whole_17_table_row_hashes_equal_after_each_failure": true,
+  "api_precommit_fault": {
+    "attached": true,
+    "armed": true,
+    "fired": true,
+    "flushed_common_rows": 4
+  },
+  "same_confirmation_and_request_lawful_retry": true,
+  "actual_commit_then_client_response_loss": true,
+  "original_receipt_recovered_without_additional_effects": true,
+  "full_material_keys": 12,
+  "saved_issuer_dependency_keys": 1,
+  "actual_registry_keys_at_start": 2,
+  "actual_registry_keys_after_start": 3,
+  "saved_full_proof_sha256": "3dba7a60eb13fbcc583d22449ac76990ec3c00d382efdd072c84d4f6331f2cac",
+  "malformed_proof_actual_SQL_rejected": true,
+  "real_professional_qualification": false
+}

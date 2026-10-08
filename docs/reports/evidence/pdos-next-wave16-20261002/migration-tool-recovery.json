@@ -1,0 +1,11 @@
+{
+  "initial_error": "UndefinedColumn",
+  "sqlstate": "42703",
+  "table": "login_sessions",
+  "stage": "read_only_retained_before",
+  "backup_or_migration_started": false,
+  "cause": "Tool assumed all tables have id; login_sessions uses token_hash primary key",
+  "fix": "Use actual registered model primary-key columns for deterministic full-row hash ordering",
+  "tool_sha256": "cc648d3533d08c474f9fe84616adefc81152a00aaecdefcc113932d15225ab67",
+  "business_sources_changed": false
+}

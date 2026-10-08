@@ -41,7 +41,7 @@ import type {
 
 type LoadState = "loading" | "ready" | "forbidden" | "error" | "redirecting";
 
-const internalRoles = new Set(["owner", "admin", "project_manager", "engineer", "quality"]);
+const internalRoles = new Set(["owner", "admin", "product_manager", "project_manager", "engineer", "quality"]);
 const verificationRoles = new Set(["owner", "admin", "project_manager", "quality"]);
 const statusLabels = { draft: "草稿", verified: "已验证", archived: "已归档" } as const;
 const emptyDraft: MemoryDraftInput = {
@@ -88,7 +88,7 @@ function StatusBadge({ memory }: { memory: MemoryRecord }) {
   );
 }
 
-export function KnowledgeSearch() {
+export function KnowledgeSearch({ children }: { children?: React.ReactNode }) {
   const { replace } = useRouter();
   const [editingDigest, setEditingDigest] = useState<string | null>(null);
   const [replaceDraftSources, setReplaceDraftSources] = useState(false);
@@ -312,18 +312,15 @@ export function KnowledgeSearch() {
     >
       <header className="flex flex-wrap items-end justify-between gap-4 border-b pb-5">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-            Verified organizational memory
-          </p>
-          <h1 className="mt-1 text-lg font-semibold">Knowledge Search</h1>
+          <h1 className="text-lg font-semibold tracking-tight">知识库</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             只检索经另一位成员验证的项目 Memory；草稿与归档内容不会进入 AI 上下文。
           </p>
         </div>
-        <label className="grid min-w-64 gap-1 text-xs font-medium" htmlFor="knowledge-project">
+        <label className="grid w-full min-w-0 gap-1 text-xs font-medium sm:w-64" htmlFor="knowledge-project">
           项目范围
           <select
-            className="h-11 rounded-lg border bg-background px-3 text-sm"
+            className="h-11 w-full min-w-0 max-w-full rounded-lg border bg-background px-3 text-sm"
             id="knowledge-project"
             onChange={(event) => void switchProject(event.target.value)}
             value={projectId}
@@ -515,6 +512,7 @@ export function KnowledgeSearch() {
           ) : null}
         </>
       )}
+      {children && <section aria-label="原始资料与证据" className="mt-8 border-t pt-6">{children}</section>}
     </WorkspaceShell>
   );
 }

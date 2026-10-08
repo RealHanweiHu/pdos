@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.followup.link-capa.followup_linked]",
+  "original_index": 19,
+  "exit_code": 0,
+  "seconds": 1801.39,
+  "source_stable": true,
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "log_sha256": "6f0882dea0fbd726289c0c8dad3f5fcf697acc8b0bfb7981537a66031aaef8e0"
+}

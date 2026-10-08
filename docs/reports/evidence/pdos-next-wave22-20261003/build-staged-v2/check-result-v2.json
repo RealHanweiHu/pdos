@@ -1,0 +1,39 @@
+{
+  "schema_version": "wave22-build-decimal-delta-v2",
+  "baseline_unchanged": {
+    "wave22_shared_build.py": "0706238d95010d1a96e4bc86e78cde5de2a814cd918225a3e12efa6ba495df7e",
+    "test_wave22_shared_build.py": "b28b1cbd51ce191c7ac3d0ef502178c6358289bca0cf143ba8c5d6079644dcef"
+  },
+  "source_files": {
+    "wave22_shared_build.py": "bd8035806019ebf22dd6b7e3079fa85ccda23d6d9400ccc1a4c8fd7bf35315c0",
+    "test_wave22_shared_build.py": "bd30e211c34fe1724c324e466194ef879346ecf66728a29513e0626f0d3be46d"
+  },
+  "delta": "Only a strict finite Decimal equality helper and closed known-demand predicate replace literal quantity string comparison; no actual quantity/source strings rewritten; all original recovery/authority/commands preserved.",
+  "actual_reported_shape": {
+    "line_count": 1,
+    "unit": "ea",
+    "issues": [],
+    "required_quantity": "2.00000000",
+    "quantity_per_product": "1",
+    "private_identity_omitted": true
+  },
+  "pure_tests": {
+    "count": 38,
+    "elapsed_seconds": 0.779,
+    "exit_code": 0,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=pdos-next/server pdos-next/server/.venv/bin/python -m unittest discover -s pdos-next/.local/wave22-build-staged/v2 -p test_wave22_shared_build.py -v",
+    "log": "checks/pure-final-38.log",
+    "scope": "33 previous checks on this changed candidate plus 5 new meaningful decimal/DTO checks; not cumulative coverage"
+  },
+  "ruff": {
+    "exit_code": 0,
+    "log": "checks/ruff-final.log"
+  },
+  "ast_compile": {
+    "files": 2,
+    "exit_code": 0,
+    "bytecode_written": false
+  },
+  "executed_db_http": false,
+  "actual_operational_source_or_import_by_this_agent": false
+}

@@ -9,12 +9,14 @@ from pathlib import Path
 from typing import Protocol
 
 import httpx2
+from pdos_agent_runtime.graph import in_agent_graph
 from pydantic import BaseModel
 from sqlalchemy import Engine
 
 from app.ai.application_leases import ApplicationLeaseKeeper
-from app.ai.budget_adoption import ApplicationBudgetConfiguration
+from app.ai.budget_adoption import ApplicationBudgetConfiguration, preproject_budget_configuration
 from app.ai.budget_ledger import ExistingRunBudgetLedger
+from app.ai.durable import configured_runtime
 from app.ai.egress import ProviderEgressPolicy
 from app.ai.gateway import (
     GatewayInvocation,
@@ -50,9 +52,12 @@ def configured_application_gateway(
     *,
     request_timeout_seconds: float = 30.0,
     max_structured_attempts: int = 2,
+    preproject: bool = False,
 ) -> Iterator[StructuredModelGateway]:
     values = os.environ if environment is None else environment
     budget_configuration = ApplicationBudgetConfiguration.from_environment(values)
+    if preproject:
+        budget_configuration = preproject_budget_configuration(budget_configuration, values)
     catalog = ModelCatalog.from_environment(values)
     trusted_suite = load_golden_suite(DEFAULT_GOLDEN_SUITE_PATH)
     qualification_path = Path(
@@ -88,7 +93,7 @@ def configured_application_gateway(
             if budget_configuration is not None
             else None
         )
-        yield StructuredModelGateway(
+        gateway = StructuredModelGateway(
             engine,
             catalog=catalog,
             qualifications=qualifications,
@@ -101,3 +106,8 @@ def configured_application_gateway(
             budget_controller=budget_controller,
             application_lease_keeper=lease_keeper,
         )
+        gateway.durable_runtime = (
+            None if in_agent_graph() else configured_runtime(values, engine=engine)
+        )
+        gateway.require_agent_graph = gateway.durable_runtime is not None or in_agent_graph()
+        yield gateway

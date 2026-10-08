@@ -147,9 +147,9 @@ class ReminderScheduler:
             failed = True
             self._log_failure(tenant_id, project_id, "risks", error)
         try:
-            from app.domain.xiaopai import XiaopaiService
+            from app.ai.durable_followup import ensure_followup
 
-            XiaopaiService(self._engine).scan_project(tenant_id, project_id, as_of)
+            ensure_followup(self._engine, tenant_id, project_id, as_of)
         except Exception as error:
             # No model fallback and no stale follow-up dispatch after a failed scan.
             outcome.failed_projects += 1

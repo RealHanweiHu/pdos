@@ -5,10 +5,10 @@ const MAX_FILE = 20 * 1024 * 1024;
 async function forward(method: "GET" | "POST", request: Request, context: Context) {
   const path = (await context.params).conversationPath ?? [];
   const isAttachment = path[1] === "attachments";
-  const shapes = method === "GET" ? [[], ["#"], ["#", "matrix-options"], ["#", "attachments"], ["#", "attachments", "#"], ["#", "attachments", "#", "email-parts"], ["#", "attachments", "#", "email-origins"],
+  const shapes = method === "GET" ? [[], ["#", "messages", "#", "reply"], ["#"], ["#", "matrix-options"], ["#", "attachments"], ["#", "attachments", "#"], ["#", "attachments", "#", "email-parts"], ["#", "attachments", "#", "email-origins"],
     ["#", "messages", "#", "intake-ai-sources"], ["#", "messages", "#", "report-imports"], ["#", "intake-ai-sources", "#"], ["#", "intake-ai-findings", "#"], ["#", "intake-ai-sources", "#", "runs"], ["#", "report-imports", "#"],
     ["#", "messages", "#", "email-intake-previews"], ["#", "messages", "#", "pdf-intake-previews"], ["#", "messages", "#", "decision-intake-previews"], ["#", "messages", "#", "issue-intake-previews"], ["#", "decision-intake-previews", "#"], ["#", "decision-intake-previews", "#", "target-options"], ["#", "issue-intake-previews", "#"], ["#", "issue-intake-previews", "#", "issue-options"]] :
-    [[], ["#", "intake-ai-findings", "#", "prepare-import"], ["#", "intake-ai-findings", "#", "observation-preview"], ["#", "intake-ai-findings", "#", "adopt-observations"], ["#", "intake-ai-findings", "#", "preview"], ["#", "intake-ai-findings", "#", "review"], ["#", "intake-ai-sources", "#", "runs"], ["#", "messages"], ["#", "archive"], ["#", "attachments"], ["#", "messages", "#", "run"],
+    [[], ["#", "messages", "#", "preproject", "confirm"], ["#", "messages", "#", "reply", "cancel"], ["#", "messages", "#", "reply"], ["#", "intake-ai-findings", "#", "prepare-import"], ["#", "intake-ai-findings", "#", "observation-preview"], ["#", "intake-ai-findings", "#", "adopt-observations"], ["#", "intake-ai-findings", "#", "preview"], ["#", "intake-ai-findings", "#", "review"], ["#", "intake-ai-sources", "#", "runs"], ["#", "messages"], ["#", "archive"], ["#", "attachments"], ["#", "messages", "#", "run"],
       ["#", "attachments", "#", "email-parts"], ["#", "attachments", "#", "content"], ["#", "attachments", "#", "parse"], ["#", "attachments", "#", "revoke"],
       ["#", "messages", "#", "intake-ai-sources"], ["#", "messages", "#", "report-imports"], ["#", "report-imports", "#", "prepare"], ["#", "messages", "#", "email-intake-previews"], ["#", "messages", "#", "pdf-intake-previews"], ["#", "messages", "#", "decision-intake-previews"], ["#", "messages", "#", "issue-intake-previews"], ["#", "issue-intake-previews", "#", "confirm"], ["#", "decision-intake-previews", "#", "confirm"]];
   const valid = (method === "GET" && path.length === 4 && path[0] === "work-context" && uuid.test(path[1]) && ["task", "issue", "risk", "capa", "gate"].includes(path[2]) && uuid.test(path[3])) || shapes.some(shape => shape.length === path.length && shape.every((part, index) => part === "#" ? uuid.test(path[index]) : part === path[index]));
@@ -29,8 +29,15 @@ async function forward(method: "GET" | "POST", request: Request, context: Contex
         chunks.push(new Uint8Array(item.value));
       } } finally { reader.releaseLock(); }
       body = new Blob(chunks); contentType = "application/octet-stream";
-    } else if (method === "POST" && !["run", "parse", "revoke", "prepare"].includes(path.at(-1) ?? "")) {
+    } else if (method === "POST" && !["run", "reply", "cancel", "parse", "revoke", "prepare"].includes(path.at(-1) ?? "")) {
       body = JSON.stringify(await readBoundedJson(request, (["pdf-intake-previews", "email-intake-previews"].includes(path.at(-1) ?? "") || path[1] === "decision-intake-previews" && path.at(-1) === "confirm") ? 2 * 1024 * 1024 : 131072)); contentType = "application/json";
+    }
+    if (method === "POST" && path.at(-1) === "reply") {
+      const upstream = await pdosApiFetch(`/api/conversations/${path.map(encodeURIComponent).join("/")}`, {
+        method, headers: { Authorization: `Bearer ${token}`, Accept: "text/event-stream" },
+      }, 120_000);
+      if (!upstream.ok || !upstream.headers.get("content-type")?.startsWith("text/event-stream")) return forwardJson(upstream);
+      return new Response(upstream.body, { status: upstream.status, headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store", "X-Accel-Buffering": "no" } });
     }
     return forwardJson(await pdosApiFetch(`/api/conversations${path.length ? `/${path.map(encodeURIComponent).join("/")}` : ""}${query.size ? `?${query}` : ""}`, {
       method, headers: { Authorization: `Bearer ${token}`, ...(contentType ? { "Content-Type": contentType } : {}) }, body,

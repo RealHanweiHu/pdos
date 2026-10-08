@@ -1,0 +1,20 @@
+{
+  "reason": "Unquoted ampersand in absolute path split shell invocation; corrected to safe relative arguments. These are not test results.",
+  "failures": [
+    {
+      "check": 1,
+      "exit_code": 127,
+      "output": "zsh:1: nice(5) failed: operation not permitted\nzsh:1: no such file or directory: D-platform/docs/reports/evidence/pdos-next-supply-business-20261002/junit-final.xml\n"
+    },
+    {
+      "check": 2,
+      "exit_code": 127,
+      "output": "zsh:1: nice(5) failed: operation not permitted\nzsh:1: no such file or directory: D-platform/docs/reports/evidence/pdos-next-supply-business-20261002/capture.py\n"
+    },
+    {
+      "check": 3,
+      "exit_code": 127,
+      "output": "zsh:1: nice(5) failed: operation not permitted\nzsh:1: no such file or directory: D-platform/docs/reports/evidence/pdos-next-supply-business-20261002/capture.py\n"
+    }
+  ]
+}

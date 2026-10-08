@@ -1,0 +1,19 @@
+{
+  "candidate_sha256": "63bc4b8889c135dd69110ffa5b5dbb5341674e872ae871903b7e7f4e6df8c891",
+  "files": {
+    "pdos-next/server/pdos_next/model_configuration/__init__.py": "852d001f107921fa7b16d39e560c7bd34f4ca9efebcb5bee2c667cabd7a0c0b1",
+    "pdos-next/server/pdos_next/model_configuration/persistence.py": "1e0efc129042e0c48ee9a7b01b3a11f1a8a1b7261ce80154f67c0700c79b8569",
+    "pdos-next/server/pdos_next/model_configuration/ports.py": "6546c8c676f801080b2c1d5f201d5fa515d4ea8beeee37f7abffc9413487085a",
+    "pdos-next/server/pdos_next/model_configuration/runtime.py": "354f4a7f01885b9a2c52145c5179a0d8490e2e5e18c384f0f58cbbf845f1cbc7",
+    "pdos-next/server/pdos_next/model_configuration/service.py": "2d72dfc56f91bc5285ef3c6a8de1519c0e5e58702c3cf5cb7e037909912de86d",
+    "pdos-next/server/pdos_next/schemas/model_configuration/__init__.py": "3dbfb6c4b4ee4a848b70b8bc591a2e0adf766085184e86ee5a2ee9d9a6e3a2a9",
+    "pdos-next/server/pdos_next/schemas/model_configuration/dto.py": "9af27f92bd241e587a9c662741d24053d5d49bc81b0d43a23ebc463c188d7349",
+    "pdos-next/server/tests/model_configuration/test_configuration.py": "7d897c7cda238b8df5d2338fa8ebee6bad2ef34505ad3f4be8befafe99b31c21",
+    "pdos-next/server/tests/model_configuration/test_persistence_contract.py": "9a22adb65dead9aff0940e14be9294a0ed4848bfb3e75f3438980cd706c2d451",
+    "pdos-next/web/src/components/model_configuration/contracts.ts": "71d1b4d62947661b34ec750e457317180f3f80e25ea08b0d83394fffd3d25aa8",
+    "pdos-next/web/src/components/model_configuration/index.ts": "0eab3fa771da98715ed8b53c0c2aa9e202b9e5e0487278f851d572ff18dc55ca",
+    "pdos-next/web/src/components/model_configuration/render.test.mjs": "b197d0a6980b13c1a2649d0c0f4c02e7adfb6d6dc7668f61d1462aec345c228e",
+    "pdos-next/web/src/components/model_configuration/settings.tsx": "fc44f7a292fcf48bd5692ac17bd0c12147543feb57d7a4aa0f263d67641be66e",
+    "pdos-next/web/src/components/model_configuration/tsconfig.check.json": "ffa5d8af294f55913424b86bc3d4be1939d1492c4ae7bf554618a979e906273c"
+  }
+}

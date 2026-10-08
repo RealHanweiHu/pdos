@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T19:32:53.014191+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "reason": "Previously future window start has passed; prepared proposal was never submitted; original is retained",
+  "original_command_id": "aa003973-20db-5ae5-a07a-18e11e5e1172",
+  "original_key": "wave22-195d6eae-9df7-4e94-a6ba-3114b3303873-observer-run-plan",
+  "original_body_sha256": "64f0867ba2912b28ead1ff15f77c2b0e6c02ccb3e36be765f4b175d78e20653d",
+  "fixed_window": {
+    "start": "2026-10-03T19:16:49.891472Z",
+    "finish": "2026-10-03T20:01:49.891472Z",
+    "original_timezone": "UTC"
+  },
+  "receipt_fact_id": "f23647af-4bd8-46e7-8c0a-15e586bacdf9",
+  "business_writes": 0,
+  "action_receipts_count": 0,
+  "request_keys_count": 0,
+  "verification_run_identities_count": 0,
+  "verification_run_versions_count": 0,
+  "verification_current_runs_count": 0,
+  "prepared_confirmation": {
+    "consumed": false,
+    "expires_at": "2026-10-03T19:26:49.680038+00:00",
+    "exact_actor_and_product": true
+  },
+  "original_body_hash_algorithm": "sha256 of canonical UTF-8 JSON, ensure_ascii=False, sorted keys, compact separators",
+  "supersedes_only_hash_encoding": "v1 retained; v1 used ensure_ascii=True; business body and token unchanged",
+  "previous_proof": "test-unsubmitted-plan-readback-v1.json",
+  "read_only_transaction_rolled_back": true,
+  "query_count": 7
+}

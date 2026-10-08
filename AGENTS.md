@@ -15,7 +15,7 @@
 ## 续接入口与按需阅读
 
 1. 先读[清单当前队列](tasks/ai-native-integrated-todo.md#current-queue)，再读取本闭环涉及的 N 项依赖/交付/验收；不要从旧 N0 起重跑，不全文重读历史日志。
-2. 施工顺序与验证层级见[计划 §3](docs/design/2026-09-09-ai-native-integrated-execution-plan.md#execution-cadence)。[完整设计合同](docs/design/2026-09-10-pdos-complete-design-contract.md)按当前对象/职责查阅；原规格 `docs/specs/cehub-v3.2-preview/`、[原版计划](docs/design/2026-08-09-preview-execution-plan.md)基础设施参数/§11 及 S0–S5 canonical Exit 保留，首次涉及对应领域再定向阅读。
+2. 施工顺序与验证层级见[计划 §3](docs/design/2026-09-09-ai-native-integrated-execution-plan.md#execution-cadence)。[完整设计合同](docs/design/2026-09-10-pdos-complete-design-contract.md)按当前对象/职责查阅；原规格 `docs/specs/cehub-v3.2-preview/`、[原版计划](docs/design/2026-08-09-preview-execution-plan.md)基础设施参数/§11 及 S0–S5 canonical Exit 保留，首次涉及对应领域再定向阅读。全部设计文档的权威链、生效合同与被取代稿分类见[设计文档索引](docs/design/README.md)。
 3. 前端遵循[UI 基线](docs/design/2026-08-09-ui-baseline.md)与[原稿](docs/design/ui-baseline-mockup.html)：shadcn/ui + Tailwind v4 + Geist，橙色亮 `#c2410c` / 暗 `#fb923c`，圆角 8px，双主题，Phosphor 图标。不换栈或新增第二套 UI 库。
 4. 决策背景见[全量新建说明](docs/design/2026-08-09-cehub-v32-convergence.md)；只有追溯特定旧结论时读取[入口历史](AGENTS.history-2026-09-27.md)或清单对应历史锚点。归档中的旧“当前/下一步”不是执行命令。
 
@@ -31,7 +31,7 @@
 3. **迁移纪律**：Alembic schema 与迁移一致，按实施时真实 head 单调分配，不复用旧预留号；迁移步骤不是逐步完整验收的理由。
 4. **前缀冻结**：定稿 system prompt/工具定义不插动态内容，动态状态由代码预聚合追加至 context 末尾。
 5. **业务与可信根边界**：不替代 ERP/MES/PLM；worker 错误路径零 LLM；golden-case 是可信根，自动化不得写入。
-6. **固定技术栈**：Next.js + FastAPI + PostgreSQL + LangGraph(Python) + shadcn/ui；新增实体/namespace 按已批准共同合同及迁移，不把原版数量当永久上限。
+6. **固定技术栈与 Agent 运行架构**：Next.js + FastAPI + PostgreSQL + LangGraph(Python) + Temporal + shadcn/ui。所有 Agent 的完整能力经 Temporal 工作流与 Activity 调用 LangGraph；模型网关不得绕过注册执行图。LangGraph 管理能力内执行/检查点，Temporal 管理持久任务、等待、取消和恢复，领域服务拥有业务事实及批准。**Agent 拓扑（用户 2026-10-08 定）**：只有一个 Agent，即小Pai，通过注册工具、MCP 连接器和渐进加载的技能包完成各类工作；对话、页面按钮、事件和定时都由它承担。不再按原工程六领域 Agent + PMI 拆分 Agent 或按 Agent 建能力管线，见[小Pai 单 Agent 方案](docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md)。新旧工程复用纯运行框架，不跨工程导入业务模块或继承资格；新增实体/namespace 按已批准共同合同及迁移，不把原版数量当永久上限。
 
 ## 环境与资产
 

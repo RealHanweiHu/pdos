@@ -1,0 +1,47 @@
+{
+  "scope": "OWNED Python static/import and SQL-string generation ONLY; no tests/SQL grammar/DB/RLS/atomic qualification claim",
+  "status": "passed_static_only",
+  "source_manifest": "fact-sql-source-manifest-v1.json",
+  "source_manifest_sha256": "d03f3f7101d2c1debc31006a11ee89ad62a6c7694d858b965145246675605465",
+  "plan": "fact-sql-plan-v1.json",
+  "plan_sha256": "fa578055160f4b220a8bd337a82c330fa8dd8f2ee3d89fa31eb131bfced931bb",
+  "raw_logs": [
+    "fact-sql-ruff-v1.log",
+    "fact-sql-static-v1.log"
+  ],
+  "checks": {
+    "ruff_check": 0,
+    "ruff_format_check": 0,
+    "ast": true,
+    "compile": true,
+    "new_module_import": true,
+    "actual_head25_six_definition_binding": true,
+    "guard_plan_construction": true
+  },
+  "initial_lint_observation": {
+    "E501": 53,
+    "resolved": "Literal SQL/actual anchor preservation has scoped E501 exemption; final Ruff is clean",
+    "raw_initial_log_available": false
+  },
+  "statement_counts": {
+    "preflight": 3,
+    "replace_functions": 4,
+    "new_functions": 6,
+    "new_triggers": 15,
+    "permissions": 41,
+    "rollback_preflight": 2,
+    "rollback_guards": 23,
+    "restore_functions": 4
+  },
+  "sql_executed": false,
+  "db_connected": false,
+  "tests_run": false,
+  "public_files_changed": false,
+  "pending": [
+    "Root model/parent UNIQUE registration",
+    "actual PostgreSQL syntax and positive/negative atom writes",
+    "actual writer/semantic and consumption marker integration",
+    "seven current owner gates",
+    "effectiveness/close T2 Issue guard separate contract"
+  ]
+}

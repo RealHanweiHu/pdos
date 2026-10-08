@@ -1,0 +1,25 @@
+{
+  "scope": "candidate-only Node BFF transport before narrow change",
+  "files": [
+    {
+      "path": "pdos-next/web/package.json",
+      "sha256": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8"
+    },
+    {
+      "path": "pdos-next/web/pnpm-lock.yaml",
+      "sha256": "be7fceea859d01075be4889843f4fc8c955f34770b2d5a244b34569b159517e0"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "3a2523685c351a3ae8905121a2198a6a50e65937320efbf6f4b341206751f696"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "207d7c9b2c38d890a126879e80e3a335e822becd9f1509fc405eed5e999a60d7"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/wave16-route.test.ts",
+      "sha256": "f9e238a5964be2f1f64877082574649d3246c63fee8cd2bb2ab98f6ee3db7e8c"
+    }
+  ]
+}

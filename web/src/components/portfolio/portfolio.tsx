@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { requestProjects } from "@/components/projects/project-api";
 import type { Project } from "@/components/projects/project-types";
 import { WorkspaceShell } from "@/components/workspace-shell";
+import { ProjectTaskWorkspace as WorkspaceSections } from "@/components/projects/project-task-workspace";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
 import { cn } from "@/lib/utils";
 import { PortfolioMilestones } from "./portfolio-milestones";
@@ -125,10 +126,7 @@ export function Portfolio() {
     >
       <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-4">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-            Portfolio
-          </p>
-          <h1 className="mt-1 text-lg font-semibold">项目组合</h1>
+          <h1 className="text-lg font-semibold tracking-tight">项目组合</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             查看各项目登记证据的六维健康、基线与预测偏差，并回到原业务记录办理。
           </p>
@@ -152,16 +150,20 @@ export function Portfolio() {
         </dl>
       </div>
 
-      <ExecutiveBriefPreparation projects={projects}/>
-        <PortfolioProgress />
-      <PortfolioMilestones projects={projects} />
-      <PortfolioControlQueue projects={projects} />
-      <PortfolioProductPipeline />
-      <PortfolioMaterials />
-      <PortfolioSuppliers projects={projects}/>
-      <PortfolioResources />
-      <PortfolioHealth />
-      <PortfolioComparisons projects={projects} />
+      <div className="mt-5">
+        <WorkspaceSections label="组合决策办理" sections={[
+          { id: "portfolio-current-work", title: "处理待决与例外", description: "先看真实待决事项，再进入原记录核对来源和当前责任。", children: <PortfolioControlQueue projects={projects} /> },
+          { id: "portfolio-progress", title: "核对项目进度", description: "对照正式基线、当前预测和实际执行，未知项保留。", children: <PortfolioProgress /> },
+          { id: "portfolio-health", title: "检查健康与缺项", description: "识别异常和不可评估维度，查看各项依据。", children: <PortfolioHealth /> },
+          { id: "portfolio-milestone-review", title: "核对阶段里程碑", description: "追查阶段与目标日的当前证据。", children: <PortfolioMilestones projects={projects} /> },
+          { id: "portfolio-comparisons", title: "比较项目方案", description: "按共同口径比较项目与约束。", children: <PortfolioComparisons projects={projects} /> },
+          { id: "portfolio-supply-resources", title: "处理物料约束", description: "核对跨项目齐套与恢复状态。", children: <PortfolioMaterials /> },
+          { id: "portfolio-suppliers", title: "核对供方风险", description: "从供方能力与异常回到原项目。", children: <PortfolioSuppliers projects={projects} /> },
+          { id: "portfolio-resources", title: "协调共享资源", description: "核对资源容量和跨项目冲突。", children: <PortfolioResources /> },
+          { id: "portfolio-pipeline-brief", title: "比较产品投入", description: "查看真实产品管线与投入依据。", children: <PortfolioProductPipeline /> },
+          { id: "portfolio-brief", title: "准备经营简报", description: "准备有来源的简报，正式发布与外发仍分别办理。", children: <ExecutiveBriefPreparation projects={projects}/> },
+        ]}/>
+      </div>
 
       {rows.length === 0 ? (
         <section

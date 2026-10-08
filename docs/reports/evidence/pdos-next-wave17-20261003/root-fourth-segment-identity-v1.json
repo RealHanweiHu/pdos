@@ -1,0 +1,20 @@
+{
+  "scope": "Fourth staged segment exact source/dependency identity and raw evidence only; no aggregate G3 claim",
+  "all_listed_sources_stable": true,
+  "root_static": {
+    "ruff_log": "fact-consumption-ruff-v4.log",
+    "format_log": "fact-consumption-format-v4.log",
+    "both_last_command_exit": 0,
+    "ast_parsed_files": 2
+  },
+  "report_sha256": {
+    "fact-registry-final-check-result-v2.json": "438018a6389729c01787b945c794156ecfa872e135e7b343809582687e0c199e",
+    "anchor-storage-check-result.json": "11f956e72c27932667be89806d9f52155a659b556ac529ec75b02f9d4824f111",
+    "ui-view-check-result.json": "d4811bf8ed31d4a83a2c294b93c28b8ad75bcfe8717e87f5b37cb02ffa1c37a8",
+    "root-fact-consumption-result-v4.json": "4a094aa5de0ae2b91d77dfc460c39d6f5908eb4fab17b6706392dd088f32a5f4",
+    "origin-actual-readonly-v1.json": "0fc659c458708e030a97d9b4913d2a1c44fdb1bff4dcd0b151090a46c1bd1b0f",
+    "sql-actual-functions-v1.json": "73bf23b81d3824418a0b0cffed9cdeddd11a8874ca1e4d35e07c8342e6d4907a",
+    "facts-registry-integration-review.md": "63a0606581d2f574186482c3a8d896abb0df73c674cbabb310700c7fccc966a6",
+    "fact-consumption-independent-review.md": "aad2a185de112e19d704ac034692b5f9d64831c67840d07ccfda228159d92a14"
+  }
+}

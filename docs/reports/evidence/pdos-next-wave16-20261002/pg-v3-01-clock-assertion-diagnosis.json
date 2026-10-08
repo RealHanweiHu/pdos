@@ -1,0 +1,8 @@
+{
+  "observed_at": "2026-10-03T09:36:57.856221+00:00",
+  "original_result_sha256": "797c4d19fd5c1aaf3683dd6e9124b19a43d1d679788fa8a1a3dd940123190124",
+  "original_log_sha256": "39c77cc3fc5914cf51a6efe86b1b70a58f23b1dde19987f870388ed9933920bd",
+  "classification": "assertion compares equivalent UTC spelling Z against +00:00; same complete microsecond instant",
+  "repair_applied": false,
+  "remaining": "After all frozen v3 cases finish, compare parsed aware instants including microseconds and preserve exact original IANA timezone; normalize observation membership too; rerun this node under new manifest. No business time/fixture/guard weakening."
+}

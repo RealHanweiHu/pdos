@@ -3,7 +3,7 @@ import type { WorkspaceIdentity } from "@/components/workspace-types";
 
 import type { DingTalkBootstrap, DingTalkOutboxItem, DingTalkStatus } from "./dingtalk-types";
 
-const INTERNAL_ROLES = new Set(["owner", "admin", "project_manager", "engineer", "quality"]);
+const INTERNAL_ROLES = new Set(["owner", "admin", "product_manager", "project_manager", "engineer", "quality"]);
 
 function parseStatus(value: unknown): DingTalkStatus {
   if (

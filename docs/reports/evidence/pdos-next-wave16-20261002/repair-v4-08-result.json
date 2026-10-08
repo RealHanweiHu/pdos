@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+  "original_index": 8,
+  "exit_code": 0,
+  "seconds": 2419.99,
+  "source_stable": true,
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "log_sha256": "7ae1911388a9fa5051ded011b13ee51dfc9d127efabf3aef61da534c21524c25"
+}

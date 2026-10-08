@@ -1,0 +1,40 @@
+{
+  "matrix": [
+    {
+      "documentWidth": 1440,
+      "theme": "light",
+      "width": 1440
+    },
+    {
+      "documentWidth": 1440,
+      "theme": "dark",
+      "width": 1440
+    },
+    {
+      "documentWidth": 390,
+      "theme": "dark",
+      "width": 390
+    },
+    {
+      "documentWidth": 390,
+      "theme": "light",
+      "width": 390
+    },
+    {
+      "documentWidth": 320,
+      "theme": "light",
+      "width": 320
+    },
+    {
+      "documentWidth": 320,
+      "theme": "dark",
+      "width": 320
+    }
+  ],
+  "horizontalOverflow": false,
+  "historyV2Readonly": true,
+  "historyV2NoResults": true,
+  "currentRequestGapsSeparate": true,
+  "restoredTheme": "light",
+  "viewportOverrideReset": true
+}

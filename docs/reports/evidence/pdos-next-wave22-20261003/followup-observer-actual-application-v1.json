@@ -1,0 +1,14 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "recorded_at": "2026-10-04T02:42:36.415519+00:00",
+  "runtime_before": "5196b20a17c6fa6ae1fe0c9128e7f9eb734de3931edb29912fcaaae0302d59b5",
+  "runtime_after": "38d06a67eb71e2be94948cc685833a8b609b211eeff8c56b9b152432cdbb062d",
+  "test_after": "f5a2e2591fcdec87ce234b3a9f2e262d16b8b71278340d2fba2aec2a7421a22a",
+  "test_layout_transform": "actual tool and retained before baseline paths only",
+  "checkpoint_raw_sha256": "f974b6e6baaecd3f7dfe9cc28ee16eea89bd97b4707b3b86aec325980516dc1a",
+  "checkpoint_unchanged": true,
+  "observation_requests_before": 0,
+  "business_writes": 0,
+  "api_reload_required": false,
+  "new_qualification_grants": 0
+}

@@ -27,6 +27,7 @@ SENSITIVE_KEY_PARTS = frozenset(
 NON_SENSITIVE_METRIC_KEYS = frozenset(
     {
         "daily_token_budget",
+        "token_budget_enforced",  # Boolean policy setting, never a credential.
         "input_tokens",
         "output_tokens",
         "total_tokens",

@@ -1,0 +1,7 @@
+{
+  "stopped_only_exact_private_candidate_build_processes": true,
+  "reason": "production next/font fetch has no timeout; two stalled font connections",
+  "actual_ui_source_and_actual_served_next_untouched": true,
+  "recovery": "same frozen web candidate; actual cached Geist bytes via official local font supplier",
+  "google_network_download_passed": false
+}

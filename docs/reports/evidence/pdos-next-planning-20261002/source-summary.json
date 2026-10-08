@@ -1,0 +1,78 @@
+[
+  {
+    "path": "server/app/domain/working_time.py",
+    "file_sha256": "2503b572f4fea610ddb691072c9e0e00d079d64ccd1ad9c82a1d13ec54254a4c",
+    "symbols": [
+      {
+        "symbol": "ceil_minute",
+        "line": 49,
+        "end_line": 54,
+        "sha256": "f3954aeac8556baf75d338dc9b78e6629168044376f921848f2e0b511567c595"
+      },
+      {
+        "symbol": "minute_quantity",
+        "line": 57,
+        "end_line": 58,
+        "sha256": "d3e88547921fdb96654e001d5359c39d7977e088bb242708a9d13e6b804b4143"
+      },
+      {
+        "symbol": "WorkingTime",
+        "line": 62,
+        "end_line": 149,
+        "sha256": "dbe037fa310ab13a8719b16c6a4e9aa6dd7154629b02aa014bcb9050fd5c219f"
+      }
+    ],
+    "reuse": "Deterministic algorithm adapted to independent DTO v1"
+  },
+  {
+    "path": "server/app/domain/plan_scheduling.py",
+    "file_sha256": "3647d9a3aead6bd478edcfb97da160a35cadd0980487a83b29fe26b6bcfea185",
+    "symbols": [
+      {
+        "symbol": "_schedule_plan",
+        "line": 23,
+        "end_line": 197,
+        "sha256": "8e2353748c5ea1ef1e2d4440c2dfecd8f3aadec3570004854861f40113a958ef"
+      },
+      {
+        "symbol": "schedule_plan",
+        "line": 200,
+        "end_line": 208,
+        "sha256": "dc51505782d3e1f3830595ec1fa64f71d0bdaef8a504ffffc0ca24c63768be9d"
+      }
+    ],
+    "reuse": "Deterministic algorithm adapted to independent DTO v1"
+  },
+  {
+    "path": "server/app/domain/schedule_forecast_engine.py",
+    "file_sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa",
+    "symbols": [
+      {
+        "symbol": "calculate_forecast",
+        "line": 39,
+        "end_line": 60,
+        "sha256": "8f04d7e21d832751d151758462395f912de3768ba3aa4e6b1b7146377f7e61f3"
+      },
+      {
+        "symbol": "_calculate",
+        "line": 63,
+        "end_line": 554,
+        "sha256": "398ae5a702f5504aa77742aa1b8e0f6ae1f645556aebe0c50a8a58a06177802d"
+      }
+    ],
+    "reuse": "Deterministic algorithm adapted to independent DTO v1"
+  },
+  {
+    "path": "server/app/domain/work_calendars.py",
+    "file_sha256": "b7e76a9c24e9d4fbc9458c457580cc162d6a7022a8d3fb16802790eaf0e866b9",
+    "symbols": [
+      {
+        "symbol": "_zone_rules",
+        "line": 63,
+        "end_line": 82,
+        "sha256": "f10421f9c473a98334b498d2b1af9957310c85128cd7f6eee44950185cf28aa4"
+      }
+    ],
+    "reuse": "Deterministic algorithm adapted to independent DTO v1"
+  }
+]

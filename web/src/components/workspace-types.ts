@@ -1,3 +1,5 @@
+import type { WorkModule } from "./work-modules";
+
 export type WorkspaceIdentity = {
   tenant: {
     id: string;
@@ -12,5 +14,6 @@ export type WorkspaceIdentity = {
     role: string;
     email: string | null;
     is_active: boolean;
+    work_modules?: WorkModule[];
   };
 };

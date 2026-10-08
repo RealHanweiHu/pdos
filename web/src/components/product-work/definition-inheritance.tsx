@@ -120,7 +120,7 @@ function InheritancePanel({ item, base, canDerive, canMerge, renderValue, onChan
     </div>}
     {canDerive && !created && <Button variant="outline" size="sm" disabled={busy || !!pending} onClick={() => setOpen(value => !value)}>{open ? "取消派生" : "派生为新产品"}</Button>}
     {open && canDerive && !created && <form className="space-y-3" onSubmit={event => { event.preventDefault(); derive(); }}><fieldset disabled={busy || !!pending} className="space-y-3">
-      <p className="text-sm text-muted-foreground">在同产品线和层级创建独立产品，引用此发布版。规格先待确认，专业协审人需重新指定。</p>
+      <p className="text-sm text-muted-foreground">在同品类和层级创建独立产品，引用此发布版。规格先待确认，专业协审人需重新指定。</p>
       <label className="block text-sm">新产品编号<input required pattern={"[a-zA-Z0-9_.:\\-]+"} maxLength={128} className={field} value={code} onChange={event => setCode(event.target.value)}/></label>
       <label className="block text-sm">新产品名称<input required maxLength={2048} className={field} value={name} onChange={event => setName(event.target.value)}/></label>
       <label className="block text-sm">派生原因<textarea required maxLength={2048} className={field} value={reason} onChange={event => setReason(event.target.value)}/></label>

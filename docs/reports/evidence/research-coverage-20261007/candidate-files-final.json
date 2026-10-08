@@ -1,0 +1,26 @@
+{
+  "working_copy_hashes": {
+    "server/app/ai/conversation_research.py": "e416d5552a62910469e369943ca66a87a8fb04f88bf21b01ca3105aa3ac181dd",
+    "server/app/ai/conversation_reply.py": "52692ebb8a05e00d92b2a2648c2164ddf022978ab7dcb96b1e5899f7b8a3c146",
+    "server/app/ai/reply_progress.py": "00272295a3a28f4ad2854e6f86939290761ffa7b9d85d5379f556dd9b3651413",
+    "server/app/ai/application_authorization.py": "041e138fd8f62a13611a3ce936d6d68e5612f1357eda31149ed3f9913d01395c",
+    "server/app/ai/prompts/xiaopai_reply_v7.json": "b42dfa5270f0cdbbcb2c787e59e9ed48082a0fbead1c9246945324e0c217732d",
+    "server/app/ai/prompts/preproject_dialogue_v7.json": "d58bd0d8e28c6dac540b9b6c897a31f99b81e08819aaa75e3030f75c1d4a42bc",
+    "server/migrations/versions/0431_conversation_research_exploration.py": "9a6af2d0acaebcc48f55ab7d8d042008f5244d7fa8c7149c90b57ebb7f97a852",
+    "server/tests/test_conversation_research_exploration.py": "ba4aecf879d34a8d86b49730ea9a2d5135940c17d81d815e71f5f8cfaac6526d",
+    "server/tests/test_reply_progress.py": "d024ee70518441ef2f124e77669da85a7f0e5e3acacc45332ad634d193813bed",
+    "web/src/components/ai/xiaopai-process.tsx": "83c43b3f6f139523486436ccc9cbbc767f799700be9e76ad7aa5ef95c0f1ec73",
+    "web/src/components/ai/xiaopai-session.tsx": "7a889ba092e71caaa2dff2a8752d631b42e3a6cd9e987f38b3a6df86235c67ae",
+    "web/src/components/ai/xiaopai-answer.tsx": "d987efbc3d19e1d3dd52895e3e04a87995d2cc7dc6bdebd5ad3b7ce43cdb5504",
+    "web/src/components/ai/xiaopai-answer.test.tsx": "d52b7524dc0a068685109ee60a8ce414313794961a396b72818d58c2cf048513"
+  },
+  "actual_preview_backend_basis": "runtime-snapshot-v7.json",
+  "current_web_increment": [
+    "xiaopai-answer.tsx",
+    "answer renderer in xiaopai-session.tsx"
+  ],
+  "shared_working_copy_contains_other_active_task_changes": true,
+  "not_a_full_build_or_formal_exit": true,
+  "actual_research_reply": "real-public-research-v7-proof.json",
+  "low_risk_visual_increment_after_checks": "table cell minimum widths; lint and actual GUI inspected, no additional mirror tests"
+}

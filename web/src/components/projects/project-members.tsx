@@ -23,6 +23,7 @@ type Roster = { can_manage: boolean; access_lost?: boolean; items: Member[]; ava
 const roleLabels: Record<UserRole, string> = {
   owner: "租户所有者",
   admin: "租户管理员",
+  product_manager: "产品经理",
   project_manager: "项目经理",
   engineer: "工程师",
   quality: "品质",

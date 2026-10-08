@@ -4,6 +4,7 @@ import type {
   IssueCreateInput,
   IssueStatus,
   MaterialClosureReference,
+  CostClosureReference,
   ProjectIssue,
   ProjectRisk,
   ProjectTask,
@@ -243,6 +244,7 @@ export type IssueTransitionExtra = {
   closure_evidence_ref?: string;
   expected_updated_at?: string;
   material_closures?: MaterialClosureReference[];
+  cost_closures?: CostClosureReference[];
 };
 
 export async function transitionIssue(

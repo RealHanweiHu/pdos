@@ -1,0 +1,931 @@
+{
+  "schema_version": "pdos-next-backend-freeze-review.v1",
+  "reviewer": "reuse_foundation",
+  "reviewed_at_utc": "2026-10-02T13:25:56.873432+00:00",
+  "method": "Independent filesystem-only SHA-256 comparisons and existing log/source/actual-preview review. No tests, database operations, credentials, backup bytes, network or model calls were executed by this reviewer. Only this new review file was written.",
+  "result": "pass_with_scope_limits",
+  "backend_delivery_blockers": [],
+  "freeze": {
+    "path": "docs/reports/evidence/pdos-next-wave6-20261002/backend-before-tests.json",
+    "sha256": "c2ff3401991024b0a7ab6525c6f4286edeef4234d0f7992e4f7c492865818d74",
+    "size_bytes": 20257,
+    "recorded_mtime_utc": "2026-10-02T13:12:58.884015+00:00",
+    "listed_files": 162,
+    "matching_files": 162,
+    "missing_files": [],
+    "changed_files": [],
+    "hash_algorithm": "SHA-256 of each listed file bytes",
+    "test_selection": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/integrated-test-selection.json",
+      "sha256": "a593510d981b2543be7e04c3a1887520e292e3a126467aee066d09111154bf46",
+      "size_bytes": 1236,
+      "recorded_mtime_utc": "2026-10-02T13:13:28.459521+00:00"
+    },
+    "selected_test_files": 29,
+    "selected_tests_absent_from_manifest": [],
+    "lint_selection": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/integrated-lint-selection.json",
+      "sha256": "748977e4b6dd919c1a5604fd418d776acc8ec30d43920a86a11228d1f4f22ed0",
+      "size_bytes": 9241,
+      "recorded_mtime_utc": "2026-10-02T13:12:58.818302+00:00"
+    },
+    "lint_selection_exactly_matches_manifest": true
+  },
+  "test_evidence": {
+    "initial_scoped": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/initial-scoped-tests.log",
+      "sha256": "bbc381442871759a17329336b39fc9fdd24281e436c541d4448f11856db71c20",
+      "size_bytes": 3306,
+      "recorded_mtime_utc": "2026-10-02T13:11:37.902508+00:00",
+      "summary": "1 failed, 36 passed in 102.82s (0:01:42)",
+      "summary_verified": true,
+      "passed": 36,
+      "failed": 1,
+      "elapsed_seconds": 102.82,
+      "candidate_role": "Preserved earlier test revision failure, not a passing final candidate."
+    },
+    "repaired_case": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/scoped-tests.log",
+      "sha256": "36daf390f2b5bd3fe6c2740693dd33b4f6bd7137f0887ef443e3606d8acefa22",
+      "size_bytes": 98,
+      "recorded_mtime_utc": "2026-10-02T13:13:03.106316+00:00",
+      "summary": "1 passed in 3.29s",
+      "summary_verified": true,
+      "passed": 1,
+      "elapsed_seconds": 3.29,
+      "candidate_role": "Focused supporting rerun of corrected quantity assertion."
+    },
+    "joint": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/postgres-tests.log",
+      "sha256": "0140c244e9f38c179fa47725237f87f6047453d33a5b840fc2ac76f57b85a182",
+      "size_bytes": 912,
+      "recorded_mtime_utc": "2026-10-02T13:22:01.457080+00:00",
+      "summary": "787 passed in 511.68s (0:08:31)",
+      "summary_verified": true,
+      "passed": 787,
+      "elapsed_seconds": 511.68,
+      "selected_test_files": 29,
+      "candidate_role": "Completed current mainline joint run; all frozen backend hashes still match afterward."
+    },
+    "count_interpretation": "The earlier 36 passes and repaired 1 pass are not added to 787. Joint covers 29 explicitly selected mainline files, including 37 cost execution cases, not all independent packages or the full repository.",
+    "candidate_binding": "Current manifest contains the corrected test revision. Its 162 hashes match after joint completion. Web, catalogs, dependencies and unlisted documents require separate evidence."
+  },
+  "decimal_assertion_correction": {
+    "test_source": "pdos-next/server/tests/test_cost_execution.py",
+    "test_name": "test_process_cost_consumes_exact_manufacturing_keys_and_explicit_good_product_quantity[known]",
+    "initial_failure": "Exact quantity assertion expected 5.5 hours; engine returned 5.5000000000000000000000000000000000001 after converting 330 minutes with a repeating 1/60 factor.",
+    "contract": "Decimal precision 38, ROUND_HALF_EVEN; no currency display quantization. Unit conversion divides canonical unit factors within the engine context before multiplying.",
+    "repair": "Only quantity_in_price_unit allows Decimal absolute error <= Decimal(\"1e-36\"). No float, relative percentage or monetary tolerance introduced.",
+    "retained_checks": [
+      "Exact known_build_subtotal == Decimal(\"13.2\") for known process case",
+      "Exact process line build_candidate == 11",
+      "Result decimal_precision == 38",
+      "Result rounding == \"ROUND_HALF_EVEN at precision 38; no currency display quantization\""
+    ],
+    "implementation_boundary": "Frozen pure engine, DTO, unit conversion and monetary implementation were not changed for this failure.",
+    "engine_sources": [
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/units.py",
+        "sha256": "565c193c687a5d9898379bb90e613056a079e5c26387d86bc597cdebc1277c48",
+        "size_bytes": 1139,
+        "recorded_mtime_utc": "2026-10-02T10:50:40.130844+00:00"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+        "sha256": "6e5af8ec6a13fc9d5309dc9ca9afbb0111882bf686498b45730551fdced0ea36",
+        "size_bytes": 20366,
+        "recorded_mtime_utc": "2026-10-02T10:52:11.419036+00:00"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+        "sha256": "14f3cc902abde9ffcf98639a577812ba8577445a532299899cfb63541718a1d8",
+        "size_bytes": 8929,
+        "recorded_mtime_utc": "2026-10-02T11:02:31.140718+00:00"
+      }
+    ],
+    "engine_freeze_baseline": "docs/reports/evidence/pdos-next-wave5-20261002/candidate.json",
+    "engine_sources_match_wave5_candidate_and_wave6_backend": true,
+    "engine_scope_distinction": "These pure engine files are checked against Wave5/current backend manifests; they are not among the separately frozen 24-file supply business package."
+  },
+  "migration_evidence": {
+    "head": "next_0008",
+    "parent": "next_0007",
+    "version_source": {
+      "path": "pdos-next/server/migrations/versions/0008_cost_inputs_and_estimates.py",
+      "sha256": "0dcd9fbc9e920954eaeead1e021d0234f0139219185e2b20f5d30e387e53abcd",
+      "size_bytes": 3064,
+      "recorded_mtime_utc": "2026-10-02T13:00:43.889606+00:00"
+    },
+    "roundtrip": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/migration-roundtrip.log",
+      "sha256": "56459010a15a3bc6069e87773a974637f4088df5af7e6c4bac1ae90919ec2944",
+      "size_bytes": 116,
+      "recorded_mtime_utc": "2026-10-02T13:00:48.481676+00:00",
+      "recorded_steps": [
+        "upgrade next_0008: passed",
+        "downgrade next_0007: passed",
+        "No new upgrade operations detected.",
+        "upgrade next_0008: passed"
+      ]
+    },
+    "schema_match": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/schema-match.log",
+      "sha256": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+      "size_bytes": 36,
+      "recorded_mtime_utc": "2026-10-02T13:08:58.164947+00:00",
+      "summary": "No new upgrade operations detected.",
+      "summary_verified": true
+    },
+    "recorded_target": "127.0.0.1:62513/pdos_test",
+    "target_evidence": "scope.md and actual-preview.json",
+    "reviewer_database_connection": false
+  },
+  "reuse_evidence": {
+    "path": "docs/reports/evidence/pdos-next-wave6-20261002/cost-package-reuse.json",
+    "sha256": "ff6ecde670c2115475304360905bda0137994f1d089fbaa3e0e73007d1ba4b85",
+    "size_bytes": 581,
+    "recorded_mtime_utc": "2026-10-02T13:01:30.287793+00:00",
+    "source_candidate": {
+      "path": "docs/reports/evidence/pdos-next-supply-business-20261002/candidate.json",
+      "sha256": "571e4c53d077be76231c0adab7635c4eea3aeeb460f096ce0d7fdf486d19f7db",
+      "size_bytes": 4205,
+      "recorded_mtime_utc": "2026-10-02T11:44:28.524542+00:00"
+    },
+    "declared_candidate_id": "8876b5bc371bd86fdf2ca9b3afd0311907463b2937aadc2657bf6c7e26274763",
+    "reuse_declared_candidate_id_matches": true,
+    "reuse_manifest_file_hash_matches": true,
+    "digest_semantics": "Declared candidate ID is a manifest field, distinct from the SHA-256 of manifest file bytes.",
+    "freeze_check": {
+      "listed_files": 24,
+      "matching_files": 24,
+      "missing_files": [],
+      "changed_files": []
+    },
+    "files": [
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+        "sha256": "0fdc7d05cebc082dffd4be8c80c0e5171b2f90b4458d58b88fb052e3bc7f383e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+        "sha256": "740299f0cf78635c68a05d430522d9587693154ee8335169d71826ff08951b80"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/errors.py",
+        "sha256": "b391821b1020acf5a4207144cf59121bc4d7ac4e115ebd0805f2759bd8cdf28f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+        "sha256": "f99e23b19ec7981e35d7bd21885ed377f5a85fd661f7d83ca8c5dddcae9fe6a4"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+        "sha256": "6a418b8a0b71458eb1f315e874456f3b0c83f2c3462229d1cdf0321dcabb4d25"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+        "sha256": "c9e5ddfb4cf5406829f51eb985c2086cc2e2a2e2a111c70f4dbece680be3e650"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+        "sha256": "5fb9113df27d7088fc3365d9d42c828648427928c821f070abe74826ef91d6e1"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/supply_cost/__init__.py",
+        "sha256": "44abfc6833aa379358f095310a038b38451e3f48e7d7c37b0dc5981314d77a5f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+        "sha256": "539f725a0c39df2ebea96ec32c6af8ac332ab99d45f54219c086cdad9c04f3e3"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/__init__.py",
+        "sha256": "5ffb64472c30f00b2e803bd898b9ddcb8aeb624314bd8503dfb1c320a8a16ee6"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/conftest.py",
+        "sha256": "6c8213a11efd39ab3658320a87ac4b2d0b9b0a04edae7ef7b512f7d082295b98"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+        "sha256": "8b8df2ae8bafb789c4cffac1488cc789ce0a0cc0955c7a41afe1eb9167b1dae6"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+        "sha256": "664edc868237ed5ef93dd381ef664009a504d0394ee9247229c54559b4c11bcb"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+        "sha256": "68767d60517136fda2d5c33e47d5e1d234cba576ee50c945a6105c55547957a3"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+        "sha256": "40ba8f046d2944014445839fb3754da3680bf992724622f1129013900f9b44a6"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+        "sha256": "71dfa2a8224e9b55684975c94f0fae09c66be5186ec7d728929c2f79bd5dac2e"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/cost-breakdown.tsx",
+        "sha256": "9697edd4661f974b0ded0632c2b86d0b30705ed8581f08476679b0362768ca4b"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/coverage-shortages.tsx",
+        "sha256": "8f4525a445a4cbdd4b8c4753760f3973e11675234f3f40184a00af833dd929b9"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/display.tsx",
+        "sha256": "e434491aa35999c8f5f83314f942d08c43b6a1920db688f61faff508f7a41665"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/index.ts",
+        "sha256": "054121111f0f1036bb6cb51ce9140fd9715300074467fce7d61c6e49c157219b"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/presentation.ts",
+        "sha256": "d8defc35c602a4332c6112cade2e5f0c8a2bfab4987103b79c632f3c30b9a949"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/snapshot-history.tsx",
+        "sha256": "548d0c5c30a86e5cb695efe2653010c065977210027d3aecabca0c9094c74520"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/supply-entry.tsx",
+        "sha256": "146b4694c756a3ecd54a79b4711b4860c108129ade02d94cd4ccea10630ae3ae"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/types.ts",
+        "sha256": "267756ccea0625eac43e19c2200f285d3f15480306d5b53a6d637c8dd15f9ccc"
+      }
+    ],
+    "integration": "Cost persistence uses cost_candidate, the fixed-BOM Decimal engine, freshness/read mappers and CostBreakdown. Common command service owns T1 confirmation and Receipt/Audit/Outbox; SupplyCostHandler transaction ownership is not reused.",
+    "frozen_package_tests_outside_mainline_candidate": [
+      "pdos-next/server/tests/supply_cost_domain/__init__.py",
+      "pdos-next/server/tests/supply_cost_domain/conftest.py",
+      "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py"
+    ],
+    "package_test_boundary": "Seven supply_cost_domain package test/support files remain independent hash-verified reuse assets. Historical package passes are not counted in the 29-file joint suite."
+  },
+  "legacy_boundary": {
+    "path": "docs/reports/evidence/pdos-next-reuse-parallel-20261002/source-inventory.json",
+    "sha256": "a13146346df961347a95dedfa40f7ba85f91e6c9497415fd3542e7479bda6f2a",
+    "size_bytes": 13959,
+    "recorded_mtime_utc": "2026-10-02T10:03:42.160585+00:00",
+    "listed_files": 57,
+    "matching_files": 57,
+    "missing_files": [],
+    "changed_files": [],
+    "selection_rule": "Select 57 paths outside pdos-next/ from the 61-file reuse inventory; four new-project paths are excluded.",
+    "excluded_new_project_paths": [
+      "pdos-next/server/pdos_next/service.py",
+      "pdos-next/server/pdos_next/runtime.py",
+      "pdos-next/server/pdos_next/safety.py",
+      "pdos-next/tools/local_environment.py"
+    ],
+    "files": [
+      {
+        "path": "assets/cehub/deliverable-guide-manifest.json",
+        "sha256": "1c98e124e24121736fe5f5afca847221c2ee4474140500b6db605805c44dec27"
+      },
+      {
+        "path": "certs/ApsaraDB-CA-Chain.pem",
+        "sha256": "cd9337e1dfd610888f265096990d76edf1606753b6c551f803e0465dc6cee22c"
+      },
+      {
+        "path": "server/app/ai/application_checkpoints.py",
+        "sha256": "c59ada31f25afc0d87d5f0f6daf521bb8dd3d759e5a47d359dfcfaedc348c36a"
+      },
+      {
+        "path": "server/app/ai/budget_ledger.py",
+        "sha256": "f12ebb27c65e0e80f167fd9dd4c542a0eac56ab7ae263550cda46424137655ed"
+      },
+      {
+        "path": "server/app/ai/checkpoints.py",
+        "sha256": "981704f5e05fb76a37392f0405dab864ad1d13518c6ec0d744086acbf056d612"
+      },
+      {
+        "path": "server/app/ai/egress.py",
+        "sha256": "0fce9cc42426d73f023500eb862d4ba6cb8773aa77d1a84c3e6969199df4fdd8"
+      },
+      {
+        "path": "server/app/ai/golden_suite.py",
+        "sha256": "16e2f1ef6faded937d5e98bf1377477f162f453f1520bd97c077182e7d920f82"
+      },
+      {
+        "path": "server/app/ai/model_budget.py",
+        "sha256": "08f8875936ec451ba405c95f2a8c5fa2ac82df032a59ad7edbd5983fa36ff1e9"
+      },
+      {
+        "path": "server/app/ai/model_call_fence.py",
+        "sha256": "a385cb182f57de664db9415becb5e638116baa0785202c41601b4ef3adf5199f"
+      },
+      {
+        "path": "server/app/ai/provider_adapters.py",
+        "sha256": "68299f0dd50621cec7aeb9885c96cba90f6b6a4cba039f0548d7dc134e6cdc88"
+      },
+      {
+        "path": "server/app/ai/qualifications.py",
+        "sha256": "381a59b8d92519fb2958d3f73b21f5defce6e3902252fdbe5a31f6d333fd9bcd"
+      },
+      {
+        "path": "server/app/auth/passwords.py",
+        "sha256": "281c8cd89de32404435b41353be723828fdf8b59868341f4e6d195c56fd4fc02"
+      },
+      {
+        "path": "server/app/db/test_safety.py",
+        "sha256": "deb75d386d4d3f9c068e237e945bfb3c49fd89aa3cf1b1fdcf77a6cde116a754"
+      },
+      {
+        "path": "server/app/domain/build_materials.py",
+        "sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37"
+      },
+      {
+        "path": "server/app/domain/capa_actions.py",
+        "sha256": "e972141b7f0ebdb602b3ee50bd193b61f7897d66508bd5fca9c2579bfae84536"
+      },
+      {
+        "path": "server/app/domain/change_execution_evidence.py",
+        "sha256": "6ce6d397c71dd8fdb2a7555e4a938391eff275e7290e1cbd261adc8979017584"
+      },
+      {
+        "path": "server/app/domain/change_execution_results.py",
+        "sha256": "9c70b5e8190d9e1d471d99dc882e736934dfe88741e89c99080cfa2e308c481a"
+      },
+      {
+        "path": "server/app/domain/change_impact_graph.py",
+        "sha256": "ed9a3c056ae41405961ca20ef003eebfa833eb4eba3dcb8bf11d833776dc578f"
+      },
+      {
+        "path": "server/app/domain/cost_freezes.py",
+        "sha256": "2f623c30395a2ee89141e938ef3e7f6e9ea41cb34d9fff05f60f2cf807dbee71"
+      },
+      {
+        "path": "server/app/domain/cost_inputs.py",
+        "sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013"
+      },
+      {
+        "path": "server/app/domain/cost_rollups.py",
+        "sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059"
+      },
+      {
+        "path": "server/app/domain/definition_inheritance.py",
+        "sha256": "bd4ab5e8e7ae55357fe25b9a6618055b33cc2bbf481986003a7284c54229cb7c"
+      },
+      {
+        "path": "server/app/domain/documents.py",
+        "sha256": "93d4f3bae636d3682fb78fe32290d39190b1607500d74ce0b6f5d7078837aecf"
+      },
+      {
+        "path": "server/app/domain/email_documents.py",
+        "sha256": "b715db921fe90c5bc3b5f9ee23e5351fcbfa5a5195bb888e3653e5ca68d43fd0"
+      },
+      {
+        "path": "server/app/domain/fmea_design_rules.py",
+        "sha256": "222a067fdba70d879fad3453d58724e81e2fd0abe52fda0a905bec598b8d1a9d"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "sha256": "33b7f1eee2e96a710f8d00a2a6c59e26498a51de9ca3559141b8c29c07176969"
+      },
+      {
+        "path": "server/app/domain/material_allocations.py",
+        "sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66"
+      },
+      {
+        "path": "server/app/domain/material_coverage.py",
+        "sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf"
+      },
+      {
+        "path": "server/app/domain/material_supply_pools.py",
+        "sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93"
+      },
+      {
+        "path": "server/app/domain/plan_scheduling.py",
+        "sha256": "3647d9a3aead6bd478edcfb97da160a35cadd0980487a83b29fe26b6bcfea185"
+      },
+      {
+        "path": "server/app/domain/portfolio_scoring.py",
+        "sha256": "705804cf7c937d856e3669510f964ea16e6ba18b4dc6150e0427c27168ab6628"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "sha256": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b"
+      },
+      {
+        "path": "server/app/domain/product_evidence_items.py",
+        "sha256": "c053f63977ddc1e19d3c0abaf228f1d0389f625c36f5243ddf8660643630c2a0"
+      },
+      {
+        "path": "server/app/domain/project_completion.py",
+        "sha256": "c81b64544ae6f9b47370945f29a0ab0858c3db77d066c27199ac2c971a080a4b"
+      },
+      {
+        "path": "server/app/domain/project_handoff_sources.py",
+        "sha256": "c6426c5f694f4065f8a2fef44e4a73aa006f7495a7386af6db03becbb6a3355f"
+      },
+      {
+        "path": "server/app/domain/quality_issue_links.py",
+        "sha256": "d10c563e86c0f0fb9d7fc5be31324caa4563910cd69576e4196a4a1e1890286e"
+      },
+      {
+        "path": "server/app/domain/resource_schedule_solver.py",
+        "sha256": "ae247477a4167a263aa3faa1b64091fd1a078c9363a0eecb6154c67f2828238d"
+      },
+      {
+        "path": "server/app/domain/sample_configuration_comparison.py",
+        "sha256": "a8bca35e62b6766eb3bf319980b261746f8afb5bd524633b6aef3b9a98bdadcf"
+      },
+      {
+        "path": "server/app/domain/sample_configuration_revisions.py",
+        "sha256": "4ba0e6724b7865d2ab410d9b817ebebf215f5d163cf2420b6a367fdbea7a87cc"
+      },
+      {
+        "path": "server/app/domain/schedule_forecast_engine.py",
+        "sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa"
+      },
+      {
+        "path": "server/app/domain/test_import_preview.py",
+        "sha256": "2bdf8bc205733b67872caa955ec74d86a7ad1b028c3141fe89d9a7648806f71b"
+      },
+      {
+        "path": "server/app/domain/test_report_workbook.py",
+        "sha256": "9c82ef91aca2e45930f08751a7d1a5856199d3f9f992ce666f117860ebd37a67"
+      },
+      {
+        "path": "server/app/domain/test_runs.py",
+        "sha256": "86e1516332a3de2479a4b4c2c37b0b947460e451be5df4d4a20e7259452340ae"
+      },
+      {
+        "path": "server/app/domain/tooling_rounds.py",
+        "sha256": "00cc4d6cd2eff169c4bd70df582b159c1ab079b61f10226309a18eb38a42b940"
+      },
+      {
+        "path": "server/app/domain/work_calendars.py",
+        "sha256": "b7e76a9c24e9d4fbc9458c457580cc162d6a7022a8d3fb16802790eaf0e866b9"
+      },
+      {
+        "path": "server/app/domain/working_time.py",
+        "sha256": "2503b572f4fea610ddb691072c9e0e00d079d64ccd1ad9c82a1d13ec54254a4c"
+      },
+      {
+        "path": "server/app/events/writer.py",
+        "sha256": "d37ff343bf69dac21730c2dddff15b729646d8d0a6c6dbf51fc891cfd20aa42c"
+      },
+      {
+        "path": "server/app/exports/definition_documents.py",
+        "sha256": "ff31b80f957b1885549b480c36715dc1dd4ba0f6f01a0c4ec603d3e468099f5d"
+      },
+      {
+        "path": "server/app/integrations/dingtalk_outbox.py",
+        "sha256": "146075106f2231437e22d7ca37c69004ad257ea24b6c88e9a8f8084bc950dcb7"
+      },
+      {
+        "path": "server/app/storage/documents.py",
+        "sha256": "a664d647fde0ed10d4e2b2d3e519822a954e9e80883652a3cae4b3866d6f55b4"
+      },
+      {
+        "path": "web/src/components/my-work/my-work-scenario.ts",
+        "sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8"
+      },
+      {
+        "path": "web/src/components/product-work/product-reading-ui.tsx",
+        "sha256": "8e546ecaae0ca908b9c5aab46e4b4106659b85dfd7631693f3e38bbacbc27eb1"
+      },
+      {
+        "path": "web/src/components/projects/project-task-workspace.tsx",
+        "sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5"
+      },
+      {
+        "path": "web/src/components/ui/button.tsx",
+        "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+      },
+      {
+        "path": "web/src/components/workspace-experience.ts",
+        "sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f"
+      },
+      {
+        "path": "web/src/lib/decimal.ts",
+        "sha256": "1c9384a3bb753fef840b56c336eabc1fda4c540c1b6a2a16f6a5c5a1d344fc0b"
+      },
+      {
+        "path": "web/src/lib/utils.ts",
+        "sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d"
+      }
+    ],
+    "claim_limit": "Equality applies only to these 57 selected old-track files/assets. The entire pre-existing dirty working tree is not frozen, tested, restored or approved. Recovery loss history and formal obligations remain."
+  },
+  "candidate_source_files_recommendation": {
+    "previous_candidate": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/candidate.json",
+      "sha256": "07a95edebf9502950fc6f9dae97e4af6adc48542cab67cd0dac437b2cc629114",
+      "size_bytes": 27229,
+      "recorded_mtime_utc": "2026-10-02T12:42:36.777967+00:00"
+    },
+    "previous_candidate_current_check": {
+      "listed_files": 208,
+      "matching_files": 197,
+      "missing_files": [],
+      "changed_files": [
+        {
+          "path": "pdos-next/contracts/auxiliary-operations.json",
+          "expected_sha256": "9b7ad581a6e6340915b533f42e299f5b4f60a2078b1554d27a2e4aa8108d7610",
+          "actual_sha256": "465ba058395b2e078ef29e28ee199e0acbad1c0c2b36c80e0c0453243f7a595a"
+        },
+        {
+          "path": "pdos-next/contracts/openapi.json",
+          "expected_sha256": "717efe4972cbef6571d52c5efeb3f99179c21f65eb41330a8323f3f33b6d8180",
+          "actual_sha256": "ebcb37379ce64bdd185b8f25b22bedf2f387891c84077b5e446fc35536e8d355"
+        },
+        {
+          "path": "pdos-next/contracts/operations.json",
+          "expected_sha256": "0ce119e6289b6c15772fca3e8233899e804f13c684c6cecc7fb0dcd007e7b46d",
+          "actual_sha256": "c2048ef913e12606ca09bd566aa5f99f4ec034d10472a363de82e18db552d930"
+        },
+        {
+          "path": "pdos-next/contracts/payloads.schema.json",
+          "expected_sha256": "5237b3474eb740108c24c1a5c2d10ce1ff2bb5986a1f12d28b7debe0c77ba3a5",
+          "actual_sha256": "40fdb8f9fd0945ba49ec5287645387a64bef4ab147932b62eadbd6413936d0c0"
+        },
+        {
+          "path": "pdos-next/server/pdos_next/api.py",
+          "expected_sha256": "70421375e0881404b8cdc04629b410e62cec032c757fe56c4bf732482ee9df0c",
+          "actual_sha256": "22bb794fd82e9750ad1aa8d23141344f0380d9f3a7e387f10b77f1eac914439d"
+        },
+        {
+          "path": "pdos-next/server/pdos_next/command_handlers.py",
+          "expected_sha256": "0b8200bd3a81a0a0b7f48ce0c539423cfe57e380bfe0cd65b27f81a1ef77307d",
+          "actual_sha256": "9638613f596fbd85b2accd4b8dfa9d58bd9fb85b6d193549b11c828626a885a3"
+        },
+        {
+          "path": "pdos-next/server/pdos_next/contracts.py",
+          "expected_sha256": "bd8f1c09c2ecf880aa962f39e02ca632c932455a41ccb9e978845612baf1d864",
+          "actual_sha256": "29c903fec3e8924b0ed53b04791dab1dc39a9b583dac40b6483ba74033d06d20"
+        },
+        {
+          "path": "pdos-next/server/pdos_next/models.py",
+          "expected_sha256": "c556c52964f1a83204c56143f5f52e79f5d6b1500dfbb91a3c44fddc5f27a48a",
+          "actual_sha256": "59f79611d0434c7cb666b8a129f596ad934ba1c73ce13c84eb24d6861e6a1fcf"
+        },
+        {
+          "path": "pdos-next/server/pdos_next/service.py",
+          "expected_sha256": "7ffb1ba2740e6bd2f075c576404722947eaa117812c82ca31abb73c77c49c1c6",
+          "actual_sha256": "5910fa04108dd05cc11b1bede3da348eed1418ead222ab236810e9e18c3409c5"
+        },
+        {
+          "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+          "expected_sha256": "987504161374dbdcfe846b331ad4e88d2da1b84726dd5fe3d4ffd3602186279c",
+          "actual_sha256": "326037ca4830a09318082b33f5856395265339365f8106d85547efd323c5415e"
+        },
+        {
+          "path": "pdos-next/web/src/components/workspace.tsx",
+          "expected_sha256": "c6c409067641907b2be3b886d8c9798e436793aa4d87298b8e4cd91c4969c461",
+          "actual_sha256": "78fa83ad466b6d829a18a3b8a87df4bc726158c540c059f5b49368dafd71795e"
+        }
+      ]
+    },
+    "merge_rule": "sorted(set(Wave5.candidate.source_files) | set(Wave6.backend-before-tests) | {pdos-next/web/src/components/builds/build-cost.tsx, pdos-next/web/src/lib/build-cost-view.ts})",
+    "suggested_file_count": 219,
+    "suggested_paths": [
+      "pdos-next/.env.example",
+      "pdos-next/.gitignore",
+      "pdos-next/README.md",
+      "pdos-next/contracts/acceptance.json",
+      "pdos-next/contracts/auxiliary-operations.json",
+      "pdos-next/contracts/events.json",
+      "pdos-next/contracts/openapi.json",
+      "pdos-next/contracts/operations.json",
+      "pdos-next/contracts/payloads.schema.json",
+      "pdos-next/ruff.toml",
+      "pdos-next/server/alembic.ini",
+      "pdos-next/server/migrations/env.py",
+      "pdos-next/server/migrations/schema_0001.py",
+      "pdos-next/server/migrations/schema_0003.py",
+      "pdos-next/server/migrations/schema_0004.py",
+      "pdos-next/server/migrations/schema_0005.py",
+      "pdos-next/server/migrations/schema_0006.py",
+      "pdos-next/server/migrations/schema_0007.py",
+      "pdos-next/server/migrations/schema_0008.py",
+      "pdos-next/server/migrations/versions/0001_trusted_source_work.py",
+      "pdos-next/server/migrations/versions/0002_qualification_read_lock.py",
+      "pdos-next/server/migrations/versions/0003_durable_work_and_product_definitions.py",
+      "pdos-next/server/migrations/versions/0004_project_plan_variant_confirmation_trace.py",
+      "pdos-next/server/migrations/versions/0005_configuration_build_preparation.py",
+      "pdos-next/server/migrations/versions/0006_actual_configuration_lots_samples.py",
+      "pdos-next/server/migrations/versions/0007_supply_source_snapshots_and_kit.py",
+      "pdos-next/server/migrations/versions/0008_cost_inputs_and_estimates.py",
+      "pdos-next/server/pdos_next/__init__.py",
+      "pdos-next/server/pdos_next/api.py",
+      "pdos-next/server/pdos_next/asgi.py",
+      "pdos-next/server/pdos_next/command_handlers.py",
+      "pdos-next/server/pdos_next/contracts.py",
+      "pdos-next/server/pdos_next/database.py",
+      "pdos-next/server/pdos_next/dispatch/__init__.py",
+      "pdos-next/server/pdos_next/dispatch/outbox.py",
+      "pdos-next/server/pdos_next/domain/build_execution/__init__.py",
+      "pdos-next/server/pdos_next/domain/build_execution/comparison.py",
+      "pdos-next/server/pdos_next/domain/build_execution/models.py",
+      "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py",
+      "pdos-next/server/pdos_next/domain/builds/__init__.py",
+      "pdos-next/server/pdos_next/domain/builds/demand.py",
+      "pdos-next/server/pdos_next/domain/builds/models.py",
+      "pdos-next/server/pdos_next/domain/builds/readiness.py",
+      "pdos-next/server/pdos_next/domain/builds/schemas.py",
+      "pdos-next/server/pdos_next/domain/builds/service.py",
+      "pdos-next/server/pdos_next/domain/configurations/__init__.py",
+      "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+      "pdos-next/server/pdos_next/domain/configurations/service.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/__init__.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/schemas.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py",
+      "pdos-next/server/pdos_next/domain/planning/calendar.py",
+      "pdos-next/server/pdos_next/domain/planning/scheduling.py",
+      "pdos-next/server/pdos_next/domain/products/definitions.py",
+      "pdos-next/server/pdos_next/domain/products/models.py",
+      "pdos-next/server/pdos_next/domain/products/variant_models.py",
+      "pdos-next/server/pdos_next/domain/products/variants.py",
+      "pdos-next/server/pdos_next/domain/projects/models.py",
+      "pdos-next/server/pdos_next/domain/projects/schemas.py",
+      "pdos-next/server/pdos_next/domain/projects/service.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/errors.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "pdos-next/server/pdos_next/domain/supply_execution/__init__.py",
+      "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+      "pdos-next/server/pdos_next/domain/supply_execution/schemas.py",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py",
+      "pdos-next/server/pdos_next/engines/derivation/__init__.py",
+      "pdos-next/server/pdos_next/engines/derivation/dto.py",
+      "pdos-next/server/pdos_next/engines/derivation/engine.py",
+      "pdos-next/server/pdos_next/engines/planning/__init__.py",
+      "pdos-next/server/pdos_next/engines/planning/calendar.py",
+      "pdos-next/server/pdos_next/engines/planning/dto.py",
+      "pdos-next/server/pdos_next/engines/planning/forecast.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/__init__.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/bom.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/common.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/coverage.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+      "pdos-next/server/pdos_next/engines/supply_cost/units.py",
+      "pdos-next/server/pdos_next/errors.py",
+      "pdos-next/server/pdos_next/evidence_processing/__init__.py",
+      "pdos-next/server/pdos_next/evidence_processing/isolation.py",
+      "pdos-next/server/pdos_next/evidence_processing/parsers.py",
+      "pdos-next/server/pdos_next/evidence_processing/types.py",
+      "pdos-next/server/pdos_next/evidence_processing/worker.py",
+      "pdos-next/server/pdos_next/model_gateway/__init__.py",
+      "pdos-next/server/pdos_next/model_gateway/claim.py",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py",
+      "pdos-next/server/pdos_next/model_gateway/ports.py",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation_schema.py",
+      "pdos-next/server/pdos_next/models.py",
+      "pdos-next/server/pdos_next/object_storage/__init__.py",
+      "pdos-next/server/pdos_next/object_storage/adapters.py",
+      "pdos-next/server/pdos_next/object_storage/types.py",
+      "pdos-next/server/pdos_next/originals.py",
+      "pdos-next/server/pdos_next/providers/__init__.py",
+      "pdos-next/server/pdos_next/providers/client.py",
+      "pdos-next/server/pdos_next/providers/types.py",
+      "pdos-next/server/pdos_next/runtime.py",
+      "pdos-next/server/pdos_next/safety.py",
+      "pdos-next/server/pdos_next/schemas/planning/__init__.py",
+      "pdos-next/server/pdos_next/schemas/planning/plan.py",
+      "pdos-next/server/pdos_next/schemas/products/definitions.py",
+      "pdos-next/server/pdos_next/schemas/products/variants.py",
+      "pdos-next/server/pdos_next/schemas/supply_cost/__init__.py",
+      "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "pdos-next/server/pdos_next/service.py",
+      "pdos-next/server/pdos_next/workflows/__init__.py",
+      "pdos-next/server/pdos_next/workflows/checkpoints.py",
+      "pdos-next/server/pdos_next/workflows/definitions.py",
+      "pdos-next/server/pdos_next/workflows/transport.py",
+      "pdos-next/server/pdos_next/workflows/worker.py",
+      "pdos-next/server/pyproject.toml",
+      "pdos-next/server/tests/conftest.py",
+      "pdos-next/server/tests/derivation_engine/test_derivation.py",
+      "pdos-next/server/tests/evidence_processing/test_documents.py",
+      "pdos-next/server/tests/evidence_processing/test_storage.py",
+      "pdos-next/server/tests/planning/test_scheduling.py",
+      "pdos-next/server/tests/planning_engine/test_calendar.py",
+      "pdos-next/server/tests/planning_engine/test_forecast.py",
+      "pdos-next/server/tests/products/test_definition_payload.py",
+      "pdos-next/server/tests/products/test_definition_transactions.py",
+      "pdos-next/server/tests/products/test_variants_payload.py",
+      "pdos-next/server/tests/products/test_variants_transactions.py",
+      "pdos-next/server/tests/providers/conftest.py",
+      "pdos-next/server/tests/providers/test_claim_gateway.py",
+      "pdos-next/server/tests/providers/test_persistent_budget_contract.py",
+      "pdos-next/server/tests/providers/test_persistent_budget_transactions.py",
+      "pdos-next/server/tests/providers/test_reconciliation_schema.py",
+      "pdos-next/server/tests/supply_cost_engine/__init__.py",
+      "pdos-next/server/tests/supply_cost_engine/conftest.py",
+      "pdos-next/server/tests/supply_cost_engine/helpers.py",
+      "pdos-next/server/tests/supply_cost_engine/test_contract.py",
+      "pdos-next/server/tests/supply_cost_engine/test_costs.py",
+      "pdos-next/server/tests/supply_cost_engine/test_coverage.py",
+      "pdos-next/server/tests/test_build_comparison.py",
+      "pdos-next/server/tests/test_build_demand.py",
+      "pdos-next/server/tests/test_build_execution.py",
+      "pdos-next/server/tests/test_build_readiness.py",
+      "pdos-next/server/tests/test_builds.py",
+      "pdos-next/server/tests/test_checkpoint_recovery.py",
+      "pdos-next/server/tests/test_configurations.py",
+      "pdos-next/server/tests/test_cost_execution.py",
+      "pdos-next/server/tests/test_durable_evidence.py",
+      "pdos-next/server/tests/test_project_first_plan.py",
+      "pdos-next/server/tests/test_supply_execution.py",
+      "pdos-next/server/tests/test_trusted_source_work.py",
+      "pdos-next/server/uv.lock",
+      "pdos-next/tools/export_contracts.py",
+      "pdos-next/tools/local_environment.py",
+      "pdos-next/tools/validate_contracts.py",
+      "pdos-next/tools/wave1_check.py",
+      "pdos-next/tools/wave1_recovery.py",
+      "pdos-next/tools/wave1_smoke.py",
+      "pdos-next/tools/wave2_check.py",
+      "pdos-next/tools/wave2_verify.py",
+      "pdos-next/tools/wave3_check.py",
+      "pdos-next/tools/wave3_verify.py",
+      "pdos-next/tools/wave4_check.py",
+      "pdos-next/tools/wave4_verify.py",
+      "pdos-next/tools/wave5_check.py",
+      "pdos-next/tools/wave5_verify.py",
+      "pdos-next/tools/wave6_check.py",
+      "pdos-next/tools/wave6_verify.py",
+      "pdos-next/tools/workflow_environment.py",
+      "pdos-next/web/eslint.config.mjs",
+      "pdos-next/web/next-env.d.ts",
+      "pdos-next/web/next.config.ts",
+      "pdos-next/web/package.json",
+      "pdos-next/web/pnpm-lock.yaml",
+      "pdos-next/web/pnpm-workspace.yaml",
+      "pdos-next/web/postcss.config.mjs",
+      "pdos-next/web/src/app/api/[...path]/route.ts",
+      "pdos-next/web/src/app/api/local-session/route.ts",
+      "pdos-next/web/src/app/globals.css",
+      "pdos-next/web/src/app/layout.tsx",
+      "pdos-next/web/src/app/page.tsx",
+      "pdos-next/web/src/components/builds/build-cost.tsx",
+      "pdos-next/web/src/components/builds/build-execution.tsx",
+      "pdos-next/web/src/components/builds/build-preparation.tsx",
+      "pdos-next/web/src/components/builds/build-supply.tsx",
+      "pdos-next/web/src/components/product/model-accounting.tsx",
+      "pdos-next/web/src/components/product/original-files.tsx",
+      "pdos-next/web/src/components/product/product-definition.tsx",
+      "pdos-next/web/src/components/product/product-variants.tsx",
+      "pdos-next/web/src/components/product/reading.tsx",
+      "pdos-next/web/src/components/projects/project-planning.tsx",
+      "pdos-next/web/src/components/providers.tsx",
+      "pdos-next/web/src/components/supply_cost/cost-breakdown.tsx",
+      "pdos-next/web/src/components/supply_cost/coverage-shortages.tsx",
+      "pdos-next/web/src/components/supply_cost/display.tsx",
+      "pdos-next/web/src/components/supply_cost/index.ts",
+      "pdos-next/web/src/components/supply_cost/presentation.ts",
+      "pdos-next/web/src/components/supply_cost/snapshot-history.tsx",
+      "pdos-next/web/src/components/supply_cost/supply-entry.tsx",
+      "pdos-next/web/src/components/supply_cost/types.ts",
+      "pdos-next/web/src/components/ui/button.tsx",
+      "pdos-next/web/src/components/workspace.tsx",
+      "pdos-next/web/src/lib/build-cost-view.ts",
+      "pdos-next/web/src/lib/build-execution-view.ts",
+      "pdos-next/web/src/lib/build-preparation-view.ts",
+      "pdos-next/web/src/lib/build-supply-view.ts",
+      "pdos-next/web/src/lib/original-location.ts",
+      "pdos-next/web/src/lib/product-view.ts",
+      "pdos-next/web/src/lib/project-plan-view.ts",
+      "pdos-next/web/src/lib/request-origin.ts",
+      "pdos-next/web/src/lib/utils.ts",
+      "pdos-next/web/src/lib/variant-view.ts",
+      "pdos-next/web/tsconfig.json"
+    ],
+    "new_backend_paths": [
+      "pdos-next/server/migrations/schema_0008.py",
+      "pdos-next/server/migrations/versions/0008_cost_inputs_and_estimates.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/__init__.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/schemas.py",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py",
+      "pdos-next/server/tests/test_cost_execution.py",
+      "pdos-next/tools/wave6_check.py",
+      "pdos-next/tools/wave6_verify.py"
+    ],
+    "new_cost_ui_paths": [
+      "pdos-next/web/src/components/builds/build-cost.tsx",
+      "pdos-next/web/src/lib/build-cost-view.ts"
+    ],
+    "missing_suggested_paths": [],
+    "hash_rule": "Final source_files must hash all 219 suggested current byte contents, not copy obsolete Wave5 values. Backend must match the 162-file freeze; hash web after its checkpoint is final.",
+    "remaining_scope_updates": [
+      "Set schema_head next_0008 and cite actual final joint evidence.",
+      "Remove cost object persistence/API/page integration from not_integrated_capabilities after root UI evidence is complete.",
+      "Keep complete stock/cross-Build reservation, quality release, resource qualification, Build start, TestRun and consumption limitations."
+    ],
+    "final_candidate_authorship": "A source-path recommendation, not a replacement for the root final candidate or UI approval."
+  },
+  "additional_existing_checks": {
+    "backend_lint": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/integrated-lint.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "recorded_mtime_utc": "2026-10-02T13:12:58.877028+00:00",
+      "summary": "All checks passed!",
+      "summary_verified": true
+    },
+    "catalog": {
+      "path": "docs/reports/evidence/pdos-next-wave6-20261002/catalog-validation.log",
+      "sha256": "e5b43ca077ab456acae52596a79a2aef70d2ce30698d59c39847f78387bb67f4",
+      "size_bytes": 166,
+      "recorded_mtime_utc": "2026-10-02T13:01:44.273441+00:00",
+      "summary": "Catalog/source coverage passed: 66 operations, 65 events, 48 acceptance IDs.",
+      "summary_verified": true,
+      "runtime_qualification_inferred": false
+    }
+  },
+  "actual_preview_evidence": {
+    "path": "docs/reports/evidence/pdos-next-wave6-20261002/actual-preview.json",
+    "sha256": "96a57fa11c4e96610f63f325d1fe313be35e469257af86307c55e41b11dfe790",
+    "size_bytes": 68177,
+    "recorded_mtime_utc": "2026-10-02T13:22:46.959702+00:00",
+    "recorded_schema_head": "next_0008",
+    "recorded_business_port": 62513,
+    "recorded_business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+    "recorded_business_table_count": 50,
+    "plan_and_readiness_unchanged": true,
+    "sample_and_supply_history_preserved": true,
+    "receipt_count": 4,
+    "audit_and_outbox_each_once": true,
+    "model_calls": 0,
+    "agent_business_write_privileges": 0,
+    "cost_input_revisions": [
+      {
+        "id": "1d4b20ac-7621-4561-a910-2faf99e9e115",
+        "revision": 2,
+        "freshness": "current"
+      },
+      {
+        "id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+        "revision": 1,
+        "freshness": "historical"
+      }
+    ],
+    "cost_estimates": [
+      {
+        "id": "0a089e81-5f14-439e-8bb3-d42ba4de90f4",
+        "input_revision": 2,
+        "freshness": "current",
+        "known_build_subtotal": "316.8000000000",
+        "build_candidate": null
+      },
+      {
+        "id": "98ad3bfd-096f-4ad4-9fcc-783a87013a06",
+        "input_revision": 1,
+        "freshness": "requires_recalculation",
+        "known_build_subtotal": "220.000000000",
+        "build_candidate": null
+      }
+    ],
+    "limitations": "Synthetic selected-scope cost candidates only. Missing housing cost retained. No purchase, actual financial cost, approval, proven savings or model call.",
+    "evidence_limit": "Existing server verification output was read; reviewer did not replay HTTP/transactions or inspect backup bytes."
+  },
+  "scope_limits_and_remaining_work": [
+    {
+      "code": "UI_CHECKPOINT_SEPARATE",
+      "blocking_for_backend_review": false,
+      "detail": "Root owns browser, themes/layouts, production build and final candidate. This review does not approve screenshots or full browser behavior."
+    },
+    {
+      "code": "FREEZE_MANIFEST_SCOPE",
+      "blocking_for_backend_review": false,
+      "detail": "162 Python source/migration/test/tool files have backend byte identity. Catalogs, locks, web and unlisted documents have separate evidence; 219 paths are a proposed final source scope."
+    },
+    {
+      "code": "SYNTHETIC_COST_SCOPE",
+      "blocking_for_backend_review": false,
+      "detail": "Synthetic selected-scope examples preserve unknown housing costs and null total candidates. They do not prove purchase prices, actual financial costs, approvals or realized savings."
+    },
+    {
+      "code": "NO_LIVE_EXTERNAL_AUTHORITY",
+      "blocking_for_backend_review": false,
+      "detail": "No complete inventory, cross-Build occupation, resource qualification, quality release, Build-start permission, TestRun or consumption authority is inferred."
+    },
+    {
+      "code": "LOCAL_EVIDENCE_ONLY",
+      "blocking_for_backend_review": false,
+      "detail": "Local implementation/test evidence does not grant model qualification, real data egress, deployment, production enablement or human formal Exit."
+    }
+  ],
+  "production_or_formal_exit_authorization": false
+}

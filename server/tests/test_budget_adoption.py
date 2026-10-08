@@ -10,10 +10,12 @@ from app.ai.budget_adoption import (
     METER_DIGEST_KEY,
     METER_PATH_KEY,
     MODE_KEY,
+    PREPROJECT_PROFILE_KEY,
     PROFILE_KEY,
     ApplicationBudgetConfiguration,
     BudgetConfigurationError,
     approved_budget_profile,
+    preproject_budget_configuration,
 )
 
 
@@ -45,6 +47,32 @@ def test_default_legacy_and_explicit_budgeted_configuration() -> None:
     assert configured is not None
     assert configured.profile == approved_budget_profile("short")
     assert configured.meter_path == Path("/operator/meter.json")
+
+
+def test_preproject_candidate_requires_explicit_adoption_and_keeps_original_profile() -> None:
+    original = ApplicationBudgetConfiguration.from_environment(settings())
+    assert preproject_budget_configuration(original, settings()) is original
+    selected = preproject_budget_configuration(
+        original, {**settings(), PREPROJECT_PROFILE_KEY: "preproject_research"}
+    )
+    assert selected.profile.output_token_reserve == 8000
+    assert original.profile == approved_budget_profile("short")
+    assert selected.meter_path == original.meter_path
+    with pytest.raises(BudgetConfigurationError):
+        preproject_budget_configuration(None, {PREPROJECT_PROFILE_KEY: "preproject_research"})
+    with pytest.raises(BudgetConfigurationError):
+        preproject_budget_configuration(original, {PREPROJECT_PROFILE_KEY: "model-suggested"})
+
+
+def test_preproject_candidate_hash_is_checked_before_adoption(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "changed-profile.json"
+    path.write_text(budget_adoption.PREPROJECT_PROFILE_PATH.read_text().replace("8000", "80000"))
+    monkeypatch.setattr(budget_adoption, "PREPROJECT_PROFILE_PATH", path)
+    with pytest.raises(BudgetConfigurationError, match="digest mismatch"):
+        preproject_budget_configuration(
+            ApplicationBudgetConfiguration.from_environment(settings()),
+            {PREPROJECT_PROFILE_KEY: "preproject_research"},
+        )
 
 
 @pytest.mark.parametrize(

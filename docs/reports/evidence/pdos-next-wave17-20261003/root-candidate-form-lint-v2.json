@@ -1,0 +1,53 @@
+{
+  "scope": "In-memory two staged files under actual public ESLint rules; no public files or build",
+  "observed_at": "2026-10-03T11:54:19.967Z",
+  "outcomes": [
+    {
+      "name": "candidate-form.tsx",
+      "source_sha256": "dfcd2ad83aadd1126391523d2e77b94e52b8c28961f9c3bff7b82faad43f1140",
+      "error_count": 1,
+      "warning_count": 1,
+      "messages": [
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 2,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/quality/staged-candidate-form.tsx:39:3\n  37 |   // scope, even before the parent receives the draft invalidation notification.\n  38 |   const live = useRef({ basis, unlocked: props.disabled === false && props.busy !== true });\n> 39 |   live.current = { basis, unlocked: props.disabled === false && props.busy !== true };\n     |   ^^^^^^^^^^^^ Cannot update ref during render\n  40 |   const notified = useRef<string | null | undefined>(undefined);\n  41 |   useLayoutEffect(() => {\n  42 |     if (notified.current !== basis) { notified.current = basis; props.onChange(null); }",
+          "line": 39,
+          "column": 3,
+          "nodeType": null,
+          "endLine": 39,
+          "endColumn": 15
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useLayoutEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useLayoutEffect call and refer to those specific props inside useLayoutEffect.",
+          "line": 43,
+          "column": 6,
+          "nodeType": "ArrayExpression",
+          "endLine": 43,
+          "endColumn": 29,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [basis, props, props.onChange]",
+              "fix": {
+                "range": [
+                  2470,
+                  2493
+                ],
+                "text": "[basis, props, props.onChange]"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "candidate-form-contract.ts",
+      "source_sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "error_count": 0,
+      "warning_count": 0,
+      "messages": []
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+--- before-link-common-service.py.txt
++++ pdos_next/service.py
+@@ -416,8 +416,12 @@
+     for read in command.source_read_set:
+         source_for(s, ctx, product.id, read.artifact_id, read.expected_revision)
+     module = handler(command.operation)
+-    module.validate(s, ctx, command, product, payload)
+-    snapshot = reviewed_view(module, s, ctx, command, product, payload)
++    if command.operation == "quality.capa.followup.link":
++        phase = module.prepare_preview(s, ctx, command, product, payload)
++        snapshot = module.preview_prepared(s, ctx, command, product, payload, phase)
++    else:
++        module.validate(s, ctx, command, product, payload)
++        snapshot = reviewed_view(module, s, ctx, command, product, payload)
+     token = secrets.token_urlsafe(32)
+     expires = now() + timedelta(minutes=10)
+     s.add(
+@@ -450,7 +454,9 @@
+     }
+ 
+ 
+-def consume_material_confirmation(s, ctx, command, product, payload, module):
++def consume_material_confirmation(
++    s, ctx, command, product, payload, module, *, prepared_review=None
++):
+     named_decision = command.operation in T2_OPERATIONS
+     token = getattr(payload, "approval_token" if named_decision else "confirmation_token", None)
+     if not token:
+@@ -480,9 +486,15 @@
+                     recovery=recovery,
+                 ) from failure
+         raise
++    if prepared_review is not None and command.operation != "quality.capa.followup.link":
++        raise DomainError("INTEGRATION_REQUIRED", "此操作未接入本调用内实质准备。", 503)
+     if confirmation.payload_digest != material_digest(ctx, command, payload, module) or digest(
+         confirmation.snapshot
+-    ) != digest(reviewed_view(module, s, ctx, command, product, payload)):
++    ) != digest(
++        prepared_review
++        if prepared_review is not None
++        else reviewed_view(module, s, ctx, command, product, payload)
++    ):
+         raise DomainError("CONFIRMATION_SCOPE_CHANGED", "预览内容或对象已改变，请重新核对。")
+     confirmation.consumed = True
+     if command.operation in {
+@@ -629,9 +641,24 @@
+             raise DomainError("VERSION_CONFLICT", "产品范围版本已变化。")
+     visibility = getattr(payload, "visibility", "private")
+     if module:
++        write_phase, prepared_review = None, None
++        if command.operation == "quality.capa.followup.link":
++            write_phase, prepared_review = module.prepare_write_review(
++                s, ctx, command, product, payload
++            )
+         if command.operation in T1_OPERATIONS | T2_OPERATIONS:
+-            consume_material_confirmation(s, ctx, command, product, payload, module)
+-        subject, subject_type, visibility = module.apply(s, ctx, command, product, payload)
++            if write_phase is not None:
++                consume_material_confirmation(
++                    s, ctx, command, product, payload, module, prepared_review=prepared_review
++                )
++            else:
++                consume_material_confirmation(s, ctx, command, product, payload, module)
++        if write_phase is not None:
++            subject, subject_type, visibility = module.apply_prepared_write(
++                s, ctx, command, product, payload, write_phase
++            )
++        else:
++            subject, subject_type, visibility = module.apply(s, ctx, command, product, payload)
+         if hasattr(subject, "budget_exceeded"):
+             subject.action_result = {"budget_exceeded": subject.budget_exceeded}
+     elif isinstance(payload, DefinitionDraftPayload):

@@ -1,0 +1,63 @@
+{
+  "status": "PASS_MANUFACTURING_DRAFT_UI_WITH_EXPLICIT_LEGACY_QUALITY_DENIAL",
+  "browser": "existing Codex In-app Browser 2; independent new tab6 from observed UI link; original tab4 and its draft preserved",
+  "actual_web_checkpoint": "actual-web-checkpoint-v1.json",
+  "web_source_files": 165,
+  "scope": "old Wave15 actual existing synthetic person and real visible project/process; no new professional qualification",
+  "manufacturing_observations": [
+    "new manufacturing section present next to preserved configurations/Build",
+    "explicit real project selection and its corresponding fixed process; one declared actual operation",
+    "WorkInstruction/ControlPlan/manufacturing baseline local unsent forms opened from actual buttons",
+    "private default; product visibility disabled with private upstream references",
+    "empty values kept unknown; baseline actual child selectors return unknown/no version; no fabricated WI/CP identity",
+    "qualification currently not attested; incomplete material preview disabled; no save/preview/commands sent"
+  ],
+  "actual_viewport_readbacks": [
+    {
+      "width": 320,
+      "theme": "light",
+      "client_width": 320,
+      "document_scroll_width": 320
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "client_width": 320,
+      "document_scroll_width": 320
+    },
+    {
+      "width": 1280,
+      "theme": "dark",
+      "client_width": 1280,
+      "document_scroll_width": 1280
+    },
+    {
+      "width": 1280,
+      "theme": "light",
+      "client_width": 1280,
+      "document_scroll_width": 1280
+    }
+  ],
+  "screenshots": "Actual 320 light/dark and 1280 dark screenshots captured inline through cua_repl; no durable image file/export attested",
+  "console_errors_or_warnings": 0,
+  "original_light_theme_restored": true,
+  "temporary_viewport_override_reset": true,
+  "legacy_quality_observation": {
+    "CAPA_current_6_history_visible": true,
+    "old_fixed_run_quality_read_pass": false,
+    "visible_message": "本轮质量、失败或变更事实读取失败，请刷新核对；本次读取未发起操作。",
+    "direct_exact_actor_checkpoint": "old-quality-exact-actor-denial-v3.json",
+    "direct_status": 409,
+    "direct_code": "SOURCE_STALE",
+    "underlying_retained_subreason_pending": true,
+    "unknown_not_automatically_unlocked": true
+  },
+  "not_attested": [
+    "actual new T1 save/Current/history readback with qualified material",
+    "new operation real UNKNOWN transport/exact original request recovery",
+    "old full quality browser chain",
+    "real professional qualification/manufacturing release/pilot/complete G3 G4/manual Exit"
+  ],
+  "business_saves": 0,
+  "model_calls": 0
+}

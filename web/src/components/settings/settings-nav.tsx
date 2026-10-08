@@ -62,7 +62,7 @@ export function SettingsNav({
   );
   return (
     <div className="lg:grid lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-8">
-      <nav aria-label="设置导航" className="mb-6 lg:mb-0">
+      <nav aria-label="设置导航" className="mb-6 lg:sticky lg:top-20 lg:mb-0 lg:self-start">
         {visibleSections.map((section) => (
           <div className="mb-4 last:mb-0 lg:mb-5" key={section.label}>
             <p className="hidden px-2 pb-1 text-[11px] font-medium text-muted-foreground lg:block">

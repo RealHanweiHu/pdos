@@ -1,0 +1,1708 @@
+{
+  "schema_version": 1,
+  "reviewer": "reuse_foundation",
+  "reviewed_at": "2026-10-02T14:54:48.352405+00:00",
+  "method": {
+    "action": "Read-only SHA-256 comparison of explicit frozen lists against current filesystem bytes.",
+    "source_of_legacy_and_verification_baselines": "docs/reports/evidence/pdos-next-wave7-20261002/backend-freeze-review.json",
+    "tests_run": false,
+    "database_access": false,
+    "runtime_configuration_read": false,
+    "output_only": "docs/reports/evidence/pdos-next-wave8-20261002/reuse-freeze-review.json"
+  },
+  "result": {
+    "status": "pass",
+    "scope": "Explicit 279/13/57/25 manifest sets only.",
+    "expected_counts": {
+      "wave8_candidate": 279,
+      "transport_delivery": 13,
+      "legacy_frozen": 57,
+      "verification_package_frozen": 25
+    },
+    "counts_match": true,
+    "all_listed_source_hashes_match": true,
+    "referenced_baseline_manifest_hashes_match_wave7": true,
+    "baseline_manifests_stable_during_review": true,
+    "distinct_source_files_checked": 349
+  },
+  "baseline_manifests": {
+    "wave8_candidate": {
+      "path": "docs/reports/evidence/pdos-next-wave8-20261002/candidate-before-validation.json",
+      "sha256": "bc9153f5f42728961b80866a4e7bfee2e661fdb77740e4a622255fbc394b7586",
+      "size_bytes": 34389
+    },
+    "transport_delivery": {
+      "path": "docs/reports/evidence/pdos-next-wave8-20261002/transport-candidate-sha256.json",
+      "sha256": "2c9feb0500c039a1486e3e4fe11b2ab6c226a3e9d537cd93cc0aee79176c23b0",
+      "size_bytes": 1650
+    },
+    "wave7_reference": {
+      "path": "docs/reports/evidence/pdos-next-wave7-20261002/backend-freeze-review.json",
+      "sha256": "631e38cf910f6aedeb6a16ff4925d6b601b5dedb3a4f2ebb3445312325fdd4e9",
+      "size_bytes": 28618
+    },
+    "prior_baselines": [
+      {
+        "path": "docs/reports/evidence/pdos-next-reuse-parallel-20261002/source-inventory.json",
+        "sha256": "a13146346df961347a95dedfa40f7ba85f91e6c9497415fd3542e7479bda6f2a",
+        "size_bytes": 13959,
+        "name": "legacy_baseline",
+        "expected_manifest_sha256": "a13146346df961347a95dedfa40f7ba85f91e6c9497415fd3542e7479bda6f2a",
+        "manifest_matches_wave7": true
+      },
+      {
+        "path": "docs/reports/evidence/pdos-next-verification-20261002/candidate.json",
+        "sha256": "c078bd8c8ed0605145794e3c1d7974939efc0833f6aef1b618ecd2071a4c28f3",
+        "size_bytes": 4556,
+        "name": "verification_baseline",
+        "expected_manifest_sha256": "c078bd8c8ed0605145794e3c1d7974939efc0833f6aef1b618ecd2071a4c28f3",
+        "manifest_matches_wave7": true
+      }
+    ]
+  },
+  "wave8_candidate": {
+    "listed_files": 279,
+    "matching_files": 279,
+    "changed_files": [],
+    "missing_files": [],
+    "excluded_files": [],
+    "files": [
+      {
+        "path": "pdos-next/.env.example",
+        "sha256": "6d5b250da0e8116d83e318ea080c5d52074c4953fb67e59c9622d0a94d0263fc"
+      },
+      {
+        "path": "pdos-next/.gitignore",
+        "sha256": "ed92c90aa7041a04a79c80512c491338ee456a05f6d31acb30bc5e4fc4377100"
+      },
+      {
+        "path": "pdos-next/README.md",
+        "sha256": "f2733c81e4bca283c9d8678e104d7d4645a5f7fcba15389c04982fe147e705c4"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/Dockerfile",
+        "sha256": "3f6a8dd46ba1e376429465a4c3fce909084b9fd0aae733cfbc148e2c1c608863"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/base-image.json",
+        "sha256": "1ed6f5b8442729252fef7d6f488c2fdf5dbc7a37ba4296ac1b3534cc817b7509"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/build.py",
+        "sha256": "6e8aeb27d17bb3a2376fb7e4dd63cbb93a08c50826aeb69c978580357cc37183"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/fetch_base.py",
+        "sha256": "1cce69cf4e3efdaec8fb2cd1a2c02eaac081999a0abc4005a688c83dc5a0c7e5"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/parser_worker.py",
+        "sha256": "ab9909dd18cb72aa6e6bc7302e23538408d48d82b9c7f2ff628e9daf6c5af3ee"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/requirements.txt",
+        "sha256": "e3413840894ba52baac1d215d34e153ac1ca7456297bdac77668186c1bca1488"
+      },
+      {
+        "path": "pdos-next/contracts/acceptance.json",
+        "sha256": "61d666521c0b1b582677c65dffe178f064e05a23393767f053b1cb67e8141848"
+      },
+      {
+        "path": "pdos-next/contracts/auxiliary-operations.json",
+        "sha256": "b6dcdac2d241bcd9ef2cb2a053356117f224c30b8c131b79e4cac6641f3249c5"
+      },
+      {
+        "path": "pdos-next/contracts/events.json",
+        "sha256": "d930174a6f1b1815cc80492af894e6720ff4481c03933012cac327458bd39840"
+      },
+      {
+        "path": "pdos-next/contracts/openapi.json",
+        "sha256": "e8ea74f98fe293130de6a60d7400a52bc318f92709e9568e92e4427847281fee"
+      },
+      {
+        "path": "pdos-next/contracts/operations.json",
+        "sha256": "c2048ef913e12606ca09bd566aa5f99f4ec034d10472a363de82e18db552d930"
+      },
+      {
+        "path": "pdos-next/contracts/payloads.schema.json",
+        "sha256": "c6a314038990a23991bf6fe3f0a6957e65294d611d5c76cc905cb2fa080231dd"
+      },
+      {
+        "path": "pdos-next/ruff.toml",
+        "sha256": "47d082a0b44b20fca2bff25524f1047f668abdacb47ec17f295ebb6f6ba878f5"
+      },
+      {
+        "path": "pdos-next/server/alembic.ini",
+        "sha256": "ebfad8a9c8f352d2381e48df599dd04dad764ca95b03f0dc9949d0691c6d2517"
+      },
+      {
+        "path": "pdos-next/server/migrations/env.py",
+        "sha256": "d74f9a9a20ca5103628ac94ce0c2ed94354b77efe97ab876d1ce6310230a854a"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0001.py",
+        "sha256": "bca6aa0b0d42794549957e89120efe11af8085ce932ec948d800feae6d1a4d5b"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0003.py",
+        "sha256": "c404c71e90249330b25e789ed2c2b7077a5ea5f596a329075f5623a3b2aa6ddf"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0004.py",
+        "sha256": "f5cc4d07dc3ed4f0ffd79ea38542bdb67b1029bd583c373b8553c785d3174c01"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0005.py",
+        "sha256": "2052dfb2d0fd1d09647144d7472bd9241040184fa0fe76a54ee9176b01f8aab0"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0006.py",
+        "sha256": "897449111731bc2fac8bc9eaad7665ec374f96d391f66825c1713316133c2f41"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0007.py",
+        "sha256": "82dc2dbca56512b2a0c5f91a8a60de96f96087f7285134db9cb26dcddbabbb00"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0008.py",
+        "sha256": "59cbcc530207467c56e86fa673050f455e340bcba604ca67f3e7f0b6bea45024"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0009.py",
+        "sha256": "a9a72d6a7dd5607421b435e2fbbe63aa2699629ab2956e33d1ca3740a9f63340"
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_0010.py",
+        "sha256": "a4523134df688f6b3e341c52ad1164ca79ec68d35e60eeb0d63dbb440cde8359"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0001_trusted_source_work.py",
+        "sha256": "332e63de5fc5316fa61c37d3b2532f28feb9cd959bf34444b05055f0938c34e3"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0002_qualification_read_lock.py",
+        "sha256": "7df9c06650f9f9aa60bd47dcf66a2bbfe931fdbe8815cebea2fafd0202c33b10"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0003_durable_work_and_product_definitions.py",
+        "sha256": "fc8faa550d06357e6addbe1cad89e8915bf533f940b60b6efa825c86ef245207"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0004_project_plan_variant_confirmation_trace.py",
+        "sha256": "180995c43eb0509f6a111e7f23256016a374e0aedd24feed6b347c327fecc386"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0005_configuration_build_preparation.py",
+        "sha256": "76e4899870fa2ec513dc22bdec71e1e1e832cf33a45641e535c0359fc7ee2a4d"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0006_actual_configuration_lots_samples.py",
+        "sha256": "eb81754c59e1b0d68edb61013b91e60d3d139544b1daa3a552a5220a8dc79876"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0007_supply_source_snapshots_and_kit.py",
+        "sha256": "1a959f8215b6af47446e4c4bddb352196eff628440c51057fcc2a1c8693d720e"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0008_cost_inputs_and_estimates.py",
+        "sha256": "0dcd9fbc9e920954eaeead1e021d0234f0139219185e2b20f5d30e387e53abcd"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0009_verification_preparation_versions.py",
+        "sha256": "6044e39fbbc7f2c61d5e38be5b0661aef25c9ee26982f609981bf09ec164168f"
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/0010_original_safety_facts.py",
+        "sha256": "35aa72f385b6d4e25b7b3a062986e4f42ba7f8e7392225fff66b91edad1fedcc"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/__init__.py",
+        "sha256": "bc0de14c2bc2427df7dafa801a0bb30342deaffdac2f31a3ae214b9cada881cc"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/api.py",
+        "sha256": "28fd6697ab0d9cc6f66daad02f275d6b7a30850c547b6e0fb8582889134e0b16"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/asgi.py",
+        "sha256": "6160ca9915abc4ca567b6bceadfe1d93ffc3a97df39d2538c87bc35b069c566c"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/command_handlers.py",
+        "sha256": "776dba259392583f678a9a6ec7d87d118032ef28d1bae3a38a334931587a9b8e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/contracts.py",
+        "sha256": "e166a0b48d14cc61edb2be8139580cc77a51f62f47e2c48987269b22f19383f2"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/database.py",
+        "sha256": "a64c91d9f9a465be48b2585198ca7db802d37de0a38b2fed1064e445535c0858"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/dispatch/__init__.py",
+        "sha256": "f429ef394854a4a34bf368d3c3936603395859aeb92ce4fe7f64f9f719438b9f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/dispatch/outbox.py",
+        "sha256": "078245a21457a793f0c939d2aa7ad36659ae3f6b54009bbba4780b23b029b10e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/build_execution/__init__.py",
+        "sha256": "fbcbf580144382039c4870b6b5474c41a3a29264782666e8d8e6bd197c2ea3be"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/build_execution/comparison.py",
+        "sha256": "58f1c57bb8ffcd99e0ef629a8e2bacdd9898e3c442ebe7e7d5642fff6fc6f01d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/build_execution/models.py",
+        "sha256": "87560e4c5836f8f956249c6d2aad98fffb6659e97079365542ab5ddf9aeb4413"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+        "sha256": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/build_execution/service.py",
+        "sha256": "62d73d7bb408686f1fc19431daf425f149327a9c63c3253d6a01b6c4c8df63e0"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/builds/__init__.py",
+        "sha256": "00ae0c5e301cb4fb849a87780382d3c24e1161bbf6c7f7c87d986fd30253ca5b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/builds/demand.py",
+        "sha256": "cf6e39998e797ed662b0af51ed3b5618d47ba2c425ac29fa7f8d9d473fa936eb"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/builds/models.py",
+        "sha256": "6f01acd30b8f645d337277268d5a216c669c80b5dde242d0225e675339ad8b13"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/builds/readiness.py",
+        "sha256": "36bbfa7bea357dbb6b0055fc561353577a6030a079cabfeeb4fdb194de8920f0"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/builds/schemas.py",
+        "sha256": "bc002e93a9f8070f552efaf759fdfcc7cf1003580217b2d7aa37ef330600c086"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/builds/service.py",
+        "sha256": "92bd95c9abbb2318540fda7e45c58dbfc906ea80a0a0b5fac50dad504bdea3e8"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/configurations/__init__.py",
+        "sha256": "2d06ce8b86ae6f7d2fa4d0366b6357a321a78d8b17c5e1ea0ce6fc490bf986e0"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/configurations/models.py",
+        "sha256": "7d366adab2fd2e9cf04a570f7b5821a1efe0a60ead9894954d11fb4c0d2606b4"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+        "sha256": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/configurations/service.py",
+        "sha256": "e4f03b7acf612ac3fdb83452bdc948c7821e11c5501d777c211f7c4d8ae972ac"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/cost_execution/__init__.py",
+        "sha256": "712011397dde4ece02e69109ce00eb43000e664641bd7adabb859d32cdfc672f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+        "sha256": "ea9206c0ad8c4bc27054f639b619842820e0c1cb313fcfb14d4352cb87baa2b7"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/cost_execution/schemas.py",
+        "sha256": "15d662abd55b1cf5dfb3411170452d5dc1c7962220bf77bb282738c26c2bbb2b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/cost_execution/service.py",
+        "sha256": "d733157c0a4f91f4e4cde91902cb3fc7a95d9834b3aa2516eecbdc202d503d9e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/planning/calendar.py",
+        "sha256": "82cd8629fc12ffbe74eb7a133c8aa35852a04c7e226fdb1b9cb3179076cf3ce8"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/planning/scheduling.py",
+        "sha256": "f41f4784d1051b067063e2ab477059062e8ffb5aba5676886782c3d7c05b6911"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/products/definitions.py",
+        "sha256": "80a3cb56b0e8060162e45387fd4c315cfa15da35937cb1e1185e8597755eef2d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/products/models.py",
+        "sha256": "5a6157bfdf4d1ddf4731a1a4bf4d65c2d57c7f2dd1bd9d7cf8de99cce33be92a"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/products/variant_models.py",
+        "sha256": "df6f2a5276b749a21465bdf0b937aa03c39dcf9bc0fcfb56f0df1c07716ac385"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/products/variants.py",
+        "sha256": "dd2830e18d01e7de1303f4a264954b0a8a90fb9487ca5056d6554ce78f7ef19e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/projects/models.py",
+        "sha256": "74414ad221e4026129f60b180490468b68897750433c6e6278dc047193044f73"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/projects/schemas.py",
+        "sha256": "d1d535720f01d6407e25fdb4e392c4dece8f9a13c7dc5f90105d064e6b2cb254"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/projects/service.py",
+        "sha256": "69159cb34c82c93aab03263c8f17f9658977372472cb39b668de51dd96151397"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+        "sha256": "0fdc7d05cebc082dffd4be8c80c0e5171b2f90b4458d58b88fb052e3bc7f383e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+        "sha256": "740299f0cf78635c68a05d430522d9587693154ee8335169d71826ff08951b80"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/errors.py",
+        "sha256": "b391821b1020acf5a4207144cf59121bc4d7ac4e115ebd0805f2759bd8cdf28f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+        "sha256": "f99e23b19ec7981e35d7bd21885ed377f5a85fd661f7d83ca8c5dddcae9fe6a4"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+        "sha256": "6a418b8a0b71458eb1f315e874456f3b0c83f2c3462229d1cdf0321dcabb4d25"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+        "sha256": "c9e5ddfb4cf5406829f51eb985c2086cc2e2a2e2a111c70f4dbece680be3e650"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+        "sha256": "5fb9113df27d7088fc3365d9d42c828648427928c821f070abe74826ef91d6e1"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_execution/__init__.py",
+        "sha256": "7716ec841780ee4eb285c57188844e5ef380bb9c36d8fddd7cfef1f8efadf1df"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+        "sha256": "7b19619aefdff9416693ee3cb200959d4a048888a6f6ce67c0cde971e1478a79"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_execution/schemas.py",
+        "sha256": "1b5387578a6adf35eacaee95e139e582122807ba37559dd7cdc9d31ffb14bc0b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/supply_execution/service.py",
+        "sha256": "47c901147ac936b2a3c537badfc44574237ce97cc95be95eb2cb6ae3af2d021a"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/__init__.py",
+        "sha256": "d6c8524892875ab4826535adf0db845d973e29cb8d0a82a6346a1b389f9b99ea"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/rules.py",
+        "sha256": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification_execution/__init__.py",
+        "sha256": "1d3ce5a77f44a76ef60456fafd61e8c98bcc68b097f1448f0548db5a1d39716b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification_execution/models.py",
+        "sha256": "b8f18932a9f316a93bf229cf90fbd2d9951d484015c1c626405e43a08faee597"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification_execution/schemas.py",
+        "sha256": "e1911d9ae7682ac8e4016d2481253d005b148fe5ce387188c76ca7b9f210ce26"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification_execution/service.py",
+        "sha256": "78253692d53d7f93e5278e8a06c1ea9332a9abedd62e218a67efce1cddafd6ff"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/derivation/__init__.py",
+        "sha256": "7eb27dd6f13846903b4f557472a689e308c5898496866390f63f39129815d04f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/derivation/dto.py",
+        "sha256": "dcb5c7f2925d3fe55ada694570cd79dba9a5aa7c27fcb8b180430203d4503838"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/derivation/engine.py",
+        "sha256": "47f2ca765949e736ed1e304a03f52df38d1998a6d5bfa035cdda0f9f573dbe45"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/planning/__init__.py",
+        "sha256": "da41441ab73ff5c024f1f39095eab7f93f739728b2828d328be5b14a37e12364"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/planning/calendar.py",
+        "sha256": "8d57a37a5137f2bbd058986d7220296c0c0a9da0613decc7e97c19808434d42d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/planning/dto.py",
+        "sha256": "22acd27e207250208e86c37b9dcef4d79d31817948c125602c1d5c2ff5693a4f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/planning/forecast.py",
+        "sha256": "d5f43e78b8b9cad59ad928e91d5a9d1d366fc0a50fbefdecd4ff1daf4cb8d7b1"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/__init__.py",
+        "sha256": "9a2929d5c8b965def4c59dd6189244bc029b5f4007ebdb8bc8701b3c34c21fa6"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/bom.py",
+        "sha256": "cdad615b84a349dae4cb3d7c9e447491ed70d9ab7b63b1e95f67112a4649cdf2"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/common.py",
+        "sha256": "cd7f43ffb1c46bf8175fe59da3c76b9aeaf598d03def82aa03b8a10d4dab7379"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+        "sha256": "6e5af8ec6a13fc9d5309dc9ca9afbb0111882bf686498b45730551fdced0ea36"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/coverage.py",
+        "sha256": "534737cf0117ddc1607d7f56e705ebefb2311e72f25dca1a9ff386cfb6ef7e6d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+        "sha256": "14f3cc902abde9ffcf98639a577812ba8577445a532299899cfb63541718a1d8"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/engines/supply_cost/units.py",
+        "sha256": "565c193c687a5d9898379bb90e613056a079e5c26387d86bc597cdebc1277c48"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/errors.py",
+        "sha256": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_processing/__init__.py",
+        "sha256": "f9f025154be5889d55fce2dc5f36e89b060c1b12b6220d47119782d39b5ea823"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_processing/isolation.py",
+        "sha256": "0dc212566dcf95f5ac56511f7c64e962c5380adf32ab983d3f296fd41746f63b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_processing/parsers.py",
+        "sha256": "66a6b407933728d45b90b4e8c2b9f4a21b738326bc47102280185202282df907"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_processing/types.py",
+        "sha256": "3bdb7eec20948def3f0ddec45cbf41ec21a37b6333d7b8247edbe4d6811b7e10"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_processing/worker.py",
+        "sha256": "772b44c32ae3f4a36470f8e21f5ec91752e3260774a14fbb81f235934c43d273"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_security/__init__.py",
+        "sha256": "d093c271e2ddee8025b5d54aa40ab2abca234fdde2592162364db8b2b0affe61"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_security/adapter.py",
+        "sha256": "d82083d98dceb27bdd3dc547db704c112a2616d6623049b8023770db5d2ea5d2"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_security/preflight.py",
+        "sha256": "09902617cad904c31612bbaced01ae548f6b8fbfdd240fa45ae8fe7ae9076b1d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_security/rules.py",
+        "sha256": "b4edcb84184f226ff59aea1b0aa65d8221e688e78f4f90dd23979f4d41467bdc"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/evidence_security/types.py",
+        "sha256": "a544bcf732915277e6cdd702c0e68ec9c3d4b5bc5653d0206b7f467f599f8321"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/model_gateway/__init__.py",
+        "sha256": "036d626fc218bab50de629fe5db6020f1f2539751122ab676beddf423534f101"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/model_gateway/claim.py",
+        "sha256": "6c385f5c6aee5ca781b9169b9f69ad0b0831f6b9709eb5cf40563adb2d0f17a8"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/model_gateway/persistent_budget.py",
+        "sha256": "175ea75eb1873635b99dffe224447ceb146c9aa4f81577e4a1c3f1ee19ef4d32"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/model_gateway/ports.py",
+        "sha256": "6484e82d7918c3f38824b6f78655cbefb1e09d79082ee64a38cc5e02bafed81b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/model_gateway/reconciliation.py",
+        "sha256": "3cb500e849bc13a52b18e293f55a012e0bc18583b72fd5bee39715bd2e156554"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/model_gateway/reconciliation_schema.py",
+        "sha256": "9b06651833b85284c84bd8814a3b120b698ad4e6f8b6b59d5664ccbf490231a3"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/models.py",
+        "sha256": "9b1d754d234d62548a90a78401c802bff2e3563a7694dbf6385c0ba96a496953"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_journal/__init__.py",
+        "sha256": "ecbc0154e08e8113c165344f47f93dae3a4937966e3cf152111d62bbb232380d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_journal/store.py",
+        "sha256": "2db448c0943a01c9f0737d252ae9cc5f63b3bef5b3773afaaa31f0bea269f688"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_journal/types.py",
+        "sha256": "69f4f17963435df46b4fce6cf88b7f2b1dc77cb54d45169fe914ae12303d0380"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_storage/__init__.py",
+        "sha256": "db02b4363a147de4ec18bc4d7d54148b20bf580961365068ffa3c7e4bc46d341"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_storage/adapters.py",
+        "sha256": "bb24af925be876eb2dcbcc8cb75d44ada8b20127de74f68368466de9894d6f0d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_storage/types.py",
+        "sha256": "6a96ee13bb918473e856d1e88bf65bf93c010800b76a1431266beb63abeac737"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/original_actions.py",
+        "sha256": "33adf13ae17cf39b1ed29405718a613210a40a0dbf59964d13a0de266e712d46"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/original_security.py",
+        "sha256": "e4cf1636c8f07f06dec043273688ce6099c6a0b0189ff4a53d0bdcba93b90952"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/original_store.py",
+        "sha256": "cca82430e271e22450d518c5d7b6dca631ec471fd47376a9d259be0ed0f9a092"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/originals.py",
+        "sha256": "85db70a0d6650cc469482ecb45fe36fadd7700a8d857b2218f94a14d19030744"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/providers/__init__.py",
+        "sha256": "6986a5320a4dc0c8003ec48c093f06a1b2c6db691f98911b94864d50da97e73d"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/providers/client.py",
+        "sha256": "9f41fc92a75e5fc403fe7f8fef947ea71c6ee620e8dcd6f1c8591393115e638e"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/providers/types.py",
+        "sha256": "7685aed45bcf7df33b9c11f2d0ba98a698059da45cd695a97cfeda6b9326b6cf"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/runtime.py",
+        "sha256": "312f709a3d2ead597135c3d2e5f78d24ffe49b44040e80395e92c2cc89c0a1ea"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/safety.py",
+        "sha256": "f51ba8cca61f3e20bb4b089f07cf272650aa5f0adf7d02bd6206c889ef38a8d2"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/planning/__init__.py",
+        "sha256": "f0dc71b3ef368bf75c3510faf6ff5909cc0e2c200dde2ec3bcc4d1ba9115740f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/planning/plan.py",
+        "sha256": "c98ac6c365164c293663afbb603c52f0b3e162cfd29979f2da6eb47f5d39217b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/products/definitions.py",
+        "sha256": "591c8e070a1d36e146da212cb266e055ed51de553183b1e6364af372b5f57424"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/products/variants.py",
+        "sha256": "903b6fc4741c6804cc04dac507825c0f4b54ba0810ebe243cf79c03cdf2501aa"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/supply_cost/__init__.py",
+        "sha256": "44abfc6833aa379358f095310a038b38451e3f48e7d7c37b0dc5981314d77a5f"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+        "sha256": "539f725a0c39df2ebea96ec32c6af8ac332ab99d45f54219c086cdad9c04f3e3"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/verification/__init__.py",
+        "sha256": "9c5d73deba86ef0ba3535f8f8ac6b350382e0c0a4a323283e80a4b401f89a504"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+        "sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_bootstrap.py",
+        "sha256": "a04743d35aa5bc322d9daf2d6ade191b2ec12f71ab2e5278d585e86b2a3c1cac"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/__init__.py",
+        "sha256": "adcbaa72f290ec0bc178085bf97e85c41185a6dd62ef7de9424dd4864e6f33df"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/docker.py",
+        "sha256": "358f3bf18c017dc3a14ed3d3bda2641eec66510196b9a5b91609015401d531e0"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/parser-image.json",
+        "sha256": "b27bfb5e33e9728b0c06aeea7f8b77a7af15d83075a9a9a589cf1b8988e2654b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/parser.py",
+        "sha256": "e07cfb0d3d3475cf8ee2ea88147e070c74516ed169223cb539912de7c8b29ca3"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/scanner.py",
+        "sha256": "6152c1c976a1c3866b61300e1a0181260ef001823855e60efd0ff5df6facec77"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/service.py",
+        "sha256": "5a2b867d4ff9ecd7ba2af0ad7b6f22e9f04f264c59397275cd47c8e347c1e3ef"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/workflows/__init__.py",
+        "sha256": "ee6cb0b1349b8907a72072ed88ad9a95b55b81abc06b2bbd3ba912cf9548fcc1"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/workflows/checkpoints.py",
+        "sha256": "2c32065d538249097537916fa27d65a84b8c91fa207b7e79a4fa0b1e91890e75"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/workflows/definitions.py",
+        "sha256": "dc4bf46290fd5d6d5117d541118c58651b4a190f74d11e96a9fa7a051bef1be9"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/workflows/transport.py",
+        "sha256": "dcc8291d2fc610b041e746a0690837055658e042b2eb528cd6541d6f6bd5ade1"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/workflows/worker.py",
+        "sha256": "a0cdc40fa5277fe16ace678b417c4b68f5d26c0924f3bec98b444b8af37403ba"
+      },
+      {
+        "path": "pdos-next/server/pyproject.toml",
+        "sha256": "1c2edea2464fc3260b1ceda3a701c0f2308ec68fe01ff28c6db4b8044d0573b3"
+      },
+      {
+        "path": "pdos-next/server/tests/conftest.py",
+        "sha256": "ba2615051bfbffdb53109437aa055b854887b36b94495cd0f888919ad2fa3486"
+      },
+      {
+        "path": "pdos-next/server/tests/derivation_engine/test_derivation.py",
+        "sha256": "2d9f4bf45c708b5be8d0648f3518d3b2314f87f42236d9a4a46d795d049f1fd0"
+      },
+      {
+        "path": "pdos-next/server/tests/evidence_processing/test_documents.py",
+        "sha256": "934db7187f561bb2a02c81a9af00ea968f0ae0c72f6e41e125d45a8272567754"
+      },
+      {
+        "path": "pdos-next/server/tests/evidence_processing/test_storage.py",
+        "sha256": "f6ed848e600bf146765809ea8771dab364ffee41a485c19ecf5b0b1331de7d74"
+      },
+      {
+        "path": "pdos-next/server/tests/evidence_security/conftest.py",
+        "sha256": "be5a30e62aa787d868f6d6a58c1b57e0cbd3a505ac01007d1d79a43e3e1f519b"
+      },
+      {
+        "path": "pdos-next/server/tests/evidence_security/test_scanning.py",
+        "sha256": "11b5b8008f262650adc46cd007a20b7c98b2fc4b43f6c113d2926383bbb5edfc"
+      },
+      {
+        "path": "pdos-next/server/tests/object_journal/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "pdos-next/server/tests/object_journal/conftest.py",
+        "sha256": "27853139f1a1de2fd9b6360b7dacf560af5d660f9adb34a3d54bc4d689dd1755"
+      },
+      {
+        "path": "pdos-next/server/tests/object_journal/test_store.py",
+        "sha256": "b36e2bba126c5b9ae26498728ef3382b2802a3bdff8393cbd0781457b20f6129"
+      },
+      {
+        "path": "pdos-next/server/tests/planning/test_scheduling.py",
+        "sha256": "19fc6cf188c7d6c7f39f3dac5336209b5672074d1999244e5acf9e4d703e12b3"
+      },
+      {
+        "path": "pdos-next/server/tests/planning_engine/test_calendar.py",
+        "sha256": "e6eb48e74c02ea0f9894d28d2ce83ef273652f76b5016c2098bbcf194e79dd7f"
+      },
+      {
+        "path": "pdos-next/server/tests/planning_engine/test_forecast.py",
+        "sha256": "93cbfe52a0350e7ee55b6c9b1f01b742f3c6226e1dd7f18ac213cc8cedb40014"
+      },
+      {
+        "path": "pdos-next/server/tests/products/test_definition_payload.py",
+        "sha256": "fd53774f41bcd876a6274d6b56e4102c3bb5c67bb2719f9a89b6ec0ee20443f0"
+      },
+      {
+        "path": "pdos-next/server/tests/products/test_definition_transactions.py",
+        "sha256": "b7c2935bfc3b27b86636a0486804905b2518d8caa1d06b64b192c18ef0a4223b"
+      },
+      {
+        "path": "pdos-next/server/tests/products/test_variants_payload.py",
+        "sha256": "3587596311781af39e33942d8e4a4af5379a605402911e788640463b8dbc17f2"
+      },
+      {
+        "path": "pdos-next/server/tests/products/test_variants_transactions.py",
+        "sha256": "539c33528ddf7381c26bde355b0316cf415bd5392fa98e4a59f18a0553cb9a3a"
+      },
+      {
+        "path": "pdos-next/server/tests/providers/conftest.py",
+        "sha256": "815bead3dd9675ed43b1342c02bf55852909e42e72d99c60d50f8bf730271783"
+      },
+      {
+        "path": "pdos-next/server/tests/providers/test_claim_gateway.py",
+        "sha256": "4fc6875783107ec084520755641e9789497e1ff4b0d4dcca70995a58d4913271"
+      },
+      {
+        "path": "pdos-next/server/tests/providers/test_persistent_budget_contract.py",
+        "sha256": "888246c39af36bc17d5547830ef7f3c8a0cb3429020de38ba7317fd7f684229d"
+      },
+      {
+        "path": "pdos-next/server/tests/providers/test_persistent_budget_transactions.py",
+        "sha256": "a5abc5aa50b8c34b06c73f3203f5e77517447bc35313954e8eabac56b0901c48"
+      },
+      {
+        "path": "pdos-next/server/tests/providers/test_reconciliation_schema.py",
+        "sha256": "0a81ae28a5e005e915bfcf0b56fc7a211c751ad76a4d6138072153d0dcf536c4"
+      },
+      {
+        "path": "pdos-next/server/tests/security_fixture.py",
+        "sha256": "371fea854e211148c925d8b42738c4857a544c6f3ce0b8e7f231f17a4dc9382c"
+      },
+      {
+        "path": "pdos-next/server/tests/security_runtime/real_checks.py",
+        "sha256": "e61614cba34d1b929c3d714f79ea4e737e77e2a6e27fcade03e072d2f6a6f9ae"
+      },
+      {
+        "path": "pdos-next/server/tests/security_runtime/test_runtime.py",
+        "sha256": "886ebcf9b5fdb422d39fbbc950e0d0b9d923d635f1f2b646f3dd344251c6cc1f"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_engine/__init__.py",
+        "sha256": "ed1c615eb2f46a84de3138ad14fb0d115b85213c92dcd6cb23a1ba57109a5fb8"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_engine/conftest.py",
+        "sha256": "83772dcff16770cf66a358505af54c0985e516966384940874b49dbfeb4f676a"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_engine/helpers.py",
+        "sha256": "553852d69c815174517443d43c60bb0ae68a84d8b998ab0d2db987b6f75d2cde"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_engine/test_contract.py",
+        "sha256": "2e09e5c1495b677281975ea77a17dfcb1309f01dbd287c58a0e283819f313e04"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_engine/test_costs.py",
+        "sha256": "a5d51fb65e3957062425087c2e18252c9de927046d75aed822acf61fc9bdd1fe"
+      },
+      {
+        "path": "pdos-next/server/tests/supply_cost_engine/test_coverage.py",
+        "sha256": "6f870a2c4134514f51c4489e5ea258e6bf4ddee9efb3e5e6511cad8574674599"
+      },
+      {
+        "path": "pdos-next/server/tests/test_build_comparison.py",
+        "sha256": "1784e470831c762cde52d1db447798521e4fd70ace7611ebd4066d028dbd46c8"
+      },
+      {
+        "path": "pdos-next/server/tests/test_build_demand.py",
+        "sha256": "c34435a179b3a05eb217d09d97746bc3732d753951d82a82ae7fbf8f5feb520f"
+      },
+      {
+        "path": "pdos-next/server/tests/test_build_execution.py",
+        "sha256": "b77546e3b6636165a3b9bb79214a32b44622d77b9fd271ca7af572d8fad9f752"
+      },
+      {
+        "path": "pdos-next/server/tests/test_build_readiness.py",
+        "sha256": "a0290c56ec87efd650792d3a1bb7c786b8af39241dca37d6cad4c84577407d89"
+      },
+      {
+        "path": "pdos-next/server/tests/test_builds.py",
+        "sha256": "eaf383efd75c39eb69bd5a1413b760a0ed8ab53d97799b1538655ffbdc6cb417"
+      },
+      {
+        "path": "pdos-next/server/tests/test_checkpoint_recovery.py",
+        "sha256": "c2c90b9133a6e5c786508c71717812ff8c26a8c2f318143939508cdcc2e038de"
+      },
+      {
+        "path": "pdos-next/server/tests/test_configurations.py",
+        "sha256": "a56b23d1f6ac30f5ecf946f70b3f8adb4583656538e3cfaf9f2159b4465da6a2"
+      },
+      {
+        "path": "pdos-next/server/tests/test_cost_execution.py",
+        "sha256": "aad1f54fbd8526be5554c99a26154bf6e31199551010cdfe511ba8eef7dc1f4e"
+      },
+      {
+        "path": "pdos-next/server/tests/test_durable_evidence.py",
+        "sha256": "e53bc7908503bfe63fd71cad3ddefb639feadbd3d1901f379207f82bbc1d2d1c"
+      },
+      {
+        "path": "pdos-next/server/tests/test_original_security.py",
+        "sha256": "3ce786dce5b59850d8bd332d2c6f6e13eeb80562164c0463763608dec1a1b979"
+      },
+      {
+        "path": "pdos-next/server/tests/test_project_first_plan.py",
+        "sha256": "16d30e10bbfcfada24637696114d0281cd8ba251b565fa3fcbbbea46c883f9bf"
+      },
+      {
+        "path": "pdos-next/server/tests/test_supply_execution.py",
+        "sha256": "5533a59131c3170c72c4c65c7ea8f70277e30ce3dec8f1e304ae3fa2b39ecc41"
+      },
+      {
+        "path": "pdos-next/server/tests/test_trusted_source_work.py",
+        "sha256": "2ba510e9f718d095cb0daf023f3fc2f6c39933b8167fa1be9d108ab3d9b0f1e0"
+      },
+      {
+        "path": "pdos-next/server/tests/test_verification_execution.py",
+        "sha256": "cb1d57147671363efbb31ab0e3d8802d416e4d5e4792c8fc3918fac06e4c9797"
+      },
+      {
+        "path": "pdos-next/server/uv.lock",
+        "sha256": "77fdcf076d143a63d212108a40721129bf13409bee20bc67e98f56c30ee791cc"
+      },
+      {
+        "path": "pdos-next/tools/export_contracts.py",
+        "sha256": "31da8aa75deed9af7e50d094d567e8c728262a61b707b7a57752e1f3c0530057"
+      },
+      {
+        "path": "pdos-next/tools/local_environment.py",
+        "sha256": "797118ef309d1bd587cf9db0a4ed31af8cefadb0c538c78803376a9441e6f821"
+      },
+      {
+        "path": "pdos-next/tools/validate_contracts.py",
+        "sha256": "47719c7491804318577749e9766442657dcbbbaebb8df0a56320a6b9be7103b3"
+      },
+      {
+        "path": "pdos-next/tools/wave1_check.py",
+        "sha256": "733417aa33f97da0f9a2a337e600ba1dbcae3d589db99a871056751228af8004"
+      },
+      {
+        "path": "pdos-next/tools/wave1_recovery.py",
+        "sha256": "0d29939735f20eb8f3c015c1d219f65b8fa4dd67132afd338a73df203f5a5763"
+      },
+      {
+        "path": "pdos-next/tools/wave1_smoke.py",
+        "sha256": "8a06e297a7118c05890889d868384dc89c230af89640dcf14eb3b54f9532162a"
+      },
+      {
+        "path": "pdos-next/tools/wave2_check.py",
+        "sha256": "4b9af7a29014f4a6e5b127ee311cd735e439777596881e4a35da208cd5de4b1d"
+      },
+      {
+        "path": "pdos-next/tools/wave2_verify.py",
+        "sha256": "654631317569da4232ac241ac026e0fbc0641f31f5d934b6551ad86c0d9343a6"
+      },
+      {
+        "path": "pdos-next/tools/wave3_check.py",
+        "sha256": "72885ad1e12aca5739668147a0d81179026aad486fc397a131934edb0b4be739"
+      },
+      {
+        "path": "pdos-next/tools/wave3_verify.py",
+        "sha256": "cfd6d402a1703d0f0ad8fdb8eab41fa344cc93f7c056fc951e19d9bcbde58af8"
+      },
+      {
+        "path": "pdos-next/tools/wave4_check.py",
+        "sha256": "bab846a7f3b28307f0bbe19b060d136ea4a6c99afb334d7ca79e0d6f3c76c3c4"
+      },
+      {
+        "path": "pdos-next/tools/wave4_verify.py",
+        "sha256": "0aa12e603f94974b77ae4b8f797cf47c490af0deab40c73a8b6a59b45c722971"
+      },
+      {
+        "path": "pdos-next/tools/wave5_check.py",
+        "sha256": "760f7b937c565a7a20603df177713fb5b02f2f3ad9ffdfd31cc35a6d63a09394"
+      },
+      {
+        "path": "pdos-next/tools/wave5_verify.py",
+        "sha256": "47f4ad1d7bc1c4bc6b966ef1633d8560773e5fbe156eda0b7fbb02d331f4dd40"
+      },
+      {
+        "path": "pdos-next/tools/wave6_check.py",
+        "sha256": "0f4341325bf3a1626daa72889ad1b6cf0d90f04d196b7b9317cc749079b7d9f2"
+      },
+      {
+        "path": "pdos-next/tools/wave6_verify.py",
+        "sha256": "9b2d52d3199ebfca7f21e564c389fde2a98a4ccdfb06cac9260112915f24b5cb"
+      },
+      {
+        "path": "pdos-next/tools/wave7_check.py",
+        "sha256": "cad0724a617cfde09fb7eb8e0b14bc43bd19e81326582fd3d2f47124d43d907e"
+      },
+      {
+        "path": "pdos-next/tools/wave7_verify.py",
+        "sha256": "ee7262e06594fadc2ed79d0d8e05485cef5519d9d8eb8c1a733f574a714c1816"
+      },
+      {
+        "path": "pdos-next/tools/wave8_check.py",
+        "sha256": "835d5c5f9c9df512a1f27b6743a5cfd4e81b95ce0d112147b48b4a02540fb1de"
+      },
+      {
+        "path": "pdos-next/tools/workflow_environment.py",
+        "sha256": "c9ca02665fc54a44c68b3fe412670f77eb8079c05b095ff2ffa7e107e42a1de9"
+      },
+      {
+        "path": "pdos-next/web/eslint.config.mjs",
+        "sha256": "5fdde8ef206d87d3e82a239eb18b984c878e1387b3123a04655c0a7d88292008"
+      },
+      {
+        "path": "pdos-next/web/next-env.d.ts",
+        "sha256": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b"
+      },
+      {
+        "path": "pdos-next/web/next.config.ts",
+        "sha256": "7eba77a1bee720ae17a4df36386ea1351c3d1ec624106af44efe37e40057bd54"
+      },
+      {
+        "path": "pdos-next/web/package.json",
+        "sha256": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8"
+      },
+      {
+        "path": "pdos-next/web/pnpm-lock.yaml",
+        "sha256": "be7fceea859d01075be4889843f4fc8c955f34770b2d5a244b34569b159517e0"
+      },
+      {
+        "path": "pdos-next/web/pnpm-workspace.yaml",
+        "sha256": "44fd1f2aefbb5fafbb86a23df9ce6092e0dd9a3db3654901b58e5d21de371136"
+      },
+      {
+        "path": "pdos-next/web/postcss.config.mjs",
+        "sha256": "a1a188221f064d964dd9958c3d48b0c23252fabbeb6099d95ee8e15c764718b0"
+      },
+      {
+        "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+        "sha256": "42ce169cbd456d21d474fa811db1ac10c31a378935f31ab0c0d3774027549442"
+      },
+      {
+        "path": "pdos-next/web/src/app/api/local-session/route.ts",
+        "sha256": "95e5f0b8fe1f2c046213012d7bbc7ed5a31a8efa347e9b897e148ec536c32e40"
+      },
+      {
+        "path": "pdos-next/web/src/app/globals.css",
+        "sha256": "83927e87630415f8ef70438bcd42f20c036eff1c3469c3e64634175dde9a0e16"
+      },
+      {
+        "path": "pdos-next/web/src/app/layout.tsx",
+        "sha256": "0cd971eef3b411d6704368949268ef4c3aa8565d638f2a221f5722b0d2df81e6"
+      },
+      {
+        "path": "pdos-next/web/src/app/page.tsx",
+        "sha256": "eb7c980400b51be545dded38de4d5f14a08847cc0bfd541a1756404e33d58b00"
+      },
+      {
+        "path": "pdos-next/web/src/components/builds/build-cost.tsx",
+        "sha256": "ab30d5f9e09f6306529b653d39d76c6cbc4e69724246cec5a568fcfa3a7ddaf2"
+      },
+      {
+        "path": "pdos-next/web/src/components/builds/build-execution.tsx",
+        "sha256": "3dcdd1a0f79e89271486bb8dadd145ce7dab30f1218d18ed89c44367f892cb78"
+      },
+      {
+        "path": "pdos-next/web/src/components/builds/build-preparation.tsx",
+        "sha256": "0499a5a3c6ef2871bff93001b5d737346eda284061324b8ccffba32411544e09"
+      },
+      {
+        "path": "pdos-next/web/src/components/builds/build-supply.tsx",
+        "sha256": "27496dfef05244fea604685643d26bcdcae0932006d931c814b18050725b14c9"
+      },
+      {
+        "path": "pdos-next/web/src/components/builds/build-verification.tsx",
+        "sha256": "a7a5965164a8e1815f9c9f8ecc43df1eba5ddff200a0b35e59a748d7dfd210f1"
+      },
+      {
+        "path": "pdos-next/web/src/components/product/model-accounting.tsx",
+        "sha256": "36ba91ad1592937510fa8b7a495a9b6cef931b9a367781821bdfc4c6f72c9b88"
+      },
+      {
+        "path": "pdos-next/web/src/components/product/original-files.tsx",
+        "sha256": "58c5000afe64ad4f6498f2d3e0cd089087e22ee2a674db7eeaccbf7ec917b3cd"
+      },
+      {
+        "path": "pdos-next/web/src/components/product/product-definition.tsx",
+        "sha256": "9ede811256377183dea721a494823108b14a4cb1f0250d997c0613ddd0401515"
+      },
+      {
+        "path": "pdos-next/web/src/components/product/product-variants.tsx",
+        "sha256": "2e56a9546ca9c52202b8db6b47238fb54a7da2111acf239067e7f282e5fdda19"
+      },
+      {
+        "path": "pdos-next/web/src/components/product/reading.tsx",
+        "sha256": "a6c12eac4be7a0c7c41338d1d124f89accd60a9e3d62b8e5bc71de7c9d463c63"
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/project-planning.tsx",
+        "sha256": "aaf9d3318cd0c4ed4a369299eef79d9d720361a9b524c05f980e0302d407d4e1"
+      },
+      {
+        "path": "pdos-next/web/src/components/providers.tsx",
+        "sha256": "5f0a052d30c45e0159aaaaa311717143392a339d7bbd166caaf873caacac3c30"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/cost-breakdown.tsx",
+        "sha256": "9697edd4661f974b0ded0632c2b86d0b30705ed8581f08476679b0362768ca4b"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/coverage-shortages.tsx",
+        "sha256": "8f4525a445a4cbdd4b8c4753760f3973e11675234f3f40184a00af833dd929b9"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/display.tsx",
+        "sha256": "e434491aa35999c8f5f83314f942d08c43b6a1920db688f61faff508f7a41665"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/index.ts",
+        "sha256": "054121111f0f1036bb6cb51ce9140fd9715300074467fce7d61c6e49c157219b"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/presentation.ts",
+        "sha256": "d8defc35c602a4332c6112cade2e5f0c8a2bfab4987103b79c632f3c30b9a949"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/snapshot-history.tsx",
+        "sha256": "548d0c5c30a86e5cb695efe2653010c065977210027d3aecabca0c9094c74520"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/supply-entry.tsx",
+        "sha256": "146b4694c756a3ecd54a79b4711b4860c108129ade02d94cd4ccea10630ae3ae"
+      },
+      {
+        "path": "pdos-next/web/src/components/supply_cost/types.ts",
+        "sha256": "267756ccea0625eac43e19c2200f285d3f15480306d5b53a6d637c8dd15f9ccc"
+      },
+      {
+        "path": "pdos-next/web/src/components/ui/button.tsx",
+        "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/contracts.test.ts",
+        "sha256": "2482c901d5cea394235d4c3250211f9702655f7461cbcad3be98a041b2dc7c58"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/contracts.ts",
+        "sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/event-time.tsx",
+        "sha256": "714000f68e7eea724edcf98eda0c59830b25169f2cdc1bbf91db53aa8578ba92"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/handoff.tsx",
+        "sha256": "60aefcc89f057fc3cf3fbeffd3106dfd7a91cb63826a84bbaae561124d9ecd12"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/index.ts",
+        "sha256": "d4f9e2830486c6b85767d2bf880871cbce659daba628190ee45099294f273f0c"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/preview.tsx",
+        "sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/request-reading.tsx",
+        "sha256": "735379e3d12e70013b2eb9162c1b5f51f5718d85fce1d9089c81374541461b41"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/test-runs.tsx",
+        "sha256": "46bd1b988fee91690b40f4de40922b3cba60f9e82815cb78f58a6a08678b0d6e"
+      },
+      {
+        "path": "pdos-next/web/src/components/workspace.tsx",
+        "sha256": "46cc377fd2383a1dd0746f397cd42772878084a56cf1858593d754a4eec83d22"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-cost-view.ts",
+        "sha256": "4c1e3b71cd695ab10a02e3185df0475d0c1edb77ffc60ed977000a3d51a1f0f2"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-execution-view.ts",
+        "sha256": "59d00a1d0b9ff22de1a6d235f61356b0afd502498877b5ad007ab44b04a4c1ae"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-preparation-view.ts",
+        "sha256": "aea83913fc8ce1e88d5a05ac6f86636bc5e854666ac55b7b162df05404c93920"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-supply-view.ts",
+        "sha256": "65f0d0fda0f84dbfd118de36d72b7db06d9bb089bfe35caf5c1e1b68304d92b5"
+      },
+      {
+        "path": "pdos-next/web/src/lib/build-verification-view.ts",
+        "sha256": "d3fe6dc5927d3a513cda1ad7054036420a3eb8c7058c883b497c4fbb7d6d2426"
+      },
+      {
+        "path": "pdos-next/web/src/lib/original-location.ts",
+        "sha256": "f86e63ed13b39d1a0a2f929d61c4ff01708d2889cc08bd613cf4b6b7ee703fd3"
+      },
+      {
+        "path": "pdos-next/web/src/lib/original-security.test.ts",
+        "sha256": "62af9ce14c2412584647b6e2a61d54c559fc0cf5b0e12225032d0f404975a696"
+      },
+      {
+        "path": "pdos-next/web/src/lib/original-security.ts",
+        "sha256": "508d74f7c1fdfb0c1195e7716d8b59be2af8186fb5bc40297d7a3d1b97d1650e"
+      },
+      {
+        "path": "pdos-next/web/src/lib/product-view.ts",
+        "sha256": "f0100590a1e2e3ffe6b3b2352a9c373d614344b120968c3767646e999bb77ec0"
+      },
+      {
+        "path": "pdos-next/web/src/lib/project-plan-view.ts",
+        "sha256": "3abce2117f7665e43072e74339c397826584d46e82b7b0ffa9e1e78fdbad0eb7"
+      },
+      {
+        "path": "pdos-next/web/src/lib/request-origin.ts",
+        "sha256": "c0e2ddc00d747f0aae1f325e256cb8f32f9ef6fbe81e59ec0173007d46173f34"
+      },
+      {
+        "path": "pdos-next/web/src/lib/utils.ts",
+        "sha256": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec"
+      },
+      {
+        "path": "pdos-next/web/src/lib/variant-view.ts",
+        "sha256": "b99777d3218b0d5b3bbc9d97587cec6705a27f535e67f341bda6bde0df473150"
+      },
+      {
+        "path": "pdos-next/web/tsconfig.json",
+        "sha256": "ce638cf8d45d1b4718fa3943a514811886830e0f9d9f14e9f4ebcdfa15e93f3e"
+      }
+    ]
+  },
+  "transport_delivery": {
+    "listed_files": 13,
+    "matching_files": 13,
+    "changed_files": [],
+    "missing_files": [],
+    "excluded_files": [],
+    "files": [
+      {
+        "path": "pdos-next/containers/evidence-parser/Dockerfile",
+        "sha256": "3f6a8dd46ba1e376429465a4c3fce909084b9fd0aae733cfbc148e2c1c608863"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/base-image.json",
+        "sha256": "1ed6f5b8442729252fef7d6f488c2fdf5dbc7a37ba4296ac1b3534cc817b7509"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/build.py",
+        "sha256": "6e8aeb27d17bb3a2376fb7e4dd63cbb93a08c50826aeb69c978580357cc37183"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/fetch_base.py",
+        "sha256": "1cce69cf4e3efdaec8fb2cd1a2c02eaac081999a0abc4005a688c83dc5a0c7e5"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/parser_worker.py",
+        "sha256": "ab9909dd18cb72aa6e6bc7302e23538408d48d82b9c7f2ff628e9daf6c5af3ee"
+      },
+      {
+        "path": "pdos-next/containers/evidence-parser/requirements.txt",
+        "sha256": "e3413840894ba52baac1d215d34e153ac1ca7456297bdac77668186c1bca1488"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/__init__.py",
+        "sha256": "adcbaa72f290ec0bc178085bf97e85c41185a6dd62ef7de9424dd4864e6f33df"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/docker.py",
+        "sha256": "358f3bf18c017dc3a14ed3d3bda2641eec66510196b9a5b91609015401d531e0"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/parser-image.json",
+        "sha256": "b27bfb5e33e9728b0c06aeea7f8b77a7af15d83075a9a9a589cf1b8988e2654b"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/parser.py",
+        "sha256": "e07cfb0d3d3475cf8ee2ea88147e070c74516ed169223cb539912de7c8b29ca3"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/security_runtime/scanner.py",
+        "sha256": "6152c1c976a1c3866b61300e1a0181260ef001823855e60efd0ff5df6facec77"
+      },
+      {
+        "path": "pdos-next/server/tests/security_runtime/real_checks.py",
+        "sha256": "e61614cba34d1b929c3d714f79ea4e737e77e2a6e27fcade03e072d2f6a6f9ae"
+      },
+      {
+        "path": "pdos-next/server/tests/security_runtime/test_runtime.py",
+        "sha256": "886ebcf9b5fdb422d39fbbc950e0d0b9d923d635f1f2b646f3dd344251c6cc1f"
+      }
+    ]
+  },
+  "legacy_frozen": {
+    "listed_files": 57,
+    "matching_files": 57,
+    "changed_files": [],
+    "missing_files": [],
+    "excluded_files": [],
+    "files": [
+      {
+        "path": "assets/cehub/deliverable-guide-manifest.json",
+        "sha256": "1c98e124e24121736fe5f5afca847221c2ee4474140500b6db605805c44dec27"
+      },
+      {
+        "path": "certs/ApsaraDB-CA-Chain.pem",
+        "sha256": "cd9337e1dfd610888f265096990d76edf1606753b6c551f803e0465dc6cee22c"
+      },
+      {
+        "path": "server/app/ai/application_checkpoints.py",
+        "sha256": "c59ada31f25afc0d87d5f0f6daf521bb8dd3d759e5a47d359dfcfaedc348c36a"
+      },
+      {
+        "path": "server/app/ai/budget_ledger.py",
+        "sha256": "f12ebb27c65e0e80f167fd9dd4c542a0eac56ab7ae263550cda46424137655ed"
+      },
+      {
+        "path": "server/app/ai/checkpoints.py",
+        "sha256": "981704f5e05fb76a37392f0405dab864ad1d13518c6ec0d744086acbf056d612"
+      },
+      {
+        "path": "server/app/ai/egress.py",
+        "sha256": "0fce9cc42426d73f023500eb862d4ba6cb8773aa77d1a84c3e6969199df4fdd8"
+      },
+      {
+        "path": "server/app/ai/golden_suite.py",
+        "sha256": "16e2f1ef6faded937d5e98bf1377477f162f453f1520bd97c077182e7d920f82"
+      },
+      {
+        "path": "server/app/ai/model_budget.py",
+        "sha256": "08f8875936ec451ba405c95f2a8c5fa2ac82df032a59ad7edbd5983fa36ff1e9"
+      },
+      {
+        "path": "server/app/ai/model_call_fence.py",
+        "sha256": "a385cb182f57de664db9415becb5e638116baa0785202c41601b4ef3adf5199f"
+      },
+      {
+        "path": "server/app/ai/provider_adapters.py",
+        "sha256": "68299f0dd50621cec7aeb9885c96cba90f6b6a4cba039f0548d7dc134e6cdc88"
+      },
+      {
+        "path": "server/app/ai/qualifications.py",
+        "sha256": "381a59b8d92519fb2958d3f73b21f5defce6e3902252fdbe5a31f6d333fd9bcd"
+      },
+      {
+        "path": "server/app/auth/passwords.py",
+        "sha256": "281c8cd89de32404435b41353be723828fdf8b59868341f4e6d195c56fd4fc02"
+      },
+      {
+        "path": "server/app/db/test_safety.py",
+        "sha256": "deb75d386d4d3f9c068e237e945bfb3c49fd89aa3cf1b1fdcf77a6cde116a754"
+      },
+      {
+        "path": "server/app/domain/build_materials.py",
+        "sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37"
+      },
+      {
+        "path": "server/app/domain/capa_actions.py",
+        "sha256": "e972141b7f0ebdb602b3ee50bd193b61f7897d66508bd5fca9c2579bfae84536"
+      },
+      {
+        "path": "server/app/domain/change_execution_evidence.py",
+        "sha256": "6ce6d397c71dd8fdb2a7555e4a938391eff275e7290e1cbd261adc8979017584"
+      },
+      {
+        "path": "server/app/domain/change_execution_results.py",
+        "sha256": "9c70b5e8190d9e1d471d99dc882e736934dfe88741e89c99080cfa2e308c481a"
+      },
+      {
+        "path": "server/app/domain/change_impact_graph.py",
+        "sha256": "ed9a3c056ae41405961ca20ef003eebfa833eb4eba3dcb8bf11d833776dc578f"
+      },
+      {
+        "path": "server/app/domain/cost_freezes.py",
+        "sha256": "2f623c30395a2ee89141e938ef3e7f6e9ea41cb34d9fff05f60f2cf807dbee71"
+      },
+      {
+        "path": "server/app/domain/cost_inputs.py",
+        "sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013"
+      },
+      {
+        "path": "server/app/domain/cost_rollups.py",
+        "sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059"
+      },
+      {
+        "path": "server/app/domain/definition_inheritance.py",
+        "sha256": "bd4ab5e8e7ae55357fe25b9a6618055b33cc2bbf481986003a7284c54229cb7c"
+      },
+      {
+        "path": "server/app/domain/documents.py",
+        "sha256": "93d4f3bae636d3682fb78fe32290d39190b1607500d74ce0b6f5d7078837aecf"
+      },
+      {
+        "path": "server/app/domain/email_documents.py",
+        "sha256": "b715db921fe90c5bc3b5f9ee23e5351fcbfa5a5195bb888e3653e5ca68d43fd0"
+      },
+      {
+        "path": "server/app/domain/fmea_design_rules.py",
+        "sha256": "222a067fdba70d879fad3453d58724e81e2fd0abe52fda0a905bec598b8d1a9d"
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "sha256": "33b7f1eee2e96a710f8d00a2a6c59e26498a51de9ca3559141b8c29c07176969"
+      },
+      {
+        "path": "server/app/domain/material_allocations.py",
+        "sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66"
+      },
+      {
+        "path": "server/app/domain/material_coverage.py",
+        "sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf"
+      },
+      {
+        "path": "server/app/domain/material_supply_pools.py",
+        "sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93"
+      },
+      {
+        "path": "server/app/domain/plan_scheduling.py",
+        "sha256": "3647d9a3aead6bd478edcfb97da160a35cadd0980487a83b29fe26b6bcfea185"
+      },
+      {
+        "path": "server/app/domain/portfolio_scoring.py",
+        "sha256": "705804cf7c937d856e3669510f964ea16e6ba18b4dc6150e0427c27168ab6628"
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "sha256": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b"
+      },
+      {
+        "path": "server/app/domain/product_evidence_items.py",
+        "sha256": "c053f63977ddc1e19d3c0abaf228f1d0389f625c36f5243ddf8660643630c2a0"
+      },
+      {
+        "path": "server/app/domain/project_completion.py",
+        "sha256": "c81b64544ae6f9b47370945f29a0ab0858c3db77d066c27199ac2c971a080a4b"
+      },
+      {
+        "path": "server/app/domain/project_handoff_sources.py",
+        "sha256": "c6426c5f694f4065f8a2fef44e4a73aa006f7495a7386af6db03becbb6a3355f"
+      },
+      {
+        "path": "server/app/domain/quality_issue_links.py",
+        "sha256": "d10c563e86c0f0fb9d7fc5be31324caa4563910cd69576e4196a4a1e1890286e"
+      },
+      {
+        "path": "server/app/domain/resource_schedule_solver.py",
+        "sha256": "ae247477a4167a263aa3faa1b64091fd1a078c9363a0eecb6154c67f2828238d"
+      },
+      {
+        "path": "server/app/domain/sample_configuration_comparison.py",
+        "sha256": "a8bca35e62b6766eb3bf319980b261746f8afb5bd524633b6aef3b9a98bdadcf"
+      },
+      {
+        "path": "server/app/domain/sample_configuration_revisions.py",
+        "sha256": "4ba0e6724b7865d2ab410d9b817ebebf215f5d163cf2420b6a367fdbea7a87cc"
+      },
+      {
+        "path": "server/app/domain/schedule_forecast_engine.py",
+        "sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa"
+      },
+      {
+        "path": "server/app/domain/test_import_preview.py",
+        "sha256": "2bdf8bc205733b67872caa955ec74d86a7ad1b028c3141fe89d9a7648806f71b"
+      },
+      {
+        "path": "server/app/domain/test_report_workbook.py",
+        "sha256": "9c82ef91aca2e45930f08751a7d1a5856199d3f9f992ce666f117860ebd37a67"
+      },
+      {
+        "path": "server/app/domain/test_runs.py",
+        "sha256": "86e1516332a3de2479a4b4c2c37b0b947460e451be5df4d4a20e7259452340ae"
+      },
+      {
+        "path": "server/app/domain/tooling_rounds.py",
+        "sha256": "00cc4d6cd2eff169c4bd70df582b159c1ab079b61f10226309a18eb38a42b940"
+      },
+      {
+        "path": "server/app/domain/work_calendars.py",
+        "sha256": "b7e76a9c24e9d4fbc9458c457580cc162d6a7022a8d3fb16802790eaf0e866b9"
+      },
+      {
+        "path": "server/app/domain/working_time.py",
+        "sha256": "2503b572f4fea610ddb691072c9e0e00d079d64ccd1ad9c82a1d13ec54254a4c"
+      },
+      {
+        "path": "server/app/events/writer.py",
+        "sha256": "d37ff343bf69dac21730c2dddff15b729646d8d0a6c6dbf51fc891cfd20aa42c"
+      },
+      {
+        "path": "server/app/exports/definition_documents.py",
+        "sha256": "ff31b80f957b1885549b480c36715dc1dd4ba0f6f01a0c4ec603d3e468099f5d"
+      },
+      {
+        "path": "server/app/integrations/dingtalk_outbox.py",
+        "sha256": "146075106f2231437e22d7ca37c69004ad257ea24b6c88e9a8f8084bc950dcb7"
+      },
+      {
+        "path": "server/app/storage/documents.py",
+        "sha256": "a664d647fde0ed10d4e2b2d3e519822a954e9e80883652a3cae4b3866d6f55b4"
+      },
+      {
+        "path": "web/src/components/my-work/my-work-scenario.ts",
+        "sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8"
+      },
+      {
+        "path": "web/src/components/product-work/product-reading-ui.tsx",
+        "sha256": "8e546ecaae0ca908b9c5aab46e4b4106659b85dfd7631693f3e38bbacbc27eb1"
+      },
+      {
+        "path": "web/src/components/projects/project-task-workspace.tsx",
+        "sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5"
+      },
+      {
+        "path": "web/src/components/ui/button.tsx",
+        "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+      },
+      {
+        "path": "web/src/components/workspace-experience.ts",
+        "sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f"
+      },
+      {
+        "path": "web/src/lib/decimal.ts",
+        "sha256": "1c9384a3bb753fef840b56c336eabc1fda4c540c1b6a2a16f6a5c5a1d344fc0b"
+      },
+      {
+        "path": "web/src/lib/utils.ts",
+        "sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d"
+      }
+    ]
+  },
+  "verification_package_frozen": {
+    "listed_files": 25,
+    "matching_files": 25,
+    "changed_files": [],
+    "missing_files": [],
+    "excluded_files": [],
+    "files": [
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/__init__.py",
+        "sha256": "d6c8524892875ab4826535adf0db845d973e29cb8d0a82a6346a1b389f9b99ea"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/handlers.py",
+        "sha256": "d4c762cc786b7d46ae488da2ff0832c46191eedb0a2d89e20d993717b6349e48"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/ports.py",
+        "sha256": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/rules.py",
+        "sha256": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/verification/__init__.py",
+        "sha256": "9c5d73deba86ef0ba3535f8f8ac6b350382e0c0a4a323283e80a4b401f89a504"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+        "sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/__init__.py",
+        "sha256": "2a2ebf0b3528de6f42e6856f7993e457b9e7d13d9758c004c8fa9c4769abf1f4"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/conftest.py",
+        "sha256": "1d6c9e8fab06ba603d42486ff05c8e079b447acde1e21f6e6ae09b566583ec26"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/helpers.py",
+        "sha256": "9bc5736ac16610f48eeb21b27f3e88d03351bc08d4ffa1fce9a4765e29da461c"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_contracts.py",
+        "sha256": "279443de02bb10303cd09834d73f2d68da300d5958a54c7bd85b4c81189da932"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_handlers.py",
+        "sha256": "fa1580acab40b5bba19cdf588492313f1a1bad6701b650084f1a5be1673955aa"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_partial_result_responsibility.py",
+        "sha256": "1412f4aa3804737928e19e0655bfe723e1884599b241238d859468253d97481b"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_preview_order.py",
+        "sha256": "3dd0611f8a28fc110b481c83a75ae4379bc4a0dc9cd7f9236127cfb6f76ca101"
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_rules.py",
+        "sha256": "bfd6f332c4b083a7cf7cba53163068e5f3995832ae5b97ee426189e1b4db3fd1"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/__tests__/fixtures.ts",
+        "sha256": "0f734c9e64016e91fdcb2b3b396eedf5c594d5c93cf8187233e6df95fa035495"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/contracts.test.ts",
+        "sha256": "2482c901d5cea394235d4c3250211f9702655f7461cbcad3be98a041b2dc7c58"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/contracts.ts",
+        "sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/event-time.tsx",
+        "sha256": "714000f68e7eea724edcf98eda0c59830b25169f2cdc1bbf91db53aa8578ba92"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/handoff.tsx",
+        "sha256": "60aefcc89f057fc3cf3fbeffd3106dfd7a91cb63826a84bbaae561124d9ecd12"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/index.ts",
+        "sha256": "d4f9e2830486c6b85767d2bf880871cbce659daba628190ee45099294f273f0c"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/preview.tsx",
+        "sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/render.test.mjs",
+        "sha256": "05e6974534252843b2da99d22523d2bd4aaa5d6efa095e2b7e5a15b30a708e38"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/request-reading.tsx",
+        "sha256": "735379e3d12e70013b2eb9162c1b5f51f5718d85fce1d9089c81374541461b41"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/test-runs.tsx",
+        "sha256": "46bd1b988fee91690b40f4de40922b3cba60f9e82815cb78f58a6a08678b0d6e"
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/tsconfig.check.json",
+        "sha256": "b8da5d8c4a19b50ef51fafcd5658a855f998c5d1b8f73afcaa68b598986adbaf"
+      }
+    ]
+  },
+  "membership_and_omissions": {
+    "transport_in_wave8_candidate": 13,
+    "transport_missing_from_wave8_candidate": [],
+    "transport_candidate_digest_disagreements": [],
+    "verification_in_wave8_candidate": [
+      "pdos-next/server/pdos_next/domain/verification/__init__.py",
+      "pdos-next/server/pdos_next/domain/verification/rules.py",
+      "pdos-next/server/pdos_next/schemas/verification/__init__.py",
+      "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+      "pdos-next/web/src/components/verification/contracts.test.ts",
+      "pdos-next/web/src/components/verification/contracts.ts",
+      "pdos-next/web/src/components/verification/event-time.tsx",
+      "pdos-next/web/src/components/verification/handoff.tsx",
+      "pdos-next/web/src/components/verification/index.ts",
+      "pdos-next/web/src/components/verification/preview.tsx",
+      "pdos-next/web/src/components/verification/request-reading.tsx",
+      "pdos-next/web/src/components/verification/test-runs.tsx"
+    ],
+    "verification_frozen_files_outside_wave8_candidate": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py",
+      "pdos-next/server/pdos_next/domain/verification/ports.py",
+      "pdos-next/server/tests/verification/__init__.py",
+      "pdos-next/server/tests/verification/conftest.py",
+      "pdos-next/server/tests/verification/helpers.py",
+      "pdos-next/server/tests/verification/test_contracts.py",
+      "pdos-next/server/tests/verification/test_handlers.py",
+      "pdos-next/server/tests/verification/test_partial_result_responsibility.py",
+      "pdos-next/server/tests/verification/test_preview_order.py",
+      "pdos-next/server/tests/verification/test_rules.py",
+      "pdos-next/web/src/components/verification/__tests__/fixtures.ts",
+      "pdos-next/web/src/components/verification/render.test.mjs",
+      "pdos-next/web/src/components/verification/tsconfig.check.json"
+    ],
+    "legacy_in_wave8_candidate": [],
+    "legacy_frozen_files_outside_wave8_candidate": [
+      "assets/cehub/deliverable-guide-manifest.json",
+      "certs/ApsaraDB-CA-Chain.pem",
+      "server/app/ai/application_checkpoints.py",
+      "server/app/ai/budget_ledger.py",
+      "server/app/ai/checkpoints.py",
+      "server/app/ai/egress.py",
+      "server/app/ai/golden_suite.py",
+      "server/app/ai/model_budget.py",
+      "server/app/ai/model_call_fence.py",
+      "server/app/ai/provider_adapters.py",
+      "server/app/ai/qualifications.py",
+      "server/app/auth/passwords.py",
+      "server/app/db/test_safety.py",
+      "server/app/domain/build_materials.py",
+      "server/app/domain/capa_actions.py",
+      "server/app/domain/change_execution_evidence.py",
+      "server/app/domain/change_execution_results.py",
+      "server/app/domain/change_impact_graph.py",
+      "server/app/domain/cost_freezes.py",
+      "server/app/domain/cost_inputs.py",
+      "server/app/domain/cost_rollups.py",
+      "server/app/domain/definition_inheritance.py",
+      "server/app/domain/documents.py",
+      "server/app/domain/email_documents.py",
+      "server/app/domain/fmea_design_rules.py",
+      "server/app/domain/market_analysis.py",
+      "server/app/domain/material_allocations.py",
+      "server/app/domain/material_coverage.py",
+      "server/app/domain/material_supply_pools.py",
+      "server/app/domain/plan_scheduling.py",
+      "server/app/domain/portfolio_scoring.py",
+      "server/app/domain/product_definitions.py",
+      "server/app/domain/product_evidence_items.py",
+      "server/app/domain/project_completion.py",
+      "server/app/domain/project_handoff_sources.py",
+      "server/app/domain/quality_issue_links.py",
+      "server/app/domain/resource_schedule_solver.py",
+      "server/app/domain/sample_configuration_comparison.py",
+      "server/app/domain/sample_configuration_revisions.py",
+      "server/app/domain/schedule_forecast_engine.py",
+      "server/app/domain/test_import_preview.py",
+      "server/app/domain/test_report_workbook.py",
+      "server/app/domain/test_runs.py",
+      "server/app/domain/tooling_rounds.py",
+      "server/app/domain/work_calendars.py",
+      "server/app/domain/working_time.py",
+      "server/app/events/writer.py",
+      "server/app/exports/definition_documents.py",
+      "server/app/integrations/dingtalk_outbox.py",
+      "server/app/storage/documents.py",
+      "web/src/components/my-work/my-work-scenario.ts",
+      "web/src/components/product-work/product-reading-ui.tsx",
+      "web/src/components/projects/project-task-workspace.tsx",
+      "web/src/components/ui/button.tsx",
+      "web/src/components/workspace-experience.ts",
+      "web/src/lib/decimal.ts",
+      "web/src/lib/utils.ts"
+    ],
+    "legacy_inventory_excluded_new_project_paths": [
+      "pdos-next/server/pdos_next/runtime.py",
+      "pdos-next/server/pdos_next/safety.py",
+      "pdos-next/server/pdos_next/service.py",
+      "pdos-next/tools/local_environment.py"
+    ],
+    "interpretation": "Files outside the 279-file candidate are independently verified only within the explicitly requested legacy/package baselines. Their absence is a scope difference, not evidence of changed source or an assertion that the whole repository is frozen."
+  },
+  "verification_package_identity": {
+    "declared_candidate_sha256": "44588c11212888059b0a4061e36046dcbe5aad536ed6c9ef5dd4d335955062a9",
+    "candidate_manifest_byte_sha256": "c078bd8c8ed0605145794e3c1d7974939efc0833f6aef1b618ecd2071a4c28f3",
+    "declared_source_file_count": 25,
+    "claim_limit": "Hash equality preserves the 25-file isolated package assets; it does not grant professional quality authority, true sample availability/consumption, production readiness or formal acceptance."
+  },
+  "limitations": [
+    "No tests, database operations or .local/runtime.json reads were performed.",
+    "The 57-file legacy boundary does not cover the entire old dirty working tree; prior recovery limitations and formal human exits remain unchanged.",
+    "The 279-file comparison is a point-in-time source freeze check; reports, runtime state and omitted files are not certified by it.",
+    "Physical object deletion, actual scanner qualification, production enablement and formal Exit are not established by matching hashes."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-03T10:36:06.748779+00:00",
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "files": 484,
+  "api_old_pid": 48675,
+  "old_api_graceful_exit": true,
+  "new_api_exec_session": 30024,
+  "replacement_pg_session": 64295,
+  "selection": "repair-v4-selection.json",
+  "web_v5_unchanged": true,
+  "worker_unchanged": true,
+  "migration_unchanged": "next_0025",
+  "write_review_sha256": "41e16b8fe723aee3aa1dd47867b77fca45b413bb75e8e74033d7c913ddb3b27c",
+  "actual_ui_action": "Same original command preview restoration started, no T1 save clicked"
+}

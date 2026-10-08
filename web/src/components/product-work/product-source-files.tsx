@@ -88,7 +88,7 @@ function ProductSourceFilesPanel({ base, lineId, initialRunId, disabled = false,
     try {
       let original = originalUpload.current;
       if (!original) {
-        if (!file || !/\.(pdf|xlsx)$/i.test(file.name) || file.size < 1 || file.size > 20 * 1024 * 1024) throw new ProductRequestError("请选择不超过20 MiB的PDF或XLSX原件", 422);
+        if (!file || !/\.(pdf|xlsx|docx|pptx|doc|ppt|xls)$/i.test(file.name) || file.size < 1 || file.size > 20 * 1024 * 1024) throw new ProductRequestError("请选择不超过20 MiB的PDF、Word、PowerPoint或Excel原件", 422);
         const level = classification; setStatus("核对原文件…"); const bytes = await file.arrayBuffer();
         if (!current()) return;
         const sha256 = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), byte => byte.toString(16).padStart(2, "0")).join("");
@@ -134,10 +134,10 @@ function ProductSourceFilesPanel({ base, lineId, initialRunId, disabled = false,
   }
   return <section className="space-y-3 rounded-lg border p-4">
     <h3 className="font-semibold">RFQ与客户原件</h3>
-    <p className="text-sm text-muted-foreground">无需先建项目。上传PDF或XLSX，核对页码、单元格与原文；原件仅供上传人依当前空间和产品线权限读取。解析不会登记需求或批准规格。</p>
+    <p className="text-sm text-muted-foreground">无需先建项目。上传PDF、Word、PowerPoint或Excel，核对页码、单元格与原文；原件仅供上传人依当前空间和品类权限读取。解析不会登记需求或批准规格。</p>
     <fieldset disabled={writeLocked} className="flex flex-wrap items-end gap-3">
       <label className="text-sm">资料级别<select className="ml-2 rounded-md border bg-background p-2" value={classification} onChange={event => setClassification(event.target.value)}><option value="internal">内部</option><option value="confidential">机密</option><option value="restricted">严格受限</option></select></label>
-      <input ref={input} className="hidden" type="file" accept=".pdf,.xlsx" aria-label="选择RFQ或客户原件" onChange={event => { const file = event.target.files?.[0]; if (file) void upload(file); }}/>
+      <input ref={input} className="hidden" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" aria-label="选择RFQ或客户原件" onChange={event => { const file = event.target.files?.[0]; if (file) void upload(file); }}/>
       <Button type="button" variant="outline" onClick={() => input.current?.click()}>上传RFQ或客户原件</Button>
       <Button type="button" variant="ghost" onClick={() => { setError(null); void refresh(); }}>刷新文件</Button>
     </fieldset>

@@ -1,0 +1,11 @@
+{
+  "status": "TWO_INDEPENDENT_NEXT_PLANS_PREPARED_NOT_RUNTIME_APPLIED",
+  "completed_implementation_checkpoint_sha256": "03d809cd0c31520febc99024e578040cc3676eb6c44f5066c138a884b5f8d786",
+  "retained_compatibility_plan_sha256": "d1e4dfa4b8cef0c050503a15e8ddad8da722bedbb72800e7be09bd918c8be42a",
+  "manufacturing_positive_material_plan_sha256": "21be0cc8d053772c30de0fff98d19dc2e9c7928d0c13f4f0436a02de3ee15801",
+  "parallel": "strict retained compatibility diagnosis/design and manufacturing WI/ControlPlan materials may proceed independently; Baseline requires saved exact WI/CP children",
+  "obsolete_SOURCE_STALE_stage_probe_executed": false,
+  "runtime_or_business_changes_in_plan_delivery": false,
+  "formal_qualification_or_positive_saves_attested": false,
+  "overall_goal_complete": false
+}

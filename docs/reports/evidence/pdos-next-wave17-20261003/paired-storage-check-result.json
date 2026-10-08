@@ -1,0 +1,30 @@
+{
+  "scope": "owned staged paired storage only; unmounted, no DB/HTTP/public validation",
+  "source_files": {
+    "pdos-next/staging/wave17/paired_storage.py": "a8333eb092a35da0f6cc61802dcc71b365e4fd945e3f643fa0e4d7ff21bede8e",
+    "pdos-next/staging/wave17/test_paired_storage.py": "627e780f1dd240f8b3d597df83983a870e735611f9320479f566dd1c103f8e7e",
+    "pdos-next/staging/wave17/paired-storage-contract.md": "893f5d3555acac4637f95ae91a8e47d8165b83f0466fc9ff36203ecdd8b5e115"
+  },
+  "prior_checks_reported_in_delivery": {
+    "owned_pure": {
+      "reported_passed": 61,
+      "reported_seconds": 1.61,
+      "command": "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/pytest --noconftest pdos-next/staging/wave17/test_paired_storage.py -q",
+      "record_origin": "Prior tool output and delivery message; original stdout was not archived as a local file",
+      "raw_log": null,
+      "independently_archived_verification": false
+    },
+    "ruff_format_ast_compile": {
+      "reported_passed": true,
+      "raw_log": null,
+      "record_origin": "Prior delivery message; no local raw check log retained"
+    }
+  },
+  "evidence_gap": "The original 61-case stdout and static-check stdout were not saved locally. This JSON preserves the handoff and exact frozen hashes, and does not substitute a raw archived test log.",
+  "repair_boundary": "Root may run only these 61 owned nodes to create the missing bound record. B did not rerun them while creating this record, and did not modify the three frozen files.",
+  "limitations": [
+    "Pure SELECT substitutes only, never real PostgreSQL or actual owner/bytes/professional/retained qualification",
+    "StoragePairReader has no attest and cannot grant publicly usable authorization",
+    "No source change, database, HTTP or public check performed to write this record"
+  ]
+}

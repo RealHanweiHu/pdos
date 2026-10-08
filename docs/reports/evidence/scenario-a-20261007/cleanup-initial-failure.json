@@ -1,0 +1,1 @@
+{"error":"UndefinedTable: unqualified tenants count","database":"owned pdos_test at51918","backup_completed":true,"cleanup_transaction_rolled_back":true,"recovery":"use canonical cehub_core.tenants; no application or guard change"}

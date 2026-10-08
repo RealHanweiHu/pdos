@@ -1,0 +1,61 @@
+{
+  "schema_version": "pdos-next-wave19-checkpoint-v1",
+  "recorded_at": "2026-10-03T17:11:12.755014+00:00",
+  "status": "CLOSED_LIMITED_READ_CHECKPOINT",
+  "source_manifest": "candidate-source-v2.json",
+  "source_manifest_sha256": "1f47339fad1678a54861db9961e86afc767548940ccd4b21af9786b2e7c524ca",
+  "frozen_files_unchanged": true,
+  "source_counts": {
+    "runtime_files": 354,
+    "backend_test_files": 11,
+    "web_files": 159,
+    "web_config": 3,
+    "tools": 2
+  },
+  "evidence_sha256": {
+    "result.md": "4f9fafef180ead6e6c5ee0756d6f559b9331363c194affe245241f646f935305",
+    "selection-actual-http-v1.json": "97f2e895684ed2908a7547c0b09fe88ba81ed1de46fac9e557c1b0d736a3852d",
+    "selection-actual-http-v2.json": "642f888bff0228cc4f22c8a5b060cd5cf29efd18efae365de035e600ea0660b8",
+    "actual-selection-ui-v2.json": "1960627e9c4f0833ba8f40013786a4dc4d634bb694c089ea5f68ce8e8c367c39",
+    "browser-selection-v1.json": "aad29736d7702a78d38d8824cc61d51e98c64011ff711f4cb24f608d92aef547",
+    "browser-storage-readback-v1.json": "36a7f8eeea392e26e5d0686d9242f055f3b01722c0168e61eeb827ebeb25dde0",
+    "actual-candidate-selection.jpg": "61d68ab9b936340bbd8a07cce042279f45db4c43aa1063bc24edc297f1e0af8c",
+    "actual-review-blocked.jpg": "8bafe2970ee3bf1f29a5f02ade4b848fdf06743cc45ed82df17943cb08d61248",
+    "affected-backend-v3.log": "0edc7e4a3dee97eb1083ca80a823d3384658ce3dc8af4d4a7f1d5923c323c9fd",
+    "web-lint-v1.log": "2f7b3f8ae5e6422bd582cd293feeb514f02518e8401df07f2e6267d10f04e390",
+    "web-build-v1.log": "e4891bc19c974cfc88bb541d80d5d0a9b7cbcdae8d866c763d238b18bdffdbb1",
+    "web-typecheck-v1.log": "99d7c2179cdd316467c51f37901025a0753453664d741214ba56fc631fa6c0bc",
+    "root-static-v3.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "root-tool-static-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "ui-selection-source-manifest-v2.json": "55896ef070d80b47cda93ae6fe9e5b99bb339dbafe23464eb14a5d0b45908e43",
+    "paired-owner-result.json": "0b8af8fd2c8a23ef4ce0241f13a6e35d3d6fc6982828f39807267f644e444033",
+    "applicability-owner-check-result-v1.json": "1029d1ed534033ed66c772360b180e544058295a8d38a800b32b4641d7990ec2",
+    "next-live-shared-handoff.md": "b22b3872bf26b2e2667c4d87e3b624228cca3af43254fb389716cf526a70d53e"
+  },
+  "sole_queue_sha256": "d72dbe962ab65be253c6ea3ef3b2c561d2333b1f6feaf807c978eefc793d7713",
+  "checks": {
+    "affected_backend_pure": 346,
+    "ui_helpers_pure": 29,
+    "bff_route_pure": 30,
+    "actual_saved_response_adapter": 9,
+    "actual_http_nodes": 5,
+    "actual_browser_selection_and_negative_gate": "PASS",
+    "web_lint_build_typecheck": "PASS"
+  },
+  "boundaries": {
+    "head": "next_0026",
+    "target": "127.0.0.1:62513/pdos_test",
+    "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+    "business_commands": 0,
+    "model_calls": 0,
+    "named_review_count": 0,
+    "retained_table_count": 24,
+    "new_migration": false,
+    "actual_positive_paired_or_review": false,
+    "physical_retest": false,
+    "effectiveness_or_close": false,
+    "production_or_formal_exit": false,
+    "full_design_complete": false
+  },
+  "next": "unified advanced Formal business owner and shared Link original signer/current consumer separation, then new legal three-actor shared loop"
+}

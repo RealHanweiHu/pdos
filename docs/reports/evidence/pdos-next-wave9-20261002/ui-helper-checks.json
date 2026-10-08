@@ -1,0 +1,158 @@
+{
+  "schema_version": "pdos-next-owned-ui-checks.v1",
+  "wave": "wave9",
+  "recorded_at": "2026-10-02T15:30:25Z",
+  "execution_timestamp": null,
+  "execution_timestamp_note": "The original tool results did not include an absolute execution timestamp. This report records previously returned raw output and does not invent that timestamp or rerun validation.",
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "scope": [
+    "src/components/product/original-lifecycle.tsx",
+    "src/lib/original-lifecycle.ts",
+    "src/lib/original-lifecycle.test.ts"
+  ],
+  "source_hashes": {
+    "pdos-next/web/src/components/product/original-lifecycle.tsx": "79a88959e5e7a77bf2a0da95ee0c02a3fbf86d22559aa9956d9df3e5f91e7b7e",
+    "pdos-next/web/src/lib/original-lifecycle.ts": "9636ec584ce60d20c393c759bd12c16701a720a8abcd883557465d6f62b7f392",
+    "pdos-next/web/src/lib/original-lifecycle.test.ts": "ffaf556a6e05d12e47f55074c9c7dacd19e99af8803b4c8bf632f557f2b543ff"
+  },
+  "hash_evidence": {
+    "original_chunk_id": "4c55f5",
+    "owned_files_modified_after_final_checks": false,
+    "note": "Hashes were read immediately after the authorized fix checks in the same orchestration call. Evidence update does not rerun those checks."
+  },
+  "checks": [
+    {
+      "name": "owned-eslint",
+      "command": "node_modules/.bin/eslint src/components/product/original-lifecycle.tsx src/lib/original-lifecycle.ts src/lib/original-lifecycle.test.ts",
+      "exit_code": 0,
+      "raw_output": "",
+      "chunk_id": "25177a",
+      "wall_time_seconds": 2.729113042
+    },
+    {
+      "name": "owned-typecheck",
+      "command": "node_modules/.bin/tsc --noEmit --incremental false -p /tmp/pdos-lifecycle-owned-tsconfig.json",
+      "exit_code": 0,
+      "raw_output": "",
+      "chunk_id": "509183",
+      "wall_time_seconds": 2.198168375
+    },
+    {
+      "name": "owned-helper-compile-and-node-test",
+      "command": "node_modules/.bin/tsc -p /tmp/pdos-lifecycle-tests-tsconfig.json && node --test /tmp/pdos-lifecycle-owned-tests/original-lifecycle.test.js",
+      "exit_code": 0,
+      "raw_output": "✔ unknown protection facts are preserved and absent capabilities never become permission (0.95925ms)\n✔ a factual zero and known false remain distinct from unknown (0.073833ms)\n✔ intent actions require explicit capabilities rather than a guessed state (0.197875ms)\n✔ candidate identity, action, digest, version and aware time are exact (0.284291ms)\n✔ confirmed command preserves identifiers, semantic payload and empty source read-set (0.335167ms)\n✔ substantive confirmation cannot replace the object, reason or physical outcome (0.182792ms)\n✔ expired previews, missing tokens and extra payload facts are not accepted (0.087959ms)\n✔ human protection requires an explicit boolean, current version and aware retention (1.221292ms)\n✔ an upload termination binds the exact upload reservation revision and real server review (0.292542ms)\n✔ protection preview accepts server UTC normalization but rejects a changed time or other semantics (0.623958ms)\n✔ object key order does not create scope changes; protection and authority changes do (0.256667ms)\n✔ receipts are checked against the actual operation and correct subject family (0.134083ms)\n✔ storage paths, raw stack traces and untrusted server details never enter the error surface (0.149666ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 109.353833\n",
+      "chunk_id": "120d41",
+      "wall_time_seconds": 0.898774,
+      "summary": {
+        "tests": 13,
+        "suites": 0,
+        "pass": 13,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 109.353833
+      }
+    }
+  ],
+  "temporary_configs": {
+    "/tmp/pdos-lifecycle-owned-tsconfig.json": {
+      "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+      "compilerOptions": {
+        "incremental": false
+      },
+      "include": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/next-env.d.ts",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/product/original-lifecycle.tsx",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/original-lifecycle.ts"
+      ],
+      "exclude": [
+        "node_modules"
+      ]
+    },
+    "/tmp/pdos-lifecycle-tests-tsconfig.json": {
+      "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+      "compilerOptions": {
+        "incremental": false,
+        "noEmit": false,
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "outDir": "/tmp/pdos-lifecycle-owned-tests",
+        "rootDir": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib",
+        "plugins": [],
+        "typeRoots": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+        ]
+      },
+      "include": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/original-lifecycle.ts",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/original-lifecycle.test.ts"
+      ],
+      "exclude": [
+        "node_modules"
+      ]
+    }
+  },
+  "limits": [
+    "No shared production build, browser, database, migration, HTTP or integrated candidate checks were run by this agent.",
+    "Temporary configs and compiled test output were outside the repository.",
+    "Evidence recording only: validation was not rerun.",
+    "The previously authorized fix caused these new affected owned checks. Evidence recording itself did not rerun validation."
+  ],
+  "prior_candidates": [
+    {
+      "recorded_at": "2026-10-02T15:16:01Z",
+      "source_hashes": {
+        "pdos-next/web/src/components/product/original-lifecycle.tsx": "b3ddb119148a66d6f7f694aa3fdaea03b7dec5affddf53fc020a29251fa203b5",
+        "pdos-next/web/src/lib/original-lifecycle.ts": "ee673f1894c4dfd987a91acd40d38eb6f1852e51ca276062e74ebc67c5b55b73",
+        "pdos-next/web/src/lib/original-lifecycle.test.ts": "dd777b8a82c32bd4a67ba9ad4178572022b5f8f9bf31334552269e643734496c"
+      },
+      "hash_evidence": {
+        "original_chunk_id": "83abe1",
+        "recording_read_chunk_id": "270d1c",
+        "matches_original": true,
+        "owned_files_modified_after_final_checks": false,
+        "note": "Hashes were read immediately after the final checks in the same orchestration call, then read again only to record this report. The three owned files have not changed. Shared integration files are outside these checks."
+      },
+      "checks": [
+        {
+          "name": "owned-eslint",
+          "command": "node_modules/.bin/eslint src/components/product/original-lifecycle.tsx src/lib/original-lifecycle.ts src/lib/original-lifecycle.test.ts",
+          "exit_code": 0,
+          "raw_output": "",
+          "chunk_id": "4b5273",
+          "wall_time_seconds": 2.661383708
+        },
+        {
+          "name": "owned-typecheck",
+          "command": "node_modules/.bin/tsc --noEmit --incremental false -p /tmp/pdos-lifecycle-owned-tsconfig.json",
+          "exit_code": 0,
+          "raw_output": "",
+          "chunk_id": "c99e27",
+          "wall_time_seconds": 1.986665583
+        },
+        {
+          "name": "owned-helper-compile-and-node-test",
+          "command": "node_modules/.bin/tsc -p /tmp/pdos-lifecycle-tests-tsconfig.json && node --test /tmp/pdos-lifecycle-owned-tests/original-lifecycle.test.js",
+          "exit_code": 0,
+          "raw_output": "✔ unknown protection facts are preserved and absent capabilities never become permission (0.978375ms)\n✔ a factual zero and known false remain distinct from unknown (0.073584ms)\n✔ intent actions require explicit capabilities rather than a guessed state (0.17875ms)\n✔ candidate identity, action, digest, version and aware time are exact (0.309625ms)\n✔ confirmed command preserves identifiers, semantic payload and empty source read-set (0.331417ms)\n✔ substantive confirmation cannot replace the object, reason or physical outcome (0.169416ms)\n✔ expired previews, missing tokens and extra payload facts are not accepted (0.091375ms)\n✔ human protection requires an explicit boolean, current version and aware retention (0.152ms)\n✔ an upload termination binds the exact upload reservation revision and real server review (0.154917ms)\n✔ object key order does not create scope changes; protection and authority changes do (0.90325ms)\n✔ receipts are checked against the actual operation and correct subject family (0.149542ms)\n✔ storage paths, raw stack traces and untrusted server details never enter the error surface (0.185709ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 101.988\n",
+          "chunk_id": "849a8e",
+          "wall_time_seconds": 0.836189625,
+          "summary": {
+            "tests": 12,
+            "suites": 0,
+            "pass": 12,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "duration_ms": 101.988
+          }
+        }
+      ],
+      "note": "Superseded by the authorized timestamp normalization and upload-abandon reason-length fix. These 12 passing checks belong only to the previous three-file candidate."
+    }
+  ],
+  "change_reason": "Normalize only protection retention_until to the exact UTC instant including six-digit microsecond precision when validating the returned prepared command; retain the returned command unchanged. Align upload-abandon reason minimum length to server min4. Add a regression test against normalized UTC and altered time/other semantics."
+}

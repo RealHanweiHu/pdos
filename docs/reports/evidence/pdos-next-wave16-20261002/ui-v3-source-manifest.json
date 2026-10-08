@@ -1,0 +1,20 @@
+{
+  "candidate": "Wave16 owned UI v3 before integration-missing display",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "7e162684371d1127fccd21816b86c1b6b3cde918b830d541e7ec03ae84e89c31",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v3-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c1bf9bad3a2d2d27605fcaa969d283d9c604b2900146a69a9e65db5054029ba7",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v3-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "b3a089884e2c53ef4e0e4e7711fd4f3765405ecd7854a2b523e1c9fc512f8b74",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v3-source/build-quality-followup-view.test.ts"
+    }
+  ]
+}

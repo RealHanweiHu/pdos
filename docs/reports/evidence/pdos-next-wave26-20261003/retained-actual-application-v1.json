@@ -1,0 +1,34 @@
+{
+  "status": "APPLIED_EXACT_LEGACY_SINGLE_DEPENDENCY_COMPATIBILITY",
+  "manifest_sha256": "f1a0c4bee74dd41c008b75ca2c27b2ee3754413416ae47746820847dd2b325cb",
+  "files": [
+    {
+      "source": "pdos-next/.local/wave26-retained-compat-staged-v2/src/pdos_next/domain/test_resources/retained.py",
+      "target": "pdos-next/server/pdos_next/domain/test_resources/retained.py",
+      "baseline_sha256": "abf1c6d4599b3a5c13f113666b1971e85bfb173b5c27e1b34e1e17197517e0de",
+      "sha256": "480d6b2bae305f3f883dc29ea7f16acdfe583a7aaa8b7d5b0fa8606db6aa1b14"
+    },
+    {
+      "source": "pdos-next/.local/wave26-retained-compat-staged-v2/src/pdos_next/domain/test_resources/fingerprint_compatibility.py",
+      "target": "pdos-next/server/pdos_next/domain/test_resources/fingerprint_compatibility.py",
+      "baseline_sha256": null,
+      "sha256": "8f4935f7c53c06ac2abf7e00666902ca5aa3cd13cd37ec5d44e2c5e9634792e3"
+    },
+    {
+      "source": "pdos-next/.local/wave26-retained-compat-staged-v2/tests/test_fingerprint_compatibility.py",
+      "target": "pdos-next/server/tests/test_fingerprint_compatibility.py",
+      "baseline_sha256": null,
+      "sha256": "286a3796c0f0ba6c02a1e0699605880a623220017dd7299f0ae3e89b2c44d244"
+    },
+    {
+      "source": "pdos-next/.local/wave26-retained-compat-staged-v2/tests/test_retained_fingerprint_compatibility.py",
+      "target": "pdos-next/server/tests/test_retained_fingerprint_compatibility.py",
+      "baseline_sha256": null,
+      "sha256": "b915d7978b9847af30aa5f432c57d8f4ec6ac41b1e5bed29cccc0e39f42a8157"
+    }
+  ],
+  "actual_full_candidate_sha_match_evidence": "actual-complete-material-diagnostic-v1.json",
+  "new_start_default_changed": false,
+  "new_schema_or_qualification_added": false,
+  "shared_db_writes": 0
+}

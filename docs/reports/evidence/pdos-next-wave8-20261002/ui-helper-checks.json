@@ -1,0 +1,87 @@
+{
+  "schema_version": "pdos-next-wave8-ui-helper-checks.v1",
+  "recorded_at": "2026-10-02T14:52:39Z",
+  "execution": "Previously completed checks; no check was rerun while recording this evidence.",
+  "execution_time": null,
+  "execution_time_note": "The original tool outputs did not contain a wall-clock timestamp. Result chunk IDs below identify the captured outputs in the reuse_product_ui conversation.",
+  "scope": "Owned OriginalFiles component, original-security helper and its pure tests only. No database, browser, service restart, public build or real scanner was run by these checks.",
+  "source_files": {
+    "pdos-next/web/src/components/product/original-files.tsx": "58c5000afe64ad4f6498f2d3e0cd089087e22ee2a674db7eeaccbf7ec917b3cd",
+    "pdos-next/web/src/lib/original-security.ts": "508d74f7c1fdfb0c1195e7716d8b59be2af8186fb5bc40297d7a3d1b97d1650e",
+    "pdos-next/web/src/lib/original-security.test.ts": "62af9ce14c2412584647b6e2a61d54c559fc0cf5b0e12225032d0f404975a696"
+  },
+  "hash_provenance": "Hashes were recovered when recording evidence, rather than printed at check execution. These are the same owned files frozen immediately after the final successful checks; no subsequent edit was made by reuse_product_ui. All three current hashes match candidate-before-validation.json.",
+  "candidate_manifest": "docs/reports/evidence/pdos-next-wave8-20261002/candidate-before-validation.json",
+  "subsequent_changes": false,
+  "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "configurations": {
+    "/tmp/pdos-original-tests-tsconfig.json": {
+      "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+      "compilerOptions": {
+        "incremental": false,
+        "noEmit": false,
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "outDir": "/tmp/pdos-original-owned-tests",
+        "rootDir": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib",
+        "plugins": [],
+        "typeRoots": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+        ]
+      },
+      "include": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/original-security.ts",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/original-security.test.ts"
+      ],
+      "exclude": [
+        "node_modules"
+      ]
+    },
+    "/tmp/pdos-original-owned-tsconfig.json": {
+      "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+      "compilerOptions": {
+        "incremental": false
+      },
+      "include": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/next-env.d.ts",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/product/original-files.tsx",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/original-security.ts"
+      ],
+      "exclude": [
+        "node_modules"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "owned ESLint",
+      "command": "node_modules/.bin/eslint src/components/product/original-files.tsx src/lib/original-security.ts src/lib/original-security.test.ts",
+      "exit_code": 0,
+      "output_chunk_id": "38785c",
+      "original_output": ""
+    },
+    {
+      "name": "owned TypeScript",
+      "command": "node_modules/.bin/tsc --noEmit --incremental false -p /tmp/pdos-original-owned-tsconfig.json",
+      "exit_code": 0,
+      "output_chunk_id": "5ef51d",
+      "original_output": ""
+    },
+    {
+      "name": "12 pure helper checks",
+      "command": "node_modules/.bin/tsc -p /tmp/pdos-original-tests-tsconfig.json && node --test /tmp/pdos-original-owned-tests/original-security.test.js",
+      "exit_code": 0,
+      "output_chunk_id": "16def4",
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "original_output": "✔ legacy parsed originals without security stay unavailable and cannot download (1.828958ms)\n✔ coerced capabilities and missing clean receipts fail closed (0.134792ms)\n✔ current clean facts still require server download permission (0.083542ms)\n✔ every unsafe scan state forbids download even with an inconsistent capability (0.160667ms)\n✔ source withdrawal and uncertain physical position do not become readable through a clean receipt (0.105541ms)\n✔ an active scan does not start another request (0.058667ms)\n✔ parse failure retains registered bytes and does not grant physical cleanup (0.059625ms)\n✔ withdrawal requires current capability and an explicit reason (0.217791ms)\n✔ confirmation binds the original command and substantive review (0.280417ms)\n✔ expired previews and unsupported extra payload values cannot be confirmed (0.139875ms)\n✔ scope changes invalidate the local preview without changing source facts (0.119291ms)\n✔ storage paths and scanner diagnostics do not leak into error surfaces (0.240958ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 101.74375\n"
+    }
+  ],
+  "result": "passed_owned_static_and_12_pure_checks",
+  "authority_limits": [
+    "Pure helper checks do not establish PG/API transaction behavior, browser accessibility, real malware-scanning qualification or production activation.",
+    "Base64 upload bytes are retained in page memory only; these checks do not claim refresh-persistent upload recovery."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+  "exit_code": -15,
+  "seconds": 1020.25,
+  "source_stable": true,
+  "candidate_sha256": "8845f7b89bdfa2c122a426819689e4f3fbc34e86255d0499e47b66afd77b97c1",
+  "log_file": "priority-01.log",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

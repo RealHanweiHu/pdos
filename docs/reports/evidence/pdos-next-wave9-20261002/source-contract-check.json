@@ -1,0 +1,13 @@
+{
+  "payloads_match_runtime": true,
+  "openapi_matches_runtime": true,
+  "payload_count": 31,
+  "canonical_counts": {
+    "operations": 66,
+    "events": 65,
+    "acceptance": 48
+  },
+  "new_named_lifecycle_helpers": 5,
+  "all_lifecycle_helpers": "T1 named human; never AI authority",
+  "effect_receipts": "internal controlled worker only; not a public command"
+}

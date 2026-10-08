@@ -1,0 +1,59 @@
+{
+  "schema_version": "public-candidate-ui-check.v2",
+  "candidate_manifest": "public-candidate-ui-source-manifest-v2.json",
+  "candidate_manifest_sha256": "9597508af58e33f5fc9f8d61d19c0c907e5374b67ff550a0c6dc51067f1d639e",
+  "checks": [
+    {
+      "kind": "owned-strict-react-types",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-public-candidate-panel-tsconfig.json --pretty false",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+      "exit_code": 0,
+      "explicit_files": 10,
+      "configuration": "public-candidate-ui-panel-typecheck-config-v2.json",
+      "log": "public-candidate-ui-panel-typecheck-v2.log"
+    },
+    {
+      "kind": "owned-lint",
+      "command": "node node_modules/eslint/bin/eslint.js src/components/capa-effectiveness/candidate-panel.tsx src/components/capa-effectiveness/candidate-panel-contract.ts src/components/capa-effectiveness/candidate-workflow.tsx --format json",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "exit_code": 0,
+      "files": 3,
+      "errors": 0,
+      "warnings": 0,
+      "log": "public-candidate-ui-panel-lint-v2.json"
+    }
+  ],
+  "logs": [
+    {
+      "path": "public-candidate-ui-panel-typecheck-v2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "public-candidate-ui-panel-lint-v2.json",
+      "sha256": "da823c81f0e0687b4dc0d106ff16475196ee84ac50aa12cbb7a78a7a46a38461"
+    },
+    {
+      "path": "public-candidate-ui-panel-lint-v2-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "prior_pure_checks": {
+    "count": 17,
+    "result": "v1 passed; helper/test SHA remain exact; not rerun and not component/browser coverage",
+    "record": "public-candidate-ui-check-result-v1.json"
+  },
+  "development_findings_preserved_as_transcript_summary": [
+    "First 10-file typecheck: TS18046 f.coverage inside callback; fixed local narrowed alias.",
+    "First 3-file lint: 0 errors, 2 warnings (ref cleanup and unused receipt argument); fixed callback cleanup and no-unused argument.",
+    "Subsequent 10-file typecheck and three-file lint both passed before final source cleanup; final recorded runs bind current SHA."
+  ],
+  "not_run": [
+    "public build",
+    "browser",
+    "HTTP",
+    "PostgreSQL",
+    "new mirror component tests",
+    "real candidate save/replay"
+  ],
+  "scope": "actual route callback/data reader and business projection only; no qualification/bytes/UOW validation attestation"
+}

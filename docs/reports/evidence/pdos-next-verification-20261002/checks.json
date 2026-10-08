@@ -1,0 +1,45 @@
+{
+  "scope": "Package-only synthetic checks; not database/browser/production acceptance.",
+  "checks": [
+    {
+      "name": "pytest",
+      "chunk_id": "5bb302",
+      "wall_time_seconds": 1.01165425,
+      "exit_code": 0,
+      "original_token_count": 65,
+      "output": "........................................................................ [ 46%]\n........................................................................ [ 92%]\n............                                                             [100%]\n156 passed in 0.36s\n"
+    },
+    {
+      "name": "ruff",
+      "chunk_id": "1bd123",
+      "wall_time_seconds": 0.000009875,
+      "exit_code": 0,
+      "original_token_count": 5,
+      "output": "All checks passed!\n"
+    },
+    {
+      "name": "typecheck",
+      "chunk_id": "72cf70",
+      "wall_time_seconds": 1.883714833,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "name": "eslint",
+      "chunk_id": "9379a5",
+      "wall_time_seconds": 2.553255542,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "name": "component-tests",
+      "chunk_id": "a9f6ab",
+      "wall_time_seconds": 2.37876775,
+      "exit_code": 0,
+      "original_token_count": 579,
+      "output": "✔ partial reception covers only explicit pairs and preserves next responsibility (2.093084ms)\n✔ documents affect only their declared tests, and do not prove physical readiness (0.155333ms)\n✔ incomplete documentation can be offered, while acceptance still blocks affected tests (0.0975ms)\n✔ accepting every offered pair still requires a reason for remaining original quantity gaps (0.153125ms)\n✔ second partial reception excludes already accepted pairs from returns and duplicate acceptance (0.205625ms)\n✔ planned configuration cannot stand in for actual configuration or a source (0.088042ms)\n✔ selected IDs without explicit pair coverage are rejected (0.067416ms)\n✔ expired, edited or drifted previews cannot be confirmed (8.964416ms)\n✔ port and role drift invalidate snapshots even when caller watermark is unchanged (0.167041ms)\n✔ rejected ports, enlarged scopes and changed pair scopes block confirmation (0.572375ms)\n✔ measurement preserves its raw string and validates exact sample and method versions (5.994833ms)\n✔ unknown readings require explicit missing fields and never infer pass (0.18375ms)\n✔ source gaps and contradictory known/missing declarations are rejected (0.207208ms)\n✔ missing or unzoned observation time cannot be silently replaced with submit time (0.242959ms)\n✔ partial result completion follows the exact run pairs rather than a cartesian guess (0.194875ms)\n✔ one run can cover a valid subset while retaining original quantity and cavity gaps (0.05925ms)\n✔ execution statuses and result outcomes remain distinct dimensions (0.043917ms)\n✔ real event times need offset, original timezone and a fixed source (0.363375ms)\n✔ named start binds the current server actor and server resource versions (0.396583ms)\n✔ request reading keeps samples, documents, tentative scheduling and sourced times separate (6.381209ms)\n✔ missing ports visibly disable actual reception without a synthetic successful state (14.821625ms)\n✔ a failed run retains execution status independently and limits result interpretation to its scope (5.472959ms)\n✔ named start asks for real event evidence and displays the server executor read-only (3.733166ms)\nℹ tests 23\nℹ suites 0\nℹ pass 23\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2377.915875\n"
+    }
+  ]
+}

@@ -58,6 +58,7 @@ class BudgetResponse(BaseModel):
     used_tokens_today: int
     remaining_tokens_today: int
     exhausted: bool
+    token_budget_enforced: bool
 
 
 class ModelGovernanceResponse(BaseModel):
@@ -74,6 +75,7 @@ class ModelGovernanceUpdateRequest(BaseModel):
     provider: ProviderName
     model: str = Field(min_length=1, max_length=128)
     daily_token_budget: int = Field(ge=1, le=1_000_000_000)
+    token_budget_enforced: bool | None = Field(default=None, strict=True)
 
     @field_validator("model", mode="before")
     @classmethod
@@ -151,6 +153,7 @@ def budget_response(budget: BudgetSnapshot) -> BudgetResponse:
         used_tokens_today=budget.used_tokens_today,
         remaining_tokens_today=budget.remaining_tokens_today,
         exhausted=budget.exhausted,
+        token_budget_enforced=budget.token_budget_enforced,
     )
 
 
@@ -196,6 +199,7 @@ def update_model_governance(
                 provider=payload.provider,
                 model=payload.model,
                 daily_token_budget=payload.daily_token_budget,
+                token_budget_enforced=payload.token_budget_enforced,
             ),
         )
     except ModelNotEligibleError as error:

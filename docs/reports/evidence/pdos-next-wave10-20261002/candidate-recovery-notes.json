@@ -1,0 +1,21 @@
+{
+  "initial_attempt": "joint-attempt-1",
+  "initial_passed": 1232,
+  "initial_failed": 1,
+  "final_candidate_files": 350,
+  "changed_after_initial_joint": [
+    "pdos-next/README.md",
+    "pdos-next/server/pdos_next/object_lifecycle_runtime/files.py",
+    "pdos-next/server/tests/object_lifecycle_runtime/test_runtime.py"
+  ],
+  "reason": "A pre-existing first lock creation race was diagnosed and fixed; an explicit regression was added. README was updated. The full selected union will be checked again against this final candidate.",
+  "static_check_notes": {
+    "lint_files": 271,
+    "lint_result": "All checks passed using per-directory config discovery",
+    "initial_invocation": "wrong forced root config bypassed server config; saved static-check-wrong-config-attempt.log, no edits",
+    "format_only": "41 legacy/current scoped files would be reformatted; 230 already formatted. No global format requirement/rewriting; actual changed runtime files format passed by owned agent. Saved static-format-scope.log."
+  },
+  "archived_path_mapping": {
+    "runtime-race-diagnostic.json original_joint_failure.evidence": "joint-attempt-1/joint-pure.log"
+  }
+}

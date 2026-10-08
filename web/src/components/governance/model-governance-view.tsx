@@ -38,6 +38,13 @@ function formatCount(value: number) {
 
 function BudgetMeter({ snapshot }: { snapshot: ModelGovernanceSnapshot }) {
   const budget = snapshot.budget;
+  if (budget.token_budget_enforced === false) return (
+    <section className="rounded-lg border bg-card p-5" aria-labelledby="budget-title">
+      <h2 className="text-sm font-medium" id="budget-title">Token 预算不限额</h2>
+      <p className="mt-2 text-xs text-muted-foreground">已关闭每日与累计额度限制，继续记录实际用量。</p>
+      <p className="mt-3 font-mono text-2xl font-semibold">今日已用 {formatCount(budget.used_tokens_today)}</p>
+    </section>
+  );
   const usedRatio = Math.min(100, Math.round((budget.used_tokens_today / budget.daily_token_budget) * 100));
   return (
     <section className="rounded-lg border bg-card p-5" aria-labelledby="budget-title">

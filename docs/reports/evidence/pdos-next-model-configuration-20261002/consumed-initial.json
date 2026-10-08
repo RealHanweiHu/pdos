@@ -1,0 +1,22 @@
+{
+  "AGENTS.md": "908eac11bb376e34ad204907dfdb8da748c3141e70ca10e22cfe67f8a36a4156",
+  "pdos-next/web/AGENTS.md": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb",
+  "tasks/ai-native-integrated-todo.md": "2a1cd1eef2e75fe9b1f097601bbc91e85b65169ff813f29221ff27defb3cee90",
+  "docs/design/2026-10-02-pdos-next-execution-plan.md": "3fa2bc7c35da22f66459e405da812ef76394987de055ee2ec32f70e0d60a959a",
+  "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+  "docs/design/2026-08-09-ui-baseline.md": "bdd4dd15969c806e99a20b8c400a2bc76afa900b3d5b46ec72b26bd4871b9725",
+  "docs/design/2026-09-20-ai-direct-write-tier-policy.md": "8dab81ad7f1f4957430b11bec671b08a1d863a7fc7a829768335d353345d6136",
+  "pdos-next/server/pdos_next/providers/types.py": "7685aed45bcf7df33b9c11f2d0ba98a698059da45cd695a97cfeda6b9326b6cf",
+  "pdos-next/server/pdos_next/providers/client.py": "9f41fc92a75e5fc403fe7f8fef947ea71c6ee620e8dcd6f1c8591393115e638e",
+  "pdos-next/server/pdos_next/model_gateway/ports.py": "6484e82d7918c3f38824b6f78655cbefb1e09d79082ee64a38cc5e02bafed81b",
+  "pdos-next/server/pdos_next/model_gateway/claim.py": "6c385f5c6aee5ca781b9169b9f69ad0b0831f6b9709eb5cf40563adb2d0f17a8",
+  "pdos-next/server/pdos_next/models.py": "c556c52964f1a83204c56143f5f52e79f5d6b1500dfbb91a3c44fddc5f27a48a",
+  "pdos-next/server/pdos_next/service.py": "7ffb1ba2740e6bd2f075c576404722947eaa117812c82ca31abb73c77c49c1c6",
+  "pdos-next/server/pdos_next/errors.py": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd",
+  "pdos-next/server/pyproject.toml": "1c2edea2464fc3260b1ceda3a701c0f2308ec68fe01ff28c6db4b8044d0573b3",
+  "pdos-next/web/package.json": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8",
+  "pdos-next/web/tsconfig.json": "ce638cf8d45d1b4718fa3943a514811886830e0f9d9f14e9f4ebcdfa15e93f3e",
+  "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+  "pdos-next/web/src/lib/utils.ts": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+  "pdos-next/web/node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md": "c3f53d13af341d19a601a846082f34abcea2b599c805ab9cd2f32173295e5914"
+}

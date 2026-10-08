@@ -1,0 +1,32 @@
+{
+  "algorithm": "sha256(sorted(path+NUL+sha256(file)+LF))",
+  "candidate_sha256": "a99bfaf02303f821c996121ba38caea8f2277b363d83c25740f77c40680dd206",
+  "backend_sha256": "d2718901cf792f14e64c1755bbfdcb1e4e6445b72eb621f1a1e4dfcb407913a0",
+  "ui_sha256": "52502334697260dae4ee4c983131be8f850853ceb8087d921a7d5b681f8bf0f6",
+  "files": {
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/__init__.py": "18d738b5dab34f37e970c21b1b33470ee7106874f47d1fdb26dbcb06f9ad0c0e",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py": "8d08b209b14e0fcf4a3dd895a830270ff27df5585cf2300728d8552f8ed2453a",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/ports.py": "212555993793270a2f64f9f8e433caf6ea4dc804c88cac466db535e829bd9c03",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/read_models.py": "01660a670317610e5570e0c836356ef21d892c2ea1311f3c96b4b114698f42d7",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py": "7309094e743855b5b88c1285f7bd7ad9dd47a723e5e5ce02e06d8830b636b543",
+    "pdos-next/server/pdos_next/schemas/manufacturing_trials/__init__.py": "e5096d3a2e9d6e2dae95d0f55faf8ee1ba749fc32277815b06d62a2a9910e7dc",
+    "pdos-next/server/pdos_next/schemas/manufacturing_trials/contracts.py": "8056ad6dcb9846620313f0ca41bc300f29faa4b356f437f8c3793fc06ee28422",
+    "pdos-next/server/tests/manufacturing_trials/__init__.py": "f773a7eff6366b65f22e981130085c9e8c12087177d782bb8f3fea6a69adbf54",
+    "pdos-next/server/tests/manufacturing_trials/conftest.py": "000049f6afc6dd0061ca04df79e1478ed6104c2b54f26b7ea764d7a24aebb3a1",
+    "pdos-next/server/tests/manufacturing_trials/helpers.py": "deb79fc2522ac6d0a7e2224af37f5375292636ae21f43371cb0598b12dd75d7b",
+    "pdos-next/server/tests/manufacturing_trials/test_contracts.py": "b8c47c0235022d4552a794093a7d1fa0bc94500d89090b793b184b8b28eb2576",
+    "pdos-next/server/tests/manufacturing_trials/test_handlers.py": "41a699f6aaa1d948cbafa0ac767465afbbcc32efb9d11e8f73e4b9da4a0b2d6c",
+    "pdos-next/server/tests/manufacturing_trials/test_read_models.py": "660db6b781690ccf4f8d4ba380a5467cf574865a4249f6553bc4875d3d164c98",
+    "pdos-next/server/tests/manufacturing_trials/test_rules.py": "df7891796a7d46d93c7f4169f2a2269cdc7b304f99355ccc7fbbbc14a91c33fa",
+    "pdos-next/web/src/components/manufacturing_trials/__tests__/fixtures.ts": "1c6c1490ea0aca40349055248bef5a4a1b5d5a4cb977abcd7ebf4cb977c59af5",
+    "pdos-next/web/src/components/manufacturing_trials/contracts.ts": "02ac2f7dd825a159e7b6c43b2ecd20168aeb5fe1daff5bfcd3d8ad64202523cf",
+    "pdos-next/web/src/components/manufacturing_trials/display.tsx": "a1f8832f44823c5f7d4f1d82efa84612d3437a7979a57de889423284a04c0cce",
+    "pdos-next/web/src/components/manufacturing_trials/domain-payload.ts": "f31282f721832f615b0345b39ba735bdf1daa45c0af1c15cf31c9092d0145add",
+    "pdos-next/web/src/components/manufacturing_trials/index.ts": "6decddc418a4c7b6de19fe83daa26caee8ac216da27655880a54469ddda29e58",
+    "pdos-next/web/src/components/manufacturing_trials/preparation.tsx": "eaeb972dac8a7187a0fced6850d444432d3cfd4e04ef63e8b53a2b7e4b719bd2",
+    "pdos-next/web/src/components/manufacturing_trials/render.test.mjs": "a9a2055bc8277fb79ed63c983f9d9da29439b9bcd7f928bd9ff546cdc11f4ec8",
+    "pdos-next/web/src/components/manufacturing_trials/results.tsx": "87ef235b3d9a4028139d4a24cfb94b81bbb707aa9519daa3a415a17bdaa3b5bf",
+    "pdos-next/web/src/components/manufacturing_trials/tsconfig.check.json": "ffa5d8af294f55913424b86bc3d4be1939d1492c4ae7bf554618a979e906273c",
+    "docs/reports/evidence/pdos-next-manufacturing-trials-20261002/domain-payload-fixtures.json": "63ad6f1488e3588449ab997ac33ef07351133eb65286ba468e42043092632373"
+  }
+}

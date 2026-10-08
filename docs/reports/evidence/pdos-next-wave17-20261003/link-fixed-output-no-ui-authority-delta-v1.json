@@ -1,0 +1,71 @@
+{
+  "schema_version": "pdos-link-fixed-output-no-ui-authority-delta-v1",
+  "status": "PASS_SCOPED_OFFLINE",
+  "scope": "One explicit assess_capabilities=False call in capa_verification._owner verification_request; owned test boundary only",
+  "before_source_sha256": "be96290a17723e53b68972fb7a555942052949674f5fc01c0895a74ee8875edc",
+  "after_source_sha256": "77bef966e6d3623ab6199400c612f08b3ab0b36da214483b68ef61889c3cd152",
+  "exact_one_call_delta_reconstructed_before_hash_matches": true,
+  "signature": "verification_front.get_request(s,ctx,product_id,identity,*,assess_capabilities=True)",
+  "dependency_scope": "B owns the front reader implementation; F only passes its internal keyword. Front artifact SHA is the observed signature checkpoint, not an assertion of B final freeze.",
+  "pure": {
+    "passed": 85,
+    "pytest_seconds": 1.05,
+    "new_fixed_owner_cases": 13,
+    "noconftest": true,
+    "scope": "Existing professional/capa pure, retained-call regression and owned fixed-reader regressions; not public suite"
+  },
+  "checks": [
+    {
+      "kind": "pure",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/server/tests/professional_authority/test_assessment.py pdos-next/server/tests/capa_verification/test_pure.py pdos-next/server/tests/capa_verification/test_fixed_request_owner.py docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-regression.py -q",
+      "exit_code": 0,
+      "log": "link-fixed-output-no-ui-authority-pure-v1.log"
+    },
+    {
+      "kind": "ruff",
+      "command": "pdos-next/server/.venv/bin/ruff check pdos-next/server/pdos_next/domain/capa_verification/service.py pdos-next/server/tests/capa_verification/test_fixed_request_owner.py",
+      "exit_code": 0,
+      "log": "link-fixed-output-no-ui-authority-ruff-v1.log"
+    },
+    {
+      "kind": "format",
+      "command": "pdos-next/server/.venv/bin/ruff format --check pdos-next/server/pdos_next/domain/capa_verification/service.py pdos-next/server/tests/capa_verification/test_fixed_request_owner.py",
+      "exit_code": 0,
+      "log": "link-fixed-output-no-ui-authority-format-v1.log"
+    },
+    {
+      "kind": "import_signature",
+      "command": "No-bytecode public imports + inspect.signature(front.get_request) keyword-only/default True check; no DB invocation",
+      "exit_code": 0,
+      "log": "link-fixed-output-no-ui-authority-import-v1.log"
+    }
+  ],
+  "ast_files": 2,
+  "ast_exit_code": 0,
+  "fixed_material_contract": [
+    "Full OutputReading JSON/snapshot/current child/business fields unchanged when only UI capability evaluation omitted",
+    "Full source closure/digest/owner_basis_sha256 unchanged",
+    "Immutable parent and actual referenced Method/Window saved reads still current source/ACL checked",
+    "No historical Link/Receipt write or reseal",
+    "Retained authority original refs/negative/relevant/issuer/Current/source/expiry checks preserved"
+  ],
+  "new_regression": "Actual capa._reading invoked through a boundary substitute returning ordinary UI vs fixed-reader differences; full material JSON and digest match; actual internal call recorded False",
+  "artifact_assembly_recovery": "All checks succeeded before one metadata Path construction typo; successful raw logs retained. Only metadata assembly resumed; checks not rerun.",
+  "limitations": [
+    "Front/owner/source I/O in F tests is explicit offline substitution, not actual qualification truth",
+    "No DB/HTTP/UI/public suite or schema operations run by F",
+    "Root owns actual HTTP/save/performance validation",
+    "No frontend/shared common/front/professional module edited by F"
+  ],
+  "artifacts": {
+    "pdos-next/server/pdos_next/domain/capa_verification/service.py": "77bef966e6d3623ab6199400c612f08b3ab0b36da214483b68ef61889c3cd152",
+    "pdos-next/server/tests/capa_verification/test_fixed_request_owner.py": "76ceada1c2c5055a2dc8381778e581ad06d0f2b45379ee8a6728429e3ae3e445",
+    "pdos-next/server/pdos_next/domain/verification_front/service.py": "dcb1196a83cd28fbb3a41e53322c75a2ee9ecb83520ebbf6b5472d0dd491293c",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-readset-delta-v1.json": "0737f0a831075ac68682cc03188a6d7f9d082890dc865ce388e33fce82d1c3ea",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-authority-actual-readonly-v4.json": "aabe72e01b40efaf77e21a48c75368d54b7ced5f7f8a9727b6be4c75414156e8",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-no-ui-authority-pure-v1.log": "6741a7c9ae90096bc5df19f253217872943b01230603e9b1cb621ab8e9755243",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-no-ui-authority-ruff-v1.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-no-ui-authority-format-v1.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-no-ui-authority-import-v1.log": "b1eadea0f8f05d99002c64a569dff9f6f4bb063fe40304c455c65660bcea326a"
+  }
+}

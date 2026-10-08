@@ -1,0 +1,53 @@
+{
+  "previous_manifest": "backend-candidate-v2-source.json",
+  "current_manifest": "backend-candidate-v3-source.json",
+  "previous_manifest_sha256": "d1823dafba0dbdefc495491b1445132a706693a0ee36b9254288f0d6572b3be8",
+  "current_manifest_sha256": "8f5e7542818773af2d0f341af40896550c2bfb74be246eaa49698f43eba23833",
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+      "before_sha256": "5e42fb2ba4a953901cd15d8ffa14d9bc7e44ad73979b1a0de85742471cbebe1f",
+      "after_sha256": "3fe9b7988ee504f4310858754082baf565914457e1ca7518a5ccc00c7eb0b6bb",
+      "reason": "Exact Current graph neighbors and stable retained proof basis"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_pure.py",
+      "before_sha256": "e185ec9f2945de53202595814377d2196c5a6ad706798964d9e6e66afd88f400",
+      "after_sha256": "daa6705911eb68bbbff6981305dfd4220df389a7b6ce1a7dbb50c60504c52422",
+      "reason": "Exact Current graph neighbors and stable retained proof basis"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_transactions.py",
+      "before_sha256": "9726106e991f402ea6d695d0b55db42ecec1e8bfed40816d7791f422e981f317",
+      "after_sha256": "1f5e8aa3d7c102f5a76a407015a292498d9bfdf6389000258af2f802f5e624f5",
+      "reason": "Exact Current graph neighbors and stable retained proof basis"
+    }
+  ],
+  "rechecks": [
+    {
+      "nodes": [
+        "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba"
+      ],
+      "selection_file": "graph-history-recheck-selection-pg11.json",
+      "selection_sha256": "383e121a74049529e510ccb5d375701dbff25dc6b9fe3ea7799e26ee0fbec817",
+      "result_file": "graph-history-recheck-result-pg11.json",
+      "result_sha256": "852fc091bb26f5cbc4ec80a19c896fe7c5fb5e4f47dc8cd81aa5fbb72acdcefe",
+      "log_file": "graph-history-recheck-pg11.log",
+      "log_sha256": "b8b3f74a8ae94a7488d515c491237e8ba28e5c586c8b536f5a8b9aff407dbe3a",
+      "exit_code": 0
+    },
+    {
+      "nodes": [
+        "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture"
+      ],
+      "selection_file": "graph-history-recheck-selection-pg12.json",
+      "selection_sha256": "2d0c6d6dd90e225c745133233bd196659f587f35e9c211f95b33d0efdf84bf34",
+      "result_file": "graph-history-recheck-result-pg12.json",
+      "result_sha256": "d8bd454f5a0ac6150168ebdeafcc2d20346ec00bdacdae1639f2a20d6fecdb81",
+      "log_file": "graph-history-recheck-pg12.log",
+      "log_sha256": "f1257eedd78ea34489234e99d440655c2b83235225cd57349b6c18119b6e85db",
+      "exit_code": 1
+    }
+  ],
+  "unaffected_checks": "Original v1 full scoped PG selection, v2 affected merge pass, and v3 exact graph affected nodes; no v3 full joint rerun claimed."
+}

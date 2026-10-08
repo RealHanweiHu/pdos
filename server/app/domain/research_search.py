@@ -1,5 +1,6 @@
 """Scope-bound search observations, with durable request identity and honest outcomes."""
 
+from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 from uuid import UUID, uuid4
@@ -8,7 +9,14 @@ from pydantic import Field
 from sqlalchemy import Connection, Engine, select
 
 from app.ai.reach import ReachDeniedError, ReachFetchError, ReachSearchUnavailableError
-from app.ai.research_search import SearxSearchProvider
+from app.ai.research_search import (
+    FallbackSearchProvider,
+    FirecrawlSearchProvider,
+    LocalIndexSearchProvider,
+    SearchBackend,
+    SearxSearchProvider,
+    TavilySearchProvider,
+)
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.schema import tables
@@ -59,10 +67,51 @@ def _access(
     _line(connection, context, space_id, line_id)
 
 
+SearchProvider = SearchBackend | FallbackSearchProvider
+
+
+def resolve_search_provider(
+    engine: Engine,
+    *,
+    endpoint: str | None,
+    tenant_id: UUID,
+    space_id: UUID | None = None,
+    line_id: UUID | None = None,
+    tavily_api_key: str | None = None,
+    firecrawl_api_key: str | None = None,
+    before_attempt: Callable[[], None] | None = None,
+) -> SearchProvider:
+    """Local index, then Tavily, Firecrawl and SearXNG on misses or service failures."""
+    local = LocalIndexSearchProvider(
+        engine, tenant_id=tenant_id, space_id=space_id, line_id=line_id
+    )
+    providers = tuple(
+        provider
+        for provider in (
+            local,
+            TavilySearchProvider(tavily_api_key),
+            FirecrawlSearchProvider(firecrawl_api_key),
+            SearxSearchProvider(endpoint),
+        )
+        if provider.configured
+    )
+    if len(providers) > 1:
+        return FallbackSearchProvider(providers, before_attempt)
+    return providers[0] if providers else SearxSearchProvider(None)
+
+
 class ResearchSearchService:
-    def __init__(self, engine: Engine, *, endpoint: str | None) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        *,
+        endpoint: str | None,
+        provider: SearchProvider | None = None,
+    ) -> None:
         self.engine = engine
-        self.provider = SearxSearchProvider(endpoint)
+        self.provider: SearchProvider = (
+            provider if provider is not None else SearxSearchProvider(endpoint)
+        )
 
     def history(self, context: AuthContext, space_id: UUID) -> list[dict[str, Any]]:
         with self.engine.begin() as connection:
@@ -208,6 +257,9 @@ class ResearchSearchService:
                 hits=result.hits,
                 warnings=result.warnings,
                 response_digest=result.response_digest,
+                provider_key=result.provider_key or self.provider.key,
+                provider_protocol_version=result.provider_protocol_version
+                or self.provider.protocol_version,
             )
         except ReachSearchUnavailableError as error:
             values.update(

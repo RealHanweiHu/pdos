@@ -1,0 +1,18 @@
+{
+  "selection": "tests/verification_launch/test_transactions.py::test_same_key_and_cross_key_same_intent_replay_do_not_duplicate_truth",
+  "parameters": [
+    "test.run.plan",
+    "verification.schedule.promise",
+    "test.run.start"
+  ],
+  "passed": 3,
+  "exit_code": 0,
+  "pytest_elapsed_seconds": 1269.99,
+  "log_created_utc": "2026-10-03T02:21:38.941624+00:00",
+  "test_source_sha256": "f2437243378a6d78768afaac15334961563006e08c6a7d637c139ef4591caee8",
+  "test_source_mtime_utc": "2026-10-03T02:11:27.861616+00:00",
+  "default_fixture_behavior_preserved": true,
+  "final_fixture_default_branch_extra_check": "recheck-default-fixture-final-result.json",
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c"
+}

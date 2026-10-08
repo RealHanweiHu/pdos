@@ -1,0 +1,20 @@
+{
+  "scope": "Root-only exact expired unconsumed followup recovery implementation; not a business pass",
+  "code": "FOLLOWUP_CONFIRMATION_EXPIRED",
+  "state": "not_saved_expired_proof",
+  "conditions": [
+    "common execute same Product lock after RequestKey, semantic Receipt and module replay Receipt paths",
+    "same human context; exact Product revision",
+    "old proof exact actor/product/op/subject/revision/material, expired and unconsumed",
+    "IssueCurrent exact expected version",
+    "echo original complete command with only two token fields removed; no DTO payload defaults"
+  ],
+  "no_automatic_preview_or_approval": true,
+  "files": {
+    "pdos-next/server/pdos_next/errors.py": "b1fc79f99e469a9fb8a59c03f602b64e9ade50dfbf35ae23468a97905bf20d5f",
+    "pdos-next/server/pdos_next/api.py": "86820c67069235716e687359d775dc03d742ba704d565ec758f5660b9a94eb51",
+    "pdos-next/server/pdos_next/service.py": "d4afc3197e77899c6211eba339fefe6ca9e317ee6b6d9ddec622128db4b7838a",
+    "pdos-next/server/pdos_next/quality_followup_host.py": "9400df47e01a8c7b4e9dc7f65bd56279da167e4de1f772509c864d0d079a7cb2",
+    "pdos-next/web/src/components/workspace.tsx": "b152e0a9ae7e96942513f7a1df711abc3c74c5dac80919c87a653dbe174a07b7"
+  }
+}

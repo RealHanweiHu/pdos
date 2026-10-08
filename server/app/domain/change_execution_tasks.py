@@ -108,7 +108,9 @@ def _existing_ready(c: Connection, tenant_id: UUID, project_id: UUID, task: dict
                 m.c.project_id == project_id,
                 u.c.id == UUID(task["assignee_user_id"]),
                 u.c.is_active.is_(True),
-                u.c.role.in_(["owner", "admin", "project_manager", "engineer", "quality"]),
+                u.c.role.in_(
+                    ["owner", "admin", "product_manager", "project_manager", "engineer", "quality"]
+                ),
             )
         ).scalar_one_or_none()
         is not None
@@ -119,7 +121,19 @@ def _state(c: Connection, tenant_id: UUID, project_id: UUID, ecr_id: UUID) -> di
     ecr = _ecr(c, tenant_id, project_id, ecr_id)
     approved = ((ecr["impact_analysis"] or {}).get("impact_scope") or {}).get("basis")
     current = current_basis(c, tenant_id, project_id, ecr_id)
-    changes = scope_changes(c, tenant_id, project_id, approved) if approved else []
+    changes = (
+        scope_changes(
+            c,
+            tenant_id,
+            project_id,
+            approved,
+            professional_basis=((ecr["impact_analysis"] or {}).get("professional") or {}).get(
+                "basis"
+            ),
+        )
+        if approved
+        else []
+    )
     ready = bool(
         ecr["status"] == "approved"
         and approved
@@ -200,7 +214,16 @@ def read(engine: Engine, *, context: AuthContext, project_id: UUID, ecr_id: UUID
                     u.c.tenant_id == context.tenant.id,
                     m.c.project_id == project_id,
                     u.c.is_active.is_(True),
-                    u.c.role.in_(["owner", "admin", "project_manager", "engineer", "quality"]),
+                    u.c.role.in_(
+                        [
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        ]
+                    ),
                 )
                 .order_by(u.c.display_name, u.c.id)
             ).mappings()
@@ -242,7 +265,9 @@ def choices(
                 t.c.kind == "task",
                 t.c.status.not_in(TERMINAL_TASK_STATUSES),
                 u.c.is_active.is_(True),
-                u.c.role.in_(["owner", "admin", "project_manager", "engineer", "quality"]),
+                u.c.role.in_(
+                    ["owner", "admin", "product_manager", "project_manager", "engineer", "quality"]
+                ),
                 t.c.due_date.is_not(None),
                 t.c.stage_id.is_not(None),
                 t.c.expected_output.is_not(None),

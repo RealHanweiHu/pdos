@@ -1,0 +1,8 @@
+{
+  "orchestrator_pid": 86042,
+  "paused_only_orchestrator": true,
+  "children_continue": true,
+  "reason": "All regular selections dispatched; targeted corrective PostgreSQL checks must finish before structural lifecycle DDL.",
+  "resume_pending": false,
+  "resumed_after_all_corrective_pg_children_exited": true
+}

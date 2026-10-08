@@ -1,0 +1,56 @@
+{
+  "status": "PASS_LOCAL_PREPARATION_AND_RULE_CHECKPOINT",
+  "recorded_at": "2026-10-04T02:47:37.298528+00:00",
+  "scope": "Synthetic shared followup preparation/rule and exact actor/UI fixes, not complete A2 retest or G3 Exit",
+  "actual_db": {
+    "target": "127.0.0.1:62513/pdos_test",
+    "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+    "head": "next_0026",
+    "business_groups_verified": 17,
+    "new_schema_migrations": 0
+  },
+  "issue_current_revision": 6,
+  "named_preparation_completed": true,
+  "A2_formal_revision": 4,
+  "A2_run_revision": 1,
+  "A2_run_status": "planned",
+  "A2_start_occupancy_usage_measurements_projections": 0,
+  "promise_command_constructed": false,
+  "promise_failure_raw": "retest-promise-preview-v1.log",
+  "rule_current_revision": 1,
+  "actual_qualified_observer_http": 200,
+  "complete_rule_sources": 16,
+  "observations": 0,
+  "named_reviews": 0,
+  "effectiveness": null,
+  "closed": false,
+  "actual_ui_helper": {
+    "passed": 28,
+    "full_build": false,
+    "browser": false
+  },
+  "actual_actor_control_pure": {
+    "passed": 62,
+    "failed": 0
+  },
+  "A_C_backend_or_manufacturing_UI_applied": false,
+  "selected_evidence_sha256s": {
+    "rule-window-readback-v2.json": "82c5fe090f4ecabf4ef16b658f5259219817913268330cdd76a213e0dfffc1d5",
+    "retest-rule-observer-http-v1.json": "47797a881ed3a3e6a3f124c0074d541e0d1595781a77567976d9276546339638",
+    "retest-rule-maker-http-check-v2.json": "cada44ececf48c4d7f8e39f9b847089397067e976ce62f6a1627f37bd00e584e",
+    "capa-text-ui-actual-checkpoint-v1.json": "dfe81c09c8653d6ab0706a441871a0533e9bfc2783632e098f0b6527e7abb4cb",
+    "followup-observer-actual-checkpoint-v1.json": "481c4ee7949823fdd9bdb6c3b1c0757b7f96763fed9ca2c33c07048d041ca344",
+    "capa-text-ui-core-source-v3.json": "9ae4b3011db7eb52c2f72f1e6fb69125e93a080cf734573551eadfe0a1c96d73",
+    "control-candidate-source-v7.json": "d108597551de47cc28ea79867123df1ecaf399d694103a5bc3be45d084ee28dc"
+  },
+  "private_raw_checkpoint_sha256s": {
+    "wave21-shared-case.json": "d8d599e1c12b2a2c27f46dea6fee3484f2cb44cea03e6e0af88ccbf2d812d3ef",
+    "checkpoint.json": "a792acdfdabeea321c4c557a471c84374e010815189cc2edfad55c59b11e44b1",
+    "wave22-shared-retest.json": "e44b7133f38d820f070f49b9e8f204cd1c24d04041a6185d65a10c5f31196565",
+    "wave22-followup-control.json": "f974b6e6baaecd3f7dfe9cc28ee16eea89bd97b4707b3b86aec325980516dc1a",
+    "wave22-root-rule-import-journal-v1.json": "422f2bcad545175a1ee91d118bedf7e918259565430285bcffff48cf05e6b75a",
+    "wave22-shared-test-fresh-37c270ad-521a-44ad-b186-3447a94906c1.json": "22fb7e597808f655a397481a5dfee9ec1ef60b33385638ce20eef453646a0db3"
+  },
+  "next": "Controlled formal Change/manufacturing schema and runtime integration; A2 needs separately legitimate future window/materials and full Source<=20 without rewriting expired originals",
+  "manual_or_production_exit": false
+}

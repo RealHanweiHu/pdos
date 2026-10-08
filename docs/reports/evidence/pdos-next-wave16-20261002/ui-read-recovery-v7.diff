@@ -1,0 +1,57 @@
+--- docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/workspace.tsx
++++ pdos-next/web/src/components/workspace.tsx
+@@ -60,6 +60,8 @@
+   const [error, setError] = useState("");
+   const [notice, setNotice] = useState("");
+   const [busy, setBusy] = useState(false);
++  const [readingFacts, setReadingFacts] = useState(false);
++  const factsReadLock = useRef(false);
+   const [draft, setDraft] = useState<Draft>(emptyDraft);
+   const [sourceId, setSourceId] = useState("");
+   const [line, setLine] = useState(1);
+@@ -102,6 +104,13 @@
+     setData(next);
+     setSourceId((current) => next.sources.some((s) => s.id === current) ? current : next.sources[0]?.id ?? "");
+   }, [productId, api]);
++  async function retryCurrentFacts() {
++    if (busy || factsReadLock.current || auth !== "ready" || !productId || data?.product.id === productId) return;
++    factsReadLock.current = true; setReadingFacts(true); setBusy(true); setError("");
++    try { await refresh(); }
++    catch (failure) { setError(failure instanceof Error ? failure.message : "当前产品事实暂时无法读取，请核对当前读取权限后重试。"); }
++    finally { factsReadLock.current = false; setReadingFacts(false); setBusy(false); }
++  }
+   useEffect(() => {
+     let active = true;
+     if (productId) api<Data>(`v1/products/${productId}/workspace`).then((next) => {
+@@ -177,7 +186,8 @@
+       {pending && !error && <div role="status" className="panel mt-5"><p>有一项原操作等待核对回执，重试会沿用同一请求。</p><Button variant="outline" className="mt-3" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button></div>}
+       {error && <div role="alert" className="panel mt-5 border-destructive"><p>{error}</p>{pending && <Button className="mt-3" variant="outline" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button>}</div>}
+       {notice && <p role="status" className="mt-4">{notice}</p>}
+-      {busy && <p role="status" className="mt-4 subtle">正在核对服务回执…</p>}
++      {busy && <p role="status" className="mt-4 subtle">{readingFacts ? "正在读取当前产品事实…" : "正在核对服务回执…"}</p>}
++      {auth === "ready" && productId && (!data || data.product.id !== productId) && (error || readingFacts) && <section className="panel mt-5"><p className="subtle">{readingFacts ? "正在按当前身份和产品读取事实；此次只读，不提交业务操作。" : "当前产品事实尚未取得。可按当前身份明确重试读取，不改变授权、草稿或原操作。"}</p><Button type="button" variant="outline" className="mt-3" disabled={busy || readingFacts} onClick={() => void retryCurrentFacts()}>重试读取当前事实</Button></section>}
+       </div>
+       {auth === "loading" ? <p role="status">正在载入你的工作…</p> : auth === "signed_out" ? <div className="panel mx-auto mt-12 max-w-lg">
+         <p className="subtle">独立新工程 · 合成预览</p><h1 className="mt-3 text-2xl font-semibold">从一份产品资料开始</h1>
+--- docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-loop.tsx
++++ pdos-next/web/src/components/builds/build-quality-loop.tsx
+@@ -69,7 +69,7 @@
+   function choose(patch: Partial<QualityLocal>) { if (!unlocked) return; sequence.current++; save(selectQualityScope(state.current, patch)); setInputs(null); setPreview(null); setLoading(true); void refresh().catch(failure => { const handled = qualityError(failure, true); if (handled.status === 401 || handled.status === 403) clearSensitive(); if (alive.current) setError(handled.message); }); }
+   function closePreview() { if (lock.current || state.current.pending) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
+   async function perform(waiting: QualityPending, element?: HTMLElement) {
+-    if (lock.current) return; const recovering = state.current.pending?.stage === "execute", requestedScope = scopeRef.current; sequence.current++; lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; save({ pending: waiting }); let current = waiting, committed = false;
++    if (lock.current) return; const recovering = state.current.pending?.stage === "execute", requestedScope = scopeRef.current; sequence.current++; setLoading(false); lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; save({ pending: waiting }); let current = waiting, committed = false;
+     try {
+       if (current.stage === "capture") {
+         const result = await api<unknown>(`v1/products/${product.id}/change-execution/captures`, current.request);
+--- docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-followup.tsx
++++ pdos-next/web/src/components/builds/build-quality-followup.tsx
+@@ -71,7 +71,7 @@
+   function choose(issueId: string, versionId = "") { if (!unlocked) return; try { sequence.current++; save(selectFollowupIssue(state.current, issueId, versionId)); setPreview(null); setInputs(null); setAddedRefs([]); setLoading(true); void refresh(false).catch(failure => { if (!alive.current || followupCancelled(failure)) return; const handled = followupError(failure, true); if (handled.status === 401 || handled.status === 403) clearSensitive(); setReadFailed(true); setLoading(false); setError(handled.message); }); } catch (failure) { setError(failure instanceof Error ? failure.message : "请选择实际固定问题。"); } }
+   function closePreview() { if (lock.current || (state.current.pending && !state.current.pending.reconfirmation)) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
+   async function perform(waiting: FollowupPending, element?: HTMLElement) {
+-    if (lock.current) return; const requestedScope = scopeRef.current, recovering = state.current.pending?.stage === "execute"; sequence.current++; lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; save({ pending: waiting }); let current = waiting, committed = false;
++    if (lock.current) return; const requestedScope = scopeRef.current, recovering = state.current.pending?.stage === "execute"; sequence.current++; setLoading(false); lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; save({ pending: waiting }); let current = waiting, committed = false;
+     try {
+       if (current.stage === "inputs") {
+         const value = await api<unknown>(`v1/products/${product.id}/quality-followup/inputs`, current.command);

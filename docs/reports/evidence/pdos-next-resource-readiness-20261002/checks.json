@@ -1,0 +1,87 @@
+{
+  "scope": "exclusive synthetic package only",
+  "checks": [
+    {
+      "name": "pytest",
+      "cwd": "pdos-next/server",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/resource_readiness",
+        "--confcutdir=tests/resource_readiness",
+        "-p",
+        "no:cacheprovider",
+        "-q"
+      ],
+      "exit_code": 0,
+      "log": "pytest.log"
+    },
+    {
+      "name": "ruff",
+      "cwd": "pdos-next/server",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--no-cache",
+        "pdos_next/domain/resource_readiness",
+        "pdos_next/schemas/resource_readiness",
+        "tests/resource_readiness"
+      ],
+      "exit_code": 0,
+      "log": "ruff.log"
+    },
+    {
+      "name": "format",
+      "cwd": "pdos-next/server",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--no-cache",
+        "--check",
+        "pdos_next/domain/resource_readiness",
+        "pdos_next/schemas/resource_readiness",
+        "tests/resource_readiness"
+      ],
+      "exit_code": 0,
+      "log": "format.log"
+    },
+    {
+      "name": "typecheck",
+      "cwd": "pdos-next/web",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+        "--project",
+        "src/components/resource_readiness/tsconfig.check.json",
+        "--noEmit",
+        "--incremental",
+        "false"
+      ],
+      "exit_code": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "eslint",
+      "cwd": "pdos-next/web",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/eslint",
+        "--no-cache",
+        "src/components/resource_readiness"
+      ],
+      "exit_code": 0,
+      "log": "eslint.log"
+    },
+    {
+      "name": "components",
+      "cwd": "pdos-next/web",
+      "command": [
+        "node",
+        "--test",
+        "src/components/resource_readiness/render.test.mjs"
+      ],
+      "exit_code": 0,
+      "log": "components.log"
+    }
+  ],
+  "all_passed": true
+}

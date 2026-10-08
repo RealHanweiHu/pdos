@@ -136,6 +136,14 @@ def configured_agent_runtime(
                 run_store=run_store,
                 budget_controller=budget_controller,
             )
+            from pdos_agent_runtime.graph import in_agent_graph
+
+            from app.ai.durable import configured_runtime
+
+            gateway.durable_runtime = (
+                None if in_agent_graph() else configured_runtime(values, engine=engine)
+            )
+            gateway.require_agent_graph = gateway.durable_runtime is not None or in_agent_graph()
             yield AgentRuntime(
                 engine=engine,
                 executor=AgentExecutor(

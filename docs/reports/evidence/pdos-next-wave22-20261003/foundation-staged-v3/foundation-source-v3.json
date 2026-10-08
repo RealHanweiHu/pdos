@@ -1,0 +1,61 @@
+{
+  "schema_version": "wave21-shared-foundation-source-v3",
+  "created_at": "2026-10-03T18:20:38.482932+00:00",
+  "status": "frozen_staged_not_executed",
+  "files": [
+    {
+      "path": ".local/wave21-case-staged/wave21_shared_case.py",
+      "sha256": "72124fd73785621445ac2068c4da3faf1b19174ee21d0aa1f7f64089a6f5be3d",
+      "future_target": "tools/wave21_shared_case.py"
+    },
+    {
+      "path": ".local/wave21-case-staged/test_wave21_shared_case.py",
+      "sha256": "0aeaa5201652cd935276479f058aec74753ecf0afb8fdabf7a457923107f79bc",
+      "future_target": "tools/tests/test_wave21_shared_case.py"
+    },
+    {
+      "path": ".local/wave21-case-staged/shared-case-contract-v1.md",
+      "sha256": "08af0d8ea54ae8833a898a89c8dced6839e30b59948745a2fcff4c0dc186889f",
+      "future_target": null
+    }
+  ],
+  "dependencies_observed_only": [
+    {
+      "path": "tools/wave15_seed.py",
+      "sha256": "d03460000b337f4540c1c4ea10312521d29b479439295fa1dae8a9538a747880"
+    },
+    {
+      "path": "server/pdos_next/api.py",
+      "sha256": "45fa2cd5f127cf220a3e033b0fdaeff1a4199a9bdcf9bd1cba9467946f22897c"
+    },
+    {
+      "path": "server/pdos_next/contracts.py",
+      "sha256": "94a7d820425f0ca9b885f3969886dd899a41a779c28f390d325fdb5406b10b4a"
+    },
+    {
+      "path": "server/pdos_next/service.py",
+      "sha256": "e4712878901eef8e2933482fc31db2f948767921722def6004b43c3eb135f9e9"
+    },
+    {
+      "path": "server/pdos_next/domain/projects/service.py",
+      "sha256": "7ee37e6712d53bdeb9c23732fdf250ba5e35d0a6aa01fd8cdab25739431e4256"
+    },
+    {
+      "path": "server/pdos_next/domain/configurations/service.py",
+      "sha256": "e4f03b7acf612ac3fdb83452bdc948c7821e11c5501d777c211f7c4d8ae972ac"
+    },
+    {
+      "path": "../docs/reports/evidence/pdos-next-wave21-20261003/implementation-contract.md",
+      "sha256": "be207b5682e1a2c864c40e9aace7c73b4d777fc5ad23e09a28e93c3b91ffa486"
+    }
+  ],
+  "scope": "one new staged driver and one new owned pure test; real server/tools/checkpoints untouched by this delivery",
+  "test_layouts": [
+    ".local/wave21-case-staged/test_wave21_shared_case.py -> sibling staged tool",
+    "tools/tests/test_wave21_shared_case.py -> parent tools/wave21_shared_case.py"
+  ],
+  "runtime_target_not_accessed": true,
+  "old_demo_not_instantiated": true,
+  "actual_business_execution": false,
+  "public_build_or_checks": false
+}

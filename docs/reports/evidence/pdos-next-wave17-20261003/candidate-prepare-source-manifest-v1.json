@@ -1,0 +1,55 @@
+{
+  "schema_version": "pdos-wave17-candidate-prepare-source-v1",
+  "created_at": "2026-10-03T12:15:01.716614+00:00",
+  "source_files": {
+    "pdos-next/staging/wave17/candidate_prepare.py": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+    "pdos-next/staging/wave17/test_candidate_prepare.py": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa",
+    "pdos-next/staging/wave17/candidate-prepare-contract.md": "54f1750d3e43e0d8b9137f58f4d29e0c4fe1eef13b3eb5dfba2b2d974ec45172"
+  },
+  "read_only_dependencies": {
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/anchor_owner.py": "02048fa237fa085149151a8277aea8c8fa23763f473df2a34887964787cb05c3",
+    "pdos-next/staging/wave17/anchor_storage.py": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+    "pdos-next/staging/wave17/fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "pdos-next/server/pdos_next/domain/capa_verification/service.py": "91c72ff1d49a794561af28c9a5dfcdef52d717588b46aa9390a00abd816798af",
+    "pdos-next/server/pdos_next/domain/capa_verification/schemas.py": "d97373d13d9bcf3a0087ac301885dd649a92537d9d61e7f16fc69d88a0a2745f",
+    "pdos-next/server/pdos_next/domain/quality_execution/evidence.py": "f9b128b0cff62607415d16824bd6a8c1a7e9b30c397b1252991f1ec76bd98903",
+    "pdos-next/server/pdos_next/domain/quality_execution/policy.py": "18987da3dcc09406abb09dabc5af99c1c21e627b857136b418a9fa490551755b",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "640bb0ce26dda5fe6ecc02caf1216ee3a5cec04d165ede119095f37ec5280f15",
+    "pdos-next/server/pdos_next/quality_result_bridge.py": "28eef312b51350f1085329c59a45d3dd28efafbda0b25a466dc0ce6c791d3077",
+    "pdos-next/server/pdos_next/service.py": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686"
+  },
+  "previous_fifth_sixth_segments_unchanged": {
+    "pdos-next/staging/wave17/candidate_commands.py": {
+      "expected_sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "actual_sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/test_candidate_commands.py": {
+      "expected_sha256": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+      "actual_sha256": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/candidate-command-contract.md": {
+      "expected_sha256": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b",
+      "actual_sha256": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/candidate_storage.py": {
+      "expected_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "actual_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/test_candidate_storage.py": {
+      "expected_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "actual_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/candidate-storage-contract.md": {
+      "expected_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "actual_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "matches": true
+    }
+  },
+  "scope": "Only three new seventh-segment staged files; no public model/API/migration/operation/permission registration."
+}

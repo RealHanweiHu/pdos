@@ -521,6 +521,7 @@ def change_execution_overview(
 ) -> dict[str, Any]:
     from app.domain.change_execution_overview import read
 
+    _access(engine, context, project_id, Action.CHANGE_VIEW)
     try:
         return read(engine, context=context, project_id=project_id, ecr_id=ecr_id)
     except (ProductWorkError, ProductWorkAccessError) as error:
@@ -607,6 +608,7 @@ def execution_results_read(
 ) -> dict[str, Any]:
     from app.domain.change_execution_results import read
 
+    _access(engine, context, project_id, Action.CHANGE_VIEW)
     try:
         return read(
             engine,
@@ -653,6 +655,7 @@ def execution_results_save(
 ) -> dict[str, Any]:
     from app.domain.change_execution_results import save
 
+    _access(engine, context, project_id, Action.TEST_RUN_RECORD)
     try:
         return save(
             engine, context=context, project_id=project_id, binding_id=binding_id, draft=body
@@ -672,6 +675,7 @@ def execution_results_confirm(
 ) -> dict[str, Any]:
     from app.domain.change_execution_results import confirm
 
+    _access(engine, context, project_id, Action.CHANGE_APPROVE)
     try:
         return confirm(
             engine,

@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "status": "PASS",
+  "tests": 43,
+  "checks": [
+    {
+      "command": [
+        "server/.venv/bin/ruff",
+        "check",
+        "server/pdos_next/capa_applicability_owner.py",
+        "server/tests/capa_effectiveness/test_actual_applicability_owner.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.012,
+      "log": "applicability-check-1-v1.log"
+    },
+    {
+      "command": [
+        "server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "server/pdos_next/capa_applicability_owner.py",
+        "server/tests/capa_effectiveness/test_actual_applicability_owner.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.013,
+      "log": "applicability-check-2-v1.log"
+    },
+    {
+      "command": [
+        "server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "server/tests/capa_effectiveness/test_actual_applicability_owner.py",
+        "-q",
+        "--tb=short"
+      ],
+      "exit_code": 0,
+      "seconds": 2.228,
+      "log": "applicability-check-3-v1.log"
+    }
+  ],
+  "ast": {
+    "files": [
+      "server/pdos_next/capa_applicability_owner.py",
+      "server/tests/capa_effectiveness/test_actual_applicability_owner.py"
+    ],
+    "status": "PASS"
+  },
+  "source_manifest": "applicability-owner-source-v1.json",
+  "limitations": [
+    "Real no-connect Session/UOW plus explicit storage/source/professional substitutes",
+    "No actual independent professional/bytes/PG/HTTP acceptance",
+    "Default action fulfillment remains unknown; no physical implementation owner configured"
+  ],
+  "earlier_local_checks": "41 passed before two new deadline/runtime tests; their initial regex-only assertions used message instead of DomainError.code and were repaired; no saved raw prefinal log."
+}

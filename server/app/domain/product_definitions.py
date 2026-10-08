@@ -198,7 +198,10 @@ def _resolve_content(
         value[key] = _fact(connection, context, getattr(content, key))
     for key in ("region_constraints", "service_requirements", "success_criteria"):
         value[key] = [_fact(connection, context, fact) for fact in getattr(content, key)]
+    from app.domain.product_categories import validate_parameter
+
     for index, item in enumerate(content.items):
+        validate_parameter(connection, context, space_id, line_id, value["items"][index], spec=True)
         if item.owner_user_id:
             _member(connection, context, space_id, item.owner_user_id, line_id=line_id)
         value["items"][index]["rationale"] = _fact(connection, context, item.rationale)

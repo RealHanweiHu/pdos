@@ -1,0 +1,12 @@
+{
+  "verified_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "verified_port": 62513,
+  "before_migration": "pdos-next/.local/pre-wave11-next_0013.dump",
+  "after_business": "pdos-next/.local/wave11-business.dump",
+  "mode": "0o600",
+  "sha256": "d6531252017fc40b29967811de9286c36b06d834ecfc6b23998f64537517d6d5",
+  "bytes": 37426780,
+  "catalog_checked": true,
+  "restore_performed": false,
+  "migration_roundtrip_before_business": "next_0013 → next_0014 → next_0013 → next_0014"
+}

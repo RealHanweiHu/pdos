@@ -111,7 +111,7 @@ export function UserManagement() {
       replaceUser(updated);
       setNotice(`${user.username} 的账户设置已更新`);
     } catch {
-      setActionError(`无法更新 ${user.username}。请确认权限和 Owner 保留规则。`);
+      setActionError(`无法更新 ${user.username}。请核对账户权限；改为外部角色前请先清空兼任模块。`);
     } finally {
       setBusyUserId(null);
     }

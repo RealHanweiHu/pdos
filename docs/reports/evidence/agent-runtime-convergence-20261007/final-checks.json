@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-10-07T16:13:00.508956+00:00",
+  "checks": [
+    {
+      "name": "original-adapter-mypy",
+      "exit_code": 0,
+      "log": "original-adapter-mypy.log",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "app/ai/durable.py",
+        "app/ai/durable_codec.py",
+        "app/ai/durable_worker.py",
+        "app/ai/durable_followup.py"
+      ],
+      "scope": "selected source; imported modules silent"
+    },
+    {
+      "name": "architecture-entry",
+      "exit_code": 0,
+      "log": "architecture-entry.log",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_durable_agent_architecture.py"
+      ],
+      "scope": "selected affected checks"
+    },
+    {
+      "name": "next-factory",
+      "exit_code": 0,
+      "log": "next-factory.log",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_agent_framework.py"
+      ],
+      "scope": "selected affected checks"
+    },
+    {
+      "name": "next-ruff",
+      "exit_code": 0,
+      "log": "next-ruff.log",
+      "command": [
+        "uv",
+        "run",
+        "--no-sync",
+        "ruff",
+        "check",
+        "pdos_next/agent_execution.py",
+        "pdos_next/workflows/worker.py",
+        "pdos_next/runtime.py",
+        "pdos_next/api.py",
+        "pdos_next/asgi.py",
+        "tests/test_agent_framework.py",
+        "tests/test_trusted_source_work.py"
+      ],
+      "scope": "selected affected checks"
+    }
+  ]
+}

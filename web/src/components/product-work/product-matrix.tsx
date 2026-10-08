@@ -11,7 +11,7 @@ import { request, type EvidenceContent, type ProductCatalog, type SourceRef } fr
 
 const field = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
 const lifecycles: Record<string, string> = { proposed: "拟议", developing: "开发中", available: "已上市", retired: "已退市" };
-const levels: Record<string, string> = { line: "产品线", family: "家族", platform: "平台", series: "系列", model: "型号", variant: "变体" };
+const levels: Record<string, string> = { line: "品类", family: "家族", platform: "平台", series: "系列", model: "型号", variant: "变体" };
 const kinds = { observed: "观察事实", derived: "推导", hypothesis: "假设" };
 const publications: Record<string, string> = { current: "当前已发布", missing: "尚无发布定义", withdrawn: "已撤回" };
 type Product = {
@@ -91,7 +91,7 @@ function ProductMatrixPanel({ base, catalog, initialRecordId, initialRunId }: Ma
   return <section className="space-y-4 rounded-lg border p-4">
     <header><h3 className="font-semibold">产品矩阵与上市窗口</h3><p className="mt-1 text-sm text-muted-foreground">从当前发布的产品定义比较定位与规格，尚未立项的产品也可加入。产品家族归属在下方维护。</p></header>
     <fieldset disabled={busy} className="min-w-0 space-y-3"><form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" onSubmit={event => { event.preventDefault(); void load(query); }}>
-      <label className="text-sm">产品线<select className={field} value={query.product_line_id ?? ""} onChange={event => setQuery({ ...query, product_line_id: event.target.value || null, root_id: null })}><option value="">全部可访问产品线</option>{catalog.nodes.filter(node => node.level === "line").map(node => <option key={node.id} value={node.id}>{node.name}</option>)}</select></label>
+      {!catalog.category_id && <label className="text-sm">品类<select className={field} value={query.product_line_id ?? ""} onChange={event => setQuery({ ...query, product_line_id: event.target.value || null, root_id: null })}><option value="">全部可访问品类</option>{catalog.nodes.filter(node => node.level === "line").map(node => <option key={node.id} value={node.id}>{node.name}</option>)}</select></label>}
       <label className="text-sm">家族 / 平台 / 系列范围<select className={field} value={query.root_id ?? ""} onChange={event => setQuery({ ...query, root_id: event.target.value || null })}><option value="">全部层级</option>{catalog.nodes.filter(node => (!query.product_line_id || node.product_line_id === query.product_line_id) && ["family", "platform", "series", "model"].includes(node.level)).map(node => <option key={node.id} value={node.id}>{levels[node.level]} · {node.code} · {node.name}</option>)}</select></label>
       <label className="text-sm">生命周期<select className={field} value={query.lifecycle ?? ""} onChange={event => setQuery({ ...query, lifecycle: event.target.value || null })}><option value="">全部状态</option>{Object.entries(lifecycles).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       <label className="text-sm">定义状态<select className={field} value={query.publication} onChange={event => setQuery({ ...query, publication: event.target.value })}><option value="all">全部（含缺项）</option>{Object.entries(publications).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>

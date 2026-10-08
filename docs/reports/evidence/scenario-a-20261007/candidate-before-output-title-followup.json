@@ -1,0 +1,12 @@
+{
+  "server/app/api/conversations.py": "0d44f09e6cf3ed29d1e6068da90c541806209b5685a11ca8f56b6c7dc65d4a9a",
+  "server/app/ai/conversation_reply.py": "d897d0d764cfaa80001f6a441475912043bac1b4accd363b796f15c1e4161992",
+  "server/app/ai/conversation_research.py": "a749c6798d3597b66c39c247dcca77bf0b5a3fbf2a4daef8665632c559bcd5b2",
+  "server/app/ai/context_projection.py": "ab448ab34275f1eab55c633241cfa0b5aec651b0632e5dde9b002ecf7e3a7802",
+  "server/app/domain/preproject_dialogue.py": "ef28f061c91c27a5437d7f5e19639f00873bdf358bdb19616a75670181c4c64e",
+  "server/app/domain/research_index.py": "789234dff549958952e3370d70413b73986d2161fead3b3c591c89e2a5ca9a98",
+  "server/app/ai/prompts/xiaopai_reply_v5.json": "16d307fc3d143f5d98717608bc04faa3836e6e3ed577596fc5de7ffb025eba4e",
+  "server/app/ai/prompts/preproject_dialogue_v6.json": "f5fc7c2a26a16778436d22a7a1cac534fff4f4209fade43c960b7344c61c568b",
+  "web/src/components/ai/xiaopai-provider.tsx": "5312e41cb55b0f015d52cc18258ae1e012a9a065c821ad300d853b3cf273016e",
+  "web/src/components/ai/xiaopai-session.tsx": "2912af781e4164600229e6f64ac27ab62b54b467693296fac7d5060bd1758762"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "FAIL_BEFORE_DOWNGRADE_ATTEMPT",
+  "error_sqlstate": "42P01",
+  "message": "relation public.pg_statistic does not exist",
+  "cause": "Privilege function may evaluate system-table rows before schema filter; constructed public name is incorrect. Root v2 uses actual relation OID.",
+  "downgrade_attempted": false,
+  "database_modified": false,
+  "original_staged_guard_unchanged": true
+}

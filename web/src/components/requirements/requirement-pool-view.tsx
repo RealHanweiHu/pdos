@@ -102,12 +102,9 @@ export function RequirementPoolView({
           {statusMessage}
         </p>
       ) : null}
-      <div className="flex items-start justify-between gap-4 border-b pb-4">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-4">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-            Intake
-          </p>
-          <h1 className="mt-1 text-lg font-semibold">需求池</h1>
+          <h1 className="text-lg font-semibold tracking-tight">需求池</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             记录客户需求与验收依据，为立项评估保留可信入口。
           </p>
@@ -123,7 +120,7 @@ export function RequirementPoolView({
         ) : null}
       </div>
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_384px]">
+      <div className={`mt-6 grid min-w-0 items-start gap-6 ${creatingCustomer || creating || convertingRequirement || editingRequirement ? "xl:grid-cols-[minmax(0,1fr)_384px]" : ""}`}>
         <RequirementList
           canEdit={canEdit}
           onSelect={onSelect}

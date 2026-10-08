@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "scope": "new quality_followup_host.py and tests/quality_followup_host only",
+  "source_files": {
+    "pdos-next/server/pdos_next/quality_followup_host.py": "6b67f2d9d20bfbd48d869aa2028ba92d84e85660e7a27d3e4fc8c049035470de",
+    "pdos-next/server/tests/quality_followup_host/__init__.py": "353706467a64c74565dd0d6a5796a31f1634ae5b8540d0b78c36ed3810dedc2a",
+    "pdos-next/server/tests/quality_followup_host/test_pure.py": "366454a46e8245556d2ad3ecf927686643862f7ceb7bdad2a68425534d6f4c4a"
+  },
+  "source_file_count": 3,
+  "previous_frozen_a_source_count": 9,
+  "previous_frozen_a_hashes_match": true,
+  "validation": {
+    "ruff": "passed",
+    "ast_compile": "3 files passed",
+    "owned_pure": {
+      "passed": 33,
+      "failed": 0,
+      "seconds": 0.85,
+      "command": ".venv/bin/python -m pytest tests/quality_followup_host --noconftest -q",
+      "log": "quality-host-pure.log"
+    },
+    "database": "not_run",
+    "http": "not_run",
+    "public_checks": "not_run"
+  },
+  "exports": [
+    "configure_host(engine)",
+    "append_issue existing frozen Protocol",
+    "record_consumed_confirmation(s,ctx,command,payload,module,confirmation)->UUID",
+    "require_consumed_proof(s,ctx,command,payload,*,tier)->UUID",
+    "OP_TIERS"
+  ],
+  "provenance": {
+    "session_and_transaction_object_binding": true,
+    "nested_transaction_binding": true,
+    "requires_real_persistent_unflushed_false_to_true_transition": true,
+    "must_hook_immediately_after_consumed_assignment_before_sql_or_flush": true,
+    "historical_consumed_bool_is_insufficient": true,
+    "no_second_consumption_or_preview": true
+  },
+  "write_scope": "existing IssueVersion + exact Current CAS; no new aggregate/Receipt/commit/Run effects",
+  "completion_assessment_default": null,
+  "remaining": [
+    "public consume hook and registrations",
+    "public model checks/monotonic migration/RLS/agent/deferred atom",
+    "explicit host synthetic completion classification ledger",
+    "central PG transaction/receipt/proof/CAS/rollback/replay validation"
+  ],
+  "evidence_files": {
+    "quality-host-integration-review.md": "6a818749b5f68336759ec7e7e5fddcec88770b8ec1930ce96e3ad6af5fc60777",
+    "quality-host-checkpoint.md": "e18cb913c4e01e14c1228c814629a583f44a9a54a1ee409a95b7f334c3693359",
+    "quality-host-pure.log": "5e807d2e9c7332ce363f01dca2bf182e04dbebeda6b68df29327522b57a109dc"
+  }
+}

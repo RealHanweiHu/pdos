@@ -1,0 +1,15 @@
+{
+  "id": "ce39b523-5a74-45a5-acff-b12ea5d40ea7",
+  "operation": "verification.schedule.promise",
+  "subject_type": "verification_request",
+  "subject_id": "5985d407-4c96-4942-bd15-c9ed561fedde",
+  "subject_revision": 6,
+  "writer_id": "0a41538d-e721-4783-866a-39c35d382eef",
+  "requester_id": "0a41538d-e721-4783-866a-39c35d382eef",
+  "created_at": "2026-10-03T01:34:10.042361+00:00",
+  "result": {
+    "id": "5985d407-4c96-4942-bd15-c9ed561fedde",
+    "revision": 6,
+    "status": "scheduled"
+  }
+}

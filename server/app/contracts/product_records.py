@@ -25,7 +25,7 @@ class ProductNode(ScopedRecord):
     level: Literal["line", "family", "platform", "series", "model", "variant"]
     parent_id: UUID | None
     lifecycle: Literal["proposed", "developing", "available", "retired"]
-    regions: tuple[Key, ...] = ()
+    regions: tuple[Text, ...] = ()
     channels: tuple[Key, ...] = ()
     definition_ref: SourceRef | None = None
 
@@ -275,6 +275,8 @@ class ProductStrategy(ScopedRecord):
 
 
 class SpecificationItem(Contract):
+    parameter_id: UUID | None = None
+    parameter_version: int | None = Field(default=None, ge=1)
     item_key: Key
     title: Text
     target_text: Text | None

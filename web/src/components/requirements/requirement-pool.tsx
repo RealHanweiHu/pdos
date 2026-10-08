@@ -84,7 +84,7 @@ export function RequirementPool() {
     );
   }
 
-  const canEdit = ["owner", "admin", "project_manager"].includes(identity.user.role);
+  const canEdit = ["owner", "admin", "product_manager", "project_manager"].includes(identity.user.role);
   async function logout() {
     setLoggingOut(true);
     try {

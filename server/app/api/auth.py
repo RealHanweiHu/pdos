@@ -24,6 +24,7 @@ from app.auth.repository import AuthContext, AuthRepository
 from app.auth.roles import Role
 from app.auth.service import AuthService
 from app.auth.tokens import TokenCodec
+from app.auth.work_modules import WorkModule
 from app.db.engine import get_engine
 from app.settings import Settings, get_settings
 
@@ -92,6 +93,7 @@ class PublicUser(BaseModel):
     role: Role
     email: str | None
     is_active: bool
+    work_modules: tuple[WorkModule, ...] = ()
 
 
 class IdentityResponse(BaseModel):
@@ -162,6 +164,7 @@ def public_identity(context: AuthContext) -> IdentityResponse:
             role=context.user.role,
             email=context.user.email,
             is_active=context.user.is_active,
+            work_modules=context.user.work_modules,
         ),
     )
 

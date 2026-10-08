@@ -1,0 +1,41 @@
+{
+  "scope": "C-owned staged model/index bounds only; no SQL/DB/HTTP/qualification",
+  "original_model_sha256": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+  "backup": {
+    "path": "pdos-next/.local/wave17-fact-storage-index-before-v2/fact_storage_models.py",
+    "mode": "0o600",
+    "directory_mode": "0o700"
+  },
+  "sources": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "d3df2e247dfbb2000925deb1cc86f06d906ff6e95d8839e99489b13de2e1c44a",
+    "pdos-next/staging/wave17/test_fact_storage_index_bounds.py": "0da4264a31b8490f225da9169103f618c990f7d536ae09cc362bc1fd0a82f7e6",
+    "pdos-next/staging/wave17/fact-storage-index-bounds-contract.md": "83d7d97f855485fb1e40e679d9b8066ce45265383c2675353333db87fcf65f52"
+  },
+  "unchanged_dependencies": {
+    "pdos-next/staging/wave17/facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "pdos-next/staging/wave17/test_fact_storage_codec.py": "6b7e124d5b01d06896fabc129b51160da96d96261779975a5cf9027e478d0726",
+    "pdos-next/staging/wave17/fact-storage-contract.md": "eb020013ea6f10c7ca8ee6959bc361ef878679317fe1ea485d9a5a6c6e9f9f85"
+  },
+  "raw_evidence": {
+    "fact-storage-index-ast-v2.log": "698c1c18cc627e07ce997e6683d4f2aff94ace4fce4c4007aeeba780395d10ca",
+    "fact-storage-index-check-result-v2.json": "20be0e65fdd683e783894710adedc7e16badd5ba0a567fb2360515b40a5f130c",
+    "fact-storage-index-ddl-v2.sql": "6684b77cde4616766638366b73904a968067e95185acbe4b412710372605fb3f",
+    "fact-storage-index-delta-v2.patch": "f25be7baf56e2b4182f9ff0084e44e307eb468bde17ce676db922e9e6a55636b",
+    "fact-storage-index-format-v2.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "fact-storage-index-pure-v2.log": "faef289354216fa923ea6d0c9100b4cf77e67454c0f6a0e11806408ab0891d95",
+    "fact-storage-index-ruff-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "fact-storage-index-widths-v2.json": "77bdffca4d9fea24a083ab3410dce133a14074e251bd461ff57e2e7f7aeded62"
+  },
+  "checks": {
+    "new_index_bounds": 24,
+    "affected_original_pure": 38,
+    "total_passed": 62,
+    "pytest_seconds": 2.21,
+    "ruff_exit": 0,
+    "format_check_exit": 0,
+    "ast_in_memory_compile_files": 2,
+    "db_http_public_checks_run": false
+  },
+  "pre_backup_error": "Initial repo-root .local path did not exist; failed mkdir wrote no source/backup. Corrected to existing pdos-next/.local and verified bytes/modes before source edit."
+}

@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-05T18:41:38.666135+00:00",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "target": "127.0.0.1:62513/pdos_test",
+  "head": "next_0028",
+  "scope": "actual original actor/token and fixed old Build/Run; HTTP GET only",
+  "business_commands": 0,
+  "qualification_imports": 0,
+  "model_calls": 0,
+  "api_health_status": 200,
+  "http_status": 401,
+  "elapsed_seconds": 0.153,
+  "response_sha256": "9572e34bfabaed8f4e629fee6a8a52aa44fde3c82031055d7573059ffbe88ad4",
+  "status": "ACTUAL_OLD_QUALITY_HTTP_REJECTED",
+  "code": "UNAUTHENTICATED",
+  "message": "\u4f1a\u8bdd\u5df2\u5931\u6548\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55\u3002",
+  "all_122_tenant_tables_unchanged": true,
+  "registered_tables": 122
+}

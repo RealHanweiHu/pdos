@@ -32,6 +32,11 @@ SUPPORTED_MEDIA_TYPES = {
     ".pdf": "application/pdf",
     ".eml": "message/rfc822",
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".doc": "application/msword",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".xls": "application/vnd.ms-excel",
 }
 
 
@@ -223,7 +228,12 @@ def extract_document_details(
     suffix = PurePath(safe_name).suffix.lower()
     media_type = SUPPORTED_MEDIA_TYPES.get(suffix)
     if media_type is None:
-        raise UnsupportedDocumentTypeError("only PDF, XLSX and EML are supported")
+        raise UnsupportedDocumentTypeError("supported formats: PDF, Word, PowerPoint, Excel, EML")
+    if suffix in {".docx", ".pptx", ".doc", ".ppt", ".xls"}:
+        from app.domain.office_documents import extract_office
+
+        fragments, details = extract_office(content, suffix)
+        return media_type, fragments, details
     if suffix == ".pdf":
         if not content.startswith(b"%PDF-"):
             raise DocumentExtractionError("file content is not a PDF")

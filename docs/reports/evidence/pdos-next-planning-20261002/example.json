@@ -1,0 +1,543 @@
+{
+  "label": "Synthetic calculation only",
+  "input": {
+    "snapshot_id": "synthetic-plan",
+    "version": "v1",
+    "as_of": "2026-10-02T01:00:00+00:00",
+    "calendars": [
+      {
+        "calendar_id": "synthetic-factory",
+        "version": "v1",
+        "timezone": "Asia/Shanghai",
+        "weekly": [
+          {
+            "weekday": 0,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 720
+              },
+              {
+                "start_minute": 780,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 1,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 720
+              },
+              {
+                "start_minute": 780,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 2,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 720
+              },
+              {
+                "start_minute": 780,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 3,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 720
+              },
+              {
+                "start_minute": 780,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 4,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 720
+              },
+              {
+                "start_minute": 780,
+                "end_minute": 1020
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "nodes": [
+      {
+        "node_id": "engineering",
+        "calendar_id": "synthetic-factory",
+        "work": {
+          "minimum": 120,
+          "maximum": 240,
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          },
+          "confidence": "medium"
+        },
+        "waiting": {
+          "minimum": 0,
+          "maximum": 0,
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          }
+        },
+        "allocation_basis": "Explicit synthetic single-unit assumption"
+      },
+      {
+        "node_id": "npi-preparation",
+        "calendar_id": "synthetic-factory",
+        "work": {
+          "minimum": 60,
+          "maximum": 120,
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          },
+          "confidence": "medium"
+        },
+        "waiting": {
+          "minimum": 0,
+          "maximum": 0,
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          }
+        },
+        "allocation_basis": "Explicit synthetic single-unit assumption"
+      },
+      {
+        "node_id": "verification",
+        "calendar_id": "synthetic-factory",
+        "work": {
+          "minimum": 60,
+          "maximum": 60,
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          },
+          "confidence": "medium"
+        },
+        "waiting": {
+          "minimum": 0,
+          "maximum": 0,
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          }
+        },
+        "allocation_basis": "Explicit synthetic single-unit assumption"
+      }
+    ],
+    "dependencies": [
+      {
+        "predecessor_id": "engineering",
+        "successor_id": "verification",
+        "relation": "FS",
+        "source": {
+          "source_id": "synthetic-example-input",
+          "version": "v1"
+        }
+      },
+      {
+        "predecessor_id": "npi-preparation",
+        "successor_id": "verification",
+        "relation": "FS",
+        "source": {
+          "source_id": "synthetic-example-input",
+          "version": "v1"
+        }
+      }
+    ]
+  },
+  "result": {
+    "dto_version": "planning.v1",
+    "algorithm_version": "planning.minute_forecast.v1",
+    "time_kind": "Forecast",
+    "disposition": "candidate",
+    "input_sha256": "21f142956d3b17b342e36930022c9d1ee802a7c629e07150e2a3dab90d91cbc1",
+    "candidate_sha256": "932639257cf1d279ab54e3c56a953250a5dfc857a633dfacead2684fd1bbc772",
+    "input_snapshot": {
+      "dto_version": "planning.v1",
+      "snapshot_id": "synthetic-plan",
+      "version": "v1",
+      "as_of": "2026-10-02T01:00:00Z",
+      "horizon_days": 366,
+      "calendars": [
+        {
+          "calendar_id": "synthetic-factory",
+          "version": "v1",
+          "timezone": "Asia/Shanghai",
+          "weekly": [
+            {
+              "weekday": 0,
+              "intervals": [
+                {
+                  "start_minute": 540,
+                  "end_minute": 720
+                },
+                {
+                  "start_minute": 780,
+                  "end_minute": 1020
+                }
+              ]
+            },
+            {
+              "weekday": 1,
+              "intervals": [
+                {
+                  "start_minute": 540,
+                  "end_minute": 720
+                },
+                {
+                  "start_minute": 780,
+                  "end_minute": 1020
+                }
+              ]
+            },
+            {
+              "weekday": 2,
+              "intervals": [
+                {
+                  "start_minute": 540,
+                  "end_minute": 720
+                },
+                {
+                  "start_minute": 780,
+                  "end_minute": 1020
+                }
+              ]
+            },
+            {
+              "weekday": 3,
+              "intervals": [
+                {
+                  "start_minute": 540,
+                  "end_minute": 720
+                },
+                {
+                  "start_minute": 780,
+                  "end_minute": 1020
+                }
+              ]
+            },
+            {
+              "weekday": 4,
+              "intervals": [
+                {
+                  "start_minute": 540,
+                  "end_minute": 720
+                },
+                {
+                  "start_minute": 780,
+                  "end_minute": 1020
+                }
+              ]
+            }
+          ],
+          "exceptions": [],
+          "ambiguous_time": "reject",
+          "timezone_rules_sha256": null
+        }
+      ],
+      "nodes": [
+        {
+          "node_id": "engineering",
+          "calendar_id": "synthetic-factory",
+          "work": {
+            "minimum": "120",
+            "maximum": "240",
+            "measure": "total",
+            "source": {
+              "source_id": "synthetic-example-input",
+              "version": "v1"
+            },
+            "confidence": "medium"
+          },
+          "waiting": {
+            "minimum": "0",
+            "maximum": "0",
+            "measure": "total",
+            "source": {
+              "source_id": "synthetic-example-input",
+              "version": "v1"
+            },
+            "confidence": "unknown"
+          },
+          "waiting_clock": "elapsed",
+          "parallel_units": "1",
+          "divisible_work": false,
+          "allocation_basis": "Explicit synthetic single-unit assumption",
+          "not_before": null,
+          "external_waits": [],
+          "resources": [],
+          "time_records": []
+        },
+        {
+          "node_id": "npi-preparation",
+          "calendar_id": "synthetic-factory",
+          "work": {
+            "minimum": "60",
+            "maximum": "120",
+            "measure": "total",
+            "source": {
+              "source_id": "synthetic-example-input",
+              "version": "v1"
+            },
+            "confidence": "medium"
+          },
+          "waiting": {
+            "minimum": "0",
+            "maximum": "0",
+            "measure": "total",
+            "source": {
+              "source_id": "synthetic-example-input",
+              "version": "v1"
+            },
+            "confidence": "unknown"
+          },
+          "waiting_clock": "elapsed",
+          "parallel_units": "1",
+          "divisible_work": false,
+          "allocation_basis": "Explicit synthetic single-unit assumption",
+          "not_before": null,
+          "external_waits": [],
+          "resources": [],
+          "time_records": []
+        },
+        {
+          "node_id": "verification",
+          "calendar_id": "synthetic-factory",
+          "work": {
+            "minimum": "60",
+            "maximum": "60",
+            "measure": "total",
+            "source": {
+              "source_id": "synthetic-example-input",
+              "version": "v1"
+            },
+            "confidence": "medium"
+          },
+          "waiting": {
+            "minimum": "0",
+            "maximum": "0",
+            "measure": "total",
+            "source": {
+              "source_id": "synthetic-example-input",
+              "version": "v1"
+            },
+            "confidence": "unknown"
+          },
+          "waiting_clock": "elapsed",
+          "parallel_units": "1",
+          "divisible_work": false,
+          "allocation_basis": "Explicit synthetic single-unit assumption",
+          "not_before": null,
+          "external_waits": [],
+          "resources": [],
+          "time_records": []
+        }
+      ],
+      "dependencies": [
+        {
+          "predecessor_id": "engineering",
+          "successor_id": "verification",
+          "relation": "FS",
+          "lag_minutes": "0",
+          "lag_clock": "working",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          }
+        },
+        {
+          "predecessor_id": "npi-preparation",
+          "successor_id": "verification",
+          "relation": "FS",
+          "lag_minutes": "0",
+          "lag_clock": "working",
+          "source": {
+            "source_id": "synthetic-example-input",
+            "version": "v1"
+          }
+        }
+      ],
+      "resources": []
+    },
+    "timezone_rule_digests": [
+      [
+        "synthetic-factory",
+        "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+      ]
+    ],
+    "status": "complete",
+    "project_finish": {
+      "earliest": "2026-10-02T04:00:00Z",
+      "latest": "2026-10-02T07:00:00Z"
+    },
+    "nodes": [
+      {
+        "node_id": "engineering",
+        "calendar_id": "synthetic-factory",
+        "calendar_version": "v1",
+        "original_timezone": "Asia/Shanghai",
+        "start": {
+          "earliest": "2026-10-02T01:00:00Z",
+          "latest": "2026-10-02T01:00:00Z"
+        },
+        "finish": {
+          "earliest": "2026-10-02T03:00:00Z",
+          "latest": "2026-10-02T06:00:00Z"
+        },
+        "remaining_work_start": {
+          "earliest": "2026-10-02T01:00:00Z",
+          "latest": "2026-10-02T01:00:00Z"
+        },
+        "remaining_work_finish": {
+          "earliest": "2026-10-02T03:00:00Z",
+          "latest": "2026-10-02T06:00:00Z"
+        },
+        "status": "range",
+        "origin": "estimate",
+        "issues": [],
+        "latest_start": null,
+        "latest_finish": null,
+        "float_minutes": null,
+        "working_float_minutes": null,
+        "critical": null
+      },
+      {
+        "node_id": "npi-preparation",
+        "calendar_id": "synthetic-factory",
+        "calendar_version": "v1",
+        "original_timezone": "Asia/Shanghai",
+        "start": {
+          "earliest": "2026-10-02T01:00:00Z",
+          "latest": "2026-10-02T01:00:00Z"
+        },
+        "finish": {
+          "earliest": "2026-10-02T02:00:00Z",
+          "latest": "2026-10-02T03:00:00Z"
+        },
+        "remaining_work_start": {
+          "earliest": "2026-10-02T01:00:00Z",
+          "latest": "2026-10-02T01:00:00Z"
+        },
+        "remaining_work_finish": {
+          "earliest": "2026-10-02T02:00:00Z",
+          "latest": "2026-10-02T03:00:00Z"
+        },
+        "status": "range",
+        "origin": "estimate",
+        "issues": [],
+        "latest_start": null,
+        "latest_finish": null,
+        "float_minutes": null,
+        "working_float_minutes": null,
+        "critical": null
+      },
+      {
+        "node_id": "verification",
+        "calendar_id": "synthetic-factory",
+        "calendar_version": "v1",
+        "original_timezone": "Asia/Shanghai",
+        "start": {
+          "earliest": "2026-10-02T03:00:00Z",
+          "latest": "2026-10-02T06:00:00Z"
+        },
+        "finish": {
+          "earliest": "2026-10-02T04:00:00Z",
+          "latest": "2026-10-02T07:00:00Z"
+        },
+        "remaining_work_start": {
+          "earliest": "2026-10-02T03:00:00Z",
+          "latest": "2026-10-02T06:00:00Z"
+        },
+        "remaining_work_finish": {
+          "earliest": "2026-10-02T04:00:00Z",
+          "latest": "2026-10-02T07:00:00Z"
+        },
+        "status": "range",
+        "origin": "estimate",
+        "issues": [
+          {
+            "code": "dependency_uncertain",
+            "message": "Dependency endpoint is a range or unknown",
+            "node_ids": [
+              "verification"
+            ],
+            "source_ids": [
+              "synthetic-example-input"
+            ],
+            "blocking": false
+          },
+          {
+            "code": "dependency_uncertain",
+            "message": "Dependency endpoint is a range or unknown",
+            "node_ids": [
+              "verification"
+            ],
+            "source_ids": [
+              "synthetic-example-input"
+            ],
+            "blocking": false
+          }
+        ],
+        "latest_start": null,
+        "latest_finish": null,
+        "float_minutes": null,
+        "working_float_minutes": null,
+        "critical": null
+      }
+    ],
+    "issues": [
+      {
+        "code": "dependency_uncertain",
+        "message": "Dependency endpoint is a range or unknown",
+        "node_ids": [
+          "verification"
+        ],
+        "source_ids": [
+          "synthetic-example-input"
+        ],
+        "blocking": false
+      },
+      {
+        "code": "dependency_uncertain",
+        "message": "Dependency endpoint is a range or unknown",
+        "node_ids": [
+          "verification"
+        ],
+        "source_ids": [
+          "synthetic-example-input"
+        ],
+        "blocking": false
+      }
+    ],
+    "capacity_status": "not_requested",
+    "float_status": "not_calculated"
+  }
+}

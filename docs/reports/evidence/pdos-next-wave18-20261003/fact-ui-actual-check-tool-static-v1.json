@@ -1,0 +1,15 @@
+{
+  "schema_version": "pdos-wave18-offline-ui-tool-static-v1",
+  "file": "pdos-next/tools/wave18_actual_fact_ui.cjs",
+  "sha256": "9673335985b5b9db50993d22ff811cbdad800602bbf9fe05896ababc93f7f3f0",
+  "check": {
+    "command": "node --check pdos-next/tools/wave18_actual_fact_ui.cjs",
+    "exit_code": 0
+  },
+  "actual_responses_checked": false,
+  "limits": [
+    "No DB/HTTP/browser/public validation performed.",
+    "No fake successful response substituted.",
+    "Only subsequent real four JSON files can establish actual parser result."
+  ]
+}

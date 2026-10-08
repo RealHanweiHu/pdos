@@ -1,0 +1,41 @@
+{
+  "files": {
+    "pdos-next/server/tests/test_launch_storage.py": {
+      "before": "e44a028d68b30e9c9c68816839b741877239b204e648ca59915d7bfca339b88c",
+      "after": "bdceaeaa13d3abdffeb633d77e72980b9870e3663b1a0154de22f07f0cd18ef0"
+    },
+    "pdos-next/server/tests/test_resources/test_transactions.py": {
+      "before": "5026c03156f6ab3c7ed3ac093df66e2f6a39b78120771d09b58ef686f48959d9",
+      "after": "e1ed6f45b7624600fbad72141f5d1baae26dd8add0dc286139d63b86545f4275"
+    },
+    "pdos-next/server/tests/verification_launch/fixtures.py": {
+      "before": "278d44528f773f2b2fa16fc6fdad56873413e3fc9ea685dbf029d28710277f1e",
+      "after": "10e5c57889064fd47be6044f80197eecb6c07f46079153e6e6dcb63eef81ff5f"
+    }
+  },
+  "frozen_at": "2026-10-03T02:26:05.381321+00:00",
+  "server_production_unchanged": true,
+  "default_fixtures_preserved": true,
+  "profile": {
+    "window_minutes": 45,
+    "fact_minutes": 60,
+    "synthetic_upstream_minutes": 120
+  },
+  "profile_scope": "Only strict indirect launch_work profile on six-fault storage function; upstream synthetic qualification and real Grants/LoginSessions extended before import and original two T2 signatures. Production roles, policy, clock, guards and token TTL unchanged.",
+  "manual_default_factory": "launch_work.__wrapped__(work, request=None)",
+  "confirmation_strategy": "Each fault obtains a fresh ordinary T1; full rollback baseline taken after that preview; all tokens stay unconsumed.",
+  "original_storage_pid": 97082,
+  "original_storage_started_utc": "2026-10-03T02:20:15Z",
+  "final_fixture_mtime_utc": "2026-10-03T02:23:02.403770Z",
+  "required_recheck": "Fresh six-fault storage function using final fixture hash; original process cannot establish final fixture provenance.",
+  "original_storage_outcome": {
+    "passed_default_orphan_cases": 2,
+    "failed_final_profile_case": 1,
+    "failure_code": "RESOURCE_NOT_READY",
+    "failure_stage": "test.run.plan preview",
+    "production_guard_preserved": true,
+    "log": "joint-tests-test_launch_storage.log",
+    "pytest_elapsed_seconds": 820.59,
+    "collection_warning": "Imported SQLAlchemy TestResourceReservation model is not a test class; all three explicit functions were collected."
+  }
+}

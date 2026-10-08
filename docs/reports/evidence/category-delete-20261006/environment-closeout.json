@@ -1,0 +1,29 @@
+{
+  "task_owned_container": "32f0ada653b08d5dba656f3fb89befa97197022c5ae0cec942baae957c6cec80",
+  "database": "pdos_test",
+  "port": 53992,
+  "head": "0429_preview_legacy_usage_holds",
+  "private_backup": "/Users/huhanwei/pdos-preview-backups/category-delete-closeout-20261007-024914/pdos_test-after-delete-restore.dump",
+  "backup_bytes": 4288675,
+  "backup_sha256": "d28c65585379b35b6ddc288708de486c34f9e905287a6433670c3624903efb74",
+  "backup_archive_list_verified": true,
+  "remaining_tenants": 0,
+  "cleanup_method": "clear_test_tenants; zero-tenant query asserted before stopping container",
+  "owned_services_stopped": {
+    "3051": true,
+    "8851": true
+  },
+  "owned_container_stopped": true,
+  "owned_volume_retained": true,
+  "browser_closed": true,
+  "borrowed_container_left_untouched_after_detachment": true,
+  "main_preview_listeners_preserved": {
+    "3000": true,
+    "8000": true
+  },
+  "no_actual_restore_drill": true,
+  "closeout_recovery": [
+    "Initial cleanup refused before writes because TEST_DATABASE_URL was omitted; resumed with explicit verified URL.",
+    "Cleanup, zero-tenant check and stop completed, but metadata JSON failed on CleanupResult serialization; saved scalar metadata after independently verifying stopped container and listeners."
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "pg-04": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_current_policy_missing_and_withdrawn_do_not_default_to_low_risk"
+    ],
+    "exit_code": 0,
+    "seconds": 1108.45
+  },
+  "pg-03": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_create_concurrent_titles_are_one_failure_identity_and_one_created_event"
+    ],
+    "exit_code": 0,
+    "seconds": 1142.72
+  },
+  "pg-05": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_outbox_failure_rolls_back_issue_version_pointer_and_common_confirmation"
+    ],
+    "exit_code": 0,
+    "seconds": 1256.52
+  },
+  "pg-01": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_fixed_failure_replay_across_title_key_and_later_event_keeps_one_created_receipt"
+    ],
+    "exit_code": 0,
+    "seconds": 1430.4
+  },
+  "pg-02": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_one_result_event_with_two_failures_creates_two_then_merge_retains_recheck_block"
+    ],
+    "exit_code": 1,
+    "seconds": 1668.02
+  },
+  "pg-00": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_definite_fail_create_triage_containment_capa_retains_test_and_unknown_conclusions"
+    ],
+    "exit_code": 0,
+    "seconds": 1671.07
+  },
+  "pg-06": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_source_revocation_and_named_scope_apply_before_successful_receipt_replay"
+    ],
+    "exit_code": 0,
+    "seconds": 1016.8
+  },
+  "pg-08": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_policy_and_issue_storage_is_immutable_scoped_and_agent_has_zero_write"
+    ],
+    "exit_code": 0,
+    "seconds": 984.06
+  },
+  "pg-09": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_projection_or_arbitrary_event_cannot_relabel_an_unverified_result_as_failure"
+    ],
+    "exit_code": 0,
+    "seconds": 870.92
+  },
+  "pg-07": {
+    "nodes": [
+      "tests/quality_execution/test_transactions.py::test_original_bytes_read_runtime_revocation_is_atomic"
+    ],
+    "exit_code": 0,
+    "seconds": 2157.32
+  },
+  "pg-11": {
+    "nodes": [
+      "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba"
+    ],
+    "exit_code": 1,
+    "seconds": 2113.0
+  },
+  "pg-10": {
+    "nodes": [
+      "tests/change_execution/test_transactions.py::test_current_issue_capa_create_cross_key_one_receipt_exact_sources_and_private_scope"
+    ],
+    "exit_code": 0,
+    "seconds": 2278.18
+  },
+  "pg-12": {
+    "nodes": [
+      "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture"
+    ],
+    "exit_code": 1,
+    "seconds": 1912.55
+  }
+}

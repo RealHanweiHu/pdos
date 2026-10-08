@@ -1,0 +1,14 @@
+{
+  "schema_version": "wave22-fresh-request-controlled-application-v1",
+  "state": "applied_two_owned_files_not_business_executed",
+  "files": [
+    {
+      "path": "tools/wave22_shared_fresh_request.py",
+      "sha256": "edfb4c7f6b64c5e5ab20f00fdfa0d5e235b8e518b9b5784faba26a791382e73a"
+    },
+    {
+      "path": "tools/tests/test_wave22_shared_fresh_request.py",
+      "sha256": "d0df207f63820160953a034039ee76f6bbb32488b90b25d7635290edf72c22f2"
+    }
+  ]
+}

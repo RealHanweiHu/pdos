@@ -1,0 +1,81 @@
+{
+  "schema_version": "staged-candidate-form-source.v1",
+  "scope": "Three new staged form files only; no public API/view or business operation",
+  "owned_files": [
+    {
+      "path": "pdos-next/staging/wave17/candidate-form-contract.ts",
+      "before_exists": false,
+      "before_sha256": null,
+      "after_sha256": "3bc6423e8bad1cdb5cb0f373c067976191fc449e617e338dd693bbe44f237ca3"
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-form.tsx",
+      "before_exists": false,
+      "before_sha256": null,
+      "after_sha256": "ab1421e58d030d545fee5d561a1123a28f700e43df66bc4821d1606dfb439c2d"
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-form-contract.md",
+      "before_exists": false,
+      "before_sha256": null,
+      "after_sha256": "5cb81af931098db1543039d6a947fb6ea1703396482fcbc53a2b6ea4606896fe"
+    }
+  ],
+  "frozen_ui_files": [
+    {
+      "path": "pdos-next/staging/wave17/ui-view.tsx",
+      "before_sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "after_sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-view-contract.md",
+      "before_sha256": "0f1191fd7289dc90798fce1c5fc12ce99658378adf1d0a91f8ad46f1dba7c411",
+      "after_sha256": "0f1191fd7289dc90798fce1c5fc12ce99658378adf1d0a91f8ad46f1dba7c411",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-contract.ts",
+      "before_sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "after_sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state.ts",
+      "before_sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "after_sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state.test.ts",
+      "before_sha256": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+      "after_sha256": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state-contract.md",
+      "before_sha256": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7",
+      "after_sha256": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7",
+      "unchanged": true
+    }
+  ],
+  "read_contracts": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/schemas.py",
+      "sha256": "d97373d13d9bcf3a0087ac301885dd649a92537d9d61e7f16fc69d88a0a2745f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+      "sha256": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/schemas.py",
+      "sha256": "7c2106760407b5966e8f3220dd08ece22a12b1cede079cbaa073ac61b64db8a8"
+    },
+    {
+      "path": "pdos-next/web/AGENTS.md",
+      "sha256": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb"
+    }
+  ],
+  "python_candidate_schema_status": "Actual staging/wave17/candidate_commands.py read; A still performing owned freeze, no HTTP writer installed"
+}

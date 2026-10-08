@@ -88,7 +88,16 @@ def read(
                 .where(
                     u.c.tenant_id == ctx.tenant.id,
                     u.c.is_active.is_(True),
-                    u.c.role.in_(("owner", "admin", "project_manager", "engineer", "quality")),
+                    u.c.role.in_(
+                        (
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        )
+                    ),
                     or_(
                         u.c.role.in_(("owner", "admin")),
                         exists(

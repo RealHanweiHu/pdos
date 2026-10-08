@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "head": "next_0028",
+  "registered_tables": 122,
+  "retained_tables": 111,
+  "up_down_up_and_alembic_check": {
+    "adopted_actual_steps": "migration-recovery-v2.json",
+    "all_four_exit_codes": 0,
+    "no_rerun": true
+  },
+  "head26_entire_catalog_restored": true,
+  "head28_entire_catalog_restored": true,
+  "all_111_original_rows_verified_unchanged_by_v2": true,
+  "schema_names_types_nullability_catalog_exact": true,
+  "schema_check_v2_false_assumption": "Old ALTER ADD COLUMN appends historical fields; ordinal order is not a named ORM schema mismatch. PostgreSQL numeric comma whitespace canonicalized. No database tables reordered.",
+  "preexisting_ordinal_differences": [
+    "principals",
+    "products",
+    "grants",
+    "artifact_versions",
+    "work_requests",
+    "runs",
+    "outbox_events",
+    "confirmations",
+    "model_invocations",
+    "model_budget_reservations",
+    "operational_resource_occupancies"
+  ],
+  "new_11_tables_exact_ordinal_force_rls_lifecycle_guards_and_zero_rows": true,
+  "all_registered_tables_agent_direct_writes": 0,
+  "original_failure_evidence": [
+    "migration-roundtrip-v1.json",
+    "migration-recovery-v1.json",
+    "migration-recovery-v2.json"
+  ],
+  "source_stable": true,
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c"
+}

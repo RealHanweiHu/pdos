@@ -1,0 +1,32 @@
+{
+  "status": "PASS_SYNTHETIC_PREPARE",
+  "started_at": "2026-10-03T15:54:31.769673+00:00",
+  "action": "prepare",
+  "target": "127.0.0.1:62513/pdos_test",
+  "steps": [
+    {
+      "step": "actual-inputs",
+      "http_status": 200,
+      "duration_seconds": 31.233,
+      "response_sha256": "0805d0b55df157086b0f61c05039c9dabb83d01a2c2070a1d0ee6631cb908553",
+      "error_code": null
+    },
+    {
+      "step": "actual-preview",
+      "http_status": 200,
+      "duration_seconds": 31.739,
+      "response_sha256": "33d57b8dfe3836c586684c15c1c2ac4fd422aacdfce4dfcf176f557ce39563f0",
+      "error_code": null
+    }
+  ],
+  "model_calls": 0,
+  "source_manifest_sha256": "59964d1e50c34aaad649e398b29cf8f4680ae445534c9a8852f05a92c5b13e66",
+  "full_read_count": 19,
+  "actual_13_material_preview": true,
+  "original_command_sha256": "00a82934702613c013d9fd1ba8961117c8436bc796ee0b7196f8dc043d8b7ce3",
+  "finished_at": "2026-10-03T15:55:35.243680+00:00",
+  "added_runtime_sources": [],
+  "removed_runtime_sources": [],
+  "changed_runtime_sources": [],
+  "source_stable": true
+}

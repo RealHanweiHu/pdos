@@ -1,0 +1,56 @@
+{
+  "recorded_at": "2026-10-03T19:41:17.192299+00:00",
+  "scope": "exactly twelve Root-applied control/verification files; existing frozen544 core catalog kept separately; not full tree",
+  "files": {
+    "tools/wave21_shared_case.py": "72124fd73785621445ac2068c4da3faf1b19174ee21d0aa1f7f64089a6f5be3d",
+    "tools/tests/test_wave21_shared_case.py": "0aeaa5201652cd935276479f058aec74753ecf0afb8fdabf7a457923107f79bc",
+    "tools/wave22_shared_authority.py": "d44f92e26353b6a8a02e5a11e4faf2ef7e772e22457bc4dbd12742fca4487e71",
+    "tools/tests/test_wave22_shared_authority.py": "707a536284b0e5fdadfc8705104953da16b847954b5e6d84daf7948329b8b962",
+    "tools/wave22_authority_readback.py": "713fc9e0080bf2d12fc07060831bfbc126bb8c635eab06c618da878c91347513",
+    "tools/tests/test_wave22_authority_readback.py": "2b589d1372c21176b4e9db8cfc0081c23917d5e8d52cf48c2eaaf625f1e8cd1c",
+    "tools/wave22_shared_build.py": "3911be2ab31f651bc8447db1ddb4551ce20e1b0eff39e4196a41d09fd5109cc6",
+    "tools/tests/test_wave22_shared_build.py": "51ccfc53862be2969702789781ced7821667484cb60459885c6eea77219c23b3",
+    "tools/wave22_shared_test.py": "e1613219fec3fd4ff8b6c954c3f023905a5290499ac47bb3240d40a8230e9659",
+    "tools/tests/test_wave22_shared_test.py": "b6d0be746b89496f49e8f5139146de830629d1cdc017550ce576d45eeb7655a3",
+    "tools/named_build_decision_material.py": "a78ac9c0556399df891a96436466b26ee24c1380ea0d8589d10db9a7ae23eb17",
+    "tools/wave22_retained_readback.py": "b600403b6ff61af0f1f82bd725cab4164fb49cf624d75f9151629aa6fdafc270"
+  },
+  "checks": {
+    "shared_foundation": {
+      "actual_count": 37,
+      "log": "foundation-actual-pure-v1.log"
+    },
+    "shared_authority": {
+      "actual_count": 42,
+      "scope": "no-connect pure driver; static imports corrected without behavior change"
+    },
+    "authority_readback": {
+      "actual_count": 39,
+      "scope": "owned no-connect verifier; actual readback v2 separately PASS"
+    },
+    "shared_build": {
+      "actual_count": 44,
+      "scope": "v3 actual-layout no-connect control"
+    },
+    "shared_test": {
+      "actual_count": 97,
+      "log": "test-actual-layout-pure-v6.log",
+      "static": "test-v4-controlled-application-v1.json",
+      "scope": "actual layout frozen v4 no-connect pure, 1.41 sec"
+    },
+    "named_material": {
+      "staged_count": 9,
+      "scope": "frozen same source helper, raw staged evidence only"
+    }
+  },
+  "counts_not_summed": true,
+  "first_test_check_zero_collected": "test-actual-layout-pure-v1.log (unittest command collected zero; excluded)",
+  "actual_db_and_http_evidence_separate": true,
+  "business_checkpoint": "test-generation-planned-actual-readback-v1.json",
+  "full_design_completion": false,
+  "retained_errors": [
+    "test-actual-layout-pure-v5.log: wrong path zero collected excluded",
+    "test-unsubmitted-plan-readback-v1.json: legacy ensure_ascii True hash retained; v2 rechecked same unchanged body and zero original writes",
+    "Root v4 application evidence relative-path failure after copy; source+test and corrected proof subsequently verified"
+  ]
+}

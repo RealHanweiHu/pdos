@@ -1,0 +1,26 @@
+{
+  "status": "PASS_SYNTHETIC_SAVE",
+  "started_at": "2026-10-03T15:58:34.838679+00:00",
+  "action": "save",
+  "target": "127.0.0.1:62513/pdos_test",
+  "steps": [
+    {
+      "step": "actual-save",
+      "http_status": 200,
+      "duration_seconds": 47.223,
+      "response_sha256": "f3bfa941ec850e599919e5efa5ebef1aec391cec807cfff791330993fff515a3",
+      "error_code": null
+    }
+  ],
+  "model_calls": 0,
+  "source_manifest_sha256": "59964d1e50c34aaad649e398b29cf8f4680ae445534c9a8852f05a92c5b13e66",
+  "original_command_sha256": "00a82934702613c013d9fd1ba8961117c8436bc796ee0b7196f8dc043d8b7ce3",
+  "receipt_id": "025f344a-db46-4003-9f8c-fceb23155719",
+  "fact_id": "def79536-096a-49b5-b08e-d8fc53af7b63",
+  "original_request_replay_same_receipt": false,
+  "finished_at": "2026-10-03T15:59:22.675697+00:00",
+  "added_runtime_sources": [],
+  "removed_runtime_sources": [],
+  "changed_runtime_sources": [],
+  "source_stable": true
+}

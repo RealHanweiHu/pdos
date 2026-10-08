@@ -1,0 +1,47 @@
+{
+  "wave": 16,
+  "scope": "new Wave16 BFF test only",
+  "status": "static_only_tests_not_run",
+  "owned_source": {
+    "path": "pdos-next/web/src/app/api/[...path]/wave16-route.test.ts",
+    "sha256": "f9e238a5964be2f1f64877082574649d3246c63fee8cd2bb2ab98f6ee3db7e8c"
+  },
+  "actual_dependencies_read_only": [
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "1c94099e657f564a2030dd8a9ec738f46f5daf6e49dc2fca93a1d55156461888"
+    },
+    {
+      "path": "pdos-next/web/src/lib/request-origin.ts",
+      "sha256": "c0e2ddc00d747f0aae1f325e256cb8f32f9ef6fbe81e59ec0173007d46173f34"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "2f876d4b1b73851305dc1c365d494d63829f96af984b647b9a660a6bdcc072a3"
+    }
+  ],
+  "revision_contract": {
+    "minimum": 1,
+    "maximum": 2147483647,
+    "must_be_safe_integer": true,
+    "get_requires_canonical_positive_decimal": true
+  },
+  "checks_performed": {
+    "typescript_ast_parse": "passed",
+    "commonjs_es2022_transpile": "passed",
+    "vm_script_compile_without_evaluation": "passed",
+    "diagnostics": 0,
+    "test_call_sites": 19,
+    "statically_materialized_test_cases": 30,
+    "vm_executed": false,
+    "tests_executed": false,
+    "database_executed": false,
+    "http_executed": false,
+    "public_build_executed": false
+  },
+  "runtime_result": null,
+  "pending": [
+    "Root must execute the actual new test file against the frozen public BFF candidate.",
+    "This evidence provides no real domain authority, Receipt or database acceptance."
+  ]
+}

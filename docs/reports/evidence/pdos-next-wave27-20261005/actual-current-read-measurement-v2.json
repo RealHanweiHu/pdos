@@ -1,0 +1,321 @@
+{
+  "schema_version": "pdos-actual-current-read-measurement-v2",
+  "input": {
+    "report_name": "actual-current-read-profile-v4.json",
+    "report_sha256": "5ae3352fb8e6d516ff8521cbf1406ce9c293e34916d91ab17d4214c607c902f9",
+    "root_declared_candidate": "candidate-v4",
+    "case_label": "wave27_real_flow",
+    "profiler_sha256": "7342f055e7bff7ae6be0d5c96d3e231c67d16140d33095db3ab70c1f4dc0a4cd"
+  },
+  "completion": {
+    "critical_conditions_normalized_missing_zero": {
+      "active_owner_calls_at_exit": 0,
+      "unfinished_queries": 0,
+      "listener_cleanup_failures": 0,
+      "target_changed_during_measurement": 0,
+      "unmatched_completion_events": 0,
+      "query_observation_failures": 0,
+      "owner_observation_failures": 0,
+      "owner_calls_without_exact_engine_binding": 0
+    },
+    "observed_callback_completion_valid": true,
+    "conditions": {
+      "unattributed_worker_section_queries": 71478,
+      "active_owner_calls_at_exit": 0,
+      "observed_threads": 14,
+      "unfinished_queries": 0
+    },
+    "full_http_phase_sql_attribution_available": false
+  },
+  "wall": {
+    "context_ns": 505542949292,
+    "root_sections": {
+      "actual_start_preview": {
+        "calls": 1,
+        "inclusive_ns": 12211062458,
+        "exclusive_ns": 12211062458
+      },
+      "actual_start_response_loss": {
+        "calls": 1,
+        "inclusive_ns": 42289627667,
+        "exclusive_ns": 42289627667
+      },
+      "api_precommit_fault": {
+        "calls": 1,
+        "inclusive_ns": 42718951125,
+        "exclusive_ns": 42718951125
+      },
+      "deferred_sql_negatives": {
+        "calls": 1,
+        "inclusive_ns": 83379354958,
+        "exclusive_ns": 83379354958
+      },
+      "future_window_wait": {
+        "calls": 1,
+        "inclusive_ns": 216315069917,
+        "exclusive_ns": 216315069917
+      },
+      "original_request_recovery": {
+        "calls": 1,
+        "inclusive_ns": 12973068208,
+        "exclusive_ns": 12973068208
+      },
+      "plan_promise": {
+        "calls": 1,
+        "inclusive_ns": 81754025542,
+        "exclusive_ns": 81754025542
+      }
+    },
+    "root_labelled_exclusive_ns": 491641159875,
+    "root_unlabelled_residual_ns": 13901789417,
+    "explicit_api_section_ns": 110192709458,
+    "future_window_wait_ns": 216315069917,
+    "fixture_setup_isolated_duration_available": false,
+    "fixture_note": "Report has no dedicated fixture/setup label; plan_promise is its own labelled phase and residual is not assumed fixture time."
+  },
+  "owners": {
+    "front._recheck": {
+      "calls": 166,
+      "failures": 0,
+      "inclusive_ns": 12592303997,
+      "exclusive_ns": 12592303997
+    },
+    "physical._basis": {
+      "calls": 176,
+      "failures": 0,
+      "inclusive_ns": 8329370425,
+      "exclusive_ns": 8329370425
+    },
+    "physical._inspect": {
+      "calls": 33,
+      "failures": 0,
+      "inclusive_ns": 57216283957,
+      "exclusive_ns": 57216283957
+    },
+    "resources._load": {
+      "calls": 60,
+      "failures": 0,
+      "inclusive_ns": 139912283713,
+      "exclusive_ns": 133045869372
+    },
+    "retained.inspect": {
+      "calls": 2,
+      "failures": 0,
+      "inclusive_ns": 6019383917,
+      "exclusive_ns": 351437793
+    }
+  },
+  "sql": {
+    "aggregate": {
+      "count": 104191,
+      "failures": 2,
+      "elapsed_ns": 191523191006,
+      "executemany_calls": 8
+    },
+    "worker_unattributed": {
+      "count": 71478,
+      "failures": 0,
+      "elapsed_ns": 130912445133,
+      "executemany_calls": 4
+    },
+    "worker_unattributed_by_owner": {
+      "front._recheck": {
+        "count": 3154,
+        "failures": 0,
+        "elapsed_ns": 5801442184,
+        "executemany_calls": 0
+      },
+      "physical._basis": {
+        "count": 2289,
+        "failures": 0,
+        "elapsed_ns": 3887863807,
+        "executemany_calls": 0
+      },
+      "physical._inspect": {
+        "count": 15865,
+        "failures": 0,
+        "elapsed_ns": 28515944542,
+        "executemany_calls": 0
+      },
+      "resources._load": {
+        "count": 30351,
+        "failures": 0,
+        "elapsed_ns": 56033874068,
+        "executemany_calls": 0
+      },
+      "unattributed": {
+        "count": 19819,
+        "failures": 0,
+        "elapsed_ns": 36673320532,
+        "executemany_calls": 4
+      }
+    },
+    "by_owner": {
+      "front._recheck": {
+        "count": 4610,
+        "failures": 0,
+        "elapsed_ns": 8271326709,
+        "executemany_calls": 0
+      },
+      "physical._basis": {
+        "count": 3377,
+        "failures": 0,
+        "elapsed_ns": 5812091351,
+        "executemany_calls": 0
+      },
+      "physical._inspect": {
+        "count": 20953,
+        "failures": 0,
+        "elapsed_ns": 37871089425,
+        "executemany_calls": 0
+      },
+      "resources._load": {
+        "count": 48147,
+        "failures": 0,
+        "elapsed_ns": 88365446410,
+        "executemany_calls": 0
+      },
+      "retained.inspect": {
+        "count": 150,
+        "failures": 0,
+        "elapsed_ns": 204862368,
+        "executemany_calls": 0
+      },
+      "root": {
+        "count": 7135,
+        "failures": 2,
+        "elapsed_ns": 14325054211,
+        "executemany_calls": 4
+      },
+      "unattributed": {
+        "count": 19819,
+        "failures": 0,
+        "elapsed_ns": 36673320532,
+        "executemany_calls": 4
+      }
+    },
+    "by_root_or_unattributed_section": {
+      "deferred_sql_negatives": {
+        "count": 30319,
+        "failures": 2,
+        "elapsed_ns": 55795525639,
+        "executemany_calls": 4
+      },
+      "plan_promise": {
+        "count": 9,
+        "failures": 0,
+        "elapsed_ns": 23369666,
+        "executemany_calls": 0
+      },
+      "unattributed": {
+        "count": 71478,
+        "failures": 0,
+        "elapsed_ns": 130912445133,
+        "executemany_calls": 4
+      },
+      "unsectioned": {
+        "count": 2385,
+        "failures": 0,
+        "elapsed_ns": 4791850568,
+        "executemany_calls": 0
+      }
+    }
+  },
+  "source_bindings": {
+    "physical._basis": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_basis",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "physical._inspect": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_inspect",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "front._recheck": {
+      "module": "pdos_next.domain.verification_front.service",
+      "qualname": "_recheck",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_front/service.py",
+      "file_sha256": "dcb1196a83cd28fbb3a41e53322c75a2ee9ecb83520ebbf6b5472d0dd491293c"
+    },
+    "resources._load": {
+      "module": "pdos_next.domain.test_resources.service",
+      "qualname": "_load",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/service.py",
+      "file_sha256": "a588bdef2d51375d17f6b0caf4534d89ce3ba4fc7aecf893ed20bac350a32d03"
+    },
+    "retained.inspect": {
+      "module": "pdos_next.domain.test_resources.retained",
+      "qualname": "inspect_retained_execution",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/retained.py",
+      "file_sha256": "aa8179e86d2766daafa2910a9fb2e08c290d9a9e34f3fbe34d68b9c88d591716"
+    }
+  },
+  "interpretation": [
+    "Worker SQL sections are all unattributed; never allocate them to an open Root label.",
+    "Nested owner inclusive times overlap and must not be added; concurrent sums can exceed wall time.",
+    "SQL aggregate time is an execution-interval sum, not HTTP wall time or an achieved speedup.",
+    "Only the same Engine and declared module attributes are observed; cached local aliases and other Engines/processes can be outside scope.",
+    "Existing Root-only 4.12s SQL measurement is not reused as an API conclusion.",
+    "The report does not include DB port/marker/head; bind those from Root's actual atomic execution evidence."
+  ],
+  "next_priority_candidates": [
+    {
+      "priority": 1,
+      "owner": "resources._load",
+      "title": "先缩窄资源完整读取的重复路径",
+      "evidence": {
+        "owner": {
+          "calls": 60,
+          "failures": 0,
+          "inclusive_ns": 139912283713,
+          "exclusive_ns": 133045869372
+        },
+        "sql": {
+          "count": 48147,
+          "failures": 0,
+          "elapsed_ns": 88365446410,
+          "executemany_calls": 0
+        },
+        "worker_sql": {
+          "count": 30351,
+          "failures": 0,
+          "elapsed_ns": 56033874068,
+          "executemany_calls": 0
+        }
+      },
+      "qualification": "This case's aggregate identifies a measurement/optimization candidate; it does not prove which individual guard is redundant or a safe speedup.",
+      "guard_boundary": "Preserve final complete current proof, Source/ACL/issuer/qualification/clock/UOW/lock/sentinel checks; no global current-state cache or weaker readset."
+    },
+    {
+      "priority": 2,
+      "owner": "physical._inspect",
+      "title": "再查固定样件 owner 的重复来源/父对象读取",
+      "evidence": {
+        "owner": {
+          "calls": 33,
+          "failures": 0,
+          "inclusive_ns": 57216283957,
+          "exclusive_ns": 57216283957
+        },
+        "sql": {
+          "count": 20953,
+          "failures": 0,
+          "elapsed_ns": 37871089425,
+          "executemany_calls": 0
+        },
+        "worker_sql": {
+          "count": 15865,
+          "failures": 0,
+          "elapsed_ns": 28515944542,
+          "executemany_calls": 0
+        }
+      },
+      "qualification": "This case's aggregate identifies a measurement/optimization candidate; it does not prove which individual guard is redundant or a safe speedup.",
+      "guard_boundary": "Preserve final complete current proof, Source/ACL/issuer/qualification/clock/UOW/lock/sentinel checks; no global current-state cache or weaker readset."
+    }
+  ],
+  "performance_improvement_proven": false
+}

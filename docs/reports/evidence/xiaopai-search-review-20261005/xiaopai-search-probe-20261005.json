@@ -1,0 +1,7 @@
+{
+  "keyword_hits": 1,
+  "natural_sentence_status": "no_results",
+  "local_miss_status": "no_results",
+  "configured_remote_ignored_when_local_exists": true,
+  "only_superseded_document_still_marks_local_configured": true
+}

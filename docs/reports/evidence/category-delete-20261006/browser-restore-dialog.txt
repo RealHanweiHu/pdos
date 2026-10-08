@@ -1,0 +1,62 @@
+### Page
+- Page URL: http://127.0.0.1:3051/product-work
+- Page Title: 产品管理工作台 · PDOS
+- Console: 0 errors, 12 warnings
+### Snapshot
+```yaml
+- generic:
+  - alert
+  - generic [aria-hidden]:
+    - link:
+      - /url: "#main-content"
+      - text: 跳到主要内容
+    - generic:
+      - banner:
+        - generic:
+          - generic [aria-hidden]: P
+          - generic: PDOS
+        - generic:
+          - link:
+            - /url: /search
+          - link:
+            - /url: /capture
+          - button
+          - button
+      - navigation:
+        - generic:
+          - generic: 产品管理工作台
+          - button: 展开导航
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - heading [level=1]: 品类
+              - paragraph: 从客户需求、新品想法或产品迭代开始一份提案。
+            - generic:
+              - button [pressed]: 返回品类列表
+              - group:
+                - button [pressed]
+                - button
+              - button: 新建品类
+              - button: 刷新
+          - generic:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /product-work?category=494d44bc-5b27-4799-af61-2d81b7b2e3a5
+                  - generic:
+                    - generic: 删除验证·汽车充气泵
+                    - generic: 1 个用户群 · 1 个地域 · 1 个场景 · 1 个研究问题
+                  - generic: 已归档
+                - generic:
+                  - button [expanded]: 恢复
+  - button [aria-hidden]
+  - dialog [ref=f3e176]:
+    - heading "恢复品类“删除验证·汽车充气泵”？" [level=2] [ref=f3e177]
+    - paragraph [ref=f3e178]: 恢复后将重新显示在品类列表，保留原资料、成员权限和版本历史。
+    - generic [ref=f3e179]:
+      - button "取消" [active] [ref=f3e180] [cursor=pointer]
+      - button "确认恢复" [ref=f3e181] [cursor=pointer]
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-07T02-45-05-527Z.log#L12-L17

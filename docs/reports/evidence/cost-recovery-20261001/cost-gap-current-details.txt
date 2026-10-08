@@ -1,0 +1,143 @@
+- alert
+- link "跳到主要内容":
+  - /url: "#main-content"
+- complementary:
+  - link "PDOS 工作区":
+    - /url: /my-work
+    - generic: P
+    - generic: PDOS
+  - navigation "主导航":
+    - paragraph: 工作
+    - list:
+      - link "我的工作":
+        - /url: /my-work
+        - generic: 我的工作
+      - link "驾驶舱":
+        - /url: /
+        - generic: 驾驶舱
+    - paragraph: 项目
+    - list:
+      - link "项目工作区":
+        - /url: /projects
+        - generic: 项目工作区
+      - link "组合与阻塞":
+        - /url: /portfolio
+        - generic: 组合与阻塞
+    - paragraph: 产品
+    - list:
+      - link "产品管理工作台":
+        - /url: /product-work
+        - generic: 产品管理工作台
+      - link "需求池":
+        - /url: /requirements
+        - generic: 需求池
+      - link "开发案例":
+        - /url: /cases
+        - generic: 开发案例
+    - paragraph: AI 与知识
+    - list:
+      - link "小Pai":
+        - /url: /ask
+        - generic: 小Pai
+      - link "Review 收件箱":
+        - /url: /ai-review
+        - generic: Review 收件箱
+      - link "知识库":
+        - /url: /knowledge
+        - generic: 知识库
+  - link "设置":
+    - /url: /settings/security
+    - generic: 设置
+  - link "Fixture project_manager · 账户安全":
+    - /url: /settings/security
+    - generic: F
+    - paragraph: Fixture project_manager
+    - paragraph: Supply PG fixture
+- banner:
+  - button "收起侧栏" [expanded]:
+  - navigation "当前位置":
+    - generic "Supply PG fixture"
+    - generic: 项目
+    - generic: 项目工作区
+  - link "搜索":
+    - /url: /search
+  - link "现场采集":
+    - /url: /capture
+  - button "切换为深色主题":
+  - button "退出登录":
+- main:
+  - paragraph: 项目工作区 / PRJ-one
+  - heading "成本恢复联验·my_work" [level=1]
+  - generic: 进行中
+  - generic: EVT
+  - button "切换项目（2）"
+  - button "项目设置":
+  - region "项目详情":
+    - tablist "项目工作区标签":
+      - tab "总览"
+      - tab "项目阶段"
+      - tab "工作项" [selected]
+      - tab "计划"
+      - tab "评审与交付"
+      - tab "资料与协作"
+    - tabpanel "工作项":
+      - navigation "工作视图":
+        - button "工作清单"
+        - button "工程·变更"
+        - button "试制·测试·质量"
+        - button "物料·供应"
+      - group "工作项类型":
+        - button "任务，0项": 任务0
+        - button "问题，1项" [pressed]: 问题1
+        - button "风险，0项": 风险0
+      - region "项目问题":
+        - heading "问题" [level=3]
+        - paragraph: 跟踪分析、整改和验证；关闭关键问题时核对责任人与证据。
+        - generic: 1 条
+        - generic "新建问题"
+        - option "低"
+        - option "中" [selected]
+        - option "高"
+        - option "关键"
+        - list:
+          - button "查看问题详情 硬件成本超标" [expanded]: 硬件成本超标
+          - generic: 已关闭
+          - generic: 高
+          - generic: 工程
+          - button "重开问题"
+          - paragraph: Cost Gap：硬件 / unit 计算版本：c5f77acb-6669-457f-81fd-62355d184509 目标：5；成本：6.000000；差额：1.000000 CNY 办理依据：实际超标一元 范围变化须重新核对，回到目标内不代替原问题验证与关闭。
+          - generic "问题清单导入来源"
+          - generic "物料异常与原问题"
+          - generic "历史决策来源与明确关联"
+          - generic "通告来源与具名审阅"
+          - generic "Cost Gap问题与后续重算"
+          - paragraph: 明确超标项可创建或关联原问题。同一目标版本和费用范围只登记一次；后续同口径计算自动沿原问题保留观察，反复超标不会重复建单，回到目标内不会自动关闭问题。
+          - button "刷新问题与观察"
+          - paragraph: 已登记Cost Gap
+          - generic: 硬件 · 单位成本 · 硬件成本超标 · 本次计算回到目标内 · 问题 closed
+          - button "原依据／后续观察"
+          - paragraph: 硬件 · 单位成本 · 问题 closed
+          - link "办理原问题 · 硬件成本超标":
+            - /url: /projects?project=c235fb31-a31d-4023-bbca-d8e3e4126376&tab=work-items&entity_id=791b8cbe-cfe2-45e5-8d90-9190174d6b32
+          - paragraph: 当前关闭依据：最新同口径成本已恢复，可由验证人核对原问题
+          - paragraph: 记录原目标／费用范围：实际超标一元。问题关闭后若再超标，请沿原问题重开流程办理。
+          - generic "最初超标计算与固定范围"
+          - paragraph: 历次观察
+          - generic: v2 · 本次计算回到目标内 · 2026-10-02T03:58:56.126725+00:00
+          - button "查看本次原计算"
+          - generic: v1 · 仍超目标 · 2026-10-02T03:58:55.912770+00:00
+          - button "查看本次原计算"
+          - paragraph: 所选观察 v2 · 同一已登记费用范围的新计算，沿原问题追踪；不自动关闭或重开问题
+          - paragraph: 本次计算回到目标内 · 硬件 · 单位成本目标
+          - paragraph: 目标 5 → 成本 4.000000；差额 -1.000000 CNY。
+          - paragraph: 目标版本、费用构成、BOM、数量及税费口径固定；恢复仅描述此计算，不代替验证、关闭或工程变更批准。
+          - generic "本次费用构成与原件"
+          - generic "反馈产品定义与产品经理处置"
+          - generic "围绕本成本资料发起多专业讨论"
+          - generic "结构化成本建议与运行记录"
+          - generic "降本备选方案、代价与正式变更"
+          - generic "产品流程要求的补充资料"
+          - generic "质量升级与 NCR/CAPA 关联"
+        - button "收起异常处理记录" [expanded]
+        - generic "异常来源与已有问题"
+- button "打开小Pai":

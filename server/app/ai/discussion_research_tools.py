@@ -22,16 +22,22 @@ from app.ai.reach import (
     ReachService,
 )
 from app.ai.reach_transport import PublicReachTransport
-from app.ai.research_search import SearxSearchProvider
 from app.ai.rollout_guard import require_live_key
 from app.auth.roles import Action
 from app.contracts.runtime_records import Observation
 from app.db.schema import tables
 from app.domain.evidence import EvidenceService, EvidenceValidationError
 from app.domain.product_workspace import ProductWorkError, _plain, _role
+from app.domain.research_search import resolve_search_provider
 from app.settings import get_settings
 
 TOOLS = {"search": "research.search_public", "read": "research.capture_snapshot"}
+
+
+def _tavily_key() -> str | None:
+    secret = get_settings().research_tavily_api_key
+    value = secret.get_secret_value().strip() if secret else ""
+    return value or None
 
 
 def observations(c: Connection, tenant: UUID, run: UUID) -> list[dict[str, Any]]:
@@ -213,7 +219,18 @@ def execute(
     try:
         before_read()
         if choice.action == "search":
-            provider = SearxSearchProvider(get_settings().research_search_endpoint)
+            provider = resolve_search_provider(
+                engine,
+                endpoint=get_settings().research_search_endpoint,
+                tenant_id=row["tenant_id"],
+                tavily_api_key=_tavily_key(),
+                firecrawl_api_key=(
+                    get_settings().research_firecrawl_api_key.get_secret_value().strip()
+                    if get_settings().research_firecrawl_api_key
+                    else None
+                ),
+                before_attempt=before_read,
+            )
             result = provider.search(choice.target or "", language="auto", time_range=None, limit=5)
             status = (
                 "partial"
@@ -227,6 +244,8 @@ def execute(
                 "hits": result.hits,
                 "warnings": result.warnings,
                 "response_digest": result.response_digest,
+                "provider_key": result.provider_key or provider.key,
+                "providers_tried": list(result.providers_tried or (provider.key,)),
                 "reference": None,
                 "notice": "搜索命中仅作线索，必须读取实际原文快照才可引用",
             }
@@ -270,6 +289,8 @@ def execute(
             "failed",
             "SEARCH_NOT_CONFIGURED"
             if not get_settings().research_search_endpoint
+            and _tavily_key() is None
+            and not get_settings().research_firecrawl_api_key
             else "SEARCH_UNAVAILABLE",
         )
         data = {

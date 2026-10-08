@@ -13,6 +13,7 @@ from app.ai.application_recovery import try_resume
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.capability_contract import CapabilityRollout, resolve_capability
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.intake_ai_context import (
     CAPABILITY,
@@ -149,6 +150,7 @@ class IntakeAiRuns:
                 items.append(value)
             return {"items": items, "truncated": len(runs) > 30, **generation_state()}
 
+    @agent_entry
     def create(
         self, ctx: AuthContext, conversation: UUID, identity: UUID, body: IntakeRunRequest
     ) -> dict[str, Any]:
@@ -280,6 +282,7 @@ class IntakeAiRuns:
                 )
         return self.execute(ctx, run)
 
+    @agent_entry
     def execute(self, ctx: AuthContext, run: RowMapping) -> dict[str, Any]:
         gateway = self.gateway
         if gateway is None:

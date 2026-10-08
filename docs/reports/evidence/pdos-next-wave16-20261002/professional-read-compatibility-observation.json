@@ -1,0 +1,60 @@
+{
+  "status": 200,
+  "elapsed": 20.895,
+  "keys": [
+    "authority_by_project",
+    "blockers",
+    "capabilities",
+    "current_by_request",
+    "has_more",
+    "preparations",
+    "requests",
+    "unavailable_count"
+  ],
+  "requests": 7,
+  "preparations": 2,
+  "states": [
+    {
+      "revision": 1,
+      "status": "draft",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 2,
+      "status": "draft",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 3,
+      "status": "offered",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 4,
+      "status": "accepted",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 5,
+      "status": "scheduled",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 6,
+      "status": "executing",
+      "zero_occupancy": false,
+      "has_actual_start": true
+    },
+    {
+      "revision": 7,
+      "status": "reported",
+      "zero_occupancy": true,
+      "has_actual_start": true
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "status": "PASS_SYNTHETIC_SAVED_READ",
+  "started_at": "2026-10-03T16:00:12.421665+00:00",
+  "action": "saved-read",
+  "target": "127.0.0.1:62513/pdos_test",
+  "steps": [
+    {
+      "step": "current-context",
+      "http_status": 200,
+      "duration_seconds": 49.156,
+      "response_sha256": "9e25de8e44a2a09435082dc2a2c780f218f4c9d1626d80a6c1c94ac3c4375342",
+      "error_code": null
+    }
+  ],
+  "model_calls": 0,
+  "source_manifest_sha256": "59964d1e50c34aaad649e398b29cf8f4680ae445534c9a8852f05a92c5b13e66",
+  "current_rule": true,
+  "selectable_original_records": 1,
+  "source_choices": 25,
+  "current_issue_revision": 6,
+  "observation_enabled": true,
+  "named_review_enabled": false,
+  "effectiveness_enabled": false,
+  "close_enabled": false,
+  "receipt_id": "025f344a-db46-4003-9f8c-fceb23155719",
+  "fact_id": "def79536-096a-49b5-b08e-d8fc53af7b63",
+  "history_readback": true,
+  "observation_complete_unknown": true,
+  "incomplete_sampling_and_interval": true,
+  "actual_proof_id": "94bc6286-7834-4d06-8455-c3e1c6d624c7",
+  "full_read_count": 19,
+  "finished_at": "2026-10-03T16:01:02.124845+00:00",
+  "added_runtime_sources": [],
+  "removed_runtime_sources": [],
+  "changed_runtime_sources": [],
+  "source_stable": true
+}

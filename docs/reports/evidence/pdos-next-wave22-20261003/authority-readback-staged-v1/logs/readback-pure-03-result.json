@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "-p",
+    "no:cacheprovider",
+    "-q",
+    "-o",
+    "addopts=",
+    "--rootdir",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave22-authority-staged",
+    "test_wave22_authority_readback.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 1.578,
+  "no_db_http": true
+}

@@ -1,0 +1,292 @@
+{
+  "groups": {
+    "pure": {
+      "exit_code": 1,
+      "elapsed_seconds": 15.12,
+      "passed": 958
+    },
+    "build_operational_facts-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 27.72,
+      "passed": 4
+    },
+    "build_operational_facts-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 21.63,
+      "passed": 3
+    },
+    "build_operational_facts-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 36.76,
+      "passed": 6
+    },
+    "build_start-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 66.98,
+      "passed": 4
+    },
+    "build_start-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 72.0,
+      "passed": 4
+    },
+    "build_operational_facts-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 24.67,
+      "passed": 3
+    },
+    "build_start-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 93.68,
+      "passed": 4
+    },
+    "build_start-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 127.95,
+      "passed": 5
+    },
+    "sample_handoff-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 106.46,
+      "passed": 1
+    },
+    "sample_handoff-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 173.99,
+      "passed": 2
+    },
+    "sample_handoff-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 207.82,
+      "passed": 2
+    },
+    "sample_handoff-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 242.16,
+      "passed": 2
+    },
+    "verification_handoff-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 497.21,
+      "passed": 3
+    },
+    "verification_handoff-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 480.62,
+      "passed": 3
+    },
+    "verification_handoff-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 485.59,
+      "passed": 3
+    },
+    "verification_handoff-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 577.48,
+      "passed": 3
+    },
+    "test_resources-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 505.81,
+      "passed": 2
+    },
+    "test_resources-0": {
+      "exit_code": 1,
+      "elapsed_seconds": 1154.99,
+      "passed": 2
+    },
+    "test_resources-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 860.6,
+      "passed": 2
+    },
+    "test_resources-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 928.21,
+      "passed": 2
+    },
+    "test_build_execution-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 142.83,
+      "passed": 15
+    },
+    "verification_launch-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 855.48,
+      "passed": 3
+    },
+    "test_build_execution-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 173.53,
+      "passed": 15
+    },
+    "test_build_execution-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 126.6,
+      "passed": 15
+    },
+    "test_build_execution-3": {
+      "exit_code": 1,
+      "elapsed_seconds": 125.29,
+      "passed": 14
+    },
+    "test_verification_execution-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 69.71,
+      "passed": 16
+    },
+    "test_verification_execution-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 87.39,
+      "passed": 6
+    },
+    "test_verification_execution-2": {
+      "exit_code": 1,
+      "elapsed_seconds": 76.19,
+      "passed": 4
+    },
+    "products-test_definition_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 7.55,
+      "passed": 9
+    },
+    "test_verification_execution-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 81.76,
+      "passed": 5
+    },
+    "products-test_variants_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 26.72,
+      "passed": 16
+    },
+    "professional_authority-test_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 29.73,
+      "passed": 27
+    },
+    "tests-test_build_comparison": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.02,
+      "passed": 5
+    },
+    "providers-test_persistent_budget_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 12.59,
+      "passed": 24
+    },
+    "tests-test_build_readiness": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.01,
+      "passed": 41
+    },
+    "tests-test_build_start_common": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.02,
+      "passed": 8
+    },
+    "verification_launch-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 1250.67,
+      "passed": 3
+    },
+    "tests-test_checkpoint_recovery": {
+      "exit_code": 0,
+      "elapsed_seconds": 9.59,
+      "passed": 12
+    },
+    "tests-test_configurations": {
+      "exit_code": 0,
+      "elapsed_seconds": 37.88,
+      "passed": 25
+    },
+    "tests-test_durable_evidence": {
+      "exit_code": 0,
+      "elapsed_seconds": 12.1,
+      "passed": 18
+    },
+    "tests-test_handoff_common": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.02,
+      "passed": 7
+    },
+    "tests-test_launch_common": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.01,
+      "passed": 7
+    },
+    "tests-test_builds": {
+      "exit_code": 0,
+      "elapsed_seconds": 78.73,
+      "passed": 26
+    },
+    "tests-test_build_demand": {
+      "exit_code": 0,
+      "elapsed_seconds": 98.88,
+      "passed": 25
+    },
+    "tests-test_original_security": {
+      "exit_code": 0,
+      "elapsed_seconds": 28.24,
+      "passed": 26
+    },
+    "tests-test_project_first_plan": {
+      "exit_code": 0,
+      "elapsed_seconds": 19.16,
+      "passed": 19
+    },
+    "test_resources-test_rules": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.52,
+      "passed": 37
+    },
+    "tests-test_cost_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 235.09,
+      "passed": 37
+    },
+    "verification_front-test_read_concurrency_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 4.04,
+      "passed": 2
+    },
+    "tests-test_trusted_source_work": {
+      "exit_code": 0,
+      "elapsed_seconds": 16.63,
+      "passed": 34
+    },
+    "tests-test_supply_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 195.72,
+      "passed": 29
+    },
+    "verification_launch-2": {
+      "exit_code": 1,
+      "elapsed_seconds": 3056.36,
+      "passed": 2
+    },
+    "verification_launch-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 2446.55,
+      "passed": 2
+    },
+    "tests-test_launch_storage": {
+      "exit_code": 1,
+      "elapsed_seconds": 1891.93,
+      "passed": 2
+    },
+    "verification_front-test_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 1837.47,
+      "passed": 11
+    },
+    "lifecycle-isolated": {
+      "exit_code": 0,
+      "elapsed_seconds": 72.51,
+      "passed": 24
+    }
+  },
+  "total_passed": 1589,
+  "elapsed_seconds": 3950.38,
+  "structural_tests_isolated": true
+}

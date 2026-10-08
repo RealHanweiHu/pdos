@@ -1,0 +1,55 @@
+{
+  "layouts": [
+    {
+      "clientWidth": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "width": 1440
+    },
+    {
+      "clientWidth": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "width": 1440
+    },
+    {
+      "clientWidth": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "theme": "light",
+      "width": 390
+    },
+    {
+      "clientWidth": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "theme": "dark",
+      "width": 390
+    },
+    {
+      "clientWidth": 320,
+      "height": 844,
+      "scrollWidth": 320,
+      "theme": "light",
+      "width": 320
+    },
+    {
+      "clientWidth": 320,
+      "height": 844,
+      "scrollWidth": 320,
+      "theme": "dark",
+      "width": 320
+    }
+  ],
+  "all_without_horizontal_overflow": true,
+  "ui_checks": [
+    "two immutable cost-input versions",
+    "two fixed estimates",
+    "old result requires recalculation",
+    "known subtotal 220 to 316.8 CNY",
+    "NRE1000 separate",
+    "unknown housing preserved"
+  ]
+}

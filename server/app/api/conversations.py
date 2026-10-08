@@ -9,6 +9,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, R
 from fastapi.concurrency import run_in_threadpool
 from fastapi.dependencies.utils import get_dependant, solve_dependencies
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import StreamingResponse
 from fastapi.routing import APIRoute
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import Engine
@@ -53,6 +54,7 @@ from app.domain.knowledge_push import KnowledgeAccessError, KnowledgeVersionErro
 from app.domain.meetings import MeetingNotFoundError, MeetingStateError
 from app.domain.nonconformance import NcrNotFoundError
 from app.domain.pdf_intake_previews import PdfIntakePrepare, PdfIntakePreviews
+from app.domain.preproject_dialogue import Confirm as PreprojectConfirm
 from app.domain.product_workspace import ProductWorkAccessError, ProductWorkError
 from app.domain.quality_operations import Evidence
 from app.domain.test_report_workbook import ImportError_
@@ -77,6 +79,8 @@ class MessageCreate(BaseModel):
     request_id: UUID
     expected_context_version: int = Field(ge=1)
     body: str = Field(min_length=1, max_length=2000)
+    reply_only: bool = False
+    preproject_goal: Literal["category", "proposal"] | None = None
     action: Literal[
         "note",
         "project_query",
@@ -287,6 +291,24 @@ def save_conversation_message(
         raise error_response(error) from error
 
 
+@router.post("/{conversation_id}/messages/{message_id}/preproject/confirm", status_code=201)
+def confirm_preproject(
+    conversation_id: UUID,
+    message_id: UUID,
+    body: PreprojectConfirm,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.domain.preproject_dialogue import confirm
+
+    no_store(response)
+    try:
+        return confirm(engine, context, conversation_id, message_id, body)
+    except Exception as error:
+        raise error_response(error) from error
+
+
 def _dispatch_gateway_dependency(
     gateway: Annotated[ApplicationModelGateway, Depends(get_application_gateway)],
 ) -> ApplicationModelGateway:
@@ -348,6 +370,180 @@ async def dispatch_conversation_message(
         )
     except Exception as error:
         raise error_response(error) from error
+
+
+@router.get("/{conversation_id}/messages/{message_id}/reply")
+def get_conversation_reply(
+    conversation_id: UUID,
+    message_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from app.ai.conversation_reply import read_reply
+
+    no_store(response)
+    try:
+        return {"reply": read_reply(engine, context, conversation_id, message_id)}
+    except Exception as error:
+        raise error_response(error) from error
+
+
+@router.post("/{conversation_id}/messages/{message_id}/reply/cancel")
+def stop_conversation_reply(
+    conversation_id: UUID,
+    message_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> dict[str, Any]:
+    from sqlalchemy import select
+
+    from app.ai.conversation_reply import VERSION, authorize, identity
+    from app.db.schema import tables
+
+    no_store(response)
+    try:
+        _, message = authorize(engine, context, conversation_id, message_id)
+        if message["author_user_id"] != context.user.id:
+            raise ConversationAccessError("只能停止本人发起的回复")
+        with engine.begin() as c:
+            row = (
+                c.execute(
+                    select(tables.agent_runs)
+                    .where(
+                        tables.agent_runs.c.id == identity(message_id),
+                        tables.agent_runs.c.tenant_id == context.tenant.id,
+                        tables.agent_runs.c.context_version == VERSION,
+                    )
+                    .with_for_update()
+                )
+                .mappings()
+                .one_or_none()
+            )
+            if row is None:
+                raise ConversationError("回复尚未启动，请等待运行回执后停止")
+            if row["status"] == "running":
+                c.execute(
+                    tables.agent_runs.update()
+                    .where(tables.agent_runs.c.id == row["id"])
+                    .values(run_context={**row["run_context"], "reply_stop_requested": True})
+                )
+        return {"status": "stop_requested" if row["status"] == "running" else "already_completed"}
+    except Exception as error:
+        raise error_response(error) from error
+
+
+@router.post("/{conversation_id}/messages/{message_id}/reply")
+async def stream_conversation_reply(
+    conversation_id: UUID,
+    message_id: UUID,
+    request: Request,
+    response: Response,
+    background_tasks: BackgroundTasks,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+):
+    import asyncio
+    import json
+
+    from app.ai.conversation_reply import ConversationReplies, authorize
+
+    try:
+        _, authorized_message = await run_in_threadpool(
+            authorize, engine, context, conversation_id, message_id
+        )
+    except Exception as error:
+        raise error_response(error) from error
+
+    async def events():
+        loop = asyncio.get_running_loop()
+        queue: asyncio.Queue = asyncio.Queue()
+        listening = True
+
+        def emit(value):
+            def deliver():
+                if listening:
+                    queue.put_nowait(value)
+
+            loop.call_soon_threadsafe(deliver)
+
+        async def generate():
+            try:
+                # This task owns provider connections and lease heartbeats. The
+                # viewing request can close without cleaning them up mid-research.
+                async with AsyncExitStack() as stack:
+                    dispatch_request = Request(
+                        {
+                            **request.scope,
+                            "fastapi_inner_astack": stack,
+                            "fastapi_function_astack": stack,
+                            "pdos_preproject_goal": authorized_message["preproject_goal"],
+                        },
+                        receive=request.receive,
+                    )
+                    gateway = await _resolve_dispatch_gateway(
+                        dispatch_request, response, background_tasks, engine
+                    )
+                    result = await run_in_threadpool(
+                        ConversationReplies(engine, gateway).answer,
+                        context,
+                        conversation_id,
+                        message_id,
+                        emit,
+                    )
+                emit({"type": "result", "reply": result})
+            except Exception as error:
+                try:
+                    failure = error_response(error)
+                except Exception:
+                    import logging
+
+                    logging.getLogger(__name__).error(
+                        "Conversation reply failed: message=%s error=%s",
+                        message_id,
+                        type(error).__name__,
+                    )
+                    failure = HTTPException(
+                        500, detail={"message": "回复未完成，失败已保存，请查询此条原请求"}
+                    )
+                emit(
+                    {
+                        "type": "error",
+                        "status": failure.status_code,
+                        "message": failure.detail.get("message", "回复未完成，请查询此条原请求")
+                        if isinstance(failure.detail, dict)
+                        else "回复未完成，请查询此条原请求",
+                    }
+                )
+            finally:
+                emit({"type": "done"})
+
+        task = asyncio.create_task(generate())
+        workers = getattr(request.app.state, "conversation_reply_tasks", None)
+        if workers is None:
+            workers = request.app.state.conversation_reply_tasks = set()
+        workers.add(task)
+        task.add_done_callback(workers.discard)
+        try:
+            yield 'data: {"type":"status","message":"已收到，正在读取本会话…"}\n\n'
+            while True:
+                try:
+                    event = await asyncio.wait_for(queue.get(), timeout=10)
+                except TimeoutError:
+                    yield ": keep-alive\n\n"
+                    continue
+                yield "data: " + json.dumps(event, ensure_ascii=False) + "\n\n"
+                if event["type"] == "done":
+                    break
+        finally:
+            listening = False
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.post("/{conversation_id}/archive")

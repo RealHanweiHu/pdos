@@ -79,7 +79,7 @@ export function FieldCaptureWorkspace() {
   function saved(r: Row) { setRecord(r); router.push(`/capture?project=${project}&capture=${txt(r.id)}`); setRefresh(v => v + 1); }
   if (!identity) return <p role="status" className="p-6">{error || "正在读取现场采集入口…"}</p>;
   return <WorkspaceShell active="capture" identity={identity} loggingOut={loggingOut} onLogout={() => { setLoggingOut(true); void fetch("/api/session/logout", { method: "POST" }).finally(() => router.replace("/login")); }}>
-    <main className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6"><header><h1 className="text-2xl font-semibold">现场采集</h1><p className="mt-2 text-sm text-muted-foreground">保存原件与说明，人工核对后登记问题或测试。尚未提交的记录仅本人可见。</p></header>
+    <section aria-label="现场采集工作区" className="mx-auto max-w-3xl space-y-4"><header><h1 className="text-lg font-semibold tracking-tight">现场采集</h1><p className="mt-2 text-sm text-muted-foreground">保存原件与说明，人工核对后登记问题或测试。尚未提交的记录仅本人可见。</p></header>
       <label className="block text-sm">所属项目<select value={project} className={inputClass} onChange={e => router.push(`/capture?project=${e.target.value}`)}><option value="">请选择项目</option>{projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {project && loadedScope !== scope && <p role="status" className="text-sm">正在读取记录…</p>}
@@ -87,6 +87,6 @@ export function FieldCaptureWorkspace() {
         {record ? <Review key={txt(record.id)} base={base} record={record} own={txt(record.created_by_user_id) === identity.user.id} updated={saved}/> : !capture && <NewFieldCapture key={project} base={base} saved={saved}/>}
         <section className="space-y-2"><h2 className="font-medium">本人最近100条记录</h2>{!items.length && <p className="text-sm text-muted-foreground">还没有已保存的记录。</p>}{items.map(r => <Link key={txt(r.id)} href={`/capture?project=${project}&capture=${txt(r.id)}`} className="block rounded-lg border p-3 text-sm"><p className="truncate">{txt(obj(r.review).title) || txt(r.original_text) || txt(r.filename)}</p><p className="mt-1 text-xs text-muted-foreground">{new Date(txt(r.created_at)).toLocaleString("zh-CN")} · {r.test_run_id ? "已登记测试" : r.issue_id ? "已登记问题" : r.status === "awaiting_upload" ? "待补传原件" : "待人工核对"}</p></Link>)}</section>
       </>}
-    </main>
+    </section>
   </WorkspaceShell>;
 }

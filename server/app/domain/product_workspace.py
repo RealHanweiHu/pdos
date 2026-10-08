@@ -145,6 +145,31 @@ def _line_filter(table: Any, context: AuthContext) -> Any:
     )
 
 
+def category_line_id(connection: Connection, tenant_id: UUID, space_id: UUID) -> UUID:
+    """The old line is a compatibility projection of this category, never a child category."""
+    t = tables.product_nodes
+    ids = (
+        connection.execute(
+            select(t.c.id).where(
+                t.c.tenant_id == tenant_id, t.c.market_space_id == space_id, t.c.level == "line"
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if len(ids) != 1:
+        raise ProductWorkError("品类身份尚未统一，请先完成品类迁移；不能在品类内另建品类")
+    return ids[0]
+
+
+def category_space(connection: Connection, row: Any) -> dict[str, Any]:
+    return {
+        **_plain(row),
+        "category_id": str(row["id"]),
+        "category_line_id": str(category_line_id(connection, row["tenant_id"], row["id"])),
+    }
+
+
 def _line(
     connection: Connection,
     context: AuthContext,
@@ -156,6 +181,11 @@ def _line(
 ) -> Any:
     if line_id is None:
         return None
+    category = _space(connection, context, space_id, access=access)
+    if line_id != category_line_id(connection, context.tenant.id, space_id):
+        raise ProductWorkAccessError("品类归属不一致，请在对应品类办理")
+    if writable and category["lifecycle"] == "archived":
+        raise ProductWorkError("已归档品类只读，请先恢复品类")
     table = tables.product_nodes
     row = (
         connection.execute(
@@ -183,9 +213,9 @@ def _line(
     )
     levels = {"viewer": 1, "contributor": 2, "manager": 3}
     if row is None or levels.get(level or "", 0) < levels[access]:
-        raise ProductWorkAccessError("产品线不存在或无权访问")
+        raise ProductWorkAccessError("品类不存在或无权访问")
     if writable and row["lifecycle"] == "retired":
-        raise ProductWorkError("已退役产品线只读，请先恢复产品线")
+        raise ProductWorkError("已退役品类只读，请先恢复品类")
     return row
 
 
@@ -248,7 +278,7 @@ def _space(
         statement = statement.with_for_update()
     row = connection.execute(statement).mappings().one_or_none()
     if row is None:
-        raise ProductWorkAccessError("市场空间不存在或无权访问")
+        raise ProductWorkAccessError("品类不存在或无权访问")
     level = (
         "manager"
         if context.user.role in {Role.OWNER, Role.ADMIN}
@@ -265,9 +295,9 @@ def _space(
         "contributor": 2,
         "manager": 3,
     }[access]:
-        raise ProductWorkAccessError("市场空间不存在或无权访问")
+        raise ProductWorkAccessError("品类不存在或无权访问")
     if lock and row["lifecycle"] == "archived" and not allow_archived:
-        raise ProductWorkError("已归档市场空间只读")
+        raise ProductWorkError("已归档品类只读")
     return row
 
 
@@ -291,7 +321,9 @@ def _member(
             tables.users.c.tenant_id == context.tenant.id,
             tables.users.c.id == user_id,
             tables.users.c.is_active.is_(True),
-            tables.users.c.role.in_(("owner", "admin", "project_manager", "engineer", "quality")),
+            tables.users.c.role.in_(
+                ("owner", "admin", "product_manager", "project_manager", "engineer", "quality")
+            ),
             tables.market_space_members.c.market_space_id == space_id,
             tables.market_space_members.c.access.in_(("contributor", "manager")),
         )
@@ -309,7 +341,7 @@ def _member(
             )
         ).scalar_one_or_none()
         if granted is None:
-            raise ProductWorkError("负责人或接收人须为该产品线有效协作成员")
+            raise ProductWorkError("负责人或接收人须为该品类有效协作成员")
 
 
 def _sources(
@@ -376,9 +408,57 @@ def _result_sources(
 
 def _audit_snapshot(kind: str, row: Any) -> dict[str, Any]:
     value = _plain(row)
+    if kind == "product_source_file":
+        # A customer name can appear in a filename; tenant audits retain only proof.
+        return {
+            key: value[key]
+            for key in (
+                "id",
+                "market_space_id",
+                "product_line_id",
+                "uploaded_by_user_id",
+                "sha256",
+                "size_bytes",
+                "classification",
+                "status",
+                "error_code",
+                "version",
+                "revoked_at",
+                "created_at",
+                "updated_at",
+            )
+            if key in value
+        }
+    if kind == "product_proposal" and (
+        value.get("entry_kind") == "odm" or value.get("source_file_ids")
+    ):
+        # General tenant audits retain proof, not private customer requirements.
+        return {
+            **{
+                key: value[key]
+                for key in (
+                    "id",
+                    "tenant_id",
+                    "market_space_id",
+                    "product_line_id",
+                    "owner_user_id",
+                    "reviewer_user_id",
+                    "state",
+                    "version",
+                    "created_at",
+                    "updated_at",
+                )
+            },
+            "brief_digest": digest(value["brief"]),
+            "document_digest": digest(value["document"]),
+            "source_count": len(value["source_file_ids"]) + len(value["evidence_ids"]),
+        }
     if kind == "research_subscription":
         # A lease authorizes an internal collector; retain its status, not its identity.
         value["collection_in_progress"] = value.pop("lease_token", None) is not None
+    if kind == "research_crawl_frontier":
+        # Same rule for the crawler frontier: status of the lease, never the token.
+        value["crawl_in_progress"] = value.pop("lease_token", None) is not None
     return value
 
 
@@ -601,8 +681,22 @@ class ProductWorkspaceService:
                 )
             )
         with self.engine.connect() as connection:
+            managers = set(
+                connection.execute(
+                    select(tables.market_space_members.c.market_space_id).where(
+                        tables.market_space_members.c.tenant_id == context.tenant.id,
+                        tables.market_space_members.c.user_id == context.user.id,
+                        tables.market_space_members.c.access == "manager",
+                    )
+                ).scalars()
+            )
             return [
-                _plain(row)
+                {
+                    **category_space(connection, row),
+                    "payload_digest": digest(_plain(row)),
+                    "can_restore": is_allowed(context.user.role, Action.PRODUCT_WORK_MANAGE)
+                    and (context.user.role in {Role.OWNER, Role.ADMIN} or row["id"] in managers),
+                }
                 for row in connection.execute(
                     statement.order_by(table.c.updated_at.desc())
                 ).mappings()
@@ -627,7 +721,7 @@ class ProductWorkspaceService:
                     _space(connection, context, existing["id"])
                     if existing["request_digest"] != digest(payload):
                         raise ProductWorkError("同一请求编号不能用于不同内容")
-                    return _plain(existing)
+                    return category_space(connection, existing)
                 values = draft.model_dump(exclude={"request_id"})
                 row = (
                     connection.execute(
@@ -655,9 +749,9 @@ class ProductWorkspaceService:
                     )
                 )
                 _emit(connection, context, row["id"], "market_space", "created", row)
-                return _plain(row)
+                return category_space(connection, row)
         except IntegrityError as error:
-            raise ProductWorkError("市场空间编号或请求编号已存在，请刷新列表") from error
+            raise ProductWorkError("品类编号或请求编号已存在，请刷新列表") from error
 
     def detail(self, context: AuthContext, space_id: UUID) -> dict[str, Any]:
         with self.engine.connect() as connection:
@@ -685,7 +779,14 @@ class ProductWorkspaceService:
                     tables.users.c.tenant_id == context.tenant.id,
                     tables.users.c.is_active.is_(True),
                     tables.users.c.role.in_(
-                        ("owner", "admin", "project_manager", "engineer", "quality")
+                        (
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        )
                     ),
                     tables.market_space_members.c.market_space_id == space_id,
                 )
@@ -714,7 +815,14 @@ class ProductWorkspaceService:
                         tables.users.c.tenant_id == context.tenant.id,
                         tables.users.c.is_active.is_(True),
                         tables.users.c.role.in_(
-                            ("owner", "admin", "project_manager", "engineer", "quality")
+                            (
+                                "owner",
+                                "admin",
+                                "product_manager",
+                                "project_manager",
+                                "engineer",
+                                "quality",
+                            )
                         ),
                     )
                 ).mappings()
@@ -722,7 +830,10 @@ class ProductWorkspaceService:
                 else []
             )
             return {
-                "space": {**_plain(space), "payload_digest": digest(_plain(space))},
+                "space": {
+                    **category_space(connection, space),
+                    "payload_digest": digest(_plain(space)),
+                },
                 "members": [_plain(row) for row in members],
                 "available_members": [_plain(row) for row in available],
                 "research": [_research(row) for row in research],
@@ -758,7 +869,14 @@ class ProductWorkspaceService:
                     tables.users.c.id == user_id,
                     tables.users.c.is_active.is_(True),
                     tables.users.c.role.in_(
-                        ("owner", "admin", "project_manager", "engineer", "quality")
+                        (
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        )
                     ),
                 )
             ).scalar_one_or_none()

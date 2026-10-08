@@ -1,0 +1,185 @@
+{
+  "database": "localhost:57432/pdos",
+  "run_id": "7156b23b-c2d0-5d6e-8272-01b6452ce049",
+  "failed_original_run_id": "622e3e57-9216-5193-ac3a-bb030969ad0a",
+  "other_verification_runs": {
+    "rejected_category_mode": "4e81984f-64fb-55b0-8168-458299235b9d",
+    "cancelled_obsolete_mode": "a9be12fe-2347-5873-8928-fc67a7e35a38"
+  },
+  "read_only": true,
+  "head": "0429_preview_legacy_usage_holds",
+  "mode": {
+    "mode": "budgeted",
+    "revision": 2
+  },
+  "original_three_digest": "e4d7abf1452a4aaae82b6613c55d3a9c70db8ad25400efecf77351026361e42f",
+  "holds": [
+    {
+      "invocation_id": "95fe9204-c8f3-4aa6-a870-c51123a08833",
+      "reviewer_user_id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+      "input_token_bound": 1000000,
+      "output_token_bound": 524288,
+      "budget_period_start": "2026-10-06 00:00:00+00:00"
+    },
+    {
+      "invocation_id": "a3b1253d-1c28-4272-92e9-4175ab9fdbfc",
+      "reviewer_user_id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+      "input_token_bound": 1000000,
+      "output_token_bound": 524288,
+      "budget_period_start": "2026-10-06 00:00:00+00:00"
+    },
+    {
+      "invocation_id": "c5ac39e4-af83-4911-b40c-236ee4066c24",
+      "reviewer_user_id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+      "input_token_bound": 1000000,
+      "output_token_bound": 524288,
+      "budget_period_start": "2026-10-06 00:00:00+00:00"
+    }
+  ],
+  "calls": [
+    {
+      "id": "f4877c94-a218-4ba1-87c4-c89ccfb238f7",
+      "run_id": "622e3e57-9216-5193-ac3a-bb030969ad0a",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 3266,
+      "output_tokens": 1022,
+      "error_code": null,
+      "structured_attempts": 1
+    },
+    {
+      "id": "f61a577f-0a6f-4012-803c-d1e8749d4550",
+      "run_id": "4e81984f-64fb-55b0-8168-458299235b9d",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 3266,
+      "output_tokens": 1325,
+      "error_code": null,
+      "structured_attempts": 1
+    },
+    {
+      "id": "a1aaae86-3cb2-458c-bec2-245a9547d154",
+      "run_id": "4e81984f-64fb-55b0-8168-458299235b9d",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 7434,
+      "output_tokens": 3605,
+      "error_code": null,
+      "structured_attempts": 1
+    },
+    {
+      "id": "c43120a4-5b2f-40ae-8e23-26369c907a56",
+      "run_id": "a9be12fe-2347-5873-8928-fc67a7e35a38",
+      "model": "MiniMax-M3",
+      "status": "provider_error",
+      "usage_status": "unknown",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "error_code": "PROVIDER_INVALID_RESPONSE",
+      "structured_attempts": 1
+    },
+    {
+      "id": "dbb72922-cfa6-4760-9502-7a1b5b9e99e8",
+      "run_id": "7156b23b-c2d0-5d6e-8272-01b6452ce049",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 926,
+      "output_tokens": 359,
+      "error_code": null,
+      "structured_attempts": 1
+    },
+    {
+      "id": "72b1bf3d-bb2b-45cd-866c-3ccf676f756f",
+      "run_id": "7156b23b-c2d0-5d6e-8272-01b6452ce049",
+      "model": "MiniMax-M3",
+      "status": "succeeded",
+      "usage_status": "known",
+      "input_tokens": 3071,
+      "output_tokens": 1457,
+      "error_code": null,
+      "structured_attempts": 1
+    }
+  ],
+  "known_usage_totals": {
+    "input_tokens": 17963,
+    "output_tokens": 7768
+  },
+  "cancelled_unknown_budget": [
+    {
+      "attempt_id": "4b287791-394c-5da2-8ab5-995b275f5867",
+      "reservation_status": "unknown",
+      "reserved_tokens": 7494,
+      "held_tokens": 7494,
+      "charged_tokens": null
+    }
+  ],
+  "tool_observations": [
+    {
+      "id": "d67183a6-9d7c-510c-a6d0-8381efc45f75",
+      "tool": "search",
+      "target": "electric SUP paddleboard pump brand official spec PSI Outdoor Master Nixy site:outdoormaster.com OR site:nixysup.com",
+      "status": "completed",
+      "pin": null
+    },
+    {
+      "id": "69931d02-b98e-56f9-b06f-090e76b5c0e8",
+      "tool": "read",
+      "target": "https://outdoormaster.com/blogs/om-blog/repost-from-adventure-gear-insider-outdoor-master-cachalot-electric-pump-review",
+      "status": "partial",
+      "pin": {
+        "id": "a44a0cf5-8d00-4ef3-a264-f4044a96d8c3",
+        "url": "https://outdoormaster.com/blogs/om-blog/repost-from-adventure-gear-insider-outdoor-master-cachalot-electric-pump-review",
+        "taint": "untrusted_external",
+        "source_id": null,
+        "trust_tier": "unknown",
+        "captured_at": "2026-10-07 03:09:15.800440+00:00",
+        "conflict_note": null,
+        "content_digest": "b272320bb7865fe3827be0d4163206c2d1e3cb9b9f686afbf701ff7f1e88d0f0",
+        "superseded_by_id": null,
+        "conflicts_with_id": null,
+        "freshness_expires_at": null
+      }
+    },
+    {
+      "id": "6c01825d-9d71-5cd5-8bee-9662e474d4e8",
+      "tool": "read",
+      "target": "https://outdoormaster.com/ja/products/electric-paddle-board-pump-shark-ii",
+      "status": "unavailable",
+      "pin": null
+    }
+  ],
+  "partial_source_coverage": true,
+  "fixed_category_origin_read_observations": [
+    {
+      "id": "efd5c8bd-177e-5d8f-8ba5-610981d9764b",
+      "tool": "search",
+      "target": "NIXY Outdoor Master electric SUP pump official product specifications PSI battery site:nixysup.com OR site:outdoormaster.com",
+      "status": "completed"
+    },
+    {
+      "id": "d533a4ba-bd4f-5597-bf83-298d3a7d6dcd",
+      "tool": "read",
+      "target": "https://outdoormaster.com/blogs/om-blog/product-review-the-outdoor-master-cachalot-2-mini-electric-sup-pump",
+      "status": "partial"
+    },
+    {
+      "id": "510e3aed-af7c-5ba4-9396-2a10813e6a7a",
+      "tool": "read",
+      "target": "https://outdoormaster.com/products/20psi-high-pressure-sup-air-pump-the-shark",
+      "status": "partial"
+    }
+  ],
+  "unbound_usage": {
+    "additional_tokens": 11295,
+    "unresolved_invocation_ids": []
+  },
+  "nonclosed_model_sessions": 0,
+  "confirmation_count_for_verification_messages": 0,
+  "failed_reply_preserved": true,
+  "private_env_mode": "0o600",
+  "completed_at": "2026-10-07T03:11:42.506218+00:00"
+}

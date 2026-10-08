@@ -31,6 +31,7 @@ class BudgetSnapshot:
     used_tokens_today: int
     remaining_tokens_today: int
     exhausted: bool
+    token_budget_enforced: bool = True
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,7 @@ class ModelSettingsUpdate:
     provider: ProviderName
     model: str
     daily_token_budget: int
+    token_budget_enforced: bool | None = None
 
 
 class ModelGovernanceService:
@@ -137,6 +139,12 @@ class ModelGovernanceService:
             )
             budget = int(row["daily_token_budget"])
 
+        # The application tenant setting does not disable independent Agent budgets.
+        enforced = (
+            bool(row["token_budget_enforced"])
+            if row is not None and (self._run_store is None or not self._run_store.projection_only)
+            else True
+        )
         remaining = max(0, budget - used_tokens)
         return ModelGovernanceSnapshot(
             eligible_models=eligible,
@@ -145,7 +153,8 @@ class ModelGovernanceService:
                 daily_token_budget=budget,
                 used_tokens_today=used_tokens,
                 remaining_tokens_today=remaining,
-                exhausted=used_tokens >= budget,
+                exhausted=enforced and used_tokens >= budget,
+                token_budget_enforced=enforced,
             ),
         )
 
@@ -180,6 +189,11 @@ class ModelGovernanceService:
                 "provider": changes.provider.value,
                 "model": changes.model,
                 "daily_token_budget": changes.daily_token_budget,
+                "token_budget_enforced": changes.token_budget_enforced
+                if changes.token_budget_enforced is not None
+                else bool(existing["token_budget_enforced"])
+                if existing is not None
+                else True,
             }
             before_snapshot: dict[str, object]
             if existing is None:
@@ -220,7 +234,10 @@ class ModelGovernanceService:
                     event_type="TENANT_MODEL_SETTINGS_UPDATED",
                     source="model_governance_service",
                     entity_id=settings_id,
-                    payload=after_snapshot,
+                    payload={
+                        key: after_snapshot[key]
+                        for key in ("provider", "model", "daily_token_budget")
+                    },
                     occurred_at=occurred_at,
                 ),
                 AuditDraft(
@@ -238,6 +255,7 @@ class ModelGovernanceService:
             "provider": row["provider"],
             "model": row["model"],
             "daily_token_budget": row["daily_token_budget"],
+            "token_budget_enforced": row["token_budget_enforced"],
         }
 
     @staticmethod

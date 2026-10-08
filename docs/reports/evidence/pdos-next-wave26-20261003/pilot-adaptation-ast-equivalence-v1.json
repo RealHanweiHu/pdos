@@ -1,0 +1,13 @@
+{
+  "status": "PASS_IMPORT_ONLY_ADAPTATION_AST_EQUIVALENCE",
+  "actual_files": {
+    "server/pdos_next/schemas/manufacturing_trials/pilot_results.py": "b2c6126734037faf88a9bed25151461dc968d6e20782a8debf6d3e89a636e4de",
+    "server/pdos_next/domain/manufacturing_trials/pilot_result_rules.py": "02193e5b02f3fdca7324d2706a66f531db34170f346897e06f07a16c753c8b81",
+    "server/pdos_next/domain/manufacturing_trials/pilot_result_ports.py": "12dad0ba663f17c2b0d6b81bb625a7d2d86f35a80bd1045874c5c8a83bf9ed47",
+    "server/tests/manufacturing_trials/test_pilot_results.py": "023a4910afd932e5d01f464262030fa5c951701405c21d07081fd41ae45531b5"
+  },
+  "regression_actual_sha256": "d5f7a4556bf4786bd7f1bab15eb2cae7bf890e93d9617b882a87cb0f09073ea9",
+  "staged_pure_logic_preserved": true,
+  "existing_shared_count_guard_is_explicit_functional_delta": true,
+  "no_new_runtime_owners": true
+}

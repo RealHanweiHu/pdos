@@ -1,0 +1,13 @@
+{
+  "status": "WITHDRAWN_UNSUBMITTED_PROPOSAL",
+  "recorded_at": "2026-10-03T19:21:39.369622+00:00",
+  "original_command_id": "aa003973-20db-5ae5-a07a-18e11e5e1172",
+  "original_key": "wave22-195d6eae-9df7-4e94-a6ba-3114b3303873-observer-run-plan",
+  "readback_proof": "test-unsubmitted-plan-readback-v1.json",
+  "readback_sha256": "cbf9934eaebbc61d4bb4287c68d0664dd1bd30fb4acf6c106b0da54321f2705b",
+  "original_requests_and_token_retained": true,
+  "new_prospective_window_requires_new_intent_and_receipt": true,
+  "checkpoint_changed": false,
+  "fact1_withdrawn_or_deleted": false,
+  "new_test_start": false
+}

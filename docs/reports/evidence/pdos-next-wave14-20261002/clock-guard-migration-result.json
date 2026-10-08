@@ -1,0 +1,30 @@
+{
+  "head": "next_0022",
+  "roundtrip": "0021 -> 0022 -> 0021 -> 0022",
+  "schema_check": "passed",
+  "backup_private": ".local/pre-wave14-next_0021-before-clock-guard.dump",
+  "actual_constraint_cases": [
+    {
+      "case": "preliminary_result",
+      "constraint": "ck_test_start_no_result_clocks",
+      "rolled_back": true
+    },
+    {
+      "case": "final_result",
+      "constraint": "ck_test_start_no_result_clocks",
+      "rolled_back": true
+    },
+    {
+      "case": "disposed",
+      "constraint": "ck_test_start_no_result_clocks",
+      "rolled_back": true
+    },
+    {
+      "case": "missing_preliminary",
+      "constraint": "ck_test_start_no_result_clocks",
+      "rolled_back": true
+    }
+  ],
+  "original_start_sha256_unchanged": true,
+  "nature": "Owned isolated target; duplicate existing Start insertion is rejected at CHECK before uniqueness; savepoint rolls each probe back."
+}

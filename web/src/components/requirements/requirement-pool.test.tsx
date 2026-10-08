@@ -10,6 +10,7 @@ const { routerPush, routerReplace } = vi.hoisted(() => ({
 }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
   useRouter: () => ({ push: routerPush, replace: routerReplace }),
 }));
 

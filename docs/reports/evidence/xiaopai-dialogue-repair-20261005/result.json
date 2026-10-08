@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-05",
+  "timezone": "America/Los_Angeles",
+  "scope": "original server/web Xiaopai normal dialogue",
+  "root_cause": {
+    "reproduced_with_real_provider": "MiniMax-M3",
+    "returned": "nonempty text deltas, finish_reason=stop, full token usage, then clean EOF",
+    "missing": "[DONE] sentinel",
+    "previous_error": "PROVIDER_INVALID_RESPONSE",
+    "evidence": "live-before.log"
+  },
+  "changes": [
+    "Accept OpenAI-compatible clean EOF only with an explicit completion reason; require text and known usage for successful output.",
+    "Preserve rejection of incomplete streams and distinguish output-limit truncation even when only thinking was generated.",
+    "Decode provisional answer after complete thinking tags or an opening JSON fence; never emit the thinking block.",
+    "Skip unrelated project-list loading for personal/product chat; allow project-loading retry and avoid premature no-access warnings.",
+    "Show understandable provider failure messages and retain sanitized stream-state diagnostics without prompt, credential or response text."
+  ],
+  "verification": {
+    "provider_and_stream_regression": {
+      "passed": 32,
+      "seconds": 5.59,
+      "capture": "tool stdout in this chat"
+    },
+    "frontend_and_bff_regression": {
+      "passed": 23,
+      "capture": "tool stdout in this chat"
+    },
+    "isolated_postgres_conversation_and_search_api": {
+      "passed": 15,
+      "seconds": 72.39,
+      "log": "api-tests.log"
+    },
+    "ruff": "passed",
+    "affected_eslint": "passed",
+    "typescript": "passed",
+    "isolated_production_build": {
+      "status": "passed",
+      "log": "build.log",
+      "source_hashes_match": true
+    },
+    "real_provider": {
+      "greeting": "answered",
+      "multi_turn": "returned previously supplied 青橙17",
+      "persisted_read": "passed",
+      "replay": "same original reply; exactly one succeeded model invocation per each of the three successful message runs",
+      "first_text_ms": [
+        2840,
+        2637
+      ],
+      "evidence": [
+        "live-after.log",
+        "live-continuity.log"
+      ]
+    },
+    "golden_files": "existing suite and qualifications SHA256 unchanged; no qualification was created or edited"
+  },
+  "environment": {
+    "repository_tests": "new isolated 127.0.0.1:64534/pdos_test only",
+    "allocation_marker": "41f90fd6-171a-4242-b2df-e029982cd180",
+    "test_environment_recovery": "First fresh-cluster migration failed because pdos_agent was absent; applied existing local role bootstrap only to the new test cluster, then all 15 cases passed. Initial failures retained.",
+    "build_recovery": "pnpm refused its automatic modules-directory rewrite in the frozen copy; used existing Node/Next webpack build directly without installing or deleting workspace dependencies.",
+    "backup": "/Users/huhanwei/Documents/ai-native-R&D-platform/tmp/xiaopai-repair-tested-64534.dump",
+    "backup_sha256": "b346b459cb213969421a8d0cd79bd8dff96ec5666728c1655bf6de4d5a0d9890",
+    "backup_catalog": "validated with pg_restore --list; no restore rehearsal claimed",
+    "live_application": "existing localhost:57432/pdos; no repository tests, migration, business objects, account or credential changes. Only three newly created private probe conversations and their model receipts; those three conversations reversibly archived through the domain service.",
+    "new_test_container": "removed after backup; source build copy retained",
+    "history_boundary": "2026-09-27 backup-era partial login/sequence loss remains unchanged"
+  },
+  "limits": [
+    "Real calls verified the existing local tenant/model gateway through normal conversation domain services; browser authenticated real-model clicking was not completed. Native capture was unavailable and the separate Chrome profile reached login, so no GUI success is claimed.",
+    "Existing stopped/failed replies remain original history; send a new message after refresh to use the fix.",
+    "This verifies normal local dialogue, not complete OpenClaw feature parity, global tool autonomy, full-system performance, new golden qualification, budgeted-channel eligibility, production deployment, or manual N/P/Q exits.",
+    "No push, production deployment, schema migration or change to the original 65 activity checkboxes."
+  ]
+}

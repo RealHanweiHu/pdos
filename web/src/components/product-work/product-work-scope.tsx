@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-export type ProductWorkScope = { scope: string; setScope: (value: string) => void };
+export type ProductWorkScope = { scope: string; setScope: (value: string) => void; categoryLineId?: string };
 export const ProductWorkScopeContext = createContext<ProductWorkScope | null>(null);
 
 export function useProductWorkScope() {

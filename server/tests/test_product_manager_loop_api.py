@@ -3,8 +3,9 @@
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
-from uuid import uuid4
+from uuid import UUID, uuid4
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
@@ -25,16 +26,42 @@ def command(row: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+@pytest.mark.parametrize("actor_role", ["owner", "product_manager"])
 def test_research_to_released_definition_matrix_and_roadmap_without_project(
     client: TestClient,
     isolated_test_run_database: str,
+    actor_role: str,
 ) -> None:
     scope = Scope(client, isolated_test_run_database)
     try:
         headers = bearer_headers(client)
+        actor_id = scope.owner_id
+        if actor_role == "product_manager":
+            account = client.post(
+                "/api/admin/users",
+                headers=headers,
+                json={
+                    "username": "product-manager",
+                    "display_name": "合成产品经理",
+                    "role": "product_manager",
+                    "password": "synthetic product manager password",
+                },
+            )
+            assert account.status_code == 201, account.text
+            actor_id = UUID(account.json()["id"])
+            login = client.post(
+                "/api/auth/login",
+                json={
+                    "tenant_slug": "beepump",
+                    "username": "product-manager",
+                    "password": "synthetic product manager password",
+                },
+            )
+            assert login.status_code == 200, login.text
+            headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
         sid = space(client, headers)
         base = f"/api/product-work/spaces/{sid}"
-        owner = str(scope.owner_id)
+        owner = str(actor_id)
 
         def post(path: str, body: dict[str, Any], status: int = 200) -> dict[str, Any]:
             response = client.post(base + path, headers=headers, json=body)
@@ -53,7 +80,7 @@ def test_research_to_released_definition_matrix_and_roadmap_without_project(
             "/products", code="PUMP", name="合成便携气泵", level="line", owner_user_id=owner
         )
         parent = line
-        for level in ("family", "platform", "series", "model"):
+        for level in ("model",):
             parent = create(
                 "/products",
                 code="PUMP-" + level,
@@ -84,7 +111,7 @@ def test_research_to_released_definition_matrix_and_roadmap_without_project(
         service = EvidenceService(scope.engine)
         source = service.create_source(
             tenant_id=scope.tenant_id,
-            actor_user_id=scope.owner_id,
+            actor_user_id=actor_id,
             name="合成原始研究与测试记录",
             source_type="file",
             allowed_use="internal_analysis",
@@ -94,7 +121,7 @@ def test_research_to_released_definition_matrix_and_roadmap_without_project(
         )
         evidence = service.capture(
             tenant_id=scope.tenant_id,
-            actor_user_id=scope.owner_id,
+            actor_user_id=actor_id,
             source_id=source.id,
             content="合成夹具：A型号100kPa（25℃），B型号0.1MPa（0℃）；三个方案，平台复用方案的噪声实验被证伪。不是业务实测。",
             freshness_expires_at=datetime.now(UTC) + timedelta(days=30),

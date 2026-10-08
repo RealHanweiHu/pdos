@@ -1,0 +1,354 @@
+{
+  "imports": [
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "module": "adapters"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "module": "errors"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "module": "handlers"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "module": "ports"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "module": "read_models"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "module": "rules"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "pdos_next.engines.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "errors"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "module": "rules"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "adapters"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "errors"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "ports"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "module": "rules"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "module": "dataclasses"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "module": "typing"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "json"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "errors"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "module": "rules"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "pdos_next.engines.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "pdos_next.engines.supply_cost.units"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "errors"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "module": "json"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/supply_cost/__init__.py",
+      "module": "dto"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "module": "typing"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "module": "pydantic"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/conftest.py",
+      "module": "pytest"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/conftest.py",
+      "module": "helpers"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "hashlib"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "pdos_next.domain.supply_cost.rules"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "pdos_next.engines.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "dataclasses"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "pytest"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "pdos_next.domain.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "pdos_next.domain.supply_cost.handlers"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "module": "helpers"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "module": "decimal"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "module": "pytest"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "module": "pdos_next.domain.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "module": "helpers"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "decimal"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "pytest"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "pdos_next.domain.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "pdos_next.domain.supply_cost.read_models"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "module": "helpers"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "datetime"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "decimal"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pytest"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pydantic"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pdos_next.domain.supply_cost"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pdos_next.domain.supply_cost.rules"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pdos_next.engines.supply_cost.common"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pdos_next.engines.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "pdos_next.schemas.supply_cost.dto"
+    },
+    {
+      "file": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "module": "helpers"
+    }
+  ],
+  "forbidden": [],
+  "passed": true
+}

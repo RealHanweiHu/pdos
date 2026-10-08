@@ -1,0 +1,8 @@
+{
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "pure_result_sha256": "14879a28bbb90808a140f9f0f7dc038cdec87799b7fd2ac5da181d54ce6fee07",
+  "selected_runtime_and_test_paths_equal": true,
+  "excluded": "UTC assertion test is not in the pure selection; its format-only change is covered by replacement PG",
+  "actual_pure_count": 137,
+  "scope": "Phase/owner/option pure checks only; no full-tree or PG claim"
+}

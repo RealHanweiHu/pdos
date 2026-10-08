@@ -8,7 +8,7 @@ vi.mock("next/navigation", async () => {
   const { useSyncExternalStore } = await import("react");
   const replace = vi.fn();
   const subscribe = (fn: () => void) => { window.addEventListener("popstate", fn); return () => window.removeEventListener("popstate", fn); };
-  return { useRouter: () => ({ replace }), useSearchParams: () => new URLSearchParams(useSyncExternalStore(subscribe, () => window.location.search)) };
+  return { usePathname: () => useSyncExternalStore(subscribe, () => window.location.pathname), useRouter: () => ({ replace }), useSearchParams: () => new URLSearchParams(useSyncExternalStore(subscribe, () => window.location.search)) };
 });
 vi.mock("@/components/workspace-api", async original => ({ ...await original<typeof import("@/components/workspace-api")>(), requestIdentity: async () => ({ user: { role: "admin" }, tenant: {} }) }));
 vi.mock("@/components/workspace-shell", () => ({ WorkspaceShell: ({ children }: { children: ReactNode }) => <main>{children}</main> }));

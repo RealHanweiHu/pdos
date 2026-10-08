@@ -87,7 +87,8 @@ export function CaseWorkspace() {
   }
 
   const selectedCase = cases.find((developmentCase) => developmentCase.id === selectedId) ?? null;
-  const canEdit = ["owner", "admin", "project_manager"].includes(identity.user.role);
+  const canTransition = ["owner", "admin", "project_manager"].includes(identity.user.role);
+  const canEdit = canTransition || identity.user.role === "product_manager";
 
   async function updateCase(developmentCase: DevelopmentCase, values: CaseFormValues) {
     const patch: Record<string, unknown> = {};
@@ -192,6 +193,7 @@ export function CaseWorkspace() {
   return (
     <CaseWorkspaceView
       canEdit={canEdit}
+      canTransition={canTransition}
       cases={cases}
       errorMessage={errorMessage}
       identity={identity}

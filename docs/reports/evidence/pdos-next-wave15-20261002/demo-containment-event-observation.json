@@ -1,0 +1,26 @@
+{
+  "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+  "at": {
+    "occurred_at": "2026-10-03T06:25:03.160086+00:00",
+    "original_timezone": "UTC",
+    "source": {
+      "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+      "revision": 1,
+      "kind": "artifact",
+      "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+    }
+  },
+  "reference": {
+    "artifact_id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+    "expected_revision": 1,
+    "line": 1,
+    "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"issue_id\":\"16ff0607-08f8-5e3c-9b74-b48999791b00\",\"occurred_at\":\"2026-10-03T06:25:03.160086+00:00\",\"operation\":\"quality.issue.containment.record\",\"purpose\":\"内部问题调查：独立单模穴A尺寸复测（合成）\",\"text\":\"独立合成样件仅保留内部调查，非释放/关闭\"}"
+  },
+  "authority_receipt_labels": [
+    "authority-change-followup-duty",
+    "authority-change-followup-qualification"
+  ],
+  "nature": "synthetic",
+  "scope": "independent saved actor/project/purpose only",
+  "no_issue_mutation": true
+}

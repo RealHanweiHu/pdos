@@ -1,0 +1,9 @@
+{
+  "server/app/ai/conversation_research.py": "de203ae69169f33039bba0b78a193c9d1a75f45f283b597b13e027eac9ec1ad4",
+  "server/app/ai/conversation_reply.py": "d560b092f899d6e989913f310982dc99e651238954b6841c86025dcabd621510",
+  "server/app/ai/application_authorization.py": "041e138fd8f62a13611a3ce936d6d68e5612f1357eda31149ed3f9913d01395c",
+  "server/app/ai/prompts/xiaopai_reply_v4.json": "179b6659816db70e836ea859fbc600af6604650aed18ef59784750c2a3879c27",
+  "server/app/ai/prompts/preproject_dialogue_v3.json": "ebb0d87782f576d966d8f32d87a1cd27fefb566ee1b62750be3a84fdf7dfd4f7",
+  "server/migrations/versions/0431_conversation_research_exploration.py": "9a6af2d0acaebcc48f55ab7d8d042008f5244d7fa8c7149c90b57ebb7f97a852",
+  "web/src/components/ai/xiaopai-session.tsx": "57194be77c6bb0b660fc2c02933e9f94b51ab2102bff415cbf37fc9401789506"
+}

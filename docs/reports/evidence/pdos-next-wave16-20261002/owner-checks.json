@@ -1,0 +1,48 @@
+{
+  "scope": "Wave16 new-owned capa_verification files only; no public registration or migration",
+  "checks": {
+    "owned_pure": "39 passed in 0.78s; --noconftest only",
+    "ruff": "passed",
+    "ast_compile": 8
+  },
+  "database_http_public_tests": "not run",
+  "limitations": [
+    "Pure tests use explicit owner substitutes; no real PG transaction or owner-chain integration exercise.",
+    "No public API/models registration, migration, HTTP, production qualification or effectiveness/closure.",
+    "Professional applicability, independence, actual observation and action fulfillment remain null/missing."
+  ],
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/__init__.py",
+      "sha256": "f0839e561baab886c3c2db8a9d93feb7537e4021b336d43439005e117af85628"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/commands.py",
+      "sha256": "05c8c74af37cd26edd73ed320311f20d86c9b6515ebc9bac2b9b37a6e28a150a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/models.py",
+      "sha256": "321a721fd5b90d9857f8e29603ef057f6b7cc1cf62e29ba27b036c3296952ef4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/ports.py",
+      "sha256": "a0fd1c9a0409b0aee29185e7edd399d7d1bd3f913d86fcdd249b554ff7675d50"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/schemas.py",
+      "sha256": "d97373d13d9bcf3a0087ac301885dd649a92537d9d61e7f16fc69d88a0a2745f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/service.py",
+      "sha256": "91c72ff1d49a794561af28c9a5dfcdef52d717588b46aa9390a00abd816798af"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_verification/__init__.py",
+      "sha256": "8af593177b8c309ee2161b9302fa281b908efd2c352bc8ce476ef4ddd3bef62d"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_verification/test_pure.py",
+      "sha256": "4f253f80c454220535cb67e7f97a3cdba86ed6501efd626f4d41a1cb0622b2ba"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "container": "pdos-parallel-closure-20260930-pg",
+  "container_id": "4a4d9bce396f5739732afdbfb5c95907953ea8ac5508260851d3c495491a8a1f",
+  "volume": "0b56f2911e7758fc60a8e9a98fbd74118b5502917ab27d67f363ebc223604512",
+  "database": "127.0.0.1:57440/pdos_test",
+  "head": "0416_product_evidence_item_decisions",
+  "stopped": true,
+  "volume_retained": true,
+  "ports_closed": {
+    "3040": true,
+    "8840": true,
+    "57440": true
+  },
+  "browser_closed": true,
+  "backup": "output/cost-recovery-20261001/after-final-checks.dump",
+  "backup_bytes": 6406563,
+  "backup_sha256": "b95d035321abf89a8dbb9e4cdda60818fc31cfac86b44afbbec2d2ea5c2899b1",
+  "archive_catalog_readable": true,
+  "restore_rehearsal": false,
+  "protected_environments_touched": false
+}

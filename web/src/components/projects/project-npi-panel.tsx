@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ProjectTaskWorkspace, type ProjectTaskSection } from "./project-task-workspace";
 import { SpecVerificationCoverage } from "./spec-verification-coverage";
 import { TestExecutionPreparation } from "./test-execution-preparation";
 import { TestVerificationPath } from "./test-verification-path";
@@ -42,6 +43,8 @@ type Props = {
   canRecordTests?: boolean;
   /** Build material demand, allocation and movements follow product-engineering edit rights. */
   canEditMaterials?: boolean;
+  additionalSections?: ProjectTaskSection[];
+  initialTask?: string;
 };
 
 /**
@@ -51,7 +54,7 @@ type Props = {
  * digital thread the Gate panel points at ("查看产品工程") led nowhere. Every
  * action here writes through the NPI BFF; nothing is computed client-side.
  */
-export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, canEditMaterials = canEdit }: Props) {
+export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, canEditMaterials = canEdit, additionalSections = [], initialTask }: Props) {
   const [snapshot, setSnapshot] = useState<NpiSnapshot>(EMPTY_NPI_SNAPSHOT);
   const [state, setState] = useState<LoadState>("loading");
   const [error, setError] = useState<string | null>(null);
@@ -134,20 +137,7 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
     [load],
   );
 
-  if (state === "loading") {
-    return <p className="text-sm text-muted-foreground">正在加载试制与测试…</p>;
-  }
-
-  if (state === "error") {
-    return (
-      <div className="space-y-3">
-        <p className="text-sm text-destructive">{error}</p>
-        <Button variant="outline" size="sm" onClick={() => void load()}>
-          重试
-        </Button>
-      </div>
-    );
-  }
+  const availability = state === "loading" ? <p className="py-6 text-sm text-muted-foreground" role="status">正在加载试制与测试…</p> : <div className="space-y-3 py-6"><p className="text-sm text-destructive" role="alert">{error ?? "试制与测试数据暂不可用"}</p><Button variant="outline" size="sm" onClick={() => void load()}>重试</Button></div>;
 
   const samplesByBuild = new Map<string, typeof snapshot.samples>();
   for (const sample of snapshot.samples) {
@@ -164,13 +154,11 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
   }
 
   return (
-    <div className="space-y-8" data-testid="npi-panel">
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-
-      <SpecVerificationCoverage key={`spec-coverage:${projectId}`} projectId={projectId} />
-      <ProjectFirmwareWorkPackages key={`firmware-work:${projectId}`} projectId={projectId} canEdit={canEdit} canRecordResults={canRecordTests} />
-
-      <section className="space-y-3">
+    <div className="min-w-0" data-testid="npi-panel">
+      {state === "ready" && error && <p className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">{error}</p>}
+      <ProjectTaskWorkspace label="试制、验证与质量办理" defaultOpen={initialTask ? [initialTask] : undefined} sections={[
+        { id: "trial-verification", title: "准备试制与样机", description: "核对试制批次、实际样机和物料齐套，登记真实执行。", queryKeys: ["build_id"], hashPrefixes: ["build-", "sample-"], children: state === "ready" ? (
+<section className="space-y-3">
         <h3 className="text-sm font-semibold">试制批次与样机</h3>
         {canEdit && <ProjectBuildCreate key={projectId} projectId={projectId} busy={busy} onCreated={refreshImportResults} />}
         {snapshot.builds.length === 0 ? (
@@ -283,10 +271,9 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
           </ul>
         )}
       </section>
-
-      <ProjectConfigurationComparison key={projectId} projectId={projectId} samples={snapshot.samples} canEdit={canEdit} />
-
-      <section className="space-y-3">
+        ) : availability },
+        { id: "test-execution", title: "执行测试与核对报告", description: "查看用例与配置，登记真实结果，核对原报告和失败复测。", queryKeys: ["test_case_id", "test_run_id", "test_plan_id", "plan_id"], hashPrefixes: ["test-", "test-run-", "test-plan-"], children: state === "ready" ? (
+<section className="space-y-3">
         <h3 className="text-sm font-semibold">测试计划与用例</h3>
         {canEdit && <ProjectTestTemplate key={projectId} projectId={projectId} onSaved={load} />}
         {snapshot.test_plans.length === 0 ? (
@@ -296,7 +283,7 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
             {snapshot.test_plans.map((plan) => {
               const cases = casesByPlan.get(plan.id) ?? [];
               return (
-                <li key={plan.id} className="rounded-md border p-3">
+                <li id={`test-plan-${plan.id}`} key={plan.id} className="rounded-md border p-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">{plan.title}</span>
                     <span className="text-xs text-muted-foreground">
@@ -315,7 +302,7 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
                     <ul className="mt-2 space-y-1 border-t pt-2">
                       {cases.map((testCase) => (
                         <li
-                          key={testCase.id}
+                          id={`test-${testCase.id}`} key={testCase.id}
                           className="flex flex-wrap items-center gap-2 text-sm"
                         >
                           <span>{testCase.title}</span>
@@ -342,8 +329,13 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
           </ul>
         )}
       </section>
-
-      {snapshot.sample_signoffs.length > 0 ? (
+        ) : availability },
+        { id: "verification-coverage", title: "检查规格验证覆盖", description: "核对每条规格的验证依据和缺项。", hashPrefixes: ["spec-coverage", "verification-coverage"], children: <SpecVerificationCoverage key={`spec-coverage:${projectId}`} projectId={projectId} /> },
+        { id: "configuration-comparison", title: "比较实际配置", description: "比较样机配置修订，保留每次测试绑定的实际版本。", hashPrefixes: ["configuration-"], children: state === "ready" ? <ProjectConfigurationComparison key={projectId} projectId={projectId} samples={snapshot.samples} canEdit={canEdit} /> : availability },
+        { id: "firmware-verification", title: "核对固件工作与结果", description: "查看固件工作包和已登记结果，不以计划替代实测。", hashPrefixes: ["firmware-", "fw-"], children: <ProjectFirmwareWorkPackages key={`firmware-work:${projectId}`} projectId={projectId} canEdit={canEdit} canRecordResults={canRecordTests} /> },
+        ...additionalSections,
+        { id: "sample-signoffs", title: "查看样机回应", description: "查看已登记的样机回应，客户反馈与内部放行分别保留。", hashPrefixes: ["sample-signoff"], children: state === "ready" ? <>
+{snapshot.sample_signoffs.length > 0 ? (
         <section className="space-y-2">
           <h3 className="text-sm font-semibold">样机会签</h3>
           <ul className="space-y-1">
@@ -355,6 +347,9 @@ export function ProjectNpiPanel({ projectId, canEdit, canRecordTests = canEdit, 
           </ul>
         </section>
       ) : null}
+          {!snapshot.sample_signoffs.length && <p className="py-3 text-sm text-muted-foreground">尚无样机回应记录。</p>}
+        </> : availability },
+      ]}/>
     </div>
   );
 }

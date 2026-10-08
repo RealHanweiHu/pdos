@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "purpose": "Wave11 owned frontend checks; consolidated from retained prior tool results without rerunning checks",
+  "recorded_at_utc": "2026-10-02T18:27:42Z",
+  "recorded_local_date": "2026-10-02",
+  "recorded_by": "reuse_product_ui",
+  "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-start.tsx",
+      "sha256": "e47c2b8f4108fea93308fc428494a2a10858d69efde15a340b6bed96a5214e72"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-start-view.ts",
+      "sha256": "c030a7640effc973d872edb1038614e3075c48bffadd755c94facf584cdc5c44"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-start-view.test.ts",
+      "sha256": "ab87705e8dcec907fbc835c17db20721c58ecbbf1d3754378f9c1f4990ef101b"
+    }
+  ],
+  "checks": [
+    {
+      "name": "owned helper transpilation",
+      "command": "node - <<'JS'\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst ts = require('typescript');\nconst out = '/tmp/pdos-build-start-owned-tests';\nfs.mkdirSync(out, { recursive: true });\nfor (const name of ['build-start-view.ts', 'build-start-view.test.ts']) {\n  const source = fs.readFileSync(`src/lib/${name}`, 'utf8');\n  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true, isolatedModules: true }, fileName: name });\n  fs.writeFileSync(path.join(out, name.replace(/\\.ts$/, '.js')), compiled.outputText);\n}\nJS",
+      "tool_chunk_id": "ef0d58",
+      "exit_code": 0,
+      "output": "",
+      "boundaries": "Only the owned helper and test were transpiled into /tmp. This transpilation is not a typecheck; separate noEmit TypeScript checks are recorded below. No JavaScript was generated under src."
+    },
+    {
+      "name": "owned helper tests",
+      "command": "node --test /tmp/pdos-build-start-owned-tests/build-start-view.test.js",
+      "tool_chunk_id": "7e1322",
+      "exit_code": 0,
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "raw_output": "✔ permission and write tiers remain explicit; product write does not authorize professionals (1.301416ms)\n✔ fresh forms keep professional applicability unknown and all four controls unaccepted (1.00775ms)\n✔ scope fixes full planned quantity and unit plus explicit timezone and CAS history (16.340291ms)\n✔ only exact same-scope readonly inputs can feed a T0 calculation (0.409417ms)\n✔ positive quantity is exact decimal, bounded and never zero or floating conversion (0.124166ms)\n✔ UTC semantic time normalization retains microseconds and rejects imaginary or naive dates (0.152625ms)\n✔ approve requires both fixed role rules, applicable evidence and every named control (0.601042ms)\n✔ all professional proof periods cover the entire approval period (0.162875ms)\n✔ revoke can bind the old decision assessment and does not fabricate positive reviews (0.244ms)\n✔ T2 must return its dedicated approval token and named tier, never a T1 confirmation (1.265125ms)\n✔ T2 exact command, professional values, read set and after binding cannot drift (0.321458ms)\n✔ start requires distinct current-scope professional roles and a real past event reference (0.3995ms)\n✔ exact original line references and read sets do not mix revision or invent facts (0.426125ms)\n✔ unknown T2 execution restores only the same person/product and original approval command (0.60775ms)\n✔ database key order never creates false change, and read models never grant missing capabilities (0.27825ms)\n✔ receipts bind operation and distinct assessment, decision, start families (0.21275ms)\nℹ tests 16\nℹ suites 0\nℹ pass 16\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 138.8305\n",
+      "executed_source_sha256": {
+        "pdos-next/web/src/lib/build-start-view.ts": "c030a7640effc973d872edb1038614e3075c48bffadd755c94facf584cdc5c44",
+        "pdos-next/web/src/lib/build-start-view.test.ts": "ab87705e8dcec907fbc835c17db20721c58ecbbf1d3754378f9c1f4990ef101b"
+      }
+    },
+    {
+      "name": "final owned component lint after saved reservation display adjustment",
+      "command": "./node_modules/.bin/eslint src/components/builds/build-start.tsx",
+      "tool_chunk_id": "0d7144",
+      "exit_code": 0,
+      "output": "",
+      "component_sha256": "e47c2b8f4108fea93308fc428494a2a10858d69efde15a340b6bed96a5214e72"
+    },
+    {
+      "name": "final owned typecheck after saved reservation display adjustment",
+      "command": "./node_modules/.bin/tsc --noEmit --project /tmp/pdos-build-start-owned-tsconfig.json",
+      "tool_chunk_id": "b40135",
+      "exit_code": 0,
+      "output": "",
+      "config_snapshot": {
+        "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+        "compilerOptions": {
+          "incremental": false
+        },
+        "include": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/next-env.d.ts",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/builds/build-start.tsx",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/build-start-view.ts",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/build-start-view.test.ts"
+        ],
+        "exclude": [
+          "node_modules"
+        ]
+      },
+      "files_sha256": {
+        "pdos-next/web/src/components/builds/build-start.tsx": "e47c2b8f4108fea93308fc428494a2a10858d69efde15a340b6bed96a5214e72",
+        "pdos-next/web/src/lib/build-start-view.ts": "c030a7640effc973d872edb1038614e3075c48bffadd755c94facf584cdc5c44",
+        "pdos-next/web/src/lib/build-start-view.test.ts": "ab87705e8dcec907fbc835c17db20721c58ecbbf1d3754378f9c1f4990ef101b"
+      }
+    }
+  ],
+  "candidate_sequence": {
+    "first_frozen_component_sha256": "0a821d0e9ea87776e29310997930f78c6d3d435af4540825a645b8e3ac9344d1",
+    "first_frozen_owned_lint": {
+      "command": "./node_modules/.bin/eslint src/components/builds/build-start.tsx src/lib/build-start-view.ts src/lib/build-start-view.test.ts",
+      "tool_chunk_id": "4e978b",
+      "exit_code": 0,
+      "output": ""
+    },
+    "first_frozen_owned_typecheck": {
+      "command": "./node_modules/.bin/tsc --noEmit --project /tmp/pdos-build-start-owned-tsconfig.json",
+      "tool_chunk_id": "174c2d",
+      "exit_code": 0,
+      "output": ""
+    },
+    "subsequent_component_only_changes": [
+      "The first frozen component shows synthetic exercise warnings at the top, in the confirmation panel, and in saved start records. This presentation change followed the 16 helper tests; helper and tests were unchanged.",
+      "The final component alone adds saved material-hold/resource-occupancy record counts from real arrays, preserves unknown counts, renders reservation arrays without exposing UUIDs, and translates staged_in_caller_uow as retained history saved with the start transaction."
+    ],
+    "helper_and_tests_unchanged_since_16_test_execution": true,
+    "helper_tests_repeated_for_final_display_change": false,
+    "final_owned_lint_and_typecheck_after_last_display_change": true,
+    "current_component_sha256": "e47c2b8f4108fea93308fc428494a2a10858d69efde15a340b6bed96a5214e72",
+    "hash_readback_tool_chunk_id": "a9b0ab"
+  },
+  "scope_and_limitations": [
+    "Checks cover the owned helper algorithms, recovery/confirmation binding, component lint, and the scoped TypeScript dependency graph.",
+    "No database, service, browser, production build, or global lint was run by this subagent.",
+    "Public final build was being run by the parent at evidence assembly time; this record does not claim that build passed.",
+    "These owned checks do not replace joint candidate validation, real HTTP/browser behavior, operational issuer qualification, or any formal production exit.",
+    "This evidence was assembled from retained actual tool results; checks were not rerun for this evidence-only task."
+  ]
+}

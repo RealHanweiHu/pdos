@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-02T17:19:39.681859+00:00",
+  "scope": {
+    "temporary_synthetic_objects_only": true,
+    "database_access": false,
+    "credentials_or_configuration_access": false,
+    "original_content_recorded": false,
+    "object_storage_paths_recorded": false,
+    "real_qualification_granted": false
+  },
+  "original_joint_failure": {
+    "evidence": "docs/reports/evidence/pdos-next-wave10-20261002/joint-pure.log",
+    "result": "1 failed, 730 passed in 13.16s",
+    "case": "test_parallel_processes_produce_one_actual_marker_transition"
+  },
+  "diagnostic": {
+    "unchanged_limits": {
+      "permit_future_validity_seconds": 90,
+      "io_timeout_seconds": 5
+    },
+    "targeted_pytest_before_fix": {
+      "maximum_attempts": 5,
+      "passed": 4,
+      "failed": 1,
+      "failure_elapsed_seconds": 0.22,
+      "error_code": "LIFECYCLE_STORAGE_UNKNOWN"
+    },
+    "temporary_trace_method": "Trace captured exceptions in both parent transport._run and child effects.process; no exception args, bytes, UUIDs or object paths recorded.",
+    "traced_rounds_until_first_failure": 7,
+    "first_failure_elapsed_seconds": 0.089,
+    "parent_caught_exceptions": [],
+    "child_caught_exceptions": [
+      {
+        "type": "FileNotFoundError",
+        "errno": 2,
+        "checkpoint": "startup",
+        "occurrences": 2,
+        "frames": [
+          {
+            "file": "effects.py",
+            "function": "process",
+            "line": 447
+          },
+          {
+            "file": "effects.py",
+            "function": "apply",
+            "line": 242
+          },
+          {
+            "file": "contextlib.py",
+            "function": "__enter__",
+            "line": 137
+          },
+          {
+            "file": "files.py",
+            "function": "locked",
+            "line": 123
+          }
+        ]
+      }
+    ],
+    "receipts": {
+      "unknown": 2,
+      "applied": 2,
+      "applied_proofs_identical": true
+    },
+    "root_cause": "Concurrent first lock-file creation with O_CREAT|O_NOFOLLOW raised ENOENT in the child before acquiring the object lock or writing an effect attempt. The parent conservatively returned UNKNOWN. This was not a timeout, expired permit or successful partial authority."
+  },
+  "fix": {
+    "summary": "Use the existing upload journal single-creator pattern: O_CREAT|O_EXCL; a FileExistsError loser safely opens the existing lock with O_NOFOLLOW. Continue owner/mode/link checks and bounded flock waiting. No generic ENOENT retry and no business-effect retry.",
+    "files_changed": [
+      "pdos-next/server/pdos_next/object_lifecycle_runtime/files.py",
+      "pdos-next/server/tests/object_lifecycle_runtime/test_runtime.py"
+    ],
+    "deterministic_regression": "test_first_lock_create_race_has_one_creator_and_safe_existing_open",
+    "regression_method": "Emulate a competing creator before our exclusive create and the observed Darwin failure for the prior unsafe flag combination; verify safe existing opening and zero effect attempts.",
+    "production_limits_unchanged": true,
+    "unknown_never_treated_as_applied": true,
+    "runtime_failure_boundary_unchanged": true
+  },
+  "verification": {
+    "module_command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest --noconftest -p no:cacheprovider tests/object_lifecycle_runtime/test_runtime.py -q",
+    "module_result": "40 passed in 7.64s",
+    "module_log": "docs/reports/evidence/pdos-next-wave10-20261002/runtime-race-tests.log",
+    "module_log_sha256": "abdefde8b3dfc36ec0a4d87052f8bf40688446d5fb4713d146133f2a2036c9a1",
+    "ruff_check_passed": true,
+    "ruff_format_check_passed": true,
+    "post_module_change": "Ruff joined only a split os.open expression; final 20-round actual recheck used the final formatted bytes.",
+    "post_fix_actual_rounds": 20,
+    "post_fix_actual_calls": 80,
+    "post_fix_actual_all_applied": true,
+    "one_attempt_one_event_identical_proof_per_round": true,
+    "actual_recheck_evidence": "docs/reports/evidence/pdos-next-wave10-20261002/runtime-race-recheck.json"
+  },
+  "runtime_7_file_scope": {
+    "original_baseline": "docs/reports/evidence/pdos-next-wave9-20261002/reuse-freeze-review.json",
+    "unchanged_files": 5,
+    "changed_files": 2,
+    "files": [
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/__init__.py",
+        "wave9_frozen_sha256": "1459ea87797f8f2cb47c88a97401056471f53b6163ea60dc6e277ebdf6f58e45",
+        "current_sha256": "1459ea87797f8f2cb47c88a97401056471f53b6163ea60dc6e277ebdf6f58e45",
+        "matches_wave9": true,
+        "size_bytes": 102
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/effects.py",
+        "wave9_frozen_sha256": "4830234c6a8e7597cb145fc047f74e2847fc8d72ab1fae9c323b4f0501a1609a",
+        "current_sha256": "4830234c6a8e7597cb145fc047f74e2847fc8d72ab1fae9c323b4f0501a1609a",
+        "matches_wave9": true,
+        "size_bytes": 21482
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/files.py",
+        "wave9_frozen_sha256": "dafd4cc5070b07852c5d68687923cbf9a6a0a73d062c3cca1f098d4f05058b90",
+        "current_sha256": "ff95b08dc277b4eedb631e97df418d04649ae5daf764e7c7aad9fad57336371e",
+        "matches_wave9": false,
+        "size_bytes": 7984
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/protocol.py",
+        "wave9_frozen_sha256": "95773a8a741c7104f979486e65bb66a5c8e4b66365a25ff91998a4df53fabfa5",
+        "current_sha256": "95773a8a741c7104f979486e65bb66a5c8e4b66365a25ff91998a4df53fabfa5",
+        "matches_wave9": true,
+        "size_bytes": 1134
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/transport.py",
+        "wave9_frozen_sha256": "22b5ff8c43b5456e48b6dccb121628789faa557d434c3fc2c7f6e0e525e16860",
+        "current_sha256": "22b5ff8c43b5456e48b6dccb121628789faa557d434c3fc2c7f6e0e525e16860",
+        "matches_wave9": true,
+        "size_bytes": 10391
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/worker.py",
+        "wave9_frozen_sha256": "4f660b414f2c3bd60ea3cfb2d235283eaf796d74125b321988deb14af6ffb13d",
+        "current_sha256": "4f660b414f2c3bd60ea3cfb2d235283eaf796d74125b321988deb14af6ffb13d",
+        "matches_wave9": true,
+        "size_bytes": 1278
+      },
+      {
+        "path": "pdos-next/server/tests/object_lifecycle_runtime/test_runtime.py",
+        "wave9_frozen_sha256": "b07470da53ba2a9c20a713d28ee9fcd42ee933f831ebf533c71d8f9ff04f0411",
+        "current_sha256": "0387a1ef4e66988b0ee24100d50da37b2a8843db9266e4a76f7173b4d5acfd81",
+        "matches_wave9": false,
+        "size_bytes": 20429
+      }
+    ],
+    "historical_evidence_overwritten": false,
+    "interpretation": "The earlier Wave10 reuse-freeze-review.json remains a truthful comparison at its original timestamp, before the later authorized diagnostic and repair. It cannot be cited as proof that all seven runtime files still match at the final candidate."
+  },
+  "remaining_validation": "The main thread owns final joint pure and affected PostgreSQL lifecycle checks. This local record does not claim those checks or production qualification."
+}

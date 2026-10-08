@@ -1,0 +1,622 @@
+{
+  "status": "PASS_READ_ONLY_INVENTORY",
+  "scope": "existing retained synthetic candidate source inventory",
+  "target": "127.0.0.1:62513/pdos_test",
+  "business_writes": 0,
+  "model_calls": 0,
+  "tool_sha256": "c290566e9d70493b8662c84fe65ab122a3d7c3b14f60a3f988b040c6e2e7ef29",
+  "candidates": [
+    {
+      "id": "f392b96f-3739-4f00-b4cd-ea7d21235f86",
+      "revision": 1,
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "read_count": 17,
+      "anchor_sha256": "072f708c797f592cef9ce6df63c22b83f465788b13c560731cfac35863426fc4"
+    },
+    {
+      "id": "481b5d35-4d62-457f-bad2-8bd1cd4d7e68",
+      "revision": 1,
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "read_count": 17,
+      "anchor_sha256": "74f652c187c4ea948a949b7f9c959f41b2c6a1e9ab26a3c2b9f74b636d7a9183"
+    }
+  ],
+  "professional_scope": [
+    {
+      "id": "01ea97d4-ba38-4424-9bea-7c66242b9a9c",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.draft",
+        "quality.issue.containment.record",
+        "quality.issue.create",
+        "quality.issue.merge",
+        "quality.issue.triage"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "0b998de7-0e08-493a-974a-09fd9e087786",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.verification.candidate.record"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T12:49:53.947214+00:00",
+      "valid_until": "2026-10-05T12:50:53.947214+00:00"
+    },
+    {
+      "id": "4b8bae74-6b78-42fe-8428-03aabbe293db",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "test.disposition.decide",
+        "test.result.compute",
+        "test.results.import",
+        "test.run.review"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "4ea80bc9-db2c-455b-899d-3b17275d70e1",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "build.engineering.authorize"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "8393345d-59db-461f-8ec5-3bc3b03ca776",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.issue.root_cause.decide"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T08:05:29.549734+00:00",
+      "valid_until": "2026-10-04T08:06:00+00:00"
+    },
+    {
+      "id": "98148977-f735-4ac2-a030-f42b279f241c",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.followup.link"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T08:05:29.549734+00:00",
+      "valid_until": "2026-10-04T08:06:00+00:00"
+    },
+    {
+      "id": "c4ef0d7d-ee5a-44e0-8e97-1c142f74e26a",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.actions.complete"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T08:05:29.549734+00:00",
+      "valid_until": "2026-10-04T08:06:00+00:00"
+    },
+    {
+      "id": "cc5458ca-21bf-4340-b9ea-d78ad6ad0df7",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "change.impact.compute",
+        "change.request.create"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "d52ddbc3-f3c0-4b2d-97cf-048e64b5450d",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "test.run.plan",
+        "test.run.start",
+        "verification.actual_method.prepare",
+        "verification.handoff.accept",
+        "verification.method.prepare",
+        "verification.request.create",
+        "verification.schedule.promise"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "dfad93f5-79f9-4fae-80c6-6fc93930005e",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "duty",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "build.manufacturing.authorize",
+        "build.sample.readiness.record",
+        "build.start",
+        "verification.handoff.offer"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "23ca74f6-c2e9-46f1-b73a-abcc9d48b2f5",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.followup.link"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T08:05:29.549734+00:00",
+      "valid_until": "2026-10-04T08:06:00+00:00"
+    },
+    {
+      "id": "24ac71d0-51b2-4ed9-81a2-f641ef4da892",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "test.run.plan",
+        "test.run.start",
+        "verification.actual_method.prepare",
+        "verification.handoff.accept",
+        "verification.method.prepare",
+        "verification.request.create",
+        "verification.schedule.promise"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "31554143-f673-4516-8bc0-b3113ef937d7",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.actions.complete"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T08:05:29.549734+00:00",
+      "valid_until": "2026-10-04T08:06:00+00:00"
+    },
+    {
+      "id": "33c14272-b175-4a84-a731-c85a43843755",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "change.impact.compute",
+        "change.request.create"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "3ffaa2ed-c334-40f8-9987-de6a4ee3fc53",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.verification.candidate.record"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T12:49:53.947214+00:00",
+      "valid_until": "2026-10-05T12:50:53.947214+00:00"
+    },
+    {
+      "id": "6ddf5b22-6e98-427f-8a86-b90a95e497fc",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "test.disposition.decide",
+        "test.result.compute",
+        "test.results.import",
+        "test.run.review"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "b57279f4-b098-43a3-90e1-04684cd31813",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.capa.draft",
+        "quality.issue.containment.record",
+        "quality.issue.create",
+        "quality.issue.merge",
+        "quality.issue.triage"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "b586c89f-0fa8-457d-965a-03d83e469cde",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "build.manufacturing.authorize",
+        "build.sample.readiness.record",
+        "build.start",
+        "verification.handoff.offer"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "dd9b085c-66fb-460c-9a5e-df46cfa336e4",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "build.engineering.authorize"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T05:47:04.132349+00:00",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00"
+    },
+    {
+      "id": "f305a341-1619-4fbf-a5f2-1d7a47aacd2c",
+      "revision": 1,
+      "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "kind": "qualification",
+      "state": "active",
+      "issuer_epoch": null,
+      "operations": [
+        "quality.issue.root_cause.decide"
+      ],
+      "purposes": [
+        "内部问题调查：独立单模穴A尺寸复测（合成）"
+      ],
+      "valid_from": "2026-10-03T08:05:29.549734+00:00",
+      "valid_until": "2026-10-04T08:06:00+00:00"
+    }
+  ],
+  "sources": [
+    {
+      "id": "0f3cc56e-4536-4d39-a27c-fbc61ba1e137",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "70e66a5a17d1a5fe8baecffceadc2fdb6c40f59cc2732240b2170f6f6e5eb19d",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "a9064d596152da0eaf840c4107ace6b3d910b933cf226bc815c82f87633d4c9e",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "1f1c96df-e80e-40b6-8ef3-31dd14f582b2",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate",
+        "professional_scope_including_negative_and_historical"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "1e36c8601a0e24f2655315da94e6bdc5a556b7d32b67cf9cacf025d3492286c7",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "33fa986c-bb30-44db-b7ef-3ab36a0344b8",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "3e78851c826851a589c0ebdcf719f84ee739ff9b53f86f0f6ab694969523dfc9",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "7965af50d3b2ec822a4bec1f26250e273440ecd9987fbe48baeb4099cb52bead",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "e8e932225da3e2b42f195fd9b11232bbca3cde30893ca10e2f7651ffee8188d0",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate",
+        "professional_scope_including_negative_and_historical"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "344aefe463ff630444084d571ce2b158ebcf0e0d6fd08b83f4d8f9b043fb1582",
+      "line_count": 5,
+      "original_id": null
+    },
+    {
+      "id": "65e725ce-d5cb-436e-94e0-f3dfd8ebd6c8",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "08d7187f8acbf7d05763340c6c01e5a0c0e9ef874b8e2af1ded681fe4bf1034b",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "42ca9df68885ba22e92f1ae3ccc5efb95e76d9880e4e6b068a2af22022401486",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "a0a60ae82d3209d192b3b75f0ad10548ade9f39a4cbf6f4c7f92ef7cc5e0a3e6",
+      "line_count": 1,
+      "original_id": "6b8299f1-7e9c-4abe-971d-3d885caacc69"
+    },
+    {
+      "id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "42086a777d5ef2aea5bf502325c60647ecba25c3df65081a1ac23624fd77fe8c",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "6ca6c201666d4fca4e06a37db64036e2ca460bac1ac951c02235cdd914d7569c",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate",
+        "professional_scope_including_negative_and_historical"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "c7eb212d3e53b974eefe77e262420a58daf6af8b77ed13feddee44dce40f738a",
+      "line_count": 3,
+      "original_id": null
+    },
+    {
+      "id": "e543001b-a5d8-4cfe-8cb2-8cc2657470b0",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "9544a6ff9e165e63684736ddde1d9d3e829ddb085e80f28d56304c1c5c76e9b4",
+      "line_count": 1,
+      "original_id": null
+    },
+    {
+      "id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+      "revision": 1,
+      "roles": [
+        "fixed_candidate"
+      ],
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "active",
+      "hash": "424ff621c81a10836161025640986dd56b20b467b50b631580c049f46c957b50",
+      "line_count": 1,
+      "original_id": null
+    }
+  ],
+  "fact_rows": {
+    "capa_verification_rule_facts": 0,
+    "capa_observation_facts": 0,
+    "capa_named_verification_reviews": 0,
+    "capa_current_verification_rules": 0,
+    "capa_current_observations": 0
+  },
+  "union_count": 17,
+  "command_limit": 20,
+  "scope_union_exceeds_command_limit": false,
+  "qualified_for_new_operations": false,
+  "independent_reviewer": false,
+  "future_fact_source_slots_reserved": 0,
+  "observed_at": "2026-10-03T15:19:07.874622+00:00"
+}

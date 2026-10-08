@@ -1,0 +1,62 @@
+[
+  {
+    "check": "typescript",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+      "--project",
+      "src/components/model_configuration/tsconfig.check.json",
+      "--incremental",
+      "false",
+      "--noEmit"
+    ],
+    "exit_code": 0
+  },
+  {
+    "check": "eslint",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/eslint",
+      "src/components/model_configuration"
+    ],
+    "exit_code": 0
+  },
+  {
+    "check": "component",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "command": [
+      "node",
+      "--test",
+      "src/components/model_configuration/render.test.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "check": "pytest",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/model_configuration",
+      "--confcutdir=tests/model_configuration",
+      "-p",
+      "no:cacheprovider",
+      "-q"
+    ],
+    "exit_code": 0
+  },
+  {
+    "check": "ruff",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      "pdos_next/model_configuration",
+      "pdos_next/schemas/model_configuration",
+      "tests/model_configuration"
+    ],
+    "exit_code": 0
+  }
+]

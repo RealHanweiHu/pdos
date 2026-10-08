@@ -1,0 +1,37 @@
+{
+  "scope": "Actual existing local synthetic origin; no new fact/qualification/DDL",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "observed_at": "2026-10-03T11:24:42.158333+00:00",
+  "dependencies_sha256": {
+    "anchor_storage.py": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+    "anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "paired.py": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750",
+    "lineage.py": "252a11c5a48f9d6db8a270e07f979ae1437de4156bd1b16d6fe4bd7dcea6dcce"
+  },
+  "public_candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "saved_identity_source_sha256": "896eb4bec6f3367ce78e2bcb31ff3cc12462eb8d3a202ad09e313bdc6d9a9920",
+  "status": "PASS",
+  "transaction_read_only": true,
+  "origin_revision": 6,
+  "current_revision": 6,
+  "full_descriptor_sha256": "fd190080ea80d7cd84c229728adccaac59c135138db9ef543c6360e59a32f6f4",
+  "needs_lineage_owner": false,
+  "missing_owners": [
+    "original_failure_bytes_owner",
+    "current_source_security_owner",
+    "current_professional_policy_owner"
+  ],
+  "current_evidence_authorized": false,
+  "source_bytes_verified": false,
+  "original_failures_verified": false,
+  "same_uow_consumption_attested": false,
+  "preserved_actual_completion_clock": true,
+  "no_new_write_or_preview": true,
+  "public_source_stable": true,
+  "staged_dependencies_stable": true
+}

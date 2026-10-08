@@ -1,0 +1,60 @@
+{
+  "schema": "pdos-candidate-api-source-v2",
+  "state": "source_frozen_static_only",
+  "source": {
+    "path": "pdos-next/server/pdos_next/capa_candidate_api.py",
+    "before_sha256": "272b5c5cc5e2e6f94b91c264b38777e1da1c8f2590b1072bf7d7b210fd3edd8c",
+    "after_sha256": "ca9f466baf69639cd8b0e9c295d80985657d54d2517695f90bebe898f524ad58"
+  },
+  "scope": [
+    "pdos-next/server/pdos_next/capa_candidate_api.py"
+  ],
+  "before": {
+    "entry": "candidate_context called full list_quality_followup before actual candidate prepare",
+    "additional_work": "old ROOT_CAUSE/COMPLETE/LINK capability assessments, all Formal output choices and duplicate fixed-failure/view refresh; Link proofs and candidate history were additionally read",
+    "clock_position": "prepared phase clock/invalidation preceded display/history IO"
+  },
+  "after": {
+    "selection": "actual scoped Current/Version snapshot, Project/caller and actual _origin; actual prepare verifies completed origin",
+    "candidate": "unchanged full actual prepare and all-owner/source refresh; no positive defaults",
+    "links": "existing _links/_saved_link/exact Receipt/current owners._link; independently refreshed proof after display IO; needs_recheck excluded and actual reason_codes shown",
+    "sources": "actual prepared.sources only; exact full POSITION, current source_for, content digest and full-line SHA; structured report/domain locators not converted",
+    "history": "actual candidate_storage.read_candidate retained",
+    "final": "professional/policy comparison, raw source_basis, exact Current/Issue/Project, fresh caller watermark then registered phase clock/runtime; phase invalidated only afterwards",
+    "json_contract": "original host/data keys and indeterminate/null candidate fields preserved"
+  },
+  "historical_observations": [
+    {
+      "seconds": 129.844,
+      "code_sha256": "272b5c5cc5e2e6f94b91c264b38777e1da1c8f2590b1072bf7d7b210fd3edd8c",
+      "source": "Root actual historical GET observation; response was not retained by original v2 tool",
+      "conclusion": "cannot infer denied qualification from that assertion"
+    },
+    {
+      "seconds": 131.365,
+      "code_sha256": "272b5c5cc5e2e6f94b91c264b38777e1da1c8f2590b1072bf7d7b210fd3edd8c",
+      "source": "Root actual v3 historical GET observation",
+      "conclusion": "host.allowed=true and authority true; empty Link choice was real needs_recheck"
+    }
+  ],
+  "checks": {
+    "ruff_format_exit": 0,
+    "ruff_check_exit": 0,
+    "ast_compile_import_exit": 0,
+    "source_option_checks_exit": 0,
+    "raw_output_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-api-source-v2-static.log",
+    "raw_output_sha256": "2003471f59373f08831c0cc6117c01fc7d5bcb6a5164d8c76e03ad4d1dd2ac34"
+  },
+  "not_executed": [
+    "DB",
+    "HTTP",
+    "pytest/public tests",
+    "build",
+    "migration"
+  ],
+  "limitations": [
+    "Static work identifies removable duplicate calls, not measured bottleneck attribution.",
+    "No claim of speed improvement or business/PG/seven-owner qualification; Root actual HTTP and integrated validation pending.",
+    "Old Link retained compatibility is a separately owned change; not modified here."
+  ]
+}

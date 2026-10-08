@@ -1,0 +1,25 @@
+{
+  "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "noEmit": false,
+    "allowJs": false,
+    "isolatedModules": false,
+    "incremental": false,
+    "rootDir": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src",
+    "outDir": "/tmp/pdos-wave20-ui-speed-tests",
+    "typeRoots": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/build-quality-loop-view.test.ts"
+  ],
+  "include": [],
+  "exclude": []
+}

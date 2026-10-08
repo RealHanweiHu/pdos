@@ -1,0 +1,17 @@
+{
+  "scope_source_hashes_unchanged": true,
+  "api_health": 200,
+  "preview_http": 200,
+  "gui_completed_reply_and_tool_receipt_observed": true,
+  "screenshot": "docs/reports/evidence/preproject-research-runtime-20261006/automatic-research-enabled.jpg",
+  "screenshot_bytes": 67142,
+  "preview_kept_running": true,
+  "api_hot_reload": false,
+  "agent_created_result_tab": 10,
+  "result_tab_deliverable": true,
+  "main_database_repo_tests": false,
+  "full_frontend_build_repeated": false,
+  "formal_exit_claimed": false,
+  "production_operation": false,
+  "git_push": false
+}

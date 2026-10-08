@@ -1,0 +1,8 @@
+{
+  "files": {
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py": "0e326e0762fa1e2aa275f12b7e39b82635fa6a712aa27c582104fe49b072654a",
+    "pdos-next/server/pdos_next/domain/change_control/ports.py": "a8cf76cf77187dcbefe937d901f10fea396c418fd0b26dae36a3037e7d50453c",
+    "pdos-next/server/pdos_next/domain/change_control/handlers.py": "1906a199fa6ecbe3730539955a719434dac1fbbba8a04f141d98147ad2de5673"
+  },
+  "summary": "Final closed DTO/ports/handler reviewed: reconciles_id server-owned in implementation/effectivity facts; FactPort.audience binds source-to-target use; unknown attempts cannot be bypassed with a new receipt and reconcile only exact same attempt. UI still submits owner item_id/fact_id, not policy/source/reconcile claims. Backend IMPACT_UNKNOWN blocks approval when assessment.unknown or plan disposition unknown; UI advisory guard now matches. Final root review also checks graph_snapshot own currentness and requires lock/read-set/cancel recheck at record."
+}

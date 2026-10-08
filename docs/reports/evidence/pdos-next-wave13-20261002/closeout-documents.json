@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "files": {
+    "docs/reports/evidence/pdos-next-wave13-20261002/result.md": "4bbf7bfe813d21f3ab899fb52f0c568383fb8f1eb542a950d376dab3e0cb8f36",
+    "tasks/ai-native-integrated-todo.md": "a7fa0683ff7ffd8f958d1605dac41088ca5941c91b37c11a91ae9a2d9cb65c96",
+    "docs/design/2026-10-02-pdos-next-execution-plan.md": "1e4847e97d4c0ef3208c70b6bbac88c28898be9e14fb8cc4d8ecb305e5e9a862"
+  },
+  "unique_backend_passed": 1598,
+  "ui_helper_passed": 117,
+  "next_wave": "14 contract freeze; no implementation yet",
+  "formal_exit_or_real_qualification_granted": false
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "path": "verification-handoff?build_id=506efa65-e39c-470f-b041-b53977f42a1f",
+    "status": 200,
+    "seconds": 4.099,
+    "rows": 3
+  },
+  {
+    "path": "sample-handoff?build_id=506efa65-e39c-470f-b041-b53977f42a1f&purpose=Verify%20preparation",
+    "status": 200,
+    "seconds": 2.674,
+    "rows": 2
+  }
+]

@@ -3,10 +3,12 @@
 import { ArrowLeftIcon, ArrowClockwiseIcon, CaretRightIcon, ChatCircleDotsIcon, GearSixIcon, ListBulletsIcon, SquaresFourIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { openXiaopai } from "@/components/ai/xiaopai-launcher";
-import { ProductSpaceOverview, ProductTopicList } from "./product-space-overview";
+import { CategoryLifecycleAction } from "./category-lifecycle-action";
+import { ProductSpaceOverview } from "./product-space-overview";
+import { ProductProposals } from "./product-proposals";
 import { ProductWorkScopeContext, useProductWorkUpdates } from "./product-work-scope";
 import { navigateProductWork, productViews, productView, productWorkHref } from "./product-work-navigation";
 import { useXiaopaiPending } from "@/components/ai/xiaopai-provider";
@@ -35,6 +37,9 @@ import { SourceCitations } from "./source-citations";
 import { ProductSourceFiles } from "./product-source-files";
 import { ProductAiPreparation } from "./product-ai-preparation";
 import { ProductShadowEvaluation } from "./product-shadow-evaluation";
+import { ProductReadingProvider } from "./product-reading-context";
+import { ProductResearchEntries } from "./product-research-entries";
+import { ReadingRecord } from "./product-reading-ui";
 
 const field = "mt-1 w-full rounded-md border bg-background p-2 text-sm";
 const lines = (value: string) => value.split("\n").map((item) => item.trim()).filter(Boolean);
@@ -53,39 +58,6 @@ function spaceMeta(space: Space) {
   if (space.use_scenarios.length) parts.push(`${space.use_scenarios.length} 个场景`);
   if (space.research_questions.length) parts.push(`${space.research_questions.length} 个研究问题`);
   return parts.join(" · ");
-}
-
-/**
- * Derived identity tile for a market space: a deterministic gradient and
- * monogram from the space code. Spaces have no real cover-image field yet, so
- * the tile is an honest derived mark rather than fabricated photography; a
- * future cover field can replace it in place.
- */
-function SpaceVisual({ code, title }: { code: string; title: string }) {
-  let hash = 0;
-  for (let index = 0; index < code.length; index += 1) {
-    hash = (hash * 31 + code.charCodeAt(index)) % 360;
-  }
-  const monogram =
-    code
-      .split(/[-_:]/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part.charAt(0).toUpperCase())
-      .join("") || title.charAt(0);
-  return (
-    <div
-      aria-hidden="true"
-      className="flex h-28 items-end p-3 dark:brightness-75"
-      style={{
-        backgroundImage: `linear-gradient(135deg, hsl(${hash} 42% 82%), hsl(${(hash + 48) % 360} 38% 68%))`,
-      }}
-    >
-      <span className="font-mono text-xl font-semibold tracking-tight text-white/95 [text-shadow:0_1px_2px_rgb(0_0_0/0.25)]">
-        {monogram}
-      </span>
-    </div>
-  );
 }
 
 const navigateWorkspace = navigateProductWork;
@@ -108,16 +80,16 @@ export function ProductWorkspace() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [spaces, setSpaces] = useState<Space[] | null>(null);
   const [canCreate, setCanCreate] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
   const [sourceLock, setSourceLock] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "cards">(() => {
     try { return typeof window !== "undefined" && window.localStorage.getItem(VIEW_STORAGE_KEY) === "cards" ? "cards" : "list"; }
     catch { return "list"; }
   });
-  const stableId = useRequestId();
-  const load = async () => { const data = await request<{ items: Space[]; can_create: boolean }>("spaces"); setSpaces(data.items); setCanCreate(data.can_create); };
+  const directoryRevision = useRef(0);
+  const load = async () => { const revision = ++directoryRevision.current; const data = await request<{ items: Space[]; can_create: boolean }>("categories"); if (revision !== directoryRevision.current) return; setSpaces(data.items); setCanCreate(data.can_create); };
   useEffect(() => {
     let live = true;
     void requestIdentity().then((loaded) => {
@@ -125,16 +97,16 @@ export function ProductWorkspace() {
       if (loaded === null) { replace("/login"); return; }
       setIdentity(loaded);
     }).catch(() => { if (live) setIdentityFailed(true); });
-    void request<{ items: Space[]; can_create: boolean }>("spaces").then((data) => {
-      if (!live) return; setSpaces(data.items); setCanCreate(data.can_create);
+    const reading = ++directoryRevision.current;
+    void request<{ items: Space[]; can_create: boolean }>("categories").then((data) => {
+      if (!live || reading !== directoryRevision.current) return; setSpaces(data.items); setCanCreate(data.can_create);
     }).catch((failure) => { if (live) setError(failure.message); });
     return () => { live = false; };
   }, [replace]);
   // Selection is derived from the ?space= deep link, so shared links and
   // browser back/forward keep the directory and workspace in sync.
-  const targetSpace = search.get("space") ?? "";
+  const targetSpace = search.get("category") ?? search.get("space") ?? "";
   const selected = spaces?.some(space => space.id === targetSpace) ? targetSpace : "";
-  const openSpace = (id: string) => { if (paiPending) return; setCreateOpen(false); navigateWorkspace({ space: id }); };
   const closeSpace = () => { if (!paiPending) navigateWorkspace({ space: "" }); };
   const changeViewMode = (mode: "list" | "cards") => {
     setViewMode(mode);
@@ -160,31 +132,35 @@ export function ProductWorkspace() {
     return <main aria-busy="true" className="mx-auto max-w-6xl px-4 py-10 text-sm text-muted-foreground">正在加载产品管理工作台…</main>;
   }
   const selectedSpace = spaces?.find((space) => space.id === selected) ?? null;
+  const visibleSpaces = spaces?.filter(space => (space.lifecycle === "archived") === showArchived);
+  const lifecycleChanged = (saved: Space) => {
+    directoryRevision.current += 1;
+    setSpaces(current => current?.map(space => space.id === saved.id ? { ...space, ...saved } : space) ?? null);
+    if (saved.lifecycle === "archived" && selected === saved.id) navigateWorkspace({ space: "" });
+    void load().catch(failure => setError(failure.message));
+  };
   return <WorkspaceShell active="product-work" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
     <div className="space-y-6">
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    {spaces && targetSpace && !selected && <p role="alert" className="text-sm text-destructive">此市场空间不存在或当前无权访问，请重新选择。</p>}
+    {spaces && targetSpace && !selected && <p role="alert" className="text-sm text-destructive">此品类不存在或当前无权访问，请重新选择。</p>}
     {selectedSpace ? (
-      <>
-        <div className="flex min-w-0 items-center gap-1.5">
+      <SpaceWorkspace key={`${selected}:${search.get("line") ?? "all"}`} spaceId={selected} onLifecycleChanged={lifecycleChanged} directoryBreadcrumb={<div className="flex min-w-0 items-center gap-1.5">
           <Button className="-ml-2 gap-1 text-muted-foreground" onClick={closeSpace} disabled={paiPending || sourceLock === `${selected}:${search.get("line") ?? "all"}`} size="sm" variant="ghost">
             <ArrowLeftIcon aria-hidden="true" className="size-4" />
-            市场空间
+            品类
           </Button>
           <span aria-hidden="true" className="text-sm text-muted-foreground">/</span>
-          <span className="max-w-[35%] shrink-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{selectedSpace.code}</span>
           <span className="truncate text-sm font-medium">{selectedSpace.title}</span>
-        </div>
-        <SpaceWorkspace key={`${selected}:${search.get("line") ?? "all"}`} spaceId={selected} canEvaluate={["owner", "admin"].includes(identity.user.role)} onSourcePendingChange={value => { const owner = `${selected}:${search.get("line") ?? "all"}`; setSourceLock(current => value ? owner : current === owner ? null : current); }}/>
-      </>
+        </div>} canEvaluate={["owner", "admin"].includes(identity.user.role)} onSourcePendingChange={value => { const owner = `${selected}:${search.get("line") ?? "all"}`; setSourceLock(current => value ? owner : current === owner ? null : current); }}/>
     ) : (
       <>
         <header className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-lg font-semibold">产品空间</h1>
-            <p className="mt-2 text-sm text-muted-foreground">说出产品目标，或进入已有空间查看研究与待办。</p>
+            <h1 className="text-lg font-semibold">品类</h1>
+            <p className="mt-2 text-sm text-muted-foreground">从客户需求、新品想法或产品迭代开始一份提案。</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" aria-pressed={showArchived} disabled={busy || paiPending} onClick={() => setShowArchived(!showArchived)}>{showArchived ? "返回品类列表" : "已归档"}</Button>
             <div aria-label="切换视图" className="flex items-center rounded-lg border p-0.5" role="group">
               {([["list", ListBulletsIcon, "列表"], ["cards", SquaresFourIcon, "卡片"]] as const).map(([mode, Icon, label]) => (
                 <button
@@ -202,53 +178,44 @@ export function ProductWorkspace() {
                 </button>
               ))}
             </div>
-            <Button onClick={openXiaopai}><ChatCircleDotsIcon aria-hidden="true"/>交代一个产品目标</Button>{canCreate && <Button size="sm" variant="ghost" onClick={() => setCreateOpen(!createOpen)}>手动建空间</Button>}
+            {canCreate && <Button disabled={busy || paiPending} onClick={() => openXiaopai({goal:"category"})}><ChatCircleDotsIcon aria-hidden="true"/>新建品类</Button>}
             <Button variant="outline" disabled={busy} onClick={() => { setError(null); void load().catch((failure) => setError(failure.message)); }}>刷新</Button>
           </div>
         </header>
-        {createOpen && canCreate && <form className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2" onSubmit={(event) => {
-          event.preventDefault(); const form = new FormData(event.currentTarget);
-          const body = { code: String(form.get("code")).trim(), title: String(form.get("title")).trim(), user_groups: lines(String(form.get("groups"))), regions: lines(String(form.get("regions"))), use_scenarios: lines(String(form.get("scenarios"))), research_questions: lines(String(form.get("questions"))) };
-          setBusy(true); setError(null);
-          void request<Space>("spaces", "POST", { ...body, request_id: stableId(body) }).then(async (space) => { await load(); setCreateOpen(false); openSpace(space.id); }).catch((failure) => setError(failure.message)).finally(() => setBusy(false));
-        }}>
-          <label className="text-sm">空间编号<input required name="code" maxLength={128} pattern={"[a-zA-Z0-9_.:\\-]+"} className={field} placeholder="如 portable-inflation" /></label>
-          <label className="text-sm">空间名称<input required name="title" maxLength={512} className={field} /></label>
-          {[["groups", "用户群"], ["regions", "地域 / 市场"], ["scenarios", "使用场景"], ["questions", "待研究问题"]].map(([key, label]) => <label key={key} className="text-sm">{label}（每行一项）<textarea required name={key} className={field} /></label>)}
-          <Button disabled={busy}>创建市场空间</Button>
-        </form>}
-        {spaces?.length === 0 && <p className="text-sm text-muted-foreground">尚无可访问市场空间。{canCreate ? "可以先向小Pai交代目标；手动建空间作为补充入口。" : "请由空间负责人将你加入协作成员。"}</p>}
-        {spaces && spaces.length > 0 && viewMode === "list" ? (
+        {visibleSpaces?.length === 0 && <p className="text-sm text-muted-foreground">{showArchived ? "暂无已归档品类。" : canCreate ? "尚无可访问品类。点击新建品类，和小Pai一起明确方向并开始研究。" : "尚无可访问品类。请由品类负责人将你加入协作成员。"}</p>}
+        {visibleSpaces && visibleSpaces.length > 0 && viewMode === "list" ? (
           <div className="overflow-hidden rounded-lg border bg-card">
             <ul className="divide-y" role="list">
-              {spaces.map((space) => (
-                <li key={space.id}>
+              {visibleSpaces.map((space) => (
+                <li key={space.id} className="flex items-center">
                   <Link
-                    className="flex min-h-11 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25"
+                    className="flex min-h-11 min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25"
                     href={productWorkHref(space.id)}
+                    onClick={event => { if (busy || paiPending) event.preventDefault(); }}
                   >
-                    <span className="max-w-[40%] shrink-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{space.code}</span>
+                    <span className="hidden max-w-[40%] shrink-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground sm:block">{space.code}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium">{space.title}</span>
                       {spaceMeta(space) ? <span className="mt-0.5 block truncate text-xs text-muted-foreground">{spaceMeta(space)}</span> : null}
                     </span>
                     <span className="shrink-0 rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">{spaceLifecycleLabels[space.lifecycle] ?? space.lifecycle}</span>
-                    <CaretRightIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                    <CaretRightIcon aria-hidden="true" className="hidden size-4 shrink-0 text-muted-foreground sm:block" />
                   </Link>
+                  {space.can_restore && <div className="shrink-0 pr-2"><CategoryLifecycleAction space={space} compact disabled={busy || paiPending} onChanged={lifecycleChanged} onPendingChange={setBusy}/></div>}
                 </li>
               ))}
             </ul>
           </div>
         ) : null}
-        {spaces && spaces.length > 0 && viewMode === "cards" ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {spaces.map((space) => (
+        {visibleSpaces && visibleSpaces.length > 0 && viewMode === "cards" ? (
+          <div className="space-y-3">
+            {visibleSpaces.map((space) => (
+              <div key={space.id} className="overflow-hidden rounded-lg border bg-card">
               <Link
-                className="overflow-hidden rounded-lg border bg-card text-left transition-colors hover:border-foreground/25 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
-                key={space.id}
+                className="block text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
                 href={productWorkHref(space.id)}
+                onClick={event => { if (busy || paiPending) event.preventDefault(); }}
               >
-                <SpaceVisual code={space.code} title={space.title} />
                 <span className="block space-y-2 p-4">
                   <span className="flex items-center gap-2">
                     <span className="min-w-0 truncate rounded border bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{space.code}</span>
@@ -258,6 +225,8 @@ export function ProductWorkspace() {
                   {spaceMeta(space) ? <span className="block truncate text-xs text-muted-foreground">{spaceMeta(space)}</span> : null}
                 </span>
               </Link>
+              {space.can_restore && <div className="flex justify-end border-t px-2 py-1"><CategoryLifecycleAction space={space} compact disabled={busy || paiPending} onChanged={lifecycleChanged} onPendingChange={setBusy}/></div>}
+              </div>
             ))}
           </div>
         ) : null}
@@ -271,16 +240,17 @@ function MemberSelect({ members, name, label, required = false, defaultValue = "
   return <label className="text-sm">{label}<select name={name} required={required} defaultValue={defaultValue} className={field}><option value="">待指定</option>{members.filter((member) => member.access !== "viewer").map((member) => <option key={member.id} value={member.id}>{member.display_name}</option>)}</select></label>;
 }
 
-function SpaceWorkspace({ spaceId, canEvaluate, onSourcePendingChange }: { spaceId: string; canEvaluate: boolean; onSourcePendingChange: (pending: boolean) => void }) {
+function SpaceWorkspace({ spaceId, directoryBreadcrumb, canEvaluate, onSourcePendingChange, onLifecycleChanged }: { spaceId: string; directoryBreadcrumb: ReactNode; canEvaluate: boolean; onSourcePendingChange: (pending: boolean) => void; onLifecycleChanged: (space: Space) => void }) {
   const paiPending = useXiaopaiPending();
   const [data, setData] = useState<Workspace | null>(null);
   const [evidence, setEvidence] = useState<Evidence[]>([]);
   const [catalog, setCatalog] = useState<ProductCatalog | null>(null);
   const search = useSearchParams();
-  const scopeFilter = search.get("line") ?? "all";
-  const [formLine, setFormLine] = useState(scopeFilter === "all" ? "" : scopeFilter);
+  const scopeFilter = "all";
+  const legacyLine = search.get("line");
+
   const requestedTab = search.get("tab");
-  const view = requestedTab ?? (search.has("line") ? "overview" : search.has("run") || search.has("responsibility_id") || typeof window !== "undefined" && /^#(?:work|research)-/.test(window.location.hash) ? "research" : "topics");
+  const view = requestedTab ?? (search.has("line") ? "overview" : search.has("run") || search.has("responsibility_id") || typeof window !== "undefined" && /^#(?:work|research)-/.test(window.location.hash) ? "research" : "proposals");
   const tab = tabKeys.indexOf(view);
   const selectedView = productView(view);
   const [aiOpen, setAiOpen] = useState(false);
@@ -332,30 +302,32 @@ function SpaceWorkspace({ spaceId, canEvaluate, onSourcePendingChange }: { space
   }, [data, catalog, tab]);
   const act = async (work: () => Promise<unknown>) => { const current = authorityRevision.current; setBusy(true); setError(null); try { await work(); if (live.current && current === authorityRevision.current) await load(); } catch (failure) { if (live.current && current === authorityRevision.current) { if (failure instanceof ProductRequestError && [401, 403].includes(failure.status)) clearAuthority(failure.message); else setError(failure instanceof Error ? failure.message : "操作失败"); } } finally { if (live.current && current === authorityRevision.current) setBusy(false); } };
   useProductWorkUpdates(base, load, { paused: busy || !!responsibilityLock || !!formKind || !["topics", "overview"].includes(view), onError: failure => { if (failure instanceof ProductRequestError && [401, 403].includes(failure.status)) clearAuthority(failure.message); else setError("数据暂未更新，可重试读取。"); } });
-  if (!data || !catalog) return <div className="space-y-2"><p className="text-sm">{error ?? "正在加载市场空间…"}</p>{error && <Button variant="outline" onClick={() => void act(load)}>重试</Button>}</div>;
-  if (search.has("line") && !["", "all"].includes(scopeFilter) && !catalog.nodes.some(node => node.id === scopeFilter && node.level === "line")) return <div className="space-y-2"><p role="alert" className="text-sm text-destructive">链接中的产品线不存在或当前无权访问。请重新选择范围。</p><Button variant="outline" disabled={paiPending} onClick={() => { if (!paiPending) navigateWorkspace({ line: null }); }}>返回此空间选择范围</Button></div>;
+  if (!data || !catalog) return <div className="space-y-4">{directoryBreadcrumb}<p className="text-sm">{error ?? "正在加载品类…"}</p>{error && <Button variant="outline" onClick={() => void act(load)}>重试</Button>}</div>;
+  if (legacyLine && !["", "all"].includes(legacyLine) && !catalog.nodes.some(node => node.id === legacyLine && node.level === "line")) return <div className="space-y-4">{directoryBreadcrumb}<p role="alert" className="text-sm text-destructive">链接中的品类不存在或当前无权访问。请重新选择范围。</p><Button variant="outline" disabled={paiPending} onClick={() => { if (!paiPending) navigateWorkspace({ line: null }); }}>返回此品类</Button></div>;
   const name = (id: string | null) => data.members.find((member) => member.id === id)?.display_name ?? "未指定 / 成员已失效";
   const productLines = catalog.nodes.filter((node) => node.level === "line");
-  const scopeName = (lineId: string | null) => lineId ? productLines.find((node) => node.id === lineId)?.name ?? "产品线" : "市场空间共同研究";
+  const scopeName = (lineId: string | null) => lineId ? productLines.find((node) => node.id === lineId)?.name ?? "品类" : "品类共同研究";
   const matchesScope = (lineId: string | null) => scopeFilter === "all" || (lineId ?? "") === scopeFilter;
   const scopedMembers = (lineId: string | null) => lineId ? data.members.filter((member) => catalog.members.some((grant) => grant.product_line_id === lineId && grant.user_id === member.id && grant.access !== "viewer")) : data.members;
   const canWork = (lineId: string | null) => data.can_contribute && (!lineId || catalog.line_access[lineId]?.can_contribute === true);
   const visibleResearch = data.research.filter((task) => matchesScope(task.product_line_id));
   const visibleWork = data.work_items.filter((item) => matchesScope(item.product_line_id));
 
-  const topic = productLines.find(line => line.id === scopeFilter);
+  const categoryLine = catalog.category_line_id ?? data.space.category_line_id ?? productLines[0]?.id ?? "";
+  const formLine = categoryLine;
   const navigateTab = (next: string) => { if (!paiPending && !responsibilityLock) navigateWorkspace({ tab: next }); };
-  const scopeValue = { scope: scopeFilter, setScope: (line: string) => { if (!paiPending && !responsibilityLock) navigateWorkspace({ line: line === "all" ? null : line }); } };
-  return <ProductWorkScopeContext.Provider value={scopeValue}><section className="min-w-0 space-y-6" data-product-workspace>
-    <header className="space-y-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0"><h1 className="text-lg font-semibold">{view === "topics" || view === "settings" ? data.space.title : topic?.name ?? (scopeFilter === "" ? "空间共同研究" : "空间全部工作")}</h1><p className="mt-1 text-sm text-muted-foreground">{view === "topics" ? "进入产品主题，查看待办、研究成果和下一动作。" : data.space.user_groups.join("、") + (data.space.regions.length ? " · " + data.space.regions.join("、") : "")}</p></div>
-        <div className="flex flex-wrap items-center gap-2"><Button variant="ghost" size="sm" disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab(view === "settings" ? "overview" : "settings")}><GearSixIcon aria-hidden="true"/>{view === "settings" ? "返回工作台" : "空间设置"}</Button><Button variant="outline" onClick={openXiaopai}><ChatCircleDotsIcon aria-hidden="true"/>与小Pai继续</Button><Button aria-label="刷新工作与来源" variant="ghost" size="icon" disabled={busy || !!responsibilityLock} onClick={() => void act(load)}><ArrowClockwiseIcon aria-hidden="true"/></Button></div>
+  const scopeValue = { scope: scopeFilter, setScope: () => {}, categoryLineId: categoryLine };
+  return <ProductWorkScopeContext.Provider value={scopeValue}><ProductReadingProvider base={base} paused={busy || !!responsibilityLock || !!formKind} onAuthorityLost={clearAuthority}><section className="min-w-0 space-y-[18px] text-[13px]" data-product-workspace>
+    <header className="space-y-3">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">{directoryBreadcrumb}
       </div>
-      {view !== "topics" && <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4"><label className="flex min-w-0 flex-wrap items-center gap-2 text-sm">工作归属<select className="min-h-11 max-w-full rounded-md border bg-background px-3 py-2 text-sm sm:min-h-9" value={scopeFilter} disabled={!!responsibilityLock || paiPending} onChange={event => scopeValue.setScope(event.target.value)}><option value="all">全部可访问工作</option><option value="">空间共同研究</option>{productLines.map(line => <option key={line.id} value={line.id}>{line.name}</option>)}</select></label><div className="flex flex-wrap items-center gap-2"><Button size="sm" variant="ghost" disabled={!!responsibilityLock || paiPending} onClick={() => { if (!paiPending && !responsibilityLock) navigateWorkspace({ tab: null, line: null }); }}>产品主题</Button><Button size="sm" variant="ghost" disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab("matrix")}>布局与路线图</Button></div></div>}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0"><h1 className="text-lg font-semibold">{data.space.title}</h1><p className="mt-1 text-sm text-muted-foreground">{view === "topics" ? "查看本品类的待办、研究成果和下一动作。" : data.space.user_groups.join("、") + (data.space.regions.length ? " · " + data.space.regions.join("、") : "")}</p></div>
+        <div className="flex flex-wrap items-center gap-2">{view === "proposals" && !search.get("proposal") && data.can_contribute && <Button disabled={!!responsibilityLock || paiPending} onClick={() => openXiaopai({goal:"proposal"})}><ChatCircleDotsIcon aria-hidden="true"/>立项提案</Button>}{view !== "proposals" && <><Button variant="outline" size="sm" onClick={() => openXiaopai()}><ChatCircleDotsIcon aria-hidden="true"/>召唤小Pai</Button><Button size="sm" variant="ghost" disabled={!!responsibilityLock} onClick={() => navigateTab("proposals")}>立项提案</Button></>}<details className="relative"><summary className="min-h-9 cursor-pointer list-none rounded-lg px-3 py-2 text-xs text-muted-foreground hover:bg-muted">更多操作</summary><div className="absolute right-0 z-20 mt-1 flex w-48 flex-col rounded-lg border bg-card p-1 shadow-md"><Button variant="ghost" size="sm" className="justify-start" disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab(view === "settings" ? "proposals" : "settings")}><GearSixIcon aria-hidden="true"/>{view === "settings" ? "返回品类资料" : "品类设置"}</Button><Button variant="ghost" size="sm" className="justify-start" disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab("matrix")}>布局与路线图</Button><Button variant="ghost" size="sm" className="justify-start" disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab("topics")}>专业资料</Button>{data.can_restore && <CategoryLifecycleAction space={data.space} disabled={busy || !!responsibilityLock || paiPending} onChanged={saved => { onLifecycleChanged(saved); if (saved.lifecycle === "active") void load().catch(failure => clearAuthority(failure.message)); }} onPendingChange={value => { setBusy(value); sourcePendingCallback.current(value); }}/>}<Button aria-label="刷新工作与来源" variant="ghost" size="sm" className="justify-start" disabled={busy || !!responsibilityLock} onClick={() => void act(load)}><ArrowClockwiseIcon aria-hidden="true"/>重新读取</Button></div></details></div>
+      </div>
     </header>
     <WorkResponsibilityLanding spaceId={spaceId}/>
-    {view !== "topics" && view !== "settings" && <>
+    {view !== "topics" && view !== "settings" && view !== "proposals" && <>
       <div className="hidden flex-wrap gap-1 border-b sm:flex" role="tablist" aria-label="产品管理工作区" onKeyDown={event => {
         if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key) || paiPending || responsibilityLock) return;
         event.preventDefault();
@@ -363,33 +335,32 @@ function SpaceWorkspace({ spaceId, canEvaluate, onSourcePendingChange }: { space
         const next = event.key === "Home" ? 0 : event.key === "End" ? productViews.length - 1 : (index + (event.key === "ArrowRight" ? 1 : -1) + productViews.length) % productViews.length;
         navigateTab(productViews[next][0]);
         document.getElementById(`product-tab-${productViews[next][0]}`)?.focus();
-      }}>{productViews.map(([key, label]) => <Button key={key} id={`product-tab-${key}`} role="tab" tabIndex={selectedView === key ? 0 : -1} aria-controls="product-view-content" aria-selected={selectedView === key} variant="ghost" size="sm" className={cn("rounded-none border-b-2 border-transparent px-3", selectedView === key && "border-b-foreground font-medium text-foreground")} disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab(key)}>{label}</Button>)}</div>
-      <label className="block text-sm sm:hidden">主题工作视图<select className={field} disabled={!!responsibilityLock || paiPending} value={selectedView} onChange={event => navigateTab(event.target.value)}>{productViews.map(([key, label]) => <option key={key} value={key}>{label}</option>)}{!productViews.some(([key]) => key === selectedView) && <option value={selectedView}>{tabs[tab] ?? "更多工作"}</option>}</select></label>
+      }}>{productViews.map(([key, label]) => <Button key={key} id={`product-tab-${key}`} role="tab" tabIndex={selectedView === key ? 0 : -1} aria-controls="product-view-content" aria-selected={selectedView === key} variant="ghost" size="sm" className={cn("rounded-none border-b-2 border-transparent px-3", selectedView === key && "border-b-primary font-semibold text-primary")} disabled={!!responsibilityLock || paiPending} onClick={() => navigateTab(key)}>{label}</Button>)}</div>
+      <label className="block text-sm sm:hidden">品类工作视图<select className={field} disabled={!!responsibilityLock || paiPending} value={selectedView} onChange={event => navigateTab(event.target.value)}>{productViews.map(([key, label]) => <option key={key} value={key}>{label}</option>)}{!productViews.some(([key]) => key === selectedView) && <option value={selectedView}>{tabs[tab] ?? "更多工作"}</option>}</select></label>
     </>}
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     <div id="product-view-content" role={productViews.some(([key]) => key === selectedView) ? "tabpanel" : undefined} aria-labelledby={productViews.some(([key]) => key === selectedView) ? `product-tab-${selectedView}` : undefined}>
-    {view === "topics" ? <ProductTopicList workspace={data} catalog={catalog} onOpen={line => { if (!paiPending) navigateWorkspace({ tab: "overview", line }); }} onManualCreate={() => navigateTab("matrix")} disabled={!!responsibilityLock || paiPending}/> : view === "overview" ? <ProductSpaceOverview base={base} workspace={data} catalog={catalog} evidence={evidence} scope={scopeFilter} onAuthorityLost={clearAuthority} onPendingChange={candidatePendingChange}/> : view === "settings" ? <>
-      <SpaceSettings workspace={data} base={base} busy={busy || !!responsibilityLock} act={act}/>
+    {view === "proposals" ? <ProductProposals onCatalogChanged={load} base={base} workspace={data} catalog={catalog} evidence={evidence} proposalId={search.get("proposal")} onAuthorityLost={clearAuthority} onPendingChange={candidatePendingChange}/> : view === "topics" ? <ProductSpaceOverview base={base} workspace={data} catalog={catalog} evidence={evidence} scope="all" onAuthorityLost={clearAuthority} onPendingChange={candidatePendingChange}/> : view === "overview" ? <ProductSpaceOverview base={base} workspace={data} catalog={catalog} evidence={evidence} scope={scopeFilter} onAuthorityLost={clearAuthority} onPendingChange={candidatePendingChange}/> : view === "settings" ? <>
+      <SpaceSettings workspace={data} base={base} busy={busy || !!responsibilityLock} act={work => act(async () => { const saved = await work(); if (saved && typeof saved === "object" && "lifecycle" in saved) onLifecycleChanged(saved as Space); return saved; })}/>
       <WorkResponsibility spaceId={spaceId} kind="space" recordId={spaceId} disabled={busy || (!!responsibilityLock && responsibilityLock !== "space")} onLock={value => setResponsibilityLock(value ? "space" : null)} onChanged={load}/>
-    <details className="rounded-lg border p-4"><summary className="cursor-pointer font-medium">空间成员与权限</summary><ul className="mt-3 space-y-2 text-sm">{data.members.map((member) => <li key={member.id} className="flex items-center gap-3"><span>{member.display_name} · {accessLabels[member.access] ?? member.access}</span>{data.can_manage && member.id !== data.space.owner_user_id && <Button size="sm" variant="outline" disabled={busy || !!responsibilityLock} onClick={() => void act(() => request(`${base}/members/${member.id}`, "PUT", { access: null }))}>移除访问</Button>}</li>)}</ul>
+    <details className="rounded-lg border p-4"><summary className="cursor-pointer font-medium">品类成员与权限</summary><ul className="mt-3 space-y-2 text-sm">{data.members.map((member) => <li key={member.id} className="flex items-center gap-3"><span>{member.display_name} · {accessLabels[member.access] ?? member.access}</span>{data.can_manage && member.id !== data.space.owner_user_id && <Button size="sm" variant="outline" disabled={busy || !!responsibilityLock} onClick={() => void act(() => request(`${base}/members/${member.id}`, "PUT", { access: null }))}>移除访问</Button>}</li>)}</ul>
       {data.can_manage && <form className="mt-3 flex flex-wrap gap-2" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); void act(() => request(`${base}/members/${form.get("user")}`, "PUT", { access: form.get("access") })); }}><label className="text-sm">成员<select required name="user" className={field}>{data.available_members.map((member) => <option key={member.id} value={member.id}>{member.display_name}</option>)}</select></label><label className="text-sm">访问范围<select name="access" className={field}><option value="contributor">协作</option><option value="viewer">只读</option><option value="manager">管理（同时受岗位权限限制）</option></select></label><Button className="self-end" disabled={busy || !!responsibilityLock}>保存成员权限</Button></form>}
     </details>
       <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => navigateTab("measurement")} disabled={!!responsibilityLock}>成效与投入</Button>{canEvaluate && <Button variant="outline" onClick={() => navigateTab("evaluation")} disabled={!!responsibilityLock}>能力评测</Button>}</div>
     </> : <>
-    {[0, 1, 2, 3, 4, 5, 7].includes(tab) && <div className="space-y-3"><Button size="sm" variant="ghost" disabled={!!responsibilityLock || paiPending} aria-expanded={aiOpen || !!search.get("run")} onClick={() => setAiOpen(!aiOpen)}>资料核对与分析记录</Button>{(aiOpen || search.get("run")) && <ProductAiPreparation key={`${spaceId}:${tab}`} base={base} initialRunId={search.get("run") ?? undefined} initialLine={scopeFilter === "all" ? "" : scopeFilter} onLineChange={line => { if (!paiPending) navigateWorkspace({ line }); }} capability={({ 0: "research_planning", 1: "competitor_analysis", 2: "market_analysis", 3: "opportunity_mapping", 4: "product_strategy", 5: "product_definition", 7: "experiment_design" } as Record<number, string>)[tab]} catalog={catalog} disabled={!!responsibilityLock || paiPending}/>}</div>}
+    {[0, 1, 2, 3, 4, 5, 7].includes(tab) && <div className="space-y-3"><Button size="sm" variant="ghost" disabled={!!responsibilityLock || paiPending} aria-expanded={aiOpen || !!search.get("run")} onClick={() => setAiOpen(!aiOpen)}>资料核对与分析记录</Button>{(aiOpen || search.get("run")) && <ProductAiPreparation key={`${spaceId}:${tab}`} base={base} initialRunId={search.get("run") ?? undefined} initialLine={categoryLine} onLineChange={() => {}} capability={({ 0: "research_planning", 1: "competitor_analysis", 2: "market_analysis", 3: "opportunity_mapping", 4: "product_strategy", 5: "product_definition", 7: "experiment_design" } as Record<number, string>)[tab]} catalog={catalog} disabled={!!responsibilityLock || paiPending}/>}</div>}
     {[3,4].includes(tab) && <div className="flex flex-wrap gap-2" aria-label="机会与策略视图"><Button variant={tab === 3 ? "outline" : "ghost"} size="sm" onClick={() => navigateTab("opportunities")} disabled={!!responsibilityLock}>机会与方案</Button><Button variant={tab === 4 ? "outline" : "ghost"} size="sm" onClick={() => navigateTab("strategies")} disabled={!!responsibilityLock}>策略取舍</Button></div>}
     {tab === 10 ? canEvaluate ? <ProductShadowEvaluation base={base} disabled={!!responsibilityLock && responsibilityLock !== "evaluation"} onPendingChange={evaluationPendingChange} onAuthorityLost={clearAuthority}/> : <p role="alert" className="text-sm text-destructive">能力评测仅允许当前租户模型管理员办理。</p> : tab === 9 ? <ResearchMeasurement spaceId={spaceId} workspace={data} catalog={catalog}/> : tab === 8 ? <DefinitionExports base={base}/> : tab === 5 ? <DefinitionWorkspace base={base} workspace={data} catalog={catalog} evidence={evidence} onResponsibilityLock={value => setResponsibilityLock(value ? "definition" : null)}/> : tab === 4 ? <StrategyWorkspace base={base} workspace={data} catalog={catalog} evidence={evidence} onResponsibilityLock={value => setResponsibilityLock(value ? "strategy" : null)}/> : tab === 7 ? <ExperimentWorkspace base={base} workspace={data} catalog={catalog} evidence={evidence} onResponsibilityLock={value => setResponsibilityLock(value ? "experiment" : null)}/> : tab === 3 ? <OpportunityTree base={base} workspace={data} catalog={catalog} evidence={evidence} onResponsibilityLock={value => setResponsibilityLock(value ? "opportunity" : null)}/> : tab === 2 ? <MarketSegments base={base} workspace={data} catalog={catalog} evidence={evidence} onAuthorityLost={clearAuthority} onPendingChange={marketPendingChange}/> : tab === 1 ? <CompetitorWorkspace base={base} workspace={data} catalog={catalog} evidence={evidence} /> : tab === 6 ? <><fieldset className="min-w-0" disabled={!!responsibilityLock}><ProductMatrix base={base} catalog={catalog} initialRecordId={search.get("record_id") ?? undefined} initialRunId={search.get("run") ?? undefined}/><ProductRoadmap base={base} catalog={catalog} workspace={data} evidence={evidence}/></fieldset><ProductTree evidence={evidence} catalog={catalog} workspace={data} base={base} busy={busy || (!!responsibilityLock && !["node", "master-reference"].includes(responsibilityLock))} act={act} refresh={load} onAuthorityLost={clearAuthority} onMasterPendingChange={masterPendingChange} onResponsibilityLock={value => setResponsibilityLock(value ? "node" : null)}/></> : tab !== 0 ? <div role="alert" className="rounded-md border p-4 text-sm"><p>此工作视图不存在或尚未接入。</p><p className="mt-1 text-muted-foreground">当前可在研究区登记问题、引用证据并分派专业评审或实验准备工作。</p></div> : <>
       <p className="text-sm text-muted-foreground">研究支持资料采集、搜索、页面订阅和专业协作。小Pai可核对本次资料与分析历史；分析开放状态及未完成项在分析记录中显示。</p>
 
-      {data.can_contribute && <div className="flex flex-wrap gap-2"><Button onClick={openXiaopai}><ChatCircleDotsIcon aria-hidden="true"/>交代研究目标</Button><Button size="sm" variant="outline" onClick={() => setFormKind(formKind === "research" ? null : "research")}>手动建研究任务</Button><Button size="sm" variant="outline" onClick={() => setFormKind(formKind === "work" ? null : "work")}>分派专业工作</Button></div>}
+      {data.can_contribute && <div className="flex flex-wrap gap-2"><Button onClick={() => openXiaopai()}><ChatCircleDotsIcon aria-hidden="true"/>交代研究目标</Button><Button size="sm" variant="outline" onClick={() => setFormKind(formKind === "research" ? null : "research")}>手动建研究任务</Button><Button size="sm" variant="outline" onClick={() => setFormKind(formKind === "work" ? null : "work")}>分派专业工作</Button></div>}
       {formKind && <form key={formKind} className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2" onSubmit={(event) => {
         event.preventDefault(); const form = new FormData(event.currentTarget);
-        const common = { owner_user_id: String(form.get("owner") ?? "") || null, product_line_id: formLine || null };
+        const common = { owner_user_id: String(form.get("owner") ?? "") || null, product_line_id: categoryLine || null };
         const body = formKind === "research" ? { ...common, question: String(form.get("question")).trim(), user_groups: data.space.user_groups, regions: data.space.regions, time_scope: String(form.get("time_scope")).trim(), method: String(form.get("method")).trim(), expected_decision: String(form.get("expected_decision")).trim(), stop_conditions: lines(String(form.get("stop_conditions"))) } : { ...common, title: String(form.get("title")).trim(), action_type: String(form.get("action_type")), receiver_user_id: String(form.get("receiver") ?? "") || null, expected_output: String(form.get("expected_output")).trim(), completion_criteria: String(form.get("completion_criteria")).trim(), due_at: form.get("due") ? new Date(String(form.get("due"))).toISOString() : null };
         const kind = formKind;
         void act(async () => { await request(`${base}/${kind === "research" ? "research" : "work-items"}`, "POST", { ...body, request_id: stableId(body) }); setFormKind(null); });
       }}>
-        <label className="text-sm sm:col-span-2">任务归属<select className={field} value={formLine} onChange={(event) => setFormLine(event.target.value)}><option value="">市场空间共同研究</option>{productLines.filter((line) => catalog.line_access[line.id]?.can_contribute).map((line) => <option key={line.id} value={line.id}>{line.name}</option>)}</select></label>
         {formKind === "research" ? <>
           <label className="text-sm sm:col-span-2">研究问题<textarea required name="question" maxLength={2048} className={field} /></label>
           <label className="text-sm">时间范围<input required name="time_scope" className={field} placeholder="例如近一年，或明确历史区间" /></label>
@@ -407,8 +378,9 @@ function SpaceWorkspace({ spaceId, canEvaluate, onSourcePendingChange }: { space
         <MemberSelect key={`owner:${formLine}`} members={scopedMembers(formLine || null)} name="owner" label="负责人" required={formKind === "research"} defaultValue={data.current_user_id} />
         <div className="flex items-end gap-2"><Button disabled={busy || !canWork(formLine || null)}>创建</Button><Button type="button" variant="outline" onClick={() => setFormKind(null)}>取消</Button></div>
       </form>}
-      <section className="space-y-3"><h3 className="font-semibold">研究任务</h3>{visibleResearch.length === 0 && <p className="text-sm text-muted-foreground">此范围尚无研究任务。</p>}{visibleResearch.map((task) => <div key={task.id}><ResearchCard key={`${task.id}:${task.version}`} task={task} scopeLabel={scopeName(task.product_line_id)} ownerName={name(task.owner_user_id)} canAct={canWork(task.product_line_id) && task.owner_user_id === data.current_user_id} evidence={evidence} busy={busy || !!responsibilityLock} act={act} base={base} onAuthorityLost={clearAuthority}/><WorkResponsibility spaceId={spaceId} kind="research" recordId={task.id} disabled={busy || !!responsibilityLock && responsibilityLock !== task.id} onLock={value => setResponsibilityLock(value ? task.id : null)} onChanged={load}/></div>)}</section>
-      <section className="space-y-3"><h3 className="font-semibold">专业协作与补证</h3>{visibleWork.length === 0 && <p className="text-sm text-muted-foreground">此范围尚无专业工作项。</p>}{visibleWork.map((item) => <div id={`work-${item.id}`} key={item.id}><WorkCard key={`${item.id}:${item.version}`} item={item} scopeLabel={scopeName(item.product_line_id)} workspace={{ ...data, members: scopedMembers(item.product_line_id), can_contribute: canWork(item.product_line_id), can_manage: data.can_manage && (!item.product_line_id || catalog.line_access[item.product_line_id]?.can_manage === true) }} evidence={evidence} busy={busy || !!responsibilityLock} act={act} base={base} onAuthorityLost={clearAuthority}/><WorkResponsibility spaceId={spaceId} kind="work" recordId={item.id} disabled={busy || !!responsibilityLock && responsibilityLock !== item.id} onLock={value => setResponsibilityLock(value ? item.id : null)} onChanged={load}/></div>)}</section>
+      <section className="space-y-2"><h3 className="text-xs font-semibold text-muted-foreground">研究任务</h3>{visibleResearch.length === 0 && <p className="text-sm text-muted-foreground">此范围尚无研究任务。</p>}{visibleResearch.map((task) => <ReadingRecord key={task.id} id={`research-${task.id}`} title={task.question} meta={`${stateLabels[task.state]} · ${name(task.owner_user_id)} · 证据 ${task.sources.length} 条 · 支持决定：${task.expected_decision}`} tone={task.state === "completed" ? "ok" : "active"} action={task.state === "active" ? "提交结论" : "查看研究"} disabled={busy || !!responsibilityLock}><ResearchCard key={`${task.id}:${task.version}`} task={task} scopeLabel={scopeName(task.product_line_id)} ownerName={name(task.owner_user_id)} canAct={canWork(task.product_line_id) && task.owner_user_id === data.current_user_id} evidence={evidence} busy={busy || !!responsibilityLock} act={act} base={base} onAuthorityLost={clearAuthority}/><WorkResponsibility spaceId={spaceId} kind="research" recordId={task.id} disabled={busy || !!responsibilityLock && responsibilityLock !== task.id} onLock={value => setResponsibilityLock(value ? task.id : null)} onChanged={load}/></ReadingRecord>)}</section>
+      <ProductResearchEntries base={base} workspace={data} evidence={evidence} scope={scopeFilter} onAuthorityLost={clearAuthority}/>
+      <section className="space-y-3"><h3 className="font-semibold">专业协作与补证</h3>{visibleWork.length === 0 && <p className="text-sm text-muted-foreground">此范围尚无专业工作项。</p>}{visibleWork.map((item) => <ReadingRecord id={`work-${item.id}`} key={item.id} title={item.title} meta={`${stateLabels[item.state]} · ${scopeName(item.product_line_id)} · ${item.expected_output}`} action={item.state === "submitted" ? "核对并接收" : "去办理"} tone={item.state === "completed" ? "ok" : "pending"}><WorkCard key={`${item.id}:${item.version}`} item={item} scopeLabel={scopeName(item.product_line_id)} workspace={{ ...data, members: scopedMembers(item.product_line_id), can_contribute: canWork(item.product_line_id), can_manage: data.can_manage && (!item.product_line_id || catalog.line_access[item.product_line_id]?.can_manage === true) }} evidence={evidence} busy={busy || !!responsibilityLock} act={act} base={base} onAuthorityLost={clearAuthority}/><WorkResponsibility spaceId={spaceId} kind="work" recordId={item.id} disabled={busy || !!responsibilityLock && responsibilityLock !== item.id} onLock={value => setResponsibilityLock(value ? item.id : null)} onChanged={load}/></ReadingRecord>)}</section>
       <details className="space-y-4 rounded-lg border p-4" open={!!search.get("run") || responsibilityLock === `rfq:${scopeFilter}` || responsibilityLock === "subscription" ? true : undefined}><summary className="cursor-pointer text-sm font-medium">资料与采集</summary><div className="mt-4 space-y-5">
       <ProductSourceFiles key={`${spaceId}:${scopeFilter}`} base={base} initialRunId={search.get("run") ?? undefined} lineId={scopeFilter === "all" ? null : scopeFilter || null} disabled={!!responsibilityLock && responsibilityLock !== `rfq:${scopeFilter}`} canEdit={canWork(scopeFilter === "all" ? null : scopeFilter || null)} onPendingChange={value => { setResponsibilityLock(current => value ? `rfq:${scopeFilter}` : current === `rfq:${scopeFilter}` ? null : current); onSourcePendingChange(value); }}/>
       <ResearchCollection onAuthorityLost={clearAuthority} onResponsibilityLock={value => setResponsibilityLock(value ? "subscription" : null)} base={base} workspace={data} evidence={evidence} lineId={scopeFilter === "all" ? null : scopeFilter || null} canCollect={data.can_collect && canWork(scopeFilter === "all" ? null : scopeFilter || null)} refresh={load} />
@@ -417,13 +389,13 @@ function SpaceWorkspace({ spaceId, canEvaluate, onSourcePendingChange }: { space
 
     </>}
     </div>
-  </section></ProductWorkScopeContext.Provider>;
+  </section></ProductReadingProvider></ProductWorkScopeContext.Provider>;
 }
 
 function ResearchCard({ task, scopeLabel, ownerName, canAct, evidence, busy, act, base, onAuthorityLost }: { task: Research; scopeLabel: string; ownerName: string; canAct: boolean; evidence: Evidence[]; busy: boolean; act: (work: () => Promise<unknown>) => Promise<void>; base: string; onAuthorityLost: (message: string) => void }) {
   const [note, setNote] = useState(""); const [findings, setFindings] = useState(""); const [unresolved, setUnresolved] = useState(""); const [selected, setSelected] = useState<string[]>([]);
   const selectedSources = evidence.filter((item) => selected.includes(item.id)).map((item) => item.reference);
-  return <article id={`research-${task.id}`} className="space-y-2 rounded-lg border p-4"><h4 className="font-medium">{task.question}</h4><p className="text-sm">{stateLabels[task.state]} · {ownerName} · {scopeLabel} · v{task.version}</p><p className="text-sm">{task.method} · {task.time_scope}</p><p className="text-sm">支持决定：{task.expected_decision}</p><p className="text-xs text-muted-foreground">停止条件：{task.stop_conditions.join("；")}</p>
+  return <article className="space-y-2"><h4 className="font-medium">{task.question}</h4><p className="text-sm">{stateLabels[task.state]} · {ownerName} · {scopeLabel} · v{task.version}</p><p className="text-sm">{task.method} · {task.time_scope}</p><p className="text-sm">支持决定：{task.expected_decision}</p><p className="text-xs text-muted-foreground">停止条件：{task.stop_conditions.join("；")}</p>
     {task.source_finding_id && <p className="text-xs text-muted-foreground">来源：AI 研究候选，经人工接受并独立应用；不代表研究已完成。</p>}
     {task.conclusion && <div className="space-y-1 rounded-md bg-muted p-3 text-sm"><p>{task.conclusion}</p>{task.findings.map((item, i) => <p key={i}>发现：{item}</p>)}{task.unresolved.map((item, i) => <p key={i}>未解决：{item}</p>)}<p>关联证据 {task.sources.length} 项</p>{task.sources.length === 0 && <p className="text-muted-foreground">历史结论未关联原始快照，待补证核对。</p>}<SourceCitations key={`${base}:${task.sources.map(ref => `${ref.ref_id}:${ref.digest}`).join(",")}`} base={base} references={task.sources} evidence={evidence} onAuthorityLost={onAuthorityLost}/></div>}
     {task.state === "cancelled" && task.cancellation_reason && <p className="text-sm">取消原因：{task.cancellation_reason}</p>}

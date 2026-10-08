@@ -1,0 +1,68 @@
+{
+  "purpose": "final local enablement scope; shared checkout, no whole-tree production-build or formal Exit claim",
+  "files": [
+    {
+      "path": "server/app/ai/legacy_preview_holds.py",
+      "sha256": "864478f2528e00b9207f99bc0d7ea29a6d33920b5c4d1fa5b62fd2e8e9233232"
+    },
+    {
+      "path": "server/app/ai/public_dns.py",
+      "sha256": "daf3eafa6c24e59b07e1ba8927dae649644fbb3e8b23d22b07df0093e52d0927"
+    },
+    {
+      "path": "server/app/ai/reach.py",
+      "sha256": "bda775e6aa20e315cf1627611e635c55222a7dd041f41c8ff18b21c1937cec8b"
+    },
+    {
+      "path": "server/app/db/schema.py",
+      "sha256": "ad85748c906c47c0f0a606c8b2b714055ec9e358a745e2b7695770a38265ad57"
+    },
+    {
+      "path": "server/migrations/versions/0429_preview_legacy_usage_holds.py",
+      "sha256": "be31a299c4a76472d07e4e4db7fc080b35a6f7e51ff4bb688ff9e1aa2453b305"
+    },
+    {
+      "path": "server/tests/test_preview_legacy_holds.py",
+      "sha256": "23aeef2a23c814c63241bfc22bd20eee26cd701e6a1058d4c26f7f23fb590062"
+    },
+    {
+      "path": "server/tests/test_public_dns.py",
+      "sha256": "37f098b8f6475090e93af1aac28a73021de9441a81784a16eea4df48b71cb0bd"
+    },
+    {
+      "path": "server/tests/test_migrations.py",
+      "sha256": "26b2de7ce90e6a66e9ce3a77bb2c77e85323a7f3a51cfd72115882390bb1a3ad"
+    },
+    {
+      "path": ".env.example",
+      "sha256": "cea86c49022aa6f39618e2625f1f43559b32af81d61ece9ec6a01d13af683868"
+    },
+    {
+      "path": "scripts/dev.sh",
+      "sha256": "c8e5f5a7d124898eb194ba43c18c13598fbb1c71b00ad6676d54164685693d0e"
+    },
+    {
+      "path": "server/app/ai/conversation_research.py",
+      "sha256": "bea37eb7d42ef7c158b3e7c237e3f81c1eb2851a812a264764acc01b70dd685d"
+    },
+    {
+      "path": "server/app/api/conversations.py",
+      "sha256": "85e8d966cfcbf7699760b67ec542a399be24bdcbcbfe0356f4763c97a55d392f"
+    },
+    {
+      "path": "server/tests/test_preproject_dialogue_api.py",
+      "sha256": "e101a13db89df4adb1e469c62064c77d348041bb6f93090fa084a0cf3ea36f1c"
+    },
+    {
+      "path": "server/tests/test_xiaopai_conversation_reply_api.py",
+      "sha256": "df44d38de076973296bb9ef7bdc2c3a73e93bff0ecc83c6d438d40701dc21a62"
+    }
+  ],
+  "checks": {
+    "original_enablement": "110 passed; 3 migration failures resolved after owned isolated PG lock-capacity recovery; 3 rechecks passed",
+    "source_registration_recovery": "26 passed and 2 failed on first 28-case run; invalid inactive fixture corrected to disabled; last case rejected changed source bundle during API editing; 4 targeted rechecks passed (including new safe SSE failure test), covering 29 distinct cases",
+    "final_static": "Ruff check and format --check passed for touched Python scope; bash -n passed; scoped diff whitespace check passed"
+  },
+  "original_candidate": "enablement-candidate.json",
+  "human_approval": "legacy-bound-approval.json"
+}

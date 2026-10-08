@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
   useRouter: () => ({ replace: routerReplace }),
 }));
 
@@ -70,6 +71,16 @@ describe("ModelGovernance", () => {
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+  });
+
+  it("shows unrestricted accounting without a remaining-budget meter", async () => {
+    fetchMock.mockImplementationOnce(() => response(identity)).mockImplementationOnce(() => response({
+      ...governance, budget: { ...governance.budget, token_budget_enforced: false },
+    }));
+    render(<ModelGovernance />);
+    expect(await screen.findByRole("heading", { name: "Token 预算不限额" })).toBeVisible();
+    expect(screen.getByText("今日已用 250,000")).toBeVisible();
+    expect(screen.queryByRole("progressbar", { name: "今日 Token 用量" })).not.toBeInTheDocument();
   });
 
   it("shows only qualified models and persists the tenant budget", async () => {

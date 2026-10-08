@@ -1,0 +1,24 @@
+{
+  "result": "passed",
+  "old_business_rows": 3,
+  "fields": [
+    "id",
+    "tenant_id",
+    "product_id",
+    "project_id",
+    "build_id",
+    "owner_execution_id",
+    "asset_id",
+    "resource_id",
+    "resource_revision",
+    "window_start",
+    "window_finish",
+    "units",
+    "intent_digest"
+  ],
+  "new_build_start_equals_original_owner": true,
+  "source_backup": "pdos-next/.local/pre-wave13-next_0015.dump",
+  "restoration_or_shared_write_performed": false,
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c"
+}

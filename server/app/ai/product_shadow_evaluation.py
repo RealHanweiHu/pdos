@@ -18,6 +18,7 @@ from app.ai.application_gateway import ApplicationModelGateway
 from app.ai.application_leases import bind_write
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.capability_contract import CapabilityRollout, resolve_capability
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import PROVIDER_SPECS, AgentTier, ProviderName
 from app.ai.product_evaluation import (
@@ -236,6 +237,7 @@ class ProductShadowEvaluation:
             row = run_row(c, context, space_id, run_id)
             return {**receipt(row), "frozen_source": row["run_context"]["evaluation_source"]}
 
+    @agent_entry
     def evaluate(
         self,
         context: AuthContext,
@@ -343,6 +345,7 @@ class ProductShadowEvaluation:
         report["report_sha256"] = digest(report)
         return report
 
+    @agent_entry
     def create(self, context: AuthContext, space_id: UUID, request: Request) -> dict[str, Any]:
         assert self.gateway is not None
         body = request.model_dump(mode="json")

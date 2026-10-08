@@ -1,0 +1,16 @@
+{
+  "observed_at": "2026-10-03T10:39:17.614521+00:00",
+  "original_command_restored": true,
+  "ui_t1_review_returned": true,
+  "review_confirmation_expiry": "2026-10-03T10:48:38.433936+00:00",
+  "issue_revision": 6,
+  "output_version": 1,
+  "output_status": "draft",
+  "output_meaning": "planned",
+  "action_fulfilled": null,
+  "review_dom_sha256": "53a71553373bc01b007482243aae0675ef32df68746b1f5a38eb21f03e33db3a",
+  "review_screenshot_sha256": "29bc9b7eea0b8a084ad42176df5873014abedac9e408a7ceb6683ae38d84844e",
+  "clicked_one_t1_save": true,
+  "save_outcome_pending": true,
+  "measured_speedup": false
+}

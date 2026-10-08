@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { isRecord, responseBody } from "@/components/workspace-api";
 import { WorkItemRequestError, type IssueTransitionExtra } from "./project-work-item-api";
-import type { MaterialClosureReference, ProjectIssue } from "./project-work-item-types";
+import type { CostClosureReference, MaterialClosureReference, ProjectIssue } from "./project-work-item-types";
+import { CostIssueClosureReview, costClosureContext, costSelectionReady, type CostClosureContext } from "./cost-issue-closure-review";
 
 type MaterialClosureItem = {
   exception_id: string;
@@ -82,6 +83,7 @@ type ClosureCard = {
   permissions: Record<string, unknown>;
   verification_policy: Record<string, unknown>;
   material_closure: MaterialClosureContext;
+  cost_closure: CostClosureContext;
 };
 
 export function MaterialIssueClosureForm({ projectId, issue, busy, onSubmit, onCancel }: {
@@ -93,6 +95,7 @@ export function MaterialIssueClosureForm({ projectId, issue, busy, onSubmit, onC
 }) {
   const [card, setCard] = useState<ClosureCard | null>(null);
   const [selected, setSelected] = useState<MaterialClosureReference[] | null>(null);
+  const [costSelected, setCostSelected] = useState<CostClosureReference[] | null>(null);
   const [linked, setLinked] = useState<MaterialClosureReference | null>(null);
   const [evidence, setEvidence] = useState("");
   const [loading, setLoading] = useState(true);
@@ -108,14 +111,16 @@ export function MaterialIssueClosureForm({ projectId, issue, busy, onSubmit, onC
       const body: unknown = await responseBody(response).catch(() => null);
       if (!response.ok) throw new WorkItemRequestError(isRecord(body) && isRecord(body.detail) && typeof body.detail.message === "string" ? body.detail.message : "未取得当前关闭依据，请刷新原记录核对", response.status);
       const context = isRecord(body) ? materialClosureContext(body.material_closure) : null;
+      const cost = isRecord(body) ? costClosureContext(body.cost_closure) : null;
       if (!isRecord(body) || !isRecord(body.item) || body.item.id !== issue.id || body.item.project_id !== projectId || typeof body.item.updated_at !== "string" || !context || !isRecord(body.permissions) || !isRecord(body.verification_policy) || typeof body.actor_id !== "string") throw new Error("关闭依据不完整，请刷新原记录核对");
       if (current !== sequence.current) return;
-      setCard({ ...body, material_closure: context } as ClosureCard); setSelected(null); setMustRefresh(false);
+      if (!cost) throw new Error("成本关闭依据不完整，请刷新原记录核对");
+      setCard({ ...body, material_closure: context, cost_closure: cost } as ClosureCard); setSelected(null); setCostSelected(null); setMustRefresh(false);
       setLinked(linkedMaterialReference(projectId, issue.id, window.location.search));
     } catch (cause) {
       if (current !== sequence.current) return;
-      if (cause instanceof WorkItemRequestError && [401, 403, 404].includes(cause.status)) { setCard(null); setSelected(null); }
-      else if (cause instanceof WorkItemRequestError && cause.status === 409) setSelected(null);
+      if (cause instanceof WorkItemRequestError && [401, 403, 404].includes(cause.status)) { setCard(null); setSelected(null); setCostSelected(null); }
+      else if (cause instanceof WorkItemRequestError && cause.status === 409) { setSelected(null); setCostSelected(null); }
       setMustRefresh(true); setError(cause instanceof Error ? cause.message : "读取失败");
     } finally { if (current === sequence.current) setLoading(false); }
   }
@@ -130,16 +135,16 @@ export function MaterialIssueClosureForm({ projectId, issue, busy, onSubmit, onC
   const currentIssue = card?.item;
   const independent = currentIssue && (["high", "critical"].includes(currentIssue.severity) || card.verification_policy[`issue_verify_${currentIssue.severity}`] === true);
   const allowed = card?.permissions.verify === true && currentIssue?.status === "verification" && !currentIssue.withdrawn_at && (!independent || (currentIssue.verifier_user_id === card.actor_id && currentIssue.owner_user_id !== card.actor_id));
-  const disabled = busy || loading || mustRefresh || !allowed || !materialSelectionReady(card?.material_closure ?? null, selected) || (!!independent && !evidence.trim());
+  const disabled = busy || loading || mustRefresh || !allowed || !materialSelectionReady(card?.material_closure ?? null, selected) || !costSelectionReady(card?.cost_closure ?? null, costSelected) || (!!independent && !evidence.trim());
   return <form className="space-y-3 rounded-lg border border-success/30 bg-success/5 p-3" onSubmit={async event => {
     event.preventDefault();
     if (disabled || !card) return;
     setError(null);
     try {
-      if (await onSubmit({ expected_updated_at: card.item.updated_at, ...(evidence.trim() ? { closure_evidence_ref: evidence.trim() } : {}), ...(card.material_closure.required ? { material_closures: selected! } : {}) })) onCancel();
+      if (await onSubmit({ expected_updated_at: card.item.updated_at, ...(evidence.trim() ? { closure_evidence_ref: evidence.trim() } : {}), ...(card.material_closure.required ? { material_closures: selected! } : {}), ...(card.cost_closure.required ? { cost_closures: costSelected! } : {}) })) onCancel();
     } catch (cause) {
-      if (cause instanceof WorkItemRequestError && [401, 403, 404].includes(cause.status)) { setCard(null); setSelected(null); setMustRefresh(true); }
-      else if (cause instanceof WorkItemRequestError && cause.status === 409) { setSelected(null); setMustRefresh(true); }
+      if (cause instanceof WorkItemRequestError && [401, 403, 404].includes(cause.status)) { setCard(null); setSelected(null); setCostSelected(null); setMustRefresh(true); }
+      else if (cause instanceof WorkItemRequestError && cause.status === 409) { setSelected(null); setCostSelected(null); setMustRefresh(true); }
       else setMustRefresh(true);
       setError(cause instanceof Error ? cause.message : "未取得关闭回执，请保留输入并刷新原记录核对");
     }
@@ -152,10 +157,11 @@ export function MaterialIssueClosureForm({ projectId, issue, busy, onSubmit, onC
       <p className="whitespace-pre-wrap break-words text-sm">关闭条件：{card.item.closure_criteria || "未填写"}</p>
       <p className="whitespace-pre-wrap break-words text-sm">实际处理：{card.item.resolution || "未填写"}</p>
       <MaterialIssueClosureReview context={card.material_closure} selected={selected} onSelect={setSelected} disabled={busy || loading || mustRefresh || !allowed} linked={linked}/>
+      <CostIssueClosureReview context={card.cost_closure} selected={costSelected} onSelect={setCostSelected} disabled={busy || loading || mustRefresh || !allowed}/>
       {!allowed && <p className="text-sm text-destructive">当前身份或问题状态不满足原问题的关闭验证要求，请由具名验证人核对。</p>}
       <label className="block text-sm">关闭证据{independent ? "（必填）" : "（按实际验证记录填写）"}<textarea aria-label={`关闭证据 ${issue.title}`} className="mt-1 w-full rounded-md border bg-background p-2 text-sm" disabled={busy || loading} maxLength={2000} rows={2} required={!!independent} value={evidence} onChange={event => setEvidence(event.target.value)}/></label>
     </>}
-    {mustRefresh && <p className="text-sm">请先刷新原记录再继续。物料来源需重新明确选择，已填写证据保留。</p>}
+    {mustRefresh && <p className="text-sm">请先刷新原记录再继续。恢复来源需重新明确选择，已填写证据保留。</p>}
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     <div className="flex gap-2"><Button type="submit" disabled={disabled}>确认关闭</Button><Button type="button" variant="outline" disabled={busy} onClick={onCancel}>取消</Button></div>
   </form>;

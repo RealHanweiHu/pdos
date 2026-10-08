@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-02 10:47:02 UTC",
+  "original_user_report": "似乎没有正常开启",
+  "diagnosis": {
+    "actual_execution": "三个独立会话均active/inProgress，已有各自算法源码与持续进展",
+    "display_issue": "侧栏初次未登记三个会话；后台启动验证未覆盖侧栏显示",
+    "application_list_limitation": "添加分组与同步标题后，list_threads摘要列表仍未返回三会话元数据；分组itemKeys包含三个真实ID，read_thread正常"
+  },
+  "actions": [
+    "用read_thread逐一核对运行状态与最新进展，核对各包真实源码",
+    "将三会话加入现有PDOS · 当前工作",
+    "同步三个原有标题",
+    "依次打开三个会话，最终停留在日历与排程会话，应用返回navigated:true",
+    "恢复被主线候选更新覆盖的唯一清单三会话登记"
+  ],
+  "sidebar": {
+    "section_id": "f89b34cc-ffbc-48f6-b255-0ad406a95a21",
+    "name": "PDOS · 当前工作",
+    "registered_thread_ids": [
+      "01a0fc32-53fd-72d3-bfd4-034641a48870",
+      "01a0fc32-65cf-7021-8d8f-1badadd7af46",
+      "01a0fc32-6a4c-7d73-8d98-ecc809435c21"
+    ],
+    "membership_verified": true
+  },
+  "tasks": [
+    {
+      "thread_id": "01a0fc32-53fd-72d3-bfd4-034641a48870",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turn_status": "inProgress",
+      "last_update": "日历与预测入口已实现，结果会保留输入快照、来源版本和时区规则摘要。发现完成依赖与估时区间结合时不能直接用两个点估计推算；首版会将这类 FF/SF 约束明确标为待计算，避免给出错误的精确日期。接下来验证未知传播、实际时间保护和容量冲突。"
+    },
+    {
+      "thread_id": "01a0fc32-65cf-7021-8d8f-1badadd7af46",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turn_status": "inProgress",
+      "last_update": "合同和旧算法已核对：首版会保留层级数量展开、共享池去重、已占用与未分配库存分离，以及成本口径和来源校验。承诺、在途、实到和质量状态将分别输出；缺数量、单位或有效报价时保留未完成结果。"
+    },
+    {
+      "thread_id": "01a0fc32-6a4c-7d73-8d98-ecc809435c21",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turn_status": "inProgress",
+      "last_update": "三方分类和选择性采用入口已实现。当前纯核会将“父版删除、子版已编辑”标为冲突，也会保护与旧父版同值的显式覆盖。候选绑定本次快照摘要；主线仍需校验来源受众、跨客户权限和适用性后才能办理写入。"
+    }
+  ],
+  "user_confirmation": {
+    "question": "现在打开的“PDOS Next：日历与排程计算”是否正常显示？",
+    "answer": "能正常看到会话",
+    "source": "user reply to request_user_input_async"
+  },
+  "recovery_status": "显示已由用户确认恢复；三个独立算法会话继续执行",
+  "delivery_boundary": "本记录确认启动与显示恢复，不确认算法全部通过检查或业务接入完成",
+  "live_status_source": "tasks/ai-native-integrated-todo.md#pdos-next-parallel-algorithms"
+}

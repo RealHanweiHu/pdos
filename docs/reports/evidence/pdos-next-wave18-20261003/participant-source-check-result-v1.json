@@ -1,0 +1,53 @@
+{
+  "status": "owned_pure_static_pass",
+  "checks": {
+    "pure": {
+      "passed": 49,
+      "command": "PYTHONPATH=server:server/tests server/.venv/bin/pytest --noconftest -q server/tests/capa_effectiveness/test_participants_owner.py server/tests/capa_effectiveness/test_fact_sources_owner.py",
+      "log": "participant-source-pure-final-v2.log"
+    },
+    "static": {
+      "ruff": "pass",
+      "format": "pass",
+      "ast_compile": 4,
+      "log": "participant-source-static.log"
+    }
+  },
+  "historical_attempts": [
+    {
+      "log": "participant-source-pure-attempt1.log",
+      "passed": 42,
+      "failed": 4,
+      "cause": "test substitute IdentitySet comparison, wrong Outbox type field, fixture SAVEPOINT mandatory clean flush; no production guard reduced"
+    },
+    {
+      "log": "participant-source-pure.log",
+      "passed": 46,
+      "failed": 0
+    },
+    {
+      "log": "participant-source-pure-attempt2.log",
+      "passed": 46,
+      "failed": 3,
+      "cause": "new pure fixture missing deepcopy import, fixed fixture only"
+    },
+    {
+      "log": "participant-source-pure-final.log",
+      "passed": 49,
+      "failed": 0
+    }
+  ],
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py": "a0bb90e954c68c87184cbf5b0526ea023242928f2ae8c6dddd6ea7bc7ee5c282",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py": "b431151e49b72e8cce36f36486a670ecce6a2e9fc333e1bd52ba3ddc75db8126",
+    "pdos-next/server/tests/capa_effectiveness/test_participants_owner.py": "832306edd593c531370f19b95e1668fb72778a3b28869fe265f193b58134685b",
+    "pdos-next/server/tests/capa_effectiveness/test_fact_sources_owner.py": "c96eca8ecc176db82cf26a38d994e48afadefb4aae117e8b4189661c227e7063",
+    "docs/reports/evidence/pdos-next-wave18-20261003/participant-source-contract.md": "c8a157a8ba832c00233963c4c8fd070577433f34add20a52c3401cca167fd256"
+  },
+  "limits": [
+    "no DB/HTTP/browser/public checks",
+    "no 7-gate/qualification/independence/applicability/effectiveness attestation",
+    "Review raw registry needs actual candidate owner; paired/finite lineage still missing",
+    "actual rows/byte/safety ports in pure checks use explicit no-connect substitutes"
+  ]
+}

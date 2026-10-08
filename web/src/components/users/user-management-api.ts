@@ -1,5 +1,6 @@
 import { isRecord, requestIdentity, responseBody } from "@/components/workspace-api";
 import type { WorkspaceIdentity } from "@/components/workspace-types";
+import { isWorkModules } from "@/components/work-modules";
 
 import { USER_ROLES } from "./user-management-types";
 import type { ManagedUser, UserCreate, UserRole, UserUpdate } from "./user-management-types";
@@ -22,7 +23,8 @@ function parseManagedUser(value: unknown): ManagedUser {
     typeof value.is_active !== "boolean" ||
     (typeof value.last_signed_in_at !== "string" && value.last_signed_in_at !== null) ||
     typeof value.created_at !== "string" ||
-    typeof value.updated_at !== "string"
+    typeof value.updated_at !== "string" ||
+    (value.work_modules !== undefined && !isWorkModules(value.work_modules))
   ) {
     throw new Error("invalid managed user response");
   }
@@ -37,6 +39,7 @@ function parseManagedUser(value: unknown): ManagedUser {
     last_signed_in_at: value.last_signed_in_at,
     created_at: value.created_at,
     updated_at: value.updated_at,
+    work_modules: value.work_modules ?? [],
   };
 }
 

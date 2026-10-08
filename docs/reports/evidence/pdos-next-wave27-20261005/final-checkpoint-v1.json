@@ -1,0 +1,45 @@
+{
+  "status": "PASS_SCOPED_BACKEND_V2_AND_MANUFACTURING_TRANSACTION_CHECKPOINT",
+  "recorded_at": "2026-10-05T20:23:07.519770+00:00",
+  "source_manifest_sha256": "c36835da89d921c021cdb5b586c634b18f53d11472102d4609a57de89d8c62e9",
+  "source_counts": {
+    "runtime_files": 385,
+    "backend_test_files": 71,
+    "web_files": 165,
+    "tools": 5
+  },
+  "actual_manufacturing_runtime_identical_v3_v4": true,
+  "new_actual_PG_cases": 2,
+  "pure_groups": {
+    "resource_actual_no_connect": 99,
+    "retained_launch_actual_no_connect": 157,
+    "profiler_actual_no_connect": 12
+  },
+  "public_preview_head": "next_0029",
+  "registered_business_tables": 122,
+  "current_frontend_validated": false,
+  "real_professional_or_model_qualification": false,
+  "formal_manufacturing_release": false,
+  "complete_G_AT_N_P_Q_exit": false,
+  "whole_goal_complete": false,
+  "unchanged_Wave26_9_slow_PG_cases_repeated": false,
+  "stage_only_candidates_counted_as_actual_delivery": false,
+  "evidence_sha256": {
+    "actual-versioned-atomic-pg-v2.json": "f07e1062a9ba86e7252bb757d596ea3fa46f34f08a6eab952a6bf103e06d6f6d",
+    "actual-versioned-atomic-runner-pg-v2.json": "69b754574921a906eba0bde4ddac589e7383d8960b21d7543e24234a9fdae01f",
+    "actual-manufacturing-transactions-pg-v1.json": "04f41f8a53c191d85328933c1099a7244db001bff766275772999f3b23b194e6",
+    "isolated-migration-checkpoint-v1.json": "bc44eac85f4393ef2a93216c8045d937c80ac2848a1c4e815e2403c3f2aabeda",
+    "used-v2-downgrade-refusal-v1.json": "bacd3c8f1ef2bb222c632730df495f7a6217b5d092f781cd230fba06df731de1",
+    "shared-migration-checkpoint-v2.json": "fe10eda6a12ad5a1824f6cd4dec28f74cfc093bdf4a696daacc87b9950416094",
+    "runtime-read-only-checkpoint-v2.json": "7d4e69c9d0ea057548aea05c0b1088d2e5bc97da0e0be20f1131e9b79b328021",
+    "isolated-test-cleanup-v1.json": "6676a8bdaab7b90becd7a743926dbd77334643c9769c4f1b938481de479bb316",
+    "actual-source-candidate-v4.json": "c36835da89d921c021cdb5b586c634b18f53d11472102d4609a57de89d8c62e9",
+    "actual-resource-dependency-pure-v2.log": "4fcf9195accaf48a2cae6606fe16bb70e1ef0e92544d065087d5412b3899b647",
+    "actual-retained-launch-pure-v2.log": "815882c60829334a27d4ea621b42e41cad668718218de5d4e2916d8dc1d96e2f",
+    "actual-worker-profiler-pure-v1.log": "8df57c9b381a420da960c470cf26ad622e051d953d79e4b18b5cd1c994502f14",
+    "actual-selected-static-v5.log": "f936548dd7abb0bae28050cd6dc7cca9718cfc8c80fc7831ccd8778561cd159d",
+    "actual-current-read-profile-v4.json": "5ae3352fb8e6d516ff8521cbf1406ce9c293e34916d91ab17d4214c607c902f9",
+    "actual-current-read-measurement-v2.json": "c4d7e4ce1244da47ebbda181a9dcf0216c5060432d94c86328bdfcaca8f16ab9",
+    "result.md": "dfaf6ba88382c13b213611f6243bd230a42753a0eaf1496992e853a273cf6eec"
+  }
+}

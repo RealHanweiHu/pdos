@@ -87,7 +87,7 @@ def acceptance_conditions(
                 tables.users.c.tenant_id == tenant_id,
                 tables.users.c.is_active.is_(True),
                 tables.users.c.role.in_(
-                    ("owner", "admin", "project_manager", "engineer", "quality")
+                    ("owner", "admin", "product_manager", "project_manager", "engineer", "quality")
                 ),
                 or_(tables.users.c.id.in_(members), tables.users.c.role.in_(("owner", "admin"))),
             )

@@ -13,6 +13,7 @@ from sqlalchemy import Connection, Engine, RowMapping, select
 from app.ai.application_gateway import ApplicationModelGateway
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.change_discussion_contract import call_id, seat_input
+from app.ai.durable import agent_entry
 from app.ai.executor import PromptFile
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
@@ -106,6 +107,7 @@ def history(c: Connection, tenant: UUID, run: UUID) -> list[dict[str, Any]]:
     ]
 
 
+@agent_entry
 def run(
     engine: Engine,
     gateway: ApplicationModelGateway,

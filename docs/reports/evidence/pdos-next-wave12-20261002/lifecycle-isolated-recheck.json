@@ -1,0 +1,11 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 66.63,
+  "passed": 24,
+  "selection": [
+    "tests/test_original_lifecycle_integration.py"
+  ],
+  "log": "lifecycle-isolated-recheck.log",
+  "other_test_processes_at_start": 0,
+  "reason": "Repeat in isolation after the targeted test-only recheck overlapped the end of the initial structural group."
+}

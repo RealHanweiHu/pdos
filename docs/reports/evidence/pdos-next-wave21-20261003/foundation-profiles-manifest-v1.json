@@ -1,0 +1,73 @@
+{
+  "schema_version": "wave21-foundation-profiles-staged-v1",
+  "created_at": "2026-10-03T17:55:58.107178+00:00",
+  "applied_to_runtime": false,
+  "source_package_copy_count": 310,
+  "source_snapshot_stable": true,
+  "actual_runtime_drift": [],
+  "staged_modified_package_files": [
+    "operational_bootstrap.py",
+    "quality_bootstrap.py",
+    "test_resource_bootstrap.py"
+  ],
+  "files": [
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/operational_bootstrap.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/operational_bootstrap.py",
+      "baseline_sha256": "473cb3f7336b0af28a82b6e5b602bc696fc67a03ba4d8f276799d60089e9cb15",
+      "final_sha256": "30fd1a30b981d3eebd8e2def6c9ac65f087aa459bd26219188d270ca37fdc961",
+      "kind": "modified bootstrap"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/test_resource_bootstrap.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/test_resource_bootstrap.py",
+      "baseline_sha256": "85eee5d1838689a54688fc64a6998b03a30fa57b7a984a40c654b333dbe31ccf",
+      "final_sha256": "14bff7bb250af38d1767087e6e8326fa8d71b4a04a4f8e3496294002ba5c47de",
+      "kind": "modified bootstrap"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/quality_bootstrap.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/quality_bootstrap.py",
+      "baseline_sha256": "74de72d1f51352e63152c76d4886092da335b06a64798bb4aa8392e548305fbf",
+      "final_sha256": "1d81e3f9f668bac455fc79cfe8f99a8db9a0315df7827abd2546cf7468686f27",
+      "kind": "modified bootstrap"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_operational_bootstrap_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/test_operational_bootstrap_profiles.py",
+      "baseline_sha256": null,
+      "final_sha256": "9d46d65d89a088401c4749879d0d35bb548204c408a860f78b51bde578934ebf",
+      "kind": "new owned pure test"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_test_resource_bootstrap_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/test_test_resource_bootstrap_profiles.py",
+      "baseline_sha256": null,
+      "final_sha256": "0f9032422bdb9b2a02279b8220c07add1382db3f47e81446fdaa937e1a45b716",
+      "kind": "new owned pure test"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_quality_bootstrap_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/test_quality_bootstrap_profiles.py",
+      "baseline_sha256": null,
+      "final_sha256": "60dc4de72be427e95fcf48e451f6d6a9123708851b008c0eab729f292b59680f",
+      "kind": "new owned pure test"
+    }
+  ],
+  "contract": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profile-contract.md",
+    "sha256": "00ebec0f95a93eab961e3569afeac1ce3dc0b11ebf310079663f801d7231e718"
+  },
+  "checks": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-checks-v1.json",
+    "sha256": "58a9525099c0e5d1324943b8cd7085c63477f6319f6d6f543e6a8ac2a40b2e24"
+  },
+  "pure_count": 67,
+  "limits": [
+    "isolated staged source only",
+    "fake verified marker boundary; no actual DB/source/qualification checks",
+    "single explicit reconfiguration retains legacy epoch behavior",
+    "plural is not an issuer update operation",
+    "Root owns API application and all actual validation"
+  ]
+}

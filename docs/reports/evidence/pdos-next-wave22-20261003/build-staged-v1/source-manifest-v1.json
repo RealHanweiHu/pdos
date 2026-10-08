@@ -1,0 +1,63 @@
+{
+  "schema_version": "wave22-shared-build-source-manifest-v1",
+  "scope": "only_new_owned_staging_files",
+  "baseline": "new file; no running source modified",
+  "files": [
+    {
+      "path": "pdos-next/.local/wave22-build-staged/wave22_shared_build.py",
+      "sha256": "0706238d95010d1a96e4bc86e78cde5de2a814cd918225a3e12efa6ba495df7e"
+    },
+    {
+      "path": "pdos-next/.local/wave22-build-staged/test_wave22_shared_build.py",
+      "sha256": "b28b1cbd51ce191c7ac3d0ef502178c6358289bca0cf143ba8c5d6079644dcef"
+    },
+    {
+      "path": "pdos-next/.local/wave22-build-staged/shared-build-contract-v1.md",
+      "sha256": "696abb30c69104686ccedd77ac0763d0d9bceb88485204bd8390557818f18649"
+    }
+  ],
+  "readonly_dependencies": [
+    {
+      "path": "pdos-next/tools/wave15_seed.py",
+      "sha256": "d03460000b337f4540c1c4ea10312521d29b479439295fa1dae8a9538a747880"
+    },
+    {
+      "path": "pdos-next/.local/wave21-case-staged/wave21_shared_case.py",
+      "sha256": "72124fd73785621445ac2068c4da3faf1b19174ee21d0aa1f7f64089a6f5be3d"
+    },
+    {
+      "path": "pdos-next/.local/wave21-case-staged/shared-case-contract-v1.md",
+      "sha256": "08af0d8ea54ae8833a898a89c8dced6839e30b59948745a2fcff4c0dc186889f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/builds/schemas.py",
+      "sha256": "987df70852ef07be68edc3ff13b1269f74f3f31ca03c82e38f66801f8ecd5dd9"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_start/schemas.py",
+      "sha256": "b8e1c0a5d0ff41ba7b3cbe11a9000bb3db866fd62c68cd60684694c5539ab1e2"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_operational_facts/schemas.py",
+      "sha256": "8b4f365b9e384f65677e6de71d9884c54987c196caf96db5a4dfb6f930aa2748"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+      "sha256": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/sample_handoff/schemas.py",
+      "sha256": "ad24016f817f1d28d5ed4842b105c927ba194100b2354de2ec49471e47de62b6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/operational_bootstrap.py",
+      "sha256": "fd7ed5585dded9a0896858c5c02dbef7b18ed4ac8d09d3f08b42ec28f2cafb3e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/operational_import.py",
+      "sha256": "c25f6620da1afa7a787e086545f98ed4f50b82d7d9ab1d7523429798f15fe0eb"
+    }
+  ],
+  "root_execution_required": true,
+  "db_http_browser_public_checks": false
+}

@@ -1,0 +1,19 @@
+{
+  "status": "FAIL",
+  "at": "2026-10-03T17:43:26.658242+00:00",
+  "candidate": "candidate-source-v2.json",
+  "business_commands": 0,
+  "model_calls": 0,
+  "observed_alerts": [
+    "本轮质量、失败或变更事实读取失败，请刷新核对；本次读取未发起操作。",
+    "当前整改、固定输出或复验事实读取失败，请刷新核对；本次读取未发起操作。"
+  ],
+  "controls": "quality/followup Build/Run/Issue/revision remain disabled",
+  "actual_direct_http_seconds": 230.037,
+  "bff_read_total_budget_ms": 180000,
+  "diagnosis": "Direct advanced followup read alone exceeds read budget; concurrent source-lock waits also consume it. Backend success does not imply old browser candidate passed.",
+  "screenshot": "actual-read-timeout-v1.jpg",
+  "source_manifest_sha256": "64c6676ce6862397fb870021f0aa1d7bd1040725e2b6b155e4296747b3967a24",
+  "repair_candidate": "candidate-source-v3.json",
+  "pending": "actual repaired browser and terminal readback"
+}

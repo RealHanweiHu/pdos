@@ -1,0 +1,61 @@
+{
+  "observed_at": "2026-10-02T13:54:20.167Z",
+  "method": "CUA real production preview; DOM geometry and actual screenshots",
+  "layouts": [
+    {
+      "height": 1000,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "width": 1440
+    },
+    {
+      "height": 1000,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "width": 1440
+    },
+    {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "theme": "dark",
+      "width": 390
+    },
+    {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "theme": "light",
+      "width": 390
+    },
+    {
+      "height": 800,
+      "overflow": false,
+      "scrollWidth": 320,
+      "theme": "light",
+      "width": 320
+    },
+    {
+      "height": 800,
+      "overflow": false,
+      "scrollWidth": 320,
+      "theme": "dark",
+      "width": 320
+    }
+  ],
+  "flow": [
+    "human T1 v1 saved",
+    "copied current v1, exact drawing/method references added, expected time changed",
+    "human T1 v2 saved",
+    "refresh preserved v2 and v1 history",
+    "final UI stable object comparison shows four real changes",
+    "physical event clocks not recorded; all formal action buttons disabled"
+  ],
+  "issues_fixed": [
+    "raw English gap field names mapped to Chinese",
+    "object property order no longer creates false input changes"
+  ],
+  "no_business_data_writes_after_second_preparation": true
+}

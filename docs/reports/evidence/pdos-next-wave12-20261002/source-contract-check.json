@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "canonical_operations": 66,
+  "canonical_events": 65,
+  "acceptance_definitions": 48,
+  "registered_payloads": 42,
+  "registered_canonical_payloads": 25,
+  "auxiliary_operations": 15,
+  "host_extensions": 2,
+  "new_operations_all_t1": true,
+  "exported_schemas_and_openapi_match_runtime": true,
+  "no_database_or_network": true,
+  "acceptance_definitions_are_not_acceptance_results": true
+}

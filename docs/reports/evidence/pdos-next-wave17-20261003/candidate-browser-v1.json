@@ -1,0 +1,66 @@
+{
+  "finalBundleReloadedAt": "2026-10-03T14:23:27.238Z",
+  "actions": [
+    {
+      "action": "prepare-click",
+      "at": "2026-10-03T14:29:00.241Z"
+    },
+    {
+      "action": "preview-observed",
+      "at": "2026-10-03T14:35:43.736Z"
+    },
+    {
+      "action": "save-confirm-click",
+      "at": "2026-10-03T14:36:01.084Z"
+    },
+    {
+      "action": "original-request-recovery-click",
+      "at": "2026-10-03T14:48:03.442Z"
+    },
+    {
+      "action": "v5-saved-history-observed",
+      "at": "2026-10-03T14:55:51.670Z"
+    },
+    {
+      "action": "final-v6-reload",
+      "at": "2026-10-03T14:57:13.842Z"
+    },
+    {
+      "action": "final-v6-saved-history-observed",
+      "at": "2026-10-03T15:02:15.493Z"
+    },
+    {
+      "action": "final-v6-read-only-refresh-click",
+      "at": "2026-10-03T15:02:42.405Z"
+    },
+    {
+      "action": "final-v6-read-only-refresh-success-observed",
+      "at": "2026-10-03T15:05:19.085Z"
+    }
+  ],
+  "final": {
+    "observed_at": "2026-10-03T15:06:06.263Z",
+    "candidate_count": 2,
+    "new_candidate_and_receipt_match_closeout": true,
+    "old_candidate_and_receipt_match_closeout": true,
+    "saved_receipt_restored": true,
+    "reason_enabled_after_explicit_read": true,
+    "recovery_buttons": 0,
+    "confirm_dialogs": 0,
+    "dark_layout": {
+      "scrollWidth": 1280,
+      "themeClass": "dark",
+      "width": 1280
+    },
+    "narrow_requested_width": 320,
+    "narrow_verified": false,
+    "narrow_limit": "Viewport override did not take effect; actual DOM and screenshot remained 1280px. Not counted as 320px validation.",
+    "scope": "One new UI confirmation on web v5/runtime v7, original request recovery; final web v6 reload and GET-only refresh; no further candidate submission. No actual access-revocation browser test, production qualification or human Exit.",
+    "current_issue_6": true,
+    "light_layout": {
+      "scrollWidth": 1280,
+      "themeClass": "light",
+      "width": 1280
+    }
+  }
+}

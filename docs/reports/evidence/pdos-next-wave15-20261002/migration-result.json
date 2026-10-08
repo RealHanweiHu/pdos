@@ -1,0 +1,37 @@
+{
+  "head": "next_0023",
+  "business_tables": 104,
+  "new_forced_rls": 9,
+  "agent_direct_writes": 0,
+  "steps": [
+    {
+      "step": [
+        "upgrade",
+        "next_0023"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "downgrade",
+        "next_0022"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "upgrade",
+        "next_0023"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "backup_private": ".local/pre-wave15-next_0022.dump",
+  "retained_history_preserved": true
+}

@@ -1,0 +1,27 @@
+{
+  "recorded_at": "2026-10-02T16:23:50.069010+00:00",
+  "database_port": 62513,
+  "database_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "head": "next_0012",
+  "scope": "Own marked local synthetic database only; backup retained, no full restore exit claimed",
+  "backups": [
+    {
+      "path": ".local/pre-wave9-next_0010.dump",
+      "bytes": 16584837,
+      "mode": "0o600",
+      "sha256": "3ebc2af2d366ecfc36adf2affcab01ad35cb4bf0f17d010a4630699bb28f19c0"
+    },
+    {
+      "path": ".local/pre-wave9-next_0011.dump",
+      "bytes": 17386574,
+      "mode": "0o600",
+      "sha256": "22b2e4ce54fd12379b612550251cf6386b7cbd7c0a63a501d03d6de12b90a175"
+    },
+    {
+      "path": ".local/wave9-business.dump",
+      "bytes": 22236012,
+      "mode": "0o600",
+      "sha256": "93f603f449c9f7898dc6c877ac2da495e9dd7bbc101b0b22202ee7fe8cbc6f71"
+    }
+  ]
+}

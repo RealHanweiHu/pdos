@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+  "exit_code": 1,
+  "seconds": 2345.52,
+  "source_stable": true,
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "log_file": "pg-v3-01.log",
+  "log_sha256": "39c77cc3fc5914cf51a6efe86b1b70a58f23b1dde19987f870388ed9933920bd"
+}

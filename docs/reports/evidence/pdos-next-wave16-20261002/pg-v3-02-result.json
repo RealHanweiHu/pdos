@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.actions.complete-capa.actions_completed]",
+  "exit_code": 0,
+  "seconds": 2015.72,
+  "source_stable": true,
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "log_file": "pg-v3-02.log",
+  "log_sha256": "f0c36270a303170dd51aff8ae9323bec835571f3dfd623778e08f544d5d645e8"
+}

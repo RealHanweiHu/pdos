@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "record_type": "independent_business_packages_dispatch_snapshot",
+  "checked_at_utc": "2026-10-02 11:28:42 UTC",
+  "user_authorization": "帮我开始（承接上一答品质验证与交接、供应与成本业务接入、文件安全与原件生命周期三条建议）",
+  "project_id": "441a6448-7480-4a29-ba78-b09d15c975c8",
+  "workspace": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+  "coordinator_thread_id": "01a0fc29-9435-75a3-8a7c-d2dc4ca0dfe6",
+  "main_thread": {
+    "thread_id": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "title": "按新设计完成并执行方案",
+    "current_ownership": [
+      "domain/configurations/**",
+      "domain/builds/**",
+      "BOM和Build需求量及准备度",
+      "公共模型/命令/迁移/API/UI入口/环境与联合验证"
+    ]
+  },
+  "interface_status": "主线Build/配置接口正在施工。各包先实现独立消费port/DTO、规则、handler与组件，真实接线须核对固定版本；计划Build不是实际样件。",
+  "tasks": [
+    {
+      "key": "verification",
+      "title": "PDOS Next：品质验证与交接",
+      "thread_id": "01a0fc5f-3974-79c1-a945-bca40ca02567",
+      "host_id": "local",
+      "exclusive_paths": [
+        "pdos-next/server/pdos_next/domain/verification/",
+        "pdos-next/server/pdos_next/schemas/verification/",
+        "pdos-next/server/tests/verification/",
+        "pdos-next/web/src/components/verification/",
+        "docs/reports/evidence/pdos-next-verification-20261002/"
+      ],
+      "launch_status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turn_status": "inProgress",
+      "last_update": "我先读取当前队列和验证领域契约，再实现请求、交接、TestRun 与结果的独立模块和组件；公共接线与数据库联验会整理成明确的主线接入材料。",
+      "first_tool_status": "completed",
+      "initial_prompt": "用户已要求开始本轮三条独立工作线。请在 /Users/huhanwei/Documents/ai-native-R&D-platform 的 pdos-next 新工程直接实施本会话指定包，持续完成独立可交付首版、必要检查及主线接入材料，不停留在分析或计划。\n\n先读 AGENTS.md 和 tasks/ai-native-integrated-todo.md 的 pdos-next-queue，再按本包对象定向读 docs/design/2026-10-02-pdos-complete-target-architecture-v1.md 及执行方案。当前主线“按新设计完成并执行方案”（01a0fbeb-3050-7662-912f-7a380996ed6a）正实现 domain/configurations/**、domain/builds/**、Build需求量/readiness及配置/Build界面；这些归主线。前一波日历、齐套成本、三方派生引擎首版已交付，仅读复用，不重写。\n\n只修改下文独占目录。公共models/contracts/service/command_handlers/api/runtime/originals、迁移、共享父__init__、认证、配置及依赖锁、BFF/workspace/全局CSS和现有组件、唯一清单及设计方案均只读。不得改主线configuration/build/project/product/planning目录及三个engines包，不建立另一个BOM、Build、SampleUnit或ActualConfiguration事实所有者。领域模块只参加主线传入的共同命令事务，不自行commit、旁路写表或授予权限；实体注册、迁移、命令/API/路由接线和公共验证留给主线。开发确需新公共接口时，先在本包定义最小消费port/DTO并列明主线应提供的字段和原子性要求，继续独立规则、handler与组件，不因缺完整主线接口停止全部工作，也不编造就绪事实。\n\n当前Build源码正在施工，导入存在不代表接口冻结。记录消费文件/DTO的版本摘要；临近交付重新核对漂移，接口未就绪则显式返回待接入。身份、租户/项目范围、当前资格、真实来源与受众由服务器port绑定，模型/请求payload不能充当授权。T1只接实质预览+一次确认，T2保留具名决定。组件沿现有shadcn/Tailwind4/Geist/Phosphor/橙色/双主题；通过typed props/callback连接主线入口，合成fixture只用于检查，不在业务界面伪装成功。\n\n可使用现有 .venv/已安装前端依赖，运行本包纯规则、port负例和组件的最小检查，pytest用本包 --confcutdir 排除根DB fixture、隔离缓存。不得读取.env/.local凭据、连接/迁移任何数据库、启动或停止共享服务、修改共享.next、安装依赖或运行全量构建；需数据库事务/浏览器联验的病例与命令交主线集中执行。不得真实模型调用、生产/云资源/业务外发、实际资产删除、git提交或push。旧工程只读提取明确需要的算法/交互并记路径/函数/哈希，不导入旧app或复制旧批准/资格。\n\n本包完成标准：可调用的领域/安全模块与明确DTO/port、指定独立组件、必要行为/负例检查、固定候选摘要、覆盖/未覆盖说明及具体集成步骤。所有证据只写本包证据目录，业务整链待主线接入的部分如实保留，不自勾G/N/P/Q或宣称真实资格。最终向用户报告已交付模块、检查结果和剩余主线接口。\n\n本会话独占以下目录：\npdos-next/server/pdos_next/domain/verification/**\npdos-next/server/pdos_next/schemas/verification/**\npdos-next/server/tests/verification/**\npdos-next/web/src/components/verification/**\ndocs/reports/evidence/pdos-next-verification-20261002/**\n\n目标：G2试模前验证准备→资料/样件交接范围→部分接收/退缺项→TestRun与部分结果的独立业务模块首版。按完整架构§04.6/7和TestRun状态契约实现。最小消费接口为 BuildRef(id/revision/product/project/双配置固定引用)、SampleRef/实际配置版本、BuildContextPort、SampleAvailabilityPort、Evidence/CommandPort；缺样件/真实配置或授权port时禁止形成接收/开测成功事实。\n\n先完成VerificationRequest与测试方法/判据/单位/条件/样件数量和模穴/预期时点/返回形式、资料齐套和适用范围规则；品质可提前准备方法/暂定时段。交接分别保存request_created、sample_ready、documents_complete、offered、accepted、promised_start、actual_start及部分/最终结果时间和来源。部分接收明确样件/测试项覆盖、退回原因与下一责任人，不把资料与实物就绪混为一个状态。\n\nTestRun执行状态与pass/fail/不确定结果分开；Measurement保留原值、单位、工况、设备/环境/方法、来源位置和缺项，未知不判通过。真实样件可用/破坏性消耗、配置适用性、具名接收/开始等由主线port原子复查。当前Build仅status=planned，计划数量与计划双配置绝不是实际SampleUnit/ActualConfiguration，不创建虚假样件或改Build状态。\n\n交付规则/handler及独立办理组件：请求/方法阅读、缺项与部分接收预览、Run/部分结果表单与状态。优先完成能接线的连贯切片，测试覆盖部分范围、来源/配置漂移、重复动作、角色/port拒绝和状态/结果分离。数据库模型需求和对应并发/事务用例在接入说明交主线，不自行注册迁移。"
+    },
+    {
+      "key": "supply_business",
+      "title": "PDOS Next：供应与成本业务接入",
+      "thread_id": "01a0fc5f-5f63-7f73-8676-62982da76b03",
+      "host_id": "local",
+      "exclusive_paths": [
+        "pdos-next/server/pdos_next/domain/supply_cost/",
+        "pdos-next/server/pdos_next/schemas/supply_cost/",
+        "pdos-next/server/tests/supply_cost_domain/",
+        "pdos-next/web/src/components/supply_cost/",
+        "docs/reports/evidence/pdos-next-supply-business-20261002/"
+      ],
+      "launch_status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turn_status": "inProgress",
+      "last_update": "我会按本包边界实施供给与成本快照模块，先核对已交付引擎和主线 Build 接口，再完成独立规则、办理组件及最小检查。共享事务、持久化与页面接线会整理成明确的主线接入材料。",
+      "first_tool_status": "completed",
+      "initial_prompt": "用户已要求开始本轮三条独立工作线。请在 /Users/huhanwei/Documents/ai-native-R&D-platform 的 pdos-next 新工程直接实施本会话指定包，持续完成独立可交付首版、必要检查及主线接入材料，不停留在分析或计划。\n\n先读 AGENTS.md 和 tasks/ai-native-integrated-todo.md 的 pdos-next-queue，再按本包对象定向读 docs/design/2026-10-02-pdos-complete-target-architecture-v1.md 及执行方案。当前主线“按新设计完成并执行方案”（01a0fbeb-3050-7662-912f-7a380996ed6a）正实现 domain/configurations/**、domain/builds/**、Build需求量/readiness及配置/Build界面；这些归主线。前一波日历、齐套成本、三方派生引擎首版已交付，仅读复用，不重写。\n\n只修改下文独占目录。公共models/contracts/service/command_handlers/api/runtime/originals、迁移、共享父__init__、认证、配置及依赖锁、BFF/workspace/全局CSS和现有组件、唯一清单及设计方案均只读。不得改主线configuration/build/project/product/planning目录及三个engines包，不建立另一个BOM、Build、SampleUnit或ActualConfiguration事实所有者。领域模块只参加主线传入的共同命令事务，不自行commit、旁路写表或授予权限；实体注册、迁移、命令/API/路由接线和公共验证留给主线。开发确需新公共接口时，先在本包定义最小消费port/DTO并列明主线应提供的字段和原子性要求，继续独立规则、handler与组件，不因缺完整主线接口停止全部工作，也不编造就绪事实。\n\n当前Build源码正在施工，导入存在不代表接口冻结。记录消费文件/DTO的版本摘要；临近交付重新核对漂移，接口未就绪则显式返回待接入。身份、租户/项目范围、当前资格、真实来源与受众由服务器port绑定，模型/请求payload不能充当授权。T1只接实质预览+一次确认，T2保留具名决定。组件沿现有shadcn/Tailwind4/Geist/Phosphor/橙色/双主题；通过typed props/callback连接主线入口，合成fixture只用于检查，不在业务界面伪装成功。\n\n可使用现有 .venv/已安装前端依赖，运行本包纯规则、port负例和组件的最小检查，pytest用本包 --confcutdir 排除根DB fixture、隔离缓存。不得读取.env/.local凭据、连接/迁移任何数据库、启动或停止共享服务、修改共享.next、安装依赖或运行全量构建；需数据库事务/浏览器联验的病例与命令交主线集中执行。不得真实模型调用、生产/云资源/业务外发、实际资产删除、git提交或push。旧工程只读提取明确需要的算法/交互并记路径/函数/哈希，不导入旧app或复制旧批准/资格。\n\n本包完成标准：可调用的领域/安全模块与明确DTO/port、指定独立组件、必要行为/负例检查、固定候选摘要、覆盖/未覆盖说明及具体集成步骤。所有证据只写本包证据目录，业务整链待主线接入的部分如实保留，不自勾G/N/P/Q或宣称真实资格。最终向用户报告已交付模块、检查结果和剩余主线接口。\n\n本会话独占以下目录：\npdos-next/server/pdos_next/domain/supply_cost/**\npdos-next/server/pdos_next/schemas/supply_cost/**\npdos-next/server/tests/supply_cost_domain/**\npdos-next/web/src/components/supply_cost/**\ndocs/reports/evidence/pdos-next-supply-business-20261002/**\n\n目标：把已完成 engines/supply_cost 的计算能力接成供给/成本快照业务模块，提供供方承诺→在途/部分实到→质量限制/可用量→齐套和成本候选的办理入口及回查。先读 docs/reports/evidence/pdos-next-supply-cost-20261002/{result,integration}.md 和当前 domain/builds/{schemas,service,models}.py。\n\n本包拥有供给、库存/占用输入快照、报价/工艺/汇率成本输入及结果投影；主线拥有BOM展开、Build需求量与Build准备度，本包仅读消费。最小port为 BuildDemandPort（固定工程/制造配置、BOM/Build版本、数量/单位、FixedBasis+DemandSnapshot）、SupplySnapshotPort、CostInputPort、CommandPort。现有 calculate_coverage 会内部 expand_bom；adapter须核对其输入同版且展开结果与主线权威需求一致，差异显式阻断。不能自己维护第二份需求对象或修改引擎；映射缺口写成主线接口需求。\n\nSupplyCommitment、在途、实际到货、库存、冻结/待检/可用和当前全部占用分别记录。共享物理池按固定ID去重；新快照对账保留前版依据与差异，旧结果仍可回查，来源/配置/Build版本变化需要重算/重核。外部替代资格只由服务器port核验，不从参数相近推导。CostEstimate候选直接调用Decimal引擎，固定报价对象/阶梯、工艺、数量、币种、时点/汇率、损耗与费用范围，缺项不补零，估算不表示实际降本或财务批准。\n\n实现typed DTO、快照/对账/计算适配与命令参与handler、供给录入/差异回查/齐套缺项/成本分项独立组件。测试重点为同版输入绑定、重复/过期/冲突快照、共享池占用、部分到货/质量受限、来源变更和port拒绝；不重跑原引擎全套作为本包成绩。共同事务、持久模型注册、API/页面入口与真实DB联验交主线；当前计划Build没有实际材料事实时保持未知。"
+    },
+    {
+      "key": "evidence_security",
+      "title": "PDOS Next：文件安全与原件生命周期",
+      "thread_id": "01a0fc5f-6336-7753-913c-2f6be216c4cd",
+      "host_id": "local",
+      "exclusive_paths": [
+        "pdos-next/server/pdos_next/evidence_security/",
+        "pdos-next/server/pdos_next/original_lifecycle/",
+        "pdos-next/server/tests/evidence_security/",
+        "pdos-next/server/tests/original_lifecycle/",
+        "docs/reports/evidence/pdos-next-evidence-security-20261002/"
+      ],
+      "launch_status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turn_status": "inProgress",
+      "last_update": "我会先核对新工程的对象存储与原件接口，在本包独占目录内实现扫描和生命周期规则，并留下主线可接入的 DTO、适配器和验证证据。",
+      "first_tool_status": "completed",
+      "initial_prompt": "用户已要求开始本轮三条独立工作线。请在 /Users/huhanwei/Documents/ai-native-R&D-platform 的 pdos-next 新工程直接实施本会话指定包，持续完成独立可交付首版、必要检查及主线接入材料，不停留在分析或计划。\n\n先读 AGENTS.md 和 tasks/ai-native-integrated-todo.md 的 pdos-next-queue，再按本包对象定向读 docs/design/2026-10-02-pdos-complete-target-architecture-v1.md 及执行方案。当前主线“按新设计完成并执行方案”（01a0fbeb-3050-7662-912f-7a380996ed6a）正实现 domain/configurations/**、domain/builds/**、Build需求量/readiness及配置/Build界面；这些归主线。前一波日历、齐套成本、三方派生引擎首版已交付，仅读复用，不重写。\n\n只修改下文独占目录。公共models/contracts/service/command_handlers/api/runtime/originals、迁移、共享父__init__、认证、配置及依赖锁、BFF/workspace/全局CSS和现有组件、唯一清单及设计方案均只读。不得改主线configuration/build/project/product/planning目录及三个engines包，不建立另一个BOM、Build、SampleUnit或ActualConfiguration事实所有者。领域模块只参加主线传入的共同命令事务，不自行commit、旁路写表或授予权限；实体注册、迁移、命令/API/路由接线和公共验证留给主线。开发确需新公共接口时，先在本包定义最小消费port/DTO并列明主线应提供的字段和原子性要求，继续独立规则、handler与组件，不因缺完整主线接口停止全部工作，也不编造就绪事实。\n\n当前Build源码正在施工，导入存在不代表接口冻结。记录消费文件/DTO的版本摘要；临近交付重新核对漂移，接口未就绪则显式返回待接入。身份、租户/项目范围、当前资格、真实来源与受众由服务器port绑定，模型/请求payload不能充当授权。T1只接实质预览+一次确认，T2保留具名决定。组件沿现有shadcn/Tailwind4/Geist/Phosphor/橙色/双主题；通过typed props/callback连接主线入口，合成fixture只用于检查，不在业务界面伪装成功。\n\n可使用现有 .venv/已安装前端依赖，运行本包纯规则、port负例和组件的最小检查，pytest用本包 --confcutdir 排除根DB fixture、隔离缓存。不得读取.env/.local凭据、连接/迁移任何数据库、启动或停止共享服务、修改共享.next、安装依赖或运行全量构建；需数据库事务/浏览器联验的病例与命令交主线集中执行。不得真实模型调用、生产/云资源/业务外发、实际资产删除、git提交或push。旧工程只读提取明确需要的算法/交互并记路径/函数/哈希，不导入旧app或复制旧批准/资格。\n\n本包完成标准：可调用的领域/安全模块与明确DTO/port、指定独立组件、必要行为/负例检查、固定候选摘要、覆盖/未覆盖说明及具体集成步骤。所有证据只写本包证据目录，业务整链待主线接入的部分如实保留，不自勾G/N/P/Q或宣称真实资格。最终向用户报告已交付模块、检查结果和剩余主线接口。\n\n本会话独占以下目录：\npdos-next/server/pdos_next/evidence_security/**\npdos-next/server/pdos_next/original_lifecycle/**\npdos-next/server/tests/evidence_security/**\npdos-next/server/tests/original_lifecycle/**\ndocs/reports/evidence/pdos-next-evidence-security-20261002/**\n\n目标：基于已有ObjectRef/ObjectStore实现原件扫描、隔离/失败状态、上传失败孤立对象识别以及保留/引用保护/恢复规则首版。现有 object_storage/**、evidence_processing/**、originals.py 和工作流均仅读，主线负责上传与解析前门禁和持久接线。当前解析明确not_scanned，process/resource隔离不是OS沙箱或恶意文件扫描；本包不能把既有成功解析提高为clean。\n\n定义有界ScannerPort/ScanRequest/ScanReceipt：绑定精确ObjectRef、版本、字节hash/size、扫描器与规则版本、结果/时间/错误；clean/infected/unknown/unavailable/timeout等状态明确，来源字节或规则变化失效。实现适合本地接线的扫描adapter或可注入transport和类型/尺寸/解压预算检查；真实扫描服务缺失时保留不可用，完成协议/状态/负例，不伪造扫描通过。材料不向外部扫描网站传送，不下载或运行真实恶意样本；仅用无害合成样本/fake scanner测试。\n\n原件生命周期基于 ReferenceGuardPort、LifecycleStorePort、保留期/hold等固定政策、权威引用和当前上传/解析状态生成OrphanCandidate/RetentionDecision。先预览候选，保留原因与固定读版本；执行前必须重新核查权威引用、当前状态/保留期/人工hold，处理并发新引用、未知删除结果、幂等和恢复。已被引用、正式历史、保留期未满或无法确认的对象不能回收。代码可定义受控回收接口，但本会话仅在自己创建且明确标记的临时合成store测试，不删除或扫描现有 .local/存储桶/业务原件。\n\n交付adapter、状态规则、候选与受控port接口、必要的版本/超限/扫描不可用/引用竞态/保留与恢复负例，及主线接入originals/Outbox/worker/存储适配器所需步骤。本包不含模型配置，也不扩展成完整OCR项目；如OS沙箱或真实扫描验证依赖环境，明确记录剩余条件并继续可实现部分。"
+    }
+  ],
+  "sidebar": {
+    "section_id": "f89b34cc-ffbc-48f6-b255-0ad406a95a21",
+    "name": "PDOS · 当前工作",
+    "membership_verified": true,
+    "opened_thread_id": "01a0fc5f-3974-79c1-a945-bca40ca02567",
+    "navigation_accepted": true,
+    "visual_confirmation": "使用应用专用分组和导航工具；未声称截图验证"
+  },
+  "request_completion": "三个会话均已创建并进入active/inProgress，已完成首轮工具读取，侧栏分组登记已核对并打开品质会话。",
+  "delivery_boundary": "模块尚在施工，算法/业务整链完成状态依各包证据与主线联合验证。",
+  "live_status_source": "tasks/ai-native-integrated-todo.md#pdos-next-parallel-domain"
+}

@@ -1,0 +1,75 @@
+{
+  "scope": "Frozen v4 replacement partial checkpoint only",
+  "completed": 7,
+  "passed": 6,
+  "failed": 1,
+  "awaiting": 2,
+  "all_completed_sources_stable": true,
+  "results": {
+    "repair-v4-01-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+      "original_index": 1,
+      "exit_code": 0,
+      "seconds": 2335.66,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "9cb99ddb16ca11a580aa572af3bba9a8f4d4f301eb96a6215a57a403721737bf"
+    },
+    "repair-v4-08-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+      "original_index": 8,
+      "exit_code": 0,
+      "seconds": 2419.99,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "7ae1911388a9fa5051ded011b13ee51dfc9d127efabf3aef61da534c21524c25"
+    },
+    "repair-v4-13-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+      "original_index": 13,
+      "exit_code": 0,
+      "seconds": 1708.97,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "a9eca44c6513e38b7fedd3eeae0e6e4defd1e9e05553a6546096446d1474317b"
+    },
+    "repair-v4-14-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[original_epoch]",
+      "original_index": 14,
+      "exit_code": 0,
+      "seconds": 1732.01,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "ec6753d1a2131f926a6b4474a1326fbf319c27369406d5833dc464ac9ac05a33"
+    },
+    "repair-v4-15-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+      "original_index": 15,
+      "exit_code": 0,
+      "seconds": 1730.9,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "d95c1dbe5156d1e9b2aa8d35a45cd3c1d53ab230ccd8a1954b023a14b7808406"
+    },
+    "repair-v4-16-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+      "original_index": 16,
+      "exit_code": 1,
+      "seconds": 2282.29,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "c047b783ccc5e6b61df237a039d465b14c3b53bf2b2590dbc446735d1f310f4a"
+    },
+    "repair-v4-17-result.json": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure",
+      "original_index": 17,
+      "exit_code": 0,
+      "seconds": 1385.72,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "41d808058042d75eec17049a84ccd3459b23ba1be77bee75e2fb6ca32e9ef9f6"
+    }
+  },
+  "failure_review": "../pdos-next-wave17-20261003/wave16-link-scope-failure-review.md",
+  "pending_fix": "Exact403/FORBIDDEN_SCOPE expected classification assertion only; public file unchanged while other v4 nodes run. Failed function requires actual affected rerun; trailing truth_counts was not executed."
+}

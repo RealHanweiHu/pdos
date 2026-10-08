@@ -1,0 +1,136 @@
+{
+  "schema_version": "wave25-readonly-closeout-evidence-audit-v1",
+  "status": "COUNTS_SUPPORTED_WITH_EXPLICIT_LIMITATIONS",
+  "mode": "filesystem read / JSON comparison / source AST parameter count / SHA; no test collection or execution",
+  "input_sha256": {
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-core-source-v3.json": "b1911543755cb50d9442797e7adce53d83e9d9c3ddae3c37afcee63590bd4eef",
+    "docs/reports/evidence/pdos-next-wave25-20261003/migration-final-checkpoint-v1.json": "411fe36ec54043d36058174d3176b0fdcff2cf837ecd718b7a384a9c2469c09e",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-pg-negative-v1.json": "e926e7c9f4d2e2e78477ea5ff21fb4a1d2c4b9a1ffacbbc57e2875dac7f621c3",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-pg-negative-v2.json": "9fbe64d9247773d1235a8325757da2b6c55525d1cb3f3fa12f66bbb2c42a5dd8",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-http-final-v6.json": "a4d26da3e165fffe83de000b06752d71aa90f3d4fe9cdc11867d7447c344bbe2",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-http-v2.json": "06673c3e52d89bcccf435b692d2a2e518c5df4f1d0b67759b401ce49d8d1962a",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-http-v3.json": "3b22f902daed64fb2d7547bb2c74070eaedceed978406c954edc31f45e1055ae",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-http-v5.json": "acaf0474bb24d159af965deb29c4066d5e8493c29c7e8b3721aa736a008d9269",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-web-checkpoint-v1.json": "bd00cd74486544c462f959d4c314b8bdc1cca779adc59221e988ff7c1b3ee66d",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-web-source-v1.json": "f1b7685572a89afc6bcf2e2f1e5e4302f0af2f203ec3da88f8d78afdb7365f83",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-browser-checkpoint-v1.json": "3b6b28ee73ac9f3b3b84c2bcd33013c78208be0737c9792aa780fb17af251a55",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-layout-pure-v1.log": "83dc522557fc868a946c0a2faef12b0e12a3058f436e8ea8fca2b43180e002b5",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-query-7-recheck-v2.log": "445b84b608bd3f5d201fed24766d92a9056803b79ebdb73d9321eb54ffe38738",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-runtime-pure-v1.log": "320fc0ef8f2e29b4729abb79b77d3e299801180d381e6a722239b0c8f7fa83fe",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-manufacturing-definition-recheck-v3.log": "c850f370e1bc40b6f3cd98daab962eee7cad82919b112aadf9ec406e2d6cd168",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-expiry-definition-node-v4.log": "b3634ada821ed90bc490bdadc743fe74a1c5a55261f3235ef02701cf9d70934c",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-selected-ruff-v1.log": "8a5d31dadd008735e5adc010d364242bea82108c629770204ff3a429b8febf40",
+    "docs/reports/evidence/pdos-next-wave25-20261003/actual-selected-ruff-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/reports/evidence/pdos-next-wave25-20261003/final-shared-fixed-state-v1.json": "29230475b5550e060f1b14f102059649cfe56b0c1379ba1d4d1f579c1e79d32e",
+    "docs/reports/evidence/pdos-next-wave25-20261003/expiry-definition-fixture-v4.json": "83da8cfc5296cc4e3625bb2944128f0748f0feb77a9d71ceb11c316bcef499e2"
+  },
+  "ui_input_sha256": {
+    "pdos-next/.local/wave25-manufacturing-ui-verification-staged/runs/applied-v1/helper-39-raw.log": "ad2c069a598bc3e668381a8ad5ce32b0e678ea87a74a809117094048d036e053",
+    "pdos-next/.local/wave25-manufacturing-ui-verification-staged/parser-reinterpret-applied-v1-v2.json": "f7b37d921463074c6cb19f2a5456412d1138bc9413cce5aeb2cd82eb6a5507eb",
+    "pdos-next/.local/wave25-manufacturing-ui-verification-staged/runs/applied-v1/failure.json": "7561dc44d0d9027e53cff4cab8e279635a76b1879bf2e93063fd0d37df68ba92"
+  },
+  "frozen_source": {
+    "manifest_sha256": "b1911543755cb50d9442797e7adce53d83e9d9c3ddae3c37afcee63590bd4eef",
+    "unique_paths": 591,
+    "counts": {
+      "runtime_files": 380,
+      "backend_test_files": 42,
+      "web_files": 165,
+      "tools": 4
+    },
+    "hash_mismatches": [],
+    "duplicates": []
+  },
+  "backend": {
+    "deduplicated_case_count": 257,
+    "base_cases": 232,
+    "new_definition_cases": 25,
+    "static_parameter_expansion_by_selected_file": {
+      "change_order": 42,
+      "controlled_change": 35,
+      "change_public_integration": 22,
+      "combined_registries": 10,
+      "api_query": 7,
+      "manufacturing_preparation": 74,
+      "manufacturing_public_protocol": 30,
+      "manufacturing_expiry": 12,
+      "new_definition_closure": 25
+    },
+    "old_232_failed_node_replaced_by_query_file_7": true,
+    "manufacturing_141_failed_expiry_replaced_by_exact_single_node": true,
+    "old_225_query7_repeat_manufacturing116_and_expiry1_not_added": true,
+    "not_all_591_sources_or_complete_same_candidate_joint_tests": true
+  },
+  "ui": {
+    "deduplicated_cases": 39,
+    "raw_summary": {
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "parser_only_reinterpretation_not_rerun": true,
+    "original_child_exit_code_not_preserved": true
+  },
+  "pg": {
+    "deduplicated_total": 47,
+    "catalog": 2,
+    "actual_rejection_cases": 45,
+    "change": 37,
+    "manufacturing": 10,
+    "original_8_syntax_failures_replaced_only_by_same_8": true,
+    "change_pending_not_counted": 13,
+    "positive_business_and_real_row_rls_not_attested": true
+  },
+  "http": {
+    "deduplicated_observations": 13,
+    "actual_segments": [
+      9,
+      1,
+      3
+    ],
+    "final_is_exact_concatenation": true,
+    "get_200": 2,
+    "exact_denial_422": 6,
+    "exact_denial_403": 5,
+    "finalization_new_requests": 0,
+    "full_selected_17_table_before_after_equal": true,
+    "business_saves": 0,
+    "not_actual_public_write_or_unknown_recovery_validation": true
+  },
+  "migration": {
+    "head": "next_0028",
+    "registered_tables": 122,
+    "original_111_rows_preserved": true,
+    "new_11_force_rls_and_zero_business_rows": true,
+    "agent_direct_business_writes": 0
+  },
+  "browser": {
+    "selected_manufacturing_draft_display_only": true,
+    "viewport_readbacks": 4,
+    "legacy_quality_actual_read_status": 409,
+    "legacy_quality_actual_read_code": "SOURCE_STALE",
+    "legacy_quality_underlying_reason_pending": true,
+    "new_business_save_or_unknown_recovery_attested": false
+  },
+  "fixed_shared_state": {
+    "issue_revision": 6,
+    "A2_run_revision": 1,
+    "A2_still_planned": true,
+    "new_11_shared_tables_zero": true,
+    "observations": 0,
+    "named_reviews": 0,
+    "source_currentness_or_professional_permission_not_inferred_from_row_hashes": true
+  },
+  "not_run_by_auditor": [
+    "DB",
+    "SQL",
+    "HTTP",
+    "browser",
+    "pytest/collection",
+    "build",
+    "shared source/queue/report mutation"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "recorded_at": "2026-10-04T01:06:08.849558+00:00",
+  "state": "planned_and_promise_saved_not_started",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "generation": "37c270ad-521a-44ad-b186-3447a94906c1",
+  "evidence": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-request-controlled-application-v2.json",
+      "sha256": "de10c6f74dcfdcaa8d67c2818a60a2b0157ee86fc3ae5434f5e45b496fa6de95"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-resource-actual-import-v1.json",
+      "sha256": "e708e99530d802fb06f13f31e97886ecd96da3095d5b51b7313a78eab064d219"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-api-reload-v1.json",
+      "sha256": "bd01f671c7bf8071582cb8ea214b243e9d21c4052bb2d479f0a2d9964af71637"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-api-health-v1.json",
+      "sha256": "e900ee3e4bb8aef481eb99edaa9df8753df025b0013b5cd82fa983a8ae6cc2a3"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-plan-preview-v1.json",
+      "sha256": "4d23a5b602d17d386bd60c1b90a41af2ff93b550a3075c786ee8b9f5fcbc2683"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-promise-preview-v1.json",
+      "sha256": "c8227c7fe6ca52033fb7852d456f1e118ed5be2feff726fb845f6679cde8f8f1"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-planned-actual-readback-v1.json",
+      "sha256": "27619b2aef7b98634dac9992e09da5eb6358f16e4ca29e819cc412d731c5270a"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/test-fresh-request-decision-v1.json",
+      "sha256": "71f809baaaa149a7be2c598714cb2f715b329c3739894cf916a16063baf8db6d"
+    }
+  ],
+  "actual_business_start": false,
+  "occupancy": 0,
+  "sample_usage": 0,
+  "old_saved_plan_and_promise_preserved": true,
+  "no_real_qualification": true
+}

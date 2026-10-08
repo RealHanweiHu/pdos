@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-07T02:25:06.934052+00:00",
+  "database": "localhost:57432/pdos",
+  "read_only": true,
+  "seed_tenant_matches": true,
+  "seed_owner_password_matches": true,
+  "owner_id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+  "owner_role": "owner",
+  "owner_active": true,
+  "login_performed": false,
+  "token_issued": false,
+  "business_writes": 0,
+  "mode_changes": 0
+}

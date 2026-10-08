@@ -130,7 +130,10 @@ class Entry:
 @pytest.fixture
 def entry(candidate: Candidate, monkeypatch: pytest.MonkeyPatch) -> Entry:
     settings = SimpleNamespace(
-        research_search_endpoint=SEARCH_ENDPOINT, research_subscriptions_enabled=False
+        research_search_endpoint=SEARCH_ENDPOINT,
+        research_tavily_api_key=None,
+        research_firecrawl_api_key=None,
+        research_subscriptions_enabled=False,
     )
     value = Entry(candidate, settings)
     # Only this module's research settings are supplied. No business .env,
@@ -292,25 +295,22 @@ def test_pm_current_line_revocation_hides_search_history_and_rejects_new_writes(
     candidate.post(entry.base + "/searches", query, 201, headers)
     with candidate.scope.engine.begin() as c:
         removed = c.execute(
-            tables.product_line_members.delete().where(
-                tables.product_line_members.c.tenant_id == candidate.scope.tenant_id,
-                tables.product_line_members.c.product_line_id == UUID(candidate.line["id"]),
-                tables.product_line_members.c.user_id == user_id,
+            tables.market_space_members.delete().where(
+                tables.market_space_members.c.tenant_id == candidate.scope.tenant_id,
+                tables.market_space_members.c.market_space_id == UUID(candidate.space_id),
+                tables.market_space_members.c.user_id == user_id,
             )
         )
         assert removed.rowcount == 1
     before = entry.state()
-    assert entry.get("/searches", headers)["items"] == []
+    hidden = candidate.client.get(entry.base + "/searches", headers=headers)
+    assert hidden.status_code == 403
     for path, body in (("/searches", entry.query()), ("/capture", entry.capture(source))):
         denied = candidate.post(entry.base + path, body, 403, headers)
-        assert denied["detail"] == {
-            "code": "PRODUCT_WORK_FORBIDDEN",
-            "message": "产品线不存在或无权访问",
-        }
+        assert denied["detail"]["code"] == "PRODUCT_WORK_FORBIDDEN"
         assert entry.state() == before
-    # Space access and shared source visibility remain legitimate; the engineer
-    # still cannot manage a source merely by knowing its Space or original URL.
-    assert entry.get("/sources", headers)["items"][0]["id"] == source["id"]
+    # Unified category access is revoked everywhere; the owner can still read its source.
+    assert entry.get("/sources", candidate.headers)["items"][0]["id"] == source["id"]
     candidate.post(
         entry.base + "/sources", {**entry.source_body(), "name": "越权新来源"}, 403, headers
     )
@@ -337,10 +337,10 @@ def test_pm_capture_rechecks_authority_after_transport_without_changing_saved_ev
         with candidate.scope.engine.begin() as c:
             if revocation == "line":
                 c.execute(
-                    tables.product_line_members.delete().where(
-                        tables.product_line_members.c.tenant_id == candidate.scope.tenant_id,
-                        tables.product_line_members.c.product_line_id == UUID(candidate.line["id"]),
-                        tables.product_line_members.c.user_id == user_id,
+                    tables.market_space_members.delete().where(
+                        tables.market_space_members.c.tenant_id == candidate.scope.tenant_id,
+                        tables.market_space_members.c.market_space_id == UUID(candidate.space_id),
+                        tables.market_space_members.c.user_id == user_id,
                     )
                 )
             else:
@@ -356,11 +356,8 @@ def test_pm_capture_rechecks_authority_after_transport_without_changing_saved_ev
     entry.after_capture_read = revoke
     denied = candidate.post(entry.base + "/capture", entry.capture(source), 403, headers)
     assert denied["detail"]["code"] == "PRODUCT_WORK_FORBIDDEN"
-    assert denied["detail"]["message"] == (
-        "产品线不存在或无权访问"
-        if revocation == "line"
-        else "账号、租户或岗位授权已变化，采集已停止"
-    )
+    if revocation == "account":
+        assert denied["detail"]["message"] == "账号、租户或岗位授权已变化，采集已停止"
     assert len(entry.capture_calls) == 2 and not entry.search_calls
     assert entry.state() == before
     assert before["agent_runs"] == before["model_invocations"] == before["findings"] == []

@@ -1,0 +1,66 @@
+--- before-link-commands.py.txt
++++ pdos_next/domain/capa_verification/commands.py
+@@ -268,6 +268,30 @@
+     return _review(command, payload, bound)
+ 
+ 
++def prepare_preview(s, ctx, command, product, payload):
++    from .preview_phase import prepare_preview as prepare
++
++    return prepare(s, ctx, command, product, payload)
++
++
++def preview_prepared(s, ctx, command, product, payload, phase):
++    from .preview_phase import preview_prepared as render
++
++    return render(s, ctx, command, product, payload, phase)
++
++
++def prepare_write_review(s, ctx, command, product, payload):
++    from .write_phase import prepare_write_review as prepare
++
++    return prepare(s, ctx, command, product, payload)
++
++
++def apply_prepared_write(s, ctx, command, product, payload, phase):
++    from .write_phase import apply_prepared_write as apply_prepared
++
++    return apply_prepared(s, ctx, command, product, payload, phase)
++
++
+ def inputs(s, ctx, product_id, command):
+     from pdos_next.models import Product
+ 
+@@ -290,6 +314,8 @@
+     payload = FollowupLinkPayload.model_validate(payload)
+     bound = _load(s, ctx, command, product, payload)
+     _new_write(s, ctx, command, product, payload, bound)
++    _refresh(s, ctx, command, product, payload, bound)
++    saved_at = owners.now()
+     # The host assertion checks the exact already-consumed common T1 row and digest.
+     # No accepted=True flag, new confirmation or extra Receipt is created here.
+     proof_id = bound.proof_callback(s, ctx, command, product, payload)
+@@ -299,10 +325,10 @@
+             "共同证明接口须返回精确已消费证明UUID，不能返回布尔值或空值。",
+             503,
+         )
+-    _refresh(s, ctx, command, product, payload, bound)
+     basis = bound.resolution.basis
+     row = RemediationLinkRecord(
+         id=uuid4(),
++        created_at=saved_at,
+         tenant_id=ctx.tenant_id,
+         product_id=product.id,
+         project_id=basis.scope.project_id,
+@@ -339,6 +365,11 @@
+ 
+ def replay_subject(s, ctx, command, product, payload):
+     payload = FollowupLinkPayload.model_validate(payload)
++    # Common already performed current-first validate under its Product lock.
++    # With no saved domain intent there is no receipt to replay; a new write
++    # still performs its complete preparation and post-consumption refresh.
++    if _saved(s, ctx, product.id, _intent(ctx, command, payload)) is None:
++        return None
+     bound = _load(s, ctx, command, product, payload)
+     row = bound.original
+     if row is None:

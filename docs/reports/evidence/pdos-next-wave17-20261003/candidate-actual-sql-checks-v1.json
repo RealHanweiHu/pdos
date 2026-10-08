@@ -1,0 +1,52 @@
+{
+  "status": "FAIL",
+  "scope": "actual PG constraints; copied SQL fixtures all rolled back",
+  "cases": [
+    {
+      "name": "legal-complete-SQL-fixture",
+      "status": "PASS",
+      "expected_sqlstate": null,
+      "expected_message_fragment": null,
+      "rejection": null
+    },
+    {
+      "name": "missing-receipt",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "receipt",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Quality/change write requires exactly one named receipt, audit and event",
+        "constraint": null
+      }
+    },
+    {
+      "name": "missing-audit",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "audit",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Quality/change write requires exactly one named receipt, audit and event",
+        "constraint": null
+      }
+    },
+    {
+      "name": "missing-outbox",
+      "status": "FAIL",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "outbox",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Quality/change write requires exactly one named receipt, audit and event",
+        "constraint": null
+      }
+    }
+  ],
+  "model_calls": 0,
+  "tool_sha256": "52f34a0e7af5126cc4b4f322a8edb636dff211c5510d1dd093bb6426868c7c31",
+  "exception_type": "AssertionError",
+  "diagnostic": "missing-outbox_WRONG_REASON",
+  "all_111_tables_unchanged_after_rollback": true,
+  "finished_at": "2026-10-03T14:05:23.076116+00:00"
+}

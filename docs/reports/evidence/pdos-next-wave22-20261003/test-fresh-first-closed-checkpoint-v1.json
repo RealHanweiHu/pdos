@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "sealed_at": "2026-10-04T01:24:23.952366+00:00",
+  "phase": "actual_original_definite_fail_no_issue_or_review",
+  "generation": "37c270ad-521a-44ad-b186-3447a94906c1",
+  "checkpoint_sha256": "22fb7e597808f655a397481a5dfee9ec1ef60b33385638ce20eef453646a0db3",
+  "source_count": 14,
+  "proofs": {
+    "test-fresh-computed-actual-readback-v2.json": "685d828f5928a4517504d6c94e2af7418c562a0ceb03ece485015ac413edff43",
+    "retained-case-exclusion-v4.json": "d4a8262fc364db303498be4c9c5bdf78178dddd49e39d038e41fb6f2b47c32bc",
+    "test-fresh-actual-scan-parse-readback-v1.json": "fc497a5fc9ab418dd3c6e6da4682eb3af01fa579814a02623bc66269f665b502",
+    "control-bound-repair-application-v1.json": "e155d5d5b001928fb2305d3f005019b7a55d45dc34d79b43cbdc47a58f0db3dd"
+  },
+  "raw_value": "11.0000",
+  "unit": "mm",
+  "computed_result": "fail",
+  "synthetic_only": true,
+  "real_qualification": false,
+  "reviewer_write_count": 0,
+  "effectiveness": null,
+  "close": false
+}

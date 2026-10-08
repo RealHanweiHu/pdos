@@ -14,6 +14,7 @@ from app.ai.application_leases import bind_write
 from app.ai.application_recovery import try_resume
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
 from app.ai.process_template_context import (
@@ -84,6 +85,7 @@ class ProcessTemplateRunService:
     def __init__(self, engine: Engine, gateway: ApplicationModelGateway):
         self.engine, self.gateway = engine, gateway
 
+    @agent_entry
     def create(self, ctx: AuthContext, identity: UUID, body: Request) -> dict[str, Any]:
         require_live_key(CAPABILITY)
         with self.engine.begin() as c:
@@ -194,6 +196,7 @@ class ProcessTemplateRunService:
                 )
         return self.execute(ctx, row)
 
+    @agent_entry
     def execute(self, ctx: AuthContext, run: RowMapping) -> dict[str, Any]:
         source = run["run_context"]["process_template_source"]
         call = model_call_id(run["id"], ModelCallSlot.PROCESS_TEMPLATE)

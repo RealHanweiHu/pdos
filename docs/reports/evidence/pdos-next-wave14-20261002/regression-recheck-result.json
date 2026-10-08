@@ -1,0 +1,22 @@
+{
+  "regression-mock-recheck": {
+    "nodes": [
+      "tests/test_resources/test_rules.py::test_scope_uses_narrow_sample_port_and_retains_full_binding",
+      "tests/build_start/test_rules.py::test_historical_reviewer_epoch_checked_in_own_readonly_context",
+      "tests/verification_results/test_pure.py"
+    ],
+    "exit_code": 1,
+    "seconds": 2.28
+  },
+  "regression-launch-recheck": {
+    "nodes": [
+      "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history",
+      "tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced",
+      "tests/verification_launch/test_transactions.py::test_build_writer_or_agent_cannot_claim_quality_or_write_run_directly",
+      "tests/verification_launch/test_pure.py",
+      "tests/test_launch_common.py"
+    ],
+    "exit_code": 1,
+    "seconds": 1418.92
+  }
+}

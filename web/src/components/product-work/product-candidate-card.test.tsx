@@ -1,0 +1,55 @@
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
+import { ProductCandidateCard } from "./product-candidate-card";
+const candidate = { id: "item", run_id: "run", parent_finding_id: "parent", item_position: 2, title: "合成竞品草案", status: "pending_review", item: { brand: "品牌", model: "A" } };
+const proposed = { id: "item", status: "pending_review", proposed_digest: "a".repeat(64), accepted_digest: null };
+const accepted = { ...proposed, status: "accepted", accepted_digest: "b".repeat(64) };
+const record = { finding: proposed, sources_current: true, proposal: { capability: "competitor_analysis", items: [candidate.item] }, evidence: [] };
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+it("reads the bound item before accepting and requires a second named action to apply", async () => {
+  const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json(record)).mockResolvedValueOnce(Response.json({ finding: accepted })).mockResolvedValueOnce(Response.json({ ...record, finding: accepted })).mockResolvedValueOnce(Response.json({ finding: { ...accepted, status: "applied" } }));
+  vi.stubGlobal("fetch", fetcher); const pending = vi.fn();
+  render(<ProductCandidateCard base="spaces/space" candidate={candidate} onRevise={vi.fn()} onPendingChange={pending}/>);
+  fireEvent.click(screen.getByRole("button", { name: "接受" }));
+  await screen.findByText("已接受 · 待独立应用");
+  expect(fetcher).toHaveBeenCalledTimes(2);
+  expect(JSON.parse(String(fetcher.mock.calls[0][1]?.body))).toEqual({ run_id: "run", parent_finding_id: "parent", position: 2 });
+  expect(JSON.parse(String(fetcher.mock.calls[1][1]?.body))).toMatchObject({ parent_finding_id: "parent", position: 2, review: { finding_id: "item", decision: "accepted", proposal: record.proposal } });
+  fireEvent.click(screen.getByRole("button", { name: "独立应用此条" }));
+  await screen.findByText("已独立应用 · 正式记录已保存");
+  expect(String(fetcher.mock.calls[3][0])).toMatch(/evidence-ai-item-apply$/);
+  expect(JSON.parse(String(fetcher.mock.calls[3][1]?.body))).toEqual({ run_id: "run", finding_id: "item", accepted_digest: accepted.accepted_digest });
+  expect(pending.mock.calls).toEqual([[true],[false],[true],[false]]);
+});
+it("requires an ignore reason and keeps the original item binding", async () => {
+  const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json(record)).mockResolvedValueOnce(Response.json({ finding: { ...proposed, status: "rejected" } })); vi.stubGlobal("fetch", fetcher);
+  render(<ProductCandidateCard base="spaces/space" candidate={candidate} onRevise={vi.fn()}/>);
+  fireEvent.click(screen.getByRole("button", { name: "忽略" }));
+  expect(screen.getByRole("button", { name: "确认忽略此条" })).toBeDisabled();
+  fireEvent.change(screen.getByLabelText("忽略原因"), { target: { value: "不符合本次地域口径" } });
+  fireEvent.click(screen.getByRole("button", { name: "确认忽略此条" }));
+  await screen.findByText("已忽略 · 原草案与原因保留");
+  expect(JSON.parse(String(fetcher.mock.calls[1][1]?.body)).review).toMatchObject({ decision: "rejected", comment: "不符合本次地域口径", proposal: null });
+});
+it("delegates revision without writing and blocks double submit while reading", async () => {
+  let finish!: (response: Response) => void;
+  const fetcher = vi.fn<typeof fetch>().mockImplementationOnce(() => new Promise(resolve => { finish = resolve; })).mockResolvedValueOnce(Response.json({ finding: accepted })); vi.stubGlobal("fetch", fetcher); const revise = vi.fn();
+  render(<ProductCandidateCard base="spaces/space" candidate={candidate} onRevise={revise}/>);
+  fireEvent.click(screen.getByRole("button", { name: "修订后接受" })); expect(revise).toHaveBeenCalledOnce(); expect(fetcher).not.toHaveBeenCalled();
+  const accept = screen.getByRole("button", { name: "接受" }); fireEvent.click(accept); fireEvent.click(accept);
+  expect(fetcher).toHaveBeenCalledOnce(); finish(Response.json(record));
+  await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2));
+});
+it("clears candidate content after authority is revoked and only restores a fresh authorized read", async () => {
+  const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json({ detail: "范围已撤回" }, { status: 403 })).mockResolvedValueOnce(Response.json(record));
+  vi.stubGlobal("fetch", fetcher); const lost = vi.fn();
+  render(<ProductCandidateCard base="spaces/space" candidate={candidate} onRevise={vi.fn()} onAuthorityLost={lost}/>);
+  fireEvent.click(screen.getByRole("button", { name: "接受" }));
+  await screen.findByText(/候选权限已变化/);
+  expect(screen.queryByText(candidate.title)).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "接受" })).not.toBeInTheDocument();
+  expect(fetcher).toHaveBeenCalledOnce(); expect(lost).toHaveBeenCalledOnce();
+  fireEvent.click(screen.getByRole("button", { name: "重新核对候选权限" }));
+  await screen.findByText(candidate.title);
+  expect(fetcher).toHaveBeenCalledTimes(2);
+});

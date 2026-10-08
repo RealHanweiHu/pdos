@@ -1,0 +1,18 @@
+{
+  "read_only": true,
+  "provider_calls": 0,
+  "approved_publication_digest_verified": true,
+  "publication_sha256": "9df66b9433dd5d14faae811a760b21c57f54ec08756374c444a93e59b6e04aad",
+  "preproject_override_enabled": false,
+  "models": [
+    {
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "window_tokens": 1000000,
+      "output_token_limit": 4000,
+      "output_parameter": "max_tokens",
+      "max_qualified_input_tokens": 17000,
+      "valid_until": "2026-10-14T02:12:31.097559+00:00"
+    }
+  ]
+}

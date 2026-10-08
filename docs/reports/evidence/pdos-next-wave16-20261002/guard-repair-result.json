@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "head": "next_0025",
+  "steps": [
+    {
+      "step": [
+        "upgrade",
+        "next_0025"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "downgrade",
+        "next_0024"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "upgrade",
+        "next_0025"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "retained_tables": 106,
+  "all_retained_rows_unchanged": true,
+  "only_changed_function": [
+    "require_quality_followup_atom"
+  ],
+  "before_function_sha256": "bad9809337d74467d6112e349d499bc9a765d3ecd462fbd59236f1180095a556",
+  "after_function_sha256": "1440edf39592be9cebe21a6a36b29dfb35c5599980fd4996fe53461fe00aacbc",
+  "no_data_restore_or_deletion": true,
+  "scope": "Three extraction-parenthesis repairs only; original head24 retained"
+}

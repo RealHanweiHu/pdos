@@ -1,0 +1,16 @@
+{
+  "pdos-next/server/pdos_next/domain/manufacturing_trials/__init__.py": "18d738b5dab34f37e970c21b1b33470ee7106874f47d1fdb26dbcb06f9ad0c0e",
+  "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py": "8d08b209b14e0fcf4a3dd895a830270ff27df5585cf2300728d8552f8ed2453a",
+  "pdos-next/server/pdos_next/domain/manufacturing_trials/ports.py": "212555993793270a2f64f9f8e433caf6ea4dc804c88cac466db535e829bd9c03",
+  "pdos-next/server/pdos_next/domain/manufacturing_trials/read_models.py": "01660a670317610e5570e0c836356ef21d892c2ea1311f3c96b4b114698f42d7",
+  "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py": "7309094e743855b5b88c1285f7bd7ad9dd47a723e5e5ce02e06d8830b636b543",
+  "pdos-next/server/pdos_next/schemas/manufacturing_trials/__init__.py": "e5096d3a2e9d6e2dae95d0f55faf8ee1ba749fc32277815b06d62a2a9910e7dc",
+  "pdos-next/server/pdos_next/schemas/manufacturing_trials/contracts.py": "8056ad6dcb9846620313f0ca41bc300f29faa4b356f437f8c3793fc06ee28422",
+  "pdos-next/server/tests/manufacturing_trials/__init__.py": "f773a7eff6366b65f22e981130085c9e8c12087177d782bb8f3fea6a69adbf54",
+  "pdos-next/server/tests/manufacturing_trials/conftest.py": "000049f6afc6dd0061ca04df79e1478ed6104c2b54f26b7ea764d7a24aebb3a1",
+  "pdos-next/server/tests/manufacturing_trials/helpers.py": "deb79fc2522ac6d0a7e2224af37f5375292636ae21f43371cb0598b12dd75d7b",
+  "pdos-next/server/tests/manufacturing_trials/test_contracts.py": "b8c47c0235022d4552a794093a7d1fa0bc94500d89090b793b184b8b28eb2576",
+  "pdos-next/server/tests/manufacturing_trials/test_handlers.py": "41a699f6aaa1d948cbafa0ac767465afbbcc32efb9d11e8f73e4b9da4a0b2d6c",
+  "pdos-next/server/tests/manufacturing_trials/test_read_models.py": "660db6b781690ccf4f8d4ba380a5467cf574865a4249f6553bc4875d3d164c98",
+  "pdos-next/server/tests/manufacturing_trials/test_rules.py": "df7891796a7d46d93c7f4169f2a2269cdc7b304f99355ccc7fbbbc14a91c33fa"
+}

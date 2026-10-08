@@ -158,6 +158,20 @@ class OpenAICompatibleAdapter:
             payload[limits.openai_output_parameter] = limits.max_output_tokens
         target_url = f"{route.base_url}/chat/completions"
         self._assert_egress(route, target_url)
+        from app.ai.provider_streaming import complete_stream, enabled
+
+        if enabled():
+            return complete_stream(
+                self._client,
+                target_url,
+                {
+                    "Authorization": f"Bearer {route.api_key.get_secret_value()}",
+                    "Content-Type": "application/json",
+                },
+                payload,
+                self._request_timeout,
+                route.protocol,
+            )
         response = self._post(
             target_url,
             headers={
@@ -301,6 +315,21 @@ class AnthropicNativeAdapter:
         )
         target_url = f"{route.base_url}/v1/messages"
         self._assert_egress(route, target_url)
+        from app.ai.provider_streaming import complete_stream, enabled
+
+        if enabled():
+            return complete_stream(
+                self._client,
+                target_url,
+                {
+                    "x-api-key": route.api_key.get_secret_value(),
+                    "anthropic-version": "2023-06-01",
+                    "Content-Type": "application/json",
+                },
+                payload,
+                self._request_timeout,
+                route.protocol,
+            )
         response = self._post(
             target_url,
             headers={

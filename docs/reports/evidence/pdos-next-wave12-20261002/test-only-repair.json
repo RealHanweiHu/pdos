@@ -1,0 +1,13 @@
+{
+  "path": "pdos-next/server/tests/verification_handoff/test_transactions.py",
+  "before_sha256": "a1a457aad0dffa83a544ef7397f71b101ce5374585f2e61c1d63cc1b6a17c123",
+  "after_sha256": "b0370ecb212588cf98cb91e652c5f8750ab476f5b54627974e5424b2f198968e",
+  "runtime_source_changed": false,
+  "reason": "Common exact-source validation correctly rejects withdrawn source before downstream sample guard; expect SOURCE_UNAVAILABLE and assert unchanged facts, receipt counts and unconsumed confirmation.",
+  "nodes": [
+    "tests/verification_handoff/test_transactions.py::test_withdrawn_new_same_plan_actual_observation_blocks_acceptance"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 105.54,
+  "log": "test-only-recheck.log"
+}

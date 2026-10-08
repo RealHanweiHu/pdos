@@ -1,0 +1,15 @@
+{
+  "container": "pdos-pai-process-test-20261006",
+  "host": "127.0.0.1",
+  "port": 53744,
+  "database": "pdos_test",
+  "image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+  "reason": "Previous independent test container already running; do not share clearing fixtures or stop another task environment.",
+  "head": "0429_preview_legacy_usage_holds",
+  "backup_path": "/tmp/pdos-pai-process-20261006-085843be.dump",
+  "backup_sha256": "15c31e02e379c3eb45ac84729f2c6010536f6cb08a990a9e7deb0929e20d235e",
+  "final_state": "exited",
+  "volume_removed": false,
+  "protected_database_operations": false,
+  "previous_running_test_container_untouched": true
+}

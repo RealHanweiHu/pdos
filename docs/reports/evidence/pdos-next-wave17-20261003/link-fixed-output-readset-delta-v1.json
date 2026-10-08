@@ -1,0 +1,122 @@
+{
+  "schema_version": "pdos-link-fixed-output-readset-delta-v1",
+  "status": "PASS_SCOPED_OFFLINE",
+  "scope": "Only capa_verification.service._owner verification_request fixed source closure; no migration/SQL/public operation/capability changes",
+  "source": "pdos-next/server/pdos_next/domain/capa_verification/service.py",
+  "before_sha256": "28ac1698624f8fa7fcff30e6fbdc858f3b9698fd19dec13b6fc074deb39bd174",
+  "after_sha256": "be96290a17723e53b68972fb7a555942052949674f5fc01c0895a74ee8875edc",
+  "exact_branch_delta_reconstructed_before_hash_matches": true,
+  "cause": "front.get_request UI command reads include current caller authority for three future actions; this changed immutable OutputReading sources despite an unchanged Formal output",
+  "fixed_closure": "Strict complete union of actual immutable parent required_source_read_set and actual referenced Method/Window saved read sets; all original get_request guards/child state remain",
+  "retained_link_authority_delta_preserved": "link-retained-authority-delta-v1.json",
+  "pure": {
+    "passed": 84,
+    "new_fixed_output_checks": 12,
+    "uses_noconftest": true,
+    "public_suite_run": false
+  },
+  "checks": [
+    {
+      "kind": "pure",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "pdos-next/server/tests/professional_authority/test_assessment.py",
+        "pdos-next/server/tests/capa_verification/test_pure.py",
+        "pdos-next/server/tests/capa_verification/test_fixed_request_owner.py",
+        "docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-regression.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.803,
+      "log": "link-fixed-output-readset-pure-final-v1.log"
+    },
+    {
+      "kind": "ruff",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/capa_verification/service.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_verification/test_fixed_request_owner.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.037,
+      "log": "link-fixed-output-readset-ruff-v1.log"
+    },
+    {
+      "kind": "format",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/capa_verification/service.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_verification/test_fixed_request_owner.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.017,
+      "log": "link-fixed-output-readset-format-v1.log"
+    },
+    {
+      "kind": "import",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-c",
+        "from pdos_next.domain.capa_verification import service; from pdos_next.domain.verification_front import service as front; assert callable(service._owner) and callable(front.get_request); print(\"public module imports passed; no database invocation\")"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.878,
+      "log": "link-fixed-output-readset-import-v1.log"
+    }
+  ],
+  "ast_files": 2,
+  "retained_fields": [
+    "method/window current, reason_codes, original authority/ref/hash/scope and exact sources",
+    "source_status/is_current/freshness",
+    "documents_ready/document_milestone_current",
+    "all fixed business material and child fields",
+    "current consumer ACL and source security basis",
+    "strict MAX20 source closure and source revision types"
+  ],
+  "negative_coverage": [
+    "Method/Window current proof change rejects",
+    "Document state change rejects",
+    "Original source security epoch change rejects",
+    "Fixed source revision conflict rejects SOURCE_STALE",
+    "Original source withdrawal rejects SOURCE_UNAVAILABLE",
+    "Private Formal nonowner read rejects FORBIDDEN_SCOPE",
+    "Child boolean source revision rejected"
+  ],
+  "positive_coverage": [
+    "Actual _owner/_reading use fixed parent and child closure, excluding UI-only sources",
+    "Actual resolve_followup_outputs/_link equality survives unrelated UI-only source addition",
+    "Saved Link object remains byte-material equivalent"
+  ],
+  "initial_pure_result": {
+    "passed": 83,
+    "failed": 1,
+    "log": "link-fixed-output-readset-pure-v1.log",
+    "cause": "New test expected RECHECK_REQUIRED for conflicting fixed source versions; actual complete read-set guard correctly returns SOURCE_STALE; only the exact test expectation changed"
+  },
+  "limitations": [
+    "Fake front/owner/source/professional I/O substitutes are explicit in new tests; this does not grant actual source or qualification truth",
+    "No DB/HTTP/UI/public checks performed by this agent",
+    "Root supplied actual read-only v3 baseline and v4 PASS observations; this agent did not execute them",
+    "Methods/windows retained mode and front service not changed"
+  ],
+  "artifacts": {
+    "pdos-next/server/pdos_next/domain/capa_verification/service.py": "be96290a17723e53b68972fb7a555942052949674f5fc01c0895a74ee8875edc",
+    "pdos-next/server/tests/capa_verification/test_fixed_request_owner.py": "6ebd00afe00cee7bca2fb44cf5b4e5a697f73ce4031aa808843360cb4d2fea76",
+    "pdos-next/server/pdos_next/domain/verification_front/service.py": "ad7390463fc84cff5b767f3046044a2817edf12e2e4601dfda9eb59c7f6b8996",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "a5693cac73d9cd4ebe8c6d2e7e0513fe03522833a9a4a0275681decbb318627f",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-authority-actual-readonly-v3.json": "2161900e9d3baaa1cad77f2003ea9f81134eb77aae713fe25a68e86c7ee216d4",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-readset-baseline-v1.json": "9a32a551b980bb4a1d59b26a2f3569f282347d3b6877e44bdeb07f59b0af28b4",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-authority-actual-readonly-v4.json": "aabe72e01b40efaf77e21a48c75368d54b7ced5f7f8a9727b6be4c75414156e8",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-readset-pure-v1.log": "7f205659c56df3b0164efb0b230196fbc4b7a63b1ac9531a4dfe638f669c19e1",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-readset-pure-final-v1.log": "735b887555bae4390019fd2f158a5c2e9256777aa6e74ae82e54f7611c5b7968",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-readset-ruff-v1.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-readset-format-v1.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-fixed-output-readset-import-v1.log": "be8a1ed23fa1990ac6172a204ae9f52faf1c0c98b7ed56ed9ca5b0bca05588e0"
+  }
+}

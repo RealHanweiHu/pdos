@@ -1,0 +1,126 @@
+# docs/design · 设计文档索引
+
+本文件是设计文档的导航索引，只整理归类，不改变任何文档效力。当前活动状态唯一来源仍是[整合清单](../../tasks/ai-native-integrated-todo.md)；新文档落盘后请在此登记分类。
+
+## 最终方案速览（截至 2026-10-08）
+
+- **产品形态**：AI-native 研发项目管理系统（PDOS）。决策背景见[全量新建说明](2026-08-09-cehub-v32-convergence.md)：以 preview 定稿为唯一产品形态基准，老 CEHub 仅可选复用。
+- **双工程线并行、互不继承**：
+  - **原工程**（`server/` + `web/`）：按[整合执行计划](2026-09-09-ai-native-integrated-execution-plan.md)（N/P/Q 65 项）推进，领域基线是[完整设计合同 v1.1](2026-09-10-pdos-complete-design-contract.md)（DC-13 确认为唯一领域基线）。
+  - **新工程 pdos-next**（`pdos-next/`）：以[完整目标架构 v1](2026-10-02-pdos-complete-target-architecture-v1.md) + [执行方案](2026-10-02-pdos-next-execution-plan.md)（G0–G5）为目标权威；不以现有代码/合同为约束，旧工程纯运行框架可复用，业务模块与资格不继承。
+- **固定技术栈与 Agent 运行架构**（AGENTS.md 不可协商项 6）：Next.js + FastAPI + PostgreSQL + LangGraph(Python) + Temporal + shadcn/ui。所有 Agent 完整能力经 Temporal 工作流与 Activity 调 LangGraph，模型网关不得绕过注册执行图；统一规则见[Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md)（已实施，两线共用）。
+- **AI 写入分级**：[DC-11 T0/T1/T2 政策](2026-09-20-ai-direct-write-tier-policy.md)（已批准，实施中）。AI 身份经受控领域服务写入，`pdos_agent` 对业务表零直接写权限，永不取得 T2 执行权。
+- **现行方向**：[DC-13 设计方向整合](2026-09-28-pdos-design-direction-integration.md)——原合同是领域基线，V2 设计包仅作体验层来源；AI 默认模式为"AI 先完成、引擎校验、人管例外"。执行顺序上产品经理开发第一（覆盖 DC-13 原 D14-04 先行顺序）。
+- **对话式 Agent**：[DC-12 小Pai](2026-09-28-xiaopai-conversational-agent.md)（已批准，实施中）；入口与统一输入见[统一对话与文件输入](2026-09-11-unified-conversation-and-file-input.md)、[立项前改造](2026-10-05-preproject-redesign.md)。
+- **UI 基线**：[UI 基线文档](2026-08-09-ui-baseline.md)（滚动更新至 v0.7.1）：shadcn/ui + Tailwind v4 + Geist，橙 `#c2410c`/`#fb923c`，圆角 8px，双主题，Phosphor 图标。
+- **冻结共同合同**：对象合同 `docs/contracts/pdos-v1/`（N0-01），运行与授权政策 `docs/contracts/pdos-runtime-v1/`（N0-02，含 DC 冻结登记台账 freeze-record.md）。两者并行生效、作用域不同。
+
+## 一、最终方案主线（当前权威链）
+
+| 文档 | 角色 |
+|---|---|
+| [2026-09-09-ai-native-integrated-execution-plan.md](2026-09-09-ai-native-integrated-execution-plan.md) | 原工程整合执行计划（AGENTS.md 入口；N/P/Q 原义务与验收保留，不优先于 pdos-next 新工程） |
+| [2026-09-10-pdos-complete-design-contract.md](2026-09-10-pdos-complete-design-contract.md) | 完整设计合同 v1.1，原工程唯一领域基线（统一阅读入口） |
+| [2026-09-20-ai-direct-write-tier-policy.md](2026-09-20-ai-direct-write-tier-policy.md) | DC-11 AI 直接写入分级政策（T0/T1/T2） |
+| [2026-09-28-pdos-design-direction-integration.md](2026-09-28-pdos-design-direction-integration.md) | DC-13 设计方向整合（V2 仅体验层来源） |
+| [2026-09-28-xiaopai-conversational-agent.md](2026-09-28-xiaopai-conversational-agent.md) | DC-12 小Pai 对话式 Agent 与项目持续跟进 |
+| [2026-10-02-pdos-complete-target-architecture-v1.md](2026-10-02-pdos-complete-target-architecture-v1.md) | pdos-next 完整目标架构 v1（12 分册、66 操作、65 事件、AT-01~48） |
+| [2026-10-02-pdos-next-execution-plan.md](2026-10-02-pdos-next-execution-plan.md) | pdos-next 执行方案（G0–G5 切片与加速规则） |
+| [2026-10-07-agent-runtime-convergence.md](2026-10-07-agent-runtime-convergence.md) | Agent 运行架构收口合同（LangGraph + Temporal，已实施，两线共用） |
+
+**导读**：[PDOS-next 架构设计整理稿](2026-10-08-pdos-next-architecture-overview.md)（2026-10-08）汇总上述权威文档与唯一清单实现现状，作为 pdos-next 架构的统一阅读入口；不新增权威、不改变任何文档效力，活动状态仍以唯一清单为准。
+
+## 二、生效领域合同
+
+### 原版 S0–S5 与验收（原工程历史义务）
+
+| 文档 | 范围 |
+|---|---|
+| [2026-08-09-preview-execution-plan.md](2026-08-09-preview-execution-plan.md) | 原版 S0–S5 规格、工程纪律与 canonical Exit 依据（配套 `docs/specs/cehub-v3.2-preview/`） |
+| [2026-08-12-s4-1-quality-owner-contract-draft.md](2026-08-12-s4-1-quality-owner-contract-draft.md) / [quality-api-contract](2026-08-12-s4-1-quality-api-contract.md) | S4-1 CAPA 质量流程与 API 合同（已冻结） |
+| [2026-08-12-s4-2-memory-search-contract.md](2026-08-12-s4-2-memory-search-contract.md) | S4-2 Memory + 向量检索契约 |
+| [2026-08-12-s4-3-phase-two-agents-contract.md](2026-08-12-s4-3-phase-two-agents-contract.md) | S4-3 Phase2 双 Agent 合同 |
+| [2026-08-12-s4-4-context-builder-layers-contract.md](2026-08-12-s4-4-context-builder-layers-contract.md) | S4-4 Context Builder 分层契约 |
+| [2026-08-12-s5-1-dingtalk-connector-contract.md](2026-08-12-s5-1-dingtalk-connector-contract.md) | S5-1 钉钉连接器 v1（真实应用 gate 待批） |
+| [2026-08-13-s5-2-erp-handoff-contract.md](2026-08-13-s5-2-erp-handoff-contract.md) | S5-2 ERP Handoff 契约 |
+| [2026-08-13-s5-3-crm-entity-contract.md](2026-08-13-s5-3-crm-entity-contract.md) | S5-3 CRM 需求入口与实体收尾 |
+| [2026-08-13-s5-4-phase-three-agent-contract.md](2026-08-13-s5-4-phase-three-agent-contract.md) | S5-4 Phase3 双 Agent 合同 |
+| [2026-08-13-sprint-5-cutover-contract.md](2026-08-13-sprint-5-cutover-contract.md) | Sprint 5 全量切换与 CEHub 只读退役 |
+| [2026-08-20-user-account-management-contract.md](2026-08-20-user-account-management-contract.md) | 生产账户管理 v1 |
+
+### vNext 遗产（部分仍为执行依据）
+
+| 文档 | 范围 |
+|---|---|
+| [2026-08-25-vnext-decision-conflict-improvement-register.md](2026-08-25-vnext-decision-conflict-improvement-register.md) | 决策台账 D1–D38（已生效；D3/D19/D32 按后续合同执行） |
+| [2026-08-25-vnext-full-scope-axis-closure-and-gap-analysis.md](2026-08-25-vnext-full-scope-axis-closure-and-gap-analysis.md) | 十条功能轴闭环 + 体验合同 UX1–UX10（V0/V1 验收引为执行依据） |
+
+### 2026-09 验收与架构附件
+
+| 文档 | 范围 |
+|---|---|
+| [2026-09-08-v0-v1-acceptance-and-pilot-contract.md](2026-09-08-v0-v1-acceptance-and-pilot-contract.md) | V0/V1 验收与试点合同 |
+| [2026-09-08-project-type-test-template-contract.md](2026-09-08-project-type-test-template-contract.md) | 项目类型与测试模板合同 |
+| [2026-09-08-ai-test-plan-conversation-contract.md](2026-09-08-ai-test-plan-conversation-contract.md) | AI 对话调整测试计划合同 |
+| [2026-09-08-original-production-exit.md](2026-09-08-original-production-exit.md) | 原版生产出口口径 |
+| [2026-09-09-management-process-v1.md](2026-09-09-management-process-v1.md) | 研发管理流程 v1.1（七阶段 + 四专业 + ID 立项） |
+| [2026-09-10-ai-native-architecture-consistency-contract.md](2026-09-10-ai-native-architecture-consistency-contract.md) | 架构一致性合同（整合计划的架构附件） |
+| [2026-09-10-ai-context-tools-harness-contract.md](2026-09-10-ai-context-tools-harness-contract.md) | 上下文、工具与 Harness 专题合同 |
+| [2026-09-11-unified-conversation-and-file-input.md](2026-09-11-unified-conversation-and-file-input.md) | 统一对话与文件输入（实施归属文档） |
+
+### UI 线
+
+| 文档 | 范围 |
+|---|---|
+| [2026-08-09-ui-baseline.md](2026-08-09-ui-baseline.md) | UI 基线（滚动更新至 v0.7.1） |
+| [2026-09-30-project-workspace-usage-model.md](2026-09-30-project-workspace-usage-model.md) | 项目工作区使用模型（导航/入口重组） |
+| [2026-10-01-role-scenario-ui.md](2026-10-01-role-scenario-ui.md) | 岗位场景 UI 使用模型（登录即本人工作） |
+| [2026-10-01-product-manager-ai-native-ui-proposal.md](2026-10-01-product-manager-ai-native-ui-proposal.md) | 产品经理空间 AI-native 界面方案（首版已实施） |
+
+### pdos-next 施工合同（wave 冻结版）
+
+| 文档 | 范围 |
+|---|---|
+| [2026-10-02-pdos-next-reuse-and-parallel-plan.md](2026-10-02-pdos-next-reuse-and-parallel-plan.md) | 新旧工程复用矩阵与施工分工 |
+| [2026-10-02-pdos-next-wave14-results-implementation-contract.md](2026-10-02-pdos-next-wave14-results-implementation-contract.md) | 第十四波：结果返回 |
+| [2026-10-02-pdos-next-wave15-quality-loop-implementation-contract.md](2026-10-02-pdos-next-wave15-quality-loop-implementation-contract.md) | 第十五波：失败/Issue/CAPA/双线变更 |
+| [2026-10-02-pdos-next-wave16-quality-followup-implementation-contract.md](2026-10-02-pdos-next-wave16-quality-followup-implementation-contract.md) / [wave16 回链修复](2026-10-03-pdos-next-wave16-link-phase-repair-contract.md) | 第十六波：品质整改后续 |
+| [2026-10-03-pdos-next-wave17-staged-implementation-contract.md](2026-10-03-pdos-next-wave17-staged-implementation-contract.md) | 第十七波：CAPA 有效性首段 |
+| [2026-10-03-pdos-next-wave18-professional-facts-contract.md](2026-10-03-pdos-next-wave18-professional-facts-contract.md) | 第十八波：规则/实际观察/具名复核 |
+| [2026-10-05-preproject-redesign.md](2026-10-05-preproject-redesign.md) | 立项前改造（品类 + 活提案 + AI 先起草 + 小Pai 入口，已授权实施） |
+
+## 三、待用户裁决
+
+| 文档 | 状态 |
+|---|---|
+| [2026-10-07-xiaopai-single-agent-runtime-plan.md](2026-10-07-xiaopai-single-agent-runtime-plan.md) | **候选，部分已定**。**Agent 拓扑已定（用户 2026-10-07）**：对话助手收敛为单 Agent 加渐进披露的技能包，以 Linear Agent 为参照样本，技能包三要素是工具、数据语义、使用原则，按上下文预载并可在运行中自加载（§5.1）。**2026-10-08 补充确认**：只有一个 Agent，即小Pai，通过工具、MCP 连接器（§4.3）和技能包完成工作；不再按原工程六领域 Agent + PMI 的方式组织，AgentKey 退出运行时概念；完整设计合同中按六领域组织 AI 的表述在拓扑上被取代，27 项能力的业务语义保留为需求来源。已写入 AGENTS.md 不可协商项 6。LangGraph + Temporal 外层边界已定。**主线工程已定（用户 2026-10-08）：按 pdos-next 来**；原工程过渡期处置、pdos-next 第一个业务闭环待定（§15）。主线工程、计量、出站、试点资格等仍待用户逐项确定（§13）。 |
+| 小Pai 产品蓝图（`2026-10-07-xiaopai-product-blueprint.md`） | **计划中，尚未落盘**。基于小Pai（单 Agent + Skill）的完整产品蓝图：六类能力、Skill 三层体系、五个交互入口、P0–P4 分阶段落地。[执行计划](2026-10-07-xiaopai-product-execution-plan.md)以其为上位文档（P0–P4 编号源自蓝图），文件本体待写作后补登；前置仍是单 Agent 方案批准（B2）。 |
+| [2026-10-07-xiaopai-product-execution-plan.md](2026-10-07-xiaopai-product-execution-plan.md) | **候选，随 B2 生效**。蓝图落地执行计划：拍板台账、里程碑 M0–M8、产品层分解 P1-1~P4-4；运行时细目引用单 Agent 方案 A1–G5 编号，不复制。**2026-10-08 策略前提（用户明确）：无用户期先把产品做好**——可靠性（M1 止血）、速度（D6 时延）、可演示性优先，真实试点（M7 P3-2/3）与生态外联（M8）后置到有试点对象；拍板台账中 B3（Temporal 固定栈）、B4（单 Agent 拓扑）已定，B2 待批。 |
+| [2026-10-08-pdos-next-design-confirmation.md](2026-10-08-pdos-next-design-confirmation.md) | **待用户逐项确认（2026-10-08）**。原工程停用、主线改为 pdos-next 后的设计冻结前确认稿：已定决定 K1–K9；待拍板 C1–C14（范围根、提案/定义关系、研究类对象去留、第一闭环、一致性与性能规则、形式化收敛、Agent 拓扑写回、试点资格、出站、术语、派生、数据迁移、复用范围、文档清理）；原工程复用清单与停用步骤 S1–S7。全部确认后并入目标架构 v1.1 冻结。 |
+
+## 四、已被取代（仅供追溯，勿作依据）
+
+| 文档 | 被谁取代/说明 |
+|---|---|
+| [proposal.md](proposal.md) / [m0-plan.md](m0-plan.md) | 2026-08-09 汇合决策降为工程参考 |
+| [2026-08-21-product-usability-optimization-plan.md](2026-08-21-product-usability-optimization-plan.md) | 被 vNext 控制环方案吸收 |
+| [2026-08-24-vnext-control-loop-upgrade-plan-draft.md](2026-08-24-vnext-control-loop-upgrade-plan-draft.md) | 草案，并入统一需求稿 |
+| [2026-08-24-pdos-vnext-unified-requirements.md](2026-08-24-pdos-vnext-unified-requirements.md) | 整合草案，非 canonical；内容落入 09-10 完整合同 |
+| [2026-08-25-vnext-object-contract-v1.md](2026-08-25-vnext-object-contract-v1.md) | 被 `docs/contracts/pdos-v1/`（N0-01 冻结）取代 |
+| [2026-09-09-ai-native-architecture-reconfirmation.md](2026-09-09-ai-native-architecture-reconfirmation.md) | 静态盘点，架构解释以一致性合同为准 |
+| wave 草稿：[w14](2026-10-02-pdos-next-wave14-results-contract-draft.md)、[w15 草案](2026-10-02-pdos-next-wave15-quality-loop-draft.md)、[w15 草稿](2026-10-02-pdos-next-wave15-quality-loop-implementation-contract-draft.md)、[w16](2026-10-02-pdos-next-wave16-quality-followup-draft.md)、[w17](2026-10-03-pdos-next-wave17-effectiveness-contract-draft.md) | 均被同 wave 冻结实施合同覆盖 |
+
+## 五、历史记录与参考
+
+- 决策/评审记录：[review-v0.1.md](review-v0.1.md)、[2026-08-09-cehub-v32-convergence.md](2026-08-09-cehub-v32-convergence.md)（决策背景，AGENTS.md 引用）、[2026-08-10-structure-and-delivery-review.md](2026-08-10-structure-and-delivery-review.md)、[2026-10-01-product-space-reference-analysis.md](2026-10-01-product-space-reference-analysis.md)、[wave14 衔接审查](2026-10-02-pdos-next-wave14-results-integration-review.md)
+- 参考资料：[ui-baseline-mockup.html](ui-baseline-mockup.html)（历史视觉）、[2026-10-01-product-space-mockup.html](2026-10-01-product-space-mockup.html)（产品空间主参考）、[2026-09-10-lifecycle-role-tasks-and-ai-value.md](2026-09-10-lifecycle-role-tasks-and-ai-value.md)（业务解读）、[2026-09-28-pm-method-catalog-candidate.md](2026-09-28-pm-method-catalog-candidate.md)（候选，未冻结）
+- [PDOS/](PDOS/) 子目录：用户提供的素材原件（`PDOS 产品空间.pdf`、`PDOS 设计方向整合.docx`、`PDOS_Build_Centric_V2_0_Design_Package.zip`，按 DC-13 仅作体验层/入口/AI 机制来源）。原冗余副本 `PDOS/2026-10-02-pdos-complete-target-architecture-v1.md` 已于 2026-10-08 经字节比对确认与主目录逐字节相同后删除，主目录[同名文件](2026-10-02-pdos-complete-target-architecture-v1.md)为唯一有效源。
+
+## 六、相邻目录
+
+| 目录 | 内容 |
+|---|---|
+| `../contracts/pdos-v1/` | N0-01 共同对象合同（DC-01~05、DC-09，2026-09-10 批准） |
+| `../contracts/pdos-runtime-v1/` | N0-02 运行与授权政策合同（DC-06/07/08）+ `freeze-record.md` 冻结登记台账（DC-11/12/13 均登记于此） |
+| `../specs/cehub-v3.2-preview/` | 原版 preview 规格 |
+| `../runbooks/`、`../pilots/`、`../decisions/`、`../reports/`（含 `evidence/`） | 运维手册、试点度量、ADR、评审报告与验证证据 |

@@ -1,0 +1,9 @@
+{
+  "helper_tests": 13,
+  "helper_and_test_unchanged_since_checks": true,
+  "component_final_sha256": "d86bbdb0f8eeb6810d02744f0701b4fc84214f034e894494bd7c4a710e63e4af",
+  "component_change_after_helper_evidence": "Display maps actual journal byte states intact/corrupt; helper logic unchanged. No new test for this label correction. Final full production build, lint and actual lifecycle layouts cover this final component.",
+  "final_build": "web-build-final.log",
+  "final_lint": "web-lint.log",
+  "actual_layouts": "browser-layouts.json"
+}

@@ -1,0 +1,184 @@
+{
+  "schema_version": "wave22-shared-authority-staged-v1",
+  "created_at": "2026-10-03T18:30:26.069922+00:00",
+  "scope": "only isolated staged tool, own pure test and contract; not applied/executed",
+  "files": [
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/wave22_shared_authority.py",
+      "sha256": "d44f92e26353b6a8a02e5a11e4faf2ef7e772e22457bc4dbd12742fca4487e71"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/test_wave22_shared_authority.py",
+      "sha256": "bec0a9c1c703bacff5b4f51e52a23a733fa82d534a48718a14c8149b436cbb82"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/shared-authority-contract-v1.md",
+      "sha256": "bef21b5200e7b85c0df4689841d88cb286eae08fcbfafba4ff06ee11473dd49b"
+    }
+  ],
+  "future_tool_target": {
+    "path": "pdos-next/tools/wave22_shared_authority.py",
+    "baseline_sha256": null,
+    "exists_at_review": false
+  },
+  "checks": [
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/ast-cold-import-02-result.json",
+      "sha256": "9d9af1e5e8527b7aadb6a6d252eeb7592fe32ad790bfaafc1909499e0239e156",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-c",
+        "import ast; from pathlib import Path; [ast.parse(Path(p).read_text(), filename=p) for p in (\"wave22_shared_authority.py\",\"test_wave22_shared_authority.py\")]; import wave22_shared_authority; print(\"2 in-memory AST + cold import: PASS; no tool instantiation/configuration/execution\")"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.052,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/format-02-result.json",
+      "sha256": "74b697a601a1b8a15da3ea3654af994276c59ef4940cd20118e9410cc709758e",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "wave22_shared_authority.py",
+        "test_wave22_shared_authority.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.043,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/format-check-02-result.json",
+      "sha256": "b32b2997d1ab58e5044a52fbc8869a950230c3bd328d469a25c3f6d067cd1bea",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "wave22_shared_authority.py",
+        "test_wave22_shared_authority.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.014,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/lint-02-result.json",
+      "sha256": "9d1e9b2655802f3e561175d9caad7c81c647b1ccea780245788ddbeffbeee103",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "wave22_shared_authority.py",
+        "test_wave22_shared_authority.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.017,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/pure-02-result.json",
+      "sha256": "ca65cd08617c8dd62f4e9b473709730485c22f39f7d7801adbb3bbcf0993a1c6",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "-o",
+        "addopts=",
+        "--rootdir",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave22-authority-staged",
+        "test_wave22_shared_authority.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.542,
+      "no_db_http": true
+    }
+  ],
+  "raw_logs": [
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/ast-cold-import-02.log",
+      "sha256": "5df3e5babd6f2828da5c0a1acb67000bff8e77fe347136995dee794573ef97aa"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/format-02.log",
+      "sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/format-check-02.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/lint-02.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/pure-02.log",
+      "sha256": "df369f809b23bc8acadfda03c257344df006b69771d3a7170696abf8ff8c516e"
+    }
+  ],
+  "historical_evidence_retained": [
+    "logs/pure-01.log",
+    "logs/pure-01-result.json"
+  ],
+  "pure_count": 42,
+  "source_stable": true,
+  "actual_foundation_read": false,
+  "private_profiles_read": false,
+  "db_http_restart_execution": false,
+  "production_qualification": false,
+  "business_result": false,
+  "read_only_dependencies": [
+    {
+      "path": "pdos-next/.local/wave21-case-staged/shared-case-contract-v1.md",
+      "sha256": "08af0d8ea54ae8833a898a89c8dced6839e30b59948745a2fcff4c0dc186889f"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave21-20261003/three-actor-authority-review.md",
+      "sha256": "0b0a082ffa04f21247f86f2ac0e066ff08e01040670feacc5682969217a7f191"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "sha256": "d1920edd315ce26f8ea1ba3631e1aff67a820032e77c53374a0793c840e44433"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/schemas.py",
+      "sha256": "bef5e330b42c3effd35a06fe85bec458cb15b5ef637e125ce83afce12866a0aa"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/professional_import.py",
+      "sha256": "c0f4d026d593f6f13fed83df68895a35f8f222329b95af9f7e4ac927b14be778"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/policy.py",
+      "sha256": "18987da3dcc09406abb09dabc5af99c1c21e627b857136b418a9fa490551755b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/schemas.py",
+      "sha256": "7c2106760407b5966e8f3220dd08ece22a12b1cede079cbaa073ac61b64db8a8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_bootstrap.py",
+      "sha256": "1b01049d9b8e6950f9bf80c4517196d3074e1476b9e1bef3839ea7ff82018e6e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_policy_import.py",
+      "sha256": "b38004b73ace8a67938c4ab1ff3fbf9b4e346b8cd4e2937c8b4e680c42d862ba"
+    },
+    {
+      "path": "pdos-next/tools/local_environment.py",
+      "sha256": "0d4b99fe7e14ce6d41dcfaa08b6bde6228a413b4a18bf773445b64f3d84fd8f7"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "e4712878901eef8e2933482fc31db2f948767921722def6004b43c3eb135f9e9"
+    }
+  ]
+}

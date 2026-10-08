@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "/tmp/pdos-wave18-fact-tests",
+    "typeRoots": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.test.ts"
+  ]
+}

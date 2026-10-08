@@ -1,0 +1,28 @@
+{
+  "algorithm": "sha256 of JSON file->sha256 map; sorted keys, compact separators",
+  "candidate_sha256": "1bf5e8a83273c61e65a8f4cd74f71c29a7c5fc0c1110cc751d714a9922e68b1e",
+  "file_count": 21,
+  "files": {
+    "pdos-next/server/pdos_next/domain/quality_issues/__init__.py": "3d5299b1809ae07d89d75621bab178a7594715c461c70fc230a440ab72a4b8bc",
+    "pdos-next/server/pdos_next/domain/quality_issues/handlers.py": "bfa0ddd8bf0fd9013b4f99bc46fb9e42d5ce34c560a2f92c3ee810f2640825e4",
+    "pdos-next/server/pdos_next/domain/quality_issues/ports.py": "e4c614577b0483c2123e8dcaadaa8f55a53a0fb8d60290152198ed43afe43857",
+    "pdos-next/server/pdos_next/domain/quality_issues/read_models.py": "9c73ca4f3d21086b2821d8f1eb0cf3b9ef2dcca49ab61b5d04cf9a14e1184230",
+    "pdos-next/server/pdos_next/domain/quality_issues/rules.py": "a6504baf0f28049dc0e97313c5c93ce275b86ee0fba7c628db2f90f186f1f92a",
+    "pdos-next/server/pdos_next/schemas/quality_issues/__init__.py": "4412a5783dd9975e04ad78569fff2c5aca8e83e7bd36dc439690eda1cefad0b1",
+    "pdos-next/server/pdos_next/schemas/quality_issues/contracts.py": "ea567a91cffb6cf824dbeaac4d9202a63121a2cb8d17968267295e95034f8aea",
+    "pdos-next/server/tests/quality_issues/__init__.py": "40437c346ca66da29646245ba95a346b9123f55884e6fb9439da17a9e71e492e",
+    "pdos-next/server/tests/quality_issues/helpers.py": "55d4239dee43a37e417e4197147149c34adc9cf4daf5351e4df069137ce12a2a",
+    "pdos-next/server/tests/quality_issues/test_quality_issues.py": "6667390ad7579029df3c893cf989386f57ea67615637d245ceee3c1caceeed4b",
+    "pdos-next/server/tests/quality_issues/test_temporal_and_nature.py": "61a9e932c0ba66982595d6fdf758d23d1fdccd09a89fa87257bbc951ee07a00e",
+    "pdos-next/web/src/components/quality_issues/__tests__/fixtures.ts": "40c82cf9d154c219d1e2956dbe23910990c8013771dccdceab1b670a574c20b8",
+    "pdos-next/web/src/components/quality_issues/contracts.test.ts": "234ed8106769a8f4a863dc644cf21c2b0c4aaaf5b45daf51d08daa3b534f1074",
+    "pdos-next/web/src/components/quality_issues/contracts.ts": "c4ca83e385ab6b9db08df60fa61e0d7562060a0166dff16842cb484afd19d46b",
+    "pdos-next/web/src/components/quality_issues/editor.ts": "76e690b3d82516cc29f633edca988f7308740db38a3ab849440574e373599b40",
+    "pdos-next/web/src/components/quality_issues/index.ts": "db340786c2d94272c050661d0ec47e972b0b04d3de2eef001a4c22590e67796a",
+    "pdos-next/web/src/components/quality_issues/reading.tsx": "676a251d477831a06475859511296b33ba3b03f89fcb3527e3a9806cc690e8cf",
+    "pdos-next/web/src/components/quality_issues/render.test.mjs": "a448d39ba148ee1e04d7db4311a10ca40f5b8601ca776c4ec6ef35ef2195a5e2",
+    "pdos-next/web/src/components/quality_issues/review.tsx": "2c8ffdeaacec1533d1969a05f9f1414f0a004d56817f6d0467fe16c2e423591e",
+    "pdos-next/web/src/components/quality_issues/tsconfig.check.json": "ffa5d8af294f55913424b86bc3d4be1939d1492c4ae7bf554618a979e906273c",
+    "pdos-next/web/src/components/quality_issues/workbench.tsx": "9d6fa814e875d90663e38ad239301d9d903ac888f407e409dc40b195e12d1a1c"
+  }
+}

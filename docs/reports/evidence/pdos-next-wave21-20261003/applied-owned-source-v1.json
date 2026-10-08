@@ -1,0 +1,73 @@
+{
+  "schema_version": "wave21-partial-owned-application-v1",
+  "files": [
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+      "target_path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+      "before_sha256": "3e645ba35aaed5504a3ee9f2e1f237d46e4dc87ac01f1044d2105b255038f850",
+      "after_sha256": "b3b18c2b2c592d55d45564262ce08fa801f51e94d87e3df5d792c78470cb68ee"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py",
+      "target_path": "pdos-next/server/tests/quality_followup_root/test_completion_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "2cb5f068a0bbb154777d5d514ee0788650a2b7a198926242ad4e72b9bc44bb63"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/pdos_next/domain/professional_authority/service.py",
+      "target_path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "before_sha256": "9c6ad2064357475003b649a36a1007cdcf047d3ffd3fa844989d73bdb6e43585",
+      "after_sha256": "d1920edd315ce26f8ea1ba3631e1aff67a820032e77c53374a0793c840e44433"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/pdos_next/capa_rule_publisher.py",
+      "target_path": "pdos-next/server/pdos_next/capa_rule_publisher.py",
+      "before_sha256": "f471c23de48366b17f9e4dd3a76e4ea4961412930adc4110ffc44cda29bd73da",
+      "after_sha256": "ed2eebdecf294f83d40549c432cd70b2f7f23057ba36379bf365103c74110358"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/tests/professional_authority/test_profiles.py",
+      "target_path": "pdos-next/server/tests/professional_authority/test_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "27fba549f7a4d67bcbab8d93ce4a45069c8927ce407895b82e9e81e7fd6f40f2"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/tests/capa_effectiveness/test_rule_publisher_profiles.py",
+      "target_path": "pdos-next/server/tests/capa_effectiveness/test_rule_publisher_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "55b692d72473bf5055efa188312a5ce1c4909c454516c55f201e70993a6cb07c"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/pdos_next/api.py",
+      "target_path": "pdos-next/server/pdos_next/api.py",
+      "before_sha256": "fabd2247220a2aee785a4690231fd7659a699b445f85fc29a82a57a8e574fa2d",
+      "after_sha256": "45fa2cd5f127cf220a3e033b0fdaeff1a4199a9bdcf9bd1cba9467946f22897c"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/pdos_next/asgi.py",
+      "target_path": "pdos-next/server/pdos_next/asgi.py",
+      "before_sha256": "cf35bd263c03ced52d06be49b90c09ce47a3bd3c5e6da2ab8db37d07563af995",
+      "after_sha256": "922f4d98b7f616fdcab421e35129a1749d8e66c619e75514afef689dda74aaf7"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/tools/local_environment.py",
+      "target_path": "pdos-next/tools/local_environment.py",
+      "before_sha256": "ab2ffe69fc08fa91aa3715eb5f8058162fb53b7b2db8ccb6708d96779b9b5875",
+      "after_sha256": "0d4b99fe7e14ce6d41dcfaa08b6bde6228a413b4a18bf773445b64f3d84fd8f7"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/test_host_profile_choices.py",
+      "target_path": "pdos-next/server/tests/test_host_profile_choices.py",
+      "before_sha256": null,
+      "after_sha256": "58c033c7d332844828f368d1f12558025a904ca6c14354e315a13cabea3982de"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/tools/tests/test_local_host_profiles.py",
+      "target_path": "pdos-next/tools/tests/test_local_host_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "dff71c79313a912179b4882cf853a25dfdd7e44df8de065d99157581d1935ced"
+    }
+  ],
+  "foundation_pending_final_v2": true,
+  "database_operations": 0
+}

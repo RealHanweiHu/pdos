@@ -1,0 +1,14 @@
+{
+  "candidate_rejected_as_publication": true,
+  "missing_review_fields": [
+    "reviewed_by",
+    "valid_from",
+    "valid_until"
+  ],
+  "private_configuration_remains_legacy": true,
+  "formal_publication_exists": false,
+  "real_calibration_requests": 4,
+  "extra_provider_requests": 0,
+  "production_code_changed": false,
+  "database_accessed": false
+}

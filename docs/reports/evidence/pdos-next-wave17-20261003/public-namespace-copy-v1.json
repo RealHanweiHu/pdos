@@ -1,0 +1,124 @@
+{
+  "scope": "Public namespace copy, no operations registered or SQL run",
+  "modules": [
+    {
+      "staged": "pdos-next/staging/wave17/anchor.py",
+      "staged_sha256": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor.py",
+      "public_sha256": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/anchor_owner.py",
+      "staged_sha256": "02048fa237fa085149151a8277aea8c8fa23763f473df2a34887964787cb05c3",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py",
+      "public_sha256": "e6fe1ba54ff0b5510b9cd6b8c19f44bfecb9f5f79d86d6f691548f1c9cc96755",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/anchor_storage.py",
+      "staged_sha256": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+      "public_sha256": "bb4429f42eaefc2d5be9ea5c8ee7549dff172a27c3d7644d82a2a066085bf7e4",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/candidate_anchor_restore.py",
+      "staged_sha256": "5dd333f70e45a1345da71d63b9b3d4c5da0dc427107c5ebffb50bbda624c1985",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+      "public_sha256": "8fb00c833ade38f46668a1d7d9d94f94db8d81e7aa0cc48dd097fcb481c4d5a1",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/candidate_commands.py",
+      "staged_sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_commands.py",
+      "public_sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/candidate_prepare.py",
+      "staged_sha256": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+      "public_sha256": "d25e91539272db0899511d2d74dc46f04f75dcb38cf50132330f371704e7a94a",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/candidate_storage.py",
+      "staged_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py",
+      "public_sha256": "38c9dd40b454d92217040a1816465a7af47f1ff0373cafa5189542b0378e0dcc",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/candidate_write.py",
+      "staged_sha256": "c7911c5341aa0c30427577de0fd5fc476740b72e00719bbe25866d4a260dc235",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py",
+      "public_sha256": "fd5e995c4b6204e940e080195673e54e9a2c4dde374c5d5d862ef8650c0e99b0",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/fact_atom_storage.py",
+      "staged_sha256": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py",
+      "public_sha256": "6b6d05de7e0e4f2ffee541b6be66c34265feeeec098417367834281d8e31e16e",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/fact_consumption.py",
+      "staged_sha256": "4bbc52ff7423fa4cf389ff12b21f7c64201a0566b6296580399561bfade50458",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+      "public_sha256": "6734844b1e844a4dabe71a261feb9a98a4d491da17268ffd9f2a4bb6284dbea5",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/fact_registry_storage.py",
+      "staged_sha256": "18c7d06f06ee67d23ce82ef2ee6141781be4b7528f5d7a3325b6f02587ec46c7",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py",
+      "public_sha256": "972d025f9573ff941b66a57ebf60c907b57af18e6f9750ca1cb94dac4ef6e6fe",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/fact_storage_codec.py",
+      "staged_sha256": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_codec.py",
+      "public_sha256": "c487dbea1c574d6fdadaa9feb17caa827e96ff29530886c4d7cbd4200f13508d",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/fact_storage_models.py",
+      "staged_sha256": "a7b5f65137f5456f72aa32e9b50d8749ea7a62003f699dedf596495b0a174162",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_models.py",
+      "public_sha256": "304441077893f03cb82d74c5039aa5ebac4877b920887b36cf10c8b76f7eb93c",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/facts.py",
+      "staged_sha256": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+      "public_sha256": "54fe3bceed6c4301f535402ebb55a60b38b5c1d528082aa5dd4f153c2fb27c50",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/lineage.py",
+      "staged_sha256": "252a11c5a48f9d6db8a270e07f979ae1437de4156bd1b16d6fe4bd7dcea6dcce",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/lineage.py",
+      "public_sha256": "d7108bd8e5088300b3b61243ec2646a5254af847f73d4c649de82ff3e0335533",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/paired.py",
+      "staged_sha256": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+      "public_sha256": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750",
+      "change": "explicit sibling relative imports only"
+    },
+    {
+      "staged": "pdos-next/staging/wave17/paired_storage.py",
+      "staged_sha256": "a8333eb092a35da0f6cc61802dcc71b365e4fd945e3f643fa0e4d7ff21bede8e",
+      "public": "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py",
+      "public_sha256": "148480bbb5dd0aa97a3e3482ec4b7674ddd1815c2b53a7b6aa49eaca078e6056",
+      "change": "explicit sibling relative imports only"
+    }
+  ]
+}

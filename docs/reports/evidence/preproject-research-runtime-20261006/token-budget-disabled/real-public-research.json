@@ -1,0 +1,4465 @@
+{
+  "started_at": "2026-10-07T05:45:49.838488+00:00",
+  "api": "http://127.0.0.1:8000",
+  "conversation_request_id": "fdab5b2a-b9e1-48ed-b140-5a6d49efc158",
+  "message_request_id": "d08dcb9f-43d6-4f3e-98cd-ade495f84983",
+  "synthetic_public_input": true,
+  "category_or_proposal_save_requested": false,
+  "preproject_goal": null,
+  "events": [
+    {
+      "type": "status",
+      "message": "已收到，正在读取本会话…"
+    },
+    {
+      "type": "status",
+      "message": "正在分析问题与当前资料",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 0,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "正在分析问题与当前资料",
+            "detail": "已读取本轮问题、0条历史消息和0条当前资料引用。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 4455,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "正在思考",
+            "detail": "已读取本轮问题、0条历史消息和0条当前资料引用。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 7789,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "正在思考",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 8093,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "正在思考",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "处理思路",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 8653,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "正在搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 8740,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "正在搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 14991,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "正在读取：https://isupworld.com/top-3-electric-pumps",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 15077,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "正在读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "读取：https://isupworld.com/top-3-electric-pumps",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 40341,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "正在读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 40442,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "正在读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 57276,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          }
+        ]
+      }
+    },
+    {
+      "type": "status",
+      "message": "正在核对资料与问题",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 57655,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在核对资料与问题",
+            "detail": "已获得1份可引用正文，核对依据和资料覆盖范围。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 60818,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已获得1份可引用正文，核对依据和资料覆盖范围。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在组织回复",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 70163,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已获得1份可引用正文，核对依据和资料覆盖范围。",
+            "state": "completed"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 is",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Out",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n•",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V ",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 ",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/B",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/p",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 ",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoorm",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V ",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n•",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Infl",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（202",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73329,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73329,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73329,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73329,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73358,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73366,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73386,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73408,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73500,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73502,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73520,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73520,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 ",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73520,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73520,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73535,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73557,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73576,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73587,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73608,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73685,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73725,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73727,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73745,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实标注未知",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73763,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实标注未知，不做品类扩展或",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "正在思考",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 73873,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "正在思考",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实标注未知，不做品类扩展或商业提案。",
+            "state": "running"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "text",
+      "text": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+      "provisional": true
+    },
+    {
+      "type": "status",
+      "message": "资料处理思路",
+      "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+      "process": {
+        "state": "running",
+        "elapsed_ms": 74976,
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "处理思路",
+            "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+            "state": "completed"
+          },
+          {
+            "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+            "at_ms": 8740,
+            "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+            "detail": "tavily返回2条候选线索。",
+            "state": "completed"
+          },
+          {
+            "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+            "at_ms": 15077,
+            "label": "读取：https://isupworld.com/top-3-electric-pumps",
+            "detail": "已保存原文快照，提供6000字符正文。",
+            "state": "partial"
+          },
+          {
+            "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+            "at_ms": 40442,
+            "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+            "detail": "本次未取得可用资料，保留失败记录。",
+            "state": "failed"
+          },
+          {
+            "key": "assess_sources",
+            "at_ms": 57655,
+            "label": "资料处理思路",
+            "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实标注未知，不做品类扩展或商业提案。",
+            "state": "completed"
+          },
+          {
+            "key": "answer",
+            "at_ms": 70163,
+            "label": "正在组织回复",
+            "detail": "整理结论、依据和仍需确认的问题。",
+            "state": "running"
+          }
+        ]
+      }
+    },
+    {
+      "type": "result",
+      "reply": {
+        "status": "answered",
+        "answer": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+        "citations": [
+          {
+            "reference_id": "snapshot:a5f4c854-f50c-4b65-8b5e-68e4c3436753",
+            "entity": "evidence_snapshot",
+            "entity_id": "a5f4c854-f50c-4b65-8b5e-68e4c3436753",
+            "label": "Best Electric Pumps for Inflatable Paddle Boards",
+            "href": "https://isupworld.com/top-3-electric-pumps/",
+            "excerpt": "公开来源；采集时间 2026-10-07T05:46:30.702688+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nYou are here: Home / SUP Pumps / Best Electric Pumps for Inflatable Paddle BoardsBest Electric Pumps for Inflatable Paddle Boards As new electric SUP pumps hit the market, I continually test and evaluate them to keep this guide up to date. The recommendations below reflect the latest and best-performing pumps for inflatable stand-up paddle boards. Are you tired of manually pumping your paddle board up to 15 PSI? You’re not alone. Few things are more frustrating than working up a sweat before you’ve even launched your board. I’ve tested a wide range of electric SUP pumps over the years. I’ve learned that not all of them are created equal and they can differ significantly in: inflation speed maximum pressure noise level portability and overall value. Not long ago, there were very few quality electric SUP pumps to choose from. Fortunately, as stand-up paddleboarding has become more popular, manufacturers have stepped up their game. Today, there are excellent options available for every budget, making it easier than ever to spend less time inflating your board and more time enjoying the water. I have done extensive research on these pumps and used them myself many times over. They not only work great for the majority of inflatable paddle boards but they can also be used for inflating inflatable kayaks, inflatable boats, inflatable mattresses, inflatable tents, inflatable pools and other inflatable gear. Each of these pumps have pros and cons and fall into different price range categories so you can choose one that fits your needs and your budget best. Brand/Model:Outdoormaster SharkOutdoormaster DolphinOutdoormaster Shark 3Photo:Power Source:12V DC Connector12V DC Connector12V DC Connector & Built-In Rechargeable BatteryMax PSI:20 PSI20 PSI20 PSIAuto Off:YesYesYesInflate & Deflate:YesInflate OnlyYesSpeed:Just over 7 minutes to inflate average size SUP10-12 minutes to inflate average size SUP3-5 minutes to inflate average size SUPNoice Decibels:83 to 85db80db80db averageSize:11\"L x 10\"W x 4.5\"D10.2″L x 6.7″W x 6.6″D13.8″L × 7.5″W × 7.0″DWeight:3.6 lbs.2.93 lbs.6.4 lbs.Tesla Compatible:With workaroundsNoYesPrice Range:$$$$$$Best Deal:Check priceCheck priceCheck priceWordpress Table Plugin Most Common Types Of Electric Pumps For Paddle Boards The most common types of electric pumps used with inflatable SUP’s are: 12V pumps that connect directly to your car battery with alligator clips 12V pumps that connect to an external battery pack 12V pumps that have an integrated rechargeable battery pumps that connect to the 12V connection in your vehicle air compressors (not recommended) I’ll save you some time right from the start—an air compressor is one of the worst options for inflating a paddle board. Without the proper adapter, it won’t even connect securely to your board’s valve. But even if you have the correct adapter, most air compressors are extremely slow at inflating an inflatable SUP to its recommended pressure. I’ve tested this approach multiple times, hoping for better results, but it has consistently been disappointing. In my experience, it’s simply not worth the hassle. Instead, choose a pump that’s specifically designed for high-pressure inflatable paddle boards and boats. These pumps are faster, more reliable, and capable of easily inflating your board to the recommended PSI. The models below are the ones I recommend. 1. OUTDOORMASTER SHARK II 12V ELECTRIC PUMP I’ve been using the Shark II electric pump for several years, and it has never let me down. While newer models with extra features have come and gone, the Shark II has remained my go-to pump thanks to its consistent performance and reliability. Outdoormaster has done an excellent job with the Shark II, combining impressive power with a practical, user-friendly design. Better yet, it’s priced in the sweet spot—offering premium performance without the premium price tag. Where To Find The Best Deal For the best deal and free shipping to the US and Canada for the Shark II electric pump go to Outdoormaster.com. IMPORTANT FEATURES This 12V electric pump has some great features as well. 5 Valve Attachments The attachment you need for most inflatable SUP’s is the H3 valve attachment. I have used the Shark II with about a dozen different SUP brands and it has worked perfectly with all of them. However it also comes with more attachments such as for a: Boston valve C7 valve Pinch valve 805 Valve With all of these attachments it also works great for inflating inflatable kayaks or canoes, dinghies, air mattresses and other inflatable products. It also comes with four different sized gaskets (the white rubber rings) to ensure a tight seal when inflating your board. Plugs Into 12V DC Car Connector The Shark pump very easily plugs into the 12V accessory socket in your vehicle. The power cord is 9′ long making it easy to reach the plug and the board. Kink Free Hose The 4′ kink-free hose is really easy to secure to the pump and doesn’t get kinked as some other flimsy hoses can. Digital Display With Auto Shutoff It has a digital display that is easy to read. There is no guessing at what PSI level you are at as you can see the progress on the display. Once you set the PSI level it will automatically shut off when it reaches the set air pressure. Lightweight This pump is also one of the lightest options weighing only 3.6 lbs. and it is very easy to carry with the built-in carry handle. It doesn’t come with a carry bag, which is unfortunate but I just keep mine in a canvas bag and keep it in my larger SUP gear mesh duffle bag. Does Not Overheat Most of the electric pumps for SUP’s on the market have a reputation for eventually overheating especially if you are inflating more than one board at a time. This is not the case with the Shark II pump. It has a built in automatic cooling system that cools the pump down as it is working hard even when inflating multiple boards. I regularly use mine to inflate 2-3 boards in one go and it’s still going strong"
+          }
+        ],
+        "error_code": null,
+        "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+        "research": {
+          "remaining": 0,
+          "observations": [
+            {
+              "status": "completed",
+              "warnings": "",
+              "shown_count": 2,
+              "provider_key": "tavily",
+              "providers_tried": [
+                "tavily"
+              ],
+              "tool": "search",
+              "target": "electric SUP paddleboard pump brand official product page max PSI 12V rechargeable"
+            },
+            {
+              "status": "partial",
+              "shown_count": 6000,
+              "total_count": 53515,
+              "warnings": "公开来源；采集时间 2026-10-07T05:46:30.702688+00:00；taint=untrusted_external；trust=unknown\n正文由Firecrawl提取；保留未信任外部资料标记",
+              "tool": "read",
+              "target": "https://isupworld.com/top-3-electric-pumps"
+            },
+            {
+              "status": "unavailable",
+              "error_code": "ReachDeniedError",
+              "warnings": "正文超过2 MiB采集上限，请选择更具体的页面",
+              "tool": "read",
+              "target": "https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464"
+            }
+          ]
+        },
+        "process": {
+          "state": "completed",
+          "elapsed_ms": 75008,
+          "steps": [
+            {
+              "key": "understand",
+              "at_ms": 0,
+              "label": "处理思路",
+              "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。",
+              "state": "completed"
+            },
+            {
+              "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+              "at_ms": 8740,
+              "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+              "detail": "tavily返回2条候选线索。",
+              "state": "completed"
+            },
+            {
+              "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+              "at_ms": 15077,
+              "label": "读取：https://isupworld.com/top-3-electric-pumps",
+              "detail": "已保存原文快照，提供6000字符正文。",
+              "state": "partial"
+            },
+            {
+              "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+              "at_ms": 40442,
+              "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+              "detail": "本次未取得可用资料，保留失败记录。",
+              "state": "failed"
+            },
+            {
+              "key": "assess_sources",
+              "at_ms": 57655,
+              "label": "资料处理思路",
+              "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实标注未知，不做品类扩展或商业提案。",
+              "state": "completed"
+            },
+            {
+              "key": "answer",
+              "at_ms": 70163,
+              "label": "正在组织回复",
+              "detail": "整理结论、依据和仍需确认的问题。",
+              "state": "completed"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "done"
+    }
+  ],
+  "actor": {
+    "id": "009fca59-19d6-4906-8313-fe771d57b384",
+    "username": "manager",
+    "role": "project_manager"
+  },
+  "conversation_id": "9df43e5f-6fe7-509d-a6e9-1e78ebda53e6",
+  "body": "研究欧美市场的电动桨板/SUP充气泵，面向休闲桨板用户。请现在联网搜索两条品牌官方产品资料，比较最大压力（PSI）、供电方式和适用场景，给出带来源的短摘要，缺失信息写未知。这是取消token额度后自动研究的合成验证；只返回250字以内的研究摘要，不创建品类或提案。",
+  "message_id": "90b4e620-22fc-4672-a883-69ab9fc7b1db",
+  "stored_reply": {
+    "answer": "已采集资料仅含 isupworld.com 第三方评测快照（reference_id 见下），覆盖 Outdoormaster 三款；未取得第二家品牌的官方产品页。\n• Outdoormaster Shark II：12V 车载点烟器供电；最大 20 PSI；自动停机+充放双用；约 7 分钟充满常规 SUP；3.6 lb；附 H3/Boston/C7/pinch/805 多阀嘴；连续充 2–3 板不发热。适用：SUP、充气皮划艇、橡皮艇、气垫。\n• Outdoormaster Dolphin：12V 车载点烟器供电；最大 20 PSI；仅充气；10–12 分钟/板；2.93 lb，主打轻量便携。\n• Outdoormaster Shark 3：12V 车载点烟器 + 内置可充电电池；最大 20 PSI；充放双用；3–5 分钟/板；6.4 lb；Tesla 兼容。\n第二品牌的官方最大 PSI、供电方式、适用场景均缺失，标注未知。来源：isupworld《Best Electric Pumps for Inflatable Paddle Boards》（2026-10-07 采集，第三方评测，非品牌官方页）。",
+    "run_id": "fdcade24-8984-5bc5-9f3a-d63df0930d07",
+    "status": "answered",
+    "process": {
+      "state": "completed",
+      "steps": [
+        {
+          "key": "understand",
+          "at_ms": 0,
+          "label": "处理思路",
+          "state": "completed",
+          "detail": "本轮需联网检索两条面向欧美市场的电动SUP充气泵官方品牌资料，比较最大压力（PSI）、供电方式与适用场景；将按官方产品页摘录关键规格，缺失项标为未知。"
+        },
+        {
+          "key": "bec7b28b-bc97-55dc-af15-aebc346f1352",
+          "at_ms": 8740,
+          "label": "搜索：electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+          "state": "completed",
+          "detail": "tavily返回2条候选线索。"
+        },
+        {
+          "key": "b50c97e8-937e-52e9-868b-838f60e91c5c",
+          "at_ms": 15077,
+          "label": "读取：https://isupworld.com/top-3-electric-pumps",
+          "state": "partial",
+          "detail": "已保存原文快照，提供6000字符正文。"
+        },
+        {
+          "key": "9be75796-8ea0-51d2-a94b-a9ff70dfa068",
+          "at_ms": 40442,
+          "label": "读取：https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+          "state": "failed",
+          "detail": "本次未取得可用资料，保留失败记录。"
+        },
+        {
+          "key": "assess_sources",
+          "at_ms": 57655,
+          "label": "资料处理思路",
+          "state": "completed",
+          "detail": "已采集的外部资料显示仅一份 isupworld 评测快照覆盖 Outdoormaster 三款机型，未触及第二家品牌官方资料。在 research.remaining=0 限制下，直接整理该快照的 PSI/供电/场景字段并对第二品牌缺失项诚实标注未知，不做品类扩展或商业提案。"
+        },
+        {
+          "key": "answer",
+          "at_ms": 70163,
+          "label": "正在组织回复",
+          "state": "completed",
+          "detail": "整理结论、依据和仍需确认的问题。"
+        }
+      ],
+      "elapsed_ms": 75008
+    },
+    "research": {
+      "remaining": 0,
+      "observations": [
+        {
+          "tool": "search",
+          "status": "completed",
+          "target": "electric SUP paddleboard pump brand official product page max PSI 12V rechargeable",
+          "warnings": "",
+          "shown_count": 2,
+          "provider_key": "tavily",
+          "providers_tried": [
+            "tavily"
+          ]
+        },
+        {
+          "tool": "read",
+          "status": "partial",
+          "target": "https://isupworld.com/top-3-electric-pumps",
+          "warnings": "公开来源；采集时间 2026-10-07T05:46:30.702688+00:00；taint=untrusted_external；trust=unknown\n正文由Firecrawl提取；保留未信任外部资料标记",
+          "shown_count": 6000,
+          "total_count": 53515
+        },
+        {
+          "tool": "read",
+          "status": "unavailable",
+          "target": "https://www.amazon.com/GICLE-Paddle-Electric-Portable-Inflatebles/dp/B0D3DTM464",
+          "warnings": "正文超过2 MiB采集上限，请选择更具体的页面",
+          "error_code": "ReachDeniedError"
+        }
+      ]
+    },
+    "citations": [
+      {
+        "href": "https://isupworld.com/top-3-electric-pumps/",
+        "label": "Best Electric Pumps for Inflatable Paddle Boards",
+        "entity": "evidence_snapshot",
+        "excerpt": "公开来源；采集时间 2026-10-07T05:46:30.702688+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nYou are here: Home / SUP Pumps / Best Electric Pumps for Inflatable Paddle BoardsBest Electric Pumps for Inflatable Paddle Boards As new electric SUP pumps hit the market, I continually test and evaluate them to keep this guide up to date. The recommendations below reflect the latest and best-performing pumps for inflatable stand-up paddle boards. Are you tired of manually pumping your paddle board up to 15 PSI? You’re not alone. Few things are more frustrating than working up a sweat before you’ve even launched your board. I’ve tested a wide range of electric SUP pumps over the years. I’ve learned that not all of them are created equal and they can differ significantly in: inflation speed maximum pressure noise level portability and overall value. Not long ago, there were very few quality electric SUP pumps to choose from. Fortunately, as stand-up paddleboarding has become more popular, manufacturers have stepped up their game. Today, there are excellent options available for every budget, making it easier than ever to spend less time inflating your board and more time enjoying the water. I have done extensive research on these pumps and used them myself many times over. They not only work great for the majority of inflatable paddle boards but they can also be used for inflating inflatable kayaks, inflatable boats, inflatable mattresses, inflatable tents, inflatable pools and other inflatable gear. Each of these pumps have pros and cons and fall into different price range categories so you can choose one that fits your needs and your budget best. Brand/Model:Outdoormaster SharkOutdoormaster DolphinOutdoormaster Shark 3Photo:Power Source:12V DC Connector12V DC Connector12V DC Connector & Built-In Rechargeable BatteryMax PSI:20 PSI20 PSI20 PSIAuto Off:YesYesYesInflate & Deflate:YesInflate OnlyYesSpeed:Just over 7 minutes to inflate average size SUP10-12 minutes to inflate average size SUP3-5 minutes to inflate average size SUPNoice Decibels:83 to 85db80db80db averageSize:11\"L x 10\"W x 4.5\"D10.2″L x 6.7″W x 6.6″D13.8″L × 7.5″W × 7.0″DWeight:3.6 lbs.2.93 lbs.6.4 lbs.Tesla Compatible:With workaroundsNoYesPrice Range:$$$$$$Best Deal:Check priceCheck priceCheck priceWordpress Table Plugin Most Common Types Of Electric Pumps For Paddle Boards The most common types of electric pumps used with inflatable SUP’s are: 12V pumps that connect directly to your car battery with alligator clips 12V pumps that connect to an external battery pack 12V pumps that have an integrated rechargeable battery pumps that connect to the 12V connection in your vehicle air compressors (not recommended) I’ll save you some time right from the start—an air compressor is one of the worst options for inflating a paddle board. Without the proper adapter, it won’t even connect securely to your board’s valve. But even if you have the correct adapter, most air compressors are extremely slow at inflating an inflatable SUP to its recommended pressure. I’ve tested this approach multiple times, hoping for better results, but it has consistently been disappointing. In my experience, it’s simply not worth the hassle. Instead, choose a pump that’s specifically designed for high-pressure inflatable paddle boards and boats. These pumps are faster, more reliable, and capable of easily inflating your board to the recommended PSI. The models below are the ones I recommend. 1. OUTDOORMASTER SHARK II 12V ELECTRIC PUMP I’ve been using the Shark II electric pump for several years, and it has never let me down. While newer models with extra features have come and gone, the Shark II has remained my go-to pump thanks to its consistent performance and reliability. Outdoormaster has done an excellent job with the Shark II, combining impressive power with a practical, user-friendly design. Better yet, it’s priced in the sweet spot—offering premium performance without the premium price tag. Where To Find The Best Deal For the best deal and free shipping to the US and Canada for the Shark II electric pump go to Outdoormaster.com. IMPORTANT FEATURES This 12V electric pump has some great features as well. 5 Valve Attachments The attachment you need for most inflatable SUP’s is the H3 valve attachment. I have used the Shark II with about a dozen different SUP brands and it has worked perfectly with all of them. However it also comes with more attachments such as for a: Boston valve C7 valve Pinch valve 805 Valve With all of these attachments it also works great for inflating inflatable kayaks or canoes, dinghies, air mattresses and other inflatable products. It also comes with four different sized gaskets (the white rubber rings) to ensure a tight seal when inflating your board. Plugs Into 12V DC Car Connector The Shark pump very easily plugs into the 12V accessory socket in your vehicle. The power cord is 9′ long making it easy to reach the plug and the board. Kink Free Hose The 4′ kink-free hose is really easy to secure to the pump and doesn’t get kinked as some other flimsy hoses can. Digital Display With Auto Shutoff It has a digital display that is easy to read. There is no guessing at what PSI level you are at as you can see the progress on the display. Once you set the PSI level it will automatically shut off when it reaches the set air pressure. Lightweight This pump is also one of the lightest options weighing only 3.6 lbs. and it is very easy to carry with the built-in carry handle. It doesn’t come with a carry bag, which is unfortunate but I just keep mine in a canvas bag and keep it in my larger SUP gear mesh duffle bag. Does Not Overheat Most of the electric pumps for SUP’s on the market have a reputation for eventually overheating especially if you are inflating more than one board at a time. This is not the case with the Shark II pump. It has a built in automatic cooling system that cools the pump down as it is working hard even when inflating multiple boards. I regularly use mine to inflate 2-3 boards in one go and it’s still going strong",
+        "entity_id": "a5f4c854-f50c-4b65-8b5e-68e4c3436753",
+        "reference_id": "snapshot:a5f4c854-f50c-4b65-8b5e-68e4c3436753"
+      }
+    ],
+    "error_code": null
+  },
+  "completed_at": "2026-10-07T05:47:05.837866+00:00"
+}

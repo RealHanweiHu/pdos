@@ -1,0 +1,86 @@
+{
+  "schema_version": "wave22-shared-build-check-result-v1",
+  "manifest_sha256": "10bf8c4a97ad5edbccf8ebf8cc24359fcdb69b57a1b5b8fb8d226a800ad558ae",
+  "actual_business_executed": false,
+  "pure": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=pdos-next/server pdos-next/server/.venv/bin/python -m unittest discover -s pdos-next/.local/wave22-build-staged -p test_wave22_shared_build.py -v",
+    "exit_code": 0,
+    "tests": 33,
+    "seconds_from_actual_output": 0.773,
+    "raw_log": "checks/pure-final-33.log",
+    "blocked_boundaries": [
+      "Engine.connect",
+      "Engine.raw_connection",
+      "httpx.Client.request",
+      "SharedBuild.target"
+    ],
+    "not_qualification_or_db_coverage": true
+  },
+  "ruff": {
+    "command": "pdos-next/server/.venv/bin/ruff check pdos-next/.local/wave22-build-staged/wave22_shared_build.py pdos-next/.local/wave22-build-staged/test_wave22_shared_build.py",
+    "exit_code": 0,
+    "raw_log": "checks/ruff-final.log"
+  },
+  "format": {
+    "command": "pdos-next/server/.venv/bin/ruff format --check pdos-next/.local/wave22-build-staged/wave22_shared_build.py pdos-next/.local/wave22-build-staged/test_wave22_shared_build.py",
+    "exit_code": 0,
+    "raw_log": "checks/format-final.log"
+  },
+  "ast_compile": {
+    "files": 2,
+    "exit_code": 0,
+    "bytecode": false,
+    "raw_log": "checks/ast-final.log"
+  },
+  "actual_foundation_shape": {
+    "raw_log": "checks/actual-foundation-shape-readonly.log",
+    "accepted": true,
+    "actual_json_read_only": true,
+    "target_db_not_verified_by_this_check": true
+  },
+  "retained_early_results": [
+    {
+      "log": "checks/pure-initial-32-failure.log",
+      "tests": 32,
+      "errors": 1,
+      "reason": "Child schema imported before real shared PAYLOADS bootstrap; existing circular import; test startup aligned to actual tool/API entry, no server change."
+    },
+    {
+      "log": "checks/pure-intermediate-32-pass.log",
+      "tests": 32,
+      "errors": 0,
+      "note": "Earlier candidate, not cumulative with final33."
+    }
+  ],
+  "earlier_ruff": "Initial E501 84; formatting reduced to1, text wrap corrected. Later own test import style/E731 corrected; final Ruff0. Original session tool outputs retained in conversation.",
+  "logs": [
+    {
+      "path": "checks/actual-foundation-shape-readonly.log",
+      "sha256": "924e68a0040eb4376e3df398b6e71667b750bfe42faec77808f436dd14a9e838"
+    },
+    {
+      "path": "checks/ast-final.log",
+      "sha256": "d54ef7d01f9d83afe5f23fb75772d6bb8782e43da6d7c671b3e5644d7962bd78"
+    },
+    {
+      "path": "checks/format-final.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "path": "checks/pure-final-33.log",
+      "sha256": "9fff9d881b2883d96f7ead4afb5be2296625b089b01652f6eff1e0e6da13eea3"
+    },
+    {
+      "path": "checks/pure-initial-32-failure.log",
+      "sha256": "5cba23f0c64f3aeb49a8d574add399778d1552b0bc7704bb10349f1f0be0399b"
+    },
+    {
+      "path": "checks/pure-intermediate-32-pass.log",
+      "sha256": "7e731d2e7e4cd781f858dcdcc24d8b06f5afa36fc9dc3e1afc7fc75e201009ce"
+    },
+    {
+      "path": "checks/ruff-final.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  ]
+}

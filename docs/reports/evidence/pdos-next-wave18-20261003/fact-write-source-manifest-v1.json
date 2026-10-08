@@ -1,0 +1,37 @@
+{
+  "schema_version": "wave18-fact-write-source-v1",
+  "recorded_at": "2026-10-03T15:34:18.982416+00:00",
+  "scope": "A five owned files; no existing source/public/DDL/dependency changes",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_commands.py",
+      "sha256": "d66a57d57b180f0c465138f989ccb19ca519906d249c86c3100c9a85becd7749",
+      "bytes": 8902
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+      "sha256": "31db58cf3b8f5e1e6c24c5327e7a636190c0d9e2ba780a5ea45153582d8806a5",
+      "bytes": 38962
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_fact_commands.py",
+      "sha256": "708bc2e6abea8894cf201e842b7fdf582e3f4ed4405ebfda8c7fb866f5cb6039",
+      "bytes": 8302
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_fact_write.py",
+      "sha256": "0ce6b894d4f9e07e137e685f362bebaf7881d2a16f01b3cd28eea263f4fcac84",
+      "bytes": 28976
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-contract.md",
+      "sha256": "81ef6eb5e58af02e4ad03582d49802ef02b7738475a2f68c4abbe550914a9908",
+      "bytes": 8890
+    }
+  ],
+  "limits": [
+    "No database/HTTP/browser/public checks",
+    "No seven-owner qualification or full FactAtom manufactured",
+    "Common registry/host/integration owned by Root"
+  ]
+}

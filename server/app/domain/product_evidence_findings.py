@@ -107,6 +107,7 @@ Proposal = Annotated[Bundle, Field(discriminator="capability")]
 class Read(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     run_id: UUID
+    finding_id: UUID | None = None
 
 
 class Review(Read):
@@ -312,7 +313,35 @@ class ProductEvidenceFindings:
             tables.findings.c.run_id == run["id"],
             tables.findings.c.finding_type == finding_type,
         )
-        row = c.execute(query.with_for_update() if write else query).mappings().one_or_none()
+        if body.finding_id:
+            query = query.where(tables.findings.c.id == body.finding_id)
+        else:
+            query = query.where(
+                tables.findings.c.proposed_payload["parent_finding_id"].as_string().is_(None)
+            )
+        row = c.execute(query).mappings().one_or_none()
+        if row and row["proposed_payload"].get("parent_finding_id"):
+            from app.domain.product_evidence_items import validate_item_binding
+
+            validate_item_binding(c, context, run, row, lock=write)
+        if write and row:
+            row = c.execute(query.with_for_update()).mappings().one()
+        if (
+            write
+            and row
+            and not row["proposed_payload"].get("parent_finding_id")
+            and c.execute(
+                select(tables.findings.c.id)
+                .where(
+                    tables.findings.c.tenant_id == context.tenant.id,
+                    tables.findings.c.run_id == run["id"],
+                    tables.findings.c.proposed_payload["parent_finding_id"].as_string()
+                    == str(row["id"]),
+                )
+                .limit(1)
+            ).first()
+        ):
+            raise ProductWorkError("本批候选已按条裁决，请继续办理各条候选")
         if write and (row is None or row["id"] != getattr(body, "finding_id", None)):
             raise ProductWorkError("原候选不存在或范围不一致")
         return run, row
@@ -325,316 +354,343 @@ class ProductEvidenceFindings:
         if not allowed(c, context.tenant.id, config(run)[0]):
             raise ProductWorkError("候选因质量收窄暂不可接受或应用")
 
+    @staticmethod
+    def _item_candidates(
+        c: Connection, context: AuthContext, run: Any, row: Any
+    ) -> list[dict[str, Any]]:
+        if (
+            not row
+            or row["status"] != "pending_review"
+            or row["proposed_payload"].get("parent_finding_id")
+        ):
+            return []
+        from app.domain.product_evidence_items import item_receipts
+
+        return item_receipts(c, context, run, row)
+
     def read(self, context: AuthContext, space: UUID, body: Read) -> dict[str, Any]:
         with (
             self.engine.connect().execution_options(isolation_level="REPEATABLE READ") as c,
             c.begin(),
         ):
             run, row = self._load(c, context, space, body)
-            snapshot = run["run_context"]["product_work_source"]
-            capability = snapshot["selection"]["capability"]
-            _, field, _ = config(run)
-            proposal = (
-                proposal_from(
-                    capability,
-                    row["accepted_payload"]["proposal"]
-                    if row and row["accepted_payload"]
-                    else {
-                        "capability": capability,
-                        "items": row["proposed_payload"]["assessment"][field],
-                    },
-                )
-                if row
-                else None
+            return self.read_in_connection(c, context, run, row)
+
+    def read_in_connection(
+        self, c: Connection, context: AuthContext, run: Any, row: Any
+    ) -> dict[str, Any]:
+        snapshot = run["run_context"]["product_work_source"]
+        capability = snapshot["selection"]["capability"]
+        _, field, _ = config(run)
+        proposal = (
+            proposal_from(
+                capability,
+                row["accepted_payload"]["proposal"]
+                if row and row["accepted_payload"]
+                else {
+                    "capability": capability,
+                    "items": row["proposed_payload"]["assessment"][field],
+                },
             )
-            return {
-                "finding": receipt(row),
-                "records": applied_records(c, context, run, row),
-                "product_line_id": snapshot["selection"]["product_line_id"],
-                "sources_current": rebuild(c, context.tenant.id, snapshot)["digest"]
-                == snapshot["digest"],
-                "proposal": proposal.model_dump(mode="json") if proposal else None,
-                "evidence": evidence_options(snapshot, context.tenant.id),
-                "targets": [
-                    {
-                        "id": ref["reference_id"].split(":", 1)[1],
-                        "kind": ref["reference_id"].split(":", 1)[0],
-                        **ref["fields"],
-                    }
-                    for ref in snapshot["references"]
-                    if ref["reference_id"].startswith(
-                        (
-                            "segment:",
-                            "opportunity:",
-                            "strategy:",
-                            "definition:",
-                            "product:",
-                            "work:",
-                        )
+            if row
+            else None
+        )
+        return {
+            "finding": receipt(row),
+            "item_candidates": self._item_candidates(c, context, run, row),
+            "records": applied_records(c, context, run, row),
+            "product_line_id": snapshot["selection"]["product_line_id"],
+            "sources_current": rebuild(c, context.tenant.id, snapshot)["digest"]
+            == snapshot["digest"],
+            "proposal": proposal.model_dump(mode="json") if proposal else None,
+            "evidence": evidence_options(snapshot, context.tenant.id),
+            "targets": [
+                {
+                    "id": ref["reference_id"].split(":", 1)[1],
+                    "kind": ref["reference_id"].split(":", 1)[0],
+                    **ref["fields"],
+                }
+                for ref in snapshot["references"]
+                if ref["reference_id"].startswith(
+                    (
+                        "segment:",
+                        "opportunity:",
+                        "strategy:",
+                        "definition:",
+                        "product:",
+                        "work:",
                     )
-                ],
-                "calculations": calculations(proposal) if proposal else [],
-            }
+                )
+            ],
+            "calculations": calculations(proposal) if proposal else [],
+        }
 
     def review(self, context: AuthContext, space: UUID, body: Review) -> dict[str, Any]:
         with self.engine.begin() as c:
-            run, row = self._load(c, context, space, body, write=True)
-            if body.expected_digest != digest(row["proposed_payload"]):
-                raise ProductWorkError("候选已变化，请重新读取")
-            accepted = None
-            if body.proposal:
-                if (
-                    body.proposal.capability
-                    != run["run_context"]["product_work_selection"]["capability"]
-                ):
-                    raise ProductWorkError("不能将候选改成另一种业务能力")
-                validate_refs(
-                    body.proposal, run["run_context"]["product_work_source"], context.tenant.id
-                )
-                accepted = {
-                    "version": "product-evidence-accepted-v1",
-                    "source_digest": row["proposed_payload"]["source_digest"],
-                    "proposal": body.proposal.model_dump(mode="json"),
-                }
-            if row["status"] != "pending_review":
-                if (
-                    row["status"]
-                    in (body.decision, "applied" if body.decision == "accepted" else "rejected")
-                    and row["accepted_payload"] == accepted
-                    and row["review_comment"] == body.comment
-                ):
-                    return {
-                        "finding": receipt(row),
-                        "calculations": calculations(body.proposal) if body.proposal else [],
-                    }
-                raise ProductWorkError("候选已办理，请刷新实际状态")
-            if body.decision == "accepted":
-                self._current(c, context, run)
-            now = c.execute(select(func.clock_timestamp())).scalar_one()
-            saved = (
-                c.execute(
-                    tables.findings.update()
-                    .where(
-                        tables.findings.c.tenant_id == context.tenant.id,
-                        tables.findings.c.id == row["id"],
-                    )
-                    .values(
-                        status=body.decision,
-                        accepted_payload=accepted if accepted else null(),
-                        reviewed_by_user_id=context.user.id,
-                        reviewed_at=now,
-                        review_comment=body.comment,
-                        updated_at=now,
-                    )
-                    .returning(tables.findings)
-                )
-                .mappings()
-                .one()
+            return self.review_in_connection(c, context, space, body)
+
+    def review_in_connection(
+        self, c: Connection, context: AuthContext, space: UUID, body: Review
+    ) -> dict[str, Any]:
+        run, row = self._load(c, context, space, body, write=True)
+        if body.expected_digest != digest(row["proposed_payload"]):
+            raise ProductWorkError("候选已变化，请重新读取")
+        accepted = None
+        if body.proposal:
+            if (
+                body.proposal.capability
+                != run["run_context"]["product_work_selection"]["capability"]
+            ):
+                raise ProductWorkError("不能将候选改成另一种业务能力")
+            validate_refs(
+                body.proposal, run["run_context"]["product_work_source"], context.tenant.id
             )
-            FindingQualityService(self.engine).evaluate_connection(
-                c, tenant_id=context.tenant.id, evaluated_at=now
-            )
-            _emit(
-                c,
-                context,
-                space,
-                row["finding_type"],
-                body.decision,
-                {**saved, "version": 2},
-                before=dict(row),
-            )
-            return {
-                "finding": receipt(saved),
-                "calculations": calculations(body.proposal) if body.proposal else [],
+            accepted = {
+                "version": "product-evidence-accepted-v1",
+                "source_digest": row["proposed_payload"]["source_digest"],
+                "proposal": body.proposal.model_dump(mode="json"),
             }
+        if row["status"] != "pending_review":
+            if (
+                row["status"]
+                in (body.decision, "applied" if body.decision == "accepted" else "rejected")
+                and row["accepted_payload"] == accepted
+                and row["review_comment"] == body.comment
+            ):
+                return {
+                    "finding": receipt(row),
+                    "calculations": calculations(body.proposal) if body.proposal else [],
+                }
+            raise ProductWorkError("候选已办理，请刷新实际状态")
+        if body.decision == "accepted":
+            self._current(c, context, run)
+        now = c.execute(select(func.clock_timestamp())).scalar_one()
+        saved = (
+            c.execute(
+                tables.findings.update()
+                .where(
+                    tables.findings.c.tenant_id == context.tenant.id,
+                    tables.findings.c.id == row["id"],
+                )
+                .values(
+                    status=body.decision,
+                    accepted_payload=accepted if accepted else null(),
+                    reviewed_by_user_id=context.user.id,
+                    reviewed_at=now,
+                    review_comment=body.comment,
+                    updated_at=now,
+                )
+                .returning(tables.findings)
+            )
+            .mappings()
+            .one()
+        )
+        FindingQualityService(self.engine).evaluate_connection(
+            c, tenant_id=context.tenant.id, evaluated_at=now
+        )
+        _emit(
+            c,
+            context,
+            space,
+            row["finding_type"],
+            body.decision,
+            {**saved, "version": 2},
+            before=dict(row),
+        )
+        return {
+            "finding": receipt(saved),
+            "calculations": calculations(body.proposal) if body.proposal else [],
+        }
 
     def apply(self, context: AuthContext, space: UUID, body: Apply) -> dict[str, Any]:
         with self.engine.begin() as c:
-            run, row = self._load(c, context, space, body, write=True)
-            if (
-                not row["accepted_payload"]
-                or digest(row["accepted_payload"]) != body.accepted_digest
-            ):
-                raise ProductWorkError("请先核对接受，再独立应用")
-            finding_type, table_name, entity_type = config(run)
-            table = getattr(tables, table_name)
-            if row["status"] == "applied":
-                return {"finding": receipt(row), "records": applied_records(c, context, run, row)}
-            if row["status"] != "accepted":
-                raise ProductWorkError("只有已接受候选可以应用")
-            self._current(c, context, run)
-            proposal = proposal_from(
-                run["run_context"]["product_work_selection"]["capability"],
-                row["accepted_payload"]["proposal"],
+            return self.apply_in_connection(c, context, space, body)
+
+    def apply_in_connection(
+        self, c: Connection, context: AuthContext, space: UUID, body: Apply
+    ) -> dict[str, Any]:
+        run, row = self._load(c, context, space, body, write=True)
+        if not row["accepted_payload"] or digest(row["accepted_payload"]) != body.accepted_digest:
+            raise ProductWorkError("请先核对接受，再独立应用")
+        finding_type, table_name, entity_type = config(run)
+        table = getattr(tables, table_name)
+        if row["status"] == "applied":
+            return {"finding": receipt(row), "records": applied_records(c, context, run, row)}
+        if row["status"] != "accepted":
+            raise ProductWorkError("只有已接受候选可以应用")
+        self._current(c, context, run)
+        proposal = proposal_from(
+            run["run_context"]["product_work_selection"]["capability"],
+            row["accepted_payload"]["proposal"],
+        )
+        validate_refs(proposal, run["run_context"]["product_work_source"], context.tenant.id)
+        line = run["run_context"]["product_work_selection"]["product_line_id"]
+        records = []
+        for position, item in enumerate(proposal.items, 1):
+            common: dict[str, Any] = dict(
+                request_id=uuid5(row["id"], str(position)),
+                product_line_id=UUID(line) if line else None,
+                supersedes_id=None,
             )
-            validate_refs(proposal, run["run_context"]["product_work_source"], context.tenant.id)
-            line = run["run_context"]["product_work_selection"]["product_line_id"]
-            records = []
-            for position, item in enumerate(proposal.items, 1):
-                common: dict[str, Any] = dict(
-                    request_id=uuid5(row["id"], str(position)),
-                    product_line_id=UUID(line) if line else None,
-                    supersedes_id=None,
+            if isinstance(proposal, Competitors):
+                created = create_competitor_in_connection(
+                    c,
+                    context,
+                    space,
+                    CompetitorDraft(**common, **item.model_dump()),
+                    source_finding_id=row["id"],
+                    source_finding_position=position,
                 )
-                if isinstance(proposal, Competitors):
-                    created = create_competitor_in_connection(
-                        c,
-                        context,
-                        space,
-                        CompetitorDraft(**common, **item.model_dump()),
-                        source_finding_id=row["id"],
-                        source_finding_position=position,
-                    )
-                elif isinstance(proposal, Markets):
-                    created = create_segment_in_connection(
-                        c,
-                        context,
-                        space,
-                        MarketSegmentDraft(**common, **item.model_dump()),
-                        source_finding_id=row["id"],
-                        source_finding_position=position,
-                    )
-                elif isinstance(proposal, Opportunities):
-                    opportunity = OpportunityContent.model_validate(item.model_dump())
-                    created = create_opportunity_in_connection(
-                        c,
-                        context,
-                        space,
-                        OpportunityDraft(
-                            request_id=common["request_id"],
-                            **item.model_dump(exclude={"solutions"}),
-                            solutions=tuple(
-                                SolutionCandidate(
-                                    id=uuid5(common["request_id"], str(i)), **solution.model_dump()
-                                )
-                                for i, solution in enumerate(opportunity.solutions, 1)
-                            ),
-                        ),
-                        source_finding_id=row["id"],
-                        source_finding_position=position,
-                    )
-                elif isinstance(proposal, Experiments):
-                    experiment = ExperimentContent.model_validate(item.model_dump())
-                    created = create_experiment_in_connection(
-                        c,
-                        context,
-                        space,
-                        ExperimentDraft(
-                            request_id=common["request_id"],
-                            opportunity_id=experiment.opportunity_id,
-                            solution_id=experiment.solution_id,
-                            plan=ExperimentPlan(
-                                owner_user_id=context.user.id,
-                                **item.model_dump(exclude={"opportunity_id", "solution_id"}),
-                            ),
-                        ),
-                        source_finding_id=row["id"],
-                        source_finding_position=position,
-                    )
-                elif isinstance(proposal, Strategies):
-                    strategy = StrategyCandidate.model_validate(item.model_dump())
-                    created = create_strategy_in_connection(
-                        c,
-                        context,
-                        space,
-                        StrategyDraft(
-                            request_id=common["request_id"],
-                            opportunity_id=strategy.opportunity_id,
-                            supersedes_id=strategy.supersedes_id,
-                            content=StrategyContent(
-                                owner_user_id=context.user.id,
-                                **strategy.model_dump(
-                                    exclude={
-                                        "opportunity_id",
-                                        "supersedes_id",
-                                        "professional_constraints",
-                                    }
-                                ),
-                                professional_constraints=tuple(
-                                    ProfessionalConstraint(
-                                        id=uuid5(common["request_id"], f"constraint:{i}"),
-                                        **value.model_dump(),
-                                    )
-                                    for i, value in enumerate(strategy.professional_constraints, 1)
-                                ),
-                            ),
-                        ),
-                        source_finding_id=row["id"],
-                        source_finding_position=position,
-                    )
-                else:
-                    definition = DefinitionCandidate.model_validate(item.model_dump())
-                    created = create_definition_in_connection(
-                        c,
-                        context,
-                        space,
-                        DefinitionDraft(
-                            request_id=common["request_id"],
-                            product_id=definition.product_id,
-                            strategy_id=definition.strategy_id,
-                            supersedes_id=definition.supersedes_id,
-                            content=DefinitionContent(
-                                owner_user_id=context.user.id,
-                                **definition.model_dump(
-                                    exclude={"product_id", "strategy_id", "supersedes_id", "items"}
-                                ),
-                                items=tuple(
-                                    SpecificationItem(
-                                        **value.model_dump(),
-                                        owner_user_id=None,
-                                        state="needs_confirmation",
-                                    )
-                                    for value in definition.items
-                                ),
-                            ),
-                        ),
-                        source_finding_id=row["id"],
-                        source_finding_position=position,
-                    )
-                # Return the persisted primary row consistently, including on retry.
-                records.append(
-                    _record(
-                        c.execute(
-                            select(table).where(
-                                table.c.tenant_id == context.tenant.id,
-                                table.c.id == UUID(created["id"]),
+            elif isinstance(proposal, Markets):
+                created = create_segment_in_connection(
+                    c,
+                    context,
+                    space,
+                    MarketSegmentDraft(**common, **item.model_dump()),
+                    source_finding_id=row["id"],
+                    source_finding_position=position,
+                )
+            elif isinstance(proposal, Opportunities):
+                opportunity = OpportunityContent.model_validate(item.model_dump())
+                created = create_opportunity_in_connection(
+                    c,
+                    context,
+                    space,
+                    OpportunityDraft(
+                        request_id=common["request_id"],
+                        **item.model_dump(exclude={"solutions"}),
+                        solutions=tuple(
+                            SolutionCandidate(
+                                id=uuid5(common["request_id"], str(i)), **solution.model_dump()
                             )
+                            for i, solution in enumerate(opportunity.solutions, 1)
+                        ),
+                    ),
+                    source_finding_id=row["id"],
+                    source_finding_position=position,
+                )
+            elif isinstance(proposal, Experiments):
+                experiment = ExperimentContent.model_validate(item.model_dump())
+                created = create_experiment_in_connection(
+                    c,
+                    context,
+                    space,
+                    ExperimentDraft(
+                        request_id=common["request_id"],
+                        opportunity_id=experiment.opportunity_id,
+                        solution_id=experiment.solution_id,
+                        plan=ExperimentPlan(
+                            owner_user_id=context.user.id,
+                            **item.model_dump(exclude={"opportunity_id", "solution_id"}),
+                        ),
+                    ),
+                    source_finding_id=row["id"],
+                    source_finding_position=position,
+                )
+            elif isinstance(proposal, Strategies):
+                strategy = StrategyCandidate.model_validate(item.model_dump())
+                created = create_strategy_in_connection(
+                    c,
+                    context,
+                    space,
+                    StrategyDraft(
+                        request_id=common["request_id"],
+                        opportunity_id=strategy.opportunity_id,
+                        supersedes_id=strategy.supersedes_id,
+                        content=StrategyContent(
+                            owner_user_id=context.user.id,
+                            **strategy.model_dump(
+                                exclude={
+                                    "opportunity_id",
+                                    "supersedes_id",
+                                    "professional_constraints",
+                                }
+                            ),
+                            professional_constraints=tuple(
+                                ProfessionalConstraint(
+                                    id=uuid5(common["request_id"], f"constraint:{i}"),
+                                    **value.model_dump(),
+                                )
+                                for i, value in enumerate(strategy.professional_constraints, 1)
+                            ),
+                        ),
+                    ),
+                    source_finding_id=row["id"],
+                    source_finding_position=position,
+                )
+            else:
+                definition = DefinitionCandidate.model_validate(item.model_dump())
+                created = create_definition_in_connection(
+                    c,
+                    context,
+                    space,
+                    DefinitionDraft(
+                        request_id=common["request_id"],
+                        product_id=definition.product_id,
+                        strategy_id=definition.strategy_id,
+                        supersedes_id=definition.supersedes_id,
+                        content=DefinitionContent(
+                            owner_user_id=context.user.id,
+                            **definition.model_dump(
+                                exclude={"product_id", "strategy_id", "supersedes_id", "items"}
+                            ),
+                            items=tuple(
+                                SpecificationItem(
+                                    **value.model_dump(),
+                                    owner_user_id=None,
+                                    state="needs_confirmation",
+                                )
+                                for value in definition.items
+                            ),
+                        ),
+                    ),
+                    source_finding_id=row["id"],
+                    source_finding_position=position,
+                )
+            # Return the persisted primary row consistently, including on retry.
+            records.append(
+                _record(
+                    c.execute(
+                        select(table).where(
+                            table.c.tenant_id == context.tenant.id,
+                            table.c.id == UUID(created["id"]),
                         )
-                        .mappings()
-                        .one()
                     )
+                    .mappings()
+                    .one()
                 )
-            now = c.execute(select(func.clock_timestamp())).scalar_one()
-            saved = (
-                c.execute(
-                    tables.findings.update()
-                    .where(
-                        tables.findings.c.tenant_id == context.tenant.id,
-                        tables.findings.c.id == row["id"],
-                    )
-                    .values(
-                        status="applied",
-                        applied_by_user_id=context.user.id,
-                        applied_at=now,
-                        applied_entity_type=entity_type,
-                        applied_entity_id=UUID(records[0]["id"]),
-                        updated_at=now,
-                    )
-                    .returning(tables.findings)
+            )
+        now = c.execute(select(func.clock_timestamp())).scalar_one()
+        saved = (
+            c.execute(
+                tables.findings.update()
+                .where(
+                    tables.findings.c.tenant_id == context.tenant.id,
+                    tables.findings.c.id == row["id"],
                 )
-                .mappings()
-                .one()
+                .values(
+                    status="applied",
+                    applied_by_user_id=context.user.id,
+                    applied_at=now,
+                    applied_entity_type=entity_type,
+                    applied_entity_id=UUID(records[0]["id"]),
+                    updated_at=now,
+                )
+                .returning(tables.findings)
             )
-            FindingQualityService(self.engine).evaluate_connection(
-                c, tenant_id=context.tenant.id, evaluated_at=now
-            )
-            _emit(
-                c,
-                context,
-                space,
-                finding_type,
-                "applied",
-                {**saved, "version": 3},
-                before=dict(row),
-            )
-            return {"finding": receipt(saved), "records": records}
+            .mappings()
+            .one()
+        )
+        FindingQualityService(self.engine).evaluate_connection(
+            c, tenant_id=context.tenant.id, evaluated_at=now
+        )
+        _emit(
+            c,
+            context,
+            space,
+            finding_type,
+            "applied",
+            {**saved, "version": 3},
+            before=dict(row),
+        )
+        return {"finding": receipt(saved), "records": records}

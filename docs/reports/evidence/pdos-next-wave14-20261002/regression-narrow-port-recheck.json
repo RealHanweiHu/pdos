@@ -1,0 +1,5 @@
+{
+  "node": "tests/test_resources/test_rules.py::test_scope_uses_narrow_sample_port_and_retains_full_binding",
+  "exit_code": 0,
+  "change": "Mock now explicitly verifies at/retained_at remain None in ordinary scope; no production behavior changed."
+}

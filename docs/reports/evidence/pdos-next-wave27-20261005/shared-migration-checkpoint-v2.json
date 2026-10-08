@@ -1,0 +1,37 @@
+{
+  "status": "PASS_RETAINED_LOCAL_PREVIEW_HEAD29",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "final_head": "next_0029",
+  "source_manifest_sha256": "c36835da89d921c021cdb5b586c634b18f53d11472102d4609a57de89d8c62e9",
+  "backup": {
+    "private_path": ".local/wave27-shared-before-head28.dump",
+    "bytes": 71008423,
+    "sha256": "2c37760a928cea75ad543b610c32a198789f5875a30ae83edaa2a347c45e4ea1",
+    "mode": "0600"
+  },
+  "original_failure_preserved": "shared-migration-checkpoint-v1.json",
+  "recovery_reason": "Two new constraint triggers also appear in pg_constraint. Restored PostgreSQL rewrites varchar[]/text[] cast display; each old CHECK is exactly compared to original private dump DDL, preserving quoted bytes and all predicates.",
+  "original_CHECK_definitions_compared": 351,
+  "original_private_schema_sha256": "116eda09bab335d46b4f44ca69a4791404eb92969e72a0694d39a699ed4568f4",
+  "private_restore_api_adaptation": "engine_for URL-object rejection corrected to private URL string; already successful restore was reused without reapplying it",
+  "baseline": "Exact private pre-head28 full backup restored only into verified Root 63866 temporary container",
+  "backup_baseline_head": "next_0028",
+  "retained_target_recovery_migrations": 0,
+  "new_business_saves": 0,
+  "all_122_legacy_full_row_hashes_equal_exact_backup": true,
+  "old_catalog_functions_triggers_policies_permissions_unchanged": true,
+  "catalog_additions": {
+    "columns": 2,
+    "CHECK": 1,
+    "trigger_constraints": 2,
+    "triggers": 2,
+    "functions": 1,
+    "policies": 0,
+    "permissions": 0
+  },
+  "legacy_new_columns_SQL_NULL": true,
+  "metadata_schema_differences": 0,
+  "agent_business_direct_write_tables": 0,
+  "repository_tests_on_shared_target": false
+}

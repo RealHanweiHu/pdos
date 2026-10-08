@@ -27,6 +27,7 @@ exhaustively without any network access.
 from __future__ import annotations
 
 import ipaddress
+import os
 import socket
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
@@ -152,6 +153,13 @@ Resolver = Callable[[str], Sequence[str]]
 
 
 def _default_resolver(hostname: str) -> Sequence[str]:
+    mode = os.environ.get("PDOS_RESEARCH_DNS_MODE", "system")
+    if mode == "cloudflare_doh":
+        from app.ai.public_dns import resolve_public
+
+        return resolve_public(hostname)
+    if mode != "system":
+        raise ReachDeniedError("resolver_configuration_invalid", "公开DNS配置无效")
     try:
         infos = socket.getaddrinfo(hostname, None)
     except OSError as error:

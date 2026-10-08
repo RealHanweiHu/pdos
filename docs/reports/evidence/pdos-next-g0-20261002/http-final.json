@@ -1,0 +1,43 @@
+[
+  {
+    "check": "API refuses missing session",
+    "status": 401,
+    "expected": 401,
+    "passed": true
+  },
+  {
+    "check": "BFF refuses missing session",
+    "status": 401,
+    "expected": 401,
+    "passed": true
+  },
+  {
+    "check": "BFF rejects cross origin",
+    "status": 403,
+    "expected": 403,
+    "passed": true
+  },
+  {
+    "check": "BFF accepts actual loopback origin",
+    "status": 200,
+    "expected": 200,
+    "passed": true
+  },
+  {
+    "check": "BFF reads committed authoritative workspace",
+    "status": 200,
+    "expected": 200,
+    "passed": true
+  },
+  {
+    "check": "Browser actions match actual domain states",
+    "source_count": 2,
+    "claim_states": [
+      "active",
+      "reverted"
+    ],
+    "work_state": "waiting_input",
+    "model_state": "MODEL_UNAVAILABLE",
+    "passed": true
+  }
+]

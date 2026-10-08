@@ -1,0 +1,48 @@
+{
+  "status": "staged_not_mounted",
+  "captured_at": "2026-10-03T12:19:13.909241+00:00",
+  "owned": [
+    {
+      "path": "pdos-next/staging/wave17/candidate_write.py",
+      "sha256": "c7911c5341aa0c30427577de0fd5fc476740b72e00719bbe25866d4a260dc235"
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_write.py",
+      "sha256": "25ee7948bf4490ccf583a719b07c09de2d74271ff0a6d8553b9e23b05f3d9a54"
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-write-contract.md",
+      "sha256": "9741e94fe5acd4dc13777f06bcff3b7a18f4a186d76ec2280fb25db9b6372f9a"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "pdos-next/staging/wave17/candidate_prepare.py",
+      "sha256": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb"
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_prepare.py",
+      "sha256": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa"
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_commands.py",
+      "sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac"
+    },
+    {
+      "path": "pdos-next/staging/wave17/fact_consumption.py",
+      "sha256": "4bbc52ff7423fa4cf389ff12b21f7c64201a0566b6296580399561bfade50458"
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor_owner.py",
+      "sha256": "02048fa237fa085149151a8277aea8c8fa23763f473df2a34887964787cb05c3"
+    },
+    {
+      "path": "pdos-next/staging/wave17/fact_atom_storage.py",
+      "sha256": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/models.py",
+      "sha256": "321a721fd5b90d9857f8e29603ef057f6b7cc1cf62e29ba27b036c3296952ef4"
+    }
+  ]
+}

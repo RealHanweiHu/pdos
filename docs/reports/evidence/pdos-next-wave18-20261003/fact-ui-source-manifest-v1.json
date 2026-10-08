@@ -1,0 +1,78 @@
+{
+  "schema_version": "pdos-wave18-fact-ui-check-v1",
+  "scope": "owned four frontend files; no DB/HTTP/browser/public build",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-contract.ts",
+      "sha256": "6afd9c9bf2d488486f7d67ee735cc56d523654d97dbd1321c858db9f9f5eda04"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.ts",
+      "sha256": "748754be30a1fc7047877f1441ac7b60b6ed4849940e1bd0b8c81f25d75c9959"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow.tsx",
+      "sha256": "320fc294b79fd6043100945ecef256054df2d4b3f140af595edf25264c2825e1"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.test.ts",
+      "sha256": "b8a14c38c0e363372b9cff4c0a97d82b0794e44511bb77f7ef8915ab0f846bfb"
+    }
+  ],
+  "checks": [
+    {
+      "name": "scoped_types",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-wave18-fact-ui-tsconfig.json --pretty false",
+      "config": "fact-ui-typecheck-config.json",
+      "log": "fact-ui-typecheck-final.log",
+      "exit_code": 0
+    },
+    {
+      "name": "helper_compile",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-wave18-fact-tests.json --pretty false",
+      "config": "fact-ui-helper-compile-config.json",
+      "log": "fact-ui-helper-compile-final.log",
+      "exit_code": 0
+    },
+    {
+      "name": "helper_tests",
+      "command": "node --test /tmp/pdos-wave18-fact-tests/fact-workflow-state.test.js",
+      "log": "fact-ui-helper-final.log",
+      "exit_code": 0,
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "duration_ms": 129.868958
+    },
+    {
+      "name": "owned_eslint",
+      "cwd": "pdos-next/web",
+      "command": "./node_modules/.bin/eslint src/components/capa-effectiveness/fact-workflow-contract.ts src/components/capa-effectiveness/fact-workflow-state.ts src/components/capa-effectiveness/fact-workflow.tsx src/components/capa-effectiveness/fact-workflow-state.test.ts --format json",
+      "log": "fact-ui-lint-final.json",
+      "exit_code": 0,
+      "files": 4,
+      "errors": 0,
+      "warnings": 0
+    }
+  ],
+  "dependency_readings": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_commands.py",
+      "sha256": "d66a57d57b180f0c465138f989ccb19ca519906d249c86c3100c9a85becd7749"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+      "sha256": "6abbbbcd7cf362a060cda7f53a10b58cf47d3f61bb6f249317e38997ee9e545e"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-contract.ts",
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b"
+    }
+  ],
+  "limits": [
+    "Contract/state fixtures are not real professional qualification, source-byte or UOW attestations.",
+    "Earlier 18/20 check logs are retained as previous coverage; counts are not combined.",
+    "Root-owned Host/Panel/API/BFF/public build and real business integration are not covered by these checks.",
+    "No JavaScript output was generated in src; emitted helper code is in /tmp."
+  ]
+}

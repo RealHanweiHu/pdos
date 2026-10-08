@@ -1,0 +1,38 @@
+{
+  "status": "PASS_ACTUAL_HEAD30_CLOCK_ROUNDTRIP",
+  "repository_tests_only_independent": true,
+  "retained_shared_database_used": false,
+  "backup": {
+    "bytes": 1269592,
+    "sha256": "6c2ddef1a5a717d4e2def70e18bffd88fcfc5a93f389811302904b32bd25fa2f",
+    "mode": "0600"
+  },
+  "steps": [
+    {
+      "args": [
+        "downgrade",
+        "next_0029"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "upgrade",
+        "next_0030"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "old_table_count": 122,
+  "all_old_complete_row_hashes_unchanged": true,
+  "complete_head30_catalog_restored": true,
+  "metadata_check_exit_code": 0,
+  "synthetic_existing_products_seeded_at_epoch1": true,
+  "agent_direct_dml": 0
+}

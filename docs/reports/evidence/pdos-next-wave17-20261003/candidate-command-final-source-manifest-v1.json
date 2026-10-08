@@ -1,0 +1,34 @@
+{
+  "schema_version": "pdos-wave17-candidate-command-source-v1",
+  "created_at": "2026-10-03T11:55:43.864963+00:00",
+  "scope": "Only the three new sixth-segment staged files; no public registration or writer.",
+  "source_files": {
+    "pdos-next/staging/wave17/candidate_commands.py": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+    "pdos-next/staging/wave17/test_candidate_commands.py": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+    "pdos-next/staging/wave17/candidate-command-contract.md": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b"
+  },
+  "read_only_dependencies": {
+    "pdos-next/staging/wave17/fact_registry_storage.py": "18c7d06f06ee67d23ce82ef2ee6141781be4b7528f5d7a3325b6f02587ec46c7",
+    "pdos-next/staging/wave17/anchor_storage.py": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+    "pdos-next/server/pdos_next/domain/capa_verification/schemas.py": "d97373d13d9bcf3a0087ac301885dd649a92537d9d61e7f16fc69d88a0a2745f",
+    "pdos-next/server/pdos_next/domain/quality_execution/schemas.py": "7c2106760407b5966e8f3220dd08ece22a12b1cede079cbaa073ac61b64db8a8",
+    "pdos-next/server/pdos_next/service.py": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686"
+  },
+  "fifth_segment_unchanged": {
+    "pdos-next/staging/wave17/candidate_storage.py": {
+      "expected_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "actual_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/test_candidate_storage.py": {
+      "expected_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "actual_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/candidate-storage-contract.md": {
+      "expected_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "actual_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "matches": true
+    }
+  }
+}

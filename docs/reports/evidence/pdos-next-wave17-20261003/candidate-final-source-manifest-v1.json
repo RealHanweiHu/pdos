@@ -1,0 +1,30 @@
+{
+  "schema_version": "pdos-wave17-candidate-storage-source-v1",
+  "created_at": "2026-10-03T11:41:34.979374+00:00",
+  "scope": "Only three new staged candidate files. Dependencies read-only; no public registration, DB, HTTP or production qualification.",
+  "source_files": {
+    "pdos-next/staging/wave17/candidate_storage.py": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+    "pdos-next/staging/wave17/test_candidate_storage.py": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+    "pdos-next/staging/wave17/candidate-storage-contract.md": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7"
+  },
+  "dependency_files": {
+    "pdos-next/staging/wave17/fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "pdos-next/staging/wave17/anchor_storage.py": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/fact_registry_storage.py": "18c7d06f06ee67d23ce82ef2ee6141781be4b7528f5d7a3325b6f02587ec46c7",
+    "pdos-next/staging/wave17/facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "pdos-next/staging/wave17/test_anchor_storage.py": "63dcb791de8f71f5bfb44b8479f435177d097d7401a49023736b9638e613b5bb",
+    "pdos-next/staging/wave17/test_anchor_lineage.py": "c8150cbcf326dc9b441d21bec56c5cca095d8ff889210499c17498ef8d6a8e68",
+    "pdos-next/staging/wave17/test_paired_storage.py": "627e780f1dd240f8b3d597df83983a870e735611f9320479f566dd1c103f8e7e",
+    "pdos-next/server/pdos_next/domain/capa_verification/models.py": "321a721fd5b90d9857f8e29603ef057f6b7cc1cf62e29ba27b036c3296952ef4",
+    "pdos-next/server/pdos_next/domain/capa_verification/schemas.py": "d97373d13d9bcf3a0087ac301885dd649a92537d9d61e7f16fc69d88a0a2745f",
+    "pdos-next/server/pdos_next/domain/capa_verification/service.py": "91c72ff1d49a794561af28c9a5dfcdef52d717588b46aa9390a00abd816798af",
+    "pdos-next/server/pdos_next/service.py": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686",
+    "pdos-next/server/pdos_next/models.py": "6397c986d170c5ea7d3b31ad3030990c18d4b31811393334dea209e0d6c570d3"
+  },
+  "full_sha_contract": "pdos-capa-candidate-full-v1",
+  "interfaces": [
+    "read_candidate(s,ctx,product_id,candidate_id,expected_ref=None,*,semantic_owner=None)",
+    "candidate_owner(CandidateSemanticOwner) -> existing CandidateRegistryRead callback"
+  ]
+}

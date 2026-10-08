@@ -1,0 +1,30 @@
+{
+  "api": "http://127.0.0.1:8863",
+  "web": "http://127.0.0.1:3063",
+  "tenant_id": "85269d5d-4e7d-453d-a558-cee94f000398",
+  "actor_id": "95ff6014-5f27-4cc3-bdd8-9b49532d778c",
+  "existing_golden_files_unchanged": true,
+  "private_backup": "/Users/huhanwei/pdos-preview-backups/scenario-a-tests-20261007-080728/after-tests.dump",
+  "backup_sha256": "1519b4ec133b37879ca5c811dc62f3f8f1d5df886c7e11c8b0a622d93f1a8a6a",
+  "governance": {
+    "eligible_models": [
+      {
+        "provider": "minimax",
+        "model": "MiniMax-M3",
+        "protocol": "openai-compatible"
+      }
+    ],
+    "selection": {
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "available": true
+    },
+    "budget": {
+      "daily_token_budget": 2000000,
+      "used_tokens_today": 0,
+      "remaining_tokens_today": 2000000,
+      "exhausted": false,
+      "token_budget_enforced": true
+    }
+  }
+}

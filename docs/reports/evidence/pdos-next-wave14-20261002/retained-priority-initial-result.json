@@ -1,0 +1,12 @@
+[
+  {
+    "name": "retained-clock",
+    "node": "tests/test_retained_execution.py::test_retained_start_survives_elapsed_window_and_natural_qualification_expiry",
+    "exit_code": 1
+  },
+  {
+    "name": "retained-basis",
+    "node": "tests/test_retained_execution.py::test_retained_proof_rejects_changed_fixed_run_basis_even_with_valid_snapshot_hash",
+    "exit_code": 1
+  }
+]

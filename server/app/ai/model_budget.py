@@ -178,6 +178,12 @@ class ModelBudgetController:
         qualified = self._meters.get((route.provider, route.model))
         if qualified is None or qualified.protocol is not route.protocol:
             raise BudgetLedgerError("BUDGET_MODEL_METER_UNQUALIFIED")
+        if (
+            self._profile.key == "preproject_research"
+            and qualified.output_token_limit < self._profile.output_token_reserve
+        ):
+            # A policy decision cannot enlarge the publication's qualification.
+            raise BudgetLedgerError("BUDGET_MODEL_METER_UNQUALIFIED")
         if before_measurement is not None:
             before_measurement()
         try:

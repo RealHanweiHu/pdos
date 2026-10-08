@@ -1,0 +1,17 @@
+{
+  "run_id": "059a1e57-b855-5aa7-b23b-b9747e2bf9f6",
+  "stored_status": "unavailable",
+  "error_code": "PROVIDER_OUTPUT_TRUNCATED",
+  "product_rows_in_provisional_unpublished_answer": [
+    "OutdoorMaster Shark 3",
+    "OutdoorMaster Shark 2s",
+    "Sea Gods 可充电SUP泵",
+    "NIXY 12V DC电动泵",
+    "Seawolf 10000mAh",
+    "Airbank Puffer Pro",
+    "Jobe 12V SUP泵",
+    "13500mAh 20PSI通用SUP泵"
+  ],
+  "not_an_accepted_or_published_report": true,
+  "source_receipts_retained": "real-public-research-focused-proof.json"
+}

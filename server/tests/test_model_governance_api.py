@@ -248,6 +248,7 @@ def test_model_governance_is_qualified_secret_free_tenant_bound_and_audited(
             "available": True,
         },
         "budget": {
+            "token_budget_enforced": True,
             "daily_token_budget": 2000000,
             "used_tokens_today": 0,
             "remaining_tokens_today": 2000000,
@@ -297,6 +298,7 @@ def test_model_governance_is_qualified_secret_free_tenant_bound_and_audited(
     persisted = client.get("/api/ai/governance/model", headers=owner_headers)
     assert persisted.status_code == 200
     assert persisted.json()["budget"] == {
+        "token_budget_enforced": True,
         "daily_token_budget": 1000,
         "used_tokens_today": 250,
         "remaining_tokens_today": 750,
@@ -373,5 +375,68 @@ def test_model_governance_is_qualified_secret_free_tenant_bound_and_audited(
         ]
         assert len(audits) == 1
         assert "api_key" not in json.dumps([dict(row) for row in audits]).lower()
+    finally:
+        engine.dispose()
+
+
+def test_owner_can_disable_token_budget_with_audit_and_omitted_field_preserves_it(
+    client: TestClient,
+    isolated_model_governance_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant = UUID(setup["tenant"]["id"])
+    seed_roles_and_other_tenant(isolated_model_governance_database, tenant_id=tenant)
+    owner = bearer_headers(client, tenant_slug="model-governance", username="owner")
+    manager = bearer_headers(client, tenant_slug="model-governance", username="manager")
+    payload = dict(provider="minimax", model="MiniMax-M2.7", daily_token_budget=1)
+    assert (
+        client.patch(
+            "/api/ai/governance/model",
+            headers=manager,
+            json={**payload, "token_budget_enforced": False},
+        ).status_code
+        == 403
+    )
+    disabled = client.patch(
+        "/api/ai/governance/model", headers=owner, json={**payload, "token_budget_enforced": False}
+    )
+    assert disabled.status_code == 200
+    assert disabled.json()["budget"]["token_budget_enforced"] is False
+    preserved = client.patch("/api/ai/governance/model", headers=owner, json=payload)
+    assert preserved.status_code == 200
+    assert preserved.json()["budget"]["token_budget_enforced"] is False
+    engine = create_engine(psycopg_database_url(isolated_model_governance_database))
+    try:
+        with engine.begin() as c:
+            c.execute(
+                tables.model_invocations.insert(),
+                dict(
+                    id=uuid4(),
+                    tenant_id=tenant,
+                    agent_key="synthetic",
+                    prompt_version="test",
+                    provider="minimax",
+                    model="MiniMax-M2.7",
+                    protocol="openai-compatible",
+                    status="succeeded",
+                    input_tokens=2,
+                    output_tokens=1,
+                    total_tokens=3,
+                    structured_attempts=1,
+                ),
+            )
+            audits = (
+                c.execute(
+                    select(tables.audit_log.c.after_snapshot).where(
+                        tables.audit_log.c.tenant_id == tenant,
+                        tables.audit_log.c.action == "tenant_model_settings.update",
+                    )
+                )
+                .scalars()
+                .all()
+            )
+            assert len(audits) == 2 and all(r["token_budget_enforced"] is False for r in audits)
+        state = client.get("/api/ai/governance/model", headers=owner).json()["budget"]
+        assert state["used_tokens_today"] == 3 and state["exhausted"] is False
     finally:
         engine.dispose()

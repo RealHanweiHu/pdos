@@ -1,6 +1,7 @@
 export const USER_ROLES = [
   "owner",
   "admin",
+  "product_manager",
   "project_manager",
   "engineer",
   "quality",
@@ -13,6 +14,7 @@ export type UserRole = (typeof USER_ROLES)[number];
 export const ROLE_LABELS: Record<UserRole, string> = {
   owner: "Owner",
   admin: "Admin",
+  product_manager: "产品经理",
   project_manager: "Project Manager",
   engineer: "Engineer",
   quality: "Quality",
@@ -31,6 +33,7 @@ export type ManagedUser = {
   last_signed_in_at: string | null;
   created_at: string;
   updated_at: string;
+  work_modules?: WorkModule[];
 };
 
 export type UserCreate = {
@@ -42,5 +45,6 @@ export type UserCreate = {
 };
 
 export type UserUpdate = Partial<
-  Pick<ManagedUser, "display_name" | "email" | "role" | "is_active">
+  Pick<ManagedUser, "display_name" | "email" | "role" | "is_active" | "work_modules">
 >;
+import type { WorkModule } from "../work-modules";

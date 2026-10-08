@@ -1,0 +1,220 @@
+{
+  "status": "PASSIVE_ACTUAL_PYTEST_TIMING",
+  "pytest_exit": 0,
+  "wall_seconds": 2.3465882500167936,
+  "successful_sql_count": 99,
+  "successful_sql_wall_seconds": 0.33851941517787054,
+  "top_sql_shapes_by_elapsed_time": [
+    {
+      "verb": "SELECT",
+      "query_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "count": 6,
+      "seconds": 0.10533566796220839,
+      "maximum_seconds": 0.09551816695602611
+    },
+    {
+      "verb": "UPDATE",
+      "query_sha256": "d5404629d5a1311e71afce2ab5834a43009d396ffdd436d7d1beb4ae7e10ac60",
+      "count": 4,
+      "seconds": 0.042789417086169124,
+      "maximum_seconds": 0.021000750013627112
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "count": 16,
+      "seconds": 0.03555212507490069,
+      "maximum_seconds": 0.003904332988895476
+    },
+    {
+      "verb": "INSERT",
+      "query_sha256": "88518e0449129400dc56bb887cd22d4374dcffdc1b93553a5abf06c6f234fbf9",
+      "count": 8,
+      "seconds": 0.020355293003376573,
+      "maximum_seconds": 0.004110833979211748
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "9468a797f429d59eff78baa73ee3f5f512bc545efe113024938a8ec844f1aff8",
+      "count": 5,
+      "seconds": 0.016263625991996378,
+      "maximum_seconds": 0.010234542016405612
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "09e380e14a4bcd539f003a8cef7bedb78286fb662f3c4bd801e15750ae292f92",
+      "count": 5,
+      "seconds": 0.014663206995464861,
+      "maximum_seconds": 0.008766875020228326
+    },
+    {
+      "verb": "INSERT",
+      "query_sha256": "7e3ee2330db29c4efb79afadb181e8ab04c248d6831d1db75585e78e066861bc",
+      "count": 4,
+      "seconds": 0.011941874050535262,
+      "maximum_seconds": 0.003943832998629659
+    },
+    {
+      "verb": "INSERT",
+      "query_sha256": "c64c2fd8b9d34fa4b56834bd67b2bf527a506fcae071b50ef3075b3f1429825b",
+      "count": 4,
+      "seconds": 0.011702499003149569,
+      "maximum_seconds": 0.0076930409995839
+    },
+    {
+      "verb": "INSERT",
+      "query_sha256": "5018bcbb1d7ddaa60ef69142df96d3678a6ba04126344bb97c943fe6a57cc180",
+      "count": 4,
+      "seconds": 0.010925375041551888,
+      "maximum_seconds": 0.0040941250044852495
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "count": 6,
+      "seconds": 0.010318999004084617,
+      "maximum_seconds": 0.0024738750071264803
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "eaa9fc2bd58473b39b5882b6fb4fd483cc282d0e8b8087c2d5de29335cae0bc4",
+      "count": 8,
+      "seconds": 0.009611375979147851,
+      "maximum_seconds": 0.0021982499747537076
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "count": 6,
+      "seconds": 0.008712292066775262,
+      "maximum_seconds": 0.0018295419868081808
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "9700f3b3d0f28b25f8fc6873f979fad6a93d888c613437af4f07b82e39fd00d9",
+      "count": 4,
+      "seconds": 0.00739683402935043,
+      "maximum_seconds": 0.002446750004310161
+    },
+    {
+      "verb": "INSERT",
+      "query_sha256": "951724b58fe218f85acbae905729833b12ca0e973f7e4ada26cb69511e752f43",
+      "count": 4,
+      "seconds": 0.007044040889013559,
+      "maximum_seconds": 0.0026004579849541187
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "ad1792144a8508bb5091ac0a7b7b977c94ea7870e569a3a840362baa964d119d",
+      "count": 2,
+      "seconds": 0.005824499996379018,
+      "maximum_seconds": 0.003395750012714416
+    },
+    {
+      "verb": "INSERT",
+      "query_sha256": "f2dc8700c08051cd72d881d6f620a1fd39b8c0bfce96b68bc14c72d4b52c3858",
+      "count": 4,
+      "seconds": 0.005179498984944075,
+      "maximum_seconds": 0.0014400830259546638
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "aa6f7f4fbbeb475a2cdbbb2aebb7fa799b431745218a80b348c3f0e555ce9126",
+      "count": 2,
+      "seconds": 0.004633957054466009,
+      "maximum_seconds": 0.0033462910214439034
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "dfc974f5f272d304feb95b035f4103e12f3aeeeb3b920229fa2ac707d0dac4e2",
+      "count": 2,
+      "seconds": 0.0033846249571070075,
+      "maximum_seconds": 0.0019258749671280384
+    },
+    {
+      "verb": "UPDATE",
+      "query_sha256": "83b1e5b93440f030789ff2dfe631eac0cbb064f6e567a9f3af989d0400476fc0",
+      "count": 1,
+      "seconds": 0.0023239169968292117,
+      "maximum_seconds": 0.0023239169968292117
+    },
+    {
+      "verb": "SET",
+      "query_sha256": "26f85b8c6c0321a858e524d225f7758289da2e6724f6fde8c93eeda4633a5996",
+      "count": 2,
+      "seconds": 0.002305750036612153,
+      "maximum_seconds": 0.0012945000198669732
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "c5e5658d6d8dd5d5dfb2cefaba81414fbd46292cca8271986f1cdee201b15d8c",
+      "count": 2,
+      "seconds": 0.0022545409738086164,
+      "maximum_seconds": 0.0011417079949751496
+    }
+  ],
+  "test_phases": [
+    {
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.4607630829559639
+    },
+    {
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0966914159944281
+    },
+    {
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00012008304474875331
+    },
+    {
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.047723666997626424
+    },
+    {
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.05603170796530321
+    },
+    {
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00012070900993421674
+    },
+    {
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.049027541012037545
+    },
+    {
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.13890062499558553
+    },
+    {
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00011741701746359468
+    },
+    {
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.05622129200492054
+    },
+    {
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.050593749969266355
+    },
+    {
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003999170148745179
+    }
+  ],
+  "sql_text_parameters_credentials_recorded": false,
+  "business_pass_claimed": false
+}

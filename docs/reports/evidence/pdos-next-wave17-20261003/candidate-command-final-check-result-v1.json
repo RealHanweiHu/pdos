@@ -1,0 +1,100 @@
+{
+  "schema_version": "pdos-wave17-candidate-command-check-v1",
+  "created_at": "2026-10-03T11:55:43.866690+00:00",
+  "manifest": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-command-final-source-manifest-v1.json",
+  "manifest_sha256": "f92724cf619e4dccafecfcc8235e6758c5d7c6229712c3e286dcfac66363e755",
+  "source_files": {
+    "pdos-next/staging/wave17/candidate_commands.py": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+    "pdos-next/staging/wave17/test_candidate_commands.py": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+    "pdos-next/staging/wave17/candidate-command-contract.md": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b"
+  },
+  "checks": {
+    "owned_pure": {
+      "exit_code": 0,
+      "passed": 63,
+      "failed": 0,
+      "seconds": 1.51,
+      "log": "candidate-command-pure-final.log"
+    },
+    "ruff": {
+      "exit_code": 0,
+      "log": "candidate-command-ruff-final.log"
+    },
+    "format": {
+      "exit_code": 0,
+      "log": "candidate-command-format-final.log"
+    },
+    "in_memory_ast": {
+      "exit_code": 0,
+      "passed": 2,
+      "log": "candidate-command-ast-final.log"
+    }
+  },
+  "commands": [
+    "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_candidate_commands.py -q",
+    "pdos-next/server/.venv/bin/ruff check pdos-next/staging/wave17/candidate_commands.py pdos-next/staging/wave17/test_candidate_commands.py",
+    "pdos-next/server/.venv/bin/ruff format --check pdos-next/staging/wave17/candidate_commands.py pdos-next/staging/wave17/test_candidate_commands.py",
+    "In-memory ast.parse of the two owned Python files (no compile output written)."
+  ],
+  "raw_logs": {
+    "candidate-command-pure-initial.log": "678e1e7cae9c225033ff5f74d31f8bbfba61b726284fe0ab9f15057b39f4908e",
+    "candidate-command-pure-recheck.log": "da58227f2f4ca5687b1f4d843352dca20de139becc4e17f013aefe43410069a5",
+    "candidate-command-pure-final.log": "5815f154e40c02b5151024a3eb503de9222b17ff2fb8249f67dd84629b119b69",
+    "candidate-command-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "candidate-command-format-final.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "candidate-command-ast-final.log": "21077622c6c7609e7c6ae4f14e8674cebe8c4be0ca4540d7a46fb6c3bed5ca54"
+  },
+  "earlier_scoped_checks": [
+    {
+      "exit_code": 1,
+      "passed": 62,
+      "failed": 1,
+      "seconds": 1.59,
+      "log": "candidate-command-pure-initial.log",
+      "final_source": false,
+      "finding": "Pydantic JSON serialization converted unvalidated strict-int True to 1 before revalidation; fixed by extracting raw model attributes before strict parse.",
+      "source_hash_at_run": "not captured; not claimed as final source validation"
+    },
+    {
+      "exit_code": 0,
+      "passed": 63,
+      "failed": 0,
+      "seconds": 1.56,
+      "log": "candidate-command-pure-recheck.log",
+      "final_source": false,
+      "source_hash_at_run": "not captured; final post-contract source checked separately"
+    }
+  ],
+  "contract": {
+    "payload": "candidate_commands.CandidateRecordPayload",
+    "semantic": "Strict raw-attribute reparse, full JSON dump excluding only confirmation_token; preserve order, defaults and nulls.",
+    "comparison": "Exact actual CandidateBinding selections and explicit positive Current revision; origin may differ from Current.",
+    "owner_factory": "Explicit candidate_commands.semantic_owner(); no auto registration.",
+    "future_host_audience_guard": "Candidate inherits actual origin/Basis owner and visibility; request visibility must equal actual origin.visibility or CANDIDATE_AUDIENCE_MISMATCH. Independent writer is not owner; any private source blocks product candidate. Pure comparison grants no audience/source authority."
+  },
+  "limits": [
+    "Staged only; no public operation/PAYLOAD/handler/API/model/permission/migration registration or write owner.",
+    "No DB/HTTP/public tests; reader compatibility uses real unbound SQLAlchemy Session/ORM shapes, explicit SELECT substitutes and do_connect rejection.",
+    "No proof consumption, Receipt/Current generation, clocks, anchors, values or observations synthesized.",
+    "Typed fields, structural binding equality and factory do not attest seven live source/issuer/participant/applicability/professional/coverage owners or same-UOW persistence.",
+    "Actual public writer, sources/ACL/current/finite lineage checks and consumed-proof atomic group remain Root integration work."
+  ],
+  "fifth_segment_unchanged": {
+    "pdos-next/staging/wave17/candidate_storage.py": {
+      "expected_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "actual_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/test_candidate_storage.py": {
+      "expected_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "actual_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "matches": true
+    },
+    "pdos-next/staging/wave17/candidate-storage-contract.md": {
+      "expected_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "actual_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "matches": true
+    }
+  },
+  "unchanged_public_scope": "No server/web/lock/migration or other frozen staged source edited by this segment."
+}

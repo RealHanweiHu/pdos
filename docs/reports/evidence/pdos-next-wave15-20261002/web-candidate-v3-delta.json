@@ -1,0 +1,21 @@
+{
+  "previous_manifest": "web-candidate-v2-source.json",
+  "current_manifest": "web-candidate-v3-source.json",
+  "previous_manifest_sha256": "666c56a4ec74e262e91b8a61ed7a0e203249688be8eea6ea094186d7a2ba200f",
+  "current_manifest_sha256": "a48c1a528a714eac73660d58b487f0559baa61ead7b6241e533dace4af1f907f",
+  "changes": [
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.test.ts",
+      "before_sha256": "8b46c23f24c117c59fd34b2caeb3bf9e7ec350b5a9184b11f1976c457270c142",
+      "after_sha256": "b92e3faf3f48c4d9395ee83c26699c15b155bbe71e6fdeee13bbcd0ba7eaf1f2",
+      "reason": "Preserve full actual event timestamp and exact preview identity"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.ts",
+      "before_sha256": "ad819a023b0547f2eac578355b844da0ad94cb178382adc215e1c2a0b4e62f56",
+      "after_sha256": "398c3f8e21603257a69ea8fbbdfe9645ec4b2f45e05f503d0ff9a2717fd3af9e",
+      "reason": "Preserve full actual event timestamp and exact preview identity"
+    }
+  ],
+  "checks": "37 helper checks in ui-event-time-precision-fix.json; root current build pending"
+}

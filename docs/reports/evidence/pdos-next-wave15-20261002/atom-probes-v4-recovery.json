@@ -1,0 +1,38 @@
+{
+  "nature": "synthetic_local_rollback_sql_guards_not_professional_qualification",
+  "selection": {
+    "tenant": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "issue": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+    "change": "d1a1a7b0-b63d-5545-95c6-b6364a2d6d0e",
+    "policy": null,
+    "capture": null,
+    "merge_source": null
+  },
+  "tool_sha256": "03c4a63d7af88002b285aceb613410fc1f21275373e4f4bf9044cbc8c0485aa4",
+  "status": "incomplete",
+  "cases": [
+    {
+      "case": "issue.immutable",
+      "expected_guard": "fixed business snapshots are immutable",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "fixed business snapshots are immutable",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    }
+  ],
+  "coverage_limits": [
+    "No positive business facts, receipts, authority, source reads or releases are created",
+    "Empty/missing optional graph or legally mergeable source is an explicit skip",
+    "Extra merge Version and full end-to-end authority/rollback use transaction tests",
+    "Observed unrelated errors, including duplicate PK, do not count as expected rejection"
+  ],
+  "failure": {
+    "type": "OperationalError",
+    "code": "UNEXPECTED_SAFE_ABORT"
+  }
+}

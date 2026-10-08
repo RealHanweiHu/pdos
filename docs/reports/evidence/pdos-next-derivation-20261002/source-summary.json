@@ -1,0 +1,29 @@
+{
+  "source_file": "server/app/domain/definition_inheritance.py",
+  "source_sha256": "bd4ab5e8e7ae55357fe25b9a6618055b33cc2bbf481986003a7284c54229cb7c",
+  "extracted_functions": [
+    {
+      "function": "merge_paths",
+      "line": 72,
+      "sha256": "cd7d18e563cb58c46f27abe2ee7f5289da4fce2b2cb9c2ce4183caaf41af03a2"
+    },
+    {
+      "function": "three_way",
+      "line": 83,
+      "sha256": "ecf546b580cbf81d10ed704264fa4ca4e7426bdc888b12766158a663c019a11e"
+    },
+    {
+      "function": "accept_changes",
+      "line": 100,
+      "sha256": "18ba077b85cc940fc17889851227b79fa64947174e4e3e3aa4f18c58bafda1a2"
+    }
+  ],
+  "extraction": "Stable-key path projection, three-way comparison, selective copy semantics; rebuilt for specs/key and typed Decimal snapshots, not imported from old app",
+  "adaptation_references": {
+    "pdos-next/server/pdos_next/domain/products/definitions.py": "aa79500071117d72d7c6e338b8966716f4bbf2403c00dfb69f3b210de8ecb0f1",
+    "pdos-next/web/src/lib/product-view.ts": "f0100590a1e2e3ffe6b3b2352a9c373d614344b120968c3767646e999bb77ec0",
+    "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+    "docs/design/2026-10-02-pdos-next-execution-plan.md": "3fa2bc7c35da22f66459e405da812ef76394987de055ee2ec32f70e0d60a959a",
+    "docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md": "c0e2dd9f1bfc697ad055e64918ab6f52567d7403b672901df8fc52a595019c02"
+  }
+}

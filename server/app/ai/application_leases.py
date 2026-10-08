@@ -66,6 +66,35 @@ class ApplicationLeaseKeeper:
             self._tokens[tenant, run] = token
             self._recoveries.add((tenant, run))
 
+    def attach_existing(self, reference: dict[str, str]) -> None:
+        """Transfer a private service lease to its durable activity, without extending authority."""
+        tenant, run, owner, token = (
+            UUID(reference[key]) for key in ("tenant_id", "run_id", "owner_id", "token")
+        )
+        with self.engine.begin() as c:
+            row = c.execute(
+                select(tables.application_run_leases).where(
+                    tables.application_run_leases.c.tenant_id == tenant,
+                    tables.application_run_leases.c.run_id == run,
+                    tables.application_run_leases.c.owner_id == owner,
+                    tables.application_run_leases.c.id == token,
+                    tables.application_run_leases.c.ended_at.is_(None),
+                )
+            ).first()
+            if (
+                row is None
+                or not c.execute(
+                    text("SELECT cehub_ai.application_lease_is_current(:r,:t)"),
+                    dict(r=run, t=token),
+                ).scalar_one()
+            ):
+                raise BudgetLedgerError("APPLICATION_RUN_LEASE_LOST")
+        with self._lock:
+            if self._tokens:
+                raise BudgetLedgerError("APPLICATION_RUNTIME_LEASE_CONFLICT")
+            self.owner_id = owner
+            self._tokens[tenant, run] = token
+
     def is_recovery(self, tenant: UUID, run: UUID) -> bool:
         with self._lock:
             return (tenant, run) in self._recoveries

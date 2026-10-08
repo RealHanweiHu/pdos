@@ -82,6 +82,9 @@ from app.domain.product_evidence_findings import Apply as EvidenceFindingApply
 from app.domain.product_evidence_findings import ProductEvidenceFindings
 from app.domain.product_evidence_findings import Read as EvidenceFindingRead
 from app.domain.product_evidence_findings import Review as EvidenceFindingReview
+from app.domain.product_evidence_items import ItemRead as EvidenceItemRead
+from app.domain.product_evidence_items import ItemReview as EvidenceItemReview
+from app.domain.product_evidence_items import ProductEvidenceItems
 from app.domain.product_matrix import MatrixComparison, MatrixQuery, ProductMatrixService
 from app.domain.product_matrix_coverage import (
     CoverageCalculation,
@@ -150,7 +153,11 @@ from app.domain.product_workspace import (
     _space,
 )
 from app.domain.research_collection import collect_page
-from app.domain.research_search import ResearchSearchRequest, ResearchSearchService
+from app.domain.research_search import (
+    ResearchSearchRequest,
+    ResearchSearchService,
+    resolve_search_provider,
+)
 from app.domain.research_subscriptions import (
     ResearchSubscriptionService,
     SubscriptionAction,
@@ -983,22 +990,76 @@ def _failure(error: Exception) -> HTTPException:
     return evidence_error(error)
 
 
+def _tavily_key() -> str | None:
+    secret = get_settings().research_tavily_api_key
+    value = secret.get_secret_value().strip() if secret else ""
+    return value or None
+
+
+def _firecrawl_key() -> str | None:
+    secret = get_settings().research_firecrawl_api_key
+    value = secret.get_secret_value().strip() if secret else ""
+    return value or None
+
+
 @router.get("/spaces/{space_id}/sources")
 def sources(
     space_id: UUID, response: Response, context: Context, engine: Database
 ) -> dict[str, Any]:
     no_store(response)
     try:
+        local_index_ready = False
         with engine.connect() as connection:
             _space(connection, context, space_id)
+            local_index_ready = (
+                connection.execute(
+                    select(1)
+                    .select_from(tables.research_index_documents)
+                    .join(
+                        tables.evidence_snapshots,
+                        (
+                            tables.evidence_snapshots.c.tenant_id
+                            == tables.research_index_documents.c.tenant_id
+                        )
+                        & (
+                            tables.evidence_snapshots.c.id
+                            == tables.research_index_documents.c.snapshot_id
+                        ),
+                    )
+                    .where(
+                        tables.research_index_documents.c.tenant_id == context.tenant.id,
+                        tables.research_index_documents.c.market_space_id == space_id,
+                        tables.evidence_snapshots.c.superseded_by_id.is_(None),
+                    )
+                    .limit(1)
+                ).first()
+                is not None
+            )
         _role(context, Action.EVIDENCE_VIEW)
+        secret = get_settings().research_tavily_api_key
+        tavily_key = bool(secret and secret.get_secret_value().strip())
+        firecrawl_key = bool(_firecrawl_key())
         return {
             "items": [
                 asdict(item)
                 for item in EvidenceService(engine).list_sources(tenant_id=context.tenant.id)
                 if item.source_type in {"web", "api"}
             ],
-            "search_available": bool(get_settings().research_search_endpoint),
+            "search_available": bool(get_settings().research_search_endpoint)
+            or tavily_key
+            or firecrawl_key
+            or local_index_ready,
+            "search_provider": (
+                "local-index"
+                if local_index_ready
+                else "tavily"
+                if tavily_key
+                else "firecrawl"
+                if firecrawl_key
+                else "searxng"
+                if get_settings().research_search_endpoint
+                else None
+            ),
             "subscription_available": get_settings().research_subscriptions_enabled,
         }
     except Exception as error:
@@ -1122,7 +1183,17 @@ def search_sources(
     no_store(response)
     try:
         value = ResearchSearchService(
-            engine, endpoint=get_settings().research_search_endpoint
+            engine,
+            endpoint=get_settings().research_search_endpoint,
+            provider=resolve_search_provider(
+                engine,
+                endpoint=get_settings().research_search_endpoint,
+                tenant_id=context.tenant.id,
+                space_id=space_id,
+                line_id=body.product_line_id,
+                tavily_api_key=_tavily_key(),
+                firecrawl_api_key=_firecrawl_key(),
+            ),
         ).search(context, space_id, body)
     except Exception as error:
         raise _failure(error) from error
@@ -1923,5 +1994,50 @@ def rfq_ai_confirm(
     no_store(response)
     try:
         return ProductRfqRequirements(engine).confirm(context, space_id, body)
+    except Exception as error:
+        raise _failure(error) from error
+
+
+@router.post("/spaces/{space_id}/evidence-ai-item")
+def evidence_ai_item(
+    space_id: UUID,
+    body: EvidenceItemRead,
+    response: Response,
+    context: Context,
+    engine: Database,
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return ProductEvidenceItems(engine).read_item(context, space_id, body)
+    except Exception as error:
+        raise _failure(error) from error
+
+
+@router.post("/spaces/{space_id}/evidence-ai-item-review")
+def evidence_ai_item_review(
+    space_id: UUID,
+    body: EvidenceItemReview,
+    response: Response,
+    context: Context,
+    engine: Database,
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return ProductEvidenceItems(engine).review_item(context, space_id, body)
+    except Exception as error:
+        raise _failure(error) from error
+
+
+@router.post("/spaces/{space_id}/evidence-ai-item-apply")
+def evidence_ai_item_apply(
+    space_id: UUID,
+    body: EvidenceFindingApply,
+    response: Response,
+    context: Context,
+    engine: Database,
+) -> dict[str, Any]:
+    no_store(response)
+    try:
+        return ProductEvidenceItems(engine).apply_item(context, space_id, body)
     except Exception as error:
         raise _failure(error) from error

@@ -1,0 +1,15 @@
+{
+  "applied_at": "2026-10-04T01:45:03.953056+00:00",
+  "files": [
+    {
+      "path": "tools/wave22_followup_control.py",
+      "sha256": "5196b20a17c6fa6ae1fe0c9128e7f9eb734de3931edb29912fcaaae0302d59b5"
+    },
+    {
+      "path": "tools/tests/test_wave22_followup_control.py",
+      "sha256": "931874ad10acdff1355a1df65489cec33f7a7691a7071cc1c46833471954c127"
+    }
+  ],
+  "runtime_or_profile_changes": false,
+  "business_execution": false
+}

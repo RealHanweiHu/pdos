@@ -1,0 +1,453 @@
+{
+  "result": "passed",
+  "verified_at_utc": "2026-10-03T02:54:41.203962+00:00",
+  "unique_passed": 1598,
+  "failed": 0,
+  "skipped": 0,
+  "group_count": 57,
+  "actual_file_count": 64,
+  "selector_count": 167,
+  "raw_run": {
+    "passed": 1589,
+    "failed": 9,
+    "log": "joint-result.json",
+    "wall_seconds_including_corrective_check_barrier": 3950.38
+  },
+  "final_groups": {
+    "pure": {
+      "failed": 0,
+      "passed": 960,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 12.89,
+      "replacement_log": "joint-pure-post-start-repair.log",
+      "elapsed_origin": "Original child pytest only; linked repair log has its own elapsed, not combined as a benchmark."
+    },
+    "build_start-0": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 125.75
+    },
+    "build_start-1": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 64.63
+    },
+    "build_start-2": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 69.58
+    },
+    "build_start-3": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 91.48
+    },
+    "build_operational_facts-0": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 25.3
+    },
+    "build_operational_facts-1": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 34.68
+    },
+    "build_operational_facts-2": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 19.65
+    },
+    "build_operational_facts-3": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 22.49
+    },
+    "sample_handoff-0": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 171.84
+    },
+    "sample_handoff-1": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 205.44
+    },
+    "sample_handoff-2": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 240.18
+    },
+    "sample_handoff-3": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 104.14
+    },
+    "verification_handoff-0": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 494.73
+    },
+    "verification_handoff-1": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 478.07
+    },
+    "verification_handoff-2": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 483.15
+    },
+    "verification_handoff-3": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 575.09
+    },
+    "test_resources-0": {
+      "failed": 0,
+      "passed": 3,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 1152.5,
+      "replacement_log": "recheck-destructive-replay.log",
+      "elapsed_origin": "Original child pytest only; linked repair log has its own elapsed, not combined as a benchmark."
+    },
+    "test_resources-1": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 503.77
+    },
+    "test_resources-2": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 858.23
+    },
+    "test_resources-3": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 925.8
+    },
+    "verification_launch-0": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 1248.48
+    },
+    "verification_launch-1": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 853.13
+    },
+    "verification_launch-2": {
+      "failed": 0,
+      "passed": 5,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 2223.58,
+      "replacement_log": "recheck-launch-replay.log",
+      "elapsed_origin": "Original child pytest only; linked repair log has its own elapsed, not combined as a benchmark."
+    },
+    "verification_launch-3": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 987.2
+    },
+    "test_build_execution-0": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 140.36
+    },
+    "test_build_execution-1": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 171.43
+    },
+    "test_build_execution-2": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 124.34
+    },
+    "test_build_execution-3": {
+      "failed": 0,
+      "passed": 15,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 122.76,
+      "replacement_log": "recheck-legacy-contracts.log",
+      "elapsed_origin": "Original child pytest only; linked repair log has its own elapsed, not combined as a benchmark."
+    },
+    "test_verification_execution-0": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 85.02
+    },
+    "test_verification_execution-1": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 67.42
+    },
+    "test_verification_execution-2": {
+      "failed": 0,
+      "passed": 5,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 73.54,
+      "replacement_log": "recheck-legacy-contracts.log",
+      "elapsed_origin": "Original child pytest only; linked repair log has its own elapsed, not combined as a benchmark."
+    },
+    "test_verification_execution-3": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 79.52
+    },
+    "tests-test_cost_execution": {
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 233.15
+    },
+    "products-test_definition_transactions": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 5.23
+    },
+    "products-test_variants_transactions": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 24.64
+    },
+    "professional_authority-test_transactions": {
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 27.65
+    },
+    "providers-test_persistent_budget_transactions": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 10.2
+    },
+    "tests-test_build_comparison": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 0.01
+    },
+    "tests-test_build_demand": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 96.7
+    },
+    "tests-test_build_readiness": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 0.07
+    },
+    "tests-test_build_start_common": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 0.07
+    },
+    "tests-test_builds": {
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 76.62
+    },
+    "tests-test_checkpoint_recovery": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 7.35
+    },
+    "tests-test_configurations": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 35.64
+    },
+    "tests-test_durable_evidence": {
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 9.42
+    },
+    "tests-test_handoff_common": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 0.07
+    },
+    "tests-test_launch_common": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 0.15
+    },
+    "tests-test_launch_storage": {
+      "failed": 0,
+      "passed": 3,
+      "warning": 1,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 820.59,
+      "replacement_log": "recheck-storage-sentinel-order.log",
+      "elapsed_origin": "Original child pytest only; linked repair log has its own elapsed, not combined as a benchmark."
+    },
+    "tests-test_original_security": {
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 25.9
+    },
+    "tests-test_project_first_plan": {
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 17.08
+    },
+    "test_resources-test_rules": {
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 0.17
+    },
+    "tests-test_supply_execution": {
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 193.63
+    },
+    "tests-test_trusted_source_work": {
+      "passed": 34,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 14.72
+    },
+    "verification_front-test_read_concurrency_transactions": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 2.1
+    },
+    "verification_front-test_transactions": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 242.4
+    },
+    "lifecycle-isolated": {
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "pytest_elapsed_seconds": 70.59
+    }
+  },
+  "failed_case_replacements": [
+    {
+      "group": "pure",
+      "failed_cases_replaced": 2,
+      "log": "joint-pure-post-start-repair.log",
+      "counted_passes_added_to_original": 2,
+      "source_provenance": "Recorded repair manifest and source archives",
+      "exact_node_ids": [
+        "tests/professional_authority/test_assessment.py::test_missing_qualification_is_null_and_operation_and_purpose_are_exact",
+        "tests/verification_handoff/test_pure.py::test_history_is_guarded_but_does_not_repeat_current_actions_or_next_owners"
+      ]
+    },
+    {
+      "group": "test_resources-0",
+      "failed_cases_replaced": 1,
+      "log": "recheck-destructive-replay.log",
+      "counted_passes_added_to_original": 1,
+      "source_provenance": "Recorded repair manifest and source archives",
+      "exact_node_ids": [
+        "tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked"
+      ]
+    },
+    {
+      "group": "verification_launch-2",
+      "failed_cases_replaced": 3,
+      "log": "recheck-launch-replay.log",
+      "counted_passes_added_to_original": 3,
+      "source_provenance": "Recorded repair manifest and source archives",
+      "exact_node_ids": [
+        "tests/verification_launch/test_transactions.py::test_same_key_and_cross_key_same_intent_replay_do_not_duplicate_truth[test.run.plan]",
+        "tests/verification_launch/test_transactions.py::test_same_key_and_cross_key_same_intent_replay_do_not_duplicate_truth[verification.schedule.promise]",
+        "tests/verification_launch/test_transactions.py::test_same_key_and_cross_key_same_intent_replay_do_not_duplicate_truth[test.run.start]"
+      ]
+    },
+    {
+      "group": "test_build_execution-3",
+      "failed_cases_replaced": 1,
+      "log": "recheck-legacy-contracts.log",
+      "counted_passes_added_to_original": 1,
+      "source_provenance": "Recorded repair manifest and source archives",
+      "exact_node_ids": [
+        "tests/test_build_execution.py::test_unknown_preparation_does_not_enable_start_or_quality_execution[test.run.start]"
+      ]
+    },
+    {
+      "group": "test_verification_execution-2",
+      "failed_cases_replaced": 1,
+      "log": "recheck-legacy-contracts.log",
+      "counted_passes_added_to_original": 1,
+      "source_provenance": "Recorded repair manifest and source archives",
+      "exact_node_ids": [
+        "tests/test_verification_execution.py::test_preparation_does_not_grant_professional_or_physical_authority"
+      ]
+    },
+    {
+      "group": "tests-test_launch_storage",
+      "failed_cases_replaced": 1,
+      "log": "recheck-storage-sentinel-order.log",
+      "counted_passes_added_to_original": 1,
+      "source_provenance": "Recorded repair manifest and source archives",
+      "exact_node_ids": [
+        "tests/test_launch_storage.py::test_corrupt_new_start_atom_rolls_back_all_eight_storage_boundaries[launch_work0]"
+      ]
+    }
+  ],
+  "success_case_replaced_without_extra_count": {
+    "node": "tests/verification_launch/test_transactions.py::test_inputs_are_readonly_even_when_sentinels_do_not_exist",
+    "log": "recheck-default-fixture-final-result.json"
+  },
+  "duplicate_success_checks_not_added": [
+    "68 scoped pure repair checks",
+    "early minimal checks",
+    "helper packages separate from backend selection",
+    "all replaced nodes already included in unique count"
+  ],
+  "final_production_candidate_frozen_before_joint": true,
+  "test_only_delta_verification_recorded": true,
+  "structural_group_isolated_after_all_regular_and_corrective_pg_checks": true,
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c"
+}

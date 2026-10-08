@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture"
+  ],
+  "candidate": "backend-candidate-v3-source.json",
+  "candidate_sha256": "8f5e7542818773af2d0f341af40896550c2bfb74be246eaa49698f43eba23833",
+  "exit_code": 1,
+  "seconds": 2234.64
+}

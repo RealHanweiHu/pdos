@@ -39,7 +39,7 @@ async function readOriginal(file: File, space: string): Promise<Original> {
     !Array.isArray(suite.cases) || !suite.cases.length || suite.cases.length > 100 ||
     suite.cases.some((item: Case) => !item || typeof item.case_id !== "string" || !sha.test(item.source_sha256 ?? "") || item.source?.market_space_id !== space || !item.source.selection) ||
     new Set(suite.cases.map((item: Case) => item.case_id)).size !== suite.cases.length) {
-    throw new Error("参考文件格式或市场空间不符。每份文件须包含同一能力的1～100个不同样例，并属于当前市场空间。");
+    throw new Error("参考文件格式或品类不符。每份文件须包含同一能力的1～100个不同样例，并属于当前品类。");
   }
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return { name: file.name, document, suite, sha256: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("") };

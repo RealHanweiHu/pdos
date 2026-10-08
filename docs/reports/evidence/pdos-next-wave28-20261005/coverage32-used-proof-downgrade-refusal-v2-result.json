@@ -1,0 +1,30 @@
+{
+  "status": "PASS_ACTUAL_USED_COVERAGE_DOWNGRADE_REFUSAL",
+  "failure": null,
+  "schema_head": "next_0032",
+  "expected_head": "next_0032",
+  "downgrade_target": "next_0031",
+  "table_count": 125,
+  "actual_fact_count": 1,
+  "all_125_complete_row_hashes_unchanged": true,
+  "complete_catalog_unchanged": true,
+  "agent_effective_direct_dml": 0,
+  "environment_port": 62158,
+  "shared_62513_used": false,
+  "downgrade_attempted": true,
+  "downgrade_exit_code": 1,
+  "exact_refusal_message": "Retained coverage publication prevents destructive downgrade",
+  "actual_migration_sha256": "49d92fe2ce3289d52d7294d6996f9e543914e8a7e1cb2852cb6d2910046ff87d",
+  "expected_migration_sha256": "49d92fe2ce3289d52d7294d6996f9e543914e8a7e1cb2852cb6d2910046ff87d",
+  "backup": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/coverage32-used-proof-downgrade-refusal-v2.dump",
+    "bytes": 2034996,
+    "sha256": "12dbf43ac33befcd695a95914b329d93756ee0c19402da0ae5b3fd67d692b3f5",
+    "sha256_unchanged": true,
+    "mode": "0600"
+  },
+  "before_snapshot_sha256": "51d7d03b05bc28f4227e9541b91c2f14281d57e795db70bfe1dde68d3401c8a1",
+  "after_snapshot_sha256": "51d7d03b05bc28f4227e9541b91c2f14281d57e795db70bfe1dde68d3401c8a1",
+  "redacted_log_sha256": "07e5d306fd84ff19548688bbf9dd0091e422c8bfa1d736c68a1d8914ab00acef",
+  "source_qualification_or_publication_verified_here": false
+}

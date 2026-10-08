@@ -1,0 +1,10 @@
+{
+  "schema_version": "staged-ui-state-source.v1",
+  "files": {
+    "pdos-next/staging/wave17/ui-contract.ts": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+    "pdos-next/staging/wave17/ui-state.ts": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+    "pdos-next/staging/wave17/ui-state.test.ts": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+    "pdos-next/staging/wave17/ui-state-contract.md": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7"
+  },
+  "scope": "Four new staged files; no public wiring"
+}

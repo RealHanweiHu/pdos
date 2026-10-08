@@ -26,6 +26,7 @@ from sqlalchemy import Connection, Engine, RowMapping, select, text
 
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation, StructuredModelGateway
 from app.ai.import_mapping_runs import ImportMappingRunError, ImportMappingRunStore
 from app.ai.model_catalog import AgentTier
@@ -320,6 +321,7 @@ class TestReportImportService:
             ) from error
         return context.user.auth_version
 
+    @agent_entry
     def start_import(
         self,
         *,

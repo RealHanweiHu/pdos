@@ -95,7 +95,7 @@ export function GlobalSearch() {
   if (!identity) return <p role="status" className="p-6 text-sm">{error ?? "正在读取搜索权限…"}</p>;
   const terms = Array.isArray(shown?.terms) ? shown.terms.map(String) : [];
   return <WorkspaceShell active="search" identity={identity} loggingOut={loggingOut} onLogout={() => { setLoggingOut(true); void fetch("/api/session/logout", { method: "POST" }).finally(() => router.replace("/login")); }}>
-    <main className="mx-auto max-w-5xl space-y-5 p-4 sm:p-6"><header><h1 className="text-2xl font-semibold">搜索</h1><p className="mt-2 text-sm text-muted-foreground">查找业务记录、附件正文与已审核知识。仅返回当前有权读取的资料；私人附件仅限本人会话。</p></header>
+    <section aria-label="搜索工作区" className="mx-auto max-w-5xl space-y-5"><header><h1 className="text-lg font-semibold tracking-tight">搜索</h1><p className="mt-2 text-sm text-muted-foreground">查找业务记录、附件正文与已审核知识。仅返回当前有权读取的资料；私人附件仅限本人会话。</p></header>
       <form key={signature} className="space-y-3 rounded-lg border bg-card p-4" onSubmit={e => { e.preventDefault(); const form = new FormData(e.currentTarget); const next = new URLSearchParams(); const entered = text(form.get("q")).trim(); if (!entered) { setError("请填写搜索词"); return; } next.set("q", entered); if (form.get("project")) next.set("project", text(form.get("project"))); if (form.get("kind")) next.set("kind", text(form.get("kind"))); setError(null); setSelected(null); setResultSignature(""); if (JSON.stringify([entered, text(form.get("project")), text(form.get("kind"))]) === signature) setRefresh(value => value + 1); router.push(`/search?${next}`); }}>
         <label className="block text-sm font-medium" htmlFor="global-search-query">关键词或编号</label><div className="flex gap-2"><input id="global-search-query" name="q" required maxLength={200} defaultValue={query} className="min-w-0 flex-1 rounded-md border bg-background px-3 py-2 text-sm" placeholder="例如：密封 泄漏，或样机编号 SN-120"/><Button type="submit"><MagnifyingGlassIcon aria-hidden="true" className="mr-1 size-4"/>搜索</Button></div>
         <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm">资料范围<select name="project" defaultValue={project} className="mt-1 w-full rounded-md border bg-background p-2"><option value="">全部可访问资料</option>{projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label><label className="text-sm">资料类型<select name="kind" defaultValue={kind} className="mt-1 w-full rounded-md border bg-background p-2"><option value="">全部类型</option>{Object.entries(kinds).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label></div>
@@ -109,6 +109,6 @@ export function GlobalSearch() {
         {shown.next_cursor != null && <Button type="button" variant="outline" disabled={loading} onClick={() => void more()}>{loading ? "正在读取…" : "更多结果"}</Button>}
       </>}
       {!query.trim() && <p className="text-sm text-muted-foreground">输入关键词开始。知识只包含已审核且来源仍有效的内容；搜索结果不代表测试通过、专业批准或业务承诺。</p>}
-    </main>
+    </section>
   </WorkspaceShell>;
 }

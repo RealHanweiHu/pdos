@@ -1,0 +1,55 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T13:42:05.639710+00:00",
+  "steps": [
+    {
+      "step": "actual-inputs",
+      "http_status": 200,
+      "duration_seconds": 183.011,
+      "response_sha256": "ceb1fa17f4df2c15c87a720944e9586bb83d117f40fab10c1696f1c8fbc837eb",
+      "error_code": null
+    },
+    {
+      "step": "actual-preview",
+      "http_status": 200,
+      "duration_seconds": 174.245,
+      "response_sha256": "f2366cbf03a0652c605e65f9ddf0d31c7a3473c49e0f28b6283383f76265f16b",
+      "error_code": null
+    },
+    {
+      "step": "actual-save",
+      "http_status": 200,
+      "duration_seconds": 569.399,
+      "response_sha256": "d26e3d43711e48dcb58c502d87747ed2ca6534356e5ccaf810cb1fd5cdf68576",
+      "error_code": null
+    }
+  ],
+  "source_manifest_sha256": "b54535ca9ec12b5343bb7e3d4fd5622e207d7127db872ae4a34979522ab030b8",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "model_calls": 0,
+  "original_command_sha256": "f8cb6129288252cc34c3c744955035a6df24dab801e9755ad342e7df14f6ec07",
+  "full_source_read_count": 17,
+  "exception_type": "TimeoutError",
+  "diagnostic": "Private exception detail withheld",
+  "frames": [
+    {
+      "file": "client.py",
+      "line": 1430
+    },
+    {
+      "file": "client.py",
+      "line": 331
+    },
+    {
+      "file": "client.py",
+      "line": 292
+    },
+    {
+      "file": "socket.py",
+      "line": 720
+    }
+  ],
+  "finished_at": "2026-10-03T14:00:33.026342+00:00",
+  "source_stable": true
+}

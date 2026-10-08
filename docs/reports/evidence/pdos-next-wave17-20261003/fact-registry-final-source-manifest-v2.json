@@ -1,0 +1,21 @@
+{
+  "schema_version": "pdos-wave17-fact-registry-source-v2",
+  "observed_at": "2026-10-03T11:21:04.527939+00:00",
+  "source_files": {
+    "pdos-next/staging/wave17/fact_registry_storage.py": "18c7d06f06ee67d23ce82ef2ee6141781be4b7528f5d7a3325b6f02587ec46c7",
+    "pdos-next/staging/wave17/test_fact_registry_storage.py": "a83d76496b120493d1aa745ac7a99ad08b0e4c78a2195822f969d88ada62bea9",
+    "pdos-next/staging/wave17/fact-registry-storage-contract.md": "dd719baae48bb7eefa4ef9579f0cc2931a242634768f8217a7cbcbd50b1e9180"
+  },
+  "dependencies_observed_sha256": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "pdos-next/staging/wave17/test_fact_storage_codec.py": "6b7e124d5b01d06896fabc129b51160da96d96261779975a5cf9027e478d0726",
+    "pdos-next/staging/wave17/fact-storage-contract.md": "eb020013ea6f10c7ca8ee6959bc361ef878679317fe1ea485d9a5a6c6e9f9f85",
+    "pdos-next/staging/wave17/fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "pdos-next/staging/wave17/facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/lineage.py": "252a11c5a48f9d6db8a270e07f979ae1437de4156bd1b16d6fe4bd7dcea6dcce"
+  },
+  "all_listed_frozen_dependencies_unchanged": true,
+  "scope": "Three new staged files only; exact registry/raw reader. Not a public backend candidate or formal Exit."
+}

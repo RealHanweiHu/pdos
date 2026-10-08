@@ -1,0 +1,19 @@
+{
+  "scope": "Affected process files; unrelated shared changes excluded",
+  "sha256": {
+    "server/app/ai/reply_progress.py": "57a44a20f73c9609e6b3d0cf396bfb7f003a5c579748e61ead5532dc4e1986ca",
+    "server/app/ai/provider_streaming.py": "6999d856cddebe554c5381e8efc0c55996d3209e38a6a2b8eea6d38fd63a1685",
+    "server/app/ai/conversation_reply.py": "f515059bcf989001c3c741aff3b80e1d47d33db052cf9e1536977a66b6c2169c",
+    "server/app/ai/conversation_research.py": "1e8a56068e34e4a9069c554c9319cee3545bbc445ee32bf72d37e9f2854b50b5",
+    "server/app/ai/prompts/xiaopai_reply_v3.json": "92e60401023e2d41c81969ae5aa222739b9cb707a9d04ada3bf9da56f8ac118c",
+    "server/app/ai/prompts/preproject_dialogue_v2.json": "5c8e2f3dcd8a6e359791c868c6ef43b2a279c41063a3c2dd1ed7b1cc2806d315",
+    "server/tests/test_reply_progress.py": "9be5deb9f769b1dd6f79c5d460a27428565b155fcc20b33405cabab6710079f6",
+    "server/tests/test_xiaopai_reply_streaming.py": "7e6fbe141ae5e0e591d4c353bd14b1e7c9cb6d524258063bded20fc7c15928b0",
+    "server/tests/test_xiaopai_conversation_reply_api.py": "dc111a753c46834a44b1ac6b33ce29311d3fdb60f2a82f50afd4eaaa705d33c8",
+    "server/tests/test_preproject_dialogue_api.py": "2fed5547202dbabe35620a6770852bc11a03c5854cbda26e5c0422ce8abcab06",
+    "web/src/components/ai/xiaopai-process.tsx": "c45fabb41c0bebbc1b203064e0f540a5568835a66512eee4f3675130637f5df7",
+    "web/src/components/ai/xiaopai-session.tsx": "de759d22c2e4eb2f3ca9c70802cf12049e098e4843972b2dde0e514fca4a24d3",
+    "web/src/components/ai/xiaopai-process.test.tsx": "bcf701d4d6c95937ba44f9dae0e975532c56384976d682dd9d14af51950c401a",
+    "web/src/components/ai/xiaopai-session.test.tsx": "66525147e90bc25c427bc5a43cac818af1672e0c7e0e3e7fb5d4ebb309e397c6"
+  }
+}

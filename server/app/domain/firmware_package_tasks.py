@@ -174,7 +174,16 @@ def read(
                     u.c.tenant_id == context.tenant.id,
                     m.c.project_id == project_id,
                     u.c.is_active.is_(True),
-                    u.c.role.in_(["owner", "admin", "project_manager", "engineer", "quality"]),
+                    u.c.role.in_(
+                        [
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        ]
+                    ),
                 )
                 .order_by(u.c.display_name, u.c.id)
             ).mappings()

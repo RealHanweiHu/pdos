@@ -1,0 +1,7 @@
+{
+  "status": "STOPPED_BEFORE_ASSESSMENT_WRITE",
+  "failure": "GET attempted while newly launched API was not ready",
+  "assessment_original_request_exists": false,
+  "saved_receipts_preserved": 4,
+  "resolution": "Actual health200 confirmed; continue from operational checkpoint with no unknown write/replacement"
+}

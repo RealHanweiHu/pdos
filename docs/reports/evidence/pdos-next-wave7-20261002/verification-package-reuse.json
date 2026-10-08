@@ -1,0 +1,17 @@
+{
+  "source_candidate": "docs/reports/evidence/pdos-next-verification-20261002/candidate.json",
+  "source_candidate_file_sha256": "c078bd8c8ed0605145794e3c1d7974939efc0833f6aef1b618ecd2071a4c28f3",
+  "declared_candidate_sha256": "44588c11212888059b0a4061e36046dcbe5aad536ed6c9ef5dd4d335955062a9",
+  "files_checked": 25,
+  "changed": [],
+  "reuse": [
+    "schemas.verification DTOs for draft reading",
+    "rules.document_gaps and coverage_gaps",
+    "compatible read-only verification presentation"
+  ],
+  "not_reused": [
+    "VerificationHandler authority/confirmation/execution ports are not replaced with fake qualification",
+    "physical handoff/acceptance/Run/start/import is not enabled",
+    "separate package test counts are not added to mainline checks"
+  ]
+}

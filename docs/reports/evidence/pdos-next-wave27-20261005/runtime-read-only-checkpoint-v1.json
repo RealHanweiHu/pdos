@@ -1,0 +1,23 @@
+{
+  "status": "PASS_ACTUAL_NEW_BACKEND_HEALTH_POLLER_AND_OLD_EXPIRED_AUTH",
+  "final_head": "next_0029",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "api_health_status": 200,
+  "actual_api_pid": 34014,
+  "actual_worker_pid": 34015,
+  "current_worker_poller_seen": {
+    "workflow": true,
+    "activity": true
+  },
+  "old_quality_http_status": 401,
+  "old_quality_code": "UNAUTHENTICATED",
+  "old_quality_read_seconds": 40.435,
+  "old_expired_session_or_grant_extended": false,
+  "all_122_complete_table_row_hashes_unchanged_during_readback": true,
+  "business_commands": 0,
+  "professional_qualification_imports": 0,
+  "model_calls": 0,
+  "current_web_built_or_validated": false,
+  "actual_old_quality_page_now_operable": false
+}

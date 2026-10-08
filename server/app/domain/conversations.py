@@ -258,6 +258,8 @@ class ConversationService:
         expected_context_version: int,
         body: str,
         action: str = "note",
+        reply_only: bool = False,
+        preproject_goal: str | None = None,
         transcript_id: UUID | None = None,
         expected_digest: str | None = None,
         expected_minutes_version: int | None = None,
@@ -275,6 +277,10 @@ class ConversationService:
         matrix_selection: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         body = body.strip()
+        if reply_only and (
+            action != "note" or attachment_ids or product_sources or matrix_selection
+        ):
+            raise ConversationError("普通会话回复不混用专业办理参数；附件请从资料入口明确选择")
         if action not in ACTIONS or not 1 <= len(body) <= 2000:
             raise ConversationError("请填写1至2000字说明并选择已接通的办理方式")
         with (
@@ -282,6 +288,12 @@ class ConversationService:
             c.begin(),
         ):
             conversation = self._conversation(c, context, conversation_id, lock=True)
+            if preproject_goal:
+                from app.domain.preproject_dialogue import authorize_goal
+
+                if not reply_only:
+                    raise ConversationError("请通过小Pai对话继续品类或提案")
+                authorize_goal(c, context, conversation, preproject_goal)
             if conversation["scope_kind"] != "project":
                 from app.domain.conversation_product_work import save
 
@@ -316,6 +328,8 @@ class ConversationService:
                     attachment_selections=attachment_selections,
                     product_sources=product_sources or [],
                     matrix_selection=matrix_selection,
+                    reply_only=reply_only,
+                    preproject_goal=preproject_goal,
                 )
             if product_sources or matrix_selection is not None or attachment_selections is not None:
                 raise ConversationError("项目会话不混用产品研究来源")
@@ -328,6 +342,7 @@ class ConversationService:
                     dict(
                         body=body,
                         action=action,
+                        **({"reply_only": True} if reply_only else {}),
                         **(
                             {"meeting_planning_brief_id": meeting_planning_brief_id}
                             if meeting_planning_brief_id is not None

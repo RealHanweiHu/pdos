@@ -1,0 +1,66 @@
+[
+  {
+    "username": "owner",
+    "authenticated": true,
+    "counts": {
+      "tasks": 1,
+      "issues": 0,
+      "risks": 1,
+      "capa_actions": 0,
+      "gate_signoffs": 0,
+      "findings": 0,
+      "cross_schedule_approvals": 0,
+      "id_design_actions": 0,
+      "change_execution_confirmations": 0,
+      "risk_followup_actions": 0,
+      "task_takeover_actions": 0,
+      "cost_freeze_approvals": 0
+    },
+    "task_title": "核对试制范围与跨岗位责任（合成）",
+    "identity_role": "owner"
+  },
+  {
+    "username": "engineer",
+    "authenticated": true,
+    "counts": {
+      "tasks": 1,
+      "issues": 1,
+      "risks": 0,
+      "capa_actions": 0,
+      "gate_signoffs": 0,
+      "findings": 0,
+      "cross_schedule_approvals": 0,
+      "id_design_actions": 0,
+      "change_execution_confirmations": 0,
+      "risk_followup_actions": 0,
+      "task_takeover_actions": 0,
+      "cost_freeze_approvals": 0
+    },
+    "task_title": "核对样机配置并完成密封整改（合成）",
+    "identity_role": "engineer"
+  },
+  {
+    "username": "quality",
+    "authenticated": true,
+    "counts": {
+      "tasks": 1,
+      "issues": 1,
+      "risks": 0,
+      "capa_actions": 0,
+      "gate_signoffs": 0,
+      "findings": 0,
+      "cross_schedule_approvals": 0,
+      "id_design_actions": 0,
+      "change_execution_confirmations": 0,
+      "risk_followup_actions": 0,
+      "task_takeover_actions": 0,
+      "cost_freeze_approvals": 0
+    },
+    "task_title": "核对整改证据与安排独立复测（合成）",
+    "identity_role": "quality"
+  },
+  {
+    "page": "/login",
+    "status": 200
+  }
+]

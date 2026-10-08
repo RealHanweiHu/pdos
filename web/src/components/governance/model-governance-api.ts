@@ -59,11 +59,13 @@ function parseBudget(value: unknown): ModelBudget {
     value.daily_token_budget < 1 ||
     !isNonNegativeInteger(value.used_tokens_today) ||
     !isNonNegativeInteger(value.remaining_tokens_today) ||
+    (value.token_budget_enforced !== undefined && typeof value.token_budget_enforced !== "boolean") ||
     typeof value.exhausted !== "boolean"
   ) {
     throw new Error("invalid model budget");
   }
   return {
+    token_budget_enforced: value.token_budget_enforced !== false,
     daily_token_budget: value.daily_token_budget,
     used_tokens_today: value.used_tokens_today,
     remaining_tokens_today: value.remaining_tokens_today,

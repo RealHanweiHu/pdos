@@ -1,0 +1,104 @@
+{
+  "schema_version": "pdos-root-current-read-profile-v1",
+  "case_label": "wave27_real_flow",
+  "elapsed_ns": 12083768250,
+  "scope": {
+    "root_thread_only": true,
+    "same_actual_engine_only": true,
+    "source_bindings_captured_before_install": true,
+    "sections_are_explicit_labels_not_inferred_sleep": true,
+    "nested_inclusive_durations_overlap_do_not_sum": true,
+    "instrumentation_overhead_is_included": true,
+    "existing_local_aliases_may_bypass_wrapped_module_attributes": true,
+    "no_domain_clock_transaction_return_value_owner_read_set_changed": true,
+    "sql_params_text_rows_credentials_emitted": false
+  },
+  "source_bindings": {
+    "physical._basis": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_basis",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "physical._inspect": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_inspect",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "front._recheck": {
+      "module": "pdos_next.domain.verification_front.service",
+      "qualname": "_recheck",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_front/service.py",
+      "file_sha256": "dcb1196a83cd28fbb3a41e53322c75a2ee9ecb83520ebbf6b5472d0dd491293c"
+    },
+    "resources._load": {
+      "module": "pdos_next.domain.test_resources.service",
+      "qualname": "_load",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/service.py",
+      "file_sha256": "1a21caa42b460b5ef4fed1ae2fc3e00a647100b6222ae7ace088a7cc1053e1b7"
+    },
+    "retained.inspect": {
+      "module": "pdos_next.domain.test_resources.retained",
+      "qualname": "inspect_retained_execution",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/retained.py",
+      "file_sha256": "aa8179e86d2766daafa2910a9fb2e08c290d9a9e34f3fbe34d68b9c88d591716"
+    }
+  },
+  "profiler_sha256": "622c61bf08d41d5a89f06ccf1ffdabf2597fb4d2ca50dfe98fb364bba1ec8086",
+  "owners": {},
+  "sections": {
+    "plan_promise": {
+      "calls": 1,
+      "inclusive_ns": 12004346541,
+      "exclusive_ns": 12004346541
+    }
+  },
+  "query_count": 4,
+  "queries": [
+    {
+      "statement_sha256": "27b3fc7b106465f15c3072225b2da1bc2cd5e4cea3399cb1603353e9e7d61c22",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1914042
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 969042
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1724292
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1849625
+    }
+  ],
+  "conditions": {
+    "unfinished_queries": 0
+  },
+  "measurement_is_not_qualification_or_execution_permission": true
+}

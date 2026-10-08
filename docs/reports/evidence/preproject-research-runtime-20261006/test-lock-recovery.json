@@ -1,0 +1,13 @@
+{
+  "container": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "database": "pdos_test",
+  "port_before": 52906,
+  "head": "0429_preview_legacy_usage_holds",
+  "tenants_before": 1,
+  "synthetic_tenants_cleared_after_backup": true,
+  "initial_probe": "refused on nonzero synthetic tenants; backed up before clearing",
+  "max_locks_before": "64",
+  "max_locks_after_restart": 2048,
+  "private_backup": "/Users/huhanwei/pdos-preview-backups/auto-research-test-20261007-024243/pdos_test-before-lock-check.dump",
+  "main_database_untouched": true
+}

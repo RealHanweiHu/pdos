@@ -1,0 +1,12 @@
+[
+  {
+    "name": "results-chain",
+    "node": "tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution",
+    "exit_code": 1
+  },
+  {
+    "name": "results-outbox",
+    "node": "tests/verification_results/test_transactions.py::test_import_last_outbox_failure_rolls_back_measurements_projection_chain_and_token",
+    "exit_code": 1
+  }
+]

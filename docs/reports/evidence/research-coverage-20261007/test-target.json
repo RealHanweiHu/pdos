@@ -1,0 +1,9 @@
+{
+  "container_id": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "database": "pdos_test",
+  "host": "127.0.0.1",
+  "port": 60638,
+  "volume": "b70319901940c66e3136427eb9c45b8ecee5b933934dd90a069f533bf064c94e",
+  "test_database_url_explicit": true,
+  "head_before": "0431_conversation_research_exploration"
+}

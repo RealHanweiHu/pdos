@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-07T01:56:13.421346+00:00",
+  "human_reply": "好的",
+  "approved_scope": "The immediately preceding explicit request: at most four real MiniMax-M3 synthetic metering calls, max_tokens=32 per call, no automatic retries, save observations and prepare a package for human review.",
+  "destination": "https://api.minimaxi.com/v1",
+  "model": "MiniMax-M3",
+  "estimated_total_input_tokens": 16604,
+  "maximum_requested_total_output_tokens": 128,
+  "customer_or_business_materials_included": false,
+  "qualification_publication_approved": false,
+  "production_enablement_approved": false
+}

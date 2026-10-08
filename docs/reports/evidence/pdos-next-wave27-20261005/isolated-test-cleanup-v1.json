@@ -1,0 +1,13 @@
+{
+  "status": "PASS_ROOT_INDEPENDENT_TEST_BACKUP_AND_CLEANUP",
+  "target": "127.0.0.1:63866/pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "container_id": "bf1927272e9e0c7e9a8fb20b18169559a41fff3aa69f20764c509d3a2bddba4a",
+  "backup": {
+    "private_path": ".local/wave27-isolated-final-validated.dump",
+    "mode": "0600",
+    "bytes": 2336353,
+    "sha256": "fac5d112e40e0d1c23cadd8000575a778df48abed1b04cd5050c515be2b107d3"
+  },
+  "retained_62513_state_65109_temporal_65425_57432_unchanged": true
+}

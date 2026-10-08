@@ -77,7 +77,7 @@ def _participant(
                 tables.users.c.id == user_id,
                 tables.users.c.is_active.is_(True),
                 tables.users.c.role.in_(
-                    ("owner", "admin", "project_manager", "engineer", "quality")
+                    ("owner", "admin", "product_manager", "project_manager", "engineer", "quality")
                 ),
             )
         ).first()

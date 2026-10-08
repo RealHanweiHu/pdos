@@ -1,0 +1,33 @@
+{
+  "base_commit": "7922b460f58cf7bff3479bffe302861f13438c1d",
+  "head": "0423_xiaopai_conversation_search",
+  "files_sha256": {
+    "server/app/ai/conversation_reply.py": "92c6771fab0cc4f717bb72fadd4e2e522e71e82a4bb9a56da5e2abd22abd8945",
+    "server/app/ai/conversation_research.py": "fccd997ab942969e9c42189066d778f977c036dae0c4e3a7da07147c11b1ae58",
+    "server/app/ai/prompts/xiaopai_reply_v2.json": "91b7c55b7d4e1c118073928df8b1ec0f630d984f9dbc33f877c6a061b9292596",
+    "server/app/ai/application_authorization.py": "ad13018dc2f4c6a3e2f065203766e83667fe3fdef7edbfd7a97640c46be77c1e",
+    "server/app/ai/application_domain_context.py": "f7caf7a291ae28f0f8349e26fa23264d6915ca576628ed77fd2bb1997bcd5b06",
+    "server/app/ai/context_projection.py": "4214cdbce2280baf72ee4a24f5d92d1bf6e5a873cc7c03a4c584361645d8f2e0",
+    "server/app/ai/research_search.py": "3613ba76a3f21a7d6b43b2358ea85f2213ad20af914b932fff4486dda723d8f3",
+    "server/app/api/product_research.py": "8af05559dbc5e986fbcb6888d9a7655ab34244b98e6e35d15c91124306e3319f",
+    "server/migrations/versions/0423_xiaopai_conversation_search.py": "20d6e3821dd89d6b78b8d98b2fa226915940d67ab8106b3b60da664acf4b718b",
+    "server/tests/test_xiaopai_conversation_search.py": "f2838140b22dfd03af3560fd72dfb133deb8c43ed1895da61418c05002fd365a",
+    "server/tests/test_xiaopai_conversation_reply_api.py": "c9c46a98ce996b79184c508134b71a55e3b3cf8fc774d14bbeed4d297e8b8800",
+    "server/tests/test_migrations.py": "d770bf8cb479ae8ad7c61f8dcdc4a679d4ec50e2fecd885023e249fcf6bda1c2",
+    "web/src/components/ai/xiaopai-session.tsx": "c7c1f758a0bb200640d22bd9ee3db9c90f1ac7f6e91d576a83f62e4b65c37948",
+    "web/src/components/ai/xiaopai-session.test.tsx": "21015dc11b819d72bed4c5864d1c22f8b00374020dfe2ccb11f3fbce18d530a8"
+  },
+  "backend_unique_passed": 57,
+  "web_passed": 46,
+  "migration_history_passed": 1,
+  "preview": "http://127.0.0.1:3035/ask",
+  "preview_synthetic": true,
+  "temporary_test_database_cleaned": true,
+  "final_backend_delta_passed": 4,
+  "test_database_ports": [
+    49458,
+    54571
+  ],
+  "build_routes": 302,
+  "external_search_configured": false
+}

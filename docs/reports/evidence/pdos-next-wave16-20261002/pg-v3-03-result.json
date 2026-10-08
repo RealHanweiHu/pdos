@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_root/test_savepoint.py::test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back",
+  "exit_code": 0,
+  "seconds": 1963.16,
+  "source_stable": true,
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "log_file": "pg-v3-03.log",
+  "log_sha256": "391469273da63ef9dfb4eafac795c0de5641007d4a276de3037eb8a0db621808"
+}

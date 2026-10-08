@@ -1,0 +1,30 @@
+{
+  "previous_manifest": "backend-candidate-source.json",
+  "current_manifest": "backend-candidate-v2-source.json",
+  "previous_manifest_sha256": "650207f2f472a1c9b15d3a132e1d9a913bba3ab6718a239a51c0d159564a33b4",
+  "current_manifest_sha256": "d1823dafba0dbdefc495491b1445132a706693a0ee36b9254288f0d6572b3be8",
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/service.py",
+      "before_sha256": "284f5749ca953ec24127b6595f263f0165faa5d1992095cb4b7639deff845427",
+      "after_sha256": "4808a93ec42468f5d29cd1fcd6783f0fc98463d1d505a849a59eb79d29773d3f",
+      "reason": "Preserve original merged Issue history in scoped run/build selector, and verify current/history readonly boundary"
+    },
+    {
+      "path": "pdos-next/server/tests/quality_execution/test_transactions.py",
+      "before_sha256": "39ab50d9c1554d53ce953dcf272475326d799030098f66f545fcecb5dc5ee082",
+      "after_sha256": "23beff748a27840ef7c6fda0cea5243d50bc302e0e12ee2172ffab0bfe36a5d2",
+      "reason": "Preserve original merged Issue history in scoped run/build selector, and verify current/history readonly boundary"
+    }
+  ],
+  "rechecks": [
+    {
+      "nodes": [
+        "tests/quality_execution/test_transactions.py::test_one_result_event_with_two_failures_creates_two_then_merge_retains_recheck_block"
+      ],
+      "result_file": "merge-history-recheck-result.json",
+      "log_file": "merge-history-recheck.log"
+    }
+  ],
+  "unaffected_checks": "Original v1 PG nodes continue; no claim that the entire v2 source tree has been rerun"
+}

@@ -1,0 +1,35 @@
+{
+  "layouts": [
+    {
+      "height": 1000,
+      "name": "desktop-light",
+      "scrollWidth": 1440,
+      "theme": "light",
+      "width": 1440
+    },
+    {
+      "height": 1000,
+      "name": "desktop-dark",
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "width": 1440
+    },
+    {
+      "height": 844,
+      "name": "mobile-dark",
+      "scrollWidth": 390,
+      "theme": "dark",
+      "width": 390
+    },
+    {
+      "height": 844,
+      "name": "mobile-light",
+      "scrollWidth": 390,
+      "theme": "light",
+      "width": 390
+    }
+  ],
+  "no_horizontal_overflow": true,
+  "viewport_restored": true,
+  "theme_restored": "light"
+}

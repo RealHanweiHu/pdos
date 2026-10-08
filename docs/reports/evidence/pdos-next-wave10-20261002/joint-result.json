@@ -1,0 +1,117 @@
+{
+  "groups": {
+    "pure": {
+      "exit_code": 0,
+      "elapsed_seconds": 15.15,
+      "passed": 732
+    },
+    "products-test_definition_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 5.54,
+      "passed": 9
+    },
+    "products-test_variants_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 20.64,
+      "passed": 16
+    },
+    "professional_authority-test_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 23.08,
+      "passed": 27
+    },
+    "providers-test_persistent_budget_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 13.56,
+      "passed": 24
+    },
+    "tests-test_build_comparison": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.51,
+      "passed": 5
+    },
+    "tests-test_build_demand": {
+      "exit_code": 0,
+      "elapsed_seconds": 83.8,
+      "passed": 25
+    },
+    "tests-test_build_readiness": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.52,
+      "passed": 41
+    },
+    "tests-test_cost_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 184.88,
+      "passed": 37
+    },
+    "tests-test_checkpoint_recovery": {
+      "exit_code": 0,
+      "elapsed_seconds": 8.03,
+      "passed": 12
+    },
+    "tests-test_verification_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 215.99,
+      "passed": 32
+    },
+    "tests-test_configurations": {
+      "exit_code": 0,
+      "elapsed_seconds": 30.6,
+      "passed": 25
+    },
+    "tests-test_durable_evidence": {
+      "exit_code": 0,
+      "elapsed_seconds": 10.55,
+      "passed": 18
+    },
+    "tests-test_builds": {
+      "exit_code": 0,
+      "elapsed_seconds": 65.28,
+      "passed": 26
+    },
+    "tests-test_project_first_plan": {
+      "exit_code": 0,
+      "elapsed_seconds": 17.07,
+      "passed": 19
+    },
+    "tests-test_original_security": {
+      "exit_code": 0,
+      "elapsed_seconds": 24.11,
+      "passed": 26
+    },
+    "verification_front-test_read_concurrency_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 4.01,
+      "passed": 2
+    },
+    "tests-test_trusted_source_work": {
+      "exit_code": 0,
+      "elapsed_seconds": 15.05,
+      "passed": 34
+    },
+    "tests-test_build_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 348.03,
+      "passed": 60
+    },
+    "tests-test_supply_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 127.5,
+      "passed": 29
+    },
+    "verification_front-test_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 142.05,
+      "passed": 11
+    },
+    "lifecycle-isolated": {
+      "exit_code": 0,
+      "elapsed_seconds": 58.29,
+      "passed": 24
+    }
+  },
+  "total_passed": 1234,
+  "elapsed_seconds": 454.53,
+  "structural_tests_isolated": true
+}

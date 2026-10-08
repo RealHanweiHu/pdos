@@ -9,7 +9,7 @@ import type { MyWorkGateSignoff } from "./my-work-types";
 const slots: Record<string, string> = { product: "产品", engineering: "工程", quality: "质量" };
 const statuses: Record<string, string> = { pending: "待签核", approved: "通过", conditional: "有条件通过", rejected: "不通过", not_applicable: "不适用" };
 const requirements: Record<string, string> = { required: "必需签核", conditional: "允许有条件签核", not_applicable: "不适用" };
-const blockerTabs: Record<string, string> = { task: "work-items", issue: "work-items", risk: "work-items", sample: "npi", test: "npi", test_run: "npi", sample_signoff: "quality", ncr: "quality", capa: "quality", document: "documents" };
+const blockerTabs: Record<string, string> = { task: "work-items", issue: "work-items", risk: "work-items", sample: "quality", test: "quality", test_run: "quality", sample_signoff: "quality", ncr: "quality", capa: "quality", document: "documents" };
 type Outcome = "approved" | "conditional" | "rejected";
 
 export function GateSignoffWorkCard({ item, onChanged, onNotice }: {

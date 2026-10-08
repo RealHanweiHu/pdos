@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "status": "owned pure and static passed; no DB/HTTP qualification attested",
+  "test": {
+    "path": "pdos-next/server/tests/capa_effectiveness/test_common_execute_validation.py",
+    "sha256": "bb5f857d8ce6a1376fe837944ddca9aca9e72edd9d375eea15d9151bc4bac34a"
+  },
+  "common_source": {
+    "path": "pdos-next/server/pdos_next/service.py",
+    "sha256": "8eb1c988ccc01095db0dbb4c084fae555540035894d81a4fd47627fd8ba18602"
+  },
+  "checks": {
+    "owned_pure": {
+      "passed": 29,
+      "seconds": 1.06,
+      "exit_code": 0,
+      "conftest": false
+    },
+    "ruff_format_exit_code": 0,
+    "ruff_check_exit_code": 0,
+    "ast_compile_exit_code": 0
+  },
+  "raw_log": {
+    "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-common-validation-pure-v2.log",
+    "sha256": "60f2b962552d99f0670ea06805ae853a6d9ee091f4faf755f0c8964edcce2511"
+  },
+  "first_attempt": {
+    "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-common-validation-first-attempt-v1.md",
+    "passed": 25,
+    "failed": 4,
+    "seconds": 1.12,
+    "cause": "Offline Link token too short; real typed schema rejected before execute",
+    "raw_traceback_saved": false
+  },
+  "fixture_delta": {
+    "old_test_sha256": "96867def3f281a0bf613996f0752e76113f7e8a37a051891a8304636bdbb516c",
+    "only_change": "Synthetic Link token length satisfies existing minimum 20; all guards/assertions unchanged"
+  },
+  "prepatch_record": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-common-validation-test-prepatch-v1.json",
+  "actual_code_exercised": [
+    "Common execute",
+    "consume_material_confirmation",
+    "append_receipt",
+    "ConsumptionHost bind/capture/require_live",
+    "SQLAlchemy UOW/Confirmation False-to-True history"
+  ],
+  "explicit_substitutes": [
+    "SQL reads/flush",
+    "Owner I/O and current-gate outcomes",
+    "Access/source gates",
+    "Legacy marker callback",
+    "Receipt response serialization"
+  ],
+  "not_run": [
+    "Database",
+    "HTTP",
+    "Public pytest/build",
+    "Performance measurement"
+  ]
+}

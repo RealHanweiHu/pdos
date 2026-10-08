@@ -1,0 +1,73 @@
+{
+  "schema_version": "wave17-staged-paired-checks-v1",
+  "recorded_at": "2026-10-03T09:57:03.423461+00:00",
+  "status": "frozen_staged_only",
+  "files": [
+    {
+      "path": "pdos-next/staging/wave17/paired.py",
+      "sha256": "73bff65b00b45e2678a18ad9ff8ea8def12d01aff3c4fb85d60d5d5386c420e3",
+      "bytes": 51199,
+      "ast_compile": "passed_in_memory_no_bytecode"
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_paired.py",
+      "sha256": "ace61c271112f997f1a93770aee27e1e2346bdd5eeab2231a370fd8ee039020e",
+      "bytes": 48610,
+      "ast_compile": "passed_in_memory_no_bytecode"
+    },
+    {
+      "path": "pdos-next/staging/wave17/paired-contract.md",
+      "sha256": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1",
+      "bytes": 11567
+    }
+  ],
+  "checks": {
+    "pure": {
+      "passed": 51,
+      "failed": 0,
+      "seconds": 0.94,
+      "log": "docs/reports/evidence/pdos-next-wave17-20261003/paired-pure.log",
+      "log_sha256": "45ae024d5eecc647afbe7926cdee2bfa4a23d086037a46de9cf2d70386eff06b",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=server:server/tests:staging/wave17 server/.venv/bin/python -m pytest --noconftest staging/wave17/test_paired.py -q"
+    },
+    "ruff_check": "passed_owned_two_python_files",
+    "ruff_format_check": "passed_owned_two_python_files",
+    "ast_compile": "passed_owned_two_python_files_in_memory"
+  },
+  "earlier_checks": [
+    {
+      "passed": 37,
+      "failed": 0,
+      "scope": "initial owned pure suite before timing/UOW and independent-review additions"
+    },
+    {
+      "passed": 39,
+      "failed": 0,
+      "scope": "same UOW and fresh-clock protocol additions"
+    },
+    {
+      "passed": 50,
+      "failed": 1,
+      "node": "test_second_partial_cannot_rewrite_or_duplicate_first_history[reorder]",
+      "actual_error": "PAIR_TIME_MISMATCH",
+      "expected_error": "PAIR_PARTIAL_HISTORY_CHANGED",
+      "resolution": "precise test expectation updated; time guard correctly rejects reordered return history before prefix guard"
+    }
+  ],
+  "independent_review_repairs": [
+    "Old observations and partial history must remain ordered complete prefixes; partial adds exactly one accurate return; final keeps history.",
+    "First Run preliminary clock cannot be rewritten and is paired with oneRun Formal preliminary clock.",
+    "Run coverage equals all actually accepted origin pairs, not a subset.",
+    "Known observed_at is bounded by actual Start and current return, and all final observations are not later than actual end."
+  ],
+  "no_database_or_http_or_public_build": true,
+  "public_host_reader_installed": false,
+  "public_api_or_writer_connected": false,
+  "structural_positive_is_authorization": false,
+  "candidate_480_statement": "Only owned staging/evidence were authored; no claim of a fresh whole-tree/hash or public joint regression.",
+  "remaining": [
+    "Real same-UOW paired owner reader and semantic/source/ACL/professional/bytes/retained/runtime gate callbacks",
+    "Public integration and real transaction/page checks",
+    "CAPA applicability, independent review, observation and T2 effectiveness/close gates remain separate"
+  ]
+}

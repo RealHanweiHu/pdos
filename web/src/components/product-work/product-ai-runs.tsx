@@ -75,7 +75,7 @@ function ProductAiRunsPanel({ base, capability, line, initialRunId, prepared, di
     if (!initialRunId || original.current || confirmationOwner.current) return;
     let active = true;
     const current = capture();
-    void request<History>(`${base}/product-ai-history`, "POST", { capability, product_line_id: line || null, before_id: null, run_id: initialRunId }).then(value => { if (!active || !current() || original.current || confirmationOwner.current) return; const item = value.items.find(item => item.run_id === initialRunId); if (!item || item.selection.capability !== capability || (item.selection.product_line_id ?? "") !== line) throw new Error("原运行与当前能力或产品线不匹配，请返回原工作范围。"); setHistory(value); setActive(item); }).catch(failure => { if (!active || !current()) return; if (authorityDenied(failure)) clearAuthority((failure as Error).message); else setError(failure instanceof Error ? failure.message : "原运行暂不可读"); });
+    void request<History>(`${base}/product-ai-history`, "POST", { capability, product_line_id: line || null, before_id: null, run_id: initialRunId }).then(value => { if (!active || !current() || original.current || confirmationOwner.current) return; const item = value.items.find(item => item.run_id === initialRunId); if (!item || item.selection.capability !== capability || (item.selection.product_line_id ?? "") !== line) throw new Error("原运行与当前能力或品类不匹配，请返回原工作范围。"); setHistory(value); setActive(item); }).catch(failure => { if (!active || !current()) return; if (authorityDenied(failure)) clearAuthority((failure as Error).message); else setError(failure instanceof Error ? failure.message : "原运行暂不可读"); });
     return () => { active = false; };
   }, [base, capability, line, initialRunId, capture, clearAuthority]);
   const readProgress = useCallback(async (id: string) => {
@@ -161,7 +161,7 @@ function ProductAiRunsPanel({ base, capability, line, initialRunId, prepared, di
     {pending && <div className="space-y-2 text-sm"><p>原请求尚未确认。可刷新我的分析；重试保持原输入和请求编号。</p><Button variant="outline" size="sm" disabled={busy || sending || disabled || !history?.can_request || history.rollout !== "live"} onClick={() => void run(pending)}>重试原请求</Button></div>}
     {(busy || sending) && <p role="status" className="text-sm">正在读取或执行，请稍候…</p>}
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    {history?.items.length === 0 && <p className="text-sm text-muted-foreground">此能力与产品线尚无你的分析记录。</p>}
+    {history?.items.length === 0 && <p className="text-sm text-muted-foreground">此能力与品类尚无你的分析记录。</p>}
     <ul className="space-y-2">{history?.items.map(item => <li key={item.run_id} className="rounded-md border p-3 text-sm">
       <p>{item.selection.question} · {statuses[item.status] ?? item.status} · {new Date(item.created_at).toLocaleString()}</p>
       {item.sources_current === false && <p className="text-primary">原资料已变化，结论仅供历史追溯。</p>}

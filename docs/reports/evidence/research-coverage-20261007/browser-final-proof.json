@@ -1,0 +1,21 @@
+{
+  "verified_url": "http://127.0.0.1:3000/ask?conversation=b4446d5a-d920-577d-a498-b95aa2693aac",
+  "browser_tab": "10",
+  "completed_process_visible": true,
+  "searches_visible": 5,
+  "candidate_count_visible": 30,
+  "sources_read_visible": 13,
+  "comparison_table_rows": 8,
+  "brands": 7,
+  "research_draft_label_visible": true,
+  "reference_count_visible": 13,
+  "not_each_source_link_opened": true,
+  "current_user_application_followup_observed": "生成品类",
+  "followup_not_part_of_our_completed_research_verification": true,
+  "no_category_save_claimed": true,
+  "preview_kept_running": true,
+  "no_restart_or_interruption_after_user_followup_started": true,
+  "screenshot": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/research-coverage-20261007/preview-final.png",
+  "screenshot_sha256": "2bb7e13c5da68215937f6a5a45933d1867aaacac1b29814a65aea646fe46b754",
+  "captured_at": "2026-10-07T09:09:44.315444+00:00"
+}

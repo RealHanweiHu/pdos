@@ -187,7 +187,7 @@ def _person(connection: Connection, context: AuthContext, project_id: UUID, user
                 tables.users.c.id == user_id,
                 tables.users.c.is_active.is_(True),
                 tables.users.c.role.in_(
-                    ("owner", "admin", "project_manager", "engineer", "quality")
+                    ("owner", "admin", "product_manager", "project_manager", "engineer", "quality")
                 ),
             )
         )
@@ -567,7 +567,14 @@ class ProjectExecutionService:
                         users.c.tenant_id == context.tenant.id,
                         users.c.is_active.is_(True),
                         users.c.role.in_(
-                            ("owner", "admin", "project_manager", "engineer", "quality")
+                            (
+                                "owner",
+                                "admin",
+                                "product_manager",
+                                "project_manager",
+                                "engineer",
+                                "quality",
+                            )
                         ),
                         or_(users.c.role.in_(("owner", "admin")), users.c.id.in_(members)),
                     )

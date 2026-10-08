@@ -1,0 +1,86 @@
+{
+  "observed_at": "2026-10-03T10:06:57.904547+00:00",
+  "target_port": 62513,
+  "target_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "readonly": true,
+  "rows": [
+    {
+      "process": "735fb136742e",
+      "state": "active",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 201.11,
+      "query_family": "SELECT",
+      "query_sha256": "b2b32cdb82b192060d12e5158101eb62c89cecfd6c39f5101fe214992bb4dc7a"
+    },
+    {
+      "process": "43d5996852cc",
+      "state": "idle in transaction",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 379.74,
+      "query_family": "SELECT",
+      "query_sha256": "ccad4cab9c606f23c0cd5f19d96e9adadad0d36c5b4bd0da0c14c0e9ee472781"
+    },
+    {
+      "process": "f70494633820",
+      "state": "idle in transaction",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 119.71,
+      "query_family": "SELECT",
+      "query_sha256": "b2b32cdb82b192060d12e5158101eb62c89cecfd6c39f5101fe214992bb4dc7a"
+    },
+    {
+      "process": "e9ac3767369b",
+      "state": "idle in transaction",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 14.26,
+      "query_family": "SELECT",
+      "query_sha256": "b2b32cdb82b192060d12e5158101eb62c89cecfd6c39f5101fe214992bb4dc7a"
+    },
+    {
+      "process": "cd9aae5b86dc",
+      "state": "idle in transaction",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 2.73,
+      "query_family": "SELECT",
+      "query_sha256": "5be80a60c7850e19a62b01bb401337be883c87df8d1cb35c604d00389141ed24"
+    },
+    {
+      "process": "10f40939e637",
+      "state": "idle in transaction",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 54.21,
+      "query_family": "SELECT",
+      "query_sha256": "84b8cbb45e22433b71ff81808e644161697b7f9da6b703b90f56d017d58114e6"
+    },
+    {
+      "process": "6b6c0168bc79",
+      "state": "idle in transaction",
+      "wait_event_type": null,
+      "wait_event": null,
+      "blocking_processes": [],
+      "query_age_seconds": 0.0,
+      "transaction_age_seconds": 4.73,
+      "query_family": "SELECT",
+      "query_sha256": "1f076284cc6481ecd00ba4cda09bc4e18512789dc15d3f63bbe11e276b0f746b"
+    }
+  ],
+  "limitation": "One instantaneous activity sample, no phase runtime/call count, no proven bottleneck or speedup."
+}

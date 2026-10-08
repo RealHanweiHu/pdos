@@ -1,0 +1,37 @@
+{
+  "container": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "port": 59366,
+  "database": "pdos_test",
+  "head": "0424_product_proposals",
+  "backup": "/Users/huhanwei/pdos-preview-backups/20261006-proposals-test-063558/pdos_test-0424.dump",
+  "sha256": "58523b960ba44f4f3dca3b528aaa0685d75a14eff048777b9e05bc7e531278e7",
+  "mode": "0o600",
+  "archive_list_verified": true,
+  "restored": false,
+  "container_stopped": true,
+  "container_and_volume_retained": true,
+  "agent_privileges": {
+    "product_proposals": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "product_proposal_revisions": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "product_proposal_decisions": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    }
+  },
+  "all_material_synthetic": true
+}

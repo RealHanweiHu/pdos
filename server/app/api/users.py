@@ -14,10 +14,12 @@ from sqlalchemy import Engine
 from app.api.auth import current_context, no_store
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, Role, is_allowed
+from app.auth.work_modules import WorkModule, normalize_work_modules
 from app.db.engine import get_engine
 from app.domain.users import (
     EmailAlreadyExistsError,
     EmptyUserUpdateError,
+    InvalidWorkModulesError,
     LastActiveOwnerRequiredError,
     ManagedUser,
     PrivilegedAccountRequiresOwnerError,
@@ -55,6 +57,12 @@ class UserCreateRequest(BaseModel):
     email: str | None = Field(default=None, max_length=320)
     role: Role
     password: SecretStr = Field(min_length=12, max_length=128)
+    work_modules: tuple[WorkModule, ...] = ()
+
+    @field_validator("work_modules", mode="after")
+    @classmethod
+    def normalize_modules(cls, value: tuple[WorkModule, ...]) -> tuple[WorkModule, ...]:
+        return normalize_work_modules(value)
 
     @field_validator("username", mode="before")
     @classmethod
@@ -79,6 +87,14 @@ class UserUpdateRequest(BaseModel):
     email: str | None = Field(default=None, max_length=320)
     role: Role | None = None
     is_active: bool | None = None
+    work_modules: tuple[WorkModule, ...] | None = None
+
+    @field_validator("work_modules", mode="after")
+    @classmethod
+    def normalize_modules(
+        cls, value: tuple[WorkModule, ...] | None
+    ) -> tuple[WorkModule, ...] | None:
+        return normalize_work_modules(value) if value is not None else None
 
     @field_validator("display_name", mode="before")
     @classmethod
@@ -94,7 +110,7 @@ class UserUpdateRequest(BaseModel):
     def validate_patch(self) -> Self:
         if not self.model_fields_set:
             raise ValueError("at least one field is required")
-        for required in ("display_name", "role", "is_active"):
+        for required in ("display_name", "role", "is_active", "work_modules"):
             if required in self.model_fields_set and getattr(self, required) is None:
                 raise ValueError(f"{required} cannot be null")
         return self
@@ -103,7 +119,7 @@ class UserUpdateRequest(BaseModel):
         return {
             field: getattr(self, field)
             for field in self.model_fields_set
-            if field in {"display_name", "email", "role", "is_active"}
+            if field in {"display_name", "email", "role", "is_active", "work_modules"}
         }
 
 
@@ -126,6 +142,7 @@ class ManagedUserResponse(BaseModel):
     last_signed_in_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    work_modules: tuple[WorkModule, ...]
 
 
 class ManagedUserListResponse(BaseModel):
@@ -146,6 +163,7 @@ def _response(user: ManagedUser) -> ManagedUserResponse:
         last_signed_in_at=user.last_signed_in_at,
         created_at=user.created_at,
         updated_at=user.updated_at,
+        work_modules=user.work_modules,
     )
 
 
@@ -187,6 +205,12 @@ def _raise_domain(error: Exception) -> NoReturn:
         (UsernameAlreadyExistsError, 409, "USERNAME_ALREADY_EXISTS", "Username already exists"),
         (EmailAlreadyExistsError, 409, "EMAIL_ALREADY_EXISTS", "Email already exists"),
         (EmptyUserUpdateError, 422, "EMPTY_USER_UPDATE", "At least one field is required"),
+        (
+            InvalidWorkModulesError,
+            422,
+            "INVALID_WORK_MODULES",
+            "Additional work modules require an internal account and valid module names",
+        ),
         (UserNotFoundError, 404, "USER_NOT_FOUND", "User not found"),
     )
     for error_type, status_code, code, message in mappings:
@@ -232,6 +256,7 @@ def create_user(
             email=payload.email,
             role=payload.role,
             password=payload.password.get_secret_value(),
+            work_modules=payload.work_modules,
         )
     except Exception as error:
         _raise_domain(error)

@@ -66,7 +66,12 @@ PROGRESS_FIELDS = {
 
 
 def scope_changes(
-    c: Connection, tenant_id: UUID, project_id: UUID, approved: dict[str, Any]
+    c: Connection,
+    tenant_id: UUID,
+    project_id: UUID,
+    approved: dict[str, Any],
+    *,
+    professional_basis: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     refs = {(i["kind"], i["id"]): i["snapshot"] for i in approved["version"]["snapshot"]["items"]}
     refs.update(
@@ -95,6 +100,27 @@ def scope_changes(
                     "id": id,
                     "fields": fields,
                     "blocking": changed_scope,
+                    "before": before,
+                    "current": current,
+                }
+            )
+    for frozen in (professional_basis or {}).get("sources", []):
+        before = {k: v for k, v in frozen.items() if k not in {"route_id", "routing_reason"}}
+        kind, id = before["kind"], before["source"]["id"]
+        try:
+            current = source_basis(c, tenant_id, project_id, kind, UUID(id))
+        except ProductWorkError:
+            current = None
+        fields = sorted(
+            k for k in set(before) | set(current or {}) if before.get(k) != (current or {}).get(k)
+        )
+        if fields or current is None:
+            changes.append(
+                {
+                    "kind": kind,
+                    "id": id,
+                    "fields": fields,
+                    "blocking": True,
                     "before": before,
                     "current": current,
                 }

@@ -46,6 +46,9 @@ from app.api.plan_scenarios import router as plan_scenarios_router
 from app.api.process_templates import router as process_templates_router
 from app.api.product_engineering import router as product_engineering_router
 from app.api.product_evaluation import router as product_evaluation_router
+from app.api.product_categories import router as product_categories_router
+from app.api.product_categories import category_router as category_identity_router
+from app.api.product_proposals import router as product_proposals_router
 from app.api.product_research import router as product_research_router
 from app.api.product_workspace import router as product_workspace_router
 from app.api.project_completion import router as project_completion_router
@@ -131,6 +134,9 @@ app.include_router(project_completion_router)
 app.include_router(project_templates_router)
 app.include_router(process_templates_router)
 app.include_router(product_workspace_router)
+app.include_router(product_categories_router)
+app.include_router(category_identity_router)
+app.include_router(product_proposals_router)
 app.include_router(product_research_router)
 app.include_router(initial_plan_candidates_router)
 app.include_router(plan_scenarios_router)

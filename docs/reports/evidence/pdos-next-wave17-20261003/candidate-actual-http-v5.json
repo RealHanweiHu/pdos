@@ -1,0 +1,84 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T13:32:25.266990+00:00",
+  "steps": [
+    {
+      "step": "current-context",
+      "http_status": 200,
+      "duration_seconds": 132.995,
+      "response_sha256": "164188576ae8911761d887b1b52ce39b333fc4ca238131043baf68621c797a6c",
+      "error_code": null
+    }
+  ],
+  "source_manifest_sha256": "c24361405ed6915212d34a95d4f68710023d480f965c9f8d3550e8ea15f8dade",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "model_calls": 0,
+  "host_gate": {
+    "allowed": true,
+    "authority": {
+      "authorized": true,
+      "qualified": true,
+      "synthetic": true
+    },
+    "missing": [
+      {
+        "dimension": "mapping",
+        "code": "FAILURE_NOT_MAPPED",
+        "detail": "\u539f\u5931\u8d25\u5c1a\u672a\u6620\u5c04\u5230\u65b0\u590d\u9a8cpair\u3002",
+        "output_ref": null,
+        "failure_id": "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+      },
+      {
+        "dimension": "applicability",
+        "code": "INTEGRATION_REQUIRED",
+        "detail": "\u5c1a\u7f3aCAPA\u8981\u6c42\u4e0e\u65b0\u65b9\u6cd5/\u5224\u636e/\u5b9e\u9645\u914d\u7f6e\u7684\u4e13\u4e1a\u9002\u7528\u6743\u5a01\u63a5\u53e3\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "dimension": "independence",
+        "code": "INTEGRATION_REQUIRED",
+        "detail": "\u5c1a\u7f3a\u72ec\u7acb\u590d\u9a8c\u4eba\u4e13\u4e1a\u4f9d\u636e\u4e0e\u53c2\u4e0e\u8005\u6392\u9664\u7684\u6743\u5a01\u63a5\u53e3\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "dimension": "observation",
+        "code": "INTEGRATION_REQUIRED",
+        "detail": "\u5c1a\u7f3a\u8986\u76d6\u771f\u5b9e\u89c2\u5bdf\u671f\u7684\u4e8b\u5b9eowner\uff0c\u8981\u6c42\u65e5\u671f\u4e0d\u80fd\u5f53\u5b9e\u9645\u5b8c\u6210\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "dimension": "policy",
+        "code": "EFFECTIVENESS_NOT_ENABLED",
+        "detail": "\u672c\u6ce2\u4e0d\u5f00\u653eCAPA\u6709\u6548\u6027\u4e0eIssue\u5173\u95ed\u3002",
+        "output_ref": null,
+        "failure_id": null
+      }
+    ]
+  },
+  "exception_type": "TimeoutError",
+  "diagnostic": "Private exception detail withheld",
+  "frames": [
+    {
+      "file": "client.py",
+      "line": 1430
+    },
+    {
+      "file": "client.py",
+      "line": 331
+    },
+    {
+      "file": "client.py",
+      "line": 292
+    },
+    {
+      "file": "socket.py",
+      "line": 720
+    }
+  ],
+  "finished_at": "2026-10-03T13:37:38.993277+00:00",
+  "source_stable": true
+}

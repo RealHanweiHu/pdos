@@ -1,0 +1,86 @@
+{
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "908eac11bb376e34ad204907dfdb8da748c3141e70ca10e22cfe67f8a36a4156",
+      "final_sha256": "908eac11bb376e34ad204907dfdb8da748c3141e70ca10e22cfe67f8a36a4156",
+      "changed_since_observation": false
+    },
+    {
+      "path": "tasks/ai-native-integrated-todo.md",
+      "sha256": "9286a7ffc6dacd77463239b36182ea26336d7bac5ebf0baa3df1e1ea8fd89f6f",
+      "final_sha256": "027a6c84671f3a3cda9b98c3449f06e1abb5a0595ca325b384882705e2e20cc3",
+      "changed_since_observation": true
+    },
+    {
+      "path": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+      "sha256": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+      "final_sha256": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+      "changed_since_observation": false
+    },
+    {
+      "path": "docs/design/2026-10-02-pdos-next-execution-plan.md",
+      "sha256": "3fa2bc7c35da22f66459e405da812ef76394987de055ee2ec32f70e0d60a959a",
+      "final_sha256": "3fa2bc7c35da22f66459e405da812ef76394987de055ee2ec32f70e0d60a959a",
+      "changed_since_observation": false
+    },
+    {
+      "path": "docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md",
+      "sha256": "c0e2dd9f1bfc697ad055e64918ab6f52567d7403b672901df8fc52a595019c02",
+      "final_sha256": "c0e2dd9f1bfc697ad055e64918ab6f52567d7403b672901df8fc52a595019c02",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/builds/models.py",
+      "sha256": "6d4b8da107feddd093f5b4575cc2e5eb5e2c0bceaa647e9fd5704969ab3c2ade",
+      "final_sha256": "6d4b8da107feddd093f5b4575cc2e5eb5e2c0bceaa647e9fd5704969ab3c2ade",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/builds/schemas.py",
+      "sha256": "bc002e93a9f8070f552efaf759fdfcc7cf1003580217b2d7aa37ef330600c086",
+      "final_sha256": "bc002e93a9f8070f552efaf759fdfcc7cf1003580217b2d7aa37ef330600c086",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/errors.py",
+      "sha256": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd",
+      "final_sha256": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/server/pyproject.toml",
+      "sha256": "1c2edea2464fc3260b1ceda3a701c0f2308ec68fe01ff28c6db4b8044d0573b3",
+      "final_sha256": "1c2edea2464fc3260b1ceda3a701c0f2308ec68fe01ff28c6db4b8044d0573b3",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/web/src/components/ui/button.tsx",
+      "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+      "final_sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/web/src/lib/utils.ts",
+      "sha256": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+      "final_sha256": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/web/src/app/globals.css",
+      "sha256": "83927e87630415f8ef70438bcd42f20c036eff1c3469c3e64634175dde9a0e16",
+      "final_sha256": "83927e87630415f8ef70438bcd42f20c036eff1c3469c3e64634175dde9a0e16",
+      "changed_since_observation": false
+    },
+    {
+      "path": "pdos-next/web/package.json",
+      "sha256": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8",
+      "final_sha256": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8",
+      "changed_since_observation": false
+    }
+  ],
+  "contract": "schemas/verification/contracts.py BuildRef/ConfigurationRef/SampleRef",
+  "host_build_still_planned_only": true,
+  "actual_adapters_provided": false,
+  "note": "Port DTOs are deliberately independent. Current Build importability does not imply Sample/ActualConfiguration/authority adapter readiness; missing ports reject actual actions."
+}

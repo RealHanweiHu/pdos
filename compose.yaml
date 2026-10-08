@@ -1,6 +1,18 @@
 name: pdos
 
 services:
+  searxng:
+    profiles: [research]
+    image: docker.io/searxng/searxng@sha256:76b0bf285aca014c7191fc4d9234c4bfb358624ac33d8883833d496c059ec072
+    environment:
+      SEARXNG_SECRET: ${PDOS_SEARXNG_SECRET:-local-development-replaced-by-SEARXNG_SECRET}
+    ports:
+      - "127.0.0.1:8888:8080"
+    volumes:
+      - ./infra/searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - pdos-searxng-cache:/var/cache/searxng
+    restart: unless-stopped
+
   postgres:
     image: pgvector/pgvector:0.8.6-pg16-bookworm
     environment:
@@ -40,5 +52,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  pdos-searxng-cache:
   pdos-minio-data:
   pdos-postgres-data:

@@ -1,27 +1,27 @@
 import {
   FlowArrowIcon,
-  ShieldCheckIcon,
-  StackIcon,
+  ListChecksIcon,
+  PackageIcon,
 } from "@phosphor-icons/react";
 import type { ReactNode } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const boundaries = [
+const workAreas = [
   {
-    icon: StackIcon,
-    title: "租户边界",
-    detail: "身份与项目范围由服务端解析，客户端不提交租户政策事实。",
+    icon: PackageIcon,
+    title: "研究与产品定义",
+    detail: "从品类进入提案，复用研究、竞品和产品规格。",
   },
   {
-    icon: ShieldCheckIcon,
-    title: "最小权限",
-    detail: "七角色矩阵默认拒绝，外部成员只见被授权项目。",
+    icon: ListChecksIcon,
+    title: "项目与日常工作",
+    detail: "查看自己的待办，在项目中推进阶段、计划和专业事项。",
   },
   {
     icon: FlowArrowIcon,
-    title: "事件留痕",
-    detail: "业务写、事件与不可变审计在同一事务中提交。",
+    title: "评审与交付",
+    detail: "汇集资料和验证依据，办理评审、签核与交付。",
   },
 ];
 
@@ -53,32 +53,29 @@ export function AuthFrame({ children }: { children: ReactNode }) {
       </header>
 
       <main
-        className="grid min-h-[calc(100svh-3.5rem)] lg:grid-cols-[minmax(0,1fr)_480px]"
+        className="mx-auto grid min-h-[calc(100svh-3.5rem)] max-w-6xl items-center gap-12 px-4 py-10 sm:px-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-20 lg:py-16"
         id="auth-content"
       >
-        <section className="bg-card px-4 py-8 sm:px-8 lg:order-2 lg:border-l lg:py-16">
+        <section className="rounded-lg border bg-card px-5 py-8 sm:px-8 lg:order-2">
           <div className="mx-auto w-full max-w-sm">{children}</div>
         </section>
 
         <section
           aria-labelledby="auth-context-title"
-          className="border-t px-4 py-8 sm:px-8 lg:order-1 lg:border-t-0 lg:px-12 lg:py-16"
+          className="hidden lg:order-1 lg:block"
         >
           <div className="mx-auto max-w-xl lg:mx-0">
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-              Sprint 0 · Governance boundary
-            </p>
             <h2
-              className="mt-3 text-lg font-semibold tracking-tight"
+              className="text-2xl font-semibold tracking-tight"
               id="auth-context-title"
             >
-              先确认身份，再进入产品开发现场
+              让产品开发的下一步更清楚
             </h2>
             <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">
-              PDOS 将需求、项目、质量记录与 AI finding 装配在同一审计链中。登录入口只负责建立可信的租户与用户上下文。
+              从研究到项目交付，在同一个工作区查看当前事项、办理动作和结果依据。
             </p>
             <ul className="mt-8 divide-y border-y" role="list">
-              {boundaries.map(({ detail, icon: Icon, title }) => (
+              {workAreas.map(({ detail, icon: Icon, title }) => (
                 <li className="grid gap-2 py-4 sm:grid-cols-[152px_1fr]" key={title}>
                   <span className="flex items-center gap-2 font-medium">
                     <Icon aria-hidden="true" className="text-primary" weight="regular" />

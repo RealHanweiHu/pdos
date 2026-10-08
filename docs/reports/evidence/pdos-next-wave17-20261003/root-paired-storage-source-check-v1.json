@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-03T11:12:23.560780+00:00",
+  "reason": "Prior B61 owned check stdout not archived; Root fills only this evidence gap on identical frozen sources",
+  "exit_code": 0,
+  "source_sha256": {
+    "pdos-next/staging/wave17/paired_storage.py": "a8333eb092a35da0f6cc61802dcc71b365e4fd945e3f643fa0e4d7ff21bede8e",
+    "pdos-next/staging/wave17/test_paired_storage.py": "627e780f1dd240f8b3d597df83983a870e735611f9320479f566dd1c103f8e7e",
+    "pdos-next/staging/wave17/paired-storage-contract.md": "893f5d3555acac4637f95ae91a8e47d8165b83f0466fc9ff36203ecdd8b5e115"
+  },
+  "source_stable": true,
+  "log_sha256": "ad5a322007d0419327272dc4f83d3bf6800cc4c7020517898c7c3ca0e10e4276",
+  "log": "root-paired-storage-pure-v1.log",
+  "scope": "Owned 61 staged SQL substitutes only; real Session/UOW/ORM expressions, no DB/HTTP/qualification/RLS",
+  "no_conftest": true,
+  "not_added_to_earlier_pure_count": true
+}

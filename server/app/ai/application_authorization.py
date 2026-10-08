@@ -16,6 +16,7 @@ from app.contracts.runtime_records import AuthorizationEnvelope
 from app.db.schema import tables
 
 PURPOSE_ACTIONS = {
+    "product_proposal": Action.PRODUCT_WORK_CONTRIBUTE,
     "event_issue": Action.WORK_ITEM_EDIT,
     "product_matrix": Action.PRODUCT_WORK_CONTRIBUTE,
     "product_work": Action.PRODUCT_WORK_CONTRIBUTE,
@@ -36,6 +37,7 @@ PURPOSE_ACTIONS = {
     "meeting_business": Action.MEETING_TRANSCRIPT_UPLOAD,
     "meeting_reading": Action.MEETING_TRANSCRIPT_UPLOAD,
     "chat_answer": Action.AI_CHAT_USE,
+    "xiaopai_reply": Action.AI_CHAT_USE,
     "risk_suggestion": Action.RISK_SUGGESTION_CREATE,
     "test_plan_suggestion": Action.WORK_ITEM_EDIT,
     "report_mapping": Action.PRODUCT_ENGINEERING_EDIT,
@@ -103,7 +105,13 @@ def issue_application_authorization(
     deadline = link.absolute_deadline
     membership = None
     delegation = None
-    market_purposes = {"product_matrix", "product_work", "product_evaluation"}
+    market_purposes = {
+        "product_matrix",
+        "product_work",
+        "product_evaluation",
+        "xiaopai_reply",
+        "product_proposal",
+    }
     if purpose not in market_purposes and user["role"] not in {
         Role.OWNER,
         Role.ADMIN,
@@ -170,7 +178,64 @@ def issue_application_authorization(
             digest=digest(pins),
         )
     ]
-    if purpose == "product_evaluation":
+    if purpose == "product_proposal":
+        from app.ai.product_proposal import VERSION
+        from app.auth.repository import AuthRepository
+        from app.domain.product_proposals import proposal_row, serial
+
+        original = AuthRepository(connection.engine).find_user_context(actor_user_id)
+        snapshot = run["run_context"]["proposal_source"]
+        if original is None or run["context_version"] != VERSION:
+            raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+        proposal = proposal_row(
+            connection,
+            original,
+            UUID(snapshot["proposal"]["market_space_id"]),
+            UUID(snapshot["proposal"]["id"]),
+        )
+        if serial(proposal) != snapshot["proposal"] or proposal["owner_user_id"] != actor_user_id:
+            raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+        scope = dict(kind="tenant", ref_id=tenant_id)
+        sources = [
+            dict(
+                tenant_id=tenant_id,
+                project_id=None,
+                kind="product_proposal",
+                ref_id=proposal["id"],
+                as_of=run["created_at"],
+                digest=snapshot["digest"],
+            )
+        ]
+    elif purpose == "xiaopai_reply":
+        from app.ai.conversation_reply import VERSION, authorize
+        from app.auth.repository import AuthRepository
+
+        original = AuthRepository(connection.engine).find_user_context(actor_user_id)
+        snapshot = run["run_context"]["reply_source"]
+        if original is None or run["context_version"] != VERSION:
+            raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+        authorize(
+            connection.engine,
+            original,
+            UUID(snapshot["conversation_id"]),
+            UUID(snapshot["message_id"]),
+        )
+        scope = (
+            dict(kind="project", ref_id=run["project_id"])
+            if run["project_id"]
+            else dict(kind="tenant", ref_id=tenant_id)
+        )
+        sources = [
+            dict(
+                tenant_id=tenant_id,
+                project_id=run["project_id"],
+                kind="conversation_message",
+                ref_id=UUID(snapshot["message_id"]),
+                as_of=run["created_at"],
+                digest=snapshot["digest"],
+            )
+        ]
+    elif purpose == "product_evaluation":
         from app.ai.product_shadow_evaluation import RUN_VERSION, current
 
         if (
@@ -182,9 +247,16 @@ def issue_application_authorization(
             raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
         snapshot = run["run_context"]["evaluation_source"]
         scope = dict(kind="market_space", ref_id=run["market_space_id"])
-        sources = [dict(tenant_id=tenant_id, project_id=None, kind="market_space",
-                        ref_id=run["market_space_id"], as_of=run["created_at"],
-                        digest=snapshot["digest"])]
+        sources = [
+            dict(
+                tenant_id=tenant_id,
+                project_id=None,
+                kind="market_space",
+                ref_id=run["market_space_id"],
+                as_of=run["created_at"],
+                digest=snapshot["digest"],
+            )
+        ]
     elif purpose == "product_work":
         from app.ai.product_work_context import readable, rebuild
         from app.ai.product_work_runs import authorize as product_authorize
@@ -287,6 +359,9 @@ def issue_application_authorization(
         ]
     elif run["project_id"] is None or run["scope_kind"] != "project":
         raise BudgetLedgerError("APPLICATION_AUTHORIZATION_SCOPE_INVALID")
+    if purpose == "xiaopai_reply":
+        from app.ai.conversation_research import VERSION as research_toolset_version
+
     body = AuthorizationEnvelope.model_validate(
         dict(
             schema_version=1,
@@ -308,7 +383,9 @@ def issue_application_authorization(
             expires_at=deadline,
             capability_version=f"{purpose}.v1",
             toolset_version=(
-                "discussion-research-tools.v1"
+                research_toolset_version
+                if purpose == "xiaopai_reply"
+                else "discussion-research-tools.v1"
                 if purpose == "change_discussion"
                 and run["run_context"].get("discussion_toolset_version")
                 == "discussion-research-tools.v1"

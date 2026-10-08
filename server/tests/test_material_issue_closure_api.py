@@ -80,7 +80,7 @@ def test_changed_source_returns_409_without_issue_event_or_audit_write(
     prepare_verification(s, demand, issue)
     base = f"/api/projects/{demand.project}/issues/{issue}"
     card = client.get(base + "/work-card", headers=headers(s.peer)).json()
-    capture(s, 1, 3, quality="frozen")
+    capture(s, 1, 4, quality="frozen")
     before = counts(s, tables.issues, tables.events, tables.audit_log)
     result = client.post(
         base + "/transitions",

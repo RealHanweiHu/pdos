@@ -1,0 +1,7 @@
+{
+  "node": "tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution",
+  "exit_code": 0,
+  "seconds": 860.12,
+  "candidate": "candidate-final-v6-source.json",
+  "test_sha256": "1a5dd88d69c3019b0de87607da4b66c04a6e735e9d3539463a101503ed4c25bb"
+}

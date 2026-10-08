@@ -1,0 +1,15 @@
+{
+  "id": "2b5a58e7-84bf-4f66-92a1-c0101b6de390",
+  "operation": "evidence.original.upload",
+  "subject_type": "uploaded_original",
+  "subject_id": "5053957e-26ce-4d1f-b999-e97516ede236",
+  "subject_revision": 1,
+  "writer_id": "0a41538d-e721-4783-866a-39c35d382eef",
+  "requester_id": "0a41538d-e721-4783-866a-39c35d382eef",
+  "created_at": "2026-10-02T14:45:30.653321+00:00",
+  "result": {
+    "id": "5053957e-26ce-4d1f-b999-e97516ede236",
+    "revision": 1,
+    "status": "uploaded"
+  }
+}

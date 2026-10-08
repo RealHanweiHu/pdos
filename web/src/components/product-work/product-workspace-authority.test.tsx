@@ -7,7 +7,7 @@ vi.mock("next/navigation", async () => {
   const { useSyncExternalStore } = await import("react");
   const replace = vi.fn();
   const subscribe = (fn: () => void) => { window.addEventListener("popstate", fn); return () => window.removeEventListener("popstate", fn); };
-  return { useRouter: () => ({ replace }), useSearchParams: () => new URLSearchParams(useSyncExternalStore(subscribe, () => window.location.search)) };
+  return { usePathname: () => useSyncExternalStore(subscribe, () => window.location.pathname), useRouter: () => ({ replace }), useSearchParams: () => new URLSearchParams(useSyncExternalStore(subscribe, () => window.location.search)) };
 });
 vi.mock("@/components/workspace-api", () => ({ requestIdentity: async () => ({ user: { role: "product_manager" }, tenant: {} }) }));
 vi.mock("@/components/workspace-shell", () => ({ WorkspaceShell: ({ children }: { children: ReactNode }) => <main>{children}</main> }));
@@ -34,7 +34,7 @@ beforeEach(() => {
   window.history.replaceState(null, "", "/product-work?space=one&tab=research");
   fetcher = vi.fn<typeof fetch>().mockImplementation(async input => {
     const path = String(input);
-    if (path.endsWith("/spaces")) return Response.json({ items: [space], can_create: false });
+    if (path.endsWith("/categories")) return Response.json({ items: [space], can_create: false });
     if (path.endsWith("/evidence/snapshot/content")) return status === 200 ? Response.json({ snapshot_id: "snapshot", content_digest: ref.digest, content: "私有原文正文" }) : Response.json({ detail: { message: "引用权限已撤回" } }, { status });
     if (path.split("?")[0].endsWith("/evidence")) return Response.json({ items: [source] });
     if (path.endsWith("/products")) return Response.json(catalog);
@@ -52,7 +52,7 @@ function expectCleared() {
 it.each([401, 403])("clears parent private data on real citation %s and requires explicit retry despite parent callback retransmission", async deniedStatus => {
   status = 200;
   const view = render(<ProductWorkspace/>);
-  await screen.findByText("私有研究结论");
+  await screen.findAllByText("私有研究结论"); { const row = screen.getByRole("button", { name: /私有研究问题/ }); if (row.getAttribute("aria-expanded") === "false") fireEvent.click(row); }
   fireEvent.click(screen.getByRole("button", { name: "查看此引用的原快照" }));
   await screen.findByText("私有原文正文");
   fireEvent.click(screen.getByRole("button", { name: "手动建研究任务" }));
@@ -69,12 +69,12 @@ it.each([401, 403])("clears parent private data on real citation %s and requires
   expectCleared(); expect(fetcher.mock.calls.length).toBe(before);
   status = 200;
   fireEvent.click(screen.getByRole("button", { name: "重试" }));
-  await screen.findByText("私有研究结论");
+  await screen.findAllByText("私有研究结论"); { const row = screen.getByRole("button", { name: /私有研究问题/ }); if (row.getAttribute("aria-expanded") === "false") fireEvent.click(row); }
   expect(await screen.findByText("私有来源名称", { exact: false })).toBeInTheDocument();
   expect(screen.queryByLabelText("研究问题")).not.toBeInTheDocument();
 });
 it("does not restore private parent data from a full workspace refresh already in flight before citation denial", async () => {
-  render(<ProductWorkspace/>); await screen.findByText("私有研究结论");
+  render(<ProductWorkspace/>); await screen.findAllByText("私有研究结论"); { const row = screen.getByRole("button", { name: /私有研究问题/ }); if (row.getAttribute("aria-expanded") === "false") fireEvent.click(row); }
   pending = new Promise<Response>(resolve => { resolvePending = resolve; });
   fireEvent.click(screen.getByRole("button", { name: "刷新工作与来源" }));
   await waitFor(() => expect(reads).toBe(2));
@@ -99,11 +99,11 @@ it.each([200, 403])("holds the actual workspace navigation for an uncertain mark
     return initialFetch(input, init);
   });
   render(<ProductWorkspace/>);
-  fireEvent.click(await screen.findByRole("button", { name: "追加修订" }));
+  fireEvent.click(await screen.findByRole("button", { name: /私有市场细分/ })); fireEvent.click(screen.getByRole("button", { name: "追加修订" }));
   fireEvent.change(screen.getByLabelText("记录 / 修订原因"), { target: { value: "合成修订原因" } });
   fireEvent.submit(screen.getByLabelText("细分名称").closest("form")!);
   await screen.findByText("保存回执暂未取得");
-  expect(screen.getByRole("button", { name: /^市场空间$/ })).toBeDisabled();
+  expect(screen.getByRole("button", { name: /^品类$/ })).toBeDisabled();
   expect(screen.getByRole("button", { name: "刷新工作与来源" })).toBeDisabled();
   for (const tab of screen.getAllByRole("tab")) expect(tab).toBeDisabled();
   expect(screen.getByLabelText("细分名称")).toBeDisabled();
@@ -113,7 +113,7 @@ it.each([200, 403])("holds the actual workspace navigation for an uncertain mark
   fireEvent.click(screen.getByRole("button", { name: "按原请求重试保存" }));
   if (nextStatus === 200) await screen.findByRole("button", { name: "追加修订" });
   else { await screen.findByRole("button", { name: "重试" }); expectCleared(); }
-  await waitFor(() => expect(screen.getByRole("button", { name: /^市场空间$/ })).toBeEnabled());
+  await waitFor(() => expect(screen.getByRole("button", { name: /^品类$/ })).toBeEnabled());
   const writes = fetcher.mock.calls.filter(([input, init]) => String(input).endsWith("/market-segments") && init?.method === "POST");
   expect(writes).toHaveLength(2); expect(writes[0][1]?.body).toBe(writes[1][1]?.body);
   if (nextStatus === 200) expect(screen.getByRole("button", { name: "刷新工作与来源" })).toBeEnabled();
@@ -122,7 +122,7 @@ it.each([200, 403])("holds the actual workspace navigation for an uncertain mark
 async function activeResearch() {
   researchOverrides = { state: "active", conclusion: null, findings: [], sources: [] };
   render(<ProductWorkspace/>);
-  fireEvent.click(await screen.findByText("提交结论或取消"));
+  fireEvent.click(await screen.findByRole("button", { name: /私有研究问题/ })); fireEvent.click(screen.getByText("提交结论或取消"));
   fireEvent.change(screen.getByLabelText("结论 / 取消原因"), { target: { value: "本期未发现可确认的差异" } });
 }
 it("requires a currently available snapshot even for a conclusion with no findings", async () => {
@@ -177,7 +177,7 @@ it("preserves the actual reason when research stops without evidence instead of 
 it("keeps legacy zero-reference conclusions readable with an explicit evidence gap", async () => {
   researchOverrides = { sources: [], findings: [] };
   render(<ProductWorkspace/>);
-  await screen.findByText("私有研究结论");
+  await screen.findAllByText("私有研究结论"); { const row = screen.getByRole("button", { name: /私有研究问题/ }); if (row.getAttribute("aria-expanded") === "false") fireEvent.click(row); }
   expect(screen.getByText("历史结论未关联原始快照，待补证核对。")).toBeInTheDocument();
   expect(screen.getByText("关联证据 0 项")).toBeInTheDocument();
 });

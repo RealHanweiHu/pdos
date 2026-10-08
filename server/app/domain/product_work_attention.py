@@ -11,6 +11,8 @@ from app.ai.product_work_runs import RUN_VERSION, authorize
 from app.auth.repository import AuthContext
 from app.contracts.product_work_ai import ProductWorkSelection
 from app.db.schema import tables
+from app.domain.product_evidence_findings import CONFIG
+from app.domain.product_evidence_items import item_receipts, item_title
 from app.domain.product_workspace import ProductWorkError, _plain, digest
 
 
@@ -69,6 +71,7 @@ def product_work_attention(
                     f.c.title.label("finding_title"),
                     f.c.summary.label("finding_summary"),
                     f.c.status.label("finding_status"),
+                    f.c.proposed_payload.label("finding_payload"),
                 )
                 .join(f, and_(f.c.tenant_id == r.c.tenant_id, f.c.run_id == r.c.id))
                 .where(
@@ -77,6 +80,7 @@ def product_work_attention(
                     f.c.scope_kind == "market_space",
                     f.c.agent_key == r.c.agent_key,
                     f.c.status.in_(["pending_review", "accepted"]),
+                    f.c.proposed_payload["parent_finding_id"].as_string().is_(None),
                 )
                 .order_by(f.c.created_at.desc(), f.c.id.desc())
                 .limit(101)
@@ -107,18 +111,49 @@ def product_work_attention(
         for row in queued[:100]:
             selection = visible(row)
             if selection is not None:
-                candidates.append(
-                    {
+                common = {
+                    "run_id": row["id"],
+                    "capability": selection.capability,
+                    "product_line_id": selection.product_line_id,
+                    "created_at": row["created_at"],
+                }
+                if row["finding_status"] == "pending_review" and selection.capability in CONFIG:
+                    parent = {
                         "id": row["finding_id"],
-                        "run_id": row["id"],
-                        "title": row["finding_title"],
-                        "summary": row["finding_summary"],
-                        "status": row["finding_status"],
-                        "capability": selection.capability,
-                        "product_line_id": selection.product_line_id,
-                        "created_at": row["created_at"],
+                        "proposed_payload": row["finding_payload"],
+                        "accepted_payload": None,
+                        "status": "pending_review",
                     }
-                )
+                    field = CONFIG[selection.capability][1]
+                    for item in item_receipts(c, context, row, parent):
+                        if item["status"] not in {"pending_review", "accepted"}:
+                            continue
+                        payload = (
+                            item["accepted_payload"]["proposal"]["items"][0]
+                            if item["accepted_payload"]
+                            else item["proposed_payload"]["assessment"][field][0]
+                        )
+                        candidates.append(
+                            {
+                                **common,
+                                **item,
+                                "title": item_title(payload),
+                                "summary": "逐条核对来源与草案，接受后独立应用",
+                                "parent_finding_id": row["finding_id"],
+                                "item_position": item["proposed_payload"]["position"],
+                                "item": payload,
+                            }
+                        )
+                else:
+                    candidates.append(
+                        {
+                            **common,
+                            "id": row["finding_id"],
+                            "title": row["finding_title"],
+                            "summary": row["finding_summary"],
+                            "status": row["finding_status"],
+                        }
+                    )
         for row in recent:
             selection = visible(row)
             if selection is not None:

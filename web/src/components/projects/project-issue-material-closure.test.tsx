@@ -16,7 +16,7 @@ import type { ProjectIssue } from "./project-work-item-types";
 
 const issue: ProjectIssue = { id: "issue", project_id: "project", title: "线束恢复验证", description: null, stage_id: null, owner_user_id: "owner", verifier_user_id: "verifier", reported_by_user_id: "owner", issue_type: "supplier", status: "verification", severity: "low", root_cause: null, resolution: "线束补齐", closure_criteria: "数量核对一致", closure_evidence_ref: null, reopen_count: 0, target_date: "2026-09-30", closed_at: null, created_at: "2026-09-27T10:00:00Z", updated_at: "2026-09-27T10:00:00Z" };
 const reference = { exception_id: "exception", review_id: "review", source_digest: "source" };
-const card = { item: issue, actor_id: "verifier", permissions: { verify: true }, verification_policy: {}, material_closure: { required: true, ready: true, items: [{ exception_id: reference.exception_id, title: "线束到料", closure: { ready: true, reasons: [], reference } }] } };
+const card = { item: issue, actor_id: "verifier", permissions: { verify: true }, verification_policy: {}, cost_closure: { required: false, ready: true, items: [] }, material_closure: { required: true, ready: true, items: [{ exception_id: reference.exception_id, title: "线束到料", closure: { ready: true, reasons: [], reference } }] } };
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 it("opens current source verification in the project IssuePanel before allowing low Issue closure", async () => {

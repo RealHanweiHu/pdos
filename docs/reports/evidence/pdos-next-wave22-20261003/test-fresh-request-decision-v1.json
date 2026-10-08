@@ -1,0 +1,16 @@
+{
+  "schema_version": "wave22-fresh-request-decision-v1",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "scope": {
+    "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+    "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0"
+  },
+  "source_generation": "19ee5abb-ec6d-47f4-a46f-9ea74af05d23",
+  "source_checkpoint_sha256": "06e9728df2d234f5d5b98781b10a6fb8eba0af3a437665ac0186f15bbcba9afa",
+  "readback_sha256": "83412ea7cd5e405aebd74a59457ef6cf50f7cdd2eb850d5c561b194ae3dc6f0f",
+  "generation": "37c270ad-521a-44ad-b186-3447a94906c1",
+  "operation": "create_distinct_formal_from_saved_unstarted_plan",
+  "old_saved_plan_and_promise_preserved": true,
+  "reason": "旧已保存计划和承诺的固定窗口已结束；只读确认没有开测与占用。为同一A1及目的建立新的独立正式请求和Run，旧记录完整保留，不撤回、改钟或重命名原保存动作。"
+}

@@ -1,0 +1,54 @@
+### Page
+- Page URL: http://127.0.0.1:3051/product-work
+- Page Title: 产品管理工作台 · PDOS
+- Console: 0 errors, 8 warnings
+### Snapshot
+```yaml
+- generic [ref=f3e1]:
+  - alert [ref=f3e3]
+  - generic [ref=f3e4]:
+    - link "跳到主要内容" [ref=f3e5] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f3e59]:
+      - banner [ref=f3e60]:
+        - generic [ref=f3e166]:
+          - generic [aria-hidden] [ref=f3e167]: P
+          - generic [ref=f3e168]: PDOS
+        - generic [ref=f3e70]:
+          - link "搜索" [ref=f3e71] [cursor=pointer]:
+            - /url: /search
+          - link "现场采集" [ref=f3e74] [cursor=pointer]:
+            - /url: /capture
+          - button "切换为浅色主题" [active] [ref=f3e165] [cursor=pointer]
+          - button "退出登录" [ref=f3e78] [cursor=pointer]
+      - navigation "移动端主导航" [ref=f3e169]:
+        - generic [ref=f3e170]:
+          - generic [ref=f3e171]: 产品管理工作台
+          - button "展开导航" [ref=f3e172] [cursor=pointer]
+      - main [ref=f3e79]:
+        - generic [ref=f3e80]:
+          - generic [ref=f3e81]:
+            - generic [ref=f3e82]:
+              - heading "品类" [level=1] [ref=f3e83]
+              - paragraph [ref=f3e84]: 从客户需求、新品想法或产品迭代开始一份提案。
+            - generic [ref=f3e85]:
+              - button "返回品类列表" [pressed] [ref=f3e153] [cursor=pointer]
+              - group "切换视图" [ref=f3e87]:
+                - button "列表视图" [pressed] [ref=f3e88] [cursor=pointer]
+                - button "卡片视图" [ref=f3e91] [cursor=pointer]
+              - button "新建品类" [ref=f3e94] [cursor=pointer]
+              - button "刷新" [ref=f3e95] [cursor=pointer]
+          - list [ref=f3e97]:
+            - listitem [ref=f3e154]:
+              - link "delete-qa-ee0858b5 删除验证·汽车充气泵 1 个用户群 · 1 个地域 · 1 个场景 · 1 个研究问题 已归档" [ref=f3e155] [cursor=pointer]:
+                - /url: /product-work?category=494d44bc-5b27-4799-af61-2d81b7b2e3a5
+                - generic [ref=f3e156]: delete-qa-ee0858b5
+                - generic [ref=f3e157]:
+                  - generic [ref=f3e158]: 删除验证·汽车充气泵
+                  - generic [ref=f3e159]: 1 个用户群 · 1 个地域 · 1 个场景 · 1 个研究问题
+                - generic [ref=f3e160]: 已归档
+              - button "恢复品类 删除验证·汽车充气泵" [ref=f3e164] [cursor=pointer]: 恢复
+  - button "打开小Pai" [ref=f3e142] [cursor=pointer]
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-07T02-45-05-527Z.log#L10-L11

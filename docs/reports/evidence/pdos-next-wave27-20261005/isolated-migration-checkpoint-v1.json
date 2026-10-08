@@ -1,0 +1,40 @@
+{
+  "recorded_at": "2026-10-05T18:50:05.502387+00:00",
+  "status": "PASS_ISOLATED_28_29_28_29_MIGRATION",
+  "target": "127.0.0.1:63866/pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "shared_62513_used_for_repository_tests": false,
+  "new_business_saves": 0,
+  "backup": {
+    "private_path": ".local/wave27-isolated-before.dump",
+    "bytes": 1985670,
+    "sha256": "a6a153fc75afba0698de3d7980f88a4100fc79c81839bd3a22606d7302fab632",
+    "mode": "0600"
+  },
+  "final_head": "next_0029",
+  "all_122_legacy_table_rows_unchanged": true,
+  "complete_head28_catalog_restored": true,
+  "metadata_schema_differences": 0,
+  "agent_business_direct_write_tables": 0,
+  "legacy_rows_new_columns_SQL_NULL": true,
+  "actions": [
+    {
+      "action": "upgrade",
+      "revision": "next_0029",
+      "exit_code": 0,
+      "log": "isolated-migration-step-1-v1.log"
+    },
+    {
+      "action": "downgrade",
+      "revision": "next_0028",
+      "exit_code": 0,
+      "log": "isolated-migration-step-2-v1.log"
+    },
+    {
+      "action": "upgrade",
+      "revision": "next_0029",
+      "exit_code": 0,
+      "log": "isolated-migration-step-3-v1.log"
+    }
+  ]
+}

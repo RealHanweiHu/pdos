@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-03T06:13:03.478511+00:00",
+  "old_api_pid": 28196,
+  "new_api_pid": 29823,
+  "new_api_session": 75252,
+  "backend_manifest": "backend-candidate-v2-source.json",
+  "manifest_sha256": "d1823dafba0dbdefc495491b1445132a706693a0ee36b9254288f0d6572b3be8",
+  "matched_files": 303,
+  "quality_profile": "explicit scoped synthetic project profile, loaded at startup",
+  "reason": "actual UI uses v2 merge-history reader and imported synthetic policy",
+  "business_resume": "browser only; seed quality resume not run"
+}

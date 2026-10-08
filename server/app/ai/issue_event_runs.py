@@ -16,6 +16,7 @@ from app.ai.application_recovery import try_resume
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.capability_contract import resolve_capability
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.issue_event_proposal import (
     KEY,
@@ -316,6 +317,7 @@ class IssueEventRuns:
 
         return enqueue_event(c, self.gateway, **values)
 
+    @agent_entry
     def execute_queued(self, run_id: UUID) -> dict[str, Any]:
         from app.ai.issue_event_trigger_runs import execute_queued
 
@@ -403,6 +405,7 @@ class IssueEventRuns:
             "prompt_version": PROMPT.version,
         }
 
+    @agent_entry
     def create(self, *, context: AuthContext, project_id: UUID, request: Request) -> dict[str, Any]:
         require_live_key(KEY)
         with self.engine.begin() as c:

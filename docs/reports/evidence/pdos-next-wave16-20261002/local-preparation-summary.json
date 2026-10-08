@@ -1,0 +1,19 @@
+{
+  "scope": {
+    "actor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+    "capa_id": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+    "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+    "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7",
+    "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b"
+  },
+  "saved_preparation_receipts": 10,
+  "business_commands_executed_at_preparation": [],
+  "completion_occurred_at": "2026-10-03T08:08:20.788303Z",
+  "completion_timezone": "UTC",
+  "classification_profile_sha256": "42d287582a041bc12e41a554fc63e2f9f9c31c147efb3a0296c9f7a5ff4209ee",
+  "nature": "explicit_local_synthetic",
+  "production_qualification": false,
+  "effectiveness": null,
+  "closure": null
+}

@@ -1,0 +1,1702 @@
+{
+  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "schema_head": "next_0008",
+  "business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_port": 62513,
+  "business_table_count": 50,
+  "plan_and_readiness_unchanged": true,
+  "sample_and_supply_history_preserved": true,
+  "costs": {
+    "captures": [
+      {
+        "id": "6e0d58fa-3ff2-4c6b-9c68-e92c239821ef",
+        "revision": 1,
+        "build_revision": 1,
+        "status": "unapplied",
+        "created_at": "2026-10-02T13:19:44.542830+00:00",
+        "expires_at": "2026-10-02T13:49:44.542830+00:00",
+        "expired": false,
+        "applied_input_id": "1d4b20ac-7621-4561-a910-2faf99e9e115",
+        "input_snapshot": {
+          "rates": [
+            {
+              "rate": "7.2",
+              "purpose": "budget",
+              "rate_id": "SYN-W6-USD-CNY-01",
+              "sources": [
+                {
+                  "line": 3,
+                  "quote": "合成直接预算汇率：2026-10-02T12:00:00Z观察，1 USD = 7.2 CNY，使用年龄上限7天。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "observed_at": "2026-10-02T12:00:00Z",
+              "to_currency": "CNY",
+              "from_currency": "USD"
+            }
+          ],
+          "prices": [
+            {
+              "unit": "件",
+              "basis": "unit",
+              "stage": "quote",
+              "amount": "2",
+              "sources": [
+                {
+                  "line": 2,
+                  "quote": "合成续版电机报价：2 USD/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "currency": "USD",
+              "price_id": "SYN-W6-MOTOR-01",
+              "tax_rate": null,
+              "tax_basis": "exclusive",
+              "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "valid_from": "2026-10-02T00:00:00Z",
+              "valid_until": "2026-10-09T00:00:00Z",
+              "subject_kind": "material",
+              "freight_basis": "included",
+              "price_quantity": "1",
+              "maximum_quantity": "100",
+              "minimum_quantity": "1",
+              "scope_assumption": "合成电机续版来源报价为2 USD每件，数量阶梯1至100件，依明确预算汇率换算。"
+            },
+            {
+              "unit": "项",
+              "basis": "nre",
+              "stage": "estimate",
+              "amount": "1000",
+              "sources": [
+                {
+                  "line": 4,
+                  "quote": "合成一次性治具估价：1000 CNY/1项，未税、含运费，单独列示，不分摊到产品。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "currency": "CNY",
+              "price_id": "SYN-W6-NRE-01",
+              "tax_rate": null,
+              "tax_basis": "exclusive",
+              "subject_id": "SYN-W6-FIXTURE",
+              "valid_from": null,
+              "valid_until": null,
+              "subject_kind": "nre",
+              "freight_basis": "included",
+              "price_quantity": "1",
+              "maximum_quantity": null,
+              "minimum_quantity": null,
+              "scope_assumption": "合成治具一次费1000元，按本版口径单独列示。"
+            }
+          ],
+          "reason": "合成续版：采用USD电机报价与明确预算汇率，一次费单列，缺项不补零。",
+          "process": null,
+          "sources": [
+            {
+              "line": 5,
+              "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+              "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+              "expected_revision": 1
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "cost_scope": {
+            "coverage": "materials_only",
+            "currency": "CNY",
+            "tax_basis": "exclusive",
+            "nre_policy": "separate",
+            "nre_volume": null,
+            "assumptions": [
+              "CNY、未税、含运费，仅材料；预算汇率最多7天；治具一次费单独列示，不分摊到产品。壳体用量与价格未知，已知小计不代表完整成本。"
+            ],
+            "rate_purpose": "budget",
+            "freight_basis": "included",
+            "max_rate_age_days": 7
+          },
+          "capture_key": "d0eb27af-f4bb-4769-9fd5-f0faa46cc195",
+          "nre_price_ids": [
+            "SYN-W6-NRE-01"
+          ],
+          "material_prices": [
+            {
+              "price_id": "SYN-W6-MOTOR-01",
+              "bom_item_id": "motor"
+            }
+          ],
+          "expected_build_revision": 1,
+          "expected_product_revision": 1
+        },
+        "source_status": "current",
+        "inputs_record_payload": {
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "expected_build_revision": 1,
+          "capture_id": "6e0d58fa-3ff2-4c6b-9c68-e92c239821ef",
+          "expected_capture_revision": 1,
+          "expected_previous_input_id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+          "expected_previous_revision": 1,
+          "reason": "合成续版：采用USD电机报价与明确预算汇率，一次费单列，缺项不补零。"
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成续版：采用USD电机报价与明确预算汇率，一次费单列，缺项不补零。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ],
+        "sources": [
+          {
+            "line": 2,
+            "quote": "合成续版电机报价：2 USD/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "合成直接预算汇率：2026-10-02T12:00:00Z观察，1 USD = 7.2 CNY，使用年龄上限7天。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 4,
+            "quote": "合成一次性治具估价：1000 CNY/1项，未税、含运费，单独列示，不分摊到产品。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 5,
+            "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ]
+      },
+      {
+        "id": "75dbdb0d-c5e6-46b7-a131-6360f5484fa5",
+        "revision": 1,
+        "build_revision": 1,
+        "status": "unapplied",
+        "created_at": "2026-10-02T13:18:15.474042+00:00",
+        "expires_at": "2026-10-02T13:48:15.474042+00:00",
+        "expired": false,
+        "applied_input_id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+        "input_snapshot": {
+          "rates": [],
+          "prices": [
+            {
+              "unit": "件",
+              "basis": "unit",
+              "stage": "quote",
+              "amount": "10",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成首版电机报价：10 CNY/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "currency": "CNY",
+              "price_id": "SYN-W6-MOTOR-01",
+              "tax_rate": null,
+              "tax_basis": "exclusive",
+              "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "valid_from": "2026-10-02T00:00:00Z",
+              "valid_until": "2026-10-09T00:00:00Z",
+              "subject_kind": "material",
+              "freight_basis": "included",
+              "price_quantity": "1",
+              "maximum_quantity": "100",
+              "minimum_quantity": "1",
+              "scope_assumption": "合成电机首版来源报价，数量阶梯1至100件，壳体价格与用量未知。"
+            }
+          ],
+          "reason": "合成首版：固定材料成本口径和电机报价，壳体缺项保留，不代表完整成本。",
+          "process": null,
+          "sources": [
+            {
+              "line": 5,
+              "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+              "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+              "expected_revision": 1
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "cost_scope": {
+            "coverage": "materials_only",
+            "currency": "CNY",
+            "tax_basis": "exclusive",
+            "nre_policy": "excluded",
+            "nre_volume": null,
+            "assumptions": [
+              "CNY、未税、含运费，仅材料；预算汇率最多7天；一次费首版排除。壳体用量与价格未知，已知小计不代表完整成本。"
+            ],
+            "rate_purpose": "budget",
+            "freight_basis": "included",
+            "max_rate_age_days": 7
+          },
+          "capture_key": "bb36f528-635d-4348-b048-426e0717b32f",
+          "nre_price_ids": [],
+          "material_prices": [
+            {
+              "price_id": "SYN-W6-MOTOR-01",
+              "bom_item_id": "motor"
+            }
+          ],
+          "expected_build_revision": 1,
+          "expected_product_revision": 1
+        },
+        "source_status": "current",
+        "inputs_record_payload": {
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "expected_build_revision": 1,
+          "capture_id": "75dbdb0d-c5e6-46b7-a131-6360f5484fa5",
+          "expected_capture_revision": 1,
+          "expected_previous_input_id": null,
+          "expected_previous_revision": null,
+          "reason": "合成首版：固定材料成本口径和电机报价，壳体缺项保留，不代表完整成本。"
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成首版：固定材料成本口径和电机报价，壳体缺项保留，不代表完整成本。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ],
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成首版电机报价：10 CNY/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 5,
+            "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "id": "1d4b20ac-7621-4561-a910-2faf99e9e115",
+        "revision": 2,
+        "sha256": "bba0a4288e6d7b6e8137774d620b4c36b22166505355a81e108e737490b7254c",
+        "captured_at": "2026-10-02T13:19:44.542830+00:00",
+        "previous_input_id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+        "previous_revision": 1,
+        "cost_scope": {
+          "currency": "CNY",
+          "tax_basis": "exclusive",
+          "freight_basis": "included",
+          "coverage": "materials_only",
+          "rate_purpose": "budget",
+          "max_rate_age_days": 7,
+          "nre_policy": "separate",
+          "nre_volume": null,
+          "assumptions": [
+            "CNY、未税、含运费，仅材料；预算汇率最多7天；治具一次费单独列示，不分摊到产品。壳体用量与价格未知，已知小计不代表完整成本。"
+          ]
+        },
+        "prices": [
+          {
+            "price_id": "SYN-W6-MOTOR-01",
+            "subject_kind": "material",
+            "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "ref": {
+              "source_id": "artifact:a61381eb-7cd0-4498-8745-2defe28c1183",
+              "version": "1",
+              "sha256": "0a594d9c41d5cbfed9399687a51ab351d49738552e89cbc69e2001d7d92285a0",
+              "captured_at": "2026-10-02T13:00:05.382290Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "stage": "quote",
+            "basis": "unit",
+            "amount": "2",
+            "price_quantity": "1",
+            "unit": "件",
+            "currency": "USD",
+            "tax_basis": "exclusive",
+            "tax_rate": null,
+            "freight_basis": "included",
+            "valid_from": "2026-10-02T00:00:00Z",
+            "valid_until": "2026-10-09T00:00:00Z",
+            "minimum_quantity": "1",
+            "maximum_quantity": "100",
+            "scope_assumption": "合成电机续版来源报价为2 USD每件，数量阶梯1至100件，依明确预算汇率换算。"
+          },
+          {
+            "price_id": "SYN-W6-NRE-01",
+            "subject_kind": "nre",
+            "subject_id": "SYN-W6-FIXTURE",
+            "ref": {
+              "source_id": "artifact:a61381eb-7cd0-4498-8745-2defe28c1183",
+              "version": "1",
+              "sha256": "0a594d9c41d5cbfed9399687a51ab351d49738552e89cbc69e2001d7d92285a0",
+              "captured_at": "2026-10-02T13:00:05.382290Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "stage": "estimate",
+            "basis": "nre",
+            "amount": "1000",
+            "price_quantity": "1",
+            "unit": "项",
+            "currency": "CNY",
+            "tax_basis": "exclusive",
+            "tax_rate": null,
+            "freight_basis": "included",
+            "valid_from": null,
+            "valid_until": null,
+            "minimum_quantity": null,
+            "maximum_quantity": null,
+            "scope_assumption": "合成治具一次费1000元，按本版口径单独列示。"
+          }
+        ],
+        "material_prices": [
+          {
+            "bom_item_id": "motor",
+            "price_id": "SYN-W6-MOTOR-01"
+          }
+        ],
+        "process": null,
+        "rates": [
+          {
+            "rate_id": "SYN-W6-USD-CNY-01",
+            "ref": {
+              "source_id": "cost-fact:1d4b20ac-7621-4561-a910-2faf99e9e115:rate:SYN-W6-USD-CNY-01",
+              "version": "2",
+              "sha256": "a85cdf5779f02b1c5d633bfb74732fbb68ed42357765d2888d48f427a6411bc5",
+              "captured_at": "2026-10-02T12:00:00Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "from_currency": "USD",
+            "to_currency": "CNY",
+            "rate": "7.2",
+            "purpose": "budget"
+          }
+        ],
+        "nre_price_ids": [
+          "SYN-W6-NRE-01"
+        ],
+        "binding": {
+          "basis_sha256": "b3eb43973357a62bb3e9523385e7d7a12c82774d9fe4a6c683f66ee23214ba2c",
+          "demand_sha256": "30781a99287914174e60097c67e67a3672f416f08e200316f2c3c693b7774396",
+          "basis": {
+            "schema_version": "supply-cost-input.v1",
+            "build": {
+              "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+              "ref": {
+                "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "version": "1",
+                "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                "captured_at": "2026-10-02T11:43:29.515406Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "quantity": "10.00000000",
+              "product_unit": "台"
+            },
+            "bom": {
+              "ref": {
+                "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "version": "1",
+                "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                "captured_at": "2026-10-02T11:41:47.769153Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "engineering_configuration": {
+                "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "version": "1",
+                "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                "captured_at": "2026-10-02T11:41:59.876254Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "items": [
+                {
+                  "item_id": "housing",
+                  "parent_item_id": null,
+                  "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                  "quantity_per_parent": null,
+                  "unit": "件",
+                  "loss_rate": null,
+                  "supply_required": true,
+                  "critical": false
+                },
+                {
+                  "item_id": "motor",
+                  "parent_item_id": null,
+                  "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                  "quantity_per_parent": "2",
+                  "unit": "件",
+                  "loss_rate": "0.1",
+                  "supply_required": true,
+                  "critical": true
+                }
+              ]
+            }
+          },
+          "manufacturing_configuration": {
+            "source_id": "manufacturing_configuration:29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "version": "1",
+            "sha256": "6aaac00d27a171b766ea1c74d3b2865117091c7d4cf464ead335b29f07760f3a",
+            "captured_at": "2026-10-02T11:42:22.842804Z",
+            "valid_until": null,
+            "state": "current"
+          }
+        },
+        "freshness": "current",
+        "freshness_reasons": [],
+        "source_status": "current",
+        "input_snapshot": {
+          "rates": [
+            {
+              "rate": "7.2",
+              "purpose": "budget",
+              "rate_id": "SYN-W6-USD-CNY-01",
+              "sources": [
+                {
+                  "line": 3,
+                  "quote": "合成直接预算汇率：2026-10-02T12:00:00Z观察，1 USD = 7.2 CNY，使用年龄上限7天。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "observed_at": "2026-10-02T12:00:00Z",
+              "to_currency": "CNY",
+              "from_currency": "USD"
+            }
+          ],
+          "prices": [
+            {
+              "unit": "件",
+              "basis": "unit",
+              "stage": "quote",
+              "amount": "2",
+              "sources": [
+                {
+                  "line": 2,
+                  "quote": "合成续版电机报价：2 USD/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "currency": "USD",
+              "price_id": "SYN-W6-MOTOR-01",
+              "tax_rate": null,
+              "tax_basis": "exclusive",
+              "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "valid_from": "2026-10-02T00:00:00Z",
+              "valid_until": "2026-10-09T00:00:00Z",
+              "subject_kind": "material",
+              "freight_basis": "included",
+              "price_quantity": "1",
+              "maximum_quantity": "100",
+              "minimum_quantity": "1",
+              "scope_assumption": "合成电机续版来源报价为2 USD每件，数量阶梯1至100件，依明确预算汇率换算。"
+            },
+            {
+              "unit": "项",
+              "basis": "nre",
+              "stage": "estimate",
+              "amount": "1000",
+              "sources": [
+                {
+                  "line": 4,
+                  "quote": "合成一次性治具估价：1000 CNY/1项，未税、含运费，单独列示，不分摊到产品。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "currency": "CNY",
+              "price_id": "SYN-W6-NRE-01",
+              "tax_rate": null,
+              "tax_basis": "exclusive",
+              "subject_id": "SYN-W6-FIXTURE",
+              "valid_from": null,
+              "valid_until": null,
+              "subject_kind": "nre",
+              "freight_basis": "included",
+              "price_quantity": "1",
+              "maximum_quantity": null,
+              "minimum_quantity": null,
+              "scope_assumption": "合成治具一次费1000元，按本版口径单独列示。"
+            }
+          ],
+          "reason": "合成续版：采用USD电机报价与明确预算汇率，一次费单列，缺项不补零。",
+          "process": null,
+          "sources": [
+            {
+              "line": 5,
+              "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+              "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+              "expected_revision": 1
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "cost_scope": {
+            "coverage": "materials_only",
+            "currency": "CNY",
+            "tax_basis": "exclusive",
+            "nre_policy": "separate",
+            "nre_volume": null,
+            "assumptions": [
+              "CNY、未税、含运费，仅材料；预算汇率最多7天；治具一次费单独列示，不分摊到产品。壳体用量与价格未知，已知小计不代表完整成本。"
+            ],
+            "rate_purpose": "budget",
+            "freight_basis": "included",
+            "max_rate_age_days": 7
+          },
+          "capture_key": "d0eb27af-f4bb-4769-9fd5-f0faa46cc195",
+          "nre_price_ids": [
+            "SYN-W6-NRE-01"
+          ],
+          "material_prices": [
+            {
+              "price_id": "SYN-W6-MOTOR-01",
+              "bom_item_id": "motor"
+            }
+          ],
+          "expected_build_revision": 1,
+          "expected_product_revision": 1
+        },
+        "comparison": {
+          "deltas": [
+            {
+              "path": "cost_scope",
+              "after": {
+                "coverage": "materials_only",
+                "currency": "CNY",
+                "tax_basis": "exclusive",
+                "nre_policy": "separate",
+                "nre_volume": null,
+                "assumptions": [
+                  "CNY、未税、含运费，仅材料；预算汇率最多7天；治具一次费单独列示，不分摊到产品。壳体用量与价格未知，已知小计不代表完整成本。"
+                ],
+                "rate_purpose": "budget",
+                "freight_basis": "included",
+                "max_rate_age_days": 7
+              },
+              "label": "成本口径",
+              "before": {
+                "coverage": "materials_only",
+                "currency": "CNY",
+                "tax_basis": "exclusive",
+                "nre_policy": "excluded",
+                "nre_volume": null,
+                "assumptions": [
+                  "CNY、未税、含运费，仅材料；预算汇率最多7天；一次费首版排除。壳体用量与价格未知，已知小计不代表完整成本。"
+                ],
+                "rate_purpose": "budget",
+                "freight_basis": "included",
+                "max_rate_age_days": 7
+              }
+            },
+            {
+              "path": "nre_price_ids",
+              "after": [
+                "SYN-W6-NRE-01"
+              ],
+              "label": "NRE选择",
+              "before": []
+            },
+            {
+              "path": "prices.SYN-W6-MOTOR-01",
+              "after": {
+                "unit": "件",
+                "basis": "unit",
+                "stage": "quote",
+                "amount": "2",
+                "sources": [
+                  {
+                    "line": 2,
+                    "quote": "合成续版电机报价：2 USD/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                    "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                    "expected_revision": 1
+                  }
+                ],
+                "currency": "USD",
+                "price_id": "SYN-W6-MOTOR-01",
+                "tax_rate": null,
+                "tax_basis": "exclusive",
+                "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "valid_from": "2026-10-02T00:00:00Z",
+                "valid_until": "2026-10-09T00:00:00Z",
+                "subject_kind": "material",
+                "freight_basis": "included",
+                "price_quantity": "1",
+                "maximum_quantity": "100",
+                "minimum_quantity": "1",
+                "scope_assumption": "合成电机续版来源报价为2 USD每件，数量阶梯1至100件，依明确预算汇率换算。"
+              },
+              "label": "价格",
+              "before": {
+                "unit": "件",
+                "basis": "unit",
+                "stage": "quote",
+                "amount": "10",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成首版电机报价：10 CNY/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                    "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                    "expected_revision": 1
+                  }
+                ],
+                "currency": "CNY",
+                "price_id": "SYN-W6-MOTOR-01",
+                "tax_rate": null,
+                "tax_basis": "exclusive",
+                "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "valid_from": "2026-10-02T00:00:00Z",
+                "valid_until": "2026-10-09T00:00:00Z",
+                "subject_kind": "material",
+                "freight_basis": "included",
+                "price_quantity": "1",
+                "maximum_quantity": "100",
+                "minimum_quantity": "1",
+                "scope_assumption": "合成电机首版来源报价，数量阶梯1至100件，壳体价格与用量未知。"
+              }
+            },
+            {
+              "path": "prices.SYN-W6-NRE-01",
+              "after": {
+                "unit": "项",
+                "basis": "nre",
+                "stage": "estimate",
+                "amount": "1000",
+                "sources": [
+                  {
+                    "line": 4,
+                    "quote": "合成一次性治具估价：1000 CNY/1项，未税、含运费，单独列示，不分摊到产品。",
+                    "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                    "expected_revision": 1
+                  }
+                ],
+                "currency": "CNY",
+                "price_id": "SYN-W6-NRE-01",
+                "tax_rate": null,
+                "tax_basis": "exclusive",
+                "subject_id": "SYN-W6-FIXTURE",
+                "valid_from": null,
+                "valid_until": null,
+                "subject_kind": "nre",
+                "freight_basis": "included",
+                "price_quantity": "1",
+                "maximum_quantity": null,
+                "minimum_quantity": null,
+                "scope_assumption": "合成治具一次费1000元，按本版口径单独列示。"
+              },
+              "label": "价格",
+              "before": null
+            },
+            {
+              "path": "rates.SYN-W6-USD-CNY-01",
+              "after": {
+                "rate": "7.2",
+                "purpose": "budget",
+                "rate_id": "SYN-W6-USD-CNY-01",
+                "sources": [
+                  {
+                    "line": 3,
+                    "quote": "合成直接预算汇率：2026-10-02T12:00:00Z观察，1 USD = 7.2 CNY，使用年龄上限7天。",
+                    "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                    "expected_revision": 1
+                  }
+                ],
+                "observed_at": "2026-10-02T12:00:00Z",
+                "to_currency": "CNY",
+                "from_currency": "USD"
+              },
+              "label": "实际汇率观察",
+              "before": null
+            }
+          ],
+          "after_input_id": "1d4b20ac-7621-4561-a910-2faf99e9e115",
+          "after_revision": 2,
+          "before_input_id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+          "before_revision": 1
+        },
+        "validity": {
+          "prices": [
+            {
+              "price_id": "SYN-W6-MOTOR-01",
+              "state": "valid"
+            },
+            {
+              "price_id": "SYN-W6-NRE-01",
+              "state": "estimate"
+            }
+          ],
+          "rates": [
+            {
+              "rate_id": "SYN-W6-USD-CNY-01",
+              "state": "valid"
+            }
+          ]
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成续版：采用USD电机报价与明确预算汇率，一次费单列，缺项不补零。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ],
+        "sources": [
+          {
+            "line": 2,
+            "quote": "合成续版电机报价：2 USD/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "合成直接预算汇率：2026-10-02T12:00:00Z观察，1 USD = 7.2 CNY，使用年龄上限7天。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 4,
+            "quote": "合成一次性治具估价：1000 CNY/1项，未税、含运费，单独列示，不分摊到产品。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 5,
+            "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ]
+      },
+      {
+        "id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+        "revision": 1,
+        "sha256": "680fdee9ad7ed7a50d8e58e8c18220aeeefd94d6d40b015a266a418f598cc6f7",
+        "captured_at": "2026-10-02T13:18:15.474042+00:00",
+        "previous_input_id": null,
+        "previous_revision": null,
+        "cost_scope": {
+          "currency": "CNY",
+          "tax_basis": "exclusive",
+          "freight_basis": "included",
+          "coverage": "materials_only",
+          "rate_purpose": "budget",
+          "max_rate_age_days": 7,
+          "nre_policy": "excluded",
+          "nre_volume": null,
+          "assumptions": [
+            "CNY、未税、含运费，仅材料；预算汇率最多7天；一次费首版排除。壳体用量与价格未知，已知小计不代表完整成本。"
+          ]
+        },
+        "prices": [
+          {
+            "price_id": "SYN-W6-MOTOR-01",
+            "subject_kind": "material",
+            "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "ref": {
+              "source_id": "artifact:a61381eb-7cd0-4498-8745-2defe28c1183",
+              "version": "1",
+              "sha256": "0a594d9c41d5cbfed9399687a51ab351d49738552e89cbc69e2001d7d92285a0",
+              "captured_at": "2026-10-02T13:00:05.382290Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "stage": "quote",
+            "basis": "unit",
+            "amount": "10",
+            "price_quantity": "1",
+            "unit": "件",
+            "currency": "CNY",
+            "tax_basis": "exclusive",
+            "tax_rate": null,
+            "freight_basis": "included",
+            "valid_from": "2026-10-02T00:00:00Z",
+            "valid_until": "2026-10-09T00:00:00Z",
+            "minimum_quantity": "1",
+            "maximum_quantity": "100",
+            "scope_assumption": "合成电机首版来源报价，数量阶梯1至100件，壳体价格与用量未知。"
+          }
+        ],
+        "material_prices": [
+          {
+            "bom_item_id": "motor",
+            "price_id": "SYN-W6-MOTOR-01"
+          }
+        ],
+        "process": null,
+        "rates": [],
+        "nre_price_ids": [],
+        "binding": {
+          "basis_sha256": "b3eb43973357a62bb3e9523385e7d7a12c82774d9fe4a6c683f66ee23214ba2c",
+          "demand_sha256": "30781a99287914174e60097c67e67a3672f416f08e200316f2c3c693b7774396",
+          "basis": {
+            "schema_version": "supply-cost-input.v1",
+            "build": {
+              "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+              "ref": {
+                "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "version": "1",
+                "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                "captured_at": "2026-10-02T11:43:29.515406Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "quantity": "10.00000000",
+              "product_unit": "台"
+            },
+            "bom": {
+              "ref": {
+                "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "version": "1",
+                "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                "captured_at": "2026-10-02T11:41:47.769153Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "engineering_configuration": {
+                "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "version": "1",
+                "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                "captured_at": "2026-10-02T11:41:59.876254Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "items": [
+                {
+                  "item_id": "housing",
+                  "parent_item_id": null,
+                  "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                  "quantity_per_parent": null,
+                  "unit": "件",
+                  "loss_rate": null,
+                  "supply_required": true,
+                  "critical": false
+                },
+                {
+                  "item_id": "motor",
+                  "parent_item_id": null,
+                  "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                  "quantity_per_parent": "2",
+                  "unit": "件",
+                  "loss_rate": "0.1",
+                  "supply_required": true,
+                  "critical": true
+                }
+              ]
+            }
+          },
+          "manufacturing_configuration": {
+            "source_id": "manufacturing_configuration:29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "version": "1",
+            "sha256": "6aaac00d27a171b766ea1c74d3b2865117091c7d4cf464ead335b29f07760f3a",
+            "captured_at": "2026-10-02T11:42:22.842804Z",
+            "valid_until": null,
+            "state": "current"
+          }
+        },
+        "freshness": "historical",
+        "freshness_reasons": [
+          "cost_inputs_superseded"
+        ],
+        "source_status": "current",
+        "input_snapshot": {
+          "rates": [],
+          "prices": [
+            {
+              "unit": "件",
+              "basis": "unit",
+              "stage": "quote",
+              "amount": "10",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成首版电机报价：10 CNY/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "currency": "CNY",
+              "price_id": "SYN-W6-MOTOR-01",
+              "tax_rate": null,
+              "tax_basis": "exclusive",
+              "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "valid_from": "2026-10-02T00:00:00Z",
+              "valid_until": "2026-10-09T00:00:00Z",
+              "subject_kind": "material",
+              "freight_basis": "included",
+              "price_quantity": "1",
+              "maximum_quantity": "100",
+              "minimum_quantity": "1",
+              "scope_assumption": "合成电机首版来源报价，数量阶梯1至100件，壳体价格与用量未知。"
+            }
+          ],
+          "reason": "合成首版：固定材料成本口径和电机报价，壳体缺项保留，不代表完整成本。",
+          "process": null,
+          "sources": [
+            {
+              "line": 5,
+              "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+              "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+              "expected_revision": 1
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "cost_scope": {
+            "coverage": "materials_only",
+            "currency": "CNY",
+            "tax_basis": "exclusive",
+            "nre_policy": "excluded",
+            "nre_volume": null,
+            "assumptions": [
+              "CNY、未税、含运费，仅材料；预算汇率最多7天；一次费首版排除。壳体用量与价格未知，已知小计不代表完整成本。"
+            ],
+            "rate_purpose": "budget",
+            "freight_basis": "included",
+            "max_rate_age_days": 7
+          },
+          "capture_key": "bb36f528-635d-4348-b048-426e0717b32f",
+          "nre_price_ids": [],
+          "material_prices": [
+            {
+              "price_id": "SYN-W6-MOTOR-01",
+              "bom_item_id": "motor"
+            }
+          ],
+          "expected_build_revision": 1,
+          "expected_product_revision": 1
+        },
+        "comparison": {
+          "deltas": [
+            {
+              "path": "cost_scope",
+              "after": {
+                "coverage": "materials_only",
+                "currency": "CNY",
+                "tax_basis": "exclusive",
+                "nre_policy": "excluded",
+                "nre_volume": null,
+                "assumptions": [
+                  "CNY、未税、含运费，仅材料；预算汇率最多7天；一次费首版排除。壳体用量与价格未知，已知小计不代表完整成本。"
+                ],
+                "rate_purpose": "budget",
+                "freight_basis": "included",
+                "max_rate_age_days": 7
+              },
+              "label": "成本口径",
+              "before": null
+            },
+            {
+              "path": "material_prices",
+              "after": [
+                {
+                  "price_id": "SYN-W6-MOTOR-01",
+                  "bom_item_id": "motor"
+                }
+              ],
+              "label": "BOM价格选择",
+              "before": null
+            },
+            {
+              "path": "nre_price_ids",
+              "after": [],
+              "label": "NRE选择",
+              "before": null
+            },
+            {
+              "path": "sources",
+              "after": [
+                {
+                  "line": 5,
+                  "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+                  "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "expected_revision": 1
+                }
+              ],
+              "label": "成本口径来源",
+              "before": null
+            },
+            {
+              "path": "prices.SYN-W6-MOTOR-01",
+              "after": {
+                "unit": "件",
+                "basis": "unit",
+                "stage": "quote",
+                "amount": "10",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成首版电机报价：10 CNY/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+                    "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+                    "expected_revision": 1
+                  }
+                ],
+                "currency": "CNY",
+                "price_id": "SYN-W6-MOTOR-01",
+                "tax_rate": null,
+                "tax_basis": "exclusive",
+                "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "valid_from": "2026-10-02T00:00:00Z",
+                "valid_until": "2026-10-09T00:00:00Z",
+                "subject_kind": "material",
+                "freight_basis": "included",
+                "price_quantity": "1",
+                "maximum_quantity": "100",
+                "minimum_quantity": "1",
+                "scope_assumption": "合成电机首版来源报价，数量阶梯1至100件，壳体价格与用量未知。"
+              },
+              "label": "价格",
+              "before": null
+            }
+          ],
+          "after_input_id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+          "after_revision": 1,
+          "before_input_id": null,
+          "before_revision": null
+        },
+        "validity": {
+          "prices": [
+            {
+              "price_id": "SYN-W6-MOTOR-01",
+              "state": "valid"
+            }
+          ],
+          "rates": []
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成首版：固定材料成本口径和电机报价，壳体缺项保留，不代表完整成本。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ],
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成首版电机报价：10 CNY/1件，未税、含运费，数量阶梯1至100件，有效期2026-10-02T00:00:00Z至2026-10-09T00:00:00Z。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          },
+          {
+            "line": 5,
+            "quote": "本次材料成本口径：CNY、未税、含运费，仅材料；预算汇率，允许年龄7天；一次费按版本明确排除或单列。",
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ]
+      }
+    ],
+    "estimates": [
+      {
+        "id": "0a089e81-5f14-439e-8bb3-d42ba4de90f4",
+        "revision": "1",
+        "created_at": "2026-10-02T13:20:24.675511+00:00",
+        "freshness": "current",
+        "freshness_reasons": [],
+        "result": {
+          "schema_version": "cost-estimate-result.v1",
+          "algorithm": "fixed-bom-process-decimal.v1",
+          "input_sha256": "992f379a19fbbf9cbec5e3accc597770246220b314cafbe449fc4af8475b3190",
+          "input_snapshot": {
+            "as_of": "2026-10-02T13:20:24.675511Z",
+            "basis": {
+              "schema_version": "supply-cost-input.v1",
+              "build": {
+                "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "ref": {
+                  "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                  "version": "1",
+                  "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                  "captured_at": "2026-10-02T11:43:29.515406Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "quantity": "10.00000000",
+                "product_unit": "台"
+              },
+              "bom": {
+                "ref": {
+                  "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                  "version": "1",
+                  "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                  "captured_at": "2026-10-02T11:41:47.769153Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "engineering_configuration": {
+                  "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                  "version": "1",
+                  "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                  "captured_at": "2026-10-02T11:41:59.876254Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "items": [
+                  {
+                    "item_id": "housing",
+                    "parent_item_id": null,
+                    "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                    "quantity_per_parent": null,
+                    "unit": "件",
+                    "loss_rate": null,
+                    "supply_required": true,
+                    "critical": false
+                  },
+                  {
+                    "item_id": "motor",
+                    "parent_item_id": null,
+                    "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                    "quantity_per_parent": "2",
+                    "unit": "件",
+                    "loss_rate": "0.1",
+                    "supply_required": true,
+                    "critical": true
+                  }
+                ]
+              }
+            },
+            "scope": {
+              "currency": "CNY",
+              "tax_basis": "exclusive",
+              "freight_basis": "included",
+              "coverage": "materials_only",
+              "rate_purpose": "budget",
+              "max_rate_age_days": 7,
+              "nre_policy": "separate",
+              "nre_volume": null,
+              "assumptions": [
+                "CNY、未税、含运费，仅材料；预算汇率最多7天；治具一次费单独列示，不分摊到产品。壳体用量与价格未知，已知小计不代表完整成本。"
+              ]
+            },
+            "process": null,
+            "material_prices": [
+              {
+                "bom_item_id": "motor",
+                "price_id": "SYN-W6-MOTOR-01"
+              }
+            ],
+            "prices": [
+              {
+                "price_id": "SYN-W6-MOTOR-01",
+                "subject_kind": "material",
+                "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "ref": {
+                  "source_id": "artifact:a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "version": "1",
+                  "sha256": "0a594d9c41d5cbfed9399687a51ab351d49738552e89cbc69e2001d7d92285a0",
+                  "captured_at": "2026-10-02T13:00:05.382290Z",
+                  "valid_until": "2026-10-09T09:33:01.917395Z",
+                  "state": "current"
+                },
+                "stage": "quote",
+                "basis": "unit",
+                "amount": "2",
+                "price_quantity": "1",
+                "unit": "件",
+                "currency": "USD",
+                "tax_basis": "exclusive",
+                "tax_rate": null,
+                "freight_basis": "included",
+                "valid_from": "2026-10-02T00:00:00Z",
+                "valid_until": "2026-10-09T00:00:00Z",
+                "minimum_quantity": "1",
+                "maximum_quantity": "100",
+                "scope_assumption": "合成电机续版来源报价为2 USD每件，数量阶梯1至100件，依明确预算汇率换算。"
+              },
+              {
+                "price_id": "SYN-W6-NRE-01",
+                "subject_kind": "nre",
+                "subject_id": "SYN-W6-FIXTURE",
+                "ref": {
+                  "source_id": "artifact:a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "version": "1",
+                  "sha256": "0a594d9c41d5cbfed9399687a51ab351d49738552e89cbc69e2001d7d92285a0",
+                  "captured_at": "2026-10-02T13:00:05.382290Z",
+                  "valid_until": "2026-10-09T09:33:01.917395Z",
+                  "state": "current"
+                },
+                "stage": "estimate",
+                "basis": "nre",
+                "amount": "1000",
+                "price_quantity": "1",
+                "unit": "项",
+                "currency": "CNY",
+                "tax_basis": "exclusive",
+                "tax_rate": null,
+                "freight_basis": "included",
+                "valid_from": null,
+                "valid_until": null,
+                "minimum_quantity": null,
+                "maximum_quantity": null,
+                "scope_assumption": "合成治具一次费1000元，按本版口径单独列示。"
+              }
+            ],
+            "rates": [
+              {
+                "rate_id": "SYN-W6-USD-CNY-01",
+                "ref": {
+                  "source_id": "cost-fact:1d4b20ac-7621-4561-a910-2faf99e9e115:rate:SYN-W6-USD-CNY-01",
+                  "version": "2",
+                  "sha256": "a85cdf5779f02b1c5d633bfb74732fbb68ed42357765d2888d48f427a6411bc5",
+                  "captured_at": "2026-10-02T12:00:00Z",
+                  "valid_until": "2026-10-09T09:33:01.917395Z",
+                  "state": "current"
+                },
+                "from_currency": "USD",
+                "to_currency": "CNY",
+                "rate": "7.2",
+                "purpose": "budget"
+              }
+            ],
+            "nre_price_ids": [
+              "SYN-W6-NRE-01"
+            ]
+          },
+          "complete_in_selected_scope": false,
+          "currency": "CNY",
+          "known_build_subtotal": "316.8000000000",
+          "known_nre_subtotal": "1000",
+          "per_product_candidate": null,
+          "build_candidate": null,
+          "nre_candidate": null,
+          "including_amortized_nre": null,
+          "lines": [
+            {
+              "line_id": "material:motor",
+              "category": "material",
+              "price_id": "SYN-W6-MOTOR-01",
+              "quantity_per_product": "2.2",
+              "quantity_for_build": "22.000000000",
+              "demand_unit": "件",
+              "quantity_in_price_unit": "22.000000000",
+              "original_currency": "USD",
+              "original_build_amount": "44.000000000",
+              "rate_id": "SYN-W6-USD-CNY-01",
+              "per_product_candidate": "31.68",
+              "build_candidate": "316.8000000000",
+              "issues": []
+            },
+            {
+              "line_id": "material:housing",
+              "category": "material",
+              "price_id": null,
+              "quantity_per_product": null,
+              "quantity_for_build": null,
+              "demand_unit": "件",
+              "quantity_in_price_unit": null,
+              "original_currency": null,
+              "original_build_amount": null,
+              "rate_id": null,
+              "per_product_candidate": null,
+              "build_candidate": null,
+              "issues": [
+                {
+                  "code": "unpriced_bom_item",
+                  "path": "housing",
+                  "message": "BOM leaf has no selected package/price",
+                  "kind": "missing"
+                },
+                {
+                  "code": "price_missing",
+                  "path": "material:housing",
+                  "message": "No selected price snapshot",
+                  "kind": "missing"
+                }
+              ]
+            },
+            {
+              "line_id": "nre:SYN-W6-NRE-01",
+              "category": "nre",
+              "price_id": "SYN-W6-NRE-01",
+              "quantity_per_product": null,
+              "quantity_for_build": "1",
+              "demand_unit": "item",
+              "quantity_in_price_unit": "1",
+              "original_currency": "CNY",
+              "original_build_amount": "1000",
+              "rate_id": null,
+              "per_product_candidate": null,
+              "build_candidate": "1000",
+              "issues": []
+            }
+          ],
+          "issues": [
+            {
+              "code": "unpriced_bom_item",
+              "path": "housing",
+              "message": "BOM leaf has no selected package/price",
+              "kind": "missing"
+            },
+            {
+              "code": "price_missing",
+              "path": "material:housing",
+              "message": "No selected price snapshot",
+              "kind": "missing"
+            }
+          ],
+          "sensitive_items": [
+            {
+              "code": "exchange_rate",
+              "path": "material:motor",
+              "message": "Uses SYN-W6-USD-CNY-01 (budget) at fixed source time",
+              "kind": "sensitivity"
+            },
+            {
+              "code": "quote_quantity_tier",
+              "path": "material:motor",
+              "message": "Build quantity and loss may change quote applicability",
+              "kind": "sensitivity"
+            },
+            {
+              "code": "material_loss_uplift",
+              "path": "motor",
+              "message": "Demand multiplies each ancestor's (1 + loss_rate)",
+              "kind": "sensitivity"
+            }
+          ],
+          "decimal_precision": 38,
+          "rounding": "ROUND_HALF_EVEN at precision 38; no currency display quantization",
+          "notice": "Selected-scope estimate candidate; not ERP actual cost, approval or proven saving"
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "按固定试制需求确定性估算成本与缺项；不批准预算、采购或付款。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ],
+        "cost_input_id": "1d4b20ac-7621-4561-a910-2faf99e9e115",
+        "cost_input_revision": 2,
+        "source_status": "current"
+      },
+      {
+        "id": "98ad3bfd-096f-4ad4-9fcc-783a87013a06",
+        "revision": "1",
+        "created_at": "2026-10-02T13:18:56.777424+00:00",
+        "freshness": "requires_recalculation",
+        "freshness_reasons": [
+          "cost_inputs_changed"
+        ],
+        "result": {
+          "schema_version": "cost-estimate-result.v1",
+          "algorithm": "fixed-bom-process-decimal.v1",
+          "input_sha256": "d33934d4b9c63d0f10a99d7507d928b38a09723b5345d3e6a8e55564a7b2fc04",
+          "input_snapshot": {
+            "as_of": "2026-10-02T13:18:56.777424Z",
+            "basis": {
+              "schema_version": "supply-cost-input.v1",
+              "build": {
+                "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "ref": {
+                  "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                  "version": "1",
+                  "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                  "captured_at": "2026-10-02T11:43:29.515406Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "quantity": "10.00000000",
+                "product_unit": "台"
+              },
+              "bom": {
+                "ref": {
+                  "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                  "version": "1",
+                  "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                  "captured_at": "2026-10-02T11:41:47.769153Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "engineering_configuration": {
+                  "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                  "version": "1",
+                  "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                  "captured_at": "2026-10-02T11:41:59.876254Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "items": [
+                  {
+                    "item_id": "housing",
+                    "parent_item_id": null,
+                    "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                    "quantity_per_parent": null,
+                    "unit": "件",
+                    "loss_rate": null,
+                    "supply_required": true,
+                    "critical": false
+                  },
+                  {
+                    "item_id": "motor",
+                    "parent_item_id": null,
+                    "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                    "quantity_per_parent": "2",
+                    "unit": "件",
+                    "loss_rate": "0.1",
+                    "supply_required": true,
+                    "critical": true
+                  }
+                ]
+              }
+            },
+            "scope": {
+              "currency": "CNY",
+              "tax_basis": "exclusive",
+              "freight_basis": "included",
+              "coverage": "materials_only",
+              "rate_purpose": "budget",
+              "max_rate_age_days": 7,
+              "nre_policy": "excluded",
+              "nre_volume": null,
+              "assumptions": [
+                "CNY、未税、含运费，仅材料；预算汇率最多7天；一次费首版排除。壳体用量与价格未知，已知小计不代表完整成本。"
+              ]
+            },
+            "process": null,
+            "material_prices": [
+              {
+                "bom_item_id": "motor",
+                "price_id": "SYN-W6-MOTOR-01"
+              }
+            ],
+            "prices": [
+              {
+                "price_id": "SYN-W6-MOTOR-01",
+                "subject_kind": "material",
+                "subject_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "ref": {
+                  "source_id": "artifact:a61381eb-7cd0-4498-8745-2defe28c1183",
+                  "version": "1",
+                  "sha256": "0a594d9c41d5cbfed9399687a51ab351d49738552e89cbc69e2001d7d92285a0",
+                  "captured_at": "2026-10-02T13:00:05.382290Z",
+                  "valid_until": "2026-10-09T09:33:01.917395Z",
+                  "state": "current"
+                },
+                "stage": "quote",
+                "basis": "unit",
+                "amount": "10",
+                "price_quantity": "1",
+                "unit": "件",
+                "currency": "CNY",
+                "tax_basis": "exclusive",
+                "tax_rate": null,
+                "freight_basis": "included",
+                "valid_from": "2026-10-02T00:00:00Z",
+                "valid_until": "2026-10-09T00:00:00Z",
+                "minimum_quantity": "1",
+                "maximum_quantity": "100",
+                "scope_assumption": "合成电机首版来源报价，数量阶梯1至100件，壳体价格与用量未知。"
+              }
+            ],
+            "rates": [],
+            "nre_price_ids": []
+          },
+          "complete_in_selected_scope": false,
+          "currency": "CNY",
+          "known_build_subtotal": "220.000000000",
+          "known_nre_subtotal": "0",
+          "per_product_candidate": null,
+          "build_candidate": null,
+          "nre_candidate": null,
+          "including_amortized_nre": null,
+          "lines": [
+            {
+              "line_id": "material:motor",
+              "category": "material",
+              "price_id": "SYN-W6-MOTOR-01",
+              "quantity_per_product": "2.2",
+              "quantity_for_build": "22.000000000",
+              "demand_unit": "件",
+              "quantity_in_price_unit": "22.000000000",
+              "original_currency": "CNY",
+              "original_build_amount": "220.000000000",
+              "rate_id": null,
+              "per_product_candidate": "22.0",
+              "build_candidate": "220.000000000",
+              "issues": []
+            },
+            {
+              "line_id": "material:housing",
+              "category": "material",
+              "price_id": null,
+              "quantity_per_product": null,
+              "quantity_for_build": null,
+              "demand_unit": "件",
+              "quantity_in_price_unit": null,
+              "original_currency": null,
+              "original_build_amount": null,
+              "rate_id": null,
+              "per_product_candidate": null,
+              "build_candidate": null,
+              "issues": [
+                {
+                  "code": "unpriced_bom_item",
+                  "path": "housing",
+                  "message": "BOM leaf has no selected package/price",
+                  "kind": "missing"
+                },
+                {
+                  "code": "price_missing",
+                  "path": "material:housing",
+                  "message": "No selected price snapshot",
+                  "kind": "missing"
+                }
+              ]
+            }
+          ],
+          "issues": [
+            {
+              "code": "unpriced_bom_item",
+              "path": "housing",
+              "message": "BOM leaf has no selected package/price",
+              "kind": "missing"
+            },
+            {
+              "code": "price_missing",
+              "path": "material:housing",
+              "message": "No selected price snapshot",
+              "kind": "missing"
+            }
+          ],
+          "sensitive_items": [
+            {
+              "code": "quote_quantity_tier",
+              "path": "material:motor",
+              "message": "Build quantity and loss may change quote applicability",
+              "kind": "sensitivity"
+            },
+            {
+              "code": "material_loss_uplift",
+              "path": "motor",
+              "message": "Demand multiplies each ancestor's (1 + loss_rate)",
+              "kind": "sensitivity"
+            }
+          ],
+          "decimal_precision": 38,
+          "rounding": "ROUND_HALF_EVEN at precision 38; no currency display quantization",
+          "notice": "Selected-scope estimate candidate; not ERP actual cost, approval or proven saving"
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "按固定试制需求确定性估算成本与缺项；不批准预算、采购或付款。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a61381eb-7cd0-4498-8745-2defe28c1183",
+            "expected_revision": 1
+          }
+        ],
+        "cost_input_id": "a767a6a8-eace-4547-99e8-111ed758be4a",
+        "cost_input_revision": 1,
+        "source_status": "current"
+      }
+    ],
+    "current_by_build": {
+      "137e82b2-86d3-4874-8a8e-652fbe853ca0": {
+        "input_id": "1d4b20ac-7621-4561-a910-2faf99e9e115",
+        "revision": 2
+      }
+    },
+    "has_more": false,
+    "unavailable_count": 0
+  },
+  "receipt_ids": [
+    "2ff1e2f9-b1de-42b5-abb0-935773764539",
+    "97165853-33b7-40b0-851a-7d7691477355",
+    "dcfe9459-5ee2-453c-846f-c7b437139bf1",
+    "e039a5f0-5ede-4094-908d-5c124189e988"
+  ],
+  "audit_and_outbox_each_once": true,
+  "model_calls": 0,
+  "agent_business_write_privileges": 0,
+  "backups": {
+    "pre-wave6-next_0007.dump": {
+      "bytes": 7746954,
+      "sha256": "677039e1134a51922909ca4e4c6cf494fd7f48e9efb76a9dab86388775d4e6c3",
+      "mode": "0o600"
+    },
+    "wave6-business.dump": {
+      "bytes": 10624731,
+      "sha256": "ede02d8b8fdb6d405b5433f1b37b04b26d8804be8177ffa151c11ced649b7617",
+      "mode": "0o600"
+    }
+  },
+  "limitations": "Synthetic selected-scope cost candidates only. Missing housing cost retained. No purchase, actual financial cost, approval, proven savings or model call."
+}

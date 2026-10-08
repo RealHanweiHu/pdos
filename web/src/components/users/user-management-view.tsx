@@ -10,6 +10,7 @@ import { USER_ROLES } from "./user-management-types";
 import type { ManagedUser, UserCreate, UserRole, UserUpdate } from "./user-management-types";
 
 const ADMIN_ASSIGNABLE_ROLES: readonly UserRole[] = [
+  "product_manager",
   "project_manager",
   "engineer",
   "quality",
@@ -56,7 +57,7 @@ export function UserManagementView({
         </p>
         <h1 className="mt-1 text-lg font-semibold">成员与角色</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          创建租户账户、分配角色并管理登录状态。密码不会回显或保留在页面中。
+          分配主角色，按兼任职责配置工作模块；成员登录后自动看到对应工作台。密码不会回显或保留在页面中。
         </p>
       </div>
 
@@ -71,7 +72,7 @@ export function UserManagementView({
         </p>
       ) : null}
 
-      <div className="mt-5 grid items-start gap-5 xl:grid-cols-[minmax(300px,0.72fr)_minmax(0,1.5fr)]">
+      <div className="mt-5 grid grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(300px,0.72fr)_minmax(0,1.5fr)]">
         <UserCreateForm
           creating={creating}
           onCreate={onCreate}

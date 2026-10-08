@@ -28,6 +28,8 @@ from app.domain.product_workspace import (
 
 
 class CompetitorMetric(Contract):
+    parameter_id: UUID | None = None
+    parameter_version: int | None = Field(default=None, ge=1)
     key: Key
     label: Text
     number: Quantity | None = None
@@ -247,9 +249,30 @@ class CompetitorService:
             ):
                 if len({row[field] for row in rows}) > 1:
                     context_warnings.append(message)
+            require_bound = (
+                connection.execute(
+                    select(tables.category_parameters.c.id)
+                    .where(
+                        tables.category_parameters.c.tenant_id == context.tenant.id,
+                        tables.category_parameters.c.product_line_id.in_(
+                            [row["product_line_id"] for row in rows if row["product_line_id"]]
+                        ),
+                    )
+                    .limit(1)
+                ).first()
+                is not None
+            )
             for key in keys:
                 cells = [item.get(key) for item in metrics]
                 reasons: list[str] = []
+                bound = [cell for cell in cells if cell and cell.get("parameter_id")]
+                if (require_bound or bound) and len(bound) != len(cells):
+                    reasons.append("部分指标未映射到共用品类参数")
+                elif bound and (
+                    len({(cell["parameter_id"], cell.get("parameter_version")) for cell in bound})
+                    != 1
+                ):
+                    reasons.append("品类参数或字典版本不同")
                 if any(cell is None or cell["nature"] == "unknown" for cell in cells):
                     reasons.append("部分型号缺少该指标")
                 known = [cell for cell in cells if cell is not None and cell["nature"] != "unknown"]
@@ -434,7 +457,10 @@ def create_competitor_in_connection(
         exclude={"request_id", "product_line_id", "supersedes_id", "observed_on"},
     )
     payload["identity_sources"] = _resolve(connection, context, draft.identity_sources)
+    from app.domain.product_categories import validate_parameter
+
     for metric, value in zip(draft.metrics, payload["metrics"], strict=True):
+        validate_parameter(connection, context, space_id, draft.product_line_id, value)
         value["source_refs"] = _resolve(connection, context, metric.source_refs)
     if draft.price_quote:
         payload["price_quote"]["source_refs"] = _resolve(

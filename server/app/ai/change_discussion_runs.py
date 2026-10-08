@@ -27,6 +27,7 @@ from app.ai.change_impact_preparation import source_state
 from app.ai.discussion_contributions import POLICY, analyze, fingerprint
 from app.ai.discussion_sources import current as current_source
 from app.ai.discussion_sources import require_disclosure
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
 from app.ai.rollout_guard import require_live_key
@@ -535,6 +536,7 @@ class ChangeDiscussionRuns:
             event(c, context.tenant.id, session_id, "queued", context.user.id)
             return result(c, row)
 
+    @agent_entry
     def execute(self, row: RowMapping) -> None:
         from app.ai.application_domain_context import record, sources_current
 

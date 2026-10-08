@@ -663,6 +663,9 @@ class CostGapService:
                     else None
                 )
                 if identity:
+                    from app.domain.cost_issue_closure import recovery
+
+                    value["closure"] = recovery(c, context.tenant.id, project, record)
                     observations = select(
                         o.c.id, o.c.version, o.c.state, o.c.rollup_id, o.c.created_at
                     ).where(o.c.tenant_id == context.tenant.id, o.c.case_id == identity)

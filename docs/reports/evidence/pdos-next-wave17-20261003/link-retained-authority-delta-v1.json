@@ -1,0 +1,90 @@
+{
+  "schema_version": "pdos-link-retained-authority-delta-v1",
+  "status": "PASS_SCOPED_OFFLINE",
+  "scope": "Only _link recheck_snapshot retained=True; no SQL, migration, operation registration or enabled capability changes",
+  "source": "pdos-next/server/pdos_next/domain/capa_verification/service.py",
+  "before_sha256": "91c72ff1d49a794561af28c9a5dfcdef52d717588b46aa9390a00abd816798af",
+  "after_sha256": "28ac1698624f8fa7fcff30e6fbdc858f3b9698fd19dec13b6fc074deb39bd174",
+  "one_call_delta_reconstructed_before_hash_matches": true,
+  "call_contract": {
+    "at": "now() at the actual Link read phase; not historical saved_at",
+    "write": false,
+    "retained": true,
+    "snapshot": "original row.authority_snapshot including all original fact_refs"
+  },
+  "pure": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/server/tests/professional_authority/test_assessment.py pdos-next/server/tests/capa_verification/test_pure.py docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-regression.py -q",
+    "exit_code": 0,
+    "passed": 72,
+    "pytest_seconds": 0.98,
+    "log": "link-retained-authority-pure-v1.log",
+    "new_regressions": 7
+  },
+  "static": [
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/capa_verification/service.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-regression.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.064
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/capa_verification/service.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-regression.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.015
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-c",
+        "from pdos_next.domain.capa_verification import service; from pdos_next.domain.professional_authority import service as authority; assert callable(service._link) and callable(authority.recheck_snapshot); print(\"public module imports passed; no database invocation\")"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.99
+    }
+  ],
+  "ast_files": 2,
+  "regression_coverage": [
+    "Actual _link forwards current phase time, write=False and original fact_refs to actual professional.assess through recheck_snapshot",
+    "New inapplicable operation series ignored; ordinary default assessment still detects differing facts_revision",
+    "Relevant new series rejected",
+    "Original negative fact Current epoch changes rejected",
+    "Original source security epoch changes rejected",
+    "Issuer disable/restore ABA rejected",
+    "Original Current epoch ABA rejected",
+    "Qualification expired at current phase time rejected"
+  ],
+  "unmodified_guards": [
+    "scope and exact immutable version",
+    "fixed outputs and source safety basis",
+    "current consumer ACL",
+    "professional assess implementation",
+    "all original and relevant added fact fingerprints",
+    "MAX_FACTS complete bound"
+  ],
+  "limitations": [
+    "Source/Project/owner I/O in the new regression uses existing explicit fake-session/source substitutes",
+    "No new PostgreSQL/HTTP/UI, public suite or migration check performed",
+    "Root actual read-only False/True observation is linked prior evidence, not an execution claimed by this agent",
+    "Root owns affected actual HTTP/PG/save validation"
+  ],
+  "artifacts": {
+    "pdos-next/server/pdos_next/domain/capa_verification/service.py": "28ac1698624f8fa7fcff30e6fbdc858f3b9698fd19dec13b6fc074deb39bd174",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-regression.py": "475fd7e452b6ea315aceaf32bd66f470bfebb1feb6b7361d4ce066200fc4a196",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "a5693cac73d9cd4ebe8c6d2e7e0513fe03522833a9a4a0275681decbb318627f",
+    "pdos-next/server/tests/professional_authority/test_assessment.py": "90ecb9ba4d9100caa74ef784bd70ec9ae9ace04d1d28b8ea892319891e90b75e",
+    "pdos-next/server/tests/capa_verification/test_pure.py": "4f253f80c454220535cb67e7f97a3cdba86ed6501efd626f4d41a1cb0622b2ba",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-authority-actual-readonly-v1.json": "cbaf79a2993115722be76af98cb4cece1dac9acbcb94ab9a4cdb349ef0696835",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-pure-v1.log": "aff82c1bbbe1d02cd531ee723076a37a31ce1020469a0014c4df8746b8c1199f",
+    "docs/reports/evidence/pdos-next-wave17-20261003/link-retained-authority-static-v1.log": "a5273e5e86f084897026da14a97deb1173523e556a7f0cd2d68cba783d727be9"
+  }
+}

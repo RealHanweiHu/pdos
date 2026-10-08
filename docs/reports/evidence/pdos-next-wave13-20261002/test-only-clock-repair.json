@@ -1,0 +1,14 @@
+{
+  "production_source_changes": [],
+  "changed": {
+    "pdos-next/server/tests/verification_launch/fixtures.py": {
+      "before": "d8f089af990b858cf2543d693dbb5dd1fc48908be44a465272ae2cdff55fd138",
+      "after": "278d44528f773f2b2fa16fc6fdad56873413e3fc9ea685dbf029d28710277f1e"
+    },
+    "pdos-next/server/tests/verification_launch/test_transactions.py": {
+      "before": "dd7de719f113678813767a6262a06c0a0caa6dd570f315429dad7ababce26412",
+      "after": "c1102f042b30315f0e86507e8902ab2feb6b82c916e3cf499fd81d838d97dbf4"
+    }
+  },
+  "reason": "Real 90-second plan window expired during full phase reads; five-minute real window and one GET snapshot per phase; preserve real PostgreSQL clock and full assertions."
+}

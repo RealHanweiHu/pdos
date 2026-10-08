@@ -1,0 +1,15 @@
+{
+  "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+  "revision": 3,
+  "status": "running",
+  "result": "indeterminate",
+  "raw_value": "  10.0  ",
+  "measurements": 1,
+  "effects": {
+    "operational_resource_occupancies": 2,
+    "sample_run_usages": 1,
+    "test_resource_reservations": 1
+  },
+  "actual_start_and_execution_unchanged": true,
+  "ui_receipt": "Unknown after 60-second BFF deadline; retain same command, recovering without a new operation."
+}

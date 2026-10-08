@@ -1,0 +1,19 @@
+{
+  "owned_preview_pids": [
+    24635,
+    24640,
+    24641,
+    24642,
+    24645,
+    24647,
+    24648,
+    24663,
+    24665,
+    24671,
+    24745,
+    39426
+  ],
+  "actual_open_sessions": 0,
+  "preserved_unknown_session_count": 1,
+  "no_migration_or_journal_write": true
+}

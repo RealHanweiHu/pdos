@@ -1,0 +1,10 @@
+{
+  "status": "REPAIRED_NOT_YET_REVERIFIED",
+  "before_sha256": "0d54c2a6ac55553b050ea4b7d98d95bcacaae9a80c6751923d09b4e7a1bb97f5",
+  "after_sha256": "41accbf13709dc60f40817a46c75a8f53fdfe4ec6a6a3cc92e5e9834788a8f35",
+  "only_downgrade_sql_0_changed": true,
+  "original_failure_log": "migration-step-2-v1.log",
+  "old_sql": "LOCK TABLE products,confirmations,action_receipts,request_keys,audit_entries,outbox_events IN SHARE ROW EXCLUSIVE MODE,manufacturing_preparation_versions,manufacturing_preparation_currents,manufacturing_baseline_document_links",
+  "new_sql": "LOCK TABLE products,confirmations,action_receipts,request_keys,audit_entries,outbox_events,manufacturing_preparation_versions,manufacturing_preparation_currents,manufacturing_baseline_document_links IN SHARE ROW EXCLUSIVE MODE",
+  "upgrade_sql_unchanged": true
+}

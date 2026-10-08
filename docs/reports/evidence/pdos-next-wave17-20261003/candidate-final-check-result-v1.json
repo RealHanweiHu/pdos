@@ -1,0 +1,65 @@
+{
+  "schema_version": "pdos-wave17-candidate-storage-check-v1",
+  "created_at": "2026-10-03T11:41:34.984190+00:00",
+  "manifest": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-final-source-manifest-v1.json",
+  "manifest_sha256": "b4e064602eb59ccce64fd118725509e6d3979d66e7186983ad59959a39b9e203",
+  "source_files": {
+    "pdos-next/staging/wave17/candidate_storage.py": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+    "pdos-next/staging/wave17/test_candidate_storage.py": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+    "pdos-next/staging/wave17/candidate-storage-contract.md": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7"
+  },
+  "checks": {
+    "owned_pure": {
+      "passed": 53,
+      "failed": 0,
+      "seconds": 3.18,
+      "log": "candidate-pure-final.log"
+    },
+    "ruff": "passed",
+    "format": "passed",
+    "in_memory_ast": {
+      "passed": 2
+    }
+  },
+  "commands": [
+    "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_candidate_storage.py -q",
+    "pdos-next/server/.venv/bin/ruff check pdos-next/staging/wave17/candidate_storage.py pdos-next/staging/wave17/test_candidate_storage.py",
+    "pdos-next/server/.venv/bin/ruff format --check pdos-next/staging/wave17/candidate_storage.py pdos-next/staging/wave17/test_candidate_storage.py",
+    "In-memory ast.parse of the two owned Python files (no compile output written)."
+  ],
+  "raw_logs": {
+    "candidate-pure-initial.log": "f906778a6fe97017ac0b0397e1d736e62f99bf1b015f47d8e15b39c6df05d761",
+    "candidate-pure-expanded.log": "f507ab0d1773055a2bbeaf67264800ecc61346b2799026ea8d56405edfc5a8bf",
+    "candidate-pure-final.log": "f49a4260a7b7c9e98537896fff55d2fd48082b11cee02cd86599ca55def01d56",
+    "candidate-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "candidate-format-final.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "candidate-ast-final.log": "1a0ec3db18fa545e7cd6d1f1607c11518b00011bb90938410cf899aac4ac3f5c"
+  },
+  "earlier_scoped_checks": [
+    {
+      "passed": 42,
+      "failed": 0,
+      "seconds": 2.55,
+      "log": "candidate-pure-initial.log",
+      "final_source": false,
+      "source_hash_at_run": "not captured; not claimed as final candidate validation"
+    },
+    {
+      "passed": 53,
+      "failed": 0,
+      "seconds": 3.19,
+      "log": "candidate-pure-expanded.log",
+      "final_source": false,
+      "source_hash_at_run": "not captured; final post-caller semantic-owner recheck/test adjustment validated separately"
+    }
+  ],
+  "test_environment": "Real unbound SQLAlchemy Session ancestry and ORM shapes, exact SELECT substitutes, explicit do_connect rejection; no database connection.",
+  "limits": [
+    "Staged only; no public payload/module/handler/permission/migration/API registration.",
+    "Real startup CandidateSemanticOwner defaults absent; live reads blocked with 503. Legacy candidate wrappers missing actual clock/anchor remain 503.",
+    "Stored metadata/full reference/common group do not attest seven live source/issuer/participant/applicability/qualification/coverage owners.",
+    "Historical consumed=True and saved consumed_at do not attest current same-UOW false-to-true persistence; output remains false.",
+    "No source bytes, production real qualification, PG/RLS/trigger or full business loop exercised."
+  ],
+  "unchanged_public_scope": "No server/web/lock/migration/other staged source edited by this segment."
+}

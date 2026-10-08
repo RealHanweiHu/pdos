@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth.repository import AuthContext
 from app.auth.roles import Action, Role, is_allowed
-from app.contracts.common_objects import Key, ScopeRef
+from app.contracts.common_objects import Key, ScopeRef, Text
 from app.contracts.object_operations import CommandPrecondition
 from app.contracts.product_records import ProductNode
 from app.db.schema import tables
@@ -26,6 +26,7 @@ from app.domain.product_workspace import (
     _precondition,
     _role,
     _space,
+    category_line_id,
     digest,
 )
 
@@ -48,16 +49,18 @@ class ProductDraft(Input):
     parent_id: UUID | None = None
     derived_from: UUID | None = None
     owner_user_id: UUID
-    regions: list[Key] = Field(default_factory=list, max_length=30)
+    regions: list[Text] = Field(default_factory=list, max_length=30)
     channels: list[Key] = Field(default_factory=list, max_length=30)
+    tags: list[str] = Field(default_factory=list, max_length=30)
 
 
 class ProductChange(CommandPrecondition):
     name: str = Field(min_length=1, max_length=2048)
     owner_user_id: UUID
     lifecycle: Lifecycle
-    regions: tuple[Key, ...] = Field(max_length=30)
+    regions: tuple[Text, ...] = Field(max_length=30)
     channels: tuple[Key, ...] = Field(max_length=30)
+    tags: tuple[str, ...] | None = Field(default=None, max_length=30)
     reason: str = Field(min_length=1, max_length=2048)
 
 
@@ -121,6 +124,12 @@ def create_product_in_connection(
 ) -> dict[str, Any]:
     _role(context, Action.PRODUCT_WORK_MANAGE)
     _space(connection, context, space_id, access="manager", lock=True)
+    if draft.level in {"family", "platform", "series"}:
+        raise ProductWorkError(
+            "新产品按品类→型号→变体创建；族/系列用可选标签，平台在独立平台目录维护"
+        )
+    if draft.level == "line":
+        raise ProductWorkError("请在品类目录创建新的品类，不能在品类内另建产品线")
     table = tables.product_nodes
     fingerprint = digest(
         draft.model_dump(
@@ -166,11 +175,15 @@ def create_product_in_connection(
         _member(connection, context, space_id, draft.owner_user_id)
     else:
         if draft.parent_id is None:
-            raise ProductWorkError("请指定相邻层级的上级产品")
+            raise ProductWorkError("请选择所属品类或型号")
         parent = _node_row(connection, context, space_id, draft.parent_id)
         line_id = parent["product_line_id"]
         _line(connection, context, space_id, line_id, access="manager", writable=True)
-        if parent["level"] != PARENT_LEVEL[draft.level] or parent["lifecycle"] == "retired":
+        if (
+            parent["level"]
+            not in ({"line", "series"} if draft.level == "model" else {PARENT_LEVEL[draft.level]})
+            or parent["lifecycle"] == "retired"
+        ):
             raise ProductWorkError("上级须为相邻产品层级，且未退役")
         _member(connection, context, space_id, draft.owner_user_id, line_id)
     if source is not None and source["product_line_id"] != line_id:
@@ -267,9 +280,11 @@ class ProductCatalogService:
                 if row["user_id"] == context.user.id
             }
             return {
+                "category_id": str(space_id),
+                "category_line_id": str(category_line_id(connection, context.tenant.id, space_id)),
                 "nodes": [_node(row) for row in nodes],
                 "members": [_plain(row) for row in memberships],
-                "can_create_line": can_manage,
+                "can_create_line": False,
                 "line_access": {
                     str(line_id): {
                         "can_manage": can_manage and (elevated or mine.get(line_id) == "manager"),
@@ -299,6 +314,8 @@ class ProductCatalogService:
         with self.engine.begin() as connection:
             _space(connection, context, space_id, access="manager", lock=True)
             row = _node_row(connection, context, space_id, node_id)
+            if row["level"] == "line":
+                raise ProductWorkError("品类资料、负责人和状态统一在品类设置办理")
             _line(
                 connection,
                 context,
@@ -397,6 +414,8 @@ class ProductCatalogService:
                     "reason",
                 },
             )
+            if command.tags is None:
+                values.pop("tags", None)
             values["owner_user_id"] = command.owner_user_id
             after = (
                 connection.execute(
@@ -424,78 +443,9 @@ class ProductCatalogService:
         self, context: AuthContext, space_id: UUID, line_id: UUID, command: LineMemberChange
     ) -> dict[str, Any]:
         _role(context, Action.PRODUCT_WORK_MANAGE)
-        with self.engine.begin() as connection:
-            _space(connection, context, space_id, access="manager", lock=True)
-            row = _line(connection, context, space_id, line_id, access="manager")
-            if not _precondition(connection, context, row, command):
-                return _node(row)
-            if command.user_id == row["owner_user_id"] and command.access != "manager":
-                raise ProductWorkError("产品线负责人须保留管理权限")
-            if command.access is not None:
-                # Scope access is an intersection. Selecting a line never grants its parent space.
-                members = tables.market_space_members
-                found = connection.execute(
-                    select(members.c.access)
-                    .join(
-                        tables.users,
-                        (tables.users.c.tenant_id == members.c.tenant_id)
-                        & (tables.users.c.id == members.c.user_id),
-                    )
-                    .where(
-                        members.c.tenant_id == context.tenant.id,
-                        members.c.market_space_id == space_id,
-                        members.c.user_id == command.user_id,
-                        tables.users.c.is_active.is_(True),
-                        tables.users.c.role.in_(
-                            ("owner", "admin", "project_manager", "engineer", "quality")
-                        ),
-                    )
-                ).scalar_one_or_none()
-                if found is None or (command.access != "viewer" and found == "viewer"):
-                    raise ProductWorkError("请先授予该成员相应的市场空间访问权限")
-            table = tables.product_line_members
-            predicates = (
-                table.c.tenant_id == context.tenant.id,
-                table.c.product_line_id == line_id,
-                table.c.user_id == command.user_id,
-            )
-            existing = connection.execute(select(table).where(*predicates)).mappings().one_or_none()
-            if command.access is None:
-                connection.execute(table.delete().where(*predicates))
-            elif existing:
-                connection.execute(table.update().where(*predicates).values(access=command.access))
-            else:
-                connection.execute(
-                    table.insert().values(
-                        tenant_id=context.tenant.id,
-                        market_space_id=space_id,
-                        product_line_id=line_id,
-                        user_id=command.user_id,
-                        access=command.access,
-                        added_by_user_id=context.user.id,
-                    )
-                )
-            after = (
-                connection.execute(
-                    tables.product_nodes.update()
-                    .where(tables.product_nodes.c.id == line_id)
-                    .values(version=row["version"] + 1, updated_at=datetime.now(UTC))
-                    .returning(tables.product_nodes)
-                )
-                .mappings()
-                .one()
-            )
-            _emit(
-                connection,
-                context,
-                space_id,
-                "product_node",
-                "membership_changed",
-                {**dict(after), "member_user_id": command.user_id, "member_access": command.access},
-                before=row,
-                operation=command,
-            )
-            return _node(after)
+        with self.engine.connect() as connection:
+            _line(connection, context, space_id, line_id, access="manager")
+        raise ProductWorkError("成员权限统一在品类设置维护，不再单独维护产品线成员")
 
     def change_space(
         self, context: AuthContext, space_id: UUID, command: SpaceChange | SpaceLifecycle
@@ -514,7 +464,7 @@ class ProductCatalogService:
                 return {**_plain(row), "payload_digest": digest(_plain(row))}
             if isinstance(command, SpaceLifecycle):
                 if row["lifecycle"] == command.lifecycle:
-                    raise ProductWorkError("市场空间已经处于目标状态")
+                    raise ProductWorkError("品类已经处于目标状态")
                 if command.lifecycle == "archived":
                     from app.domain.initial_plan_reviews import ensure_plan_reviews_resolved
 
@@ -528,7 +478,7 @@ class ProductCatalogService:
                         )
                         .limit(1)
                     ).first():
-                        raise ProductWorkError("市场空间仍有待协审定义，请先办理或退回草稿")
+                        raise ProductWorkError("品类仍有待协审定义，请先办理或退回草稿")
                     if connection.execute(
                         select(tables.product_strategies.c.id)
                         .where(
@@ -538,7 +488,7 @@ class ProductCatalogService:
                         )
                         .limit(1)
                     ).first():
-                        raise ProductWorkError("市场空间仍有待审核策略，请先办理或退回草稿")
+                        raise ProductWorkError("品类仍有待审核策略，请先办理或退回草稿")
                     for task_table in (
                         tables.research_tasks,
                         tables.scoped_work_items,
@@ -553,7 +503,7 @@ class ProductCatalogService:
                             )
                             .limit(1)
                         ).first():
-                            raise ProductWorkError("市场空间仍有未结束工作，请先完成或明确取消")
+                            raise ProductWorkError("品类仍有未结束工作，请先完成或明确取消")
                 values: dict[str, Any] = {"lifecycle": command.lifecycle}
             else:
                 values = command.model_dump(

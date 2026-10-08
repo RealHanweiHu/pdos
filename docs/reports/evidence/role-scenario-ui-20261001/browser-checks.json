@@ -1,0 +1,92 @@
+{
+  "scope": "Actual browser UI; synthetic isolated projects only. No approved/submitted business actions.",
+  "preview_url": "http://localhost:3024",
+  "api_url": "http://127.0.0.1:8894",
+  "database": "127.0.0.1:57441/pdos_test",
+  "existing_product_preview": "http://127.0.0.1:3023",
+  "measurements": [
+    {
+      "view": "quality test execution desktop",
+      "width": 1440,
+      "height": 960,
+      "document_scroll_width": 1440,
+      "scroll_y": 0,
+      "selected": [
+        "试制·测试·质量",
+        "执行测试与核对报告"
+      ],
+      "visible_alerts": []
+    },
+    {
+      "view": "quality my work mobile",
+      "width": 320,
+      "document_scroll_width": 320
+    },
+    {
+      "view": "quality test execution mobile dark",
+      "width": 320,
+      "document_scroll_width": 320
+    },
+    {
+      "view": "portfolio mobile dark",
+      "width": 320,
+      "document_scroll_width": 320,
+      "task_nav_scroll_width": 1158
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario": "工程身份",
+      "result": "Login opens own work; assigned synthetic correction task and independent issue visible. New project selection opens engineering/specification and R&D BOM; SYN-SPEC-001 shown."
+    },
+    {
+      "scenario": "品质身份",
+      "result": "Login opens own task and issue verification. Verification scene shows one actual issue. New project selection opens test execution; one failed Run, immutable sample configuration revision 1, operator, date and unknown fields visible."
+    },
+    {
+      "scenario": "产品/管理/PIE工作视角",
+      "result": "Existing synthetic owner preview: product homepage opens product-work; management opens portfolio; mobile PIE perspective change preserves current page."
+    },
+    {
+      "scenario": "深链接",
+      "result": "Project + quality + test_case_id + test_run_id + hash opens correct task, expands failed Run and locates it. Original selectors remain in URL after manual task selection."
+    },
+    {
+      "scenario": "品质测试输入",
+      "result": "New test form result note survives switch to actual configuration and back. Read-only DOM input.value confirms exact text; form cancelled without submit."
+    },
+    {
+      "scenario": "组合输入",
+      "result": "Portfolio task switch retains unsaved input; temporary input cleared."
+    },
+    {
+      "scenario": "键盘",
+      "result": "Plain direction/Home/End tab navigation covered by tests; actual Ctrl+Home scrolls to top without switching active test task. Modifier regression test passed."
+    },
+    {
+      "scenario": "我的工作打开面板",
+      "result": "Independent focused action remains visible outside scenes. Embedded task preparation stays mounted but hides when scene changes; no broader visibility claim."
+    }
+  ],
+  "coverage_limits": [
+    "Engineer uncontrolled draft browser attribute inspection returned null, so not claimed as browser evidence. Generic draft preservation tests and quality controlled input browser evidence passed.",
+    "Customer/supplier response UI covered by 19 component tests; no external identity seeded for browser verification.",
+    "Owner HTTP identity verified in new preview; owner business perspectives exercised on existing synthetic product preview.",
+    "No real model calls, worker, approvals, formal publish, outbound data, repo database tests or production deployment."
+  ],
+  "recoveries": [
+    "Initial src symlink preview returned 404; replaced only new preview with final candidate physical src copy.",
+    "127.0.0.1 previews shared cookie hostname; original 401 observed. Browser switched to localhost and logged in normally; Run/documents BFF and API reads returned 200.",
+    "Ctrl+Home intercepted by task navigation; fixed modifier guard, verified focused regression, final full tests/build and actual browser scroll."
+  ],
+  "screenshots": [
+    "product-perspective-desktop.png",
+    "portfolio-role-desktop.png",
+    "portfolio-role-mobile-dark.png",
+    "engineer-my-work-desktop.png",
+    "engineer-project-desktop.png",
+    "quality-my-work-mobile.png",
+    "quality-test-desktop.png",
+    "quality-test-mobile-dark.png"
+  ]
+}

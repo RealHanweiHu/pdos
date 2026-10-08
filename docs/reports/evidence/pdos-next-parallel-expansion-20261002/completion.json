@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-02 13:24:43 UTC",
+  "source": "Codex read_thread与各包result/integration/candidate文件核对",
+  "threads": [
+    {
+      "id": "01a0fc9e-e232-7ed2-8cbd-93992854a383",
+      "title": "PDOS Next：租户模型配置与可用性",
+      "status": "idle",
+      "turnStatus": "completed",
+      "error": null,
+      "result": "docs/reports/evidence/pdos-next-model-configuration-20261002/result.md",
+      "integration": "docs/reports/evidence/pdos-next-model-configuration-20261002/integration.md",
+      "candidate": "docs/reports/evidence/pdos-next-model-configuration-20261002/candidate.json",
+      "candidateSha256": "63bc4b8889c135dd69110ffa5b5dbb5341674e872ae871903b7e7f4e6df8c891",
+      "reportedChecksPassed": {
+        "backend": 76,
+        "frontend": 7
+      },
+      "scope": "独立模块合成检查及局部静态检查，不表示业务已接入"
+    },
+    {
+      "id": "01a0fc9e-e6f7-72f2-8edb-e65214b8a9f3",
+      "title": "PDOS Next：研究与 OEM 导入",
+      "status": "idle",
+      "turnStatus": "completed",
+      "error": null,
+      "result": "docs/reports/evidence/pdos-next-discovery-20261002/result.md",
+      "integration": "docs/reports/evidence/pdos-next-discovery-20261002/integration.md",
+      "candidate": "docs/reports/evidence/pdos-next-discovery-20261002/candidate.json",
+      "candidateSha256": "7ada664c5e900d0f85d919770a915c8764ee657a934366bd4a2acc6369b69b57",
+      "reportedChecksPassed": {
+        "domain": 63,
+        "frontend": 11
+      },
+      "scope": "独立模块合成检查及局部静态检查，不表示业务已接入"
+    },
+    {
+      "id": "01a0fc9e-ec83-7a81-8c8a-a70836f3a5d7",
+      "title": "PDOS Next：问题与 CAPA",
+      "status": "idle",
+      "turnStatus": "completed",
+      "error": null,
+      "result": "docs/reports/evidence/pdos-next-quality-issues-20261002/result.md",
+      "integration": "docs/reports/evidence/pdos-next-quality-issues-20261002/integration.md",
+      "candidate": "docs/reports/evidence/pdos-next-quality-issues-20261002/candidate.json",
+      "candidateSha256": "1bf5e8a83273c61e65a8f4cd74f71c29a7c5fc0c1110cc751d714a9922e68b1e",
+      "reportedChecksPassed": {
+        "backend": 110,
+        "frontend": 25
+      },
+      "scope": "独立模块合成检查及局部静态检查，不表示业务已接入"
+    }
+  ],
+  "mainline": {
+    "id": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "title": "按新设计完成并执行方案",
+    "status": "active",
+    "turnStatus": "inProgress",
+    "work": "成本第六波收尾；公共模型/注册/迁移/API/父页面/环境及共同验证归主线"
+  },
+  "remaining": [
+    "模型配置：公共持久层/RLS、管理员与secret manager、当前资格/出站授权、命令/API/UI接线",
+    "研究/OEM：真实研究scope/RLS/来源与定义唯一写入者、共同预览确认及API/UI接线",
+    "问题/CAPA：真实TestRun事件/来源/资格/独立政策端口与公共事务/持久化/API/UI接线"
+  ],
+  "limitations": [
+    "本轮未重复运行已通过候选检查。",
+    "未向主线新增发送这些包的接入指令；仅记录当前状态与接线缺口。",
+    "模型配置包已记录初次Ruff可能写共享缓存的偏差，其后改无缓存；本协调任务未清理缓存。",
+    "真实资格/生产/人工Exit及原N/P/Q批准边界保持。"
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "schema_version": "wave21-final-owned-application-v3",
+  "files": [
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+      "target_path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+      "before_sha256": "3e645ba35aaed5504a3ee9f2e1f237d46e4dc87ac01f1044d2105b255038f850",
+      "after_sha256": "b3b18c2b2c592d55d45564262ce08fa801f51e94d87e3df5d792c78470cb68ee",
+      "actual_current_sha256": "b3b18c2b2c592d55d45564262ce08fa801f51e94d87e3df5d792c78470cb68ee",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py",
+      "target_path": "pdos-next/server/tests/quality_followup_root/test_completion_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "2cb5f068a0bbb154777d5d514ee0788650a2b7a198926242ad4e72b9bc44bb63",
+      "actual_current_sha256": "2cb5f068a0bbb154777d5d514ee0788650a2b7a198926242ad4e72b9bc44bb63",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/pdos_next/domain/professional_authority/service.py",
+      "target_path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "before_sha256": "9c6ad2064357475003b649a36a1007cdcf047d3ffd3fa844989d73bdb6e43585",
+      "after_sha256": "d1920edd315ce26f8ea1ba3631e1aff67a820032e77c53374a0793c840e44433",
+      "actual_current_sha256": "d1920edd315ce26f8ea1ba3631e1aff67a820032e77c53374a0793c840e44433",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/pdos_next/capa_rule_publisher.py",
+      "target_path": "pdos-next/server/pdos_next/capa_rule_publisher.py",
+      "before_sha256": "f471c23de48366b17f9e4dd3a76e4ea4961412930adc4110ffc44cda29bd73da",
+      "after_sha256": "ed2eebdecf294f83d40549c432cd70b2f7f23057ba36379bf365103c74110358",
+      "actual_current_sha256": "ed2eebdecf294f83d40549c432cd70b2f7f23057ba36379bf365103c74110358",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/tests/professional_authority/test_profiles.py",
+      "target_path": "pdos-next/server/tests/professional_authority/test_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "27fba549f7a4d67bcbab8d93ce4a45069c8927ce407895b82e9e81e7fd6f40f2",
+      "actual_current_sha256": "27fba549f7a4d67bcbab8d93ce4a45069c8927ce407895b82e9e81e7fd6f40f2",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-authority-staged/tests/capa_effectiveness/test_rule_publisher_profiles.py",
+      "target_path": "pdos-next/server/tests/capa_effectiveness/test_rule_publisher_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "55b692d72473bf5055efa188312a5ce1c4909c454516c55f201e70993a6cb07c",
+      "actual_current_sha256": "55b692d72473bf5055efa188312a5ce1c4909c454516c55f201e70993a6cb07c",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/pdos_next/api.py",
+      "target_path": "pdos-next/server/pdos_next/api.py",
+      "before_sha256": "fabd2247220a2aee785a4690231fd7659a699b445f85fc29a82a57a8e574fa2d",
+      "after_sha256": "45fa2cd5f127cf220a3e033b0fdaeff1a4199a9bdcf9bd1cba9467946f22897c",
+      "actual_current_sha256": "45fa2cd5f127cf220a3e033b0fdaeff1a4199a9bdcf9bd1cba9467946f22897c",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/pdos_next/asgi.py",
+      "target_path": "pdos-next/server/pdos_next/asgi.py",
+      "before_sha256": "cf35bd263c03ced52d06be49b90c09ce47a3bd3c5e6da2ab8db37d07563af995",
+      "after_sha256": "922f4d98b7f616fdcab421e35129a1749d8e66c619e75514afef689dda74aaf7",
+      "actual_current_sha256": "922f4d98b7f616fdcab421e35129a1749d8e66c619e75514afef689dda74aaf7",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/tools/local_environment.py",
+      "target_path": "pdos-next/tools/local_environment.py",
+      "before_sha256": "ab2ffe69fc08fa91aa3715eb5f8058162fb53b7b2db8ccb6708d96779b9b5875",
+      "after_sha256": "0d4b99fe7e14ce6d41dcfaa08b6bde6228a413b4a18bf773445b64f3d84fd8f7",
+      "actual_current_sha256": "0d4b99fe7e14ce6d41dcfaa08b6bde6228a413b4a18bf773445b64f3d84fd8f7",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/test_host_profile_choices.py",
+      "target_path": "pdos-next/server/tests/test_host_profile_choices.py",
+      "before_sha256": null,
+      "after_sha256": "58c033c7d332844828f368d1f12558025a904ca6c14354e315a13cabea3982de",
+      "actual_current_sha256": "4cf246319fa69dd0bf314ed1a539c7b90837d04f801abc29db78cbfc9ee9379d",
+      "changed_after_application": true,
+      "post_application_delta": "Import grouping only; exact import members and remaining AST identical"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-root-staged/tools/tests/test_local_host_profiles.py",
+      "target_path": "pdos-next/tools/tests/test_local_host_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "dff71c79313a912179b4882cf853a25dfdd7e44df8de065d99157581d1935ced",
+      "actual_current_sha256": "dff71c79313a912179b4882cf853a25dfdd7e44df8de065d99157581d1935ced",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-foundation-staged/pdos_next/operational_bootstrap.py",
+      "target_path": "pdos-next/server/pdos_next/operational_bootstrap.py",
+      "before_sha256": "473cb3f7336b0af28a82b6e5b602bc696fc67a03ba4d8f276799d60089e9cb15",
+      "after_sha256": "fd7ed5585dded9a0896858c5c02dbef7b18ed4ac8d09d3f08b42ec28f2cafb3e",
+      "actual_current_sha256": "fd7ed5585dded9a0896858c5c02dbef7b18ed4ac8d09d3f08b42ec28f2cafb3e",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-foundation-staged/pdos_next/test_resource_bootstrap.py",
+      "target_path": "pdos-next/server/pdos_next/test_resource_bootstrap.py",
+      "before_sha256": "85eee5d1838689a54688fc64a6998b03a30fa57b7a984a40c654b333dbe31ccf",
+      "after_sha256": "e710c9af00d4c3c08c9c48e8b754a4e3f987713e4b52deada4e39263c5241d21",
+      "actual_current_sha256": "e710c9af00d4c3c08c9c48e8b754a4e3f987713e4b52deada4e39263c5241d21",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-foundation-staged/pdos_next/quality_bootstrap.py",
+      "target_path": "pdos-next/server/pdos_next/quality_bootstrap.py",
+      "before_sha256": "74de72d1f51352e63152c76d4886092da335b06a64798bb4aa8392e548305fbf",
+      "after_sha256": "1b01049d9b8e6950f9bf80c4517196d3074e1476b9e1bef3839ea7ff82018e6e",
+      "actual_current_sha256": "1b01049d9b8e6950f9bf80c4517196d3074e1476b9e1bef3839ea7ff82018e6e",
+      "changed_after_application": false
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-foundation-staged/tests/test_operational_bootstrap_profiles.py",
+      "target_path": "pdos-next/server/tests/test_operational_bootstrap_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "cbc6dc4c8ee0f70556f20f750d5e155ea0929b5dc54f5bed2bdcaa01e85c0fb9",
+      "actual_current_sha256": "c8cfa05f17edf27d58ebefa7c93702182ba47cb4d2eede70c29b055d3c151375",
+      "changed_after_application": false,
+      "post_application_delta": "Import grouping only; exact import members and remaining AST identical"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-foundation-staged/tests/test_test_resource_bootstrap_profiles.py",
+      "target_path": "pdos-next/server/tests/test_test_resource_bootstrap_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "1bef7e390abc8363185eda210206a3f0b8e6430564e77c84aa2bdbd13ffabe5e",
+      "actual_current_sha256": "4fce65e7a1818bc08a8a67b360976a885ac750daf171b8e68d693b6637d6a369",
+      "changed_after_application": false,
+      "post_application_delta": "Import grouping only; exact import members and remaining AST identical"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-foundation-staged/tests/test_quality_bootstrap_profiles.py",
+      "target_path": "pdos-next/server/tests/test_quality_bootstrap_profiles.py",
+      "before_sha256": null,
+      "after_sha256": "a2a251106399ca42d2dc11803136a08f825041b63ae4ffb15f983143f7cd6042",
+      "actual_current_sha256": "8c6cdafb5a026320a0b0a3cf059c5593cd0517455e8e7183c59c65b018918a21",
+      "changed_after_application": false,
+      "post_application_delta": "Import grouping only; exact import members and remaining AST identical"
+    }
+  ],
+  "post_application_import_only_files": [
+    "pdos-next/server/tests/test_host_profile_choices.py",
+    "pdos-next/server/tests/test_operational_bootstrap_profiles.py",
+    "pdos-next/server/tests/test_test_resource_bootstrap_profiles.py",
+    "pdos-next/server/tests/test_quality_bootstrap_profiles.py"
+  ],
+  "runtime_delta_from_wave20_v3": [
+    "pdos-next/server/pdos_next/api.py",
+    "pdos-next/server/pdos_next/asgi.py",
+    "pdos-next/server/pdos_next/capa_rule_publisher.py",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+    "pdos-next/server/pdos_next/operational_bootstrap.py",
+    "pdos-next/server/pdos_next/quality_bootstrap.py",
+    "pdos-next/server/pdos_next/quality_followup_integration.py",
+    "pdos-next/server/pdos_next/test_resource_bootstrap.py"
+  ],
+  "web_changed": false,
+  "migration_changed": false
+}

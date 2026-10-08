@@ -1,0 +1,28 @@
+{
+  "human_request": "尽可能搜索资料，囊括热门产品",
+  "scope": "local application tenant",
+  "started_at": "2026-10-07T07:25:26.000250+00:00",
+  "unknown_journal_digest_before": "f47638a90957ddc0b856935a707ac8ae7038062e4ffaa1065589bae09bf737ba",
+  "setting_before": {
+    "provider": "minimax",
+    "model": "MiniMax-M3",
+    "daily_token_budget": 2000000
+  },
+  "drained_preview_pids": [
+    1125,
+    1130,
+    1131,
+    1132,
+    1134,
+    1135,
+    1136,
+    1152,
+    1155,
+    1161,
+    1169,
+    24377
+  ],
+  "head_after": "0431_conversation_research_exploration",
+  "unknown_journal_digest_after": "f47638a90957ddc0b856935a707ac8ae7038062e4ffaa1065589bae09bf737ba",
+  "migrated_at": "2026-10-07T07:25:26.824103+00:00"
+}

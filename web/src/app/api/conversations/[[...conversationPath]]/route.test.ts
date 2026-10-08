@@ -10,3 +10,11 @@ it("keeps private PM creation and natural message sources intact at the bounded 
 it("dispatches only the actual persisted message via the existing bodyless run route", async () => { await POST(new Request("https://local", { method: "POST" }), context([id, "messages", mid, "run"])); expect(upstream.mock.calls[0][0]).toBe(`/api/conversations/${id}/messages/${mid}/run`); expect(upstream.mock.calls[0][1].body).toBeUndefined(); });
 it("retains project query compatibility and refuses unauthenticated typed reads", async () => { await GET(new Request(`https://local/api/conversations?project_id=${id}`), context()); expect(upstream.mock.calls[0][0]).toBe(`/api/conversations?project_id=${id}`); token.mockResolvedValue(null); const response = await GET(new Request("https://local/api/conversations?scope_kind=personal"), context()); expect(response.status).toBe(401); expect(upstream).toHaveBeenCalledTimes(1); });
 it("forwards authorized matrix record pagination and preserves the exact explicit matrix selection", async () => { await GET(new Request(`https://local/api/conversations/${id}/matrix-options?before_id=${mid}&record_id=untrusted&other=hidden`), context([id, "matrix-options"])); expect(upstream.mock.calls[0][0]).toBe(`/api/conversations/${id}/matrix-options?before_id=${mid}`); const body = { request_id: mid, expected_context_version: 3, body: "分析产品矩阵", action: "note", attachment_ids: [], product_sources: [], matrix_selection: { record_id: id, roadmap_ids: [mid] } }; await POST(new Request("https://local", { method: "POST", body: JSON.stringify(body) }), context([id, "messages"])); expect(JSON.parse(upstream.mock.calls[1][1].body)).toEqual(body); });
+
+it("forwards the reply stream without buffering JSON and keeps the provider connection beyond the five-second default", async () => {
+  const stream = 'data: {"type":"text","text":"你好"}\n\n';
+  upstream.mockResolvedValueOnce(new Response(stream, { headers: { "Content-Type": "text/event-stream" } }));
+  const response = await POST(new Request("https://local", { method: "POST" }), context([id, "messages", mid, "reply"]));
+  expect(response.headers.get("Content-Type")).toBe("text/event-stream"); expect(await response.text()).toBe(stream);
+  expect(upstream.mock.calls[0][2]).toBe(120_000); expect(upstream.mock.calls[0][1].headers.Authorization).toBe("Bearer token");
+});

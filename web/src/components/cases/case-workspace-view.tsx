@@ -12,6 +12,7 @@ import type { DevelopmentCase } from "./case-types";
 
 export function CaseWorkspaceView({
   canEdit,
+  canTransition,
   cases,
   errorMessage,
   identity,
@@ -27,6 +28,7 @@ export function CaseWorkspaceView({
   statusMessage,
 }: {
   canEdit: boolean;
+  canTransition: boolean;
   cases: DevelopmentCase[];
   errorMessage: string | null;
   identity: WorkspaceIdentity;
@@ -55,11 +57,10 @@ export function CaseWorkspaceView({
         </p>
       ) : null}
       <div className="border-b pb-4">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Discovery</p>
-        <h1 className="mt-1 text-lg font-semibold">开发案例</h1>
+        <h1 className="text-lg font-semibold tracking-tight">开发案例</h1>
         <p className="mt-1 text-sm text-muted-foreground">把已批准需求转成可评估、可决策、可立项的正式对象。</p>
       </div>
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_384px]">
+      <div className={`mt-6 grid min-w-0 items-start gap-6 ${selectedCase ? "xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]" : ""}`}>
         <CaseList canEdit={canEdit} cases={cases} onSelect={onSelect} selectedId={selectedCase?.id ?? null} />
         {selectedCase ? (
           <section aria-label="开发案例详情" className="rounded-lg border bg-card p-4">
@@ -80,7 +81,7 @@ export function CaseWorkspaceView({
             <CaseRequirements key={selectedCase.id} caseId={selectedCase.id} caseUpdatedAt={selectedCase.updated_at} caseStatus={selectedCase.status} />
             <InitialPlans key={`plan-${selectedCase.id}`} source={{ kind: "development_case", id: selectedCase.id }} />
             <CaseReviews key={`reviews-${selectedCase.id}`} caseId={selectedCase.id} updatedAt={selectedCase.updated_at} />
-            {canEdit && <CaseStatusActions
+            {canTransition && <CaseStatusActions
               busy={saving}
               developmentCase={selectedCase}
               onCreateProject={(values) => onCreateProject(selectedCase, values)}

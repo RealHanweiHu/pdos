@@ -1,0 +1,11 @@
+{
+  "status_code": 200,
+  "body": {
+    "status": "ok",
+    "model_available": false,
+    "slice": "wave1-source-definition",
+    "durable_queue_enabled": true
+  },
+  "at": "2026-10-04T01:28:08.357468+00:00",
+  "trust_env": false
+}

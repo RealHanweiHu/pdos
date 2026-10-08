@@ -1,0 +1,47 @@
+{
+  "real_preview": {
+    "url": "http://127.0.0.1:3000/product-work",
+    "category_directory_visible": true,
+    "existing_two_categories_preserved": true,
+    "existing_login_preserved": true,
+    "old_null_line_proposal_visible": "自行车充气泵",
+    "duplicate_space_and_line_selectors_removed": true,
+    "screenshot": "preview-category-directory.png"
+  },
+  "isolated_synthetic_preview": {
+    "web_port": 3046,
+    "api_port": 8846,
+    "database_port": 55041,
+    "car_and_bicycle_separate_categories": true,
+    "new_proposal_auto_category": true,
+    "inherited_specification_rows": 3,
+    "inherited_parameter_ids_versions_units_conditions": true,
+    "inherited_status": "unknown",
+    "manual_saved_draft_editable_after_model_failure": true,
+    "model_result": "MODEL_NOT_AVAILABLE",
+    "credentials_available": false,
+    "real_llm_called": false,
+    "new_model_directly_under_category_visible": true,
+    "independent_cross_category_platform_visible": true,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "narrow_viewport_checked_this_candidate": false,
+    "fixtures_cleared_for_final_regression_and_empty_roundtrip": true,
+    "screenshots": [
+      "qa-proposal-inheritance.png",
+      "qa-category-dictionary.png",
+      "qa-category-products-light.png",
+      "qa-category-products-dark.png"
+    ]
+  },
+  "last_display_only_changes_after_gui": [
+    "auth-frame",
+    "process-template-fields",
+    "process-template-task-fields",
+    "process-template-risk-fields",
+    "portfolio-product-pipeline"
+  ],
+  "final_build_after_display_changes_passed": true
+}

@@ -1,0 +1,69 @@
+{
+  "schema_head": "next_0014",
+  "business_tables": 76,
+  "agent_direct_writes": 0,
+  "new_tables_forced_rls": {
+    "build_operational_facts": [
+      true,
+      true
+    ],
+    "build_operational_current": [
+      true,
+      true
+    ],
+    "operational_asset_sentinels": [
+      true,
+      true
+    ],
+    "operational_material_holds": [
+      true,
+      true
+    ],
+    "operational_resource_occupancies": [
+      true,
+      true
+    ],
+    "build_execution_assessments": [
+      true,
+      true
+    ],
+    "build_current_execution_assessments": [
+      true,
+      true
+    ],
+    "build_authorization_decisions": [
+      true,
+      true
+    ],
+    "build_current_authorizations": [
+      true,
+      true
+    ],
+    "build_starts": [
+      true,
+      true
+    ]
+  },
+  "model_calls": 0,
+  "nature": "synthetic",
+  "old_builds_unchanged": 1,
+  "old_preparation_samples_and_runs_unchanged": true,
+  "old_request_versions_unchanged": 3,
+  "old_request_occupancy": 0,
+  "fixed_build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+  "plan_revision": 1,
+  "assessment_status_retained": "UNKNOWN",
+  "named_approvals": 2,
+  "start_count": 1,
+  "start_id": "b9afcb61-7399-5906-a3ad-035fb79914ef",
+  "execution_state": "READY_WITH_CONDITIONS",
+  "execution_qualification": "limited_current",
+  "stop_required": false,
+  "material_holds": 1,
+  "material_quantity": "22",
+  "material_unit": "ea",
+  "resource_occupancies": 1,
+  "resource_units": "1",
+  "receipt_audit_outbox_each": 4,
+  "prior_business_sha256": "7d9c14a37916a8cf931009c980cbefa62db729c1b65ac8f71722c02ec582fc21"
+}

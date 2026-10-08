@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "check": "merged-static-v3",
+      "exit_code": 0,
+      "log": "merged-static-v3.log"
+    },
+    {
+      "check": "merged-format-v1",
+      "exit_code": 0,
+      "log": "merged-format-v1.log"
+    }
+  ],
+  "owned_files": 19,
+  "runtime_ast_files": 353,
+  "manifest_sha256": "7878fe8b9d7c1d40be28405d532a76d31f05f7ac86dfc7fb1bcf2d996166c186"
+}

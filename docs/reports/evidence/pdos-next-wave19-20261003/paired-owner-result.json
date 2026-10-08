@@ -1,0 +1,57 @@
+{
+  "status": "owned_pure_and_static_passed",
+  "counts": {
+    "owned_pure": 24
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=.:tests .venv/bin/python -m pytest --noconftest tests/capa_effectiveness/test_live_paired_owner.py -q",
+      "cwd": "pdos-next/server",
+      "exit_code": 0,
+      "log": "paired-owner-pure-06.log"
+    },
+    {
+      "command": ".venv/bin/ruff check pdos_next/paired_output_bridge.py tests/capa_effectiveness/test_live_paired_owner.py",
+      "exit_code": 0
+    },
+    {
+      "command": ".venv/bin/ruff format --check pdos_next/paired_output_bridge.py tests/capa_effectiveness/test_live_paired_owner.py",
+      "exit_code": 0
+    },
+    {
+      "command": "in-memory AST (owned two Python files)",
+      "exit_code": 0
+    },
+    {
+      "command": "cold import LivePairedOwner",
+      "exit_code": 0
+    }
+  ],
+  "sources": {
+    "pdos-next/server/pdos_next/paired_output_bridge.py": "b482e06700c602c96fe422448a80a200121119dcd6b188be82b15ea4c219468d",
+    "pdos-next/server/tests/capa_effectiveness/test_live_paired_owner.py": "f09fa9d8f8288df6ac2a3999f04f169aba577c0ebb8fa99817921be703bb46c5",
+    "docs/reports/evidence/pdos-next-wave19-20261003/paired-owner-contract.md": "3166931a8b18f9cb0b81e5ea43f7071b2cd72a9c1b58b92b0dc9a918c367500f"
+  },
+  "logs": {
+    "paired-owner-import.log": "f13471458d02bed45353029ad6e69934eca6c203732d193f77f3f01b02dfbc91",
+    "paired-owner-pure-01.log": "ba3509e4653a31ec118a7eaf98115c500e286446c04a5d542db903cdca659938",
+    "paired-owner-pure-02.log": "31c10cc9abdcda3e78114d0044cf0d118ba807c0c5d1aae4788010fc15422f46",
+    "paired-owner-pure-03.log": "5c3c5538579eeb570533a01f583dd3738fb16e720fc802cb1b3f0cd8be91fd3d",
+    "paired-owner-pure-04.log": "de5d689cc9dce3c32ee9a6dabfac1a542bd986ac05a74700e542b467d56e8015",
+    "paired-owner-pure-05.log": "00df58b6591991ab88a047cac6ac84b216c17cf8205a76386963a8563abe3cdb",
+    "paired-owner-pure-06.log": "00df58b6591991ab88a047cac6ac84b216c17cf8205a76386963a8563abe3cdb",
+    "paired-owner-static.log": "afa20b27dacc9bf0aba3c1d265964c21e04ab42f6e39e2dd4769718ceded003a"
+  },
+  "limits": [
+    "No DB/HTTP/browser/worker/public checks executed",
+    "Real ORM/current/storage/verifier shapes; bytes/professional/retained owner callbacks explicitly substituted in tests",
+    "No new state/table/occupancy/consumption/receipt/commit",
+    "Not a production qualification/independence/7 owners/effectiveness/close result"
+  ],
+  "history": [
+    "Initial unarchived command: 13failed/5passed on fixture original-signer assignment; later raw logs retained",
+    "pure-01: same fixture missing launch authority subject; 13failed/5passed",
+    "pure-02:18passed; pure-03: source test fixture and expected code2failed/18passed",
+    "pure-04:22passed; pure-05 and06:24passed"
+  ]
+}

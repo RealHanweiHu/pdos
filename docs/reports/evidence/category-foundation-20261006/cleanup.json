@@ -1,0 +1,12 @@
+{
+  "owned_test_container": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "owned_test_container_stopped": true,
+  "retained_backups": true,
+  "listening_ports": {
+    "3000": true,
+    "8000": true,
+    "3046": false,
+    "8846": false
+  },
+  "original_preview_untouched_by_cleanup": true
+}

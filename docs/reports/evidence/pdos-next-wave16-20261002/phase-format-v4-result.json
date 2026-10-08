@@ -1,0 +1,15 @@
+{
+  "exit_code": 1,
+  "log_sha256": "0aa80e1a48bb9639621e85513074673ffe7608ca8c4167a29bada50fa3ee85ba",
+  "scope": "Scoped public phase/owner pure and static checks; no DB fixtures",
+  "files": {
+    "pdos_next/service.py": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686",
+    "pdos_next/domain/capa_verification/commands.py": "7b05a392c1897632d2e41b4812500401dd0a326bf6fdbcdd51cc165855741e84",
+    "pdos_next/domain/capa_verification/preview_phase.py": "5f22ff9ebc0d4945eae7dbf0548397e34e91285d5d7cb703621c4166a056429d",
+    "pdos_next/domain/capa_verification/write_phase.py": "daebc415ae668ffe9e897dbca1a077600341ef2426d74be92b96a349cc78b394",
+    "pdos_next/domain/verification_front/service.py": "ad7390463fc84cff5b767f3046044a2817edf12e2e4601dfda9eb59c7f6b8996",
+    "tests/quality_followup_transactions/test_transactions.py": "d6400b377956b4356bcc3546d413005099352a22295d7ae3c8e2b29980ab5aa0",
+    "tests/capa_link_phases/test_preview_phase.py": "a70d553fce9899a7f715c49da1f7cf9af7998c54fdb65d9bdb2e61db1bb91bd1",
+    "tests/capa_link_phases/test_write_phase.py": "5a98eb9a6790eeecfc3247de239e99951cecf3b8cc237819c5acb336e04afb40"
+  }
+}

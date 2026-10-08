@@ -1,0 +1,38 @@
+{
+  "project_id": "71e82ad8-9319-4e56-8f3f-9be56c05a67c",
+  "scope": "synthetic document coordination only; no physical test/certificate/ERP actual effect",
+  "ecr_status": "approved",
+  "approved_source_id": "e8b3665c-d081-4dcd-9fb5-402cca0cefa4",
+  "alternative_revisions": [
+    {
+      "id": "e8b3665c-d081-4dcd-9fb5-402cca0cefa4",
+      "revision": 1,
+      "actor": "83edf1d6-566b-47ba-b086-d61c2668eb64",
+      "expected_delta": "-2.000000"
+    },
+    {
+      "id": "48a60dc2-c4be-47f8-8909-e02c1ce198da",
+      "revision": 2,
+      "actor": "2c9c80f0-4d7c-4308-b459-6719e971a0cc",
+      "expected_delta": "0.000000"
+    }
+  ],
+  "result_count": 1,
+  "confirmation_count": 1,
+  "submitter": "160cda73-afdb-4157-b406-3e04f4b27793",
+  "reviewer": "2c9c80f0-4d7c-4308-b459-6719e971a0cc",
+  "historical_confirmation_preserved": true,
+  "issue_status": "verification",
+  "audit": [
+    {
+      "type": "npi_record",
+      "id": "0f2001cc-a6a1-4e71-a626-31dfa8416b63",
+      "action": "npi.change_execution_confirmation.verified"
+    },
+    {
+      "type": "npi_record",
+      "id": "48a60dc2-c4be-47f8-8909-e02c1ce198da",
+      "action": "npi.cost_alternative.revised"
+    }
+  ]
+}

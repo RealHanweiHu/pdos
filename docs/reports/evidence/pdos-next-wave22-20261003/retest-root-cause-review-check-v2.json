@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "review_digest": "b227cbef481c5adae104a15bd207bcfb8f2617331a35aa0d6c7dca40f3eae93c",
+  "before": 4,
+  "after": 5,
+  "exact_original_source_count": 15,
+  "capa_unchanged": true,
+  "physical_cause": null,
+  "effectiveness": null,
+  "close": false,
+  "initial_check_error": "After semantic assertions passed, mistaken top-level review.read_set lookup raised KeyError; exact original command.source_read_set verified instead",
+  "review_top_level_fields": [
+    "before",
+    "after",
+    "effect",
+    "event_effect",
+    "domain_preview",
+    "completion_observations",
+    "completion_assessments",
+    "received_at",
+    "clock_basis",
+    "read_basis",
+    "effectiveness_decide",
+    "issue_close"
+  ]
+}

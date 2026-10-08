@@ -1,0 +1,20 @@
+{
+  "purpose": "Preserve original owned v1 candidate before authorized scoped Build selector repair",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "caab169d65708b86031b7bd18eefb865374af566bfb8ee225065a2c860b6f570",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v1-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "3b3dd97b4b1569497aef0b4127a7b93407d74b6dd7625eaed021033c250bd000",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v1-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "310e98928f534e6a86966d91d8ebc39ab1856060a81bc05d0240224b284ee9db",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v1-source/build-quality-followup-view.test.ts"
+    }
+  ]
+}

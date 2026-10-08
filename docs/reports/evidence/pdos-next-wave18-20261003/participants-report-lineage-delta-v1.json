@@ -1,0 +1,77 @@
+{
+  "status": "owned_pure_static_pass_delta_frozen_actual_unified_readback_pending_root",
+  "classification": "Canonical stored provenance incompatibility in participant reader; no evidence of a missing upload/parse source was inferred from the no-DB review.",
+  "root_observed_failure": "stored-fact-readback-v5.json failed in _Read.report Receipt lookup; all actual storage/catalog/history checks prior to that point remain Root-owned evidence, not rerun here.",
+  "canonical_writer_facts": [
+    "wave15_seed.result uploads real UTF-8 JSONL bytes, requests actual scan, waits for current parsed Artifact bound to uploaded original_id, then prepares measurement capture from that Artifact.",
+    "originals.upload writes UploadedOriginal revision=1 and public evidence.original.upload Receipt/Audit/Outbox plus RequestKey. Its immutable Receipt revision remains 1 after parsing.",
+    "originals.parse_uploaded rechecks actual safe scan basis before/after original bytes and isolated parsing; increments Original.revision and creates Artifact(original_id=Original.id) in that same transaction.",
+    "parse_uploaded appends evidence.original.parse / uploaded_original(current parsed revision) Receipt/Audit/Outbox, without a RequestKey or evidence.artifact.register Receipt.",
+    "verification_results._read_report requires original_id, parsed Original, require_safe, bounded original bytes/hash/size, and fresh security epoch. Measurement.source stays bound to the real report Artifact."
+  ],
+  "production_delta": [
+    "Native source path remains exact evidence.artifact.register / artifact revision with its actual original RequestKey and Receipt/Audit/Outbox.",
+    "Uploaded source path uses exact evidence.original.upload / uploaded_original revision 1 to establish real upload actor/requester, then exact evidence.original.parse / uploaded_original current revision to establish current parsed derivation.",
+    "Derived Artifact and current Original must share actual owner/audience. Parse Receipt actor/requester must equal original owner; run_id is None, result id/revision/status exact. Both real groups remain fully tracked and reread.",
+    "Only the existing internal parse group uses the Audit/Outbox-only helper matching the actual worker writer. Public register/upload still requires its original RequestKey; no fallback, fabricated Artifact Receipt or parse key.",
+    "No changed source_for/require_safe/actual byte/security source closure, no scan clean inference from parse status/Receipt, and no authorization/independence/qualification attestation.",
+    "Both old source-shape and Run aggregate/atom fixes remain retained with full raw snapshots/material SHA."
+  ],
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+      "before_sha256": "62813ccf5355bd66edc9dc0f6e0270142ce7de7812542669371cdb431f7ecd52",
+      "after_sha256": "779d2dba1fb96e92f210792ff25adc8437a2f6e691c2faa6a72ff0a34f2c0b35"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_participants_owner.py",
+      "before_sha256": "3155657c9ba02d05f6b328f8beaaa1cd56a387c8e74edbaa6b7c57b67508559f",
+      "after_sha256": "f6651f952ddce54313919b705a0a592a1ba67e6f612eadcd4efcca91293eddd1"
+    }
+  ],
+  "checks": {
+    "pure": {
+      "command": "PYTHONPATH=server:server/tests server/.venv/bin/pytest --noconftest -q server/tests/capa_effectiveness/test_participants_owner.py",
+      "exit_code": 0,
+      "passed": 76,
+      "new_cases": 15,
+      "seconds": 1.52,
+      "log": "participants-report-lineage-pure-v1.log",
+      "log_sha256": "777af5d45175e944e944745ff32c01f62d78e5c710f7fe24766f829ac564acc1"
+    },
+    "static": {
+      "ruff_exit_code": 0,
+      "format_exit_code": 0,
+      "ast_compile_files": 2,
+      "log": "participants-report-lineage-static-v1.log",
+      "log_sha256": "6c0b45898e0856dd132b1dd294efe0fcfa03672270f1024441645469ce93ec5e"
+    }
+  },
+  "new_cases": [
+    "Actual upload v1 / worker parse v2 and v3 canonical shapes, preserving rows and no added objects. No Artifact registration Receipt or internal parse RequestKey is invented.",
+    "Missing public upload key, upload/parse Receipt, duplicate parse, wrong parse actor/version/status/event, missing parse Audit/Outbox and unparsed Original reject.",
+    "An unrelated Artifact registration cannot substitute for an original upload; mutation of real parse group after read fails final reread."
+  ],
+  "readonly_writer_source_sha256": {
+    "pdos-next/tools/wave15_seed.py": "d03460000b337f4540c1c4ea10312521d29b479439295fa1dae8a9538a747880",
+    "pdos-next/server/pdos_next/originals.py": "5e27b30bed12cacb9a5704904ee16e3933448948c2d97685bafc7a19cb9400a6",
+    "pdos-next/server/pdos_next/original_security.py": "e4cf1636c8f07f06dec043273688ce6099c6a0b0189ff4a53d0bdcba93b90952",
+    "pdos-next/server/pdos_next/models.py": "9e34f7a30834fa3576cca9737b6996a12d35c8ad06b12c445aaf1de46f7c7482",
+    "pdos-next/server/pdos_next/domain/verification_results/service.py": "c0f4e4dc465868264167c77362ed831224856b923d073e06aae7c3979b27b8d0"
+  },
+  "unchanged_explicit_paths": {
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py": "b431151e49b72e8cce36f36486a670ecce6a2e9fc333e1bd52ba3ddc75db8126",
+    "pdos-next/server/tests/capa_effectiveness/test_fact_sources_owner.py": "c96eca8ecc176db82cf26a38d994e48afadefb4aae117e8b4189661c227e7063",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py": "ca6c235254dbc25e140bdaa4876063a2e00a7fabad59809b1c27a3dd20c7ce6a"
+  },
+  "historical_deltas": [
+    "participants-source-shape-delta-v1.json",
+    "participants-run-atom-delta-v1.json"
+  ],
+  "limits": [
+    "No DB, HTTP, browser, broad/public tests or runtime services were invoked.",
+    "Pure raw rows are explicit writer-shaped no-connect substitutes; real scanner/original bytes/current ACL/professional guards are not attested by these cases.",
+    "Previous runtime frozen results remain historical until Root restarts and executes unified actual checks on this delta.",
+    "The raw participant owner still returns current_evidence_authorized=False and same_uow_consumption_attested=False; independent reviewer remains a separate missing gate."
+  ]
+}

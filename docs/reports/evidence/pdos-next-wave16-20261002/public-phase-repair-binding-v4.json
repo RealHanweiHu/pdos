@@ -1,0 +1,36 @@
+{
+  "changed_existing": {
+    "pdos_next/service.py": {
+      "before_sha256": "d4afc3197e77899c6211eba339fefe6ca9e317ee6b6d9ddec622128db4b7838a",
+      "after_sha256": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686",
+      "diff": "pdos_next-service.py.phase-repair-v4.diff"
+    },
+    "pdos_next/domain/capa_verification/commands.py": {
+      "before_sha256": "05c8c74af37cd26edd73ed320311f20d86c9b6515ebc9bac2b9b37a6e28a150a",
+      "after_sha256": "7b05a392c1897632d2e41b4812500401dd0a326bf6fdbcdd51cc165855741e84",
+      "diff": "pdos_next-domain-capa_verification-commands.py.phase-repair-v4.diff"
+    },
+    "tests/quality_followup_transactions/test_transactions.py": {
+      "before_sha256": "58bfa1250c427af0d7b6842dd33dd38b52a3b2cbed37ea364f13a1284f17ca80",
+      "after_sha256": "7e0a9bf64b4fb6a702bb7658598211e18e1194669c1a6aa0ac5563c29e1d4dfc",
+      "diff": "tests-quality_followup_transactions-test_transactions.py.phase-repair-v4.diff"
+    },
+    "pdos_next/domain/verification_front/service.py": {
+      "before_sha256": "0ccc98a4f9b3127d47a45be11f949d0e23b776da7865856933c741bf90e4d2d0",
+      "after_sha256": "ad7390463fc84cff5b767f3046044a2817edf12e2e4601dfda9eb59c7f6b8996",
+      "diff": "pdos_next-domain-verification_front-service.py.phase-repair-v4.diff"
+    }
+  },
+  "new_files": [
+    "pdos_next/domain/capa_verification/preview_phase.py",
+    "pdos_next/domain/capa_verification/write_phase.py",
+    "tests/capa_link_phases/test_preview_phase.py",
+    "tests/capa_link_phases/test_write_phase.py"
+  ],
+  "common_opt_in": "quality.capa.followup.link only",
+  "all_other_operations": "Legacy current-first validate/key/semantic/replay/consume/apply unchanged",
+  "confirmation_ttl": "Unchanged 10 minutes; final post-owner/proof checks against current clock and saved_at; no COMMIT-clock guarantee",
+  "migration": "No schema or guard changes; actual next_0025 retained",
+  "public_runtime_updated": false,
+  "replacement_pg_started": false
+}

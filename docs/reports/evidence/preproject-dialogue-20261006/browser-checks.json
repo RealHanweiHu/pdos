@@ -1,0 +1,32 @@
+{
+  "environment": "owned synthetic localhost:3046 / API8846 / pdos_test",
+  "main_preview": "127.0.0.1:3000 currently requires login",
+  "passed": [
+    "category knowledge visible with one proposal entry and no proposal block/list",
+    "proposal entry opens current-category Xiaopai",
+    "full proposal candidate includes inherited parameter identity/unit/conditions and AI/unknown values",
+    "human proposal adoption HTTP201 persists private ODM proposal",
+    "repeated adoption produces one receipt and object",
+    "successful adoption navigates to editable saved proposal",
+    "reload has no hidden restored modal",
+    "new category opens personal Xiaopai",
+    "ambiguous pump demand produces usage-only clarification with no automatic option selection",
+    "answer usage:汽车轮胎 saved in same conversation and goal",
+    "clarification dialog readable in light and dark themes"
+  ],
+  "not_claimed": [
+    "real LLM disambiguation quality",
+    "real public research to category adoption in browser",
+    "current candidate narrow-screen GUI"
+  ],
+  "runtime_recovery": {
+    "initial": "BFF503 and slow isolated API/DB",
+    "action": "restart only verified owned container; preserve volume; update changed random port; reauthenticate synthetic account",
+    "ports": [
+      50956,
+      58496
+    ],
+    "final_clarification_conversation": "6340303b-1a65-500d-80d1-b6d6bf32f951"
+  },
+  "synthetic_gateway": "fixed typed responses, no real model or public provider call"
+}

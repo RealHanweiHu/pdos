@@ -8,7 +8,7 @@ from typing import Any
 
 type JsonScalar = str | int | float | bool | None
 type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
-type ProjectionPolicy = None | dict[str, ProjectionPolicy] | tuple[dict[str, ProjectionPolicy]]
+type ProjectionPolicy = None | dict[str, ProjectionPolicy] | tuple[ProjectionPolicy]
 
 
 class ContextProjectionError(ValueError):
@@ -19,6 +19,116 @@ class ContextProjectionError(ValueError):
 class ContextProjection:
     payload: dict[str, JsonValue]
     removed_paths: tuple[str, ...]
+
+
+# Explicit domain fields; internal membership, credentials and audit identities
+# in category_bundle remain outside the model projection.
+_PARAMETER_POLICY: dict[str, ProjectionPolicy] = {
+    key: None
+    for key in (
+        "key",
+        "label",
+        "unit",
+        "conditions",
+        "direction",
+        "verification_method",
+        "acceptance_criterion",
+    )
+}
+_NOTE_POLICY: dict[str, ProjectionPolicy] = {
+    **{key: None for key in ("kind", "title", "body", "state")},
+    "citation_ids": (None,),
+}
+_CATEGORY_POLICY: dict[str, ProjectionPolicy] = {
+    "code": None,
+    "title": None,
+    **{key: (None,) for key in ("user_groups", "regions", "use_scenarios", "research_questions")},
+    "parameters": (_PARAMETER_POLICY,),
+    "notes": (_NOTE_POLICY,),
+}
+_PROPOSAL_DOCUMENT_POLICY: dict[str, ProjectionPolicy] = {
+    "narrative": None,
+    "questions": (None,),
+    "risks": (None,),
+    **{
+        key: ({**{field: None for field in fields}, "source_ids": (None,)},)
+        for key, fields in {
+            "specifications": (
+                "parameter_id",
+                "parameter_version",
+                "direction",
+                "id",
+                "label",
+                "value",
+                "unit",
+                "conditions",
+                "state",
+            ),
+            "options": (
+                "key",
+                "name",
+                "audience",
+                "positioning",
+                "use_path",
+                "price_band",
+                "tradeoffs",
+            ),
+            "differences": ("area", "baseline", "proposed", "impact"),
+            "competitors": (
+                "name",
+                "audience",
+                "use_path",
+                "price_band",
+                "strengths",
+                "pain_points",
+                "comparison_basis",
+            ),
+            "user_voices": ("quote", "context", "pain_point"),
+        }.items()
+    },
+}
+_PREPROJECT_POLICY: dict[str, ProjectionPolicy] = {
+    "goal": None,
+    "user_brief": None,
+    "previous_assessment": {
+        "goal": None,
+        "stage": None,
+        "candidate_digest": None,
+        "questions": ({"id": None, "question": None, "options": (None,), "recommendation": None},),
+        "category": _CATEGORY_POLICY,
+        "proposal": {"title": None, "entry_kind": None, "document": _PROPOSAL_DOCUMENT_POLICY},
+    },
+    "category": {
+        **{key: None for key in ("category_id", "category_line_id", "category_name")},
+        **{
+            key: (None,)
+            for key in ("user_groups", "regions", "use_scenarios", "research_questions")
+        },
+        "parameters": ({**_PARAMETER_POLICY, "parameter_id": None, "version": None},),
+        "knowledge": (
+            {
+                **{key: None for key in ("id", "kind", "title", "body")},
+                "regions": (None,),
+                "source_refs": (
+                    {
+                        key: None
+                        for key in ("kind", "ref_id", "version", "as_of", "digest", "locator")
+                    },
+                ),
+            },
+        ),
+        "research_drafts": (
+            {
+                "public_data": {
+                    "notes": (_NOTE_POLICY,),
+                    "citations": ({"reference_id": None, "label": None, "href": None},),
+                    "remaining_questions": (None,),
+                    "coverage": None,
+                }
+            },
+        ),
+    },
+}
 
 
 PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
@@ -42,6 +152,45 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
         },
     ),
     "question": None,
+    "history": ({"role": None, "content": None},),
+    "history_truncated": None,
+    "preproject": _PREPROJECT_POLICY,
+    "research": {
+        **{
+            key: None
+            for key in (
+                "remaining",
+                "search_remaining",
+                "read_remaining",
+                "searches",
+                "read_attempts",
+                "sources_read",
+                "candidate_count",
+                "candidates_truncated",
+            )
+        },
+        "candidates": ({"url": None, "title": None, "snippet": None},),
+        "last_action": ({"action": None, "target": None, "status": None},),
+        "failures": (
+            {
+                key: None
+                for key in ("tool", "target", "source_host", "error_code", "reason", "attribution")
+            },
+        ),
+        "observations": (
+            {
+                "tool": None,
+                "target": None,
+                "status": None,
+                "warnings": None,
+                "provider_key": None,
+                "providers_tried": (None,),
+                "error_code": None,
+                "shown_count": None,
+                "total_count": None,
+            },
+        ),
+    },
     "report_mapping": {
         "headers": ({"column": None},),
         "sample_rows": ({"row": None, "cells": ({"column": None, "value": None},)},),
@@ -101,6 +250,8 @@ PROJECT_GATEWAY_POLICY: dict[str, ProjectionPolicy] = {
             "label": None,
             "href": None,
             "excerpt": None,
+            "source_host": None,
+            "title_origin": None,
         },
     ),
     "multimodal": {
@@ -186,6 +337,8 @@ def _project_value(
         if value is None or isinstance(value, (str, int, float, bool)):
             return value
         raise ContextProjectionError(f"{path} must be JSON-safe")
+    if value is None:
+        return None
     if isinstance(policy, dict):
         if not isinstance(value, Mapping):
             raise ContextProjectionError(f"{path} must be an object")
@@ -201,15 +354,8 @@ def _project_value(
     projected_items: list[JsonValue] = []
     for index, item in enumerate(value):
         item_path = f"{path}[{index}]"
-        if not isinstance(item, Mapping):
-            raise ContextProjectionError(f"{item_path} must be an object")
         projected_items.append(
-            _project_mapping(
-                item,
-                item_policy,
-                parent_path=item_path,
-                removed_paths=removed_paths,
-            )
+            _project_value(item, item_policy, path=item_path, removed_paths=removed_paths)
         )
     return projected_items
 

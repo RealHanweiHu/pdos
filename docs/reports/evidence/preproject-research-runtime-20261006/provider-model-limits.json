@@ -1,0 +1,12 @@
+{
+  "endpoint": "https://api.minimaxi.com/v1/models/MiniMax-M3",
+  "model": "MiniMax-M3",
+  "llm_calls": 0,
+  "status": 200,
+  "metadata": {
+    "id": "MiniMax-M3",
+    "object": "model",
+    "created": 1780272000,
+    "owned_by": "minimax"
+  }
+}

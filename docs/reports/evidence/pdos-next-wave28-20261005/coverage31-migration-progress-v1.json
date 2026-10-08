@@ -1,0 +1,55 @@
+{
+  "status": "PASS_ACTUAL_COVERAGE31_EMPTY_ROUNDTRIP",
+  "previous_head": "next_0030",
+  "target_head": "next_0031",
+  "environment_port": 62158,
+  "steps": [
+    {
+      "args": [
+        "upgrade",
+        "next_0031"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "downgrade",
+        "next_0030"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "upgrade",
+        "next_0031"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "backup": {
+    "bytes": 1687573,
+    "sha256": "e1c3ee8e8bf0da5dcc274c04030d709b47492c90336a4270800ff201032f9a68",
+    "mode": "0600"
+  },
+  "head": "next_0031",
+  "table_count": 125,
+  "all_123_complete_old_row_hashes_unchanged": true,
+  "head30_complete_catalog_restored": true,
+  "head31_complete_catalog_recreated": true,
+  "metadata_no_diff": true,
+  "agent_direct_dml": 0,
+  "publication_and_full_owner_PG_verified": false,
+  "old_shared_62513_upgraded": false
+}

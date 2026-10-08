@@ -1,0 +1,133 @@
+{
+  "schema_version": "wave18-root-integration-review-v1",
+  "recorded_at": "2026-10-03T15:47:02.411157+00:00",
+  "owned": [
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_fact_integration.py",
+      "sha256": "2e4a8a2316cb72f49e908c0ce635cf4461b4643489c237f40e93fdf5ed236eab",
+      "bytes": 22251
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-review.md",
+      "sha256": "a6f7f0ba28a9bf6273f0f43c71e92ad9bc5564a8cba4878ed382f8412facb5a7",
+      "bytes": 6978
+    }
+  ],
+  "observed_root_bytes_not_fulltree_freeze": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_service.py",
+      "sha256": "ec7e810f1c41c6ecf27e7c5b9b1fff643b14d4d576e8ad49ba3db846e7109d45",
+      "bytes": 8748
+    },
+    {
+      "path": "pdos-next/server/pdos_next/capa_fact_owner.py",
+      "sha256": "0b29eede8cb715ada6bb55fb84fec7c1522628ae733b9fce77a38ad4a252ccec",
+      "bytes": 25255
+    },
+    {
+      "path": "pdos-next/server/pdos_next/capa_rule_import.py",
+      "sha256": "1fcbf271b41c8b0ce11901f531cbe113bbe85e9d87e87002b370220924e8eaf6",
+      "bytes": 5432
+    },
+    {
+      "path": "pdos-next/server/pdos_next/capa_rule_publisher.py",
+      "sha256": "f471c23de48366b17f9e4dd3a76e4ea4961412930adc4110ffc44cda29bd73da",
+      "bytes": 6851
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "e4712878901eef8e2933482fc31db2f948767921722def6004b43c3eb135f9e9",
+      "bytes": 35176
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "sha256": "1856870abf87fc0898a0adbf82ece9942361911cf261585916ee29acc844e9ed",
+      "bytes": 7713
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "sha256": "94a7d820425f0ca9b885f3969886dd899a41a779c28f390d325fdb5406b10b4a",
+      "bytes": 11596
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+      "sha256": "6abbbbcd7cf362a060cda7f53a10b58cf47d3f61bb6f249317e38997ee9e545e",
+      "bytes": 39025
+    }
+  ],
+  "checks": [
+    {
+      "kind": "new-owned-pure",
+      "passed": 29,
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-pure-final-v1.log",
+        "sha256": "d2cda4ca4c9ce74a225a2e928618bd75e4b02bae8d0f59b3808975766660cf6f",
+        "bytes": 99
+      },
+      "command": "cwd pdos-next/server; PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:tests .venv/bin/python -m pytest --noconftest tests/capa_effectiveness/test_fact_integration.py -q"
+    },
+    {
+      "kind": "Ruff",
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-ruff-final-v1.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "bytes": 19
+      }
+    },
+    {
+      "kind": "format check",
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-format-final-v1.log",
+        "sha256": "fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50",
+        "bytes": 25
+      }
+    },
+    {
+      "kind": "AST/inmemory compile",
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-AST-final-v1.log",
+        "sha256": "6d5952971819689ebfc63c5059edd9faa1df3215290f24fa8656813f6e01bc83",
+        "bytes": 91
+      }
+    }
+  ],
+  "preserved_history": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-pure-initial.log",
+      "sha256": "950e0d21082d821ce24fbe8a0fb1a56d3daf783f718bf7c644ce9bf5197b76e5",
+      "bytes": 6422
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-pure-recheck-v1.log",
+      "sha256": "7ea904acabfe0687c8323cb276e34b82469e988d73c29faf958ce3de7e1d1bf6",
+      "bytes": 11894
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/root-integration-pure-recheck-v2.log",
+      "sha256": "d2cda4ca4c9ce74a225a2e928618bd75e4b02bae8d0f59b3808975766660cf6f",
+      "bytes": 99
+    }
+  ],
+  "separate_authorized_writer_delta": {
+    "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-anchor-snapshot-delta-v2.json",
+    "sha256": "e10d6ef939b0bd65a8557694f5e5b170c323d8213d8990fa51f6bb4851736fcc",
+    "bytes": 1508
+  },
+  "not_run": [
+    "DB",
+    "HTTP",
+    "public tests",
+    "browser",
+    "SQL commit/FK/RLS"
+  ],
+  "not_claimed": [
+    "real qualifications",
+    "uploaded original bytes",
+    "complete observations/participants/7 owners",
+    "business end-to-end completed"
+  ]
+}

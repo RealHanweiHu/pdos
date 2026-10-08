@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
   useRouter: () => ({ replace: routerReplace }),
   useSearchParams: () =>
     new URLSearchParams("authCode=valid-code&state=one-time-state"),

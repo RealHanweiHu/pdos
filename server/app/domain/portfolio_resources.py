@@ -109,7 +109,9 @@ def capture(
                 u.c.tenant_id == tenant,
                 u.c.id == resource["user_id"],
                 u.c.is_active.is_(True),
-                u.c.role.in_(("owner", "admin", "project_manager", "engineer", "quality")),
+                u.c.role.in_(
+                    ("owner", "admin", "product_manager", "project_manager", "engineer", "quality")
+                ),
             )
         ).first()
         if active is None:

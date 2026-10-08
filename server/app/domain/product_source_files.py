@@ -111,10 +111,10 @@ class ProductSourceFiles:
         try:
             filename = _safe_filename(request.filename)
         except DocumentError as error:
-            raise ProductWorkError("原文件名称无效，请保留PDF或XLSX扩展名") from error
+            raise ProductWorkError("原文件名称无效，请保留正确扩展名") from error
         suffix = PurePath(filename).suffix.lower()
-        if suffix not in {".pdf", ".xlsx"}:
-            raise ProductWorkError("RFQ原件目前支持PDF和XLSX；扫描页会明确提示待OCR")
+        if suffix not in {".pdf", ".xlsx", ".docx", ".pptx", ".doc", ".ppt", ".xls"}:
+            raise ProductWorkError("支持PDF、Word、PowerPoint和Excel；扫描页提示待OCR")
         with self.engine.begin() as c:
             _space(c, context, space, access="contributor", lock=True)
             _line(c, context, space, request.product_line_id, access="contributor", writable=True)
@@ -147,7 +147,8 @@ class ProductSourceFiles:
                         size_bytes=request.size_bytes,
                         sha256=request.sha256,
                         object_key=f"tenants/{context.tenant.id}/private-product-files/{space}/{id}",
-                        parser_version=PARSER_VERSION,
+                        parser_version=PARSER_VERSION if suffix in {".pdf", ".xlsx"}
+                        else "product-office.v2",
                     )
                     .returning(t)
                 )

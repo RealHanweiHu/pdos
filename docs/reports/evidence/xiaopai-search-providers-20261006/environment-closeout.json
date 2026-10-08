@@ -1,0 +1,13 @@
+{
+  "test_container": "pdos-proposals-test-20261006-0424",
+  "database": "pdos_test",
+  "port": 63419,
+  "head": "0427_category_reference_aliases",
+  "backup_path": "/tmp/pdos-public-search-20261006-551b76c3.dump",
+  "backup_sha256": "a36bf033a8fe7e57cee1de1e0f304fd7c2529d1a1d897f3ba3a38e23c15d19e1",
+  "final_test_container_state": "exited",
+  "database_dropped": false,
+  "test_volume_removed": false,
+  "searxng_final_state": "running",
+  "protected_57432_operations": "none in this task"
+}

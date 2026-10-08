@@ -1,0 +1,13 @@
+{
+  "passed": 54,
+  "failed": 0,
+  "skipped": 0,
+  "source_files": {
+    "pdos-next/web/src/app/api/[...path]/route.ts": "1c94099e657f564a2030dd8a9ec738f46f5daf6e49dc2fca93a1d55156461888",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "2f876d4b1b73851305dc1c365d494d63829f96af984b647b9a660a6bdcc072a3",
+    "pdos-next/web/src/app/api/[...path]/wave16-route.test.ts": "f9e238a5964be2f1f64877082574649d3246c63fee8cd2bb2ab98f6ee3db7e8c"
+  },
+  "web_v2_sha256": "691d6fad078748510e5812631b871e3b79cd04af5892de9a86335ebc41cb9c62",
+  "log_sha256": "539eef1c24159b81207b8ad8e0d30eae46a92ecde64ba4c47f75677c39afa78e",
+  "scope": "Actual BFF route execution with fixed host I/O stubs; unchanged between actual UI v3/v4 candidates, no repeat needed"
+}

@@ -1,0 +1,37 @@
+{
+  "status": "PASS_LIMITED_RULE_OBSERVATION_CHECKPOINT",
+  "at": "2026-10-03T16:35:31.440198+00:00",
+  "scope": "Local synthetic Rule/partial Observation; actual readback and browser recovery/return. Not whole-wave independent Review or G3/production/manual Exit.",
+  "source_manifest_sha256": "ebd37ca37c5808bb20d8a6acdb198a34873104bf83e8ecc5630658f732b6201f",
+  "final_sources_unchanged": true,
+  "backend_selected_pure": 259,
+  "bff_pure": 29,
+  "ui_helpers": 24,
+  "web_files": 159,
+  "stored_facts": {
+    "rule": 1,
+    "observation": 1,
+    "named_review": 0
+  },
+  "participants_current_caller_is_participant": true,
+  "independent_review_permitted": false,
+  "browser_second_observation_submitted": false,
+  "retained_history_tables": 24,
+  "retained_history_status": "PASS",
+  "evidence": {
+    "stored-fact-readback-v6.json": "31a189dc69a92918d4fb2d737ae0598aeeb1179ada0451ca7a54542389e58bf0",
+    "browser-preview-recovery-v2.json": "f9cf6b3b8227a5b870b92af22174139d52755d288b8e61adaceac6120eede1b2",
+    "affected-backend-v9.log": "490304b76294a0a5591a5360c00f6ecc7653061373124f686bcf932cda0f6a3b",
+    "web-build-result-v2.json": "1b98cbf234866da54ba8bfe3de8608e3ba60db2fbf3b5f2e213c80d0ce40326b",
+    "fact-ui-actual-contract-check-v4.json": "11d4670233187b357cb1a200fbd2307aba97d3571b6430e9f7c21d64a1a41f84",
+    "result.md": "1164d093564a34361ed3a19bf8a10e1c100eb923ad5842effacd44c79a3e73b1"
+  },
+  "queue_sha256": "ded4c89fba36426e7d321feb3c50acdfcff78b237b2da2df405832cae9089e08",
+  "remaining": [
+    "LivePairedOwner real read/refresh/attest",
+    "actual method applicability",
+    "complete observation and seven owner attestation",
+    "independent qualified reviewer on lawful shared new scenario",
+    "effectiveness, separate closure and original manual exits"
+  ]
+}

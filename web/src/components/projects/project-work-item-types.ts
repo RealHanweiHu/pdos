@@ -46,6 +46,12 @@ export type MaterialClosureReference = {
   source_digest: string;
 };
 
+export type CostClosureReference = {
+  case_id: string;
+  observation_id: string;
+  source_digest: string;
+};
+
 export type IssueType = "engineering" | "quality" | "supplier" | "test_failure" | "certification";
 
 export type ProjectIssue = {

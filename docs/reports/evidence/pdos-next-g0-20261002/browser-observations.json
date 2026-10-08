@@ -1,0 +1,41 @@
+{
+  "scope": "final local synthetic G0 UI",
+  "desktop": {
+    "claimPresent": true,
+    "contentWidth": 1440,
+    "sourceRevisionPresent": true,
+    "theme": "dark",
+    "waitingModelVisible": true,
+    "width": 1440
+  },
+  "mobileDark": {
+    "claim": true,
+    "contentWidth": 320,
+    "disabledModel": true,
+    "theme": "dark",
+    "width": 320,
+    "workSource": true
+  },
+  "mobileLight": {
+    "contentWidth": 320,
+    "theme": "light",
+    "width": 320
+  },
+  "confirmationFocus": {
+    "contentWidth": 320,
+    "focusedText": "查看撤回范围…",
+    "hasModal": false,
+    "width": 320
+  },
+  "verifiedActions": [
+    "server-session login",
+    "register original text via UI",
+    "source line to claim and receipt",
+    "one-confirmation revert retaining source/history",
+    "draft survives reload",
+    "work survives reload with exact source revision",
+    "model unavailable while manual writing remains usable",
+    "keyboard source selection and submit",
+    "mobile confirmation Escape restores trigger focus"
+  ]
+}

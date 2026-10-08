@@ -1,0 +1,13 @@
+{
+  "applied": true,
+  "base_records": [
+    "root-public-integration-proposal.json",
+    "ui-public-integration-proposal.json"
+  ],
+  "migration": "next_0024",
+  "verified_predecessor": "next_0023",
+  "migration_source_sha256": "fce3a5dfeab2c29d8b51bac75b0ed7126cdb3e59fade2da7f8e92befd74dcfd0",
+  "wave15_final_selection_sha256": "373bbbdab365fc732590b8d68911a3c9acf1525d42993088a5fa6c1e9ce0e44a",
+  "runtime_started": false,
+  "database_migrated": false
+}

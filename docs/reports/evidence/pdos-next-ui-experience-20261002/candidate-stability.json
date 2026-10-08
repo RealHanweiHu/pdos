@@ -1,0 +1,17 @@
+{
+  "files": {
+    "src/components/workspace.tsx": true,
+    "src/components/workspace-experience.tsx": true,
+    "src/components/workspace-overview.tsx": true,
+    "src/components/product/product-definition.tsx": true,
+    "src/components/projects/project-planning.tsx": true,
+    "src/lib/workspace-navigation.ts": true,
+    "src/lib/workspace-navigation.test.ts": true,
+    "src/app/globals.css": true,
+    "src/app/layout.tsx": true
+  },
+  "all_match": true,
+  "snapshot_files": 127,
+  "snapshot_all_match": true,
+  "shared_tree_changes_since_freeze": []
+}

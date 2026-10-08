@@ -1,0 +1,415 @@
+{
+  "schema_version": "pdos-wave17-fact-lifecycle-registration.v1",
+  "status": "static_proposal_not_applied",
+  "scope": "五表登记建议，非业务/资格/SQL 执行证明",
+  "model_sha256": "a7b5f65137f5456f72aa32e9b50d8749ea7a62003f699dedf596495b0a174162",
+  "source_hashes": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "a7b5f65137f5456f72aa32e9b50d8749ea7a62003f699dedf596495b0a174162",
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/fact_registry_storage.py": "18c7d06f06ee67d23ce82ef2ee6141781be4b7528f5d7a3325b6f02587ec46c7",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "8b2031769c02bc57e94b61cbf1199da917178ffd2fec6f05d029851daf660f3e",
+    "pdos-next/server/pdos_next/lifecycle_access.py": "0137cecae4a937264b6a2607ca4f0f2a2e518192ca0329e2c89106cec2ee84a9",
+    "pdos-next/server/pdos_next/models.py": "6397c986d170c5ea7d3b31ad3030990c18d4b31811393334dea209e0d6c570d3",
+    "pdos-next/server/pdos_next/original_lifecycle/rules.py": "263f0783169fe6d74ebe008eee500ab3e276888a79261313fe63f7bb98e7653a",
+    "pdos-next/server/migrations/versions/0011_original_lifecycle.py": "1812c85b8c1f09aaed5283f53bc3f0d7fa1c7cb457591fdaaaf2d9ec17cd2dd4",
+    "pdos-next/server/migrations/versions/0012_lifecycle_delivery_independence.py": "2d399d7a63d6bce42a9a467fbdd8cca5bf19203111f1ec414d6bdbc6e5f38255",
+    "pdos-next/server/pdos_next/service.py": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686",
+    "pdos-next/server/pdos_next/original_security.py": "e4cf1636c8f07f06dec043273688ce6099c6a0b0189ff4a53d0bdcba93b90952",
+    "pdos-next/server/tests/test_original_lifecycle_integration.py": "6f06d603cb15f63986b689949892aa439b8da80b447518857ef6f5a4203789ee",
+    "pdos-next/server/tests/original_lifecycle/test_rules.py": "3fb7a5ab02235ca6b711c27139ee5d5b0ee4b07141c486335b5ce21e81f4c579",
+    "pdos-next/server/tests/original_lifecycle/test_service.py": "5988657875012c8c3e6837e2bbcaf58aa557d7014834b84b63df6bd5f3efde93"
+  },
+  "inspection": {
+    "method": "定向阅读及 PYTHONDONTWRITEBYTECODE=1 独立无连接进程 metadata columns 枚举",
+    "interpreter": "pdos-next/server/.venv/bin/python",
+    "database_access": false,
+    "http_access": false,
+    "tests_run": false,
+    "public_checks_run": false,
+    "sql_executed": false,
+    "earlier_generation_attempt": "系统 python3 因未安装 pydantic 在 import 阶段失败，尚未创建文件；改用既有 server venv 后成功。"
+  },
+  "table_count": 5,
+  "column_count": 195,
+  "tables": [
+    {
+      "table": "capa_verification_rule_facts",
+      "class_name": "RuleFact",
+      "column_count": 50,
+      "columns": [
+        "issuer_key",
+        "issuer_version",
+        "issuer_epoch",
+        "external_id",
+        "valid_from",
+        "valid_until",
+        "series_id",
+        "previous_fact_id",
+        "previous_revision",
+        "revision",
+        "writer_id",
+        "actor_id",
+        "requester_id",
+        "command_id",
+        "operation",
+        "tier",
+        "fact_kind",
+        "status",
+        "fact_body",
+        "payload_sha256",
+        "intent_digest",
+        "sources",
+        "required_source_read_set",
+        "source_basis",
+        "read_set_sha256",
+        "input_snapshot",
+        "authority_snapshot",
+        "policy_snapshot",
+        "shared_proof_id",
+        "shared_proof_revision",
+        "proof_expires_at",
+        "proof_consumed_at",
+        "token_sha256",
+        "material_sha256",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "capa_id",
+        "origin_issue_version_id",
+        "origin_issue_revision",
+        "owner_id",
+        "visibility",
+        "nature",
+        "purpose",
+        "anchor_snapshot",
+        "anchor_sha256",
+        "requirement_sha256",
+        "id",
+        "tenant_id",
+        "created_at"
+      ],
+      "registration": "GUARDED",
+      "non_consuming": false,
+      "current_pointer": false
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "class_name": "RuleCurrent",
+      "column_count": 23,
+      "columns": [
+        "issuer_key",
+        "issuer_version",
+        "external_id",
+        "series_id",
+        "fact_id",
+        "fact_revision",
+        "epoch",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "capa_id",
+        "origin_issue_version_id",
+        "origin_issue_revision",
+        "owner_id",
+        "visibility",
+        "nature",
+        "purpose",
+        "anchor_snapshot",
+        "anchor_sha256",
+        "requirement_sha256",
+        "id",
+        "tenant_id",
+        "created_at"
+      ],
+      "registration": "GUARDED",
+      "non_consuming": false,
+      "current_pointer": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "class_name": "ObservationFact",
+      "column_count": 53,
+      "columns": [
+        "rule_fact_id",
+        "rule_revision",
+        "rule_sha256",
+        "issuer_key",
+        "issuer_version",
+        "issuer_epoch",
+        "executor_id",
+        "observed_from",
+        "observed_until",
+        "series_id",
+        "previous_fact_id",
+        "previous_revision",
+        "revision",
+        "writer_id",
+        "actor_id",
+        "requester_id",
+        "command_id",
+        "operation",
+        "tier",
+        "fact_kind",
+        "status",
+        "fact_body",
+        "payload_sha256",
+        "intent_digest",
+        "sources",
+        "required_source_read_set",
+        "source_basis",
+        "read_set_sha256",
+        "input_snapshot",
+        "authority_snapshot",
+        "policy_snapshot",
+        "shared_proof_id",
+        "shared_proof_revision",
+        "proof_expires_at",
+        "proof_consumed_at",
+        "token_sha256",
+        "material_sha256",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "capa_id",
+        "origin_issue_version_id",
+        "origin_issue_revision",
+        "owner_id",
+        "visibility",
+        "nature",
+        "purpose",
+        "anchor_snapshot",
+        "anchor_sha256",
+        "requirement_sha256",
+        "id",
+        "tenant_id",
+        "created_at"
+      ],
+      "registration": "GUARDED",
+      "non_consuming": false,
+      "current_pointer": false
+    },
+    {
+      "table": "capa_current_observations",
+      "class_name": "ObservationCurrent",
+      "column_count": 20,
+      "columns": [
+        "series_id",
+        "fact_id",
+        "fact_revision",
+        "epoch",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "capa_id",
+        "origin_issue_version_id",
+        "origin_issue_revision",
+        "owner_id",
+        "visibility",
+        "nature",
+        "purpose",
+        "anchor_snapshot",
+        "anchor_sha256",
+        "requirement_sha256",
+        "id",
+        "tenant_id",
+        "created_at"
+      ],
+      "registration": "GUARDED",
+      "non_consuming": false,
+      "current_pointer": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "class_name": "NamedReviewRecord",
+      "column_count": 49,
+      "columns": [
+        "candidate_id",
+        "candidate_revision",
+        "candidate_sha256",
+        "rule_fact_id",
+        "rule_revision",
+        "rule_sha256",
+        "reviewer_id",
+        "valid_until",
+        "revision",
+        "writer_id",
+        "actor_id",
+        "requester_id",
+        "command_id",
+        "operation",
+        "tier",
+        "fact_kind",
+        "status",
+        "fact_body",
+        "payload_sha256",
+        "intent_digest",
+        "sources",
+        "required_source_read_set",
+        "source_basis",
+        "read_set_sha256",
+        "input_snapshot",
+        "authority_snapshot",
+        "policy_snapshot",
+        "shared_proof_id",
+        "shared_proof_revision",
+        "proof_expires_at",
+        "proof_consumed_at",
+        "token_sha256",
+        "material_sha256",
+        "product_id",
+        "project_id",
+        "issue_id",
+        "capa_id",
+        "origin_issue_version_id",
+        "origin_issue_revision",
+        "owner_id",
+        "visibility",
+        "nature",
+        "purpose",
+        "anchor_snapshot",
+        "anchor_sha256",
+        "requirement_sha256",
+        "id",
+        "tenant_id",
+        "created_at"
+      ],
+      "registration": "GUARDED",
+      "non_consuming": false,
+      "current_pointer": false
+    }
+  ],
+  "all_five_must_be_guarded": true,
+  "all_five_must_not_be_non_consuming": true,
+  "registration_points": [
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "required": "从 Root 实际迁入 namespace 注册五个真实 class 到唯一 Base.metadata，不同时导入 staged/迁入声明。"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/lifecycle_catalog.py",
+      "required": "COVERED_COLUMNS 五表完整字段；GUARDED 五表，旧登记全部保留。"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/lifecycle_access.py",
+      "required": "NON_CONSUMING 不加五表；Root 核 runtime metadata 与 catalog 同批匹配。schema_covered 本身只比 DB/catalog。"
+    },
+    {
+      "path": "Root 实际单调迁移与公共 schema ledger",
+      "required": "五表 enabled lifecycle_reference BEFORE I/U/D -> 原 lifecycle_reference_gate；同时真实 RLS/权限/不可变/Current 窄更新/原子守卫。保留旧 gate 与 next_0012 Inbox 例外。"
+    },
+    {
+      "path": "Root 真实 source/child/proof 宿主",
+      "required": "完整 sources/readset/source_basis/anchor/fullchild 并集≤20，source_for/require_safe/实际 owner 门禁；登记不授资格。"
+    }
+  ],
+  "gaps": [
+    {
+      "code": "RUNTIME_METADATA_NOT_CHECKED",
+      "detail": "DB/catalog 匹配但 Base.metadata 没载新表，References 可漏扫而仍 known；必须同批 runtime 登记与真实覆盖验证。"
+    },
+    {
+      "code": "GENERIC_ID_IGNORED",
+      "detail": "任意深度 id 被 _uuids 跳过，含 SourceRef/OriginalSafety/child FactRef；明确 artifact_id 和 Artifact.original_id 或 mapped child 外键必须完整。"
+    },
+    {
+      "code": "OPAQUE_REFERENCE_NOT_RESOLVED",
+      "detail": "只有 hash/digest/kind/position、字符串化 JSON/URL 不反查引用；全 child/source 并集缺失不能自封 complete。"
+    },
+    {
+      "code": "SQL_GATE_NOT_TRANSITIVE",
+      "detail": "SQL gate 是 original UUID 的 payload::text 子串扫描；不解引用 Artifact/Fact，也可能保守匹配正文 UUID。Artifact-only 依真实 source_for/require_safe。"
+    },
+    {
+      "code": "PROOF_NOT_SOURCE_AUTHORITY",
+      "detail": "shared_proof_id 会扫到，但 confirmations 是 NON_CONSUMING；proof/material hash 不替代来源闭包，不授 bytes/current/T2。"
+    },
+    {
+      "code": "BOUNDED_SCAN_UNKNOWN",
+      "detail": "未知表列/disabled gate/不完整 Journal/每表>2000/总行>12000/库存>100页，count/formal_history=None，不补零。"
+    }
+  ],
+  "coverage_complete": null,
+  "coverage_reason": "未公开登记/实际迁移/完整来源与 child 联验，静态材料不能给 complete=true。",
+  "affected_selected_tests": [
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_reviewed_business_write_advances_reference_epoch_and_invalidates_preview",
+      "impact": "当前使用 Artifact；须扩展五表合法写入/Current CAS 的 epoch 变化。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_unreviewed_schema_is_unknown_and_transactional_ddl_is_always_rolled_back",
+      "impact": "当前 unknown_table/unknown_column/disabled_trigger；须增加新表缺列/禁用 gate 与 runtime metadata 缺登记。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_product_fence_is_held_through_real_storage_effect",
+      "impact": "当前 Artifact 并发；须扩展新事实及 Current 写入不穿过 Product 栅栏。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_missing_journal_unbound_original_and_partial_inventory_cannot_prove_orphan",
+      "impact": "缺日志/部分库存仍未知，不补零。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_registered_original_is_never_orphan_even_when_parsing_failed",
+      "impact": "保留 parse_failed 参数，注册仍受保护。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_rls_agent_zero_direct_access_and_immutable_candidates_and_object_identity",
+      "impact": "当前旧生命周期实体；须另核五表 RLS、app/agent 权限、事实不可变和 Current 窄更新。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/test_original_lifecycle_integration.py",
+      "selector": "test_lifecycle_event_claim_and_ack_preserve_reference_epoch_before_real_effect",
+      "impact": "保持 next_0012 Inbox 投递例外。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/original_lifecycle/test_rules.py",
+      "selector": "test_unknown_protected_live_or_derived_facts_never_become_orphans",
+      "impact": "未知保护事实不能判孤儿。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/original_lifecycle/test_rules.py",
+      "selector": "test_authoritative_refs_and_formal_history_protect_even_expired_failed_uploads",
+      "impact": "引用/正式历史独立保护。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/original_lifecycle/test_rules.py",
+      "selector": "test_recovery_preserves_referenced_held_history_but_unknown_or_purged_bytes_block",
+      "impact": "恢复保留历史，未知或失效字节继续阻塞。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/original_lifecycle/test_service.py",
+      "selector": "test_new_authoritative_reference_invalidates_preview_and_is_never_recycled",
+      "impact": "新真实引用使旧候选失效。",
+      "run_in_this_task": false
+    },
+    {
+      "path": "pdos-next/server/tests/original_lifecycle/test_service.py",
+      "selector": "test_reference_writer_cannot_enter_between_final_validation_and_physical_marker",
+      "impact": "保持末端读取到实际效果的栅栏。",
+      "run_in_this_task": false
+    }
+  ],
+  "root_additional_selected_checks": [
+    "actual metadata/catalog/DB 五表列与 enabled triggers 同批一致；实际函数定义仍需 Root 核。",
+    "Original -> Artifact.original_id -> 五表完整 artifact_id readset -> retained 历史和 Current 的实际闭包。",
+    "Review observations 的 generic FactRef.id 不能单独保障闭包；实际 full child read union 不缺项。",
+    "direct original UUID 由 SQL gate 拒绝新隔离引用；Artifact-only 由 host current source safety 拒绝。",
+    "合法五表写及 Current CAS 触发 epoch，事实 update/delete 与非法 pointer 更新仍拒绝。",
+    "RLS/agent 无 DML/不可变/原子组检查；registered parse_failed 与 Inbox 例外不退化。"
+  ]
+}

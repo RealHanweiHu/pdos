@@ -1,0 +1,6 @@
+{
+  "result": "failed_schema_match",
+  "failure": "metadata gained physical sample sentinel FK before reapplying draft schema",
+  "prior_downgrade_failed": "constraint identifier exceeds 63 characters; transaction rolled back",
+  "business_writes_started": false
+}

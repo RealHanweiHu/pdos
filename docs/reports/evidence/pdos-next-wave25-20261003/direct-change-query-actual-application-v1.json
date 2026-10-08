@@ -1,0 +1,7 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "before_sha256": "13c337558cdf61e481594b66b4d445db8176ebb828fcfed1ccf2e8dd5f3f1f2b",
+  "after_sha256": "170f7724b33eaab7ba4d2278aa0a325b988f29836820a57a935c4718403da753",
+  "new_api_guards": "unique issue_id/change_id GET; zero-query inputs POST before tenant UOW",
+  "captures_unchanged": true
+}

@@ -1,0 +1,263 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-04T01:22:32.413858+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "excluded_exact_new_product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+  "scope": "Complete rows of the listed 24 tables and six CAPA tables excluding exactly this new Product; not whole database",
+  "before_sha256": "6f985eb4d3537da09caecef4921d0fcb976b956e935a143661be556f1184fe8a",
+  "tables": [
+    {
+      "table": "quality_issue_versions",
+      "current_retained": {
+        "rows": 175,
+        "sha256": "10e5b76e391911dbeef6e6bd05b41f030390b5782e92589e5bac201bc6c8c545"
+      },
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    {
+      "table": "quality_current_issues",
+      "current_retained": {
+        "rows": 52,
+        "sha256": "6547b2695235eb1ddfe3d5b05ca8b2972b2e2d9b8b7b603f4a7f81470b1b6742"
+      },
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    {
+      "table": "capa_remediation_links",
+      "current_retained": {
+        "rows": 5,
+        "sha256": "749bd43d617122892c49fa3151aef4b47577579b944cb99b6153f6a2d10cea56"
+      },
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    {
+      "table": "builds",
+      "current_retained": {
+        "rows": 3206,
+        "sha256": "89991a14a2e0de1e528291c839467e39ac1afc627bcf1ac8f8ddf7801f339d6d"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "build_starts",
+      "current_retained": {
+        "rows": 276,
+        "sha256": "1184379d715c45c3bcd37456087a177560ac5998cd8ef484d61406568918728e"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "build_current_execution_assessments",
+      "current_retained": {
+        "rows": 353,
+        "sha256": "c2eb3c668f46bfa9f404eb68a9ba9939ca6488cf4f04ccccf75f15a1ab3eb798"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "build_current_authorizations",
+      "current_retained": {
+        "rows": 617,
+        "sha256": "da4e2b5158b973c6d05826e8a8ed54ac2d5d948667150acc82797bf95940f98d"
+      },
+      "unchanged": true,
+      "new_case_rows": 2
+    },
+    {
+      "table": "actual_configurations",
+      "current_retained": {
+        "rows": 1401,
+        "sha256": "422afa4dd51b22ff89d21a62b09a92683dd045bb29620b2be0330581ad068a2b"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "build_lots",
+      "current_retained": {
+        "rows": 1157,
+        "sha256": "7adbb7bce902431ed7a99a65d18f056a336dcd0bf78d013c986229be2e83e390"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "sample_units",
+      "current_retained": {
+        "rows": 1667,
+        "sha256": "675bcac54a6d7c35b05464fd7a59f00a79b10061379e54d6c000faa271763549"
+      },
+      "unchanged": true,
+      "new_case_rows": 2
+    },
+    {
+      "table": "verification_formal_requests",
+      "current_retained": {
+        "rows": 1165,
+        "sha256": "88e0b4f6d8706bbd431cd393b70173af5fb44b15940a46b419cffb6ec9ce3270"
+      },
+      "unchanged": true,
+      "new_case_rows": 12
+    },
+    {
+      "table": "verification_current_formal_requests",
+      "current_retained": {
+        "rows": 295,
+        "sha256": "3e08c1ffc2475b3d4a8fb59e2b6d432653e77f2f387101c56e11bb0e4ab80c69"
+      },
+      "unchanged": true,
+      "new_case_rows": 2
+    },
+    {
+      "table": "verification_run_identities",
+      "current_retained": {
+        "rows": 123,
+        "sha256": "7b0f624200d056efeeffb75c26552f5e4c71d281f5e8eb521297c4fa2e9f65c5"
+      },
+      "unchanged": true,
+      "new_case_rows": 2
+    },
+    {
+      "table": "verification_run_versions",
+      "current_retained": {
+        "rows": 293,
+        "sha256": "808e5747db786fb81c32262a031862b42f39afbbbe7edb4b8b009383681867f4"
+      },
+      "unchanged": true,
+      "new_case_rows": 4
+    },
+    {
+      "table": "verification_current_runs",
+      "current_retained": {
+        "rows": 123,
+        "sha256": "1e973c395318f70c635c1ddab0d15026ff2bac6e84fee527855936fa31fc834f"
+      },
+      "unchanged": true,
+      "new_case_rows": 2
+    },
+    {
+      "table": "verification_launch_facts",
+      "current_retained": {
+        "rows": 317,
+        "sha256": "204aa16057d337e7a07d446b18a36d64eb42fc2b3704059c2d1af678b38db8e6"
+      },
+      "unchanged": true,
+      "new_case_rows": 5
+    },
+    {
+      "table": "test_measurements",
+      "current_retained": {
+        "rows": 123,
+        "sha256": "493174b4bd6cdbb3be83572e400f993f8d04c21bb137901487ddc7c31f61a7d8"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "test_result_projections",
+      "current_retained": {
+        "rows": 71,
+        "sha256": "57138895f9ad8a82cffdcd22dbc10fb6a344ec6ea4c6ece648c07d3c8bf99cf0"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "test_result_actions",
+      "current_retained": {
+        "rows": 78,
+        "sha256": "fbc295d287ab687b8b5762241c3c306a9a0634673c7d9db26d3208c9d06a0887"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "operational_material_holds",
+      "current_retained": {
+        "rows": 276,
+        "sha256": "73b822c4533df7df208cc9514a1509d66a88af3fd7bed9552840b862bf2ff517"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "operational_resource_occupancies",
+      "current_retained": {
+        "rows": 461,
+        "sha256": "457b8d396e5a09e4183094fc3a528f9e865ca5b3a37a6fbd0f4cd9343a437edb"
+      },
+      "unchanged": true,
+      "new_case_rows": 3
+    },
+    {
+      "table": "test_resource_reservations",
+      "current_retained": {
+        "rows": 92,
+        "sha256": "2b0449319056d1eef832c1e159af5db7ab12916acdfa32533d11b03cfd00ca20"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "sample_usage_sentinels",
+      "current_retained": {
+        "rows": 166,
+        "sha256": "df148e199002b3c02609209eb506da89da3585080872db85144804dcb539d9ba"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    },
+    {
+      "table": "sample_run_usages",
+      "current_retained": {
+        "rows": 166,
+        "sha256": "59b2b103dd7e3607d63c32b53d70cac689492c07f412d4ae470378c031e940ae"
+      },
+      "unchanged": true,
+      "new_case_rows": 1
+    }
+  ],
+  "capa_tables": {
+    "capa_verification_evidence": {
+      "retained_rows": 2,
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    "capa_verification_rule_facts": {
+      "retained_rows": 1,
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    "capa_observation_facts": {
+      "retained_rows": 1,
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    "capa_named_verification_reviews": {
+      "retained_rows": 0,
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    "capa_current_verification_rules": {
+      "retained_rows": 1,
+      "unchanged": true,
+      "new_case_rows": 0
+    },
+    "capa_current_observations": {
+      "retained_rows": 1,
+      "unchanged": true,
+      "new_case_rows": 0
+    }
+  },
+  "retained_private_files_unchanged": true,
+  "previous_544_scoped_source_files_unchanged": true,
+  "business_commands": 0,
+  "model_calls": 0
+}

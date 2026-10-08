@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "observed_at": "2026-10-03T14:51:12.511485+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_writes": 0,
+  "records": [
+    {
+      "candidate_id": "f392b96f-3739-4f00-b4cd-ea7d21235f86",
+      "receipt_id": "d0db65da-292a-42aa-b29a-8e02d345a5ad",
+      "type": "CapaVerificationCandidateRecorded",
+      "delivered_at": "2026-10-03T14:51:09.126998+00:00",
+      "attempts": 1,
+      "last_error": null,
+      "consumer": "temporal-work-v1",
+      "status": "ignored",
+      "workflow_id": null,
+      "received_at": "2026-10-03T14:51:09.127014+00:00"
+    },
+    {
+      "candidate_id": "481b5d35-4d62-457f-bad2-8bd1cd4d7e68",
+      "receipt_id": "1138d7ad-443e-4310-b25a-b32aa0d11684",
+      "type": "CapaVerificationCandidateRecorded",
+      "delivered_at": "2026-10-03T14:51:09.148643+00:00",
+      "attempts": 1,
+      "last_error": null,
+      "consumer": "temporal-work-v1",
+      "status": "ignored",
+      "workflow_id": null,
+      "received_at": "2026-10-03T14:51:09.148656+00:00"
+    }
+  ],
+  "scope": "actual restored worker acknowledged generic candidate events as ignored; no dedicated verification/effectiveness workflow; delivery/inbox state legitimately changed after readonly closeout",
+  "supersedes": "candidate-worker-ack-v1.json (diagnostic table names only; no schema or production change)"
+}

@@ -70,22 +70,6 @@ def destination(client, scope, base, headers):
         ),
         201,
     )
-    for level in ["family", "platform", "series"]:
-        parent = post(
-            client,
-            base,
-            own,
-            "/products",
-            dict(
-                request_id=str(uuid4()),
-                code="TARGET-" + level,
-                name="合成目标" + level,
-                level=level,
-                parent_id=parent["id"],
-                owner_user_id=str(member),
-            ),
-            201,
-        )
     return member, own, line, parent
 
 
@@ -223,7 +207,7 @@ def test_same_line_derivation_revocation_hides_original_and_inherited_data_then_
         with scope.engine.connect() as c, pytest.raises(ProductWorkAccessError):
             readable(c, actor(c, scope.tenant_id, member), pack)
         catalog = client.get(base + "/products", headers=own).json()
-        assert len(catalog["nodes"]) == 4 and own_line["id"] in str(catalog)
+        assert len(catalog["nodes"]) == 1 and own_line["id"] in str(catalog)
         assert child["product_id"] not in str(catalog) and source["product_line_id"] not in str(
             catalog
         )

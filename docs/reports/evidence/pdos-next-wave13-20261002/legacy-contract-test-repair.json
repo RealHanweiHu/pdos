@@ -1,0 +1,21 @@
+{
+  "files": {
+    "pdos-next/server/tests/test_build_execution.py": {
+      "before": "18a37454f21ed34382fa303c4e0b8ef151cb93d00280bdf25952a24257d27568",
+      "after": "b162c98aca3b70b895907b55618fe9405757e94f2acb238734f88d003a7c3852"
+    },
+    "pdos-next/server/tests/test_verification_execution.py": {
+      "before": "a606054844f14f5675ab5369af9488328315f0eba71427d1fab6c4317ea0c248",
+      "after": "4412a86010b33279b6c1be2bb7bf2b1e30d61418c86829816b2426c58aa8eff3"
+    }
+  },
+  "frozen_at": "2026-10-03T02:27:31.531196+00:00",
+  "production_unchanged": true,
+  "test_only": "Registered plan/promise/start canonical handlers require dedicated payloads; result/review/disposition still absent. Preparation cannot grant professional/physical authority.",
+  "required_selections": [
+    "tests/test_build_execution.py::test_unknown_preparation_does_not_enable_start_or_quality_execution[test.run.start]",
+    "tests/test_verification_execution.py::test_preparation_does_not_grant_professional_or_physical_authority"
+  ],
+  "before_source_archive": "legacy-contract-test-before-repair",
+  "original_logs_retained": true
+}

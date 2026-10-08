@@ -1,0 +1,51 @@
+{
+  "schema_version": "staged-candidate-form-delta.v2",
+  "typecheck": {
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+      "--project",
+      "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-v2-rawd8cmt/tsconfig.json"
+    ],
+    "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+    "exit_code": 0,
+    "elapsed_seconds": 1.648707,
+    "stdout": "",
+    "stderr": "",
+    "config": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-v2-rawd8cmt/tsconfig.json",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "scope": "candidate-form.tsx and candidate-form-contract.ts plus required transitive types only"
+  },
+  "manifest": "candidate-form-source-manifest-v2.json",
+  "v1_evidence_preserved": true,
+  "frozen_ui_files_unchanged": true,
+  "original_defect": "Valid CandidateFields unmounted on invalid scope/choices before its notification effect could clear the parent editable draft. Parent could retain its last valid onChange payload.",
+  "changes": [
+    "Outer unconditional hooks compute valid basis or null; layout effect notifies onChange(null) on initial/changed basis including invalid scope and choices",
+    "Current render basis and host lock gate all child onChange/onSubmit callbacks; retained earlier callback cannot emit an old payload after scope loss/change or locking",
+    "Child initial effect removed to avoid duplicate invalidation",
+    "Malformed non-array choice families return invalid instead of throwing before the invalidation path"
+  ],
+  "current_draft_clear_boundary": "Only onChange(null) for parent editable draft. Parent must retain prepared command, UNKNOWN mode/key/full payload/readset and saved receipt independently. No cancellation/restore/transport callback is present.",
+  "manual_source_assessment": [
+    "All hooks run before early returns",
+    "Initial null scope notifies null",
+    "Valid scope to null/invalid scope reaches outer invalidation",
+    "Valid choices to duplicate/malformed choices reaches outer invalidation",
+    "Valid scope to another valid scope resets local fields and notifies once",
+    "Callback identity changes alone do not repeatedly clear unchanged valid draft",
+    "Stale callbacks denied by live basis and locked gate",
+    "No command/key/token/preview/pending object touched"
+  ],
+  "manual_assessment_is_not_runtime_component_validation": true,
+  "checks_not_run": [
+    "component mirror tests",
+    "public type/lint/build",
+    "browser",
+    "HTTP",
+    "PostgreSQL"
+  ],
+  "business_actions_performed": false
+}

@@ -420,7 +420,14 @@ class ResourceCapacityService:
                             tables.users.c.tenant_id == context.tenant.id,
                             tables.users.c.is_active.is_(True),
                             tables.users.c.role.in_(
-                                ("owner", "admin", "project_manager", "engineer", "quality")
+                                (
+                                    "owner",
+                                    "admin",
+                                    "product_manager",
+                                    "project_manager",
+                                    "engineer",
+                                    "quality",
+                                )
                             ),
                         )
                         .order_by(tables.users.c.display_name)
@@ -469,7 +476,14 @@ class ResourceCapacityService:
                         tables.users.c.id == draft.user_id,
                         tables.users.c.is_active.is_(True),
                         tables.users.c.role.in_(
-                            ("owner", "admin", "project_manager", "engineer", "quality")
+                            (
+                                "owner",
+                                "admin",
+                                "product_manager",
+                                "project_manager",
+                                "engineer",
+                                "quality",
+                            )
                         ),
                     )
                 ).first()
@@ -957,7 +971,14 @@ def capacity_sources(
                     tables.users.c.id == row["user_id"],
                     tables.users.c.is_active.is_(True),
                     tables.users.c.role.in_(
-                        ("owner", "admin", "project_manager", "engineer", "quality")
+                        (
+                            "owner",
+                            "admin",
+                            "product_manager",
+                            "project_manager",
+                            "engineer",
+                            "quality",
+                        )
                     ),
                 )
             ).first()

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-03T07:32:59.496652+00:00",
+  "mode": "selection",
+  "read_only": true,
+  "limitations": [
+    "as_of evidence observation is not an execution permit",
+    "existing OriginalStore read gate may acquire/create bounded control locks only",
+    "no production or manual Exit claim"
+  ],
+  "error_code": "PURE_81_EVIDENCE_MISMATCH",
+  "status": "failed"
+}

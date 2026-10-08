@@ -1,0 +1,771 @@
+import hashlib
+import json
+import secrets
+from dataclasses import dataclass
+from datetime import timedelta
+from uuid import UUID, uuid4
+
+from sqlalchemy import select, text
+
+from pdos_next.command_handlers import T1_OPERATIONS, T2_OPERATIONS, handler, reviewed_view
+from pdos_next.contracts import (
+    PAYLOADS,
+    ArtifactPayload,
+    CancelPayload,
+    ClaimPayload,
+    Command,
+    RevertPayload,
+    WorkPayload,
+)
+from pdos_next.errors import DomainError
+from pdos_next.models import (
+    Artifact,
+    Audit,
+    Claim,
+    Confirmation,
+    Consumption,
+    Grant,
+    Outbox,
+    Principal,
+    Product,
+    Qualification,
+    Receipt,
+    RequestKey,
+    Run,
+    WorkRequest,
+    now,
+)
+from pdos_next.schemas.products.definitions import DefinitionDraftPayload
+
+
+def digest(value) -> str:
+    if isinstance(value, str):
+        raw = value
+    else:
+        raw = json.dumps(
+            value, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str
+        )
+    return hashlib.sha256(raw.encode()).hexdigest()
+
+
+@dataclass(frozen=True)
+class Context:
+    tenant_id: UUID
+    actor_id: UUID
+    requester_id: UUID
+    run_id: UUID | None = None
+    cancel_epoch: int | None = None
+
+
+EVENTS = {
+    "evidence.lifecycle.upload.abandon": "original.upload_abandoned",
+    "evidence.lifecycle.quarantine": "original.lifecycle_requested",
+    "evidence.lifecycle.restore": "original.lifecycle_requested",
+    "evidence.lifecycle.cancel": "original.lifecycle_cancelled",
+    "evidence.lifecycle.protection.record": "original.protection_recorded",
+    "evidence.lifecycle.effect": "original.lifecycle_observed",
+    "product.create": "product.created",
+    "evidence.artifact.register": "artifact.registered",
+    "evidence.claim.record": "claim.recorded",
+    "ai.work.start": "ai.work_started",
+    "ai.run.revert": "ai.run_reverted",
+    "ai.run.cancel": "ai.run_cancelled",
+    "ai.work.state.update": "ai.work_state_updated",
+    "ai.work.resume": "ai.work_resume_requested",
+    "evidence.original.upload": "original.uploaded",
+    "evidence.original.parse": "original.parsed",
+    "evidence.original.scan.request": "original.scan_requested",
+    "evidence.original.scan.record": "original.scan_recorded",
+    "evidence.original.withdraw": "original.withdrawn",
+    "product.definition.draft": "definition.draft_created",
+    "product.variant.derive": "variant.derived",
+    "product.variant.rebase": "variant.rebased",
+    "project.create": "project.created",
+    "work.plan.propose": "plan.proposed",
+    "work.plan.apply": "plan.applied",
+    "ai.model_call.reconcile": "ai.model_call_reconciled",
+    "engineering.bom.revise": "bom.revised",
+    "engineering.configuration.create": "configuration.created",
+    "npi.process.revise": "process.revised",
+    "build.create": "build.created",
+    "build.readiness.compute": "readiness.computed",
+    "build.engineering.authorize": "build.engineering_authorization_decided",
+    "build.manufacturing.authorize": "build.manufacturing_authorization_decided",
+    "build.start": "build.started",
+    "build.operational_facts.import": "build.operational_facts_imported",
+    "build.configuration.actual.record": "actual_configuration.recorded",
+    "build.output.record": "build.output_recorded",
+    "build.sample.allocate": "sample.allocated",
+    "build.sample.readiness.record": "sample.readiness_recorded",
+    "supply.snapshot.record": "supply.snapshot_recorded",
+    "supply.kit.compute": "kit.computed",
+    "cost.inputs.record": "cost.inputs_recorded",
+    "cost.estimate.compute": "cost.estimated",
+    "verification.preparation.record": "verification.preparation_recorded",
+    "verification.request.create": "verification.requested",
+    "verification.method.prepare": "verification.method_prepared",
+    "verification.schedule.propose": "verification.schedule_proposed",
+    "verification.actual_method.prepare": "verification.actual_method_prepared",
+    "verification.handoff.offer": "handoff.offered",
+    "verification.handoff.accept": "handoff.accepted",
+    "verification.handoff.return": "handoff.returned",
+    "test.run.plan": "test.run_planned",
+    "verification.schedule.promise": "verification.start_promised",
+    "test.run.start": "test.run_started",
+    "test.results.import": "test.results_imported",
+    "test.result.compute": "test.result_computed",
+    "test.run.review": "test.run_reviewed",
+    "test.disposition.decide": "test.disposition_decided",
+    "test.resources.import": "test.resources_imported",
+    "professional.authority.import": "professional.authority_imported",
+    "quality.issue.create": "issue.created",
+    "quality.issue.merge": "issues.merged",
+    "quality.issue.triage": "issue.triaged",
+    "quality.issue.containment.record": "issue.contained",
+    "quality.capa.draft": "capa.drafted",
+    "quality.issue.root_cause.decide": "issue.root_cause_decided",
+    "quality.capa.actions.complete": "capa.actions_completed",
+    "quality.capa.followup.link": "capa.followup_linked",
+    "quality.policy.import": "quality.policy_imported",
+    "change.request.create": "change.requested",
+    "change.impact.compute": "change.impact_created",
+}
+
+
+def require_access(s, ctx: Context, product_id: UUID, write=False, lock=False):
+    if lock:
+        # All locked authority reads share command order: Product → principals
+        # → grants. Later source validation must never invert that order.
+        s.scalar(
+            select(Product)
+            .where(Product.id == product_id, Product.tenant_id == ctx.tenant_id)
+            .with_for_update()
+        )
+    for principal_id in sorted({ctx.actor_id, ctx.requester_id}, key=str):
+        query = select(Principal).where(Principal.id == principal_id)
+        principal = s.scalar(query.with_for_update() if lock else query)
+        if not principal or not principal.active or principal.tenant_id != ctx.tenant_id:
+            raise DomainError("FORBIDDEN_SCOPE", "身份已失效。", 403)
+        q = select(Grant).where(
+            Grant.product_id == product_id,
+            Grant.principal_id == principal_id,
+            Grant.tenant_id == ctx.tenant_id,
+        )
+        grant = s.scalar(q.with_for_update() if lock else q)
+        if not grant or grant.expires_at <= now() or (write and not grant.can_write):
+            raise DomainError("FORBIDDEN_SCOPE", "当前身份没有这个产品范围的操作权限。", 403)
+
+
+def source_for(s, ctx, product_id, artifact_id, revision=None):
+    s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    source = s.scalar(
+        select(Artifact)
+        .where(
+            Artifact.id == artifact_id,
+            Artifact.product_id == product_id,
+        )
+        .with_for_update()
+    )
+    if not source or (source.visibility == "private" and source.owner_id != ctx.requester_id):
+        raise DomainError("SOURCE_UNAVAILABLE", "来源不在当前授权范围。", 403)
+    if source.status != "active":
+        raise DomainError("SOURCE_UNAVAILABLE", "来源已撤回，不能继续使用。")
+    if revision is not None and source.revision != revision:
+        raise DomainError("SOURCE_STALE", "来源版本已经变化。")
+    if source.original_id:
+        from pdos_next.original_security import require_safe
+        from pdos_next.originals import require_original
+
+        original = require_original(s, ctx, product_id, source.original_id, lock=True)
+        require_safe(s, ctx, original)
+    return source
+
+
+def receipt_view(r):
+    return {
+        "id": str(r.id),
+        "operation": r.operation,
+        "subject_type": r.subject_type,
+        "subject_id": str(r.subject_id),
+        "subject_revision": r.subject_revision,
+        "writer_id": str(r.actor_id),
+        "requester_id": str(r.requester_id),
+        "created_at": r.created_at.isoformat(),
+        "result": r.result,
+    }
+
+
+def append_receipt(s, ctx, command, subject_type, subject, request_digest, intent, visibility):
+    r = Receipt(
+        id=uuid4(),
+        tenant_id=ctx.tenant_id,
+        product_id=command.product_id,
+        command_id=command.command_id,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        operation=command.operation,
+        subject_type=subject_type,
+        subject_id=subject.id,
+        subject_revision=subject.revision,
+        visibility=visibility,
+        request_digest=request_digest,
+        intent_digest=intent,
+        run_id=ctx.run_id,
+        result={
+            "id": str(subject.id),
+            "revision": subject.revision,
+            "status": subject.status,
+            **getattr(subject, "action_result", {}),
+        },
+    )
+    s.add(r)
+    s.flush()
+    s.add_all(
+        [
+            Audit(
+                tenant_id=ctx.tenant_id,
+                receipt_id=r.id,
+                actor_id=ctx.actor_id,
+                operation=command.operation,
+            ),
+            Outbox(
+                tenant_id=ctx.tenant_id,
+                receipt_id=r.id,
+                type=EVENTS[command.operation],
+                subject_id=subject.id,
+                subject_revision=subject.revision,
+                actor_id=ctx.actor_id,
+                correlation_id=ctx.run_id or command.command_id,
+            ),
+        ]
+    )
+    return r
+
+
+def check_run(s, ctx, product_id):
+    if ctx.run_id is None:
+        return None
+    run = s.scalar(select(Run).where(Run.id == ctx.run_id).with_for_update())
+    if (
+        not run
+        or run.product_id != product_id
+        or run.requester_id != ctx.requester_id
+        or run.writer_id != ctx.actor_id
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "运行上下文与请求身份不匹配。", 403)
+    if run.cancel_epoch != ctx.cancel_epoch or run.status == "cancelled":
+        raise DomainError("CANCELLED_RUN", "运行已取消；已发生的动作保留在活动中。")
+    if run.used_tokens > run.token_limit:
+        raise DomainError("MODEL_BUDGET_EXCEEDED", "原运行用量已超出预算，不能继续执行。")
+    return run
+
+
+def check_qualification(s, ctx, operation, run, synthetic_mode):
+    actor = s.get(Principal, ctx.actor_id)
+    if operation in T2_OPERATIONS and (
+        actor.kind != "human" or ctx.actor_id != ctx.requester_id or ctx.run_id is not None
+    ):
+        raise DomainError("NAMED_DECISION_REQUIRED", "专业批准只由当前有权的具名本人办理。", 403)
+    if actor.kind != "agent":
+        return
+    if not run:
+        raise DomainError("FORBIDDEN_SCOPE", "AI 必须使用服务器绑定的运行身份。", 403)
+    if operation != "evidence.claim.record":
+        raise DomainError("NAMED_DECISION_REQUIRED", "当前 AI 能力仅允许登记来源事实。", 403)
+    qualification = s.scalar(
+        select(Qualification).where(
+            Qualification.writer_id == ctx.actor_id,
+            Qualification.operation == operation,
+            Qualification.skill_version == run.skill_version,
+            Qualification.provider_version == run.provider_version,
+            Qualification.purpose == "source_claim",
+            Qualification.active.is_(True),
+            Qualification.expires_at > now(),
+        )
+    )
+    if qualification:
+        locked = s.execute(
+            text("SELECT public.lock_qualification(:id)"), {"id": qualification.id}
+        ).scalar_one()
+        if not locked:
+            qualification = None
+        else:
+            s.refresh(qualification)
+    if (
+        not qualification
+        or not qualification.active
+        or qualification.expires_at <= now()
+        or qualification.writer_id != ctx.actor_id
+        or qualification.operation != operation
+        or qualification.skill_version != run.skill_version
+        or qualification.provider_version != run.provider_version
+        or qualification.purpose != "source_claim"
+        or (qualification.evaluation_kind != "real" and not synthetic_mode)
+    ):
+        raise DomainError("QUALIFICATION_REQUIRED", "此能力尚无当前用途的自动执行资格。", 403)
+
+
+def confirmation_for(s, ctx, product_id, operation, subject_id, revision, token):
+    c = s.scalar(
+        select(Confirmation)
+        .where(
+            Confirmation.token_hash == digest(token),
+            Confirmation.product_id == product_id,
+            Confirmation.actor_id == ctx.actor_id,
+            Confirmation.operation == operation,
+            Confirmation.subject_id == subject_id,
+        )
+        .with_for_update()
+    )
+    if not c or c.consumed or c.expires_at <= now():
+        raise DomainError("CONFIRMATION_REQUIRED", "请重新查看此次操作的实际范围。")
+    if c.revision != revision:
+        raise DomainError("VERSION_CONFLICT", "预览后对象已发生变化，请核对差异。")
+    return c
+
+
+def reversible_claim(s, ctx, receipt_id, product_id):
+    r = s.get(Receipt, receipt_id)
+    if (
+        not r
+        or r.product_id != product_id
+        or r.operation != "evidence.claim.record"
+        or r.requester_id != ctx.requester_id
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "只能撤回自己登记或委派登记的来源事实。", 403)
+    claim = s.scalar(select(Claim).where(Claim.id == r.subject_id).with_for_update())
+    if not claim or claim.status != "active" or claim.revision != r.subject_revision:
+        raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "记录已改变或已经撤回，不能覆盖后续工作。")
+    if s.scalar(select(Consumption.id).where(Consumption.claim_id == claim.id).limit(1)):
+        raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "记录已被下游使用，必须保留并另行处置。")
+    return r, claim
+
+
+def preview_confirmation(s, ctx, product_id, operation, subject_id):
+    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    if not product:
+        raise DomainError("FORBIDDEN_SCOPE", "产品范围不可用。", 403)
+    require_access(s, ctx, product_id, write=True, lock=True)
+    if operation == "ai.run.revert":
+        _, subject = reversible_claim(s, ctx, subject_id, product_id)
+        description = {
+            "statement": subject.statement,
+            "effect": "撤回此条事实，原文与历史回执保留。",
+        }
+    elif operation == "ai.run.cancel":
+        subject = s.scalar(
+            select(WorkRequest)
+            .where(
+                WorkRequest.id == subject_id,
+                WorkRequest.product_id == product_id,
+            )
+            .with_for_update()
+        )
+        if not subject or subject.accountable_owner_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "工作不在当前范围。", 403)
+        if subject.status in {"completed", "cancelled"}:
+            raise DomainError("VERSION_CONFLICT", "工作已结束，不能取消。")
+        description = {"goal": subject.goal, "effect": "停止后续动作，已发生的结果保留。"}
+    else:
+        raise DomainError("FORBIDDEN_SCOPE", "不支持的确认范围。", 403)
+    token = secrets.token_urlsafe(32)
+    s.add(
+        Confirmation(
+            tenant_id=ctx.tenant_id,
+            product_id=product_id,
+            actor_id=ctx.actor_id,
+            operation=operation,
+            subject_id=subject_id,
+            revision=subject.revision,
+            token_hash=digest(token),
+            expires_at=now() + timedelta(minutes=10),
+        )
+    )
+    return {"confirmation_token": token, "expected_revision": subject.revision, **description}
+
+
+def material_digest(ctx, command, payload, module):
+    return digest(
+        {
+            "tenant": ctx.tenant_id,
+            "actor": ctx.actor_id,
+            "requester": ctx.requester_id,
+            "operation": command.operation,
+            "product": command.product_id,
+            "expected_revision": command.expected_revision,
+            "read_set": sorted(
+                [r.model_dump(mode="json") for r in command.source_read_set],
+                key=lambda r: (r["artifact_id"], r["expected_revision"]),
+            ),
+            "payload": module.semantic(payload),
+        }
+    )
+
+
+def preview_command(s, ctx, command):
+    if command.operation not in T1_OPERATIONS | T2_OPERATIONS:
+        raise DomainError("FORBIDDEN_SCOPE", "这个操作没有开放人工办理预览。", 403)
+    payload = PAYLOADS[command.operation].model_validate(command.payload)
+    product = s.scalar(select(Product).where(Product.id == command.product_id).with_for_update())
+    if not product:
+        raise DomainError("FORBIDDEN_SCOPE", "产品不在当前授权范围。", 403)
+    require_access(s, ctx, product.id, write=True, lock=True)
+    actor = s.get(Principal, ctx.actor_id)
+    if ctx.run_id or actor.kind != "human" or ctx.actor_id != ctx.requester_id:
+        raise DomainError("NAMED_DECISION_REQUIRED", "此确认只由具名本人执行。", 403)
+    for read in command.source_read_set:
+        source_for(s, ctx, product.id, read.artifact_id, read.expected_revision)
+    module = handler(command.operation)
+    module.validate(s, ctx, command, product, payload)
+    snapshot = reviewed_view(module, s, ctx, command, product, payload)
+    token = secrets.token_urlsafe(32)
+    expires = now() + timedelta(minutes=10)
+    s.add(
+        Confirmation(
+            tenant_id=ctx.tenant_id,
+            product_id=product.id,
+            actor_id=ctx.actor_id,
+            operation=command.operation,
+            subject_id=product.id,
+            revision=product.revision,
+            token_hash=digest(token),
+            payload_digest=material_digest(ctx, command, payload, module),
+            snapshot=snapshot,
+            expires_at=expires,
+        )
+    )
+    prepared = command.model_dump(mode="json")
+    named_decision = command.operation in T2_OPERATIONS
+    token_field = "approval_token" if named_decision else "confirmation_token"
+    prepared["payload"] = {
+        **payload.model_dump(mode="json", exclude_unset=True),
+        token_field: token,
+    }
+    return {
+        "command": prepared,
+        token_field: token,
+        "expires_at": expires.isoformat(),
+        "review": snapshot,
+        **({"write_tier": "T2", "named_decision": True} if named_decision else {}),
+    }
+
+
+def consume_material_confirmation(s, ctx, command, product, payload, module):
+    named_decision = command.operation in T2_OPERATIONS
+    token = getattr(payload, "approval_token" if named_decision else "confirmation_token", None)
+    if not token:
+        raise DomainError(
+            "NAMED_APPROVAL_REQUIRED" if named_decision else "CONFIRMATION_REQUIRED",
+            "请先核对固定范围，由有权本人具名办理决定。"
+            if named_decision
+            else "请先查看实际变更并确认一次。",
+        )
+    try:
+        confirmation = confirmation_for(
+            s, ctx, product.id, command.operation, product.id, product.revision, token
+        )
+    except DomainError as failure:
+        if failure.code == "CONFIRMATION_REQUIRED" and command.operation in {
+            "quality.issue.root_cause.decide",
+            "quality.capa.actions.complete",
+            "quality.capa.followup.link",
+        }:
+            from pdos_next.quality_followup_host import expired_confirmation_recovery
+
+            recovery = expired_confirmation_recovery(s, ctx, command, product, payload, module)
+            if recovery is not None:
+                raise DomainError(
+                    "FOLLOWUP_CONFIRMATION_EXPIRED",
+                    "原操作尚未保存，未消费的确认已过期；请重新核对原操作的当前范围。",
+                    recovery=recovery,
+                ) from failure
+        raise
+    if confirmation.payload_digest != material_digest(ctx, command, payload, module) or digest(
+        confirmation.snapshot
+    ) != digest(reviewed_view(module, s, ctx, command, product, payload)):
+        raise DomainError("CONFIRMATION_SCOPE_CHANGED", "预览内容或对象已改变，请重新核对。")
+    confirmation.consumed = True
+    if command.operation in {
+        "quality.issue.root_cause.decide",
+        "quality.capa.actions.complete",
+        "quality.capa.followup.link",
+    }:
+        from pdos_next.quality_followup_host import record_consumed_confirmation
+
+        record_consumed_confirmation(s, ctx, command, payload, module, confirmation)
+
+
+def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
+    payload_cls = PAYLOADS.get(command.operation)
+    if not payload_cls:
+        code = (
+            "NAMED_DECISION_REQUIRED"
+            if command.operation.endswith(".publish")
+            else "FORBIDDEN_SCOPE"
+        )
+        raise DomainError(code, "该命令未在当前可执行能力中开放。", 403)
+    payload = payload_cls.model_validate(command.payload)
+    product = s.scalar(select(Product).where(Product.id == command.product_id).with_for_update())
+    if not product:
+        raise DomainError("FORBIDDEN_SCOPE", "产品不在当前授权范围。", 403)
+    require_access(s, ctx, product.id, write=True, lock=True)
+    run = check_run(s, ctx, product.id)
+    check_qualification(s, ctx, command.operation, run, synthetic_mode)
+    for read in command.source_read_set:
+        source_for(s, ctx, product.id, read.artifact_id, read.expected_revision)
+    if isinstance(payload, DefinitionDraftPayload):
+        from pdos_next.domain.products.definitions import validate
+
+        validate(s, ctx, command, product, payload)
+    module = handler(command.operation)
+    if module:
+        module.validate(s, ctx, command, product, payload)
+    request_digest = digest(
+        {
+            "operation": command.operation,
+            "product_id": command.product_id,
+            "expected_revision": command.expected_revision,
+            "source_read_set": [r.model_dump(mode="json") for r in command.source_read_set],
+            "payload": payload.model_dump(mode="json"),
+        }
+    )
+    key = s.scalar(
+        select(RequestKey).where(
+            RequestKey.actor_id == ctx.actor_id,
+            RequestKey.key == command.idempotency_key,
+        )
+    )
+    if key:
+        if key.digest != request_digest:
+            raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同请求编号对应了不同内容。")
+        return receipt_view(s.get(Receipt, key.receipt_id))
+
+    source = None
+    if isinstance(payload, (ClaimPayload, WorkPayload)):
+        reads = {r.artifact_id: r.expected_revision for r in command.source_read_set}
+        if payload.artifact_id not in reads:
+            raise DomainError("MISSING_REQUIRED_EVIDENCE", "需要原文的明确版本。")
+        source = source_for(s, ctx, product.id, payload.artifact_id, reads[payload.artifact_id])
+        if isinstance(payload, WorkPayload) and payload.source_revision != source.revision:
+            raise DomainError("SOURCE_STALE", "工作输入与来源版本不一致。")
+        if isinstance(payload, ClaimPayload):
+            lines = source.content.splitlines()
+            if payload.line > len(lines) or payload.quote not in lines[payload.line - 1]:
+                raise DomainError("MISSING_REQUIRED_EVIDENCE", "引用必须能在指定原文行定位。")
+            if source.visibility == "private" and payload.visibility != "private":
+                raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到产品共享受众。", 403)
+            if run and payload.nature == "observed":
+                raise DomainError("FORBIDDEN_SCOPE", "AI 抽取不能冒充亲历观察。", 403)
+
+    # The semantic fingerprint is server-derived. A different model/client key cannot bypass it.
+    semantic = payload.model_dump(mode="json")
+    if module:
+        semantic = module.semantic(payload)
+    if isinstance(payload, DefinitionDraftPayload):
+        from pdos_next.domain.products.definitions import semantic as definition_semantic
+
+        semantic = definition_semantic(payload)
+    if isinstance(payload, (RevertPayload, CancelPayload)):
+        semantic.pop("confirmation_token")
+    intent = digest(
+        {
+            "operation": command.operation,
+            "product": product.id,
+            "payload": semantic,
+            **({"named_actor": ctx.requester_id} if module else {}),
+            "source_revision": source.revision if source else None,
+            "private_owner": ctx.requester_id
+            if getattr(payload, "visibility", "private") == "private"
+            else None,
+        }
+    )
+    old = s.scalar(
+        select(Receipt).where(
+            Receipt.product_id == product.id,
+            Receipt.intent_digest == intent,
+        )
+    )
+    if old:
+        s.add(
+            RequestKey(
+                tenant_id=ctx.tenant_id,
+                actor_id=ctx.actor_id,
+                key=command.idempotency_key,
+                digest=request_digest,
+                receipt_id=old.id,
+            )
+        )
+        return receipt_view(old)
+
+    if module and hasattr(module, "replay_subject"):
+        replay = module.replay_subject(s, ctx, command, product, payload)
+        if replay is not None:
+            replay_type = (
+                module.replay_subject_type(payload)
+                if hasattr(module, "replay_subject_type")
+                else "original_lifecycle_intent"
+            )
+            previous = s.scalar(
+                select(Receipt).where(
+                    Receipt.product_id == product.id,
+                    Receipt.operation == command.operation,
+                    Receipt.subject_type == replay_type,
+                    Receipt.subject_id == replay.id,
+                )
+            )
+            if previous:
+                s.add(
+                    RequestKey(
+                        tenant_id=ctx.tenant_id,
+                        actor_id=ctx.actor_id,
+                        key=command.idempotency_key,
+                        digest=request_digest,
+                        receipt_id=previous.id,
+                    )
+                )
+                return receipt_view(previous)
+    if isinstance(payload, (ArtifactPayload, ClaimPayload, WorkPayload)):
+        if command.expected_revision != product.revision:
+            raise DomainError("VERSION_CONFLICT", "产品范围版本已变化。")
+    visibility = getattr(payload, "visibility", "private")
+    if module:
+        if command.operation in T1_OPERATIONS | T2_OPERATIONS:
+            consume_material_confirmation(s, ctx, command, product, payload, module)
+        subject, subject_type, visibility = module.apply(s, ctx, command, product, payload)
+        if hasattr(subject, "budget_exceeded"):
+            subject.action_result = {"budget_exceeded": subject.budget_exceeded}
+    elif isinstance(payload, DefinitionDraftPayload):
+        from pdos_next.domain.products.definitions import apply_draft
+
+        subject, subject_type, visibility = apply_draft(s, ctx, command, product, payload)
+    elif isinstance(payload, ArtifactPayload):
+        subject = Artifact(
+            id=uuid4(),
+            tenant_id=ctx.tenant_id,
+            product_id=product.id,
+            owner_id=ctx.requester_id,
+            **payload.model_dump(),
+            content_hash=digest(payload.content),
+        )
+        subject_type = "artifact"
+    elif isinstance(payload, ClaimPayload):
+        subject = Claim(
+            id=uuid4(),
+            tenant_id=ctx.tenant_id,
+            product_id=product.id,
+            **payload.model_dump(),
+            source_revision=source.revision,
+            human_owner_id=ctx.requester_id,
+            writer_id=ctx.actor_id,
+        )
+        subject_type = "claim"
+    elif isinstance(payload, WorkPayload):
+        subject = WorkRequest(
+            id=uuid4(),
+            tenant_id=ctx.tenant_id,
+            product_id=product.id,
+            goal=payload.goal,
+            artifact_id=payload.artifact_id,
+            source_revision=source.revision,
+            outcome_spec=payload.outcome_spec.model_dump(),
+            accountable_owner_id=ctx.requester_id,
+            authorization={"operation": "evidence.claim.record", "purpose": "source_claim"},
+            max_actions=payload.max_actions,
+            stop_condition=payload.stop_condition,
+        )
+        subject_type = "work_request"
+    elif isinstance(payload, RevertPayload):
+        _, subject = reversible_claim(s, ctx, payload.receipt_id, product.id)
+        c = confirmation_for(
+            s,
+            ctx,
+            product.id,
+            command.operation,
+            payload.receipt_id,
+            subject.revision,
+            payload.confirmation_token,
+        )
+        if command.expected_revision != subject.revision:
+            raise DomainError("VERSION_CONFLICT", "事实记录版本已变化。")
+        subject.status = "reverted"
+        subject.revision += 1
+        c.consumed = True
+        subject_type = "claim"
+        visibility = subject.visibility
+    elif isinstance(payload, CancelPayload):
+        subject = s.scalar(
+            select(WorkRequest)
+            .where(
+                WorkRequest.id == payload.work_id,
+                WorkRequest.product_id == product.id,
+            )
+            .with_for_update()
+        )
+        if not subject or subject.accountable_owner_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "工作不在当前范围。", 403)
+        c = confirmation_for(
+            s,
+            ctx,
+            product.id,
+            command.operation,
+            subject.id,
+            subject.revision,
+            payload.confirmation_token,
+        )
+        if command.expected_revision != subject.revision or subject.status in {
+            "completed",
+            "cancelled",
+        }:
+            raise DomainError("VERSION_CONFLICT", "工作状态已变化。")
+        cancel_run = s.scalar(select(Run).where(Run.work_id == subject.id).with_for_update())
+        cancel_run.cancel_epoch += 1
+        cancel_run.status = "cancelled"
+        subject.status = "cancelled"
+        subject.revision += 1
+        c.consumed = True
+        subject_type = "work_request"
+    s.add(subject)
+    s.flush()
+    if isinstance(payload, WorkPayload):
+        s.add(
+            Run(
+                tenant_id=ctx.tenant_id,
+                product_id=product.id,
+                work_id=subject.id,
+                requester_id=ctx.requester_id,
+            )
+        )
+    # Locks on the product, grant, source, qualification and run are held until commit.
+    check_run(s, ctx, product.id)
+    if module and subject_type in getattr(module, "deduplicate_subject", ()):
+        prior = s.scalar(
+            select(Receipt).where(
+                Receipt.product_id == product.id,
+                Receipt.operation == command.operation,
+                Receipt.subject_type == subject_type,
+                Receipt.subject_id == subject.id,
+            )
+        )
+        if prior:
+            s.add(
+                RequestKey(
+                    tenant_id=ctx.tenant_id,
+                    actor_id=ctx.actor_id,
+                    key=command.idempotency_key,
+                    digest=request_digest,
+                    receipt_id=prior.id,
+                )
+            )
+            return receipt_view(prior)
+    r = append_receipt(s, ctx, command, subject_type, subject, request_digest, intent, visibility)
+    s.add(
+        RequestKey(
+            tenant_id=ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            key=command.idempotency_key,
+            digest=request_digest,
+            receipt_id=r.id,
+        )
+    )
+    s.flush()
+    return receipt_view(r)

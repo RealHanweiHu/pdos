@@ -1,0 +1,299 @@
+{
+  "status": "PASS_SELECTED_READS_AND_EXACT_DENIALS",
+  "head": "next_0028",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "source_manifest": "actual-core-source-v3.json",
+  "source_manifest_sha256": "b1911543755cb50d9442797e7adce53d83e9d9c3ddae3c37afcee63590bd4eef",
+  "observations": [
+    {
+      "surface": "direct_api",
+      "endpoint": "change-execution",
+      "status": 200,
+      "code": null,
+      "body_sha256": "c47caad4ba9367dce997615a7bd74e949e9c4485e0ee433aabed8b4ed7d9ee6e",
+      "item_count": 0,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "manufacturing-preparations",
+      "status": 200,
+      "code": null,
+      "body_sha256": "198b9c77a7eebbceddd775efe24bbaef6e56b54d2d87cc9c9f5869a356b593a8",
+      "item_count": 0,
+      "qualification": "unknown"
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "change-execution",
+      "status": 422,
+      "code": "INVALID_PAYLOAD",
+      "body_sha256": "80557de8ce8a319c91e50db28ff1319946a036aa11db9c215141898888231def",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "change-execution",
+      "status": 422,
+      "code": "INVALID_PAYLOAD",
+      "body_sha256": "80557de8ce8a319c91e50db28ff1319946a036aa11db9c215141898888231def",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "manufacturing-preparations",
+      "status": 422,
+      "code": "INVALID_PAYLOAD",
+      "body_sha256": "a4a91b34378ec78b6e44fd60d4eb150e06a517ec19b10cbc9705cd411913e280",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "manufacturing-preparations",
+      "status": 422,
+      "code": "INVALID_PAYLOAD",
+      "body_sha256": "a4a91b34378ec78b6e44fd60d4eb150e06a517ec19b10cbc9705cd411913e280",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "manufacturing-preparations",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "body_sha256": "1d1368c1937a69d7394172d737717e9e0a2284793e053730814078bfe299d1ad",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "inputs?__wave25_unexpected=1",
+      "status": 422,
+      "code": "INVALID_PAYLOAD",
+      "body_sha256": "a4a91b34378ec78b6e44fd60d4eb150e06a517ec19b10cbc9705cd411913e280",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "inputs",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "body_sha256": "111e5c9a8866b990f936dfc7221692e9301264887725483301a43c4b80008dd1",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "inputs",
+      "status": 403,
+      "code": "QUALIFICATION_REQUIRED",
+      "body_sha256": "9ce2fdb92418fdc50796c544261d8dfcaaad97ca1d36e6029cdc32bdb00635df",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "inputs?__wave25_unexpected=1",
+      "status": 422,
+      "code": "INVALID_PAYLOAD",
+      "body_sha256": "80557de8ce8a319c91e50db28ff1319946a036aa11db9c215141898888231def",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "inputs",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "body_sha256": "7767ab0f58ba7936bcf2b6ddafaa4859fd5c669af1efbc14573f5c4325780c8a",
+      "item_count": null,
+      "qualification": null
+    },
+    {
+      "surface": "direct_api",
+      "endpoint": "inputs",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "body_sha256": "39a20a7049649cfc44f2c3a6a5ca4cba0c34e3adb0e609d3f34540729bf5b3af",
+      "item_count": null,
+      "qualification": null
+    }
+  ],
+  "deduplicated_observations": 13,
+  "full_17_table_tenant_history_unchanged": true,
+  "before": {
+    "confirmations": {
+      "rows": 172,
+      "sha256": "bd96e46184cbfaeef281b601859a34fafe6f1b44182dd5ff1ce6aeff2c5f6931"
+    },
+    "request_keys": {
+      "rows": 373,
+      "sha256": "1715ef77d56732875d72fdfbd35b0c5df5a9995979fd365fae052dba975ebaad"
+    },
+    "action_receipts": {
+      "rows": 397,
+      "sha256": "28e873759c7d12e126ce29ffeac797fd86bf1b1090a8ebf053734ceb36ee8f1d"
+    },
+    "audit_entries": {
+      "rows": 397,
+      "sha256": "f4bf671ab7d8c3d46c057c878e0db75998262b43bca741c59bc012968601452c"
+    },
+    "outbox_events": {
+      "rows": 397,
+      "sha256": "edc8938222b28755a6e3102d3745abf44d840ee8b1c0e081794345055dddaabf"
+    },
+    "change_request_versions": {
+      "rows": 2,
+      "sha256": "fabfd00f617ab183c1157ce036870d7d17fbc0ca0a5ee0f794a0f1e8f49541e6"
+    },
+    "change_order_records": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_approval_records": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_implementation_records": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_implementation_captures": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controlled_change_policy_facts": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controlled_change_selection_facts": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "manufacturing_preparation_versions": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "manufacturing_preparation_currents": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "manufacturing_baseline_document_links": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "professional_authority_facts": {
+      "rows": 48,
+      "sha256": "d88566dd439951f5092159494307a42b165dff0d1827e87a0431de4e1cf06291"
+    },
+    "quality_issue_versions": {
+      "rows": 12,
+      "sha256": "fa6d05b87e85630113063d09489309400069c140ad714b3baa15227a8855c606"
+    }
+  },
+  "after": {
+    "confirmations": {
+      "rows": 172,
+      "sha256": "bd96e46184cbfaeef281b601859a34fafe6f1b44182dd5ff1ce6aeff2c5f6931"
+    },
+    "request_keys": {
+      "rows": 373,
+      "sha256": "1715ef77d56732875d72fdfbd35b0c5df5a9995979fd365fae052dba975ebaad"
+    },
+    "action_receipts": {
+      "rows": 397,
+      "sha256": "28e873759c7d12e126ce29ffeac797fd86bf1b1090a8ebf053734ceb36ee8f1d"
+    },
+    "audit_entries": {
+      "rows": 397,
+      "sha256": "f4bf671ab7d8c3d46c057c878e0db75998262b43bca741c59bc012968601452c"
+    },
+    "outbox_events": {
+      "rows": 397,
+      "sha256": "edc8938222b28755a6e3102d3745abf44d840ee8b1c0e081794345055dddaabf"
+    },
+    "change_request_versions": {
+      "rows": 2,
+      "sha256": "fabfd00f617ab183c1157ce036870d7d17fbc0ca0a5ee0f794a0f1e8f49541e6"
+    },
+    "change_order_records": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_approval_records": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_implementation_records": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_implementation_captures": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controlled_change_policy_facts": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controlled_change_selection_facts": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "manufacturing_preparation_versions": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "manufacturing_preparation_currents": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "manufacturing_baseline_document_links": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "professional_authority_facts": {
+      "rows": 48,
+      "sha256": "d88566dd439951f5092159494307a42b165dff0d1827e87a0431de4e1cf06291"
+    },
+    "quality_issue_versions": {
+      "rows": 12,
+      "sha256": "fa6d05b87e85630113063d09489309400069c140ad714b3baa15227a8855c606"
+    }
+  },
+  "count_checker_corrected_offline_only": true,
+  "new_http_requests_for_finalization": 0,
+  "business_saves_or_qualification_imports": 0,
+  "changes_and_preparations_zero_in_selected_shared_scope": true,
+  "eight_facet_or_positive_formal_change_manufacturing_not_attested": true,
+  "actual_mfg500_fixed_with_strict_definition_source_closure": true,
+  "adopted_partial_passes": [
+    {
+      "path": "actual-http-v2.json",
+      "sha256": "06673c3e52d89bcccf435b692d2a2e518c5df4f1d0b67759b401ce49d8d1962a"
+    },
+    {
+      "path": "actual-http-v3.json",
+      "sha256": "3b22f902daed64fb2d7547bb2c74070eaedceed978406c954edc31f45e1055ae"
+    },
+    {
+      "path": "actual-http-v5.json",
+      "sha256": "acaf0474bb24d159af965deb29c4066d5e8493c29c7e8b3721aa736a008d9269"
+    }
+  ],
+  "preserved_failures": [
+    "actual-http-preflight-v1.json",
+    "actual-http-v2.json",
+    "actual-http-v3.json",
+    "actual-http-v4.log",
+    "actual-http-v5.json"
+  ],
+  "limitations": [
+    "real positive saves/Current document links/RLS with real rows/UNKNOWN exact command recovery remain pending qualified actual material",
+    "prior A body invalid SourceRef was never sent; three A denials use a new correctly typed negative probe body with unchanged actor and existing real change scope"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "path": "pdos-next/web/src/components/workspace.tsx",
+  "original_sha256": "c0bd7d61e55e4745d2b880b28581640ef2afa7e69c8c60d1cfff7719c2e1f090",
+  "verified_original_copy": "docs/reports/evidence/pdos-next-ui-experience-20261002/workspace-before.tsx",
+  "current_sha256": "9f0469d66d6ffd9bd8128aed67efa7795a409479fda98b0bd6ab4ee198b8a0af",
+  "owner_thread": "01a1001a-92ae-7b91-83b6-6a3ea30a4a32",
+  "owner_title": "优化前端入口与整体体验",
+  "scope": "User-authorized parallel frontend entry reorganization after the completed Wave14 build/browser checks; not covered by those earlier checks.",
+  "root_action": "Preserve source; continue independent backend integration; defer shared frontend mount/build until this change is reviewable."
+}

@@ -76,7 +76,7 @@ import type { ProjectWorkKind } from "./project-work-queue";
 import { useProjectActions } from "./use-project-actions";
 
 type LoadState = "loading" | "ready" | "error" | "redirecting";
-const workItemRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
+const workItemRoles = ["owner", "admin", "product_manager", "project_manager", "engineer", "quality"];
 const productEngineeringEditRoles = ["owner", "admin", "project_manager", "engineer"];
 function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : "工作项操作失败，请稍后重试。";
@@ -333,14 +333,14 @@ export function ProjectWorkspace() {
     setHighlightedEntityId(null);
   }
 
-  function selectProject(project: Project) {
+  function selectProject(project: Project, tab: ProjectWorkspaceTab = "overview") {
     if (actions.selectedProject?.id === project.id) return;
     setNavigationError(null);
-    handledLocation.current = pushProjectLocation(project.id, "overview");
+    handledLocation.current = pushProjectLocation(project.id, tab);
     actions.selectProject(project);
     resetDomainData();
-    setActiveTab("overview");
-    loadTabData("overview", project.id, true);
+    setActiveTab(tab);
+    loadTabData(tab, project.id, true);
   }
 
   async function loadActivity(projectId: string) {

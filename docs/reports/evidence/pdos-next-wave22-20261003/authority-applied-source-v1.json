@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T18:31:53.855434+00:00",
+  "files": {
+    "pdos-next/tools/wave22_shared_authority.py": "d44f92e26353b6a8a02e5a11e4faf2ef7e772e22457bc4dbd12742fca4487e71",
+    "pdos-next/tools/tests/test_wave22_shared_authority.py": "707a536284b0e5fdadfc8705104953da16b847954b5e6d84daf7948329b8b962"
+  },
+  "stage_manifest_sha256": "cc029f92bb9bac4bcea8baf983be4efe8e9875d2540feea1fd227163246f818d",
+  "pure": {
+    "passed": 42,
+    "log": "authority-actual-pure-v1.log",
+    "test_imports_and_other_AST_same_after_format": true
+  },
+  "retained_initial_static_failure": "authority-actual-static-v1.log",
+  "checks": {
+    "static": {
+      "exit_code": 0,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "format": {
+      "exit_code": 0,
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    }
+  },
+  "actual_db_http": false
+}

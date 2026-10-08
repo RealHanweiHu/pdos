@@ -1,0 +1,27 @@
+{
+  "files": {
+    "server/app/domain/cost_issue_closure.py": "d7738101981aa6f0ff378a388c05e665fcbbb8ec12e1e6d5b8bd8033cbaae6ab",
+    "server/app/domain/cost_gaps.py": "936b49afdd45b78eb56f0f1e38c00750865bdb38d6a771a026fd83f2065e86be",
+    "server/app/domain/issues.py": "11949d1d84640d9f623c218456ed81a4ffd990fc751626e16197f8f5651a729a",
+    "server/app/api/issue_risks.py": "7858c845e671688e5ca58c867fc291f14848551d5d1e9709ae5a88e57cbcf52f",
+    "server/tests/test_cost_recovery_postgres.py": "815d33df60b32f9ea4a087694b55fe37912c9d8b18672f910274f856b14bac2f",
+    "server/tests/test_material_issue_closure_api.py": "9e3b67c2b1f007ee711bafa135404de46a00924d88b485fa54fdaff0aecb9566",
+    "web/src/components/projects/cost-gaps.tsx": "e0356ab6dae832f1bf2c4046fe05ae2039303ff41c8dc3fb0965b99f7c1144b6",
+    "web/src/components/projects/cost-issue-closure-review.tsx": "60d58602de8afbb08a7be892668f4e6f717e24247e1e740425b40e953b0f0ef7",
+    "web/src/components/projects/cost-issue-closure-review.test.tsx": "f5be497467aeca97d41b3551f4cd2c26dcb29ad20843bdc1aa4fb4f187157fda",
+    "web/src/components/projects/material-issue-closure-review.tsx": "ab0805d052639ebeff92a790ac1317889b8d1dda5963d5bfe34c8f3efa433bc4",
+    "web/src/components/projects/material-issue-closure-review.test.tsx": "e1d6cfc432dce6936e2b852b79867a96930b29f72303c2608946798ac65ab4ec",
+    "web/src/components/projects/project-work-item-api.ts": "621e29860bf6f682e7a19d7268f6c535243b6f9818969a83f338cec551174a6e",
+    "web/src/components/projects/project-work-item-types.ts": "04e250809524728939d046ffbbd297f8e0501bf12025666550c0db10bd7b94b8",
+    "web/src/components/projects/project-issue-material-closure.test.tsx": "eb2155b0455890562c7d0896ab347bbc26e326db5393a13f372ff7b4a7583832",
+    "web/src/components/my-work/issue-risk-work-card.tsx": "7e4aa39a7ea3ae56229805cea06b2cd04f47172a66df430b4301c8d7801b932c",
+    "web/src/components/my-work/issue-risk-material-closure.test.tsx": "a41340983a179341b792a3325946ec3be844e2d09bfae80e756b81d9fa645bc8"
+  },
+  "database": "127.0.0.1:57440/pdos_test",
+  "head": "0416_product_evidence_item_decisions",
+  "new_schema_changes": false,
+  "parallel_files_excluded": true,
+  "final_backend_log": "output/cost-recovery-20261001/postgres-final-r5.log",
+  "frontend_rebuilt_after_browser": false,
+  "frontend_scope_unchanged_since_build": true
+}

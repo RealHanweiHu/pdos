@@ -1,0 +1,1011 @@
+{
+  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "schema_head": "next_0005",
+  "business_port": 62513,
+  "business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_table_count": 38,
+  "build": {
+    "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+    "revision": 1,
+    "status": "planned",
+    "source_status": "current",
+    "name": "合成原型试制 · 第1轮",
+    "type": "prototype",
+    "purpose": "验证固定配置与试制准备，不执行真实制造。",
+    "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "visibility": "private",
+    "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+    "project_name": "合成研发项目 · 工程与NPI",
+    "project_revision": 2,
+    "planned_quantity": "10.00000000",
+    "unit": "台",
+    "planned_start": null,
+    "planned_end": null,
+    "verification_objectives": "核对电机与壳体配合；未知设计条件需先补齐。",
+    "disposition_plan": "合成样件计划留样核对；异常品隔离，实际产出尚未记录。",
+    "previous_build_id": null,
+    "engineering_configuration": {
+      "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+      "revision": 1,
+      "name": "合成工程配置 · 定义v2",
+      "status": "draft",
+      "visibility": "private",
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "created_at": "2026-10-02T11:41:59.876254+00:00",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "额定压力：150 PSI，条件待确认。",
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "series_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+      "previous_id": null,
+      "expected_previous_revision": null,
+      "reason": "对应既有研发项目固定定义，机械电子固件版本尚待专业确认。",
+      "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+      "definition_revision": 2,
+      "definition": {
+        "id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+        "revision": 2,
+        "title": "合成资料演练 · 定义草稿",
+        "status": "draft",
+        "visibility": "private",
+        "source_status": "current"
+      },
+      "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+      "bom_revision": 1,
+      "bom": {
+        "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "revision": 1,
+        "name": "合成BOM · 初版",
+        "status": "draft",
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "created_at": "2026-10-02T11:41:47.769153+00:00",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "series_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+        "previous_id": null,
+        "expected_previous_revision": null,
+        "reason": "合成演练：固定电机用量与加损假设，壳体保留未知。",
+        "lines": [
+          {
+            "key": "housing",
+            "part_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+            "expected_part_revision": 1,
+            "part": {
+              "id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "revision": 1,
+              "name": "合成壳体 · 用量待确认",
+              "status": "draft",
+              "visibility": "private",
+              "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "created_at": "2026-10-02T11:41:47.776208+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "internal_number": null,
+              "erp_number": null,
+              "customer_number": null,
+              "mapping_version": null,
+              "external_design_refs": [],
+              "external_verification": "not_checked",
+              "mapping_status": "unknown"
+            },
+            "quantity": null,
+            "unit": "件",
+            "loss_rate": null,
+            "critical": false,
+            "notes": null
+          },
+          {
+            "key": "motor",
+            "part_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "expected_part_revision": 1,
+            "part": {
+              "id": "94824422-c361-485f-9253-0e0f8753c620",
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "revision": 1,
+              "name": "合成电机",
+              "status": "draft",
+              "visibility": "private",
+              "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "created_at": "2026-10-02T11:41:47.772134+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "internal_number": null,
+              "erp_number": null,
+              "customer_number": null,
+              "mapping_version": null,
+              "external_design_refs": [],
+              "external_verification": "not_checked",
+              "mapping_status": "unknown"
+            },
+            "quantity": "2",
+            "unit": "件",
+            "loss_rate": "0.1",
+            "critical": true,
+            "notes": null
+          }
+        ]
+      },
+      "design_versions": {
+        "firmware": null,
+        "electronic": null,
+        "mechanical": null
+      },
+      "external_verification": "not_checked"
+    },
+    "manufacturing_configuration": {
+      "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+      "revision": 1,
+      "name": "合成制造配置 · 装配路线",
+      "status": "draft",
+      "visibility": "private",
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "created_at": "2026-10-02T11:42:22.842804+00:00",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "额定压力：150 PSI，条件待确认。",
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "series_id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+      "previous_id": null,
+      "expected_previous_revision": null,
+      "reason": "先固定装配准备范围，场地、节拍、规程与设备资格等待专业核对。",
+      "engineering_configuration_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+      "engineering_revision": 1,
+      "engineering_configuration": {
+        "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "revision": 1,
+        "name": "合成工程配置 · 定义v2",
+        "status": "draft",
+        "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+        "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+        "source_status": "current"
+      },
+      "site": null,
+      "line": null,
+      "operations": [
+        {
+          "key": "assembly",
+          "sop": null,
+          "kind": "assembly",
+          "name": "合成电机与壳体装配核对",
+          "notes": "仅声明准备工作，不构成实际生产或验收。",
+          "depends_on": [],
+          "bom_line_keys": [
+            "housing",
+            "motor"
+          ],
+          "cycle_time_minutes": null,
+          "acceptance_criterion": null,
+          "resource_requirements": []
+        }
+      ],
+      "external_verification": "not_checked",
+      "qualification_status": "unknown"
+    },
+    "required_source_read_set": [
+      {
+        "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      }
+    ],
+    "created_at": "2026-10-02T11:43:29.515406+00:00",
+    "readiness": {
+      "id": "86149d65-1ce6-4dfd-a06b-6f043614480f",
+      "revision": 1,
+      "status": "blocked",
+      "is_current": true,
+      "result": {
+        "as_of": "2026-10-02T11:46:31.275030Z",
+        "ready": null,
+        "checks": [
+          {
+            "key": "fixed_sources",
+            "label": "固定版本与来源",
+            "status": "known",
+            "message": "本次计算绑定固定版本；来源有效不代表工程或制造已放行。",
+            "blocking": false,
+            "reason_code": "FIXED_SOURCES_CURRENT",
+            "source_refs": [
+              {
+                "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "kind": "build",
+                "revision": 1
+              },
+              {
+                "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "kind": "engineering_configuration",
+                "revision": 1
+              },
+              {
+                "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "kind": "bom",
+                "revision": 1
+              },
+              {
+                "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+                "kind": "manufacturing_configuration",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "核对来源有效性并选定适用版本，再按新的固定快照计算。"
+          },
+          {
+            "key": "material_demand",
+            "label": "物料需求量",
+            "issues": [
+              {
+                "code": "bom_quantity_unknown",
+                "kind": "missing",
+                "path": "housing",
+                "message": "BOM quantity is unknown"
+              },
+              {
+                "code": "loss_unknown",
+                "kind": "missing",
+                "path": "housing",
+                "message": "Loss uplift assumption is unknown"
+              }
+            ],
+            "status": "unknown",
+            "message": "BOM、数量、单位、损耗或来源不完整，受影响需求保持未知。",
+            "blocking": true,
+            "reason_code": "DEMAND_INPUT_INCOMPLETE",
+            "source_refs": [
+              {
+                "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "kind": "build",
+                "revision": 1
+              },
+              {
+                "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "kind": "engineering_configuration",
+                "revision": 1
+              },
+              {
+                "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "kind": "bom",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "补齐适用 BOM、正数计划数量、单位和明确加损比例，解决版本或行标识冲突。"
+          },
+          {
+            "key": "supply_coverage",
+            "label": "供应与齐套",
+            "status": "unknown",
+            "message": "尚无权威供应池及完整占用记录；承诺、在途和需求量都不能证明已齐套。",
+            "blocking": true,
+            "reason_code": "SUPPLY_SCOPE_UNCONNECTED",
+            "source_refs": [
+              {
+                "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "kind": "build",
+                "revision": 1
+              },
+              {
+                "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "kind": "bom",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "接入有来源的实际可用量、质量限制和跨 Build 占用，再计算齐套。"
+          },
+          {
+            "key": "resources",
+            "label": "工装、设备与人员资源",
+            "status": "unknown",
+            "message": "工序记录不能证明工装验收、设备校准、岗位资格和本轮时段可用。",
+            "blocking": true,
+            "reason_code": "RESOURCE_ACCEPTANCE_UNKNOWN",
+            "source_refs": [
+              {
+                "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "kind": "build",
+                "revision": 1
+              },
+              {
+                "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+                "kind": "manufacturing_configuration",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "核对适用工装设备的验收与校准、人员资格及真实资源预约。"
+          },
+          {
+            "key": "quality_method",
+            "label": "品质方法与验证准备",
+            "status": "unknown",
+            "message": "尚无具名确认的方法、判据、验证范围及品质接收条件。",
+            "blocking": true,
+            "reason_code": "QUALITY_METHOD_UNKNOWN",
+            "source_refs": [
+              {
+                "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "kind": "build",
+                "revision": 1
+              },
+              {
+                "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "kind": "engineering_configuration",
+                "revision": 1
+              },
+              {
+                "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+                "kind": "manufacturing_configuration",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "由品质确认适用规程、判据、样件和资料要求，保留未覆盖范围。"
+          },
+          {
+            "key": "engineering_release",
+            "label": "工程适用性与正式放行",
+            "status": "unknown",
+            "message": "固定工程草稿不代表本轮用途已获工程批准。",
+            "blocking": true,
+            "reason_code": "ENGINEERING_RELEASE_UNKNOWN",
+            "source_refs": [
+              {
+                "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "kind": "engineering_configuration",
+                "revision": 1
+              },
+              {
+                "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "kind": "bom",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "按本轮用途核对适用工程决定、偏差和必需证据。"
+          },
+          {
+            "key": "manufacturing_release",
+            "label": "制造适用性与正式放行",
+            "status": "unknown",
+            "message": "制造工序草稿不代表工艺、资源和质量条件已获制造放行。",
+            "blocking": true,
+            "reason_code": "MANUFACTURING_RELEASE_UNKNOWN",
+            "source_refs": [
+              {
+                "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+                "kind": "manufacturing_configuration",
+                "revision": 1
+              }
+            ],
+            "recovery_action": "按本轮用途核对制造基线、资格、控制要求与具名决定。"
+          }
+        ],
+        "notice": "准备计算只呈现固定快照中的需求与缺项；不占用库存、不批准开工、不代替专业放行。",
+        "status": "unknown",
+        "demands": [
+          {
+            "unit": "件",
+            "issues": [
+              {
+                "code": "bom_quantity_unknown",
+                "kind": "missing",
+                "path": "housing",
+                "message": "BOM quantity is unknown"
+              },
+              {
+                "code": "loss_unknown",
+                "kind": "missing",
+                "path": "housing",
+                "message": "Loss uplift assumption is unknown"
+              }
+            ],
+            "item_id": "housing",
+            "ancestry": [],
+            "critical": false,
+            "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+            "required_quantity": null,
+            "quantity_per_product": null
+          },
+          {
+            "unit": "件",
+            "issues": [],
+            "item_id": "motor",
+            "ancestry": [],
+            "critical": true,
+            "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "required_quantity": "22.000000000",
+            "quantity_per_product": "2.2"
+          }
+        ],
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "coverage": {
+          "lines": [
+            {
+              "uses": [],
+              "demand": {
+                "unit": "件",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              },
+              "issues": [],
+              "secured_gap": null,
+              "potential_gap": null,
+              "secured_ready": null,
+              "potential_ready": null,
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "0"
+            },
+            {
+              "uses": [],
+              "demand": {
+                "unit": "件",
+                "issues": [
+                  {
+                    "code": "bom_quantity_unknown",
+                    "kind": "missing",
+                    "path": "housing",
+                    "message": "BOM quantity is unknown"
+                  },
+                  {
+                    "code": "loss_unknown",
+                    "kind": "missing",
+                    "path": "housing",
+                    "message": "Loss uplift assumption is unknown"
+                  }
+                ],
+                "item_id": "housing",
+                "ancestry": [],
+                "critical": false,
+                "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                "required_quantity": null,
+                "quantity_per_product": null
+              },
+              "issues": [
+                {
+                  "code": "bom_quantity_unknown",
+                  "kind": "missing",
+                  "path": "housing",
+                  "message": "BOM quantity is unknown"
+                },
+                {
+                  "code": "loss_unknown",
+                  "kind": "missing",
+                  "path": "housing",
+                  "message": "Loss uplift assumption is unknown"
+                }
+              ],
+              "secured_gap": null,
+              "potential_gap": null,
+              "secured_ready": null,
+              "potential_ready": null,
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "0"
+            }
+          ],
+          "pools": [],
+          "issues": [
+            {
+              "code": "bom_quantity_unknown",
+              "kind": "missing",
+              "path": "housing",
+              "message": "BOM quantity is unknown"
+            },
+            {
+              "code": "loss_unknown",
+              "kind": "missing",
+              "path": "housing",
+              "message": "Loss uplift assumption is unknown"
+            },
+            {
+              "code": "incomplete_supply_scope",
+              "kind": "missing",
+              "path": "supply_snapshot",
+              "message": "Relevant pools or active reservations may be missing"
+            },
+            {
+              "code": "source_not_current",
+              "kind": "missing",
+              "path": "supply_snapshot",
+              "message": "Source state is unknown"
+            }
+          ],
+          "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+          "algorithm": "fixed-bom-shared-pool.v1",
+          "input_sha256": "26089b941ff5238687ae42ef51b44da00028f7f89336b2749aa581eecf6ad19e",
+          "secured_ready": null,
+          "input_snapshot": {
+            "as_of": "2026-10-02T11:46:31.275030Z",
+            "basis": {
+              "bom": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                  "version": "1",
+                  "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                  "captured_at": "2026-10-02T11:41:47.769153Z",
+                  "valid_until": null
+                },
+                "items": [
+                  {
+                    "unit": "件",
+                    "item_id": "housing",
+                    "critical": false,
+                    "loss_rate": null,
+                    "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                    "parent_item_id": null,
+                    "supply_required": true,
+                    "quantity_per_parent": null
+                  },
+                  {
+                    "unit": "件",
+                    "item_id": "motor",
+                    "critical": true,
+                    "loss_rate": "0.1",
+                    "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                    "parent_item_id": null,
+                    "supply_required": true,
+                    "quantity_per_parent": "2"
+                  }
+                ],
+                "engineering_configuration": {
+                  "state": "current",
+                  "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                  "version": "1",
+                  "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                  "captured_at": "2026-10-02T11:41:59.876254Z",
+                  "valid_until": null
+                }
+              },
+              "build": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                  "version": "1",
+                  "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                  "captured_at": "2026-10-02T11:43:29.515406Z",
+                  "valid_until": null
+                },
+                "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "quantity": "10.00000000",
+                "product_unit": "台"
+              },
+              "schema_version": "supply-cost-input.v1"
+            },
+            "pools": [],
+            "alternates": [],
+            "reservations": [],
+            "supply_snapshot": {
+              "state": "unknown",
+              "sha256": "dbdbf7db86fe78dde62f85d6b8a882c88616dfa1445617e909331eb58a7c6aa5",
+              "version": "unconnected.v1",
+              "source_id": "unconnected-supply",
+              "captured_at": "2026-10-02T11:46:31.275030Z",
+              "valid_until": null
+            },
+            "supply_scope_complete": false
+          },
+          "schema_version": "supply-coverage-result.v1",
+          "potential_ready": null,
+          "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+          "critical_secured_ready": null,
+          "potential_is_feasibility_proof": false
+        },
+        "algorithm": "fixed-build-readiness.v1",
+        "input_sha256": "dbdbf7db86fe78dde62f85d6b8a882c88616dfa1445617e909331eb58a7c6aa5",
+        "hard_blocking": true,
+        "build_revision": 1,
+        "input_snapshot": {
+          "as_of": "2026-10-02T11:46:31.275030Z",
+          "build": {
+            "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+            "unit": "台",
+            "metadata": {
+              "name": "合成原型试制 · 第1轮",
+              "type": "prototype",
+              "purpose": "验证固定配置与试制准备，不执行真实制造。",
+              "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+              "visibility": "private",
+              "planned_end": null,
+              "planned_start": null,
+              "disposition_plan": "合成样件计划留样核对；异常品隔离，实际产出尚未记录。",
+              "project_revision": 2,
+              "previous_build_id": null,
+              "verification_objectives": "核对电机与壳体配合；未知设计条件需先补齐。"
+            },
+            "quantity": "10.00000000",
+            "revision": 1,
+            "created_at": "2026-10-02T11:43:29.515406Z",
+            "valid_until": null,
+            "source_state": "current"
+          },
+          "schema_version": "build-readiness-input.v1",
+          "engineering_configuration": {
+            "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+            "bom": {
+              "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+              "lines": [
+                {
+                  "key": "housing",
+                  "unit": "件",
+                  "part_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                  "critical": false,
+                  "metadata": {
+                    "part": {
+                      "id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                      "name": "合成壳体 · 用量待确认",
+                      "status": "draft",
+                      "sources": [
+                        {
+                          "line": 1,
+                          "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                      "revision": 1,
+                      "created_at": "2026-10-02T11:41:47.776208+00:00",
+                      "erp_number": null,
+                      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                      "visibility": "private",
+                      "source_status": "current",
+                      "mapping_status": "unknown",
+                      "customer_number": null,
+                      "internal_number": null,
+                      "mapping_version": null,
+                      "external_design_refs": [],
+                      "external_verification": "not_checked",
+                      "required_source_read_set": [
+                        {
+                          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                          "expected_revision": 1
+                        }
+                      ]
+                    },
+                    "notes": null
+                  },
+                  "quantity": null,
+                  "loss_rate": null
+                },
+                {
+                  "key": "motor",
+                  "unit": "件",
+                  "part_id": "94824422-c361-485f-9253-0e0f8753c620",
+                  "critical": true,
+                  "metadata": {
+                    "part": {
+                      "id": "94824422-c361-485f-9253-0e0f8753c620",
+                      "name": "合成电机",
+                      "status": "draft",
+                      "sources": [
+                        {
+                          "line": 1,
+                          "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                      "revision": 1,
+                      "created_at": "2026-10-02T11:41:47.772134+00:00",
+                      "erp_number": null,
+                      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                      "visibility": "private",
+                      "source_status": "current",
+                      "mapping_status": "unknown",
+                      "customer_number": null,
+                      "internal_number": null,
+                      "mapping_version": null,
+                      "external_design_refs": [],
+                      "external_verification": "not_checked",
+                      "required_source_read_set": [
+                        {
+                          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                          "expected_revision": 1
+                        }
+                      ]
+                    },
+                    "notes": null
+                  },
+                  "quantity": "2",
+                  "loss_rate": "0.1"
+                }
+              ],
+              "metadata": {
+                "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "name": "合成BOM · 初版",
+                "reason": "合成演练：固定电机用量与加损假设，壳体保留未知。",
+                "status": "draft",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                "revision": 1,
+                "series_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "created_at": "2026-10-02T11:41:47.769153+00:00",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "visibility": "private",
+                "previous_id": null,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "expected_previous_revision": null
+              },
+              "revision": 1,
+              "created_at": "2026-10-02T11:41:47.769153Z",
+              "valid_until": null,
+              "source_state": "current"
+            },
+            "metadata": {
+              "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+              "name": "合成工程配置 · 定义v2",
+              "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+              "reason": "对应既有研发项目固定定义，机械电子固件版本尚待专业确认。",
+              "status": "draft",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                },
+                {
+                  "line": 2,
+                  "quote": "额定压力：150 PSI，条件待确认。",
+                  "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                  "expected_revision": 1
+                }
+              ],
+              "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "revision": 1,
+              "series_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+              "created_at": "2026-10-02T11:41:59.876254+00:00",
+              "definition": {
+                "id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+                "title": "合成资料演练 · 定义草稿",
+                "status": "draft",
+                "revision": 2,
+                "visibility": "private",
+                "source_status": "current"
+              },
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "visibility": "private",
+              "previous_id": null,
+              "bom_revision": 1,
+              "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+              "source_status": "current",
+              "design_versions": {
+                "firmware": null,
+                "electronic": null,
+                "mechanical": null
+              },
+              "definition_revision": 2,
+              "external_verification": "not_checked",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                  "expected_revision": 1
+                }
+              ],
+              "expected_previous_revision": null
+            },
+            "revision": 1,
+            "created_at": "2026-10-02T11:41:59.876254Z",
+            "valid_until": null,
+            "source_state": "current",
+            "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74"
+          },
+          "manufacturing_configuration": {
+            "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "metadata": {
+              "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+              "line": null,
+              "name": "合成制造配置 · 装配路线",
+              "site": null,
+              "reason": "先固定装配准备范围，场地、节拍、规程与设备资格等待专业核对。",
+              "status": "draft",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                },
+                {
+                  "line": 2,
+                  "quote": "额定压力：150 PSI，条件待确认。",
+                  "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                  "expected_revision": 1
+                }
+              ],
+              "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "revision": 1,
+              "series_id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+              "created_at": "2026-10-02T11:42:22.842804+00:00",
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "visibility": "private",
+              "previous_id": null,
+              "source_status": "current",
+              "engineering_revision": 1,
+              "qualification_status": "unknown",
+              "external_verification": "not_checked",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                  "expected_revision": 1
+                }
+              ],
+              "engineering_configuration": {
+                "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "name": "合成工程配置 · 定义v2",
+                "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "status": "draft",
+                "revision": 1,
+                "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+                "source_status": "current"
+              },
+              "expected_previous_revision": null,
+              "engineering_configuration_id": "4542ae73-91b3-481e-9bf9-a240e84b831a"
+            },
+            "revision": 1,
+            "created_at": "2026-10-02T11:42:22.842804Z",
+            "operations": [
+              {
+                "key": "assembly",
+                "sop": null,
+                "kind": "assembly",
+                "name": "合成电机与壳体装配核对",
+                "notes": "仅声明准备工作，不构成实际生产或验收。",
+                "depends_on": [],
+                "bom_line_keys": [
+                  "housing",
+                  "motor"
+                ],
+                "cycle_time_minutes": null,
+                "acceptance_criterion": null,
+                "resource_requirements": []
+              }
+            ],
+            "valid_until": null,
+            "source_state": "current"
+          }
+        },
+        "schema_version": "build-readiness-result.v1"
+      }
+    }
+  },
+  "configuration_counts": {
+    "boms": 1,
+    "engineering": 1,
+    "processes": 1
+  },
+  "receipt_ids": [
+    "c938025b-c721-417b-8615-1798275c365d",
+    "46ef659f-2968-4de1-9b81-c84b0bedfc04",
+    "59f03459-a6fa-47c8-8f1d-ab214ffc3f3e",
+    "c9049178-6e1c-4804-b98b-b233fe5114c4",
+    "ee5f5b8b-2829-4ee7-b61c-76558c537ac0"
+  ],
+  "audit_and_outbox_each_once": true,
+  "model_calls": 0,
+  "agent_business_write_privileges": 0,
+  "backups": {
+    "pre-wave3-next_0004.dump": {
+      "bytes": 1488782,
+      "sha256": "3e79ece4046bc0f980bbcd37a8c51bd62fa6211da0ed2abc99053a1a1bf4c2ad",
+      "mode": "0o600"
+    },
+    "wave3-business.dump": {
+      "bytes": 3003467,
+      "sha256": "007a41174a7a717b459b642c8c0db25581385fe028c84b3c503b5b67fd76a3ea",
+      "mode": "0o600"
+    }
+  }
+}

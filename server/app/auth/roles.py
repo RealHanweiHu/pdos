@@ -9,6 +9,7 @@ from types import MappingProxyType
 class Role(StrEnum):
     OWNER = "owner"
     ADMIN = "admin"
+    PRODUCT_MANAGER = "product_manager"
     PROJECT_MANAGER = "project_manager"
     ENGINEER = "engineer"
     QUALITY = "quality"
@@ -93,6 +94,45 @@ _ROLE_ACTIONS = MappingProxyType(
     {
         Role.OWNER: _ALL_ACTIONS,
         Role.ADMIN: _ALL_ACTIONS - {Action.TENANT_MANAGE},
+        Role.PRODUCT_MANAGER: frozenset(
+            {
+                Action.PRODUCT_WORK_VIEW,
+                Action.PRODUCT_WORK_CONTRIBUTE,
+                Action.PRODUCT_WORK_MANAGE,
+                Action.PROJECT_VIEW,
+                Action.REQUIREMENT_VIEW,
+                Action.REQUIREMENT_CREATE,
+                Action.REQUIREMENT_EDIT,
+                Action.DEVELOPMENT_CASE_VIEW,
+                Action.DEVELOPMENT_CASE_CREATE,
+                Action.DEVELOPMENT_CASE_EDIT,
+                Action.WORK_ITEM_VIEW,
+                Action.WORK_ITEM_EDIT,
+                Action.MY_WORK_VIEW,
+                Action.ISSUE_EXECUTE,
+                Action.QUALITY_VIEW,
+                Action.MEMORY_VIEW,
+                Action.MEMORY_DRAFT,
+                Action.FINDING_VIEW,
+                Action.FINDING_REVIEW,
+                Action.FINDING_APPLY,
+                Action.AI_CHAT_USE,
+                Action.DOCUMENT_ANALYZE,
+                Action.RISK_SUGGESTION_CREATE,
+                Action.PRODUCT_ENGINEERING_VIEW,
+                Action.GATE_VIEW,
+                Action.GATE_SIGN,
+                Action.CHANGE_VIEW,
+                Action.HANDOFF_VIEW,
+                Action.INTEGRATION_VIEW,
+                Action.INTEGRATION_BIND_SELF,
+                Action.MEETING_VIEW,
+                Action.MEETING_TRANSCRIPT_UPLOAD,
+                Action.EVIDENCE_VIEW,
+                Action.EVIDENCE_CAPTURE,
+                Action.RESEARCH_SOURCE_MANAGE,
+            }
+        ),
         Role.PROJECT_MANAGER: frozenset(
             {
                 Action.PRODUCT_WORK_VIEW,

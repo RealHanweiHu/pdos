@@ -1,0 +1,45 @@
+{
+  "target": {
+    "port": 55211,
+    "database": "pdos_test"
+  },
+  "head": "0425_category_foundation",
+  "category_metadata_differences": [],
+  "pdos_agent_privileges": {
+    "category_parameters": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "category_knowledge": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "category_promotion_proofs": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "technical_platforms": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "product_platform_links": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    }
+  }
+}

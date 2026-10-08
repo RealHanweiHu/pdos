@@ -30,7 +30,14 @@ from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 # External parties reach projects through their own surfaces, never as staff.
 INTERNAL_ROLES = frozenset(
-    {Role.OWNER, Role.ADMIN, Role.PROJECT_MANAGER, Role.ENGINEER, Role.QUALITY}
+    {
+        Role.OWNER,
+        Role.ADMIN,
+        Role.PRODUCT_MANAGER,
+        Role.PROJECT_MANAGER,
+        Role.ENGINEER,
+        Role.QUALITY,
+    }
 )
 # Derived from the policy matrix so a role change there cannot drift from here.
 MANAGER_ROLES = frozenset(role for role in Role if is_allowed(role, Action.PROJECT_MEMBERS_MANAGE))

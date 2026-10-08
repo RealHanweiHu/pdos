@@ -221,6 +221,7 @@ def get_application_gateway(
         engine,
         request_timeout_seconds=90.0 if is_test_plan else 30.0,
         max_structured_attempts=1 if is_test_plan else 2,
+        preproject=request.scope.get("pdos_preproject_goal") in {"category", "proposal"},
     ) as gateway:
         yield gateway
 

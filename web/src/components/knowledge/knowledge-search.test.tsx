@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -6,7 +6,7 @@ import { KnowledgeSearch } from "./knowledge-search";
 
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: routerReplace }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useRouter: () => ({ replace: routerReplace }) }));
 
 function jsonResponse(body: object, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -126,9 +126,10 @@ describe("KnowledgeSearch", () => {
       throw new Error(`unexpected request: ${path}`);
     });
 
-    render(<KnowledgeSearch />);
+    render(<KnowledgeSearch><p data-testid="evidence-child">原始资料区</p></KnowledgeSearch>);
 
-    expect(await screen.findByRole("heading", { name: "Knowledge Search" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "知识库" })).toBeInTheDocument();
+    expect(within(screen.getByRole("main")).getByTestId("evidence-child")).toBeInTheDocument();
     expect(screen.getByRole("complementary", { name: "Memory 登记册" })).toHaveTextContent("草稿");
     expect(screen.getByRole("button", { name: "验证" })).toBeInTheDocument();
     await user.type(screen.getByLabelText("语义检索"), "connector lesson");
@@ -163,5 +164,16 @@ describe("KnowledgeSearch", () => {
     expect(screen.queryByRole("button", { name: "验证" })).not.toBeInTheDocument();
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith("/api/projects/project-1/memories", expect.any(Object)));
     expect(fetchMock.mock.calls.filter(([, init]) => init?.method === "POST")).toHaveLength(0);
+  });
+
+  it("does not mount the evidence area before an external member passes knowledge access", async () => {
+    fetchMock.mockImplementation(async input => {
+      if (String(input) === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role: "supplier" } });
+      if (String(input) === "/api/projects") return jsonResponse({ items: [] });
+      throw new Error(`unexpected request: ${String(input)}`);
+    });
+    render(<KnowledgeSearch><p data-testid="evidence-child">原始资料区</p></KnowledgeSearch>);
+    await screen.findByRole("heading", { name: "知识库仅供内部成员" });
+    expect(screen.queryByTestId("evidence-child")).not.toBeInTheDocument();
   });
 });

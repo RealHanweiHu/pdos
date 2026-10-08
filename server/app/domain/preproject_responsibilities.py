@@ -62,6 +62,8 @@ class Reassign(BaseModel):
 
 
 def changeable(kind: Kind, row: Any) -> bool:
+    if kind == "node" and row["level"] == "line":
+        return False
     if kind == "subscription":
         return row["status"] in ("active", "paused", "quarantined")
     if kind in ("space", "node"):
@@ -161,13 +163,18 @@ def eligible(
         .where(
             u.c.tenant_id == context.tenant.id,
             u.c.is_active.is_(True),
-            u.c.role.in_(("owner", "admin", "project_manager", "engineer", "quality")),
+            u.c.role.in_(
+                ("owner", "admin", "product_manager", "project_manager", "engineer", "quality")
+            ),
             m.c.market_space_id == space,
             m.c.access.in_(("contributor", "manager")),
         )
     )
     if kind == "space":
-        q = q.where(m.c.access == "manager", u.c.role.in_(("owner", "admin", "project_manager")))
+        q = q.where(
+            m.c.access == "manager",
+            u.c.role.in_(("owner", "admin", "product_manager", "project_manager")),
+        )
     if kind == "subscription":
         q = q.where(
             u.c.role.in_([role.value for role in Role if is_allowed(role, Action.EVIDENCE_CAPTURE)])
@@ -293,6 +300,8 @@ def reassign(
         _space(c, context, space, access="manager", lock=True)
         row = record(c, context, space, kind, id)
         manage(c, context, space, row)
+        if kind == "node" and row["level"] == "line":
+            raise ProductWorkError("品类负责人统一在品类设置中移交")
         if kind == "subscription":
             _role(context, Action.RESEARCH_SOURCE_MANAGE)
         if kind == "package":

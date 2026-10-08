@@ -1,0 +1,10 @@
+{
+  "status": "VERIFIED_INDEPENDENT_REPOSITORY_TEST_DB",
+  "host": "127.0.0.1",
+  "port": 63866,
+  "database": "pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "container": "pdos-next-wave26-tests-20a17344",
+  "existing_shared_62513_used_for_repository_tests": false,
+  "role_credentials_in_private_state_only": true
+}

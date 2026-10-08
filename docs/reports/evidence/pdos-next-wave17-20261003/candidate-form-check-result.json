@@ -1,0 +1,41 @@
+{
+  "typecheck": {
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+      "--project",
+      "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-c4s142yn/tsconfig.json"
+    ],
+    "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+    "exit_code": 0,
+    "elapsed_seconds": 1.602822,
+    "stdout": "",
+    "stderr": "",
+    "config": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-c4s142yn/tsconfig.json",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "scope": "candidate-form.tsx and candidate-form-contract.ts plus required transitive types only"
+  },
+  "manifest": "candidate-form-source-manifest.json",
+  "frozen_ui_files_unchanged": true,
+  "checks_not_run": [
+    "component mirror tests",
+    "frozen UI state tests",
+    "public lint/type/build",
+    "browser",
+    "HTTP",
+    "database"
+  ],
+  "business_actions_performed": false,
+  "manual_source_assessment": [
+    "Default disabled is true; parent determines permission/current/UNKNOWN locking",
+    "Scope and complete choices reset local selections/reason only; do not change parent command/key",
+    "Payload fields match actual CandidateRecordPayload minus confirmation_token",
+    "Whole mappings and exact source quotes copied with original option order; source/UUID identity duplicates refused",
+    "Origin display never replaces Current CAS; partial materials remain unknown",
+    "Product visibility requires explicit host permission and all selected material visibility product",
+    "No Date serialization, transport, command construction, auto retry or qualification inference"
+  ],
+  "manual_assessment_is_not_browser_acceptance": true
+}

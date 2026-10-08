@@ -1,0 +1,65 @@
+{
+  "schema_version": "public-candidate-ui-source.v2",
+  "v1_manifest_sha256": "41fc9cfada5559c5012b077c65516d17f972b1bde3e100201476a73fa203929d",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-form-contract.ts",
+      "sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "v1_sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "unchanged_from_v1": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-form.tsx",
+      "sha256": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+      "v1_sha256": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+      "unchanged_from_v1": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-panel-contract.ts",
+      "sha256": "244065b6c06a1107745937be4fc9c1b1a545183cfa60c2630871f0ad5b99cab3",
+      "new_in_v2": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-panel.tsx",
+      "sha256": "a681fc29ccb36cce8c8d826d3c3c1ffd34566bfaa6b0eac515da7822ea3daf23",
+      "new_in_v2": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-workflow-state.test.ts",
+      "sha256": "03e50fe43b8cfb688733820495dc932f2ea2dae04bb9666e15e41900dcf670e5",
+      "v1_sha256": "03e50fe43b8cfb688733820495dc932f2ea2dae04bb9666e15e41900dcf670e5",
+      "unchanged_from_v1": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-workflow-state.ts",
+      "sha256": "ec557e29115ade7523737a3b9d066efde5922ae3105e6870a97dc299351e9197",
+      "v1_sha256": "ec557e29115ade7523737a3b9d066efde5922ae3105e6870a97dc299351e9197",
+      "unchanged_from_v1": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-workflow.tsx",
+      "sha256": "a8fec27619378b5b8ab188c436437be4fdc768cca9acadaff63e1da9f46e849d",
+      "v1_sha256": "658f4202e6242d618b3e41a723a5fc41af1a33d72c51c488ae0c0ad25c377a1b",
+      "unchanged_from_v1": false
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-contract.ts",
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "v1_sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "unchanged_from_v1": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-state.ts",
+      "sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "v1_sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "unchanged_from_v1": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-view.tsx",
+      "sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "v1_sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "unchanged_from_v1": true
+    }
+  ],
+  "delta": "two new panel/contract files; one existing workflow access gate changed; other seven public files unchanged; stage unchanged"
+}

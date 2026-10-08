@@ -1,0 +1,11 @@
+{
+  "v1_log": "actual-resource-and-professional-native-pg-v1.log",
+  "v1_failed": 1,
+  "v1_other_cases_passed": 4,
+  "v1_cause": "Test effect snapshot incorrectly read auth-only LoginSession using app role; PostgreSQL refused before owner positive read",
+  "actual_fixture_sha256": "b098c0af809930eae337b7abf91a747789e12cf8316dfc17deaaa03b2014ddd7",
+  "correction": "Existing real auth role, explicit read-only transaction, same fresh synthetic tenant and LoginSession token_hash primary-key sort; only full-row aggregate digest retained",
+  "auth_or_app_privileges_changed": false,
+  "existing_window_extended": false,
+  "business_owner_changed": false
+}

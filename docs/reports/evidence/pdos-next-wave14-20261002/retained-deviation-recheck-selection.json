@@ -1,0 +1,5 @@
+{
+  "retained-deviation-recheck": [
+    "tests/test_retained_execution.py::test_retained_proof_rejects_new_real_observation_of_configuration_deviation"
+  ]
+}

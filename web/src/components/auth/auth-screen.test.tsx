@@ -7,6 +7,7 @@ import { AuthScreen } from "./auth-screen";
 const { routerPush } = vi.hoisted(() => ({ routerPush: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
   useRouter: () => ({ push: routerPush }),
 }));
 
@@ -100,6 +101,26 @@ describe("AuthScreen", () => {
     );
     expect(screen.getByLabelText("密码")).toHaveValue("");
     expect(screen.getByRole("status")).toHaveTextContent("身份验证成功");
+  });
+
+  it.each([
+    ["product_manager", "/my-work"], ["project_manager", "/my-work"],
+    ["engineer", "/my-work"], ["quality", "/my-work"],
+    ["owner", "/my-work"], ["admin", "/my-work"],
+    ["supplier", "/projects"], ["customer", "/projects"],
+  ])("takes %s directly to %s after login", async (role, destination) => {
+    const user = userEvent.setup();
+    fetchMock.mockResolvedValueOnce(jsonResponse({ needs_setup: false }))
+      .mockResolvedValueOnce(jsonResponse({ authenticated: true, expires_in: 1800 }))
+      .mockResolvedValueOnce(jsonResponse({ tenant: { id: "tenant-1", slug: "company", name: "公司" }, user: { id: "user-1", tenant_id: "tenant-1", username: "person", display_name: "小李", role, email: null, is_active: true } }));
+    render(<AuthScreen />);
+    await screen.findByRole("heading", { name: "登录 PDOS" });
+    await user.type(screen.getByLabelText("租户标识"), "company");
+    await user.type(screen.getByLabelText("用户名"), "person");
+    await user.type(screen.getByLabelText("密码"), "synthetic-test-password");
+    await user.click(screen.getByRole("button", { name: "登录" }));
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith(destination));
+    expect(routerPush).toHaveBeenCalledOnce();
   });
 
   it("submits the one-time setup fields through the same-origin session boundary", async () => {

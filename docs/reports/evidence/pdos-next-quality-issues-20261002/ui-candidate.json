@@ -1,0 +1,16 @@
+{
+  "candidate_sha256": "b1b3575db2dc45eeda10e8011513901c683575757664c1414b24718c1772ef4e",
+  "files": {
+    "pdos-next/web/src/components/quality_issues/__tests__/fixtures.ts": "40c82cf9d154c219d1e2956dbe23910990c8013771dccdceab1b670a574c20b8",
+    "pdos-next/web/src/components/quality_issues/contracts.test.ts": "234ed8106769a8f4a863dc644cf21c2b0c4aaaf5b45daf51d08daa3b534f1074",
+    "pdos-next/web/src/components/quality_issues/contracts.ts": "c4ca83e385ab6b9db08df60fa61e0d7562060a0166dff16842cb484afd19d46b",
+    "pdos-next/web/src/components/quality_issues/editor.ts": "76e690b3d82516cc29f633edca988f7308740db38a3ab849440574e373599b40",
+    "pdos-next/web/src/components/quality_issues/index.ts": "db340786c2d94272c050661d0ec47e972b0b04d3de2eef001a4c22590e67796a",
+    "pdos-next/web/src/components/quality_issues/reading.tsx": "676a251d477831a06475859511296b33ba3b03f89fcb3527e3a9806cc690e8cf",
+    "pdos-next/web/src/components/quality_issues/render.test.mjs": "a448d39ba148ee1e04d7db4311a10ca40f5b8601ca776c4ec6ef35ef2195a5e2",
+    "pdos-next/web/src/components/quality_issues/review.tsx": "2c8ffdeaacec1533d1969a05f9f1414f0a004d56817f6d0467fe16c2e423591e",
+    "pdos-next/web/src/components/quality_issues/tsconfig.check.json": "ffa5d8af294f55913424b86bc3d4be1939d1492c4ae7bf554618a979e906273c",
+    "pdos-next/web/src/components/quality_issues/workbench.tsx": "9d6fa814e875d90663e38ad239301d9d903ac888f407e409dc40b195e12d1a1c"
+  },
+  "scope": "package-local UI only; no shared build/DB/HTTP/browser gate"
+}

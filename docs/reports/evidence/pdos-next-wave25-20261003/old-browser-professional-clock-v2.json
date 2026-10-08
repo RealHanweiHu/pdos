@@ -1,0 +1,266 @@
+{
+  "checked_at": "2026-10-04T03:24:22.511920+00:00",
+  "actual_head": "next_0028",
+  "target_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "scope": "old Wave15 UI visible synthetic person and exact project; not runtime default token",
+  "facts": [
+    {
+      "kind": "duty",
+      "role": "engineering",
+      "operations": [
+        "build.engineering.authorize"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "engineering",
+      "operations": [
+        "build.engineering.authorize"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "manufacturing",
+      "operations": [
+        "build.manufacturing.authorize",
+        "build.sample.readiness.record",
+        "build.start",
+        "verification.handoff.offer"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "manufacturing",
+      "operations": [
+        "build.manufacturing.authorize",
+        "build.sample.readiness.record",
+        "build.start",
+        "verification.handoff.offer"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "test.run.plan",
+        "test.run.start",
+        "verification.actual_method.prepare",
+        "verification.handoff.accept",
+        "verification.method.prepare",
+        "verification.request.create",
+        "verification.schedule.promise"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "test.run.plan",
+        "test.run.start",
+        "verification.actual_method.prepare",
+        "verification.handoff.accept",
+        "verification.method.prepare",
+        "verification.request.create",
+        "verification.schedule.promise"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "test.disposition.decide",
+        "test.result.compute",
+        "test.results.import",
+        "test.run.review"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "test.disposition.decide",
+        "test.result.compute",
+        "test.results.import",
+        "test.run.review"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "quality.capa.draft",
+        "quality.issue.containment.record",
+        "quality.issue.create",
+        "quality.issue.merge",
+        "quality.issue.triage"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "quality.capa.draft",
+        "quality.issue.containment.record",
+        "quality.issue.create",
+        "quality.issue.merge",
+        "quality.issue.triage"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "change.impact.compute",
+        "change.request.create"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "change.impact.compute",
+        "change.request.create"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T05:48:04.132349+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "quality.issue.root_cause.decide"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-04T08:06:00+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "quality.issue.root_cause.decide"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-04T08:06:00+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "quality.capa.actions.complete"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-04T08:06:00+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "quality.capa.actions.complete"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-04T08:06:00+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "quality.capa.followup.link"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-04T08:06:00+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "quality.capa.followup.link"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-04T08:06:00+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "quality.capa.verification.candidate.record"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T12:50:53.947214+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "quality.capa.verification.candidate.record"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T12:50:53.947214+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "duty",
+      "role": "quality",
+      "operations": [
+        "quality.capa.observation.record",
+        "quality.capa.verification.rule.import"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T15:32:38.577848+00:00",
+      "not_expired": true
+    },
+    {
+      "kind": "qualification",
+      "role": "quality",
+      "operations": [
+        "quality.capa.observation.record",
+        "quality.capa.verification.rule.import"
+      ],
+      "state": "active",
+      "valid_until": "2026-10-05T15:32:38.577848+00:00",
+      "not_expired": true
+    }
+  ],
+  "read_only": true,
+  "default_token_probe_correction": "old-browser-quality-denial-v1 used local runtime preview_token; it did NOT attest browser identity or browser409 reason"
+}

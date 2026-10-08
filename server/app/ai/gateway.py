@@ -11,6 +11,7 @@ from time import perf_counter
 from typing import Literal, Protocol, runtime_checkable
 from uuid import UUID, uuid4
 
+from pdos_agent_runtime.client import DurableRuntime
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from sqlalchemy import Engine
 
@@ -117,6 +118,9 @@ class BoundedModelProviderAdapter(Protocol):
 
 
 class StructuredModelGateway:
+    durable_runtime: DurableRuntime | None = None
+    require_agent_graph: bool = False
+
     def __init__(
         self,
         engine: Engine,
@@ -166,6 +170,10 @@ class StructuredModelGateway:
         invocation: GatewayInvocation,
         output_type: type[OutputT],
     ) -> GatewayResult[OutputT]:
+        from pdos_agent_runtime.graph import in_agent_graph
+
+        if getattr(self, "require_agent_graph", False) and not in_agent_graph():
+            raise RuntimeError("AGENT_LANGGRAPH_ENTRY_REQUIRED")
         projection = project_gateway_context(invocation.context)
         if self._budget_controller is not None and (
             self._run_store is None or not self._run_store.projection_only

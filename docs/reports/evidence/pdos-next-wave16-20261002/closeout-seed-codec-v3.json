@@ -1,0 +1,9 @@
+{
+  "before_sha256": "72a1aac6f01c7244c9ed5a262af98f0fd5be460297e79788131867249fcb806d",
+  "after_sha256": "61333f5a4effd988b44ca2c5dc602fece8c19617a981386b8772adc35dd89925",
+  "diagnosis": "Wave15 saved browser seed has no capa_action_id key. Exact Wave16 private action_binding and explicit selected action are retained; issue_chain still validates actual original stored action UUID, executor and full action hash across all three stored Issue versions. No business or runtime source changed.",
+  "original_reports": [
+    "actual-closeout-v4.json",
+    "actual-closeout-v4-diagnosis.json"
+  ]
+}

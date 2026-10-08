@@ -1,0 +1,35 @@
+{
+  "target": {
+    "host": "localhost",
+    "port": 57432,
+    "database": "pdos"
+  },
+  "before": {
+    "head": "0417_product_manager_role",
+    "protected_counts": {
+      "cehub_core.tenants": 1,
+      "cehub_core.users": 6,
+      "cehub_project.projects": 1,
+      "cehub_product.market_spaces": 1,
+      "cehub_product.product_nodes": 0,
+      "cehub_product.product_definitions": 0
+    },
+    "work_modules_exists": false
+  },
+  "after": {
+    "head": "0423_xiaopai_conversation_search",
+    "protected_counts": {
+      "cehub_core.tenants": 1,
+      "cehub_core.users": 6,
+      "cehub_project.projects": 1,
+      "cehub_product.market_spaces": 1,
+      "cehub_product.product_nodes": 0,
+      "cehub_product.product_definitions": 0
+    },
+    "work_modules_exists": true
+  },
+  "protected_counts_equal": true,
+  "repo_tests_run_on_target": false,
+  "accounts_changed": false,
+  "restore_performed": false
+}

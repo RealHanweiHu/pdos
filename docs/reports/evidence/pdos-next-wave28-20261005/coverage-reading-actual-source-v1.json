@@ -1,0 +1,14 @@
+{
+  "status": "ACTUAL_UI_SOURCE_INTEGRATED_VALIDATION_PENDING",
+  "files": {
+    "web/src/lib/change-coverage-reading.ts": "884d1993e6ee2736d2dfc524b12daa5bd2b684f7fc81d061099d067dc464b093",
+    "web/src/components/builds/change-coverage-reading.tsx": "2a7716486ae237c7ee8c3acd213a79d7fcef0338ac89228f054915c5117f5c76",
+    "web/src/lib/change-coverage-reading.test.tsx": "04f00ae7542ba60ae9e3a3b9540bfaec512b57e0c7ebe4716545d3741659dbf9",
+    "web/src/components/builds/build-quality-loop.tsx": "d804c1812784da780366f4c066075031cafc64dab6858eea5b0562ce25e1ac5d"
+  },
+  "raw_detail_and_command_paths_unchanged": true,
+  "python_pg_frozen_source_unchanged": true,
+  "stage_manifest_sha256": "f7622ab9514b85441bd3ca439a703b77508fff8d90efa8f97edd576128787baa",
+  "browser_tested": false,
+  "actual_build_tested": false
+}

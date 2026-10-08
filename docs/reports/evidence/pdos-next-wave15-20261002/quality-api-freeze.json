@@ -1,0 +1,38 @@
+{
+  "status": "new_route_registration_frozen_static_only",
+  "recorded_at": "2026-10-03T05:02:20.610316+00:00",
+  "source_files": {
+    "pdos-next/server/pdos_next/domain/quality_execution/api.py": "2e0a32e3d98aaec013ad1b65d74b5d73f760fbb5f04f7d51465ede767405a1c8"
+  },
+  "register": "pdos_next.domain.quality_execution.api.register_routes(app,engine,auth_dependency)",
+  "auth_dependency": "existing host Depends(authenticated); no new identity or permissions",
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/v1/products/{product_id}/quality-execution",
+      "query": [
+        "issue_id:UUID|null",
+        "run_id:UUID|null",
+        "build_id:UUID|null"
+      ],
+      "response_model": "QualityReading",
+      "service": "list_quality(s,ctx,product_id,issue_id=...,run_id=...,build_id=...)"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/products/{product_id}/quality-execution/inputs",
+      "body": "Command",
+      "path_scope": "data.product_id must equal product_id before UOW, otherwise FORBIDDEN_SCOPE403",
+      "service": "inputs(s,ctx,product_id,data)"
+    }
+  ],
+  "transaction": "each route uses existing tenant_session(engine,ctx.tenant_id); serialization via jsonable_encoder inside UOW; no own commit/Receipt/Confirmation",
+  "validation": {
+    "ruff": "passed new api.py only",
+    "compile": "Python compile(source,filename,exec) passed; no module execution",
+    "frozen_12_hashes": "all unchanged vs quality-freeze.json",
+    "db_http_collection_tests": "not performed"
+  },
+  "public_api_file_modified": false,
+  "remaining": "root registers this function after public integration; actual routes/DB authorization/HTTP behavior not independently exercised"
+}

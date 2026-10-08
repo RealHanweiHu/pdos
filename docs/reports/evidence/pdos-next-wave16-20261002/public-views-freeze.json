@@ -1,0 +1,111 @@
+{
+  "recorded_at": "2026-10-03T07:43:09.983877+00:00",
+  "status": "frozen_new_wave16_only_public_integration_pending",
+  "owned_files": [
+    {
+      "path": "pdos-next/server/pdos_next/quality_followup_views.py",
+      "sha256": "c3f4fdcae8639fed3a4fe53d954df563f004c4802bf160d8695bbb2798e8196c",
+      "ast": "passed"
+    },
+    {
+      "path": "pdos-next/server/tests/quality_followup_views/__init__.py",
+      "sha256": "6d2ed6e781d14f4576b0110caa2fbf0a5187955be3de5cc871b19e92ca34fb70",
+      "ast": "passed"
+    },
+    {
+      "path": "pdos-next/server/tests/quality_followup_views/test_pure.py",
+      "sha256": "f61e308ac36823cc1f835c8f90a0d0129a5595dc52ad2a568b8ef086961970b6",
+      "ast": "passed"
+    }
+  ],
+  "checks": {
+    "pure": {
+      "selection": "tests/quality_followup_views/test_pure.py",
+      "noconftest": true,
+      "passed": 26,
+      "failed": 0,
+      "seconds": 0.82,
+      "log": "docs/reports/evidence/pdos-next-wave16-20261002/public-views-pure.log",
+      "sha256": "6cf35ff406877e712bfa0fe99cca6509455d82d9d3eb5c4b522f10a9aac53757"
+    },
+    "ruff": "passed",
+    "ruff_format": "3 files already formatted",
+    "ast": "3 files passed"
+  },
+  "wave15_frozen_set": {
+    "manifest": "docs/reports/evidence/pdos-next-wave15-20261002/backend-candidate-v4-source.json",
+    "manifest_sha256": "fb4829a123970927440e7770fa19accbc5a890da7069ad95541605c1e14ee902",
+    "scope": "Exact previously frozen 303 paths only",
+    "count": 303,
+    "changed": []
+  },
+  "new_exports": {
+    "list_quality_followup": "(s,ctx,pid,*,issue_id:UUID,revision:int|None=None)->FollowupData dict",
+    "configure_output_options": "(engine,callback); callback(s,ctx,pid,FollowupBasis)->iterable[OutputRef], maximum20, readonly trusted host only"
+  },
+  "root_new_callbacks_checked": [
+    "pdos-next/server/pdos_next/quality_followup_api.py",
+    "pdos-next/server/pdos_next/quality_followup_integration.py::request_options"
+  ],
+  "public_envelope": [
+    "issue",
+    "current",
+    "basis",
+    "operations",
+    "actions",
+    "output_options",
+    "links",
+    "candidates",
+    "required_source_read_set",
+    "source_options",
+    "integration"
+  ],
+  "safety": [
+    "Single selected logical Issue only; default selects actual Current revision; explicit history reads real current pointer and its independent current ACL/source proof.",
+    "A list called once. Top any capability is never used. History allwrites false; current source/policy/professional/readset retained.",
+    "Output host supplies typed fixedRefs only. Real owner/source/scope checks plus exact stored Receipt result and historical actor/run provenance required. Formal/Run retained series owner is separated from saved version authority subject/writer.",
+    "Saved links rendered from real immutable row/Receipt/basis/created_at. ResolvedOutputs from _link is only a current proof, never a Link identity. 403 hides contents; currentproof failure is explicit needs_recheck.",
+    "Fresh owner/link proofs and A fixedfailure/source/policy/professional view are rechecked after actual owner IO. Sources, professional epochs, policy, runtime identity, grants/expiry, and Current are checked before response. No crossphase or global cache.",
+    "Full reads union never truncates beyond20. Query links bounded20 plus has_more and hidden count.",
+    "No candidate writer wired: candidates empty with explicit missing, action can_complete false/completion_verified null and effectiveness/close false."
+  ],
+  "limits": [
+    "Only pure synthetic read-port doubles and static checks were run. No actual DB/HTTP/browser/professional eligibility/latency proof.",
+    "Missing host optioncallback returns [] with OUTPUT_OPTIONS_NOT_CONFIGURED, not a fake positive.",
+    "Candidate persistence/independence/applicability/observation bridges remain unintegrated and explicitly missing.",
+    "When real owner IO occurs the adapter deliberately performs fresh proof work; runtime performance awaits root scoped measurements."
+  ],
+  "local_attempt_history": [
+    {
+      "log": "public-views-pure-attempt-1.log",
+      "errors": 22,
+      "reason": "New fixture omitted mandatory observation_until; supplied actual typed field, not a production relaxation."
+    },
+    {
+      "log": "public-views-pure-attempt-2.log",
+      "passed": 20,
+      "failed": 2,
+      "reason": "Direct link tests used the listing stub rather than the original implementation; corrected tests to call captured real helper."
+    },
+    {
+      "log": "public-views-pure-attempt-3.log",
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "log": "public-views-pure-attempt-4.log",
+      "passed": 24,
+      "failed": 0
+    }
+  ],
+  "not_executed": [
+    "DB",
+    "PG",
+    "HTTP",
+    "browser",
+    "public tests",
+    "public build",
+    "migration",
+    "public registry"
+  ]
+}

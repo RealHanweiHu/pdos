@@ -1,0 +1,7 @@
+{
+  "scope": "actual no-connect modules only; not actual PostgreSQL or real qualification",
+  "results": {
+    "actual-resource-dependency-pure-v2.log": 0,
+    "actual-retained-launch-pure-v2.log": 0
+  }
+}

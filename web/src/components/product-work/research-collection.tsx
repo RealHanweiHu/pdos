@@ -24,6 +24,7 @@ function ResearchCollectionPanel({ base, workspace, evidence, lineId, canCollect
   const [sources, setSources] = useState<ResearchSource[]>([]);
   const [sourceId, setSourceId] = useState("");
   const [searchConfigured, setSearchConfigured] = useState<boolean | null>(null);
+  const [searchProvider, setSearchProvider] = useState<string | null>(null);
   const [suggestedUrl, setSuggestedUrl] = useState("");
   const [suggestedName, setSuggestedName] = useState("");
   const [registerOpen, setRegisterOpen] = useState(false);
@@ -46,9 +47,9 @@ function ResearchCollectionPanel({ base, workspace, evidence, lineId, canCollect
   }, []);
   const load = useCallback(async () => {
     const version = ++sourceVersion.current;
-    const value = await request<{ items: ResearchSource[]; search_available: boolean }>(`${base}/sources`);
+    const value = await request<{ items: ResearchSource[]; search_available: boolean; search_provider?: string | null }>(`${base}/sources`);
     if (!alive.current || version !== sourceVersion.current) return;
-    setSources(value.items); setSearchConfigured(value.search_available);
+    setSources(value.items); setSearchConfigured(value.search_available); setSearchProvider(value.search_provider ?? null);
   }, [base]);
   useEffect(() => {
     alive.current = true;
@@ -95,7 +96,7 @@ function ResearchCollectionPanel({ base, workspace, evidence, lineId, canCollect
       <p className="text-sm text-muted-foreground">公开来源和快照保存到租户共享证据库。请选择符合来源许可的用途；可为指定公开页面登记订阅；AI 自主研究尚未接入。</p>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}{notice && <p role="status" className="text-sm">{notice}</p>}
       <Button size="sm" variant="outline" disabled={busy} onClick={() => void refreshAuthority()}>刷新来源与快照</Button>
-      <ResearchSearch key={`search:${lineId ?? "market"}`} base={base} lineId={lineId} configured={searchConfigured} canSearch={workspace.space.lifecycle !== "archived"} onPick={(url, title) => {
+      <ResearchSearch key={`search:${lineId ?? "market"}`} base={base} lineId={lineId} configured={searchConfigured} canSearch={workspace.space.lifecycle !== "archived"} provider={searchProvider} onPick={(url, title) => {
         setSuggestedUrl(url); setSuggestedName(title); const origin = new URL(url).origin;
         const matching = sources.find((item) => { try { return item.status === "active" && new URL(item.base_url).origin === origin; } catch { return false; } });
         if (matching) { setSourceId(matching.id); setNotice("候选页面已填入采集表单，请确认来源许可后采集。"); }

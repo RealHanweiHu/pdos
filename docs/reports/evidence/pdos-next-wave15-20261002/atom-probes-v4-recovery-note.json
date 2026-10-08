@@ -1,0 +1,16 @@
+{
+  "retained_incomplete_records": [
+    "atom-probes-v4.json",
+    "atom-probes-v4-recovery.json"
+  ],
+  "correction": "ChangeRequestVersion has no reason column; mutate existing intent_digest for its immutable negative probe.",
+  "intermediate_abort": "OperationalError outside probe savepoint; exact SQLSTATE not recorded then, no inferred cause or positive case. Safe outer rollback retained.",
+  "final_record": "atom-probes-v4-recovery-idle.json",
+  "final_sha256": "ca50867513b70b73edc662b69dded5a0437fefaff2275a5c194671f1bb1151cd",
+  "final_status": "completed_with_explicit_skips",
+  "rejected_expected_guard": 13,
+  "explicit_skip": "merge_without_alias_moves: no selected merge source; actual exact merge transaction separately passed.",
+  "all_savepoints_outer_uows_rolled_back": true,
+  "retained_rows_and_product_epoch_unchanged": true,
+  "tool_sha256": "7502905706681471d6f938617450cbbfef05044e2873b998b65e54d6b7ab3f6a"
+}

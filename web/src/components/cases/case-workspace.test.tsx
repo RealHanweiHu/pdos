@@ -10,6 +10,7 @@ const { routerPush, routerReplace } = vi.hoisted(() => ({
 }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
   useRouter: () => ({ push: routerPush, replace: routerReplace }),
 }));
 
@@ -202,6 +203,29 @@ describe("CaseWorkspace", () => {
     expect(await screen.findByText("Seal leakage development case")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "打开开发案例 CASE-001" }));
     expect(screen.queryByRole("button", { name: "保存更改" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "进入评估" })).not.toBeInTheDocument();
+  });
+
+  it("lets product managers edit a Case while keeping project decisions unavailable", async () => {
+    fetchMock.mockImplementation(async (input) => {
+      const path = String(input);
+      if (path === "/api/session/me") {
+        return jsonResponse({ ...identity, user: { ...identity.user, role: "product_manager" } });
+      }
+      if (path === "/api/development-cases") {
+        return jsonResponse({ items: [developmentCase] });
+      }
+      if (path.endsWith("/reviews")) return jsonResponse({ items: [], policies: [], policy_versions: [], members: [], charter_blockers: [], can_configure: false, can_prepare: false, has_more: false, current_user_id: "viewer" });
+      if (path.endsWith("/requirement-links")) return jsonResponse({ case_id: "case-1", case_digest: "test", sequence: 0, can_edit: false, items: [] });
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<CaseWorkspace />);
+
+    expect(await screen.findByText("Seal leakage development case")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "打开开发案例 CASE-001" }));
+    expect(screen.getByRole("button", { name: "保存更改" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "创建项目" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "进入评估" })).not.toBeInTheDocument();
   });
 

@@ -118,7 +118,7 @@ def setup_candidate(
         completion_criteria="明确待补证据",
     )
     product = seed["line"]
-    for level in ["family", "platform", "series", "model"]:
+    for level in ["model"]:
         product = create(
             "/products",
             code="PLAN-" + level,

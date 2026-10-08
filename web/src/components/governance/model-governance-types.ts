@@ -24,6 +24,7 @@ export type ModelSelection = {
 };
 
 export type ModelBudget = {
+  token_budget_enforced?: boolean;
   daily_token_budget: number;
   used_tokens_today: number;
   remaining_tokens_today: number;
@@ -37,6 +38,7 @@ export type ModelGovernanceSnapshot = {
 };
 
 export type ModelGovernanceUpdate = {
+  token_budget_enforced?: boolean;
   provider: ModelProvider;
   model: string;
   daily_token_budget: number;

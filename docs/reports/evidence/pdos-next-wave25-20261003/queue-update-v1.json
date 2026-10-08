@@ -1,0 +1,8 @@
+{
+  "status": "UPDATED_ONLY_CURRENT_PDOS_NEXT_ACTIVITY_PARAGRAPH",
+  "prior_paragraph_sha256": "4216e55bcdc7da31852e5ff03c801a141b4c6a25986b0a0197af72852177aba9",
+  "current_paragraph_sha256": "435a5450406fd842fcdd9f64e3b916cc6d34e0176003ab33c9fc46380dae53a0",
+  "prior_paragraph_retained": "prior-active-queue-wave22-v1.md",
+  "all_other_queue_content_preserved": true,
+  "original_N_P_Q_approval_and_20260927_boundaries_preserved": true
+}

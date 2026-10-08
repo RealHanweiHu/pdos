@@ -1,0 +1,38 @@
+{
+  "recorded_at": "2026-10-04T01:17:47.488950+00:00",
+  "state": "checkpoint_bound_repair_applied",
+  "reason": "actual complete stored controller history 2053893 bytes exceeded former 2000000 read limit before any results submission",
+  "before": {
+    "old_files": {
+      "tools/wave22_shared_fresh_request.py": "edfb4c7f6b64c5e5ab20f00fdfa0d5e235b8e518b9b5784faba26a791382e73a",
+      "tools/tests/test_wave22_shared_fresh_request.py": "d0df207f63820160953a034039ee76f6bbb32488b90b25d7635290edf72c22f2",
+      "tools/wave22_shared_retest.py": "a637e28f39c979e13556745c899e4c8cb6e0f80d1a6c8478bfad5a49c19b49bd",
+      "tools/tests/test_wave22_shared_retest.py": "6ed0bdfce9254dcf6a42c42615d129f565bad340021daf7ad80e006ca2b16805"
+    },
+    "business_checkpoint_sha256": "596b948809c99646f27b0d5a15d26b7f531e846329d61b28411d37c4036e495d",
+    "business_checkpoint_size": 2053893,
+    "business_request_not_submitted": true,
+    "source_and_originals_not_truncated": true,
+    "general_material_limit_unchanged": 2000000,
+    "internal_checkpoint_limit": 8388608
+  },
+  "files": {
+    "tools/wave22_shared_fresh_request.py": "61a4ff4c0aab80485c6018b1bdb791daea5dba26d0a494b2bd33242ff8257c14",
+    "tools/tests/test_wave22_shared_fresh_request.py": "e7a7ea914fe9e4f45868ca2f3d9808ce670b518ad89e0aae9b01fa1b795fe738",
+    "tools/wave22_shared_retest.py": "9fe91ec4f140f9e039fa2428bebd7b8d6196a1f959b76eded388ed4d6ef81a6f",
+    "tools/tests/test_wave22_shared_retest.py": "9ac38c071c9e313890b425ebf98ee5b3b162f1f71aa3c6482686adc4b5ee73d2"
+  },
+  "first_v4_helper_unchanged": true,
+  "checks": {
+    "combined_actual_pure": 166,
+    "pure_log": "control-bound-actual-pure-v1.log",
+    "scope": "43 fresh +123 retest owned no-connect; old38/118 not cumulative",
+    "static_exit": 0,
+    "format_exit": 0
+  },
+  "internal_checkpoint_max_bytes": 8388608,
+  "general_input_max_bytes": 2000000,
+  "raw_report_max_bytes": 200000,
+  "old_history_and_original_request_key_body_token_read_set_preserved": true,
+  "core_runtime_migration_changed": false
+}

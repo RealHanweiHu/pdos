@@ -93,7 +93,8 @@ def action_options(
                 MeetingPreparationService.members(connection, tenant_id, project_id),
                 key=lambda m: (m["display_name"], str(m["id"])),
             )
-            if m["role"] in {"owner", "admin", "project_manager", "engineer", "quality"}
+            if m["role"]
+            in {"owner", "admin", "product_manager", "project_manager", "engineer", "quality"}
         ],
     }
 

@@ -1,0 +1,24 @@
+{
+  "recorded_at": "2026-10-05T19:18:07.263845+00:00",
+  "scope": "Root actual affected fault and response field fixes; current runtime/migration unchanged",
+  "files": {
+    "server/tests/resource_dependency_faults/__init__.py": "a86b1a13cbcca84f695550ba2e54508f8457ac5eeab9c43d55259c1682330aac",
+    "server/tests/resource_dependency_faults/faults.py": "49e2b6327c581bc269a27b2b87e0b07a11aa182d4b111e670d14adf76689205e",
+    "server/tests/resource_dependency_faults/helpers.py": "9e9a9501d4f75600bbd137c8df849cad2511c64d2130231c8606c53b1eb529a5",
+    "server/tests/test_resource_dependency_atomic_execution.py": "ad14253334fadcc9415993009eb395ebefe99b1aa8b4197d54da2a30776fc110",
+    "server/tests/test_resource_dependency_execution.py": "5297bfbbaadb4d52fabdbf6605225a3fc3dc6bebdbac334aa2d050548c2be8c7"
+  },
+  "previous_v3_status": "FAILED_ROOT_RECEIPT_ASSERTION_FIELD",
+  "business_observations_before_failure": [
+    "actual Start committed",
+    "12 material keys/full proof saved",
+    "retained Current true",
+    "unrelated scope kept saved effects",
+    "original request HTTP200 reached"
+  ],
+  "remaining_v3_assertions_not_passed": [
+    "correct original receipt identity",
+    "actual malformed SQL CHECK"
+  ],
+  "recovery_plan": "one expanded actual atomic case; no repeated original 8-minute flow"
+}

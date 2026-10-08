@@ -1,0 +1,201 @@
+{
+  "schema_version": "wave21-authority-staged-source.v2",
+  "created_at": "2026-10-03T17:54:25.996753+00:00",
+  "applied_to_runtime": false,
+  "staging_root": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged",
+  "baseline_manifest": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/baseline-manifest.json",
+    "sha256": "e03899f0b1b071528c729a22bef84856f64f29d15560f9b9e17b7d45d0ae7498"
+  },
+  "files": [
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/pdos_next/domain/professional_authority/service.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "sha256": "d1920edd315ce26f8ea1ba3631e1aff67a820032e77c53374a0793c840e44433",
+      "base_sha256": "9c6ad2064357475003b649a36a1007cdcf047d3ffd3fa844989d73bdb6e43585"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/pdos_next/capa_rule_publisher.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/capa_rule_publisher.py",
+      "sha256": "ed2eebdecf294f83d40549c432cd70b2f7f23057ba36379bf365103c74110358",
+      "base_sha256": "f471c23de48366b17f9e4dd3a76e4ea4961412930adc4110ffc44cda29bd73da"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/professional_authority/test_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/professional_authority/test_profiles.py",
+      "sha256": "27fba549f7a4d67bcbab8d93ce4a45069c8927ce407895b82e9e81e7fd6f40f2",
+      "base_sha256": null
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/capa_effectiveness/test_rule_publisher_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_effectiveness/test_rule_publisher_profiles.py",
+      "sha256": "55b692d72473bf5055efa188312a5ce1c4909c454516c55f201e70993a6cb07c",
+      "base_sha256": null
+    }
+  ],
+  "copy_isolated": true,
+  "symlinks_used": false,
+  "non_owned_staged_sources_unchanged": 308,
+  "runtime_owned_baselines_unchanged": true,
+  "real_new_tests_remain_absent": true,
+  "contract": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/profiles-staged-contract-v2.md",
+    "sha256": "217267544fbb459a096f5fa562c9b9150e056ff21c357238f3cde137db7156a7"
+  },
+  "checks": {
+    "new_owned_pure": {
+      "passed": 62,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 1.24,
+      "exit_code": 0,
+      "log": {
+        "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/pure-v2.log",
+        "sha256": "4dca705a07c0475887b1c685ae139222ab6d3e83b68e730f610b3720e6c28b3a"
+      },
+      "environment": {
+        "PYTHONPATH": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_effectiveness"
+        ],
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "argv": [
+        "pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-q",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/professional_authority/test_profiles.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/capa_effectiveness/test_rule_publisher_profiles.py"
+      ]
+    },
+    "affected_compatibility_pure": {
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 1.61,
+      "exit_code": 0,
+      "log": {
+        "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/compatibility-v2.log",
+        "sha256": "966802398d3595a68dbfe756b36995aff44eb70094cc4ba068edeacc877e7609"
+      },
+      "environment": {
+        "PYTHONPATH": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_effectiveness"
+        ],
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "argv": [
+        "pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-q",
+        "pdos-next/server/tests/professional_authority/test_assessment.py",
+        "pdos-next/server/tests/capa_effectiveness/test_fact_integration.py",
+        "-k",
+        "not bridge"
+      ]
+    },
+    "ruff": {
+      "exit_code": 0,
+      "log": {
+        "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/ruff-v2.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+      },
+      "argv": [
+        "pdos-next/server/.venv/bin/ruff",
+        "check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/pdos_next/domain/professional_authority/service.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/pdos_next/capa_rule_publisher.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/professional_authority/test_profiles.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/capa_effectiveness/test_rule_publisher_profiles.py"
+      ]
+    },
+    "format": {
+      "exit_code": 0,
+      "log": {
+        "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/format-check-v2.log",
+        "sha256": "177f260a5645724013185e4b140c7045cc39e56c0c97b120f5cb23599f85f0de"
+      },
+      "argv": [
+        "pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/pdos_next/domain/professional_authority/service.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/pdos_next/capa_rule_publisher.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/professional_authority/test_profiles.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/tests/capa_effectiveness/test_rule_publisher_profiles.py"
+      ]
+    },
+    "ast_import": {
+      "exit_code": 0,
+      "ast_files": 4,
+      "module_imports": 2,
+      "log": {
+        "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/static-v2.log",
+        "sha256": "2346c1285b663b11276a2bbca425f9224d54e5f478ee860b9dad177dd3cc0d16"
+      }
+    }
+  },
+  "logs": {
+    "compatibility-v2.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/compatibility-v2.log",
+      "sha256": "966802398d3595a68dbfe756b36995aff44eb70094cc4ba068edeacc877e7609"
+    },
+    "format-check-v2.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/format-check-v2.log",
+      "sha256": "177f260a5645724013185e4b140c7045cc39e56c0c97b120f5cb23599f85f0de"
+    },
+    "format-final.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/format-final.log",
+      "sha256": "383df188576f1eee9b833e5e2f7d5d2f4b5a2c3a05e57a27613153e344923a48"
+    },
+    "format-v2.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/format-v2.log",
+      "sha256": "ecadcab6ba8db65f26e491b8a5abf181e94e6e96cf96718dc2e4c83e7c8ab2c5"
+    },
+    "format.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/format.log",
+      "sha256": "1dc6a19feae160e87088a6a505f8844ac8bfdaf9001c9c3cc558beceb0f6c9d9"
+    },
+    "pure-final.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/pure-final.log",
+      "sha256": "8398e97f69c42ca328819d8e11a9aaeda3130cb7ab16865b536867123adc15c4"
+    },
+    "pure-first.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/pure-first.log",
+      "sha256": "a1a5169b2d99444377c22dedfc7604cacdacef8542267211a478cddce0ec184a"
+    },
+    "pure-v2.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/pure-v2.log",
+      "sha256": "4dca705a07c0475887b1c685ae139222ab6d3e83b68e730f610b3720e6c28b3a"
+    },
+    "ruff-final.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/ruff-final.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "ruff-initial.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/ruff-initial.log",
+      "sha256": "c5617adb817276cc226f7bc12f59dfcf79c23702b35e070d4a8f1ce178f9cc66"
+    },
+    "ruff-v2.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/ruff-v2.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "static-v2.log": {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-authority-staged/logs/static-v2.log",
+      "sha256": "2346c1285b663b11276a2bbca425f9224d54e5f478ee860b9dad177dd3cc0d16"
+    }
+  },
+  "limitations": [
+    "No DB, HTTP, browser, public build or public test collection executed",
+    "No live professional authority, source/bytes/marker validation or business publication attested",
+    "Old single/plural API mutual exclusion is Root wiring responsibility",
+    "One configured project per tenant/product Rule dispatcher in v1"
+  ]
+}

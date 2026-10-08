@@ -17,6 +17,7 @@ from app.ai.application_recovery import is_recovery, original_observation, try_r
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.context_builder import RunContextBuilder
+from app.ai.durable import agent_entry
 from app.ai.executor import AgentAssessment, PromptFile
 from app.ai.finding_writer import (
     FindingCandidate,
@@ -70,6 +71,7 @@ class RiskSuggestionService:
         self._engine = engine
         self._gateway = gateway
 
+    @agent_entry
     def create(
         self,
         *,

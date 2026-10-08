@@ -27,7 +27,7 @@ export function resolveXiaopaiPageContext(path: string, params: URLSearchParams,
   const label = pageLabels[path] ?? (path.startsWith("/settings/") ? "设置" : "当前页面");
   const focus = parseWorkFocus(params.get("focus_kind"), params.get("focus_id")) ??
     ["task", "issue", "risk", "capa", "gate"].map(kind => parseWorkFocus(kind, params.get(kind) ?? params.get(`${kind}_id`))).find(Boolean);
-  const spaceId = path === "/product-work" ? params.get("space") ?? "" : "";
+  const spaceId = path === "/product-work" ? params.get("category") ?? params.get("space") ?? "" : "";
   const lineId = path === "/product-work" ? params.get("line") ?? "" : "";
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const recordId = path === "/product-work" ? params.get("record_id") : null;
@@ -42,7 +42,7 @@ export function resolveXiaopaiPageContext(path: string, params: URLSearchParams,
     productScope: invalid ? undefined : spaceId ? { scope_kind: lineId && lineId !== "all" ? "product_line" : "market_space", market_space_id: spaceId, ...(lineId && lineId !== "all" ? { product_line_id: lineId } : {}) } : { scope_kind: "personal" },
     ...(path === "/product-work" && spaceId && recordId && !invalid ? { matrixSelection: { record_id: recordId, roadmap_ids: [] } } : {}),
     productSources: path === "/product-work" && spaceId && !invalid ? productSources : [],
-    ...(invalid ? { scopeError: "页面中的市场空间、产品线或矩阵记录编号无效，请先返回产品工作区核对范围。" } : {}),
+    ...(invalid ? { scopeError: "页面中的品类或矩阵记录编号无效，请先返回产品工作区核对范围。" } : {}),
     focus,
   };
 }

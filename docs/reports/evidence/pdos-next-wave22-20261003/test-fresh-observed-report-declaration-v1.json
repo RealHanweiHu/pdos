@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-10-04T01:10:24.256496+00:00",
+  "generation": "37c270ad-521a-44ad-b186-3447a94906c1",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "source_of_value": "Root local synthetic operator declaration",
+  "real_instrument_measurement": false,
+  "whole_original_report_utf8": "{\"actual_configuration\":{\"id\":\"a5331fd7-df15-4750-b0b6-dbff97e5d0fd\",\"revision\":1},\"calibration\":{\"id\":\"c6e6acad-e10f-4a5b-96bb-946f5316017d\",\"kind\":\"artifact\",\"position\":\"line:4;quote_sha256:9bd1b769e78c9bca085ad954b8fbc67967ab1aec13ecdf039c9a895c1170ee35\",\"revision\":1},\"cavity\":\"A\",\"conditions\":\"23 C, dry\",\"environment\":\"Wave22 local synthetic dimension station\",\"equipment\":{\"id\":\"c6e6acad-e10f-4a5b-96bb-946f5316017d\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0d7ea62f427eac0eff418c972f18dd2b09b0cd62df666e2d0e3ec8fea2f8eba0\",\"revision\":1},\"equipment_label\":\"Wave22 local synthetic dimension station\",\"executor_id\":\"a8e4a921-15e6-4420-bc9e-51ed2242f2bf\",\"format\":\"pdos-measurement-jsonl-v1\",\"item_id\":\"dimension\",\"method\":{\"id\":\"c6e6acad-e10f-4a5b-96bb-946f5316017d\",\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:41f9a8285c33bc900a13f42b2dbc1b76f00a0711ce907755930398bea93ac5bc\",\"revision\":1},\"note\":\"Explicit local synthetic negative observation, no real instrument reading or production qualification.\",\"observed_at\":\"2026-10-04T01:10:24.255627+00:00\",\"observed_timezone\":\"UTC\",\"raw_value\":\"11.0000\",\"run_id\":\"6af03fe7-7456-57bf-8486-3dc058d1ebce\",\"sample_id\":\"88331854-7b73-4561-8a15-b0e6b7eb8a43\",\"sample_revision\":1,\"unit\":\"mm\"}\n",
+  "original_report_sha256": "58f90d5b8e42e95bb9b92de626147163880a5093e6e3e1fb2acfa9392a8580ea",
+  "actual_start": "2026-10-04T01:07:56.021417+00:00",
+  "actual_end": "2026-10-04T01:10:24.255953+00:00",
+  "returned_at": "2026-10-04T01:10:24.255954+00:00",
+  "no_controller_filled_report_fields": true
+}

@@ -1,0 +1,31 @@
+{
+  "phase": "interface_capture_before_integration",
+  "build_consumed": false,
+  "interfaces": {
+    "pdos-next/server/pdos_next/object_storage/types.py": "6a96ee13bb918473e856d1e88bf65bf93c010800b76a1431266beb63abeac737",
+    "pdos-next/server/pdos_next/object_storage/adapters.py": "bb24af925be876eb2dcbcc8cb75d44ada8b20127de74f68368466de9894d6f0d",
+    "pdos-next/server/pdos_next/object_storage/__init__.py": "db02b4363a147de4ec18bc4d7d54148b20bf580961365068ffa3c7e4bc46d341",
+    "pdos-next/server/pdos_next/evidence_processing/types.py": "3bdb7eec20948def3f0ddec45cbf41ec21a37b6333d7b8247edbe4d6811b7e10",
+    "pdos-next/server/pdos_next/evidence_processing/isolation.py": "0dc212566dcf95f5ac56511f7c64e962c5380adf32ab983d3f296fd41746f63b",
+    "pdos-next/server/pdos_next/originals.py": "ec0d67dc50d4bf841820d70f712080dfbaecbc8aeee9edb2b878adc79e69f37b",
+    "pdos-next/server/pdos_next/models.py": "97d9b65d4e90107a8deac1641384dfca14339c4beae6b7ee6a2b433032a29a30",
+    "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+    "docs/design/2026-10-02-pdos-next-execution-plan.md": "3fa2bc7c35da22f66459e405da812ef76394987de055ee2ec32f70e0d60a959a"
+  },
+  "contracts": {
+    "ObjectRef": [
+      "id: UUID",
+      "version: int currently exactly 1",
+      "content_sha256: lowercase SHA256",
+      "size_bytes: positive int",
+      "media_type: string",
+      "server_storage_key: originals/{id.hex}/v1/{hash}"
+    ],
+    "ObjectStore": [
+      "put_new(bytes, media_type=...)->ObjectRef",
+      "read_original(ObjectRef)->bytes"
+    ],
+    "UploadedOriginal": "scan_status not_scanned by default; no scan receipt table, upload journal, lifecycle, deletion, restore or hold fields consumed",
+    "ParseResult": "scan_status Literal[not_scanned]; successful parse never certifies clean"
+  }
+}

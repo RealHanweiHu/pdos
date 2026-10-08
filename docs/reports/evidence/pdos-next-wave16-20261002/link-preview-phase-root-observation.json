@@ -1,0 +1,24 @@
+{
+  "recorded_at": "2026-10-03T10:22:38.661634+00:00",
+  "staged_preview_files": [
+    {
+      "path": "pdos-next/staging/wave16/link_preview_phase.py",
+      "sha256": "9177cef30ef7bac656bd9632d04e0711fc80016ffc93f8bc95e36d347c1bc1ca"
+    },
+    {
+      "path": "pdos-next/staging/wave16/test_link_preview_phase.py",
+      "sha256": "73a242e4f4e3b35518bf9a48158368df46770f22aeb58c3e2833ed97bea83405"
+    },
+    {
+      "path": "pdos-next/staging/wave16/link-preview-phase-contract.md",
+      "sha256": "fb98e5bc2c0cbb284d95fd6220ef67ee6e86210505f0e82a344adba45002895e"
+    }
+  ],
+  "pure_passed": 41,
+  "independent_review_sha256": "88ccecfbf6045667bdc0ca5c7e966dbea8293093944752158a813e4e8878e69f",
+  "backend_480_unchanged": true,
+  "public_preview_hook_installed": false,
+  "execute_path_fixed": false,
+  "speedup_measured": false,
+  "remaining": "Complete frozen20; integrate explicit preview hook and separate reviewed-write/final-proof protocol; scoped public checks and actual UI Link still required."
+}

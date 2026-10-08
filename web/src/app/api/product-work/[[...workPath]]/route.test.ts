@@ -4,6 +4,25 @@ vi.mock("next/headers", () => ({ cookies: async () => ({ get: getCookie }) }));
 import { GET, POST } from "./route";
 const space = "33333333-3333-4333-8333-333333333333";
 const definition = "44444444-4444-4444-8444-444444444444";
+
+it("forwards exact proposal document and AI routes with the current signed session", async () => {
+  fetcher.mockImplementation(async () => Response.json({ status: "prepared" }));
+  const proposal = (...suffix: string[]) => ({ params: Promise.resolve({ workPath: ["spaces", space, "proposals", ...suffix] }) });
+  expect((await GET(new Request("http://localhost"), proposal())).status).toBe(200);
+  expect((await GET(new Request("http://localhost"), proposal(definition))).status).toBe(200);
+  expect((await POST(input(), proposal())).status).toBe(200);
+  for (const action of ["changes", "ai", "submit", "decide"]) {
+    expect((await POST(input(), proposal(definition, action))).status).toBe(200);
+  }
+  expect(fetcher).toHaveBeenCalledTimes(7);
+  expect(new Headers(fetcher.mock.calls[6][1]?.headers).get("Authorization")).toBe("Bearer test-session");
+  expect((await GET(new Request("http://localhost"), proposal(definition, "ai"))).status).toBe(404);
+  expect((await POST(input(), proposal("not-an-id", "decide"))).status).toBe(404);
+  expect((await POST(input(), proposal(definition, "publish"))).status).toBe(404);
+  getCookie.mockReturnValue(undefined);
+  expect((await POST(input(), proposal(definition, "ai"))).status).toBe(401);
+  expect(fetcher).toHaveBeenCalledTimes(7);
+});
 const context = (action: string) => ({ params: Promise.resolve({ workPath: ["spaces", space, "definitions", definition, action] }) });
 const input = () => new Request("http://localhost", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reason: "核对后接受", accept_paths: ["items/pressure"] }) });
 const fetcher = vi.fn<typeof fetch>();
@@ -171,4 +190,20 @@ it("binds the personal attention POST to the signed session and excludes other v
   getCookie.mockReturnValue(undefined);
   expect((await POST(body(), attention)).status).toBe(401);
   expect(fetcher).toHaveBeenCalledTimes(1);
+});
+
+it("forwards the unified category identity and shared data through exact signed routes", async () => {
+  fetcher.mockImplementation(async () => Response.json({ category_id:space }));
+  const category = (...suffix:string[]) => ({params:Promise.resolve({workPath:["categories", ...suffix]})});
+  for (const path of [[],[space],[space,"shared"]]) expect((await GET(new Request("http://localhost"),category(...path))).status).toBe(200);
+  expect((await POST(input(),category())).status).toBe(200);
+  expect((await POST(input(),category(space,"shared","parameters"))).status).toBe(200);
+  expect((await POST(input(),category(space,"shared","knowledge"))).status).toBe(200);
+  expect(new Headers(fetcher.mock.calls[5][1]?.headers).get("Authorization")).toBe("Bearer test-session");
+  expect((await POST(input(),category(space,"shared","members"))).status).toBe(404);
+  expect((await GET(new Request("http://localhost"),category("bad","shared"))).status).toBe(404);
+  expect((await GET(new Request("http://localhost"),category(space,"shared","parameters"))).status).toBe(404);
+  getCookie.mockReturnValue(undefined);
+  expect((await GET(new Request("http://localhost"),category(space,"shared"))).status).toBe(401);
+  expect(fetcher).toHaveBeenCalledTimes(6);
 });

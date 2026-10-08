@@ -1,0 +1,41 @@
+{
+  "target": {
+    "host": "localhost",
+    "port": 57432,
+    "database": "pdos"
+  },
+  "before_head": "0424_product_proposals",
+  "backup": {
+    "path": "/Users/huhanwei/pdos-preview-backups/20261006-0424-071313/pdos-before-0425.dump",
+    "sha256": "f3ec67e23a622f65008b44177a21f2481ef6d5af8cde8a76bf84130a9adaee44",
+    "bytes": 4292304,
+    "mode": "0o600",
+    "archive_list_verified": true,
+    "restored": false
+  },
+  "before_counts": {
+    "cehub_core.tenants": 1,
+    "cehub_core.users": 6,
+    "cehub_project.projects": 1,
+    "cehub_ai.agent_runs": 14,
+    "cehub_product.market_spaces": 1,
+    "cehub_product.product_nodes": 0,
+    "cehub_product.product_source_files": 0,
+    "cehub_product.product_proposals": 1,
+    "cehub_product.product_proposal_revisions": 1,
+    "cehub_product.product_proposal_decisions": 0
+  },
+  "after_head": "0425_category_foundation",
+  "after_counts": {
+    "cehub_core.tenants": 1,
+    "cehub_core.users": 6,
+    "cehub_project.projects": 1,
+    "cehub_ai.agent_runs": 14,
+    "cehub_product.market_spaces": 1,
+    "cehub_product.product_nodes": 0,
+    "cehub_product.product_source_files": 0,
+    "cehub_product.product_proposals": 1,
+    "cehub_product.product_proposal_revisions": 1,
+    "cehub_product.product_proposal_decisions": 0
+  }
+}

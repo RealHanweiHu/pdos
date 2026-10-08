@@ -1,0 +1,31 @@
+{
+  "scope": "Read and verify current search changes; no application code edits",
+  "source_sha256": {
+    "server/app/ai/conversation_reply.py": "cff45b9b993d24386677b463a9e759973b313398b9c5949d7d0f333a5c5d9373",
+    "server/app/ai/prompts/xiaopai_reply_v1.json": "3340ecd1a0f087f27f44a02d20790dd2a3c461c96198d97f3f9993100e7365a9",
+    "server/app/ai/research_search.py": "4e5c4f4ac8fab7d673b8aa7f8d96611501af6ad097590fec886d3952bc01b84d",
+    "server/app/domain/research_search.py": "6628d03df4bd68d93c1f537b455d526f7b3da4e87cd680816234ccecec91e426",
+    "server/app/domain/research_index.py": "ecb2eaf53a2eb51b84f1bf7cb6cf4d7512ceb3e23be2abc1e60a372ef1a17389",
+    "server/app/domain/research_crawler.py": "e0332a7fe6adb99827005920b9808c4585bcaf2f9cfb585e566c83a77652a601",
+    "server/app/api/product_research.py": "59d4d19c6731f01d597b28e854a43ed2e662ddd1bc369808684b7964a4177503",
+    "server/app/ai/discussion_research_tools.py": "e1b1640cc33e47d3f48ec502aa28d4d56c6dbd44b5db9636e90dbe68e9cfd813",
+    "server/app/settings.py": "6b1665f7eacb974b8b78a9fa65d5b925cda10c443daa3ec616bc1d2a2124b5de",
+    "web/src/components/product-work/research-search.tsx": "025e2a0be2b0e25dfbeff4503784e83d0155105b021e2ac4d9ded0dccd73353a",
+    "web/src/components/product-work/research-collection.tsx": "da2b26c529719fbb86ee509851d82332133570f93e8de3bd4522fea9ed2bfcb0"
+  },
+  "tests": {
+    "pure": 67,
+    "database_api": 21,
+    "review_probe": 1,
+    "frontend": 25
+  },
+  "database": "new independent pdos-xiaopai-search-confirm-20261005-f1c9 at 127.0.0.1:62380/pdos_test",
+  "synthetic_only": true,
+  "shell_settings_snapshot": {
+    "env_file": "server/.env",
+    "search_endpoint_configured": false,
+    "crawler_enabled": false,
+    "subscriptions_enabled": false
+  },
+  "previous_preview": "3035 remains prior frozen synthetic conversation preview"
+}

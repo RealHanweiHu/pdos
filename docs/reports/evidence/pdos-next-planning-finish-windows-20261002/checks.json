@@ -1,0 +1,28 @@
+{
+  "algorithm_version": "planning.minute_forecast.v2",
+  "checks": [
+    {
+      "name": "pytest",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -p no:cacheprovider --confcutdir=tests/planning_engine tests/planning_engine -q",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+      "exit_code": 0,
+      "log": "pytest.log"
+    },
+    {
+      "name": "ruff",
+      "command": ".venv/bin/ruff check --no-cache pdos_next/engines/planning tests/planning_engine",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+      "exit_code": 0,
+      "log": "ruff.log"
+    },
+    {
+      "name": "format",
+      "command": ".venv/bin/ruff format --check --no-cache pdos_next/engines/planning tests/planning_engine",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+      "exit_code": 0,
+      "log": "format.log"
+    }
+  ],
+  "isolation": "Only tests/planning_engine with explicit confcutdir; external pytest plugins, bytecode and shared cache disabled; no database/services/model/network access",
+  "tested_package_files": 7
+}

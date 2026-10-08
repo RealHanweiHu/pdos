@@ -139,7 +139,15 @@ def _basis(c: Connection, tenant_id: UUID, project_id: UUID, binding_id: UUID) -
             },
             "task": _task(c, tenant_id, project_id, row["task_id"]),
             "follow_ups": records(c, tenant_id, project_id, [binding_id]),
-            "scope_changes": scope_changes(c, tenant_id, project_id, approved)
+            "scope_changes": scope_changes(
+                c,
+                tenant_id,
+                project_id,
+                approved,
+                professional_basis=((ecr["impact_analysis"] or {}).get("professional") or {}).get(
+                    "basis"
+                ),
+            )
             if still_bound and approved is not None
             else [],
             "approved_scope_context": {
@@ -213,7 +221,7 @@ def _gaps(basis: dict[str, Any], refs: list[dict[str, Any]]) -> list[str]:
     if not basis["scope_bound"]:
         gaps.append("原获批范围绑定已不可用")
     if any(change["blocking"] for change in basis["scope_changes"]):
-        gaps.append("获批设计范围或关系证据内容已有变化")
+        gaps.append("获批专业来源、设计范围或关系证据已有变化")
     required = {
         "retest": "test_run",
         "rereview": "engineering_review",

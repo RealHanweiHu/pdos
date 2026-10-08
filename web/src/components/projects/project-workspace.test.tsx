@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ProjectWorkspace } from "./project-workspace";
-import { primaryProjectTab, resolveTab } from "./project-workspace-view";
+import { resolveTab } from "./project-workspace-view";
 import { ProjectTimeline } from "./project-timeline";
 
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
@@ -11,6 +11,7 @@ const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: routerReplace }),
   useSearchParams: () => new URLSearchParams(window.location.search),
+  usePathname: () => window.location.pathname,
 }));
 
 function jsonResponse(body: object, status = 200) {
@@ -300,6 +301,13 @@ function workItemResponse(path: string) {
   return null;
 }
 
+async function openProjectWork(label: string, value: string, user = userEvent.setup()) {
+  const tab = screen.queryByRole("tab", { name: label });
+  if (tab) await user.click(tab);
+  else await user.selectOptions(screen.getByRole("combobox", { name: "更多项目工作" }), value);
+  expect(screen.getByRole("tab", { name: label })).toHaveAttribute("aria-selected", "true");
+}
+
 describe("ProjectWorkspace", () => {
   const fetchMock = vi.fn<typeof fetch>();
 
@@ -307,12 +315,74 @@ describe("ProjectWorkspace", () => {
     fetchMock.mockReset();
     routerReplace.mockReset();
     vi.stubGlobal("fetch", fetchMock);
+    // Retain an old preference to verify it cannot override the actor's
+    // current role, project work or permissions.
+    const storage = new Map([["pdos.work-perspective:tenant-1:user-1", "administration"]]);
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => storage.set(key, value),
+      removeItem: (key: string) => storage.delete(key),
+      clear: () => storage.clear(),
+    });
   });
 
   afterEach(() => {
     cleanup();
     window.history.replaceState({}, "", "/");
     vi.unstubAllGlobals();
+  });
+
+  it.each([
+    ["owner", "overview", "总览", null],
+    ["engineer", "engineering", "工程·变更", "规格与研发 BOM"],
+    ["quality", "quality", "试制·测试·质量", "执行测试与核对报告"],
+  ] as const)("opens the real default work scenario for %s without promoting its permissions", async (role, tab, label, taskLabel) => {
+    const user = userEvent.setup();
+    window.localStorage.clear();
+    window.history.replaceState({}, "", "/projects");
+    fetchMock.mockImplementation(async input => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role } });
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      return workItemResponse(path) ?? jsonResponse({ items: [] });
+    });
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(window.location.search).toBe(`?project=project-1&tab=${tab}`);
+    expect(screen.getByRole("tab", { name: label })).toHaveAttribute("aria-selected", "true");
+    if (taskLabel) {
+      expect(await screen.findByRole("tab", { name: taskLabel }, { timeout: 5000 })).toHaveAttribute("aria-selected", "true");
+    } else {
+      expect(await screen.findByRole("region", { name: "项目概览" })).toBeVisible();
+    }
+    if (role !== "owner") {
+      expect(screen.queryByRole("button", { name: "编辑项目" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "提交立项" })).not.toBeInTheDocument();
+    }
+    if (role === "quality") {
+      expect(screen.queryByRole("button", { name: "创建规格" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "开始试制" })).not.toBeInTheDocument();
+    }
+    expect(fetchMock.mock.calls.some(([, init]) => ["POST", "PATCH", "PUT", "DELETE"].includes(init?.method ?? ""))).toBe(false);
+  });
+
+  it.each([
+    ["quality", "quality", "试制·测试·质量"],
+    ["supply", "materials", "物料·供应"],
+  ])("opens the assigned %s module after choosing a project", async (module, tab, label) => {
+    const user = userEvent.setup();
+    window.history.replaceState({}, "", `/projects?module=${module}&tab=${tab}`);
+    fetchMock.mockImplementation(async input => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role: "engineer", work_modules: [module] } });
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      return workItemResponse(path) ?? jsonResponse({ items: [] });
+    });
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(window.location.search).toBe(`?project=project-1&tab=${tab}`);
+    expect(screen.getByRole("tab", { name: label })).toHaveAttribute("aria-selected", "true");
+    expect(screen.queryByRole("button", { name: "编辑项目" })).not.toBeInTheDocument();
   });
 
   it("refreshes the current Issue count after AI withdrawal while keeping the original suggestion open and loading withdrawn history", async () => {
@@ -503,8 +573,10 @@ describe("ProjectWorkspace", () => {
       await screen.findByRole("region", { name: "计划与资源办理" }, { timeout: 5000 }),
     ).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "计划" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("heading", { name: "滚动预测与预测偏差" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "四时间对照与独立承诺" })).toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: "核对进展与预测" }));
+    expect(screen.getByRole("heading", { name: "滚动预测与预测偏差" })).toBeVisible();
+    await user.click(screen.getByRole("tab", { name: "办理时间承诺" }));
+    expect(screen.getByRole("heading", { name: "四时间对照与独立承诺" })).toBeVisible();
     expect(screen.queryByText(/本域的数据面将在/)).not.toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([input]) => String(input).includes("/execution/forecasts"))).toBe(false);
   });
@@ -597,6 +669,8 @@ describe("ProjectWorkspace", () => {
     expect(screen.getByRole("tab", { name: "计划" })).toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "工程·变更" })).not.toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "试制·测试·质量" })).not.toBeInTheDocument();
+    expect(within(screen.getByRole("combobox", { name: "更多项目工作" })).getByRole("option", { name: "工程·变更" })).toHaveValue("engineering");
+    expect(within(screen.getByRole("combobox", { name: "更多项目工作" })).getByRole("option", { name: "试制·测试·质量" })).toHaveValue("quality");
     expect(screen.getByRole("button", { name: "项目设置" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "总览" })).toHaveAttribute("aria-selected", "true");
     expect(screen.queryByText("项目辅助查阅")).not.toBeInTheDocument();
@@ -761,9 +835,10 @@ describe("ProjectWorkspace", () => {
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
     expect(fetchMock.mock.calls.some(([input]) => String(input).includes("/quality/"))).toBe(false);
 
-    await user.click(screen.getByRole("tab", { name: "工作项" }));
-    await user.click(screen.getByRole("button", { name: "试制·测试·质量" }));
-    expect(await screen.findByText("测试计划与用例")).toBeInTheDocument();
+    await openProjectWork("试制·测试·质量", "quality", user);
+    await user.click(screen.getByRole("tab", { name: "执行测试与核对报告" }));
+    expect(await screen.findByText("测试计划与用例")).toBeVisible();
+    await user.click(screen.getByRole("tab", { name: "调查问题与验证整改" }));
     await user.click(await screen.findByRole("button", { name: /CMP-C4S/ }));
 
     expect(await screen.findByRole("heading", { name: "CAPA 实际办理 · 根因调查与审核" })).toBeInTheDocument();
@@ -795,8 +870,8 @@ describe("ProjectWorkspace", () => {
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
     expect(fetchMock.mock.calls.some(([input]) => String(input).includes("product-engineering"))).toBe(false);
 
-    await user.click(screen.getByRole("tab", { name: "工作项" }));
-    await user.click(screen.getByRole("button", { name: "工程·变更" }));
+    await openProjectWork("工程·变更", "engineering", user);
+    expect(screen.getByRole("tab", { name: "规格与研发 BOM" })).toHaveAttribute("aria-selected", "true");
     expect(await screen.findByRole("heading", { name: "尚未建立产品规格" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "尚未建立开发 BOM" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "EBOM" })).toBeInTheDocument();
@@ -864,8 +939,7 @@ describe("ProjectWorkspace", () => {
 
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
-    await user.click(screen.getByRole("tab", { name: "工作项" }));
-    await user.click(screen.getByRole("button", { name: "工程·变更" }));
+    await openProjectWork("工程·变更", "engineering", user);
 
     expect(await screen.findByText("C4s performance specification")).toBeInTheDocument();
     expect(screen.getByText("C4s engineering BOM")).toBeInTheDocument();
@@ -889,8 +963,7 @@ describe("ProjectWorkspace", () => {
 
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
-    await user.click(screen.getByRole("tab", { name: "工作项" }));
-    await user.click(screen.getByRole("button", { name: "工程·变更" }));
+    await openProjectWork("工程·变更", "engineering", user);
     expect(await screen.findByRole("heading", { name: "产品工程数据暂不可用" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "尚未建立产品规格" })).not.toBeInTheDocument();
 
@@ -946,10 +1019,12 @@ describe("ProjectWorkspace", () => {
 
     await user.click(screen.getByRole("tab", { name: "工作项" }));
     await user.click(screen.getByRole("button", { name: "问题，1项" }));
+    expect(new URLSearchParams(window.location.search).get("view")).toBe("issues");
+    expect(screen.getByRole("button", { name: "问题，1项" })).toHaveFocus();
     await user.click(screen.getByRole("button", { name: "进入分析" }));
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/projects/project-1/issues/issue-1/transitions",
-      expect.objectContaining({ body: JSON.stringify({ to_status: "analysis" }) }),
+      expect.objectContaining({ body: JSON.stringify({ to_status: "analysis", expected_updated_at: openIssue.updated_at }) }),
     );
   });
 
@@ -1100,7 +1175,7 @@ describe("ProjectWorkspace", () => {
     });
     render(<ProjectWorkspace />);
     expect(await screen.findByRole("region", { name: "项目详情" })).toBeInTheDocument();
-    expect(document.querySelector(`#project-tab-${primaryProjectTab(tab as Parameters<typeof primaryProjectTab>[0])}`)).toHaveAttribute("aria-selected", "true");
+    expect(document.querySelector(`#project-tab-${tab}`)).toHaveAttribute("aria-selected", "true");
     expect(fetchMock.mock.calls.filter(([input]) => /\/(activity|tasks|issues|risks)$/.test(String(input)))).toHaveLength(0);
   });
 
@@ -1223,13 +1298,15 @@ describe("ProjectWorkspace", () => {
       const path = String(input);
       if (path === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role: "supplier" } });
       if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path === "/api/projects/project-1/npi") return jsonResponse({ sample_signoffs: [] });
       throw new Error(`unexpected internal request: ${path}`);
     });
     render(<ProjectWorkspace/>);
-    expect(await screen.findByRole("navigation", { name: "项目服务分类" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "供应商回应" })).toBeVisible();
+    expect(await screen.findByText("暂无发给您的回应请求")).toBeVisible();
     expect(screen.queryByRole("link", { name: "成员与权限" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "流程与资料导入" })).not.toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls.map(([input]) => String(input))).toEqual(["/api/session/me", "/api/projects", "/api/projects/project-1/npi"]);
   });
 
   it("loads work items and activity when their tabs first open and reuses an empty activity result", async () => {

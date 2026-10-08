@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "owned_ui_candidate_frozen",
+  "recorded_at": "2026-10-03T04:45:37.200386+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "d13256535bdbffb7d386b49806a1821b38f2ecbe67c4b6cfed7fa32a8da17966"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.ts",
+      "sha256": "ad819a023b0547f2eac578355b844da0ad94cb178382adc215e1c2a0b4e62f56"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.test.ts",
+      "sha256": "8b46c23f24c117c59fd34b2caeb3bf9e7ec350b5a9184b11f1976c457270c142"
+    }
+  ],
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "checks": [
+    {
+      "kind": "pure_helper",
+      "command": "node <<'JS'\nconst fs=require('node:fs'),path=require('node:path'),ts=require('./node_modules/typescript'),cp=require('node:child_process');\nconst tmp='/tmp/pdos-wave15-ui.R1c5Ff';\nfor(const file of ['product-view.ts','build-handoff-view.ts','build-results-view.ts','build-quality-loop-view.ts','build-quality-loop-view.test.ts']) fs.writeFileSync(path.join(tmp,file.replace(/\\.ts$/,'.js')),ts.transpileModule(fs.readFileSync(path.join('src/lib',file),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true},fileName:file}).outputText);\nconst r=cp.spawnSync(process.execPath,['--test',path.join(tmp,'build-quality-loop-view.test.js')],{encoding:'utf8'});fs.writeFileSync(path.join(tmp,'helper-tests.log'),r.stdout+r.stderr);process.stdout.write(r.stdout);process.stderr.write(r.stderr);process.exitCode=r.status;\nJS",
+      "exit_code": 0,
+      "tests": 35,
+      "pass": 35,
+      "fail": 0,
+      "skipped": 0,
+      "tool_chunk": "ea0728",
+      "raw_output": "ui-helper-checks.log"
+    },
+    {
+      "kind": "owned_typecheck",
+      "command": "node_modules/.bin/tsc --project /tmp/pdos-wave15-ui.R1c5Ff/tsconfig.json",
+      "exit_code": 0,
+      "tool_chunk": "930412",
+      "raw_stdout": "",
+      "raw_stderr": "",
+      "configuration_record": "ui-tsconfig.json"
+    },
+    {
+      "kind": "owned_eslint",
+      "command": "node_modules/.bin/eslint src/components/builds/build-quality-loop.tsx src/lib/build-quality-loop-view.ts src/lib/build-quality-loop-view.test.ts",
+      "exit_code": 0,
+      "tool_chunk": "a7025c",
+      "raw_stdout": "",
+      "raw_stderr": "",
+      "warnings": 0
+    }
+  ],
+  "public_validation": {
+    "build": "not_run_by_C",
+    "database": "not_run_by_C",
+    "http_browser": "not_run_by_C"
+  },
+  "integration": {
+    "export": "BuildQualityLoop",
+    "props": "{product:{id,name,purpose,revision},principalId,api<T>(path,body?),onSaved:()=>Promise<void>}",
+    "routes": [
+      "GET v1/products/{pid}/quality-execution?build_id=&run_id=",
+      "POST v1/products/{pid}/quality-execution/inputs",
+      "GET v1/products/{pid}/change-execution?issue_id=",
+      "POST v1/products/{pid}/change-execution/inputs",
+      "POST v1/products/{pid}/change-execution/captures",
+      "POST v1/commands/preview",
+      "POST v1/commands"
+    ],
+    "receipt_families": [
+      "quality_issue",
+      "change_request"
+    ],
+    "common_command_submission": "returned prepared command preserved; T0 inputs exact read-set; original unknown request recovery"
+  },
+  "boundaries": [
+    "indeterminate/unknown/invalid/pass不能建立失败问题",
+    "server per-failure/per-issue/per-change capabilities only",
+    "人工风险/资格/图complete未开放自授",
+    "CAPA completion、root cause、effectiveness、close、Order、implementation、effectivity未开放",
+    "历史固定版本只读，失效范围清空敏感读状态",
+    "未知风险/独立政策不映射为旧reader false；人工假设不映射为AI",
+    "next-round followup only describes existing owner entrances; no fake new Build/Run/config"
+  ],
+  "reuse": [
+    "QualityIssueReading/FailureReading when exact current facts preserve semantics",
+    "ChangeControlReading for source-backed paths without misleading human-AI or Order mapping",
+    "existing Build/Results readmodels, CommonCommand/Receipt/preview/replay protocol"
+  ],
+  "frozen_no_changes_after_checks": true
+}

@@ -1,0 +1,86 @@
+{
+  "schema_version": "pdos-wave17-candidate-anchor-restore-check-result-v1",
+  "source_manifest": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-source-manifest-v1.json",
+  "source_manifest_sha256": "9efb84739c560abd061f3b72dd1da9f4a73c33091a50b461a1c2dec5b6e014ec",
+  "owned_pure": {
+    "command": "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_candidate_anchor_restore.py -q",
+    "exit_code": 0,
+    "passed": 39,
+    "failed": 0,
+    "duration_seconds": 4.79,
+    "raw_output": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-pure-fourth.log",
+    "raw_output_sha256": "973563f64cf288d5a97afda96bab7549275e1803edd69f15403d0b55e27c0b99",
+    "same_final_python_source": true,
+    "scope": "actual no-connect SQLAlchemy Session/persistent ORM/UOW; raw SQL/source/bridge/authority substitutes; no PG"
+  },
+  "preserved_attempts": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-pure-initial.log",
+      "sha256": "486b09f5f217c80ceedd81ccc4f71245c0c9d0b5d8d507978a84979b182d9d18",
+      "exit_code": 1,
+      "passed": 33,
+      "failed": 1
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-pure-second.log",
+      "sha256": "fc43c2ae73d28e7697032857bfb0ee19816d9488ae3bbed74ec4c701f6592cdf",
+      "exit_code": 1,
+      "passed": 37,
+      "failed": 1
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-pure-third.log",
+      "sha256": "d74560bd6404997a401e82aa18f682c806daa55e9c839c55a6254abe70a1a8a8",
+      "exit_code": 0,
+      "passed": 38,
+      "failed": 0
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-pure-fourth.log",
+      "sha256": "973563f64cf288d5a97afda96bab7549275e1803edd69f15403d0b55e27c0b99",
+      "exit_code": 0,
+      "passed": 39,
+      "failed": 0
+    }
+  ],
+  "static": [
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/candidate_anchor_restore.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/test_candidate_anchor_restore.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/candidate_anchor_restore.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/test_candidate_anchor_restore.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": "ast.parse(source text) in memory for two owned Python files",
+      "exit_code": 0,
+      "count": 2
+    }
+  ],
+  "static_raw_output": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-anchor-restore-static-final.log",
+  "static_raw_output_sha256": "1934d63d7e50160ba25c2ddd38823f6116fb94a055ad960216847b9d4cbdb3da",
+  "source_stable_during_static": true,
+  "unchanged_prior_frozen_owned_count": 9,
+  "limits": {
+    "database": false,
+    "http": false,
+    "public_tests": false,
+    "public_registration": false,
+    "qualification_granted": false,
+    "consumption_performed": false,
+    "prepare_write_connected": false,
+    "seven_gates_authorized": false
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "candidate_sha256": "1bf5e8a83273c61e65a8f4cd74f71c29a7c5fc0c1110cc751d714a9922e68b1e",
+  "backend": {
+    "passed": 110,
+    "failed": 0,
+    "log": "backend-final.log",
+    "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. .venv/bin/python -B -m pytest -p no:cacheprovider --confcutdir=tests/quality_issues tests/quality_issues"
+  },
+  "ruff": {
+    "exit_code": 0,
+    "log": "ruff-final.log",
+    "command": ".venv/bin/ruff check --no-cache pdos_next/domain/quality_issues pdos_next/schemas/quality_issues tests/quality_issues"
+  },
+  "frontend": {
+    "candidate_sha256": "b1b3575db2dc45eeda10e8011513901c683575757664c1414b24718c1772ef4e",
+    "checks": [
+      {
+        "command": "./node_modules/.bin/tsc --project src/components/quality_issues/tsconfig.check.json --noEmit --incremental false",
+        "exit_code": 0,
+        "output": "ui-typecheck.log"
+      },
+      {
+        "command": "./node_modules/.bin/eslint src/components/quality_issues",
+        "exit_code": 0,
+        "output": "ui-eslint.log"
+      },
+      {
+        "command": "node --test src/components/quality_issues/render.test.mjs",
+        "exit_code": 0,
+        "passed": 25,
+        "failed": 0,
+        "output": "ui-tests.log"
+      }
+    ],
+    "test_inputs": "Explicit synthetic package-local inputs only",
+    "not_run": [
+      "DB",
+      "HTTP",
+      "real browser",
+      "shared .next",
+      "full build",
+      "real credentials",
+      "real model",
+      "business export"
+    ],
+    "prior_repaired_check": "ui-typecheck-attempt1.log records test fixture union narrowing diagnostic; repaired in package only."
+  },
+  "evidence_scope": "Synthetic isolated package-only tests. No DB/HTTP/browser/full build/network model/real qualification or G/N/P/Q joint acceptance."
+}

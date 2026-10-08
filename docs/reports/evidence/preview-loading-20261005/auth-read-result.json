@@ -1,0 +1,9 @@
+{
+  "login_identity_lookup": "passed",
+  "read_only_connection": true,
+  "active_account": true,
+  "role": "project_manager",
+  "work_modules_decoded": true,
+  "password_verified": false,
+  "session_created": false
+}

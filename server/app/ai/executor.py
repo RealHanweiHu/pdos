@@ -20,6 +20,7 @@ from sqlalchemy import Engine, text
 from app.ai.call_identity import ModelCallSlot, loop_model_call_id, model_call_id
 from app.ai.checkpoints import AgentCheckpointError, AgentResultCheckpoints
 from app.ai.context_builder import RunContextBuilder
+from app.ai.durable import agent_entry
 from app.ai.embeddings import EmbeddingGateway
 from app.ai.finding_writer import (
     AgentFindingWriter,
@@ -413,6 +414,7 @@ class AgentExecutor:
         ):
             raise AgentRunPaused
 
+    @agent_entry
     def _execute_claim(self, claim: ClaimedAgentRun, current_time: datetime) -> ExecutionResult:
         with self._run_store.scope(claim):
             try:

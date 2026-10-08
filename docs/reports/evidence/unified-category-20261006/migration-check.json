@@ -1,0 +1,17 @@
+{
+  "target": {
+    "host": "127.0.0.1",
+    "port": 55041,
+    "database": "pdos_test"
+  },
+  "head": "0427_category_reference_aliases",
+  "empty_roundtrip": "0427 \u2192 0425 \u2192 0427",
+  "single_category_index": "CREATE UNIQUE INDEX uq_product_nodes_one_category ON cehub_product.product_nodes USING btree (tenant_id, market_space_id) WHERE ((level)::text = 'line'::text)",
+  "agent_direct_write_privileges": {
+    "market_spaces": false,
+    "product_nodes": false,
+    "market_space_members": false,
+    "product_line_members": false
+  },
+  "agent_function_execute_count": 0
+}

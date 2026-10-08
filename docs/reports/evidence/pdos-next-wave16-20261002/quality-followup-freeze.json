@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "wave": "Wave16",
+  "scope": "A owned quality_followup package and pure tests only",
+  "status": "implemented_owned_adapter_static_and_pure_checks_complete_public_integration_pending",
+  "source_file_count": 9,
+  "source_files": {
+    "pdos-next/server/pdos_next/domain/quality_followup/__init__.py": "5573f6fa16dc55618588eb849a494436fc47a596c59667cc087d1e9980d8cedb",
+    "pdos-next/server/pdos_next/domain/quality_followup/adapters.py": "7964e501de893cb137b269e54065d3ab1842b860cf35eb85adc8d8eaae9f768e",
+    "pdos-next/server/pdos_next/domain/quality_followup/evidence.py": "00f64e3cb8b9dba7d000f0993e733f16806d4e59a5676d18f082d210d9ce0ed5",
+    "pdos-next/server/pdos_next/domain/quality_followup/models.py": "2531e465b42bcd57bfa2f1260f727eb821c8016b29b6c1073fba0e9a8b0a640e",
+    "pdos-next/server/pdos_next/domain/quality_followup/ports.py": "dab0d1016c0d1584f66b7e0ae6fe63b77495232ade1f68512525f5b4e7694d2d",
+    "pdos-next/server/pdos_next/domain/quality_followup/schemas.py": "56e4c77f91ceead0eb377ba67eaa4789aa10b01416311166d49108728ef5e153",
+    "pdos-next/server/pdos_next/domain/quality_followup/service.py": "4d04678c24d5670b2e6e46953661dd638b5518a3adf364b82cffe725bc28ac62",
+    "pdos-next/server/tests/quality_followup/__init__.py": "37bb8f7a431f9145a346ce7a6383680f3c046142d859f745f5e17a45cbb769a6",
+    "pdos-next/server/tests/quality_followup/test_pure.py": "5b1772d3385b4892f6df28702576b09a7717ea8be91963eba2cbd9b9bc2793dd"
+  },
+  "source_manifest_sha256": "64b04349d218bd0b8b66654e67792663645550783ecf2b97025c45e8f7324814",
+  "evidence_files": {
+    "docs/reports/evidence/pdos-next-wave16-20261002/quality-followup-contract.md": "0e399cc87368154801c41d135febdb5dd4a324a04c5ef8567203fae2b6069ab4",
+    "docs/reports/evidence/pdos-next-wave16-20261002/quality-followup-pure.log": "ebc4ee289a507b177bd261528af3ab6328d85d929469157268bc37181062e905"
+  },
+  "validation": {
+    "ruff_check": {
+      "command": ".venv/bin/ruff check pdos_next/domain/quality_followup tests/quality_followup",
+      "result": "passed",
+      "scope": "owned directories",
+      "provenance": "completed tool result before this evidence was saved"
+    },
+    "ast_compile": {
+      "file_count": 9,
+      "result": "passed",
+      "provenance": "AST rechecked at evidence creation; AST/compile completed previously"
+    },
+    "pure": {
+      "command": ".venv/bin/python -m pytest tests/quality_followup --noconftest -q",
+      "passed": 52,
+      "failed": 0,
+      "duration_seconds": 0.84,
+      "scope": "owned tests only; no repository conftest",
+      "log": "quality-followup-pure.log",
+      "log_kind": "transcript_of_completed_tool_result_not_raw_redirect"
+    },
+    "database": "not_run",
+    "http": "not_run",
+    "browser": "not_run",
+    "public_checks": "not_run"
+  },
+  "operations": {
+    "quality.issue.root_cause.decide": {
+      "dto": "RootCausePayload",
+      "tier": "T2",
+      "kernel_event": "issue.root_cause_decided"
+    },
+    "quality.capa.actions.complete": {
+      "dto": "ActionsCompletePayload",
+      "tier": "T1",
+      "kernel_event": "capa.actions_completed"
+    }
+  },
+  "models": {
+    "new_tables": 0,
+    "aggregate": "existing QualityIssueVersion/QualityIssueCurrent; public append callback mandatory"
+  },
+  "host_callbacks": [
+    "append_issue same Session/no Receipt/no commit",
+    "consumed_proof actual shared consumed UUID, T2 Invocation.decision_id",
+    "assess_action_completion typed current policy/owner proof",
+    "existing fixed quality Result bytes bridge and narrow refresh"
+  ],
+  "get_semantics": {
+    "can_prepare_completion": "current permission/status/callback permits candidate input only",
+    "can_complete": false,
+    "completion_verified": null,
+    "historical_write_capabilities": false
+  },
+  "boundaries": [
+    "No Wave15 files or old pure quality package modified",
+    "No new Receipt/Confirmation/commit or duplicated aggregate",
+    "No default authority/positive completion classification",
+    "No effectiveness/closure or creation/start of owner verification Run",
+    "No production qualification or formal Exit claim"
+  ],
+  "remaining_root_work": [
+    "shared append/proof/completion assessment callbacks",
+    "roles/T1-T2 command registration and existing Issue checks",
+    "singleIssue public route adapter",
+    "central PG transaction/CAS/rollback/replay/source and issuer drift validation"
+  ]
+}

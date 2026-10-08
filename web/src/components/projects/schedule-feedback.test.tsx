@@ -4,7 +4,7 @@ import { ScheduleForecastPanel } from "./schedule-forecast-panel";
 import { ScheduleActualCorrections } from "./schedule-actual-corrections";
 import { ProjectSourceActualCorrections } from "./project-source-actual-corrections";
 
-vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams() }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useSearchParams: () => new URLSearchParams() }));
 vi.mock("@/components/cases/plan-capacity", () => ({ PlanCapacity: () => <p>容量核对入口</p> }));
 
 const project = "project-a";

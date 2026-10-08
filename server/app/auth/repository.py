@@ -11,6 +11,7 @@ from sqlalchemy.engine import RowMapping
 
 from app.auth.errors import InvalidCredentialsError, SetupAlreadyCompletedError
 from app.auth.roles import Role
+from app.auth.work_modules import WorkModule, normalize_work_modules
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
@@ -36,6 +37,7 @@ class UserRecord:
     password_hash: str | None
     auth_version: int
     is_active: bool
+    work_modules: tuple[WorkModule, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -145,6 +147,7 @@ class AuthRepository:
                 tables.users.c.username,
                 tables.users.c.display_name,
                 tables.users.c.role.label("user_role"),
+                tables.users.c.work_modules,
                 tables.users.c.email,
                 tables.users.c.password_hash,
                 tables.users.c.auth_version,
@@ -178,6 +181,7 @@ class AuthRepository:
                 tables.users.c.username,
                 tables.users.c.display_name,
                 tables.users.c.role.label("user_role"),
+                tables.users.c.work_modules,
                 tables.users.c.email,
                 tables.users.c.password_hash,
                 tables.users.c.auth_version,
@@ -321,6 +325,7 @@ class AuthRepository:
                 username=row["username"],
                 display_name=row["display_name"],
                 role=Role(row["user_role"]),
+                work_modules=normalize_work_modules(row["work_modules"]),
                 email=row["email"],
                 password_hash=row["password_hash"],
                 auth_version=row["auth_version"],

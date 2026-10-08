@@ -1,0 +1,112 @@
+{
+  "environment": "existing isolated synthetic preview localhost:3023/API8893; no business writes",
+  "checks": [
+    {
+      "documentWidth": 1280,
+      "mainCount": 1,
+      "page": "/portfolio",
+      "theme": "dark",
+      "width": 1280
+    },
+    {
+      "documentWidth": 1280,
+      "page": "/ask",
+      "panelLeft": 56,
+      "sidebarCollapsed": "true",
+      "width": 1280
+    },
+    {
+      "documentWidth": 1280,
+      "page": "/ask",
+      "panelLeft": 224,
+      "sidebarCollapsed": "false",
+      "width": 1280
+    },
+    {
+      "documentWidth": 1280,
+      "mainCount": 1,
+      "page": "/cases",
+      "width": 1280
+    },
+    {
+      "documentWidth": 320,
+      "mainCount": 1,
+      "page": "/requirements",
+      "width": 320
+    },
+    {
+      "documentWidth": 320,
+      "formOpened": true,
+      "headerTop": 0,
+      "page": "/requirements",
+      "scrollY": 655.5,
+      "width": 320
+    },
+    {
+      "documentWidth": 320,
+      "mainCount": 1,
+      "page": "/search",
+      "width": 320
+    },
+    {
+      "documentWidth": 320,
+      "mainCount": 1,
+      "page": "/capture",
+      "width": 320
+    },
+    {
+      "documentWidth": 1920,
+      "mainWidth": 1696,
+      "page": "/portfolio",
+      "width": 1920
+    },
+    {
+      "documentWidth": 320,
+      "mainCount": 1,
+      "page": "/ai-review",
+      "width": 320
+    },
+    {
+      "documentWidth": 320,
+      "page": "/login",
+      "width": 320,
+      "workContextVisible": false
+    },
+    {
+      "documentWidth": 1440,
+      "page": "/login",
+      "width": 1440
+    }
+  ],
+  "additionalVerified": {
+    "myWorkMobileLight": {
+      "width": 320,
+      "documentWidth": 320,
+      "mainCount": 1
+    },
+    "myWorkMobileDark": {
+      "width": 320,
+      "documentWidth": 320,
+      "mainCount": 1
+    },
+    "knowledgeMobileDark": {
+      "width": 320,
+      "documentWidth": 320,
+      "mainCount": 1,
+      "evidenceInMain": true
+    },
+    "mobileEscapeRestoresToggle": true,
+    "sidebarPreferenceAcrossRoutes": true
+  },
+  "screenshots": [
+    "my-work-mobile-light.png",
+    "my-work-mobile-dark.png",
+    "knowledge-mobile-dark.png",
+    "portfolio-laptop-dark.png",
+    "portfolio-desktop-light.png",
+    "requirements-mobile-dark.png",
+    "review-mobile-light.png",
+    "login-mobile-light.png",
+    "login-desktop-light.png"
+  ]
+}

@@ -66,7 +66,7 @@ export function ProductResearchProposal({ base, runId, disabled, autoLoad = fals
   const editable = pending && !disabled && record?.sources_current;
   return <section aria-label="研究计划候选" className="space-y-3 rounded-md border p-3">
     <h4 className="font-medium">研究计划候选</h4>
-    <p className="text-muted-foreground">先核对计划并接受，再单独应用为研究草稿。负责人固定为你，产品线沿用原分析范围；研究开始与结论仍需另行办理。</p>
+    <p className="text-muted-foreground">先核对计划并接受，再单独应用为研究草稿。负责人固定为你，品类沿用原分析范围；研究开始与结论仍需另行办理。</p>
     <Button size="sm" variant="outline" disabled={busy} onClick={() => void load()}>读取 / 刷新研究候选</Button>
     {busy && <p role="status">正在核对或办理…</p>}
     {error && <p role="alert" className="text-destructive">{error}</p>}

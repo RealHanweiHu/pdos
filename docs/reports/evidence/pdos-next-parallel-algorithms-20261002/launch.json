@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "record_type": "dispatch_and_start_snapshot",
+  "checked_at_utc": "2026-10-02 10:39:35 UTC",
+  "user_authorization": "帮我开始这三个可以开独立会话",
+  "coordinator_thread_id": "01a0fc29-9435-75a3-8a7c-d2dc4ca0dfe6",
+  "project_id": "441a6448-7480-4a29-ba78-b09d15c975c8",
+  "workspace": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+  "environment": "local_shared_workspace_with_disjoint_file_ownership",
+  "main_thread": {
+    "thread_id": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "title": "按新设计完成并执行方案",
+    "responsibility": "共同对象、命令、迁移、服务/API/UI接线及集中联合验证"
+  },
+  "tasks": [
+    {
+      "key": "planning",
+      "threadId": "01a0fc32-53fd-72d3-bfd4-034641a48870",
+      "hostId": "local",
+      "title": "PDOS Next：日历与排程计算",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "latestTurnStatus": "inProgress",
+      "exclusive_paths": [
+        "pdos-next/server/pdos_next/engines/planning/",
+        "pdos-next/server/tests/planning_engine/",
+        "docs/reports/evidence/pdos-next-planning-20261002/"
+      ],
+      "interface_version": "v1 independent snapshots and computation candidates",
+      "initial_prompt": "在 /Users/huhanwei/Documents/ai-native-R&D-platform 的本地项目中直接开始实施。用户已明确要求启动三个独立会话；这是其中一个独立算法包，不要停留在计划或盘点。当前主线会话为“按新设计完成并执行方案”（01a0fbeb-3050-7662-912f-7a380996ed6a），正在收口 pdos-next 第一波模型网关、证据处理和人工产品定义。本包交付独立计算模块、必要检查与可供主线接入的说明；正式业务写入和页面接线由主线统一完成。\n\n先读 AGENTS.md 和 tasks/ai-native-integrated-todo.md 的 current-queue/pdos-next-queue，再定向读 docs/design/2026-10-02-pdos-complete-target-architecture-v1.md、docs/design/2026-10-02-pdos-next-execution-plan.md 与 docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md 中本包相关合同。清单当前“未开工”描述可能还未追上主线施工，勿把已存在源码重建一遍。旧源码仅作为抽取参考，记录所取算法的路径/函数/哈希；新包不导入旧 app 包，不继承旧业务实例、批准、资格或账号。\n\n严格只修改下文分配的三个目录，保留所有无关脏工作。不得修改 engines/ 公共父目录的 __init__.py（Python namespace 子包可以先独立使用），不得修改现有 domain/products、schemas/products、models/contracts/service/api/runtime、迁移、根 conftest、公共配置/依赖锁、web、唯一清单或设计方案；不能自行注册新的业务对象或绕过共同命令入口。仅读公共类型，不连接数据库、不读取 .env/.local 凭据、不调用真实模型、不操作预览/工作流服务、不运行数据库用例或完整构建，不提交或 push。独立包可以使用现有 pdos-next/server/.venv，以本包目录为 pytest --confcutdir 运行纯算法测试，避免加载公共数据库 fixture；本包 Ruff/格式检查只覆盖归属文件，不执行共享依赖安装。需要新增依赖时用现有标准库/已装依赖完成可行部分，必要需求写入接入说明交主线统一处理。\n\n合理确定本包最小输入输出 DTO v1，使用固定版本快照与确定性计算，避免先建通用框架。独立返回计算结果、缺项、冲突和依据，不伪造权威业务状态或批准。按影响做必要算法/负例检查，不为低风险展示新增镜像测试。持续执行直到本包首版实现、受影响检查和证据交付完成；只有依赖部分受阻才记录恢复条件，继续独立可做部分。结果与原始日志、源摘要和本包候选哈希只写本包证据目录；最终向用户报告可用模块、检查结果、未接入范围及主线需要的接口，不自勾 G/N/P/Q，也不把纯计算完成说成业务闭环已完成。\n\n本会话独占：\n- pdos-next/server/pdos_next/engines/planning/**\n- pdos-next/server/tests/planning_engine/**\n- docs/reports/evidence/pdos-next-planning-20261002/**\n\n目标：交付可独立调用的工作日历、依赖排程和预测计算首版，供 G1.3/G5.2 接入。优先定向抽取 server/app/domain/working_time.py、plan_scheduling.py、schedule_forecast_engine.py 中的确定性算法与必要反例，替换旧 Contract/DTO/任务枚举，不整包复制数据库服务。\n\n输入输出至少保留日历 ID/版本、原始时区、工作时段/例外、节点稳定 ID、依赖、估时范围/剩余量/来源、外部等待已知与未知。UTC 存储与本地工作日计算正确，处理跨日、周末/假日、DST、依赖环及不可满足输入；未知时长或等待不补零，也不生成虚假精确日期。区分 Baseline/Forecast/Commitment/Actual，计算仅产出 Forecast 候选及约束说明，不改变承诺、基线、事实或实际预约。资源部分先取当前排程所需最小容量表达，不扩大为完整优化平台。\n\n交付 typed DTO、纯函数/可调用入口、可解释结果和针对日历边界/未知传播/依赖冲突的必要测试。本包接入说明列出真实 ProjectProductLink、双线工作包、PlanRevision、具名责任和当前主线还须提供的读写 port，不改这些对象。"
+    },
+    {
+      "key": "supply_cost",
+      "threadId": "01a0fc32-65cf-7021-8d8f-1badadd7af46",
+      "hostId": "local",
+      "title": "PDOS Next：齐套与成本计算",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "latestTurnStatus": "inProgress",
+      "exclusive_paths": [
+        "pdos-next/server/pdos_next/engines/supply_cost/",
+        "pdos-next/server/tests/supply_cost_engine/",
+        "docs/reports/evidence/pdos-next-supply-cost-20261002/"
+      ],
+      "interface_version": "v1 independent snapshots and computation candidates",
+      "initial_prompt": "在 /Users/huhanwei/Documents/ai-native-R&D-platform 的本地项目中直接开始实施。用户已明确要求启动三个独立会话；这是其中一个独立算法包，不要停留在计划或盘点。当前主线会话为“按新设计完成并执行方案”（01a0fbeb-3050-7662-912f-7a380996ed6a），正在收口 pdos-next 第一波模型网关、证据处理和人工产品定义。本包交付独立计算模块、必要检查与可供主线接入的说明；正式业务写入和页面接线由主线统一完成。\n\n先读 AGENTS.md 和 tasks/ai-native-integrated-todo.md 的 current-queue/pdos-next-queue，再定向读 docs/design/2026-10-02-pdos-complete-target-architecture-v1.md、docs/design/2026-10-02-pdos-next-execution-plan.md 与 docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md 中本包相关合同。清单当前“未开工”描述可能还未追上主线施工，勿把已存在源码重建一遍。旧源码仅作为抽取参考，记录所取算法的路径/函数/哈希；新包不导入旧 app 包，不继承旧业务实例、批准、资格或账号。\n\n严格只修改下文分配的三个目录，保留所有无关脏工作。不得修改 engines/ 公共父目录的 __init__.py（Python namespace 子包可以先独立使用），不得修改现有 domain/products、schemas/products、models/contracts/service/api/runtime、迁移、根 conftest、公共配置/依赖锁、web、唯一清单或设计方案；不能自行注册新的业务对象或绕过共同命令入口。仅读公共类型，不连接数据库、不读取 .env/.local 凭据、不调用真实模型、不操作预览/工作流服务、不运行数据库用例或完整构建，不提交或 push。独立包可以使用现有 pdos-next/server/.venv，以本包目录为 pytest --confcutdir 运行纯算法测试，避免加载公共数据库 fixture；本包 Ruff/格式检查只覆盖归属文件，不执行共享依赖安装。需要新增依赖时用现有标准库/已装依赖完成可行部分，必要需求写入接入说明交主线统一处理。\n\n合理确定本包最小输入输出 DTO v1，使用固定版本快照与确定性计算，避免先建通用框架。独立返回计算结果、缺项、冲突和依据，不伪造权威业务状态或批准。按影响做必要算法/负例检查，不为低风险展示新增镜像测试。持续执行直到本包首版实现、受影响检查和证据交付完成；只有依赖部分受阻才记录恢复条件，继续独立可做部分。结果与原始日志、源摘要和本包候选哈希只写本包证据目录；最终向用户报告可用模块、检查结果、未接入范围及主线需要的接口，不自勾 G/N/P/Q，也不把纯计算完成说成业务闭环已完成。\n\n本会话独占：\n- pdos-next/server/pdos_next/engines/supply_cost/**\n- pdos-next/server/tests/supply_cost_engine/**\n- docs/reports/evidence/pdos-next-supply-cost-20261002/**\n\n目标：交付供 G4.1 和早期定义约束使用的齐套与成本确定性计算首版。优先抽取 server/app/domain/material_coverage.py 的计算部分、cost_rollups.py 的 calculate/_calculate，以及必要的 cost_inputs、共享池规则和反例。SQL 锁、分配事务、供方批准和旧领域服务均不复制到新计算包。\n\n从固定 BOM/配置版本、Build 数量和供给/库存快照计算需求、可用、缺口和解释。保留数量单位与可换算范围；共享库存/物料池不得重复计算；供方承诺、在途、实到、质量冻结和真正可用分别表达，承诺不计作实到；参数相近不等于替代资格，替代资格必须作为外部已验证输入而非算法自行授予。未知数量/可用状态明确输出，不默认零或齐套。\n\n成本使用 Decimal，保存 BOM、工艺、报价、币种/汇率来源与时点、数量、损耗和成本口径假设；数量/单位/币种不可比、汇率或报价缺失给出可解释未完成结果，不编造总价。输出固定依据、分项/总计候选和缺项/敏感项，估算不冒充 ERP 正式成本或实际降本。首版可限定支持明确的单位/工艺口径，并把不支持部分如实列出。\n\n交付 typed DTO、纯计算入口、必要的共享池去重/质量受限/缺项/Decimal及单位币种负例与接入说明。实体与字段需求交主线，不写 MaterialDemand/AvailabilitySnapshot/CostEstimate 权威表，不修改既有 Build/BOM/供给。"
+    },
+    {
+      "key": "derivation",
+      "threadId": "01a0fc32-6a4c-7d73-8d98-ecc809435c21",
+      "hostId": "local",
+      "title": "PDOS Next：派生三方差异",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "latestTurnStatus": "inProgress",
+      "exclusive_paths": [
+        "pdos-next/server/pdos_next/engines/derivation/",
+        "pdos-next/server/tests/derivation_engine/",
+        "docs/reports/evidence/pdos-next-derivation-20261002/"
+      ],
+      "interface_version": "v1 independent snapshots and computation candidates",
+      "initial_prompt": "在 /Users/huhanwei/Documents/ai-native-R&D-platform 的本地项目中直接开始实施。用户已明确要求启动三个独立会话；这是其中一个独立算法包，不要停留在计划或盘点。当前主线会话为“按新设计完成并执行方案”（01a0fbeb-3050-7662-912f-7a380996ed6a），正在收口 pdos-next 第一波模型网关、证据处理和人工产品定义。本包交付独立计算模块、必要检查与可供主线接入的说明；正式业务写入和页面接线由主线统一完成。\n\n先读 AGENTS.md 和 tasks/ai-native-integrated-todo.md 的 current-queue/pdos-next-queue，再定向读 docs/design/2026-10-02-pdos-complete-target-architecture-v1.md、docs/design/2026-10-02-pdos-next-execution-plan.md 与 docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md 中本包相关合同。清单当前“未开工”描述可能还未追上主线施工，勿把已存在源码重建一遍。旧源码仅作为抽取参考，记录所取算法的路径/函数/哈希；新包不导入旧 app 包，不继承旧业务实例、批准、资格或账号。\n\n严格只修改下文分配的三个目录，保留所有无关脏工作。不得修改 engines/ 公共父目录的 __init__.py（Python namespace 子包可以先独立使用），不得修改现有 domain/products、schemas/products、models/contracts/service/api/runtime、迁移、根 conftest、公共配置/依赖锁、web、唯一清单或设计方案；不能自行注册新的业务对象或绕过共同命令入口。仅读公共类型，不连接数据库、不读取 .env/.local 凭据、不调用真实模型、不操作预览/工作流服务、不运行数据库用例或完整构建，不提交或 push。独立包可以使用现有 pdos-next/server/.venv，以本包目录为 pytest --confcutdir 运行纯算法测试，避免加载公共数据库 fixture；本包 Ruff/格式检查只覆盖归属文件，不执行共享依赖安装。需要新增依赖时用现有标准库/已装依赖完成可行部分，必要需求写入接入说明交主线统一处理。\n\n合理确定本包最小输入输出 DTO v1，使用固定版本快照与确定性计算，避免先建通用框架。独立返回计算结果、缺项、冲突和依据，不伪造权威业务状态或批准。按影响做必要算法/负例检查，不为低风险展示新增镜像测试。持续执行直到本包首版实现、受影响检查和证据交付完成；只有依赖部分受阻才记录恢复条件，继续独立可做部分。结果与原始日志、源摘要和本包候选哈希只写本包证据目录；最终向用户报告可用模块、检查结果、未接入范围及主线需要的接口，不自勾 G/N/P/Q，也不把纯计算完成说成业务闭环已完成。\n\n本会话独占：\n- pdos-next/server/pdos_next/engines/derivation/**\n- pdos-next/server/tests/derivation_engine/**\n- docs/reports/evidence/pdos-next-derivation-20261002/**\n\n目标：交付 G1.2 平台/变体派生所需的固定父版与显式覆盖、三方差异/冲突及选择性采纳候选纯核。开工先定向核对当前 pdos-next/server/pdos_next/domain/products/definitions.py 的 difference 和 schemas/products/definitions.py、web/src/lib/product-view.ts：现有 difference(previous,current) 仅为两方历史比较，不修改也不重做这个功能。补充旧父版/新父版/当前子版的三方派生能力。仅读当前产品包，避免重复其草稿续版、版本历史和界面工作。\n\n优先抽取 server/app/domain/definition_inheritance.py 的 merge_paths/three_way/accept_changes 等纯算法，重建输入类型适配新 Definition/Spec 的 specs/key 结构。以固定父版标识/版本和子版显式覆盖/原因/来源/适用范围作为输入；区分未改变、仅父改变、仅子改变、双方相同变化与冲突，明确删除/缺失/None/未知状态区别。稳定条目 key 与 Decimal 值型/单位/测试条件必须保留，列表顺序变化不应制造虚假规格变更。拒绝不合法路径、版本错配和重复 key，结果顺序确定，不修改传入对象。\n\n只生成差异与采用候选；选择性采纳不能复制父版批准、发布身份、责任人或确认状态，也不能自动确认子版规格。来源受众、跨客户权限、适用性由主线权威校验 port 提供，算法不把其输入当服务器已授权事实。适配定义时对未知、单位/条件变化保留明确的重新确认需求。\n\n交付 typed DTO、三方差异/冲突与候选合并入口、针对删除与未知/稳定 key/不可继承决策的必要测试，以及与当前 Definition DTO 的字段映射和接入说明。只完成纯核，不创建 Platform/Variant 权威对象、不修改定义写入 handler/页面、不自动发布或回写平台。"
+    }
+  ],
+  "acceptance_for_this_request": "三个独立会话创建成功、首轮执行 active/inProgress、非重叠归属及交付边界明确",
+  "delivery_status": "算法实施已启动；本记录不确认模块已交付或业务接入已完成",
+  "live_status_source": "tasks/ai-native-integrated-todo.md#pdos-next-parallel-algorithms"
+}

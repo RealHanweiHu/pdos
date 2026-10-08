@@ -1,0 +1,34 @@
+{
+  "synthetic_only": true,
+  "local_http_trust_env": false,
+  "old_login_or_qualification_extended": false,
+  "existing3028_untouched": true,
+  "checks": [
+    {
+      "name": "no-cookie-session",
+      "status": 401
+    },
+    {
+      "name": "new-original-finite-session",
+      "status": 200
+    },
+    {
+      "name": "exact-principal",
+      "status": 200
+    },
+    {
+      "name": "real-cold-runtime-fixed-manufacturing-current",
+      "status": 200,
+      "versions": 3,
+      "current": 3,
+      "source_statuses": [
+        "current"
+      ]
+    },
+    {
+      "name": "exact-fixed-baseline-body",
+      "status": 200
+    }
+  ],
+  "status": "PASS_REAL_BFF_COLD_RUNTIME_READ"
+}

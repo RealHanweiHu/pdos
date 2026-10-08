@@ -1,0 +1,38 @@
+{
+  "nature": "explicit local synthetic only",
+  "request_created": {
+    "version": 1,
+    "from_preparation_revision": 2
+  },
+  "positive_method_attempt": {
+    "http_status": 422,
+    "code": "METHOD_EVIDENCE_INCOMPLETE",
+    "effect": "no method fact written; required calibration/document evidence still missing"
+  },
+  "saved_method_review": {
+    "version": 2,
+    "item_statuses": [
+      "unknown",
+      "unknown"
+    ],
+    "common_confirmation_once": true
+  },
+  "saved_window": {
+    "version": 3,
+    "start_utc": "2026-10-04T16:00:00Z",
+    "finish_utc": "2026-10-04T18:00:00Z",
+    "original_timezone": "America/Los_Angeles",
+    "resource_units": null,
+    "resource_id": null,
+    "occupancy": 0
+  },
+  "history_v1": {
+    "visible": true,
+    "method_action_enabled": false,
+    "window_action_enabled": false
+  },
+  "final_return_to_version": 3,
+  "actual_api_readback": "actual-preview.json",
+  "layouts": "browser-layouts.json",
+  "initial_read_failure": "Observed Product/Project lock order deadlock during initial parallel page load; corrected in common helpers and verified by two deterministic concurrency cases. No write was submitted during that initial failure."
+}

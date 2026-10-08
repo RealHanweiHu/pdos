@@ -1,0 +1,38 @@
+{
+  "recorded_at": "2026-10-03T10:26:37.948483+00:00",
+  "after_v3_stop": true,
+  "files": [
+    {
+      "path": "pdos-next/server/tests/quality_followup_transactions/test_transactions.py",
+      "before_sha256": "58bfa1250c427af0d7b6842dd33dd38b52a3b2cbed37ea364f13a1284f17ca80",
+      "after_sha256": "d6400b377956b4356bcc3546d413005099352a22295d7ae3c8e2b29980ab5aa0",
+      "before_archive": "utc-clock-assertion-before-v3.py.txt",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_front/service.py",
+      "before_sha256": "0ccc98a4f9b3127d47a45be11f949d0e23b776da7865856933c741bf90e4d2d0",
+      "after_sha256": "ad7390463fc84cff5b767f3046044a2817edf12e2e4601dfda9eb59c7f6b8996",
+      "before_archive": "professional-projection-before-v3.py.txt",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "before_sha256": "d4afc3197e77899c6211eba339fefe6ca9e317ee6b6d9ddec622128db4b7838a",
+      "after_sha256": "d4afc3197e77899c6211eba339fefe6ca9e317ee6b6d9ddec622128db4b7838a",
+      "before_archive": "before-link-common-service.py.txt",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/commands.py",
+      "before_sha256": "05c8c74af37cd26edd73ed320311f20d86c9b6515ebc9bac2b9b37a6e28a150a",
+      "after_sha256": "05c8c74af37cd26edd73ed320311f20d86c9b6515ebc9bac2b9b37a6e28a150a",
+      "before_archive": "before-link-commands.py.txt",
+      "changed": false
+    }
+  ],
+  "UTC_clock_precision_and_original_native_text_preserved": true,
+  "backend_projection": "zero occupancy follows actual Start fact, including reported/disposed history",
+  "public_runtime_updated": false,
+  "replacement_PG_started": false
+}

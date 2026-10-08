@@ -1,0 +1,7 @@
+{
+  "status": "ACTUAL_SHARED_COUNT_GUARD_GENERALIZED",
+  "after_sha256": "302e6130b1172132270e24d7e5294be428a06d3d27578e7d1f3c12d08853d2a4",
+  "reason": "Known final-good count cannot exceed known first-pass plus reworked-good plus first-unknown; existing lower bound preserved",
+  "unknown_fields_not_filled": true,
+  "prior_zero_unknown_equality_hunk_superseded": true
+}

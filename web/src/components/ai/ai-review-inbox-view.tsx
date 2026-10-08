@@ -205,8 +205,7 @@ export function AiReviewInboxView({
     <WorkspaceShell active="ai-review" identity={identity} loggingOut={loggingOut} onLogout={onLogout}>
       <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-4">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Engineer Workspace</p>
-          <h1 className="mt-1 text-lg font-semibold" data-testid="ai-review-ready">AI Review 收件箱</h1>
+          <h1 className="text-lg font-semibold tracking-tight" data-testid="ai-review-ready">AI Review 收件箱</h1>
           <p className="mt-1 text-sm text-muted-foreground">每条建议由人独立裁决；接受后仍需再次确认才写入业务对象。</p>
         </div>
         <dl className="flex overflow-hidden rounded-lg border bg-card text-center">
@@ -250,8 +249,9 @@ export function AiReviewInboxView({
           ) : null}
         </section>
       ) : (
-        <div className="mt-5 flex min-h-[620px] flex-col overflow-hidden rounded-lg border bg-card lg:grid lg:grid-cols-[288px_minmax(0,1fr)]">
-          <aside aria-label="Finding 队列" className="order-last max-h-[340px] overflow-y-auto border-t lg:order-none lg:max-h-[700px] lg:border-t-0 lg:border-r">
+        <div className="mt-5 flex flex-col overflow-hidden rounded-lg border bg-card lg:grid lg:min-h-[620px] lg:grid-cols-[288px_minmax(0,1fr)]">
+          <aside id="review-queue" aria-label="Finding 队列" className="order-last border-t lg:order-none lg:max-h-[700px] lg:overflow-y-auto lg:border-t-0 lg:border-r">
+            <a className="flex min-h-11 items-center border-b px-4 text-xs font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring lg:hidden" href="#review-detail">返回建议详情</a>
             <ol role="list">
               {findings.map((finding) => (
                 <li className="border-b last:border-b-0" key={finding.id}>
@@ -278,7 +278,8 @@ export function AiReviewInboxView({
           </aside>
 
           {selected ? (
-            <article aria-label="Finding 详情" className="order-first max-h-[70svh] min-w-0 overflow-y-auto lg:order-none lg:max-h-[min(700px,calc(100svh-20rem))]">
+            <article id="review-detail" aria-label="Finding 详情" className="order-first min-w-0 lg:order-none lg:max-h-[min(700px,calc(100svh-20rem))] lg:overflow-y-auto">
+              <a className="flex min-h-11 items-center justify-between border-b px-4 text-xs font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring lg:hidden" href="#review-queue">选择其他建议<span className="font-mono">{findings.length} 条</span></a>
               <header className="border-b px-4 py-4 sm:px-5">
                 <div className="flex flex-wrap items-center gap-2"><StatusBadge finding={selected} /><span className="text-[11px] text-muted-foreground">{typeLabels[selected.finding_type]}</span></div>
                 <h2 className="mt-2 text-base font-semibold">{selected.title}</h2>
@@ -379,7 +380,7 @@ export function AiReviewInboxView({
                 {selected.status === "applied" && selected.applied_entity_type === "quality_work_package" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=quality&ncr=${String(selected.accepted_payload?.ncr_id ?? "")}`}>查看实际品质任务、措施与后续观察要求</Link> : null}
                 {selected.status === "applied" && selected.applied_entity_type === "change_impact_scope" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=engineering&ecr=${String(selected.accepted_payload?.ecr_id ?? "")}`}>查看实际变更范围与后续办理</Link> : null}
                 {selected.status === "applied" && selected.applied_entity_type === "memory" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/knowledge?project=${selected.project_id}&memory=${selected.applied_entity_id}`}>查看 Memory 草稿 <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
-                {selected.status === "applied" && selected.applied_entity_type === "risk" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=work-items`}>查看已应用 Risk <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
+                {selected.status === "applied" && selected.applied_entity_type === "risk" ? <Link className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=work-items&view=risks&entity_id=${selected.applied_entity_id}`}>查看已应用 Risk <ArrowSquareOutIcon aria-hidden="true" /></Link> : null}
                 {selected.status === "applied" && meetingBusinessTypes.includes(selected.finding_type) ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={selected.finding_type === "meeting_change" ? `/projects?project=${selected.project_id}&tab=engineering&ecr=${selected.applied_entity_id}` : `/projects?project=${selected.project_id}&tab=work-items&entity_id=${selected.applied_entity_id}`}>打开实际业务记录</Link> : null}
                 {selected.status === "applied" && selected.finding_type === "meeting_decision" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=decisions`}>查看正式决策及执行跟进</Link> : null}
                 {selected.status === "applied" && selected.finding_type === "meeting_action" ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-applied" href={`/projects?project=${selected.project_id}&tab=work-items&entity_id=${selected.applied_entity_id}`}>打开实际会议行动任务</Link> : null}

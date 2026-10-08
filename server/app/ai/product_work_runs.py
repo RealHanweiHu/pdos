@@ -12,6 +12,7 @@ from app.ai.application_recovery import try_resume
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.capability_contract import resolve_capability
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
 from app.ai.product_work_context import (
@@ -251,6 +252,7 @@ class ProductWorkRuns:
             "next_before_id": str(values[19]["id"]) if len(values) > 20 else None,
         }
 
+    @agent_entry
     def create(self, *, context: AuthContext, space_id: UUID, request: Request) -> dict[str, Any]:
         require_live_key(key(request.selection.capability))
         prompt, output_type = contract(capability=request.selection.capability)

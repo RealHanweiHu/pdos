@@ -1,0 +1,66 @@
+{
+  "status": "owned_pure_and_static_passed",
+  "pure": {
+    "command": "PYTHONPATH=pdos-next/server pdos-next/server/.venv/bin/python -m pytest --noconftest -p no:cacheprovider pdos-next/server/tests/capa_effectiveness/test_candidate_service.py -q",
+    "exit_code": 0,
+    "passed": 26,
+    "seconds": 1.02,
+    "log": "candidate-service-pure-v3.log"
+  },
+  "static": {
+    "ruff_check": {
+      "exit_code": 0,
+      "log": "candidate-service-ruff-v3.log"
+    },
+    "ruff_format_check": {
+      "exit_code": 0,
+      "log": "candidate-service-format-check-v3.log"
+    },
+    "ast_compile_import_alias": {
+      "exit_code": 0,
+      "log": "candidate-service-static-v3.log",
+      "files": 3
+    }
+  },
+  "source_files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py",
+      "sha256": "33b7343e50e551d681a289d8d61f073a3b0ef1dce05d5f61aa16997dbca55223"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/schemas.py",
+      "sha256": "ad5648c0ef1d049a2234255f29570e9cb525485456a3797d4b6927ca0d0ae637"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_candidate_service.py",
+      "sha256": "cc1693338c6dbac83ecd5fcaa6fa63faea915b78da8c4275d5c200d4d74bc271"
+    }
+  ],
+  "supersession": {
+    "first_run": {
+      "passed": 22,
+      "failed": 1,
+      "failure": "test_missing_complete_source_read_set_is_rejected expected MISSING_REQUIRED_EVIDENCE; canonical empty reads raised RECHECK_REQUIRED",
+      "raw_log_saved": false,
+      "source": "functions.write_stdin tool stdout in session 86197"
+    },
+    "second_run": {
+      "passed": 23,
+      "failed": 0,
+      "log": "candidate-service-pure-v2.log"
+    },
+    "final_run": "26 passed supersedes earlier overlapping cases; do not sum"
+  },
+  "limits": [
+    "No DB/HTTP/public test/build performed",
+    "Explicit no-database owner preparation and writer delegation substitutes; no original bytes/qualification/SQL atom authorization attested",
+    "Actual shared false-to-true SQL consumer and reciprocal deferred atom checks remain Root validation",
+    "A public candidate_prepare is separately owned; observed interface present, dependency final hash to be bound by Root"
+  ],
+  "separately_owned_dependency": {
+    "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "sha256": "66b4169d848f3b348eaf8bf1c65d515eacd0f0fd58314b6f7e7f0743ff81712c",
+    "owner": "reuse_foundation",
+    "status": "frozen signature confirmed; no test rerun claimed by B"
+  }
+}

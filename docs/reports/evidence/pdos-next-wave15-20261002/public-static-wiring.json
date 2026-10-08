@@ -1,0 +1,13 @@
+{
+  "business_tables": 104,
+  "new_operations": 7,
+  "new_routes": [
+    "/v1/products/{product_id}/quality-execution",
+    "/v1/products/{product_id}/quality-execution/inputs",
+    "/v1/products/{product_id}/change-execution",
+    "/v1/products/{product_id}/change-execution/inputs",
+    "/v1/products/{product_id}/change-execution/captures"
+  ],
+  "policy_import_public": false,
+  "lifecycle_guarded": 88
+}

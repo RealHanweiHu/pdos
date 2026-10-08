@@ -1,0 +1,38 @@
+{
+  "environment": "own synthetic preview only, not a qualified real model",
+  "production_preview": "http://127.0.0.1:3035/ask",
+  "desktop": [
+    1440,
+    1000
+  ],
+  "mobile": [
+    [
+      320,
+      812
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "observed_checks": [
+    "actual streamed partial text before final answer",
+    "same-conversation follow-up uses previous user message",
+    "reload restores saved user and assistant turns",
+    "stop after committed run receipt yields REPLY_CANCELLED",
+    "starting a new session preserves access to the previous session",
+    "resume conversation after stopping",
+    "drawer opens retained personal history and expands into full conversation",
+    "light and dark layouts"
+  ],
+  "mobile_320_document_width": 320,
+  "synthetic_first_text_single_sample_ms": 5827,
+  "performance_claim": "one synthetic interaction sample; no real-provider latency or UX/P95 exit claim",
+  "console_snapshot": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "final_history_switch": true,
+  "final_continued_after_stop": true,
+  "final_restored_reply_count": 4
+}

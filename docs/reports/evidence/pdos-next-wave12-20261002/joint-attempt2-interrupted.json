@@ -1,0 +1,9 @@
+{
+  "reason": "Retire candidate after confirmed fixture bugs and scoped-read/proof performance amendments. Not a passing gate. All final candidate groups will be rerun; heavy independent functions reshared to reduce long tail.",
+  "parent": 34148,
+  "owned_pytest_children": [
+    42128,
+    53131,
+    53234
+  ]
+}

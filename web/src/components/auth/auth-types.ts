@@ -1,3 +1,5 @@
+import type { WorkModule } from "../work-modules";
+
 export type LoginPayload = {
   tenant_slug: string;
   username: string;
@@ -26,5 +28,6 @@ export type AuthIdentity = {
     role: string;
     email: string | null;
     is_active: boolean;
+    work_modules?: WorkModule[];
   };
 };

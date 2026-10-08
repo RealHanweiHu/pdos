@@ -1,0 +1,38 @@
+{
+  "schema_version": "wave20-paired-followup-delivery-v1",
+  "created_at": "2026-10-03T17:27:30.450717+00:00",
+  "status": "owned_pure_and_static_passed_actual_validation_pending",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/paired_followup_adapter.py",
+      "sha256": "7c6bdc2437ad7c6d3d207c76666b844d7e5cd7e59172db3ccb1e72b5763f389b"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_paired_followup_adapter.py",
+      "sha256": "aea458fde139c850f6582d4523d20a2eee338ee1c91494de086ffc3d5a173551"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave20-20261003/paired-followup-contract.md",
+      "sha256": "a57d2764592f23f9443640a288ab15ca8513ff801f46f1417c8c11bd9668928e"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave20-20261003/paired-checks-v1.json",
+      "sha256": "e3b4504c441a4916998fcfaa155f1e6b3d3229571c5566622665da929d72aa14"
+    }
+  ],
+  "pure": {
+    "passed": 28,
+    "seconds": 2.28,
+    "log": "paired-pure-05.log"
+  },
+  "scope": {
+    "database": false,
+    "http": false,
+    "browser": false,
+    "shared_checks": false,
+    "new_tables": false,
+    "receipt_or_commit": false,
+    "qualification_granted": false,
+    "effectiveness_or_close": false
+  }
+}

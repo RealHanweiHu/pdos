@@ -103,6 +103,7 @@ _ROLE_SLOTS: Mapping[Role, frozenset[GateSlot]] = MappingProxyType(
     {
         Role.OWNER: frozenset({"product", "engineering", "quality"}),
         Role.ADMIN: frozenset({"product", "engineering", "quality"}),
+        Role.PRODUCT_MANAGER: frozenset({"product"}),
         Role.PROJECT_MANAGER: frozenset({"product"}),
         Role.ENGINEER: frozenset({"engineering"}),
         Role.QUALITY: frozenset({"quality"}),

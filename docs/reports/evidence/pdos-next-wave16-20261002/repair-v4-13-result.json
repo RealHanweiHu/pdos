@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+  "original_index": 13,
+  "exit_code": 0,
+  "seconds": 1708.97,
+  "source_stable": true,
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "log_sha256": "a9eca44c6513e38b7fedd3eeae0e6e4defd1e9e05553a6546096446d1474317b"
+}

@@ -6,6 +6,7 @@ import type { WorkspaceIdentity } from "@/components/workspace-types";
 
 import { ROLE_LABELS, USER_ROLES } from "./user-management-types";
 import type { ManagedUser, UserRole, UserUpdate } from "./user-management-types";
+import { UserWorkModules } from "./user-work-modules";
 
 const ADMIN_ROLES: readonly UserRole[] = ["owner", "admin"];
 const NON_PRIVILEGED_ROLES = USER_ROLES.filter((role) => !ADMIN_ROLES.includes(role));
@@ -42,7 +43,7 @@ export function UserTable({
   const assignableRoles = identity.user.role === "owner" ? USER_ROLES : NON_PRIVILEGED_ROLES;
 
   return (
-    <section className="rounded-lg border bg-card" aria-labelledby="account-list-title">
+    <section className="min-w-0 rounded-lg border bg-card" aria-labelledby="account-list-title">
       <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
         <div>
           <h2 className="font-medium" id="account-list-title">租户账户</h2>
@@ -55,7 +56,7 @@ export function UserTable({
             <tr>
               <th className="px-5 py-3 font-medium" scope="col">成员</th>
               <th className="px-3 py-3 font-medium" scope="col">角色</th>
-              <th className="px-3 py-3 font-medium" scope="col">状态</th>
+              <th className="whitespace-nowrap px-3 py-3 font-medium" scope="col">状态</th>
               <th className="px-3 py-3 font-medium" scope="col">最近登录</th>
               <th className="px-5 py-3 text-right font-medium" scope="col">操作</th>
             </tr>
@@ -69,7 +70,7 @@ export function UserTable({
                 <tr key={user.id}>
                   <td className="px-5 py-4 align-top">
                     <p className="font-medium">{user.display_name}</p>
-                    <p className="mt-0.5 font-mono text-xs text-muted-foreground">{user.username}</p>
+                    <p className="mt-0.5 whitespace-nowrap font-mono text-xs text-muted-foreground">{user.username}</p>
                     {user.email ? <p className="mt-0.5 text-xs text-muted-foreground">{user.email}</p> : null}
                   </td>
                   <td className="px-3 py-4 align-top">
@@ -90,9 +91,10 @@ export function UserTable({
                     ) : (
                       <span className="text-xs font-medium">{ROLE_LABELS[user.role]}</span>
                     )}
+                    <UserWorkModules key={`${user.id}:${user.updated_at}:${user.role}`} user={user} busy={busy} editable={manageable} onUpdate={onUpdate} />
                   </td>
                   <td className="px-3 py-4 align-top">
-                    <span className={user.is_active ? "text-emerald-700 dark:text-emerald-400" : "text-muted-foreground"}>
+                    <span className={user.is_active ? "whitespace-nowrap text-emerald-700 dark:text-emerald-400" : "whitespace-nowrap text-muted-foreground"}>
                       {user.is_active ? "启用" : "停用"}
                     </span>
                   </td>

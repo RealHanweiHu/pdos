@@ -1,0 +1,46 @@
+{
+  "schema_version": "wave17-anchor-staged-result-v2",
+  "created_at": "2026-10-03T09:55:50.172360+00:00",
+  "result": "staged_pure_structural_validation_passed",
+  "source_manifest_sha256": "f88f12f49c512fdf3ab842565e801e88949f5437fb4fe653f5c0784bc2f443ff",
+  "pure": {
+    "passed": 57,
+    "seconds": 0.96,
+    "exit_code": 0,
+    "database_fixtures": false,
+    "log": {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-pure-tests-v2.log",
+      "sha256": "1ba90161bd1d60072024d6a117ac31d591fb6ba3d0c5aa4593b15b159b6c2892",
+      "bytes": 99
+    }
+  },
+  "ruff_check": {
+    "exit_code": 0,
+    "output": "All checks passed!",
+    "scope": [
+      "pdos-next/staging/wave17/lineage.py",
+      "pdos-next/staging/wave17/test_anchor_lineage.py"
+    ]
+  },
+  "ruff_format": {
+    "exit_code": 0,
+    "output": "2 files left unchanged",
+    "scope": [
+      "pdos-next/staging/wave17/lineage.py",
+      "pdos-next/staging/wave17/test_anchor_lineage.py"
+    ]
+  },
+  "ast": {
+    "passed": 2,
+    "scope": [
+      "pdos-next/staging/wave17/lineage.py",
+      "pdos-next/staging/wave17/test_anchor_lineage.py"
+    ]
+  },
+  "new_regression": "test_distinct_t2_receipts_with_resealed_same_command_cannot_form_effect_close_chain",
+  "regression_detail": "Distinct approvals and receipts plus individually valid resealed close/history/Outbox correlation/approved delta/transaction group are rejected solely by duplicate command_id across the finite chain.",
+  "limitations": [
+    "Pure synthetic inputs only; no host same-UOW/Current/source bytes or real professional authorization integration.",
+    "No server/web/480 candidate or database/HTTP/public tests changed or executed."
+  ]
+}

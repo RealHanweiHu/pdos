@@ -1,0 +1,125 @@
+{
+  "schema_version": "wave20-ui-speed-evidence.v1",
+  "status": "owned candidate frozen; root public verification pending",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "before_sha256": "20a1a0e685e4a060e490fbe76e28f92ea8d47a4ddd723147abe04fe83fdebe56",
+      "sha256": "734a53c862d64d7ec460084f90fb6dfd3325c47519f181192f085a4a8f6dffe1"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.ts",
+      "before_sha256": "398c3f8e21603257a69ea8fbbdfe9645ec4b2f45e05f503d0ff9a2717fd3af9e",
+      "sha256": "837c69071f49bbcb1bb45d30603d9aba8e31b07cd4cb3920401c991e64e5cab5"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.test.ts",
+      "before_sha256": "b92e3faf3f48c4d9395ee83c26699c15b155bbe71e6fdeee13bbcd0ba7eaf1f2",
+      "sha256": "c455eada341a655c052ea8a0300b7df0d12e9e5275034241df0d8284f09ee625"
+    }
+  ],
+  "node_version": "v25.8.1",
+  "checks": [
+    {
+      "name": "scoped-types",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "command": "./node_modules/.bin/tsc --project /tmp/pdos-wave20-ui-speed-typecheck.json --pretty false",
+      "exit_code": 0,
+      "log": "ui-speed-typecheck-final.log",
+      "coverage": [
+        "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+        "pdos-next/web/src/lib/build-quality-loop-view.ts",
+        "pdos-next/web/src/lib/build-quality-loop-view.test.ts"
+      ],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test-emit-to-tmp",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "command": "./node_modules/.bin/tsc --project /tmp/pdos-wave20-ui-speed-tests.json --pretty false",
+      "exit_code": 0,
+      "log": "ui-speed-pure-compile-v2.log",
+      "output": "/tmp/pdos-wave20-ui-speed-tests; no emitted JavaScript inside source",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "owned-pure",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "command": "node --test /tmp/pdos-wave20-ui-speed-tests/lib/build-quality-loop-view.test.js",
+      "exit_code": 0,
+      "log": "ui-speed-pure-v1.log",
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "skip": 0,
+      "composition": {
+        "existing": 37,
+        "new": 7
+      },
+      "scope": "actual helper with offline callbacks; not browser or authority acceptance",
+      "log_sha256": "d2d714b4d7abb6f574fc15c5b1fa26c14444ed5978fed6336e72caa3f4aa890e"
+    },
+    {
+      "name": "owned-eslint",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "command": "./node_modules/.bin/eslint src/components/builds/build-quality-loop.tsx src/lib/build-quality-loop-view.ts src/lib/build-quality-loop-view.test.ts --format json",
+      "exit_code": 0,
+      "log": "ui-speed-eslint-v1.json",
+      "errors": 0,
+      "warnings": 0,
+      "note": "Helper/tests unchanged since this check. Component-only final fallback clears unsent target draft on reread.",
+      "log_sha256": "175e1917fc587413b1fa46db50f77c6ff72c616d67b4ccb7468e49db3efe48e0"
+    },
+    {
+      "name": "final-component-eslint",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "command": "./node_modules/.bin/eslint src/components/builds/build-quality-loop.tsx --format json",
+      "exit_code": 0,
+      "log": "ui-speed-eslint-final.json",
+      "errors": 0,
+      "warnings": 0,
+      "log_sha256": "7edf3f7c5872ef09db39be0ae001b8f57dfe89fe64152df2ba427a661f9a94c7"
+    }
+  ],
+  "retained_first_failure": {
+    "logs": [
+      "ui-speed-typecheck-v1.log",
+      "ui-speed-pure-compile-v1.log"
+    ],
+    "exit_code": 2,
+    "reason": "Temporary configs under /tmp did not resolve existing web Node type declarations; explicit existing typeRoots/types fixed configs. No dependency or source change was needed for this failure."
+  },
+  "changed_behavior": {
+    "local_selectors": [
+      "selectedFailureId",
+      "selectedIssueVersionId",
+      "selectedChangeId",
+      "selectedChangeVersionId"
+    ],
+    "display_gate": "Only actor/product/revision and Build+Run+Issue checked index match; target must be returned by that index. Not a permission proof.",
+    "local_selection_gets": 0,
+    "prior_full_chain_gets": "2 base reads plus scoped results/quality/change when their selection exists; complete test fixture 5",
+    "unsent_material": "Clear work, inputs, preview and same-scope old draft for changed target. Keep other remote-scope drafts. Fresh-read fallback also clears old target work.",
+    "unchanged": [
+      "Build/Run/Issue change real reads",
+      "explicit refresh",
+      "post-save refresh plan",
+      "inputs/preview/execute current server checks",
+      "all pending modes exact command/key/payload/readset",
+      "401/403 private clearing",
+      "receipt saved before readback"
+    ],
+    "invalidation": "Before any perform, refresh or private clear, discard checked display index. Product revision/scope mismatch requires real read."
+  },
+  "not_run": [
+    "browser",
+    "HTTP",
+    "database",
+    "shared build",
+    "public lint/type sweep",
+    "task-list edits"
+  ],
+  "limits": [
+    "No measured latency improvement claim. No lazy-mounted panels, resolved-data cache or full save-refresh refactor introduced. Current qualification still validated at server inputs/preview/apply/replay."
+  ]
+}

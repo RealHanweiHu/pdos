@@ -1,0 +1,10 @@
+{
+  "status": "PASS_EXACT_OLD_LOCAL_BACKEND_STOPPED",
+  "pids": [
+    15737,
+    15764
+  ],
+  "full_command_and_start_time_checked_before_signal": true,
+  "signal": "SIGTERM",
+  "web_3028_and_temporal_65425_preserved": true
+}

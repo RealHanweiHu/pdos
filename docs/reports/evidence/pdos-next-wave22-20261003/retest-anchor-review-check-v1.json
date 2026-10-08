@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "review_digest": "988e7e371addcb760e440d6b85686e056860efa3ff7d149c3a064f07eebd0453",
+  "actual_completed_origin": {
+    "id": "3483e3c5-08e0-4156-a293-31f3b1217d9e",
+    "revision": 6,
+    "snapshot_sha256": "ab4cbc354b83f823425ac29a2daed0fb3ba3f492bd76301ca615db86053ad7ed"
+  },
+  "empty_links_and_mappings": true,
+  "sources": 15,
+  "no_effectiveness_claim": true
+}

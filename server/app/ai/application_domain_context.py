@@ -21,6 +21,26 @@ def json_value(value: Any) -> Any:
 
 
 def contract(purpose: str, *, prompt_version: str | None = None) -> tuple[dict[str, Any], Any]:
+    if purpose == "product_proposal":
+        from app.ai.product_proposal import PROMPT as PROPOSAL_PROMPT
+        from app.contracts.product_proposals import ProposalAssessment
+
+        if prompt_version not in {None, PROPOSAL_PROMPT["version"]}:
+            raise BudgetLedgerError("PROPOSAL_CONTRACT_CHANGED")
+        return PROPOSAL_PROMPT, ProposalAssessment
+    if purpose == "xiaopai_reply":
+        from app.ai.conversation_reply import (
+            PREPROJECT_PROMPT,
+            PROMPT,
+            PreprojectReplyAssessment,
+            ReplyAssessment,
+        )
+
+        if prompt_version == PREPROJECT_PROMPT["version"]:
+            return PREPROJECT_PROMPT, PreprojectReplyAssessment
+        if prompt_version not in {None, PROMPT["version"]}:
+            raise BudgetLedgerError("XIAOPAI_CONTRACT_CHANGED")
+        return PROMPT, ReplyAssessment
     if purpose == "product_evaluation":
         from app.ai.product_matrix_preparation import PROMPT as MATRIX_PROMPT
         from app.ai.product_work_context import contract as product_contract
@@ -203,6 +223,10 @@ def bundle(purpose: str, *, prompt_version: str | None = None) -> dict[str, Any]
 
         reader = MODEL_CONTEXT_VERSION
     service_tools = {}
+    if purpose == "xiaopai_reply":
+        from app.ai.conversation_research import TOOLSET
+
+        service_tools = {"service_toolset": TOOLSET}
     if purpose == "change_discussion" and prompt_version == "discussion-research-v1":
         from app.ai.discussion_research_loop import TOOLSET as RESEARCH_TOOLSET
 
@@ -400,6 +424,16 @@ def record(
         prompt_version = rc["process_template_prompt_version"]
     if auth["body"]["purpose"] != purpose:
         raise BudgetLedgerError("APPLICATION_CONTEXT_PURPOSE_INVALID")
+    if purpose == "xiaopai_reply":
+        from app.ai.conversation_reply import reply_prompt
+
+        with engine.connect() as c:
+            rc = c.execute(
+                select(tables.agent_runs.c.run_context).where(
+                    tables.agent_runs.c.tenant_id == tenant_id, tables.agent_runs.c.id == run_id
+                )
+            ).scalar_one()
+        prompt_version = reply_prompt(rc["reply_source"])["version"]
     prompt, output_type = contract(purpose, prompt_version=prompt_version)
     verify_application_authorization(
         engine,
@@ -447,7 +481,8 @@ def record(
             tenant_id,
             run_id,
             call_id=model_call_id
-            if purpose == "change_discussion" or snapshot.get("phase") == "discussion_convene"
+            if purpose in {"change_discussion", "xiaopai_reply"}
+            or snapshot.get("phase") == "discussion_convene"
             else None,
         )
         oid, stamp = uuid4(), c.execute(select(func.clock_timestamp())).scalar_one()
@@ -465,7 +500,18 @@ def record(
                 locator=locator,
             )
 
-        if purpose == "meeting_planning":
+        if purpose == "product_proposal":
+            sources = [source("product_proposal", UUID(snapshot["proposal"]["id"]), snapshot)]
+            shown, total, status, continuation = len(sources), len(sources), "complete", None
+        elif purpose == "xiaopai_reply":
+            sources = [source("conversation_message", UUID(snapshot["message_id"]), snapshot)]
+            for item in snapshot.get("research_receipt", {}).get("observations", []):
+                sources.append(source("tool_observation", UUID(item["id"]), item["output"]))
+            shown = len(snapshot["history"]) + 1
+            total = shown + (1 if snapshot["history_truncated"] else 0)
+            status = "partial" if snapshot["history_truncated"] else "complete"
+            continuation = "更早对话未带入；业务依据只使用本轮重新授权的资料"
+        elif purpose == "meeting_planning":
             sources = [source("meeting_planning_brief", UUID(snapshot["brief_id"]), snapshot)]
             shown, total = len(context["references"]), len(context["references"])
             status = (
@@ -755,6 +801,29 @@ def sources_current(
             .mappings()
             .one()
         )
+        if purpose == "product_proposal":
+            from app.ai.product_proposal import PROMPT as PROPOSAL_PROMPT
+            from app.ai.product_proposal import current as proposal_current
+            from app.ai.product_proposal import model_context as proposal_context
+            from app.auth.repository import AuthRepository
+
+            actor = AuthRepository(engine).find_user_context(run["requested_by_user_id"])
+            return bool(
+                actor
+                and proposal_current(engine, actor, snapshot)
+                and invocation.prompt_version == PROPOSAL_PROMPT["version"]
+                and invocation.context == proposal_context(snapshot)
+            )
+        if purpose == "xiaopai_reply":
+            from app.ai.conversation_reply import current, model_context
+            from app.auth.repository import AuthRepository
+
+            actor = AuthRepository(engine).find_user_context(run["requested_by_user_id"])
+            return bool(
+                actor
+                and current(engine, actor, snapshot)
+                and invocation.context == model_context(snapshot)
+            )
         if purpose == "meeting_planning":
             from app.ai.meeting_planning_context import bound_source as planning_source
             from app.ai.meeting_planning_context import model_context as planning_context
@@ -841,8 +910,10 @@ def sources_current(
             from app.ai.product_shadow_evaluation import current as shadow_current
 
             try:
-                return bool(snapshot == run["run_context"]["evaluation_source"]
-                            and shadow_current(c, run, invocation))
+                return bool(
+                    snapshot == run["run_context"]["evaluation_source"]
+                    and shadow_current(c, run, invocation)
+                )
             except (ValueError, LookupError, PermissionError):
                 return False
         if purpose == "product_work":

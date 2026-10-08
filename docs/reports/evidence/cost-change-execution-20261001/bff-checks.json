@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "label": "anonymous overview rejected",
+      "status": 401,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "legal synthetic verifier login",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "exact historical cost source and original ECR",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "current execution summary retains historical confirmation but requires recheck",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "current task assignment blocked by changed cost source",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "current actual result reference and independent receipt",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "changed approved source rejects a fresh confirmation-ready result",
+      "status": 409,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "foreign project overview denied",
+      "status": 403,
+      "cache_control": "no-store"
+    }
+  ],
+  "all_passed": true,
+  "fixture": "synthetic only; legal session login; no cookie/token logging"
+}

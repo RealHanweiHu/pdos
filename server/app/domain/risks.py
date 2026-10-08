@@ -238,7 +238,7 @@ class RiskService:
                 tables.project_members.c.project_id == project_id,
                 tables.project_members.c.user_id == user_id,
                 tables.users.c.role.in_(
-                    {"owner", "admin", "project_manager", "engineer", "quality"}
+                    {"owner", "admin", "product_manager", "project_manager", "engineer", "quality"}
                 ),
             )
         ).scalar_one_or_none()

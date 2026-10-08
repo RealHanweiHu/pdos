@@ -1,0 +1,29 @@
+{
+  "recorded_at": "2026-10-05T18:55:37.475306+00:00",
+  "scope": "three explicitly owned staged services only; no dependency snapshots copied",
+  "files": [
+    {
+      "source": "pdos-next/.local/wave27-resource-v2-staged/service.py",
+      "destination": "pdos-next/server/pdos_next/domain/test_resources/service.py",
+      "before_sha256": "e23dd54c312db0c051f3ca6ea4b95190949c509696c8be5c267d67425d975c5b",
+      "actual_sha256": "1a21caa42b460b5ef4fed1ae2fc3e00a647100b6222ae7ace088a7cc1053e1b7"
+    },
+    {
+      "source": "pdos-next/.local/wave27-retained-v2-staged/src/pdos_next/domain/test_resources/retained.py",
+      "destination": "pdos-next/server/pdos_next/domain/test_resources/retained.py",
+      "before_sha256": "e37b959c6f9d1ffbadafef0323f2a094adea87992fcde8051bd93975151261d1",
+      "actual_sha256": "aa8179e86d2766daafa2910a9fb2e08c290d9a9e34f3fbe34d68b9c88d591716"
+    },
+    {
+      "source": "pdos-next/.local/wave27-launch-v2-staged/service.py",
+      "destination": "pdos-next/server/pdos_next/domain/verification_launch/service.py",
+      "before_sha256": "f2c4484ee8f55a1a64e73bf9a5ab1ae1f57655a67f54c685f9b59a1bbbde64bd",
+      "actual_sha256": "e55d7b1f8936b1b96f88af99633477a51e67466cbf08e3cecea7fd0635f89e87"
+    }
+  ],
+  "new_actual_tests": [
+    "pdos-next/server/tests/test_retained_versioned_fingerprint.py",
+    "pdos-next/server/tests/verification_launch_v2/test_start_versioned_owner.py"
+  ],
+  "test_adaptation": "actual imports only; launch candidate/private codec loaders removed; no logic edits"
+}

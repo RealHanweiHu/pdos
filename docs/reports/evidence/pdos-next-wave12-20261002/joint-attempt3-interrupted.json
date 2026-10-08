@@ -1,0 +1,11 @@
+{
+  "reason": "Scoped GET sent Build row to generic evidence checker expecting derived read set; actual HTTP caught before command. Repair narrow adapter and add real scoped PG assertion. Not a passing gate.",
+  "parent": 54590,
+  "children": [
+    54606,
+    54608,
+    54609,
+    55198,
+    55204
+  ]
+}

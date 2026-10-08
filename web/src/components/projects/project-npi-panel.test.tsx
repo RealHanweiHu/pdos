@@ -5,6 +5,7 @@ import { ProjectNpiPanel } from "./project-npi-panel";
 
 vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(window.location.search),
+  usePathname: () => window.location.pathname,
 }));
 
 vi.mock("./build-materials", () => ({
@@ -64,12 +65,14 @@ describe("ProjectNpiPanel", () => {
 
     render(<ProjectNpiPanel canEdit projectId={projectId} />);
 
-    expect(await screen.findByText("BB-EVT-1")).toBeTruthy();
-    expect(screen.getByText("EVT 测试计划")).toBeTruthy();
-    expect(screen.getByText("气压保持测试")).toBeTruthy();
-
+    expect(await screen.findByText("BB-EVT-1")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "准备试制与样机" })).toHaveAttribute("aria-selected", "true");
     fireEvent.click(screen.getByRole("button", { name: "展开样机" }));
-    expect(within(screen.getByText("BB-EVT-1").closest("li")!).getByText("SN-1001")).toBeTruthy();
+    expect(within(screen.getByText("BB-EVT-1").closest("li")!).getByText("SN-1001")).toBeVisible();
+    fireEvent.click(screen.getByRole("tab", { name: "执行测试与核对报告" }));
+    expect(screen.getByText("EVT 测试计划")).toBeVisible();
+    expect(screen.getByText("气压保持测试")).toBeVisible();
+    expect(screen.getByText("BB-EVT-1")).not.toBeVisible();
   });
 
   it("starting a build sends the exact payload the backend forbids extras on", async () => {
@@ -94,6 +97,7 @@ describe("ProjectNpiPanel", () => {
     fetchMock.mockImplementation(async (input) => Response.json(String(input).endsWith("/npi") ? snapshot() : { items: [] }));
     render(<ProjectNpiPanel canEdit projectId={projectId} />);
     await screen.findByText("气压保持测试");
+    fireEvent.click(screen.getByRole("tab", { name: "执行测试与核对报告" }));
     fireEvent.click(screen.getByText("逐次测试与证据"));
     await screen.findByText("尚无逐次测试记录。");
     fireEvent.click(screen.getByRole("button", { name: "新增一次测试" }));
@@ -117,15 +121,20 @@ describe("ProjectNpiPanel", () => {
   });
 
   it("a read-only role sees the data but no write actions", async () => {
-    fetchMock.mockImplementation(async () => Response.json(snapshot()));
+    fetchMock.mockImplementation(async (input) => Response.json(String(input).endsWith("/npi") ? snapshot() : { items: [] }));
 
     render(<ProjectNpiPanel canEdit={false} projectId={projectId} />);
     await screen.findByText("BB-EVT-1");
 
     expect(screen.queryByRole("button", { name: "开始试制" })).toBeNull();
-    expect(screen.queryByRole("button", { name: "判定通过" })).toBeNull();
     // Reading is still possible.
     expect(screen.getByRole("button", { name: "展开样机" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("tab", { name: "执行测试与核对报告" }));
+    expect(screen.getByText("气压保持测试")).toBeVisible();
+    expect(screen.queryByRole("button", { name: "判定通过" })).toBeNull();
+    fireEvent.click(screen.getByText("逐次测试与证据"));
+    expect(await screen.findByText("尚无逐次测试记录。")).toBeVisible();
+    expect(screen.queryByRole("button", { name: "新增一次测试" })).toBeNull();
   });
 
   it("gives build materials the product-engineering edit right, not project edit", async () => {
@@ -150,8 +159,9 @@ describe("ProjectNpiPanel", () => {
 
     render(<ProjectNpiPanel canEdit projectId={projectId} />);
 
-    expect(await screen.findByText("Project access denied")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "重试" })).toBeTruthy();
+    const trial = screen.getByRole("tabpanel", { name: "准备试制与样机" });
+    expect(await within(trial).findByText("Project access denied")).toBeVisible();
+    expect(within(trial).getByRole("button", { name: "重试" })).toBeVisible();
   });
 
   it("tolerates a role-narrowed snapshot that omits collections", async () => {
@@ -162,7 +172,32 @@ describe("ProjectNpiPanel", () => {
 
     render(<ProjectNpiPanel canEdit={false} projectId={projectId} />);
 
-    expect(await screen.findByText("尚无试制批次。")).toBeTruthy();
-    expect(screen.getByText("尚无测试计划。")).toBeTruthy();
+    expect(await screen.findByText("尚无试制批次。")).toBeVisible();
+    fireEvent.click(screen.getByRole("tab", { name: "执行测试与核对报告" }));
+    expect(screen.getByText("尚无测试计划。")).toBeVisible();
+  });
+
+  it("starts a quality task on testing without granting build or plan edit rights", async () => {
+    fetchMock.mockImplementation(async (input) => Response.json(String(input).endsWith("/npi") ? snapshot() : { items: [] }));
+    render(<ProjectNpiPanel canEdit={false} canRecordTests initialTask="test-execution" projectId={projectId} />);
+    expect(await screen.findByText("气压保持测试")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "执行测试与核对报告" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByText("BB-EVT-1")).not.toBeVisible();
+    fireEvent.click(screen.getByText("逐次测试与证据"));
+    await waitFor(() => expect(screen.getByRole("button", { name: "新增一次测试" })).toBeEnabled());
+    fireEvent.click(screen.getByRole("tab", { name: "准备试制与样机" }));
+    expect(screen.getByText("BB-EVT-1")).toBeVisible();
+    expect(screen.queryByRole("button", { name: "开始试制" })).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([, init]) => init?.method === "POST" || init?.method === "PATCH")).toBe(false);
+  });
+
+  it("restores a test-plan receipt ahead of the suggested trial task", async () => {
+    window.history.replaceState({}, "", `/projects?project=${projectId}&tab=quality&test_plan_id=${planId}`);
+    fetchMock.mockImplementation(async () => Response.json(snapshot()));
+    render(<ProjectNpiPanel canEdit={false} initialTask="trial-verification" projectId={projectId} />);
+    expect(await screen.findByText("EVT 测试计划")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "执行测试与核对报告" })).toHaveAttribute("aria-selected", "true");
+    expect(new URLSearchParams(window.location.search).get("test_plan_id")).toBe(planId);
+    expect(fetchMock.mock.calls.some(([, init]) => init?.method === "POST" || init?.method === "PATCH")).toBe(false);
   });
 });

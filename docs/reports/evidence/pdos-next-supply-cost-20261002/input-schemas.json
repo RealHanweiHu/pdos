@@ -1,0 +1,1545 @@
+{
+  "CostRequest": {
+    "$defs": {
+      "BomItem": {
+        "additionalProperties": false,
+        "properties": {
+          "critical": {
+            "default": false,
+            "title": "Critical",
+            "type": "boolean"
+          },
+          "item_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Item Id",
+            "type": "string"
+          },
+          "loss_rate": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "le": 1,
+                "max_digits": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loss Rate"
+          },
+          "material_id": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Material Id"
+          },
+          "parent_item_id": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent Item Id"
+          },
+          "quantity_per_parent": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity Per Parent"
+          },
+          "supply_required": {
+            "title": "Supply Required",
+            "type": "boolean"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "item_id",
+          "material_id",
+          "quantity_per_parent",
+          "unit",
+          "loss_rate",
+          "supply_required"
+        ],
+        "title": "BomItem",
+        "type": "object"
+      },
+      "BomSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "engineering_configuration": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/BomItem"
+            },
+            "maxItems": 2000,
+            "title": "Items",
+            "type": "array"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          }
+        },
+        "required": [
+          "ref",
+          "engineering_configuration",
+          "items"
+        ],
+        "title": "BomSnapshot",
+        "type": "object"
+      },
+      "BuildSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "build_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Build Id",
+            "type": "string"
+          },
+          "product_unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Unit"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          }
+        },
+        "required": [
+          "build_id",
+          "ref",
+          "quantity",
+          "product_unit"
+        ],
+        "title": "BuildSnapshot",
+        "type": "object"
+      },
+      "CostScope": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "items": {
+              "maxLength": 500,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "coverage": {
+            "enum": [
+              "materials_only",
+              "materials_and_process"
+            ],
+            "title": "Coverage",
+            "type": "string"
+          },
+          "currency": {
+            "pattern": "^[A-Z]{3}$",
+            "title": "Currency",
+            "type": "string"
+          },
+          "freight_basis": {
+            "enum": [
+              "included",
+              "excluded"
+            ],
+            "title": "Freight Basis",
+            "type": "string"
+          },
+          "max_rate_age_days": {
+            "maximum": 3650,
+            "minimum": 0,
+            "title": "Max Rate Age Days",
+            "type": "integer"
+          },
+          "nre_policy": {
+            "enum": [
+              "excluded",
+              "separate",
+              "amortize"
+            ],
+            "title": "Nre Policy",
+            "type": "string"
+          },
+          "nre_volume": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nre Volume"
+          },
+          "rate_purpose": {
+            "enum": [
+              "spot",
+              "budget"
+            ],
+            "title": "Rate Purpose",
+            "type": "string"
+          },
+          "tax_basis": {
+            "enum": [
+              "exclusive",
+              "inclusive"
+            ],
+            "title": "Tax Basis",
+            "type": "string"
+          }
+        },
+        "required": [
+          "currency",
+          "tax_basis",
+          "freight_basis",
+          "coverage",
+          "rate_purpose",
+          "max_rate_age_days",
+          "nre_policy",
+          "assumptions"
+        ],
+        "title": "CostScope",
+        "type": "object"
+      },
+      "ExchangeRate": {
+        "additionalProperties": false,
+        "properties": {
+          "from_currency": {
+            "pattern": "^[A-Z]{3}$",
+            "title": "From Currency",
+            "type": "string"
+          },
+          "purpose": {
+            "enum": [
+              "spot",
+              "budget"
+            ],
+            "title": "Purpose",
+            "type": "string"
+          },
+          "rate": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate"
+          },
+          "rate_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Rate Id",
+            "type": "string"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "to_currency": {
+            "pattern": "^[A-Z]{3}$",
+            "title": "To Currency",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rate_id",
+          "ref",
+          "from_currency",
+          "to_currency",
+          "rate",
+          "purpose"
+        ],
+        "title": "ExchangeRate",
+        "type": "object"
+      },
+      "FixedBasis": {
+        "additionalProperties": false,
+        "properties": {
+          "bom": {
+            "$ref": "#/$defs/BomSnapshot"
+          },
+          "build": {
+            "$ref": "#/$defs/BuildSnapshot"
+          },
+          "schema_version": {
+            "const": "supply-cost-input.v1",
+            "default": "supply-cost-input.v1",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "build",
+          "bom"
+        ],
+        "title": "FixedBasis",
+        "type": "object"
+      },
+      "MaterialPrice": {
+        "additionalProperties": false,
+        "properties": {
+          "bom_item_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Bom Item Id",
+            "type": "string"
+          },
+          "price_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Price Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bom_item_id",
+          "price_id"
+        ],
+        "title": "MaterialPrice",
+        "type": "object"
+      },
+      "PriceSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "basis": {
+            "enum": [
+              "unit",
+              "nre"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{3}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "freight_basis": {
+            "enum": [
+              "included",
+              "excluded",
+              "unknown"
+            ],
+            "title": "Freight Basis",
+            "type": "string"
+          },
+          "maximum_quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Maximum Quantity"
+          },
+          "minimum_quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Minimum Quantity"
+          },
+          "price_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Price Id",
+            "type": "string"
+          },
+          "price_quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Quantity"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "scope_assumption": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Scope Assumption",
+            "type": "string"
+          },
+          "stage": {
+            "enum": [
+              "estimate",
+              "quote"
+            ],
+            "title": "Stage",
+            "type": "string"
+          },
+          "subject_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Subject Id",
+            "type": "string"
+          },
+          "subject_kind": {
+            "enum": [
+              "material",
+              "process",
+              "nre"
+            ],
+            "title": "Subject Kind",
+            "type": "string"
+          },
+          "tax_basis": {
+            "enum": [
+              "exclusive",
+              "inclusive",
+              "unknown"
+            ],
+            "title": "Tax Basis",
+            "type": "string"
+          },
+          "tax_rate": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "le": 1,
+                "max_digits": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tax Rate"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "valid_from": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valid From"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valid Until"
+          }
+        },
+        "required": [
+          "price_id",
+          "subject_kind",
+          "subject_id",
+          "ref",
+          "stage",
+          "basis",
+          "amount",
+          "price_quantity",
+          "unit",
+          "currency",
+          "tax_basis",
+          "freight_basis",
+          "scope_assumption"
+        ],
+        "title": "PriceSnapshot",
+        "type": "object"
+      },
+      "ProcessOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "loss_rate": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "le": 1,
+                "max_digits": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loss Rate"
+          },
+          "operation_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "price_id": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Id"
+          },
+          "quantity_per_product": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity Per Product"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "operation_id",
+          "quantity_per_product",
+          "unit",
+          "loss_rate",
+          "price_id"
+        ],
+        "title": "ProcessOperation",
+        "type": "object"
+      },
+      "ProcessSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "assumption": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Assumption",
+            "type": "string"
+          },
+          "operations": {
+            "items": {
+              "$ref": "#/$defs/ProcessOperation"
+            },
+            "maxItems": 2000,
+            "title": "Operations",
+            "type": "array"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          }
+        },
+        "required": [
+          "ref",
+          "operations",
+          "assumption"
+        ],
+        "title": "ProcessSnapshot",
+        "type": "object"
+      },
+      "SnapshotRef": {
+        "additionalProperties": false,
+        "properties": {
+          "captured_at": {
+            "format": "date-time",
+            "title": "Captured At",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "source_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Source Id",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "current",
+              "stale",
+              "withdrawn",
+              "unknown"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valid Until"
+          },
+          "version": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "version",
+          "sha256",
+          "captured_at",
+          "state"
+        ],
+        "title": "SnapshotRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "as_of": {
+        "format": "date-time",
+        "title": "As Of",
+        "type": "string"
+      },
+      "basis": {
+        "$ref": "#/$defs/FixedBasis"
+      },
+      "material_prices": {
+        "items": {
+          "$ref": "#/$defs/MaterialPrice"
+        },
+        "maxItems": 2000,
+        "title": "Material Prices",
+        "type": "array"
+      },
+      "nre_price_ids": {
+        "default": [],
+        "items": {
+          "maxLength": 500,
+          "minLength": 1,
+          "type": "string"
+        },
+        "maxItems": 1000,
+        "title": "Nre Price Ids",
+        "type": "array"
+      },
+      "prices": {
+        "items": {
+          "$ref": "#/$defs/PriceSnapshot"
+        },
+        "maxItems": 4000,
+        "title": "Prices",
+        "type": "array"
+      },
+      "process": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ProcessSnapshot"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "rates": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ExchangeRate"
+        },
+        "maxItems": 100,
+        "title": "Rates",
+        "type": "array"
+      },
+      "scope": {
+        "$ref": "#/$defs/CostScope"
+      }
+    },
+    "required": [
+      "as_of",
+      "basis",
+      "scope",
+      "material_prices",
+      "prices"
+    ],
+    "title": "CostRequest",
+    "type": "object"
+  },
+  "CoverageRequest": {
+    "$defs": {
+      "AlternateQualification": {
+        "additionalProperties": false,
+        "properties": {
+          "alternate_material_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Alternate Material Id",
+            "type": "string"
+          },
+          "alternate_quantity_per_target": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alternate Quantity Per Target"
+          },
+          "alternate_unit": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Alternate Unit",
+            "type": "string"
+          },
+          "bom_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Bom Sha256",
+            "type": "string"
+          },
+          "build_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Build Id",
+            "type": "string"
+          },
+          "configuration_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Configuration Sha256",
+            "type": "string"
+          },
+          "qualification_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Qualification Id",
+            "type": "string"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "status": {
+            "enum": [
+              "externally_verified",
+              "unverified"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "target_material_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Target Material Id",
+            "type": "string"
+          },
+          "target_unit": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Target Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "qualification_id",
+          "ref",
+          "status",
+          "target_material_id",
+          "alternate_material_id",
+          "target_unit",
+          "alternate_unit",
+          "alternate_quantity_per_target",
+          "build_id",
+          "bom_sha256",
+          "configuration_sha256"
+        ],
+        "title": "AlternateQualification",
+        "type": "object"
+      },
+      "BomItem": {
+        "additionalProperties": false,
+        "properties": {
+          "critical": {
+            "default": false,
+            "title": "Critical",
+            "type": "boolean"
+          },
+          "item_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Item Id",
+            "type": "string"
+          },
+          "loss_rate": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "le": 1,
+                "max_digits": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loss Rate"
+          },
+          "material_id": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Material Id"
+          },
+          "parent_item_id": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent Item Id"
+          },
+          "quantity_per_parent": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity Per Parent"
+          },
+          "supply_required": {
+            "title": "Supply Required",
+            "type": "boolean"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "item_id",
+          "material_id",
+          "quantity_per_parent",
+          "unit",
+          "loss_rate",
+          "supply_required"
+        ],
+        "title": "BomItem",
+        "type": "object"
+      },
+      "BomSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "engineering_configuration": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/BomItem"
+            },
+            "maxItems": 2000,
+            "title": "Items",
+            "type": "array"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          }
+        },
+        "required": [
+          "ref",
+          "engineering_configuration",
+          "items"
+        ],
+        "title": "BomSnapshot",
+        "type": "object"
+      },
+      "BuildSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "build_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Build Id",
+            "type": "string"
+          },
+          "product_unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Unit"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "gt": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          }
+        },
+        "required": [
+          "build_id",
+          "ref",
+          "quantity",
+          "product_unit"
+        ],
+        "title": "BuildSnapshot",
+        "type": "object"
+      },
+      "FixedBasis": {
+        "additionalProperties": false,
+        "properties": {
+          "bom": {
+            "$ref": "#/$defs/BomSnapshot"
+          },
+          "build": {
+            "$ref": "#/$defs/BuildSnapshot"
+          },
+          "schema_version": {
+            "const": "supply-cost-input.v1",
+            "default": "supply-cost-input.v1",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "build",
+          "bom"
+        ],
+        "title": "FixedBasis",
+        "type": "object"
+      },
+      "PoolKey": {
+        "additionalProperties": false,
+        "properties": {
+          "material_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Material Id",
+            "type": "string"
+          },
+          "pool_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Pool Id",
+            "type": "string"
+          },
+          "source_system": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Source System",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_system",
+          "pool_id",
+          "material_id"
+        ],
+        "title": "PoolKey",
+        "type": "object"
+      },
+      "ReservationSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "bom_item_id": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bom Item Id"
+          },
+          "build_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Build Id",
+            "type": "string"
+          },
+          "pool": {
+            "$ref": "#/$defs/PoolKey"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "reservation_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Reservation Id",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "reservation_id",
+          "ref",
+          "pool",
+          "build_id",
+          "bom_item_id",
+          "quantity",
+          "unit"
+        ],
+        "title": "ReservationSnapshot",
+        "type": "object"
+      },
+      "SnapshotRef": {
+        "additionalProperties": false,
+        "properties": {
+          "captured_at": {
+            "format": "date-time",
+            "title": "Captured At",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "source_id": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Source Id",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "current",
+              "stale",
+              "withdrawn",
+              "unknown"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valid Until"
+          },
+          "version": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "version",
+          "sha256",
+          "captured_at",
+          "state"
+        ],
+        "title": "SnapshotRef",
+        "type": "object"
+      },
+      "SupplyPool": {
+        "additionalProperties": false,
+        "properties": {
+          "availability": {
+            "enum": [
+              "available",
+              "unavailable",
+              "unknown"
+            ],
+            "title": "Availability",
+            "type": "string"
+          },
+          "expected_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expected At"
+          },
+          "key": {
+            "$ref": "#/$defs/PoolKey"
+          },
+          "quality": {
+            "enum": [
+              "released",
+              "frozen",
+              "unknown"
+            ],
+            "title": "Quality",
+            "type": "string"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "decimal_places": 8,
+                "ge": 0,
+                "max_digits": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity"
+          },
+          "ref": {
+            "$ref": "#/$defs/SnapshotRef"
+          },
+          "stage": {
+            "enum": [
+              "commitment",
+              "in_transit",
+              "on_hand",
+              "received"
+            ],
+            "title": "Stage",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "key",
+          "ref",
+          "stage",
+          "quantity",
+          "unit",
+          "availability",
+          "quality"
+        ],
+        "title": "SupplyPool",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "alternates": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/AlternateQualification"
+        },
+        "maxItems": 1000,
+        "title": "Alternates",
+        "type": "array"
+      },
+      "as_of": {
+        "format": "date-time",
+        "title": "As Of",
+        "type": "string"
+      },
+      "basis": {
+        "$ref": "#/$defs/FixedBasis"
+      },
+      "pools": {
+        "items": {
+          "$ref": "#/$defs/SupplyPool"
+        },
+        "maxItems": 4000,
+        "title": "Pools",
+        "type": "array"
+      },
+      "reservations": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ReservationSnapshot"
+        },
+        "maxItems": 8000,
+        "title": "Reservations",
+        "type": "array"
+      },
+      "supply_scope_complete": {
+        "title": "Supply Scope Complete",
+        "type": "boolean"
+      },
+      "supply_snapshot": {
+        "$ref": "#/$defs/SnapshotRef"
+      }
+    },
+    "required": [
+      "as_of",
+      "basis",
+      "supply_snapshot",
+      "supply_scope_complete",
+      "pools"
+    ],
+    "title": "CoverageRequest",
+    "type": "object"
+  }
+}

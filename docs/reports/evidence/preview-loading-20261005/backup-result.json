@@ -1,0 +1,15 @@
+{
+  "target": {
+    "host": "localhost",
+    "port": 57432,
+    "database": "pdos",
+    "container": "457f627a661f"
+  },
+  "before_head": "0417_product_manager_role",
+  "backup_path": "/Users/huhanwei/pdos-preview-backups/20261005-0417-3aa71482/pdos-before-0423.dump",
+  "bytes": 4208218,
+  "sha256": "6a04b4bbcda99647c712d83d02373ed563ebb4d56ae7c84737d2e9b2dfb4707b",
+  "mode": "0o600",
+  "archive_list_exit_code": 0,
+  "restore_performed": false
+}

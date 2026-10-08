@@ -1,0 +1,27 @@
+{
+  "files": 138,
+  "checks": [
+    {
+      "check": "typecheck",
+      "exit_code": 0,
+      "seconds": 4.79
+    },
+    {
+      "check": "lint",
+      "exit_code": 0,
+      "seconds": 14.56
+    },
+    {
+      "check": "build",
+      "exit_code": 0,
+      "seconds": 18.25
+    }
+  ],
+  "source_stable": true,
+  "candidate_manifest": "web-candidate-v3-source.json",
+  "candidate_manifest_sha256": "a48c1a528a714eac73660d58b487f0559baa61ead7b6241e533dace4af1f907f",
+  "helper_log_file": "ui-helper-v3-checks.log",
+  "helper_log_sha256": "23ec695dbc46c3437cfb1b73cdeb4f047cea5e6f1ffee0007e535a43023ad6e0",
+  "precision_delta_file": "ui-event-time-precision-fix.json",
+  "precision_delta_sha256": "7211f1e63e66aeaf17df0e13d508a8dd56a48027fa6ed4129b29f8da933d930f"
+}

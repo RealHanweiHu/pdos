@@ -6,7 +6,7 @@ import { ProductWorkspace } from "./product-workspace";
 vi.mock("next/navigation", async () => {
   const { useSyncExternalStore } = await import("react");
   const subscribe = (fn: () => void) => { window.addEventListener("popstate", fn); return () => window.removeEventListener("popstate", fn); };
-  return { useRouter: () => ({ replace: vi.fn() }), useSearchParams: () => new URLSearchParams(useSyncExternalStore(subscribe, () => window.location.search)) };
+  return { usePathname: () => useSyncExternalStore(subscribe, () => window.location.pathname), useRouter: () => ({ replace: vi.fn() }), useSearchParams: () => new URLSearchParams(useSyncExternalStore(subscribe, () => window.location.search)) };
 });
 vi.mock("@/components/workspace-api", () => ({ requestIdentity: async () => ({ user: { role: "product_manager" }, tenant: {} }) }));
 vi.mock("@/components/workspace-shell", () => ({ WorkspaceShell: ({ children }: { children: ReactNode }) => <main>{children}</main> }));
@@ -31,7 +31,7 @@ beforeEach(() => {
   window.history.replaceState(null, "", "/product-work?space=one&tab=matrix");
   fetcher = vi.fn<typeof fetch>().mockImplementation(async (input, init) => {
     const path = String(input);
-    if (path.endsWith("/spaces")) return Response.json({ items: [space], can_create: false });
+    if (path.endsWith("/categories")) return Response.json({ items: [space], can_create: false });
     if (path.endsWith("/evidence")) return Response.json({ items: [source] });
     if (path.endsWith("/products")) return Response.json(catalog);
     if (path.endsWith("/spaces/one")) return Response.json(workspace);
@@ -55,10 +55,10 @@ it.each([200, 403])("holds actual product-tree, workspace and directory navigati
   const retry = await screen.findByRole("button", { name: "按原请求重试交接登记" });
   expect(retry).not.toBeDisabled();
   for (const tab of screen.getAllByRole("tab")) expect(tab).toBeDisabled();
-  expect(screen.getByRole("button", { name: "市场空间" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "品类" })).toBeDisabled();
   expect(screen.getByRole("button", { name: "刷新工作与来源" })).toBeDisabled();
   for (const button of screen.getAllByRole("button", { name: "编辑" })) expect(button).toBeDisabled();
-  expect(screen.getByRole("button", { name: "新建产品线" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "新增型号" })).toBeDisabled();
   const writes = () => fetcher.mock.calls.filter(([input, init]) => String(input).endsWith("/master-references") && init?.method === "POST");
   expect(writes()).toHaveLength(1);
   writeStatus = status;
@@ -66,7 +66,7 @@ it.each([200, 403])("holds actual product-tree, workspace and directory navigati
   await waitFor(() => expect(writes()).toHaveLength(2));
   expect(JSON.parse(String(writes()[1][1]?.body))).toEqual(JSON.parse(String(writes()[0][1]?.body)));
   if (status === 200) {
-    await waitFor(() => expect(screen.getByRole("button", { name: "市场空间" })).not.toBeDisabled());
+    await waitFor(() => expect(screen.getByRole("button", { name: "品类" })).not.toBeDisabled());
     expect(screen.getByRole("button", { name: "刷新工作与来源" })).not.toBeDisabled();
     expect(screen.queryByLabelText("登记原因")).not.toBeInTheDocument();
   } else {

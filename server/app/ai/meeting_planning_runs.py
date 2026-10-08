@@ -13,6 +13,7 @@ from app.ai.application_recovery import try_resume
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.call_identity import ModelCallSlot, model_call_id
 from app.ai.capability_contract import CapabilityRollout, resolve_capability
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.meeting_planning_context import (
     PROMPT,
@@ -174,6 +175,7 @@ class MeetingPlanningRuns:
                 **generation_state(),
             }
 
+    @agent_entry
     def create(
         self, ctx: AuthContext, project: UUID, identity: UUID, body: MeetingPlanningRequest
     ) -> dict[str, Any]:
@@ -300,6 +302,7 @@ class MeetingPlanningRuns:
                 )
         return self.execute(ctx, run)
 
+    @agent_entry
     def execute(self, ctx: AuthContext, run: RowMapping) -> dict[str, Any]:
         gateway = self.gateway
         if gateway is None:

@@ -1,0 +1,17 @@
+{
+  "runtime_api": "127.0.0.1:8000",
+  "loaded_proposal_paths": [
+    "/api/product-work/spaces/{space_id}/proposals",
+    "/api/product-work/spaces/{space_id}/proposals/{proposal_id}",
+    "/api/product-work/spaces/{space_id}/proposals/{proposal_id}/changes",
+    "/api/product-work/spaces/{space_id}/proposals/{proposal_id}/submit",
+    "/api/product-work/spaces/{space_id}/proposals/{proposal_id}/decide",
+    "/api/product-work/spaces/{space_id}/proposals/{proposal_id}/ai"
+  ],
+  "unsigned_request": 401,
+  "live_head": "0424_product_proposals",
+  "account_count": 6,
+  "preview_entry": "http://127.0.0.1:3000/product-work",
+  "current_browser_session": "requires_user_relogin_after_test_cookie_collision",
+  "no_credentials_or_accounts_modified": true
+}

@@ -6,7 +6,7 @@ import { Dashboard } from "./dashboard";
 
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: routerReplace }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useRouter: () => ({ replace: routerReplace }) }));
 
 function jsonResponse(body: object, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -122,7 +122,7 @@ describe("Dashboard", () => {
 
     render(<Dashboard />);
 
-    expect(await screen.findByRole("heading", { name: "驾驶舱" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "项目快照" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "项目组合" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "跨项目风险" })).toBeInTheDocument();
     expect(screen.getByText(/尚无 Finding，不能据此判断 Agent 是否可用/)).toBeInTheDocument();
@@ -131,7 +131,8 @@ describe("Dashboard", () => {
     expect(rankedRisks[0]).toHaveTextContent("Motor validation");
     expect(rankedRisks[1]).toHaveTextContent("Supplier slip");
     expect(screen.getByRole("link", { name: "打开项目 PRJ-002" })).toHaveAttribute("href", "/projects?project=project-2");
-    expect(within(rankedRisks[0]).getByRole("link")).toHaveAttribute("href", "/projects?project=project-2&tab=work-items");
+    expect(within(rankedRisks[0]).getByRole("link")).toHaveAttribute("href", "/projects?project=project-2&tab=work-items&view=risks&entity_id=risk-2");
+    expect(screen.queryByText(/阶段进度.*%/)).not.toBeInTheDocument();
     expect(fetchMock.mock.calls.filter(([input]) => String(input).endsWith("/risks"))).toEqual([
       ["/api/dashboard/risks", { cache: "no-store", credentials: "same-origin" }],
     ]);
@@ -225,7 +226,7 @@ describe("Dashboard", () => {
     render(<Dashboard />);
 
     expect(await screen.findByRole("link", { name: "打开项目 HIST-001" })).toBeInTheDocument();
-    expect(screen.queryByText("驾驶舱暂不可用")).not.toBeInTheDocument();
+    expect(screen.queryByText("项目快照暂不可用")).not.toBeInTheDocument();
   });
 
   it.each(["customer", "supplier"])("does not request engineering risks or AI brief for external role %s", async (role) => {
@@ -242,17 +243,20 @@ describe("Dashboard", () => {
     expect(fetchMock.mock.calls.some(([input]) => String(input) === "/api/ai/brief")).toBe(false);
   });
 
-  it.each(["engineer", "quality"])("lands %s on My Work without loading dashboard risks", async (role) => {
+  it.each(["engineer", "quality"])("opens the explicit project snapshot for %s while their home remains My Work", async (role) => {
     fetchMock.mockImplementation(async (input) => {
       const path = String(input);
       if (path === "/api/session/me") return jsonResponse({ ...identity, user: { ...identity.user, role } });
       if (path === "/api/projects") return jsonResponse({ items: projects });
+      if (path === "/api/dashboard/risks") return jsonResponse(riskSnapshot([], projects));
+      if (path === "/api/ai/brief") return jsonResponse(emptyBrief);
       throw new Error(`unexpected request: ${path}`);
     });
 
     render(<Dashboard />);
-    await waitFor(() => expect(routerReplace).toHaveBeenCalledWith("/my-work"));
-    expect(screen.queryByRole("heading", { name: "驾驶舱" })).not.toBeInTheDocument();
-    expect(fetchMock.mock.calls.some(([input]) => String(input) === "/api/dashboard/risks" || String(input) === "/api/ai/brief")).toBe(false);
+    expect(await screen.findByRole("heading", { name: "项目快照" })).toBeInTheDocument();
+    await waitFor(() => expect(fetchMock.mock.calls.some(([input]) => String(input) === "/api/dashboard/risks")).toBe(true));
+    expect(routerReplace).not.toHaveBeenCalledWith("/my-work");
+    expect(fetchMock.mock.calls.every(([, init]) => !init?.method || init.method === "GET")).toBe(true);
   });
 });

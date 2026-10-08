@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-02T17:30:17.625259+00:00",
+  "verified_host": "127.0.0.1",
+  "verified_port": 62513,
+  "database": "pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "schema_head": "next_0013",
+  "backups": [
+    {
+      "path": "pdos-next/.local/pre-wave10-next_0012.dump",
+      "size_bytes": 22236012,
+      "mode": "0600",
+      "sha256": "21b9943f8e25d6980327867152d68ceb911898a3340130b5650af8e094a14728"
+    },
+    {
+      "path": "pdos-next/.local/wave10-business.dump",
+      "size_bytes": 29294272,
+      "mode": "0600",
+      "sha256": "de28a5fe348767cf092af33b9ba3fafe8c5359a5bba26a599c5cbcae9659200e"
+    }
+  ],
+  "final_archive_catalog_readable": true,
+  "restore_not_exercised_after_business_writes": true,
+  "secrets_or_raw_data_published": false
+}

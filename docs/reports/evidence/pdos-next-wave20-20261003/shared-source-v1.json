@@ -1,0 +1,34 @@
+{
+  "schema_version": "wave20-shared-owner-source-v1",
+  "scope": "one existing owner service and two new no-connect pure test files only",
+  "baseline_service_sha256": "77bef966e6d3623ab6199400c612f08b3ab0b36da214483b68ef61889c3cd152",
+  "baseline_note": "Previously frozen Wave19 service hash; original historical manifest/logs preserved. This report does not claim a saved full source backup.",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/service.py",
+      "sha256": "e819f9a9c675b7a9f7a5c91b24b86be6be716220733081b6f30aa32ae012eb5d"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_shared_link_authority.py",
+      "sha256": "68d0b6af012bb10dd9b9b463ac6f0e4674d535ad99fc4c7378006e528d7d3af0"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_paired_followup_dispatch.py",
+      "sha256": "1a41391e68c42f5c584552eabd6ba4ec096679f209f02902e22ed5dd830e8261"
+    }
+  ],
+  "dependencies_observed": [
+    {
+      "path": "pdos-next/server/pdos_next/paired_followup_adapter.py",
+      "sha256": "60578582a714d8813246c4d18aa6bb27a50d11ea8e3dacc31636d2594f9c908c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "sha256": "9c6ad2064357475003b649a36a1007cdcf047d3ffd3fa844989d73bdb6e43585"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/policy.py",
+      "sha256": "18987da3dcc09406abb09dabc5af99c1c21e627b857136b418a9fa490551755b"
+    }
+  ]
+}

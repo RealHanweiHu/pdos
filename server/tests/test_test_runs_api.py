@@ -41,6 +41,10 @@ def isolated_test_run_database(monkeypatch: pytest.MonkeyPatch) -> Iterator[str]
     monkeypatch.setenv("JWT_SECRET", TEST_JWT_SECRET)
     monkeypatch.setenv("JWT_ISSUER", "pdos-test")
     monkeypatch.setenv("JWT_AUDIENCE", "pdos-test-client")
+    # Test processes must never inherit real research-search credentials from .env.
+    monkeypatch.setenv("PDOS_RESEARCH_SEARCH_ENDPOINT", "")
+    monkeypatch.setenv("PDOS_RESEARCH_TAVILY_API_KEY", "")
+    monkeypatch.setenv("PDOS_RESEARCH_FIRECRAWL_API_KEY", "")
     get_settings.cache_clear()
     get_engine.cache_clear()
     os.environ["DATABASE_URL"] = test_url

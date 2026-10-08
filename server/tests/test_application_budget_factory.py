@@ -13,6 +13,7 @@ from app.ai.budget_adoption import (
     METER_DIGEST_KEY,
     METER_PATH_KEY,
     MODE_KEY,
+    PREPROJECT_PROFILE_KEY,
     PROFILE_KEY,
     approved_budget_profile,
 )
@@ -20,12 +21,55 @@ from app.ai.input_metering import MeteringError
 from app.ai.run_budget_creation import freeze_created_application_run
 from app.db.schema import tables
 from tests.test_budget_ledger import ledger_db as ledger_db
-from tests.test_input_metering import publication
+from tests.test_input_metering import publication, save
 from tests.test_model_budget_controller import response as response
 from tests.test_model_gateway import RiskOutput, invocation, qualification
 from tests.test_run_budget_creation import LedgerFixture, new_run
 
 FactoryFixture = tuple[dict[str, str], list[httpx2.Request], Path]
+
+
+@pytest.mark.parametrize(
+    "preproject,qualified_output,expected_output",
+    [(False, 8000, 4000), (True, 4000, None), (True, 8000, 8000)],
+)
+def test_preproject_output_adoption_requires_actual_matching_qualification(
+    ledger_db, factory_setup, tmp_path, preproject, qualified_output, expected_output
+):
+    engine, tenant, _ = ledger_db
+    environment, calls, _ = factory_setup
+    directory = tmp_path / "preproject-meter"
+    directory.mkdir()
+    path, document, _ = publication(directory, qualified_input_limit=16384, window_tokens=32768)
+    document["models"][0]["output_token_limit"] = qualified_output
+    environment = {
+        **environment,
+        PROFILE_KEY: "research_discussion",
+        PREPROJECT_PROFILE_KEY: "preproject_research",
+        METER_PATH_KEY: str(path),
+        METER_DIGEST_KEY: save(path, document),
+    }
+    with application_gateway.configured_application_gateway(
+        engine, environment, preproject=preproject
+    ) as gateway:
+        with engine.begin() as connection:
+            run_id = new_run(connection)["id"]
+            freeze_created_application_run(connection, gateway, tenant_id=tenant, run_id=run_id)
+        result = gateway.invoke_structured(
+            invocation(tenant, run_id=run_id, model_call_id=uuid4()), RiskOutput
+        )
+    if expected_output is None:
+        assert result.error_code == "BUDGET_MODEL_METER_UNQUALIFIED"
+        assert calls == []
+        with engine.connect() as connection:
+            assert connection.execute(select(tables.budget_journal)).first() is None
+    else:
+        assert result.status == "succeeded"
+        assert len(calls) == 1
+        assert json.loads(calls[0].content)["max_completion_tokens"] == expected_output
+        with engine.connect() as connection:
+            lineage = connection.execute(select(tables.budget_lineages)).mappings().one()
+            assert lineage["profile"]["output_token_reserve"] == expected_output
 
 
 @pytest.fixture

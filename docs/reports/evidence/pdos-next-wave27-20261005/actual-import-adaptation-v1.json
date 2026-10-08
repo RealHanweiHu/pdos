@@ -1,0 +1,8 @@
+{
+  "launch_before_sha256": "e55d7b1f8936b1b96f88af99633477a51e67466cbf08e3cecea7fd0635f89e87",
+  "launch_actual_sha256": "8d41555c2a5aeec6ac989b3c11540b0294ac592bb0b0ce37199f9791bef0975d",
+  "all_function_class_statement_AST_unchanged": true,
+  "pure_selection_passed": 201,
+  "pure_log": "actual-retained-launch-pure-v1.log",
+  "source_import_only_fix_after_test": true
+}

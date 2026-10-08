@@ -1,0 +1,22 @@
+{
+  "main_target": {
+    "container_id": "457f627a661fb94ada7432d120f23320d023c7a20bb0b30eb327bb83a9ca7128",
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos",
+    "access": "read_only"
+  },
+  "affected_run_id": "32a8181a-e22c-516e-89fa-2b223405878e",
+  "saved_status": "degraded",
+  "saved_generic_error": "REPLY_REQUEST_FAILED",
+  "preproject_goal": "category",
+  "application_authorizations": 0,
+  "application_run_leases": 0,
+  "application_result_checkpoints": 0,
+  "application_tool_observations": 0,
+  "application_budget_configuration_present": false,
+  "actual_block": "application research requires budgeted authorization/lease/checkpoint; current gateway uses legacy mode",
+  "search_dispatch_occurred": false,
+  "main_data_modified": false,
+  "private_message_content_in_evidence": false
+}

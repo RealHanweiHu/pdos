@@ -1,0 +1,11 @@
+{
+  "pdos-next/web/AGENTS.md": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb",
+  "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+  "pdos-next/web/src/lib/utils.ts": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+  "pdos-next/web/src/components/quality_issues/contracts.ts": "c4ca83e385ab6b9db08df60fa61e0d7562060a0166dff16842cb484afd19d46b",
+  "pdos-next/web/src/components/quality_issues/review.tsx": "2c8ffdeaacec1533d1969a05f9f1414f0a004d56817f6d0467fe16c2e423591e",
+  "pdos-next/web/src/components/verification/contracts.ts": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a",
+  "pdos-next/web/src/components/verification/preview.tsx": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6",
+  "pdos-next/web/tsconfig.json": "ce638cf8d45d1b4718fa3943a514811886830e0f9d9f14e9f4ebcdfa15e93f3e",
+  "pdos-next/web/eslint.config.mjs": "5fdde8ef206d87d3e82a239eb18b984c878e1387b3123a04655c0a7d88292008"
+}

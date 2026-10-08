@@ -1,0 +1,114 @@
+{
+  "scope": "Read-only saved DTO diagnostic; no qualification relaxation",
+  "rows": [
+    {
+      "label": "maker-engineering-duty",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "maker-engineering-qualification",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "maker-manufacturing-duty",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "maker-manufacturing-qualification",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "maker-quality-duty",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "maker-quality-qualification",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "observer-quality-front-duty",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "observer-quality-front-qualification",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "observer-quality-results-duty",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "observer-quality-results-qualification",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "independent-reviewer-quality-duty",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    },
+    {
+      "label": "independent-reviewer-quality-qualification",
+      "raw_approval_equal": true,
+      "typed_approval_equal": true,
+      "raw_import_digest_equal": false,
+      "typed_import_digest_equal": false,
+      "row_fact_hash_matches": false,
+      "source_quotes_equal": true
+    }
+  ],
+  "initial_driver_error": "Authority basis has flat tenant_id; Root corrected tenant from exact final Foundation before query"
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": "derivation.v1",
+  "owned_files": {
+    "pdos-next/server/pdos_next/engines/derivation/__init__.py": "7eb27dd6f13846903b4f557472a689e308c5898496866390f63f39129815d04f",
+    "pdos-next/server/pdos_next/engines/derivation/dto.py": "dcb5c7f2925d3fe55ada694570cd79dba9a5aa7c27fcb8b180430203d4503838",
+    "pdos-next/server/pdos_next/engines/derivation/engine.py": "47f2ca765949e736ed1e304a03f52df38d1998a6d5bfa035cdda0f9f573dbe45",
+    "pdos-next/server/tests/derivation_engine/test_derivation.py": "2d9f4bf45c708b5be8d0648f3518d3b2314f87f42236d9a4a46d795d049f1fd0"
+  },
+  "public_type_dependencies": {
+    "pdos-next/server/pdos_next/contracts.py": "47416b18dcdd8b3f74185cf426090088d9eadfa9a1c696c04fbdc98081fc57ea",
+    "pdos-next/server/pdos_next/schemas/products/definitions.py": "591c8e070a1d36e146da212cb266e055ed51de553183b1e6364af372b5f57424"
+  },
+  "stable_during_checks": true,
+  "candidate_sha256": "f250d18deeddb1bad6f1cfce40facc7a31c57a85e4d8a37057b9f6de74a13650",
+  "database_fixtures": "excluded by --confcutdir; no TEST_DATABASE_URL",
+  "checks": [
+    {
+      "name": "cold-import",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-B",
+        "-c",
+        "import sys; from pdos_next.engines.derivation import three_way, accept_changes; assert not any(n == 'app' or n.startswith('app.') or n in {'pdos_next.models','pdos_next.service','pdos_next.api','pdos_next.runtime','sqlalchemy'} for n in sys.modules); print('Independent import passed; no business/runtime/database modules')"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "tests/derivation_engine",
+        "--confcutdir=tests/derivation_engine",
+        "-o",
+        "cache_dir=/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-derivation-20261002/.pytest-cache",
+        "-q"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--no-cache",
+        "pdos_next/engines/derivation",
+        "tests/derivation_engine"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "format",
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--no-cache",
+        "pdos_next/engines/derivation",
+        "tests/derivation_engine"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import type { WorkspaceIdentity } from "./workspace-types";
+import { isWorkModules } from "./work-modules";
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -20,7 +21,8 @@ function isWorkspaceIdentity(value: unknown): value is WorkspaceIdentity {
     typeof value.user.display_name === "string" &&
     typeof value.user.role === "string" &&
     (typeof value.user.email === "string" || value.user.email === null) &&
-    typeof value.user.is_active === "boolean"
+    typeof value.user.is_active === "boolean" &&
+    (value.user.work_modules === undefined || isWorkModules(value.user.work_modules))
   );
 }
 

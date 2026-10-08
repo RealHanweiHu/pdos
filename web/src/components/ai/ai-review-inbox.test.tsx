@@ -7,7 +7,7 @@ import { FINDING_TYPES, FINDING_TYPE_LABELS } from "./ai-types";
 
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: routerReplace }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useRouter: () => ({ replace: routerReplace }) }));
 
 function jsonResponse(body: object, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -245,7 +245,9 @@ describe("AiReviewInbox", () => {
     const expand = await screen.findByRole("button", { name: "展开完整说明" });
     expect(screen.getByText(longSummary)).toHaveClass("line-clamp-3");
     expect(screen.getByRole("article", { name: "Finding 详情" })).toHaveClass("order-first");
-    expect(screen.getByRole("article", { name: "Finding 详情" })).toHaveClass("lg:max-h-[min(700px,calc(100svh-20rem))]", "overflow-y-auto");
+    expect(screen.getByRole("article", { name: "Finding 详情" })).toHaveClass("lg:max-h-[min(700px,calc(100svh-20rem))]", "lg:overflow-y-auto");
+    expect(screen.getByRole("article", { name: "Finding 详情" })).not.toHaveClass("max-h-[70svh]");
+    expect(screen.getByRole("link", { name: /选择其他建议/ })).toHaveAttribute("href", "#review-queue");
     expect(screen.getByRole("complementary", { name: "Finding 队列" })).toHaveClass("order-last");
     expect(screen.getByRole("button", { name: /接受建议/ })).toBeEnabled();
     await userEvent.click(expand);
@@ -310,7 +312,7 @@ describe("AiReviewInbox", () => {
     await waitFor(() => expect(fetchMock.mock.calls.filter(([input]) => String(input).endsWith("/apply"))).toHaveLength(1));
     expect(await screen.findByRole("link", { name: /查看已应用 Risk/ })).toHaveAttribute(
       "href",
-      "/projects?project=project-1&tab=work-items",
+      "/projects?project=project-1&tab=work-items&view=risks&entity_id=risk-1",
     );
   });
 

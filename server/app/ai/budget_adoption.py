@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import re
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from hashlib import sha256
 from pathlib import Path
 
@@ -21,6 +21,9 @@ MODE_KEY = "PDOS_APPLICATION_MODEL_BUDGET_MODE"
 PROFILE_KEY = "PDOS_APPLICATION_MODEL_BUDGET_PROFILE"
 METER_PATH_KEY = "PDOS_APPLICATION_MODEL_METER_PATH"
 METER_DIGEST_KEY = "PDOS_APPLICATION_MODEL_METER_SHA256"
+PREPROJECT_PROFILE_KEY = "PDOS_APPLICATION_PREPROJECT_BUDGET_PROFILE"
+PREPROJECT_PROFILE_PATH = PROFILE_PATH.with_name("preproject-research-budget-v1.json")
+PREPROJECT_PROFILE_SHA256 = "338c59a3eb36cc88e2a5928789527d44906d4b199c185b1b9081fee4b22d5c1c"
 
 
 class BudgetConfigurationError(ValueError):
@@ -67,6 +70,26 @@ class ApplicationBudgetConfiguration:
         if re.fullmatch(r"[0-9a-f]{64}", digest) is None:
             raise BudgetConfigurationError("meter publication requires a SHA-256 digest")
         return cls(approved_budget_profile(profile_key), Path(path), digest)
+
+
+def preproject_budget_configuration(
+    configuration: ApplicationBudgetConfiguration | None, environment: Mapping[str, str]
+) -> ApplicationBudgetConfiguration | None:
+    """Opt-in candidate; explicit adoption and adequate real metering are required.
+
+    Called only for a server-authorized category/proposal reply. Existing profiles,
+    original run reservations, ordinary chat and the Agent plane remain separate.
+    """
+    key = environment.get(PREPROJECT_PROFILE_KEY, "").strip()
+    if not key:
+        return configuration
+    if key != "preproject_research" or configuration is None:
+        raise BudgetConfigurationError("preproject research requires explicit budgeted adoption")
+    raw = PREPROJECT_PROFILE_PATH.read_bytes()
+    if sha256(raw).hexdigest() != PREPROJECT_PROFILE_SHA256:
+        raise BudgetConfigurationError("preproject budget candidate digest mismatch")
+    profile = RunBudgetProfile.model_validate_json(raw)
+    return replace(configuration, profile=profile)
 
 
 AGENT_MODE_KEY = "PDOS_AGENT_MODEL_BUDGET_MODE"

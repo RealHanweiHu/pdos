@@ -56,6 +56,18 @@ class _PinnedConnection(http.client.HTTPConnection):
         raise ReachFetchError("无法连接已校验的公开来源地址") from last
 
 
+def decode_body(raw: bytes, charset: str | None) -> str:
+    """Strict decode with a gb18030 tail: many Chinese pages omit the header."""
+    for candidate in (charset, "utf-8", "gb18030"):
+        if not candidate:
+            continue
+        try:
+            return raw.decode(candidate, errors="strict")
+        except (UnicodeError, LookupError):
+            continue
+    raise ReachFetchError("正文编码无法识别，请使用明确编码的文本来源")
+
+
 class PublicReachTransport:
     """One GET per call, no redirect following, cookies, credentials or decompression."""
 
@@ -146,11 +158,8 @@ class PublicReachTransport:
                         raise ReachDeniedError(
                             "content_too_large", "正文超过2 MiB采集上限，请选择更具体的页面"
                         )
-                charset = response.headers.get_content_charset() or "utf-8"
-                try:
-                    content = b"".join(chunks).decode(charset, errors="strict")
-                except (UnicodeError, LookupError) as error:
-                    raise ReachFetchError("正文编码无法识别，请使用明确编码的文本来源") from error
+                charset = response.headers.get_content_charset()
+                content = decode_body(b"".join(chunks), charset)
                 return ReachResponse(
                     response.status,
                     content,

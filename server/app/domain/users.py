@@ -12,12 +12,20 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
+from app.auth.work_modules import WorkModule, normalize_work_modules
 from app.db.schema import tables
 from app.events.writer import AuditDraft, EventAuditWriter, EventDraft
 
 PRIVILEGED_ROLES = frozenset({Role.OWNER, Role.ADMIN})
 ADMIN_ASSIGNABLE_ROLES = frozenset(
-    {Role.PROJECT_MANAGER, Role.ENGINEER, Role.QUALITY, Role.SUPPLIER, Role.CUSTOMER}
+    {
+        Role.PRODUCT_MANAGER,
+        Role.PROJECT_MANAGER,
+        Role.ENGINEER,
+        Role.QUALITY,
+        Role.SUPPLIER,
+        Role.CUSTOMER,
+    }
 )
 
 
@@ -65,6 +73,10 @@ class LastActiveOwnerRequiredError(UserAdministrationError):
     pass
 
 
+class InvalidWorkModulesError(UserAdministrationError):
+    pass
+
+
 @dataclass(frozen=True)
 class ManagedUser:
     id: UUID
@@ -77,6 +89,7 @@ class ManagedUser:
     last_signed_in_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    work_modules: tuple[WorkModule, ...] = ()
 
 
 PUBLIC_COLUMNS = (
@@ -86,6 +99,7 @@ PUBLIC_COLUMNS = (
     tables.users.c.display_name,
     tables.users.c.email,
     tables.users.c.role,
+    tables.users.c.work_modules,
     tables.users.c.is_active,
     tables.users.c.last_signed_in_at,
     tables.users.c.created_at,
@@ -101,6 +115,7 @@ def _managed_user(row: RowMapping) -> ManagedUser:
         display_name=row["display_name"],
         email=row["email"],
         role=Role(row["role"]),
+        work_modules=normalize_work_modules(row["work_modules"]),
         is_active=row["is_active"],
         last_signed_in_at=row["last_signed_in_at"],
         created_at=row["created_at"],
@@ -114,6 +129,7 @@ def _snapshot(user: ManagedUser) -> dict[str, Any]:
         "display_name": user.display_name,
         "email": user.email,
         "role": user.role.value,
+        "work_modules": [module.value for module in user.work_modules],
         "is_active": user.is_active,
     }
 
@@ -131,6 +147,16 @@ def _require_assignable(actor_role: Role, target_role: Role) -> None:
 def _require_target_access(actor_role: Role, target_role: Role) -> None:
     if actor_role is Role.ADMIN and target_role in PRIVILEGED_ROLES:
         raise PrivilegedAccountRequiresOwnerError
+
+
+def _validated_work_modules(role: Role, values: object) -> tuple[WorkModule, ...]:
+    try:
+        modules = normalize_work_modules(values)
+    except (ValueError, TypeError) as error:
+        raise InvalidWorkModulesError from error
+    if modules and role in {Role.SUPPLIER, Role.CUSTOMER}:
+        raise InvalidWorkModulesError
+    return modules
 
 
 def _constraint_name(error: IntegrityError) -> str:
@@ -164,9 +190,11 @@ class UserAdministrationService:
         email: str | None,
         role: Role,
         password: str,
+        work_modules: tuple[WorkModule, ...] = (),
     ) -> ManagedUser:
         _require_manager(actor_role)
         _require_assignable(actor_role, role)
+        modules = _validated_work_modules(role, work_modules)
         user_id = uuid4()
         occurred_at = datetime.now(UTC)
         password_hash = self._passwords.hash(password)
@@ -188,6 +216,7 @@ class UserAdministrationService:
                             display_name=display_name,
                             email=email,
                             role=role.value,
+                            work_modules=[module.value for module in modules],
                             password_hash=password_hash,
                             auth_version=1,
                             is_active=True,
@@ -252,6 +281,9 @@ class UserAdministrationService:
                     role_change if isinstance(role_change, Role) else Role(str(role_change))
                 )
                 _require_assignable(actor_role, requested_role)
+                modules = _validated_work_modules(
+                    requested_role, changes.get("work_modules", before.work_modules)
+                )
                 if actor_user_id == user_id and ({"role", "is_active"} & changes.keys()):
                     raise SelfRoleOrStatusChangeError
 
@@ -290,10 +322,11 @@ class UserAdministrationService:
                     "email": changes.get("email", before.email),
                     "role": requested_role.value,
                     "is_active": next_active,
+                    "work_modules": [module.value for module in modules],
                 }
                 changed_fields = [
                     field
-                    for field in ("display_name", "email", "role", "is_active")
+                    for field in ("display_name", "email", "role", "is_active", "work_modules")
                     if field in changes and before_snapshot[field] != proposed_snapshot[field]
                 ]
                 if not changed_fields:

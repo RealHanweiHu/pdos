@@ -13,6 +13,7 @@ from app.ai.application_gateway import ApplicationModelGateway
 from app.ai.application_leases import bind_write
 from app.ai.budget_ledger import BudgetLedgerError
 from app.ai.change_discussion_contract import DiscussionTurn, call_id, seat_input, validate
+from app.ai.durable import agent_entry
 from app.ai.executor import PromptFile
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
@@ -111,6 +112,7 @@ def validate_choice(value: Initiation, snapshot: dict[str, Any], config: dict[st
         raise ProductWorkError("拟召集席位仅引用相同资料，尚无不同信息贡献")
 
 
+@agent_entry
 def run(
     engine: Engine, gateway: ApplicationModelGateway, row: RowMapping, bound: dict[str, Any]
 ) -> dict[str, Any]:

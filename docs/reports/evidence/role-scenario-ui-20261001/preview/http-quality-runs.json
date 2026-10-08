@@ -1,0 +1,36 @@
+{
+  "username": "quality",
+  "independent_cookie_jar": true,
+  "proxy_disabled": true,
+  "initial_probe": "localhost urllib default-system-proxy login timed out before any Next access log; no token received; retried once with proxy disabled",
+  "checks": [
+    {
+      "surface": "frontend BFF",
+      "hostname": "localhost",
+      "path": "/api/projects/487c5f76-63cd-4ebf-abd9-cee51f458a83/npi/test-cases/5068ae8f-29d7-4b64-b8da-04ab7099ef90/runs",
+      "status": 200,
+      "items": 1
+    },
+    {
+      "surface": "frontend BFF",
+      "hostname": "localhost",
+      "path": "/api/projects/487c5f76-63cd-4ebf-abd9-cee51f458a83/documents",
+      "status": 200,
+      "items": 0
+    },
+    {
+      "surface": "FastAPI",
+      "hostname": "127.0.0.1",
+      "path": "/api/projects/487c5f76-63cd-4ebf-abd9-cee51f458a83/npi/test-cases/5068ae8f-29d7-4b64-b8da-04ab7099ef90/runs",
+      "status": 200,
+      "items": 1
+    },
+    {
+      "surface": "FastAPI",
+      "hostname": "127.0.0.1",
+      "path": "/api/ai/projects/487c5f76-63cd-4ebf-abd9-cee51f458a83/documents",
+      "status": 200,
+      "items": 0
+    }
+  ]
+}

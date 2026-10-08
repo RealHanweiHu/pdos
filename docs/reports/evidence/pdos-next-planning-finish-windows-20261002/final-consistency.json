@@ -1,0 +1,10 @@
+{
+  "candidate": "e5fc53608691da573a23899e575c0e7568c854d096f9d06d9f0e72c8274803cd",
+  "all_candidate_files_unchanged_after_checks": true,
+  "stable_shared_files": [
+    "calendar.py",
+    "dto.py",
+    "__init__.py"
+  ],
+  "example_status": "complete"
+}

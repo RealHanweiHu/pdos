@@ -1,0 +1,16 @@
+{
+  "schema": "wave16-readonly-closeout-v1",
+  "checked_at": "2026-10-03T10:48:24.443863+00:00",
+  "status": "failed",
+  "read_only": true,
+  "checks": [],
+  "limits": [
+    "As-of synthetic evidence observation; not production qualification or manual Exit.",
+    "No new scan, confirmation, replay, application, migration or HTTP operation.",
+    "OriginalStore read gate may use bounded control locks; no business byte mutation.",
+    "Original token preimage and false-to-true same-UOW transition not reconstructed.",
+    "Current professional issuer/qualification is not reassessed by this historical check.",
+    "Public candidates/integration HTTP projection not executed; physical absence checked."
+  ],
+  "reason_code": "UNVERIFIABLE_SELECTED_EVIDENCE_OR_RUNTIME"
+}

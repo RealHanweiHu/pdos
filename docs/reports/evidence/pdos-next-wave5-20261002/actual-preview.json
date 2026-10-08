@@ -1,0 +1,1416 @@
+{
+  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "schema_head": "next_0007",
+  "business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_port": 62513,
+  "business_table_count": 46,
+  "plan_and_readiness_unchanged": true,
+  "sample_identities_preserved": true,
+  "supply": {
+    "captures": [
+      {
+        "id": "a7d6d7d7-5b62-49ff-980c-35397ebbd150",
+        "revision": 1,
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "build_revision": 1,
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "status": "unapplied",
+        "created_at": "2026-10-02T12:39:04.065585+00:00",
+        "expires_at": "2026-10-02T13:09:04.065585+00:00",
+        "expired": false,
+        "applied_snapshot_id": "51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+        "reason": "合成续版：同一库存池观察由12件修订为15件，承诺100件单列，旧快照保留。",
+        "input_snapshot": {
+          "reason": "合成续版：同一库存池观察由12件修订为15件，承诺100件单列，旧快照保留。",
+          "records": [
+            {
+              "note": "合成供方已有承诺，未证明实到，预计到达时间未知。",
+              "unit": "件",
+              "pool_id": null,
+              "quality": "unknown",
+              "sources": [
+                {
+                  "line": 2,
+                  "quote": "合成供方记录：供应方 SYN-W5-SUPPLIER 承诺100件，尚未证明实到或可用。",
+                  "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+                  "expected_revision": 1
+                }
+              ],
+              "quantity": "100",
+              "record_id": "SYN-W5-COMMITMENT-01",
+              "expected_at": null,
+              "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "received_at": null,
+              "record_kind": "commitment",
+              "supplier_id": "SYN-W5-SUPPLIER",
+              "availability": "unknown",
+              "commitment_id": null,
+              "source_system": null
+            },
+            {
+              "note": "合成后续复核：同池15件，质量、可用性及跨轮次占用仍待核对。",
+              "unit": "件",
+              "pool_id": "SYN-W5-POOL-01",
+              "quality": "unknown",
+              "sources": [
+                {
+                  "line": 3,
+                  "quote": "合成复核记录：同一电机池后续登记15件，完整跨轮次占用仍未取得。",
+                  "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+                  "expected_revision": 1
+                }
+              ],
+              "quantity": "15",
+              "record_id": "SYN-W5-BALANCE-01",
+              "expected_at": null,
+              "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "received_at": null,
+              "record_kind": "inventory",
+              "supplier_id": null,
+              "availability": "unknown",
+              "commitment_id": null,
+              "source_system": "本地合成库存记录"
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "capture_key": "331ca089-a35f-4f86-b732-41497c112a9c",
+          "expected_build_revision": 1,
+          "expected_product_revision": 1
+        },
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "snapshot_record_payload": {
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "expected_build_revision": 1,
+          "capture_id": "a7d6d7d7-5b62-49ff-980c-35397ebbd150",
+          "expected_capture_revision": 1,
+          "expected_previous_snapshot_id": "05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+          "expected_previous_revision": 1,
+          "reason": "合成续版：同一库存池观察由12件修订为15件，承诺100件单列，旧快照保留。"
+        }
+      },
+      {
+        "id": "15e95206-bd0a-4e27-949b-1ae7faefe9ef",
+        "revision": 1,
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "build_revision": 1,
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "status": "unapplied",
+        "created_at": "2026-10-02T12:34:11.795918+00:00",
+        "expires_at": "2026-10-02T13:04:11.795918+00:00",
+        "expired": false,
+        "applied_snapshot_id": "05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+        "reason": "合成首版：分开记录库存观察和供方承诺，保持缺项与未知。",
+        "input_snapshot": {
+          "reason": "合成首版：分开记录库存观察和供方承诺，保持缺项与未知。",
+          "records": [
+            {
+              "note": "合成供方已有承诺，未证明实到，预计到达时间未知。",
+              "unit": "件",
+              "pool_id": null,
+              "quality": "unknown",
+              "sources": [
+                {
+                  "line": 2,
+                  "quote": "合成供方记录：供应方 SYN-W5-SUPPLIER 承诺100件，尚未证明实到或可用。",
+                  "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+                  "expected_revision": 1
+                }
+              ],
+              "quantity": "100",
+              "record_id": "SYN-W5-COMMITMENT-01",
+              "expected_at": null,
+              "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "received_at": null,
+              "record_kind": "commitment",
+              "supplier_id": "SYN-W5-SUPPLIER",
+              "availability": "unknown",
+              "commitment_id": null,
+              "source_system": null
+            },
+            {
+              "note": "合成库存观察，未核验质量、可用性与完整占用。",
+              "unit": "件",
+              "pool_id": "SYN-W5-POOL-01",
+              "quality": "unknown",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "合成库存记录：电机池 SYN-W5-POOL-01 当前登记12件，质量和可用性未核验。",
+                  "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+                  "expected_revision": 1
+                }
+              ],
+              "quantity": "12",
+              "record_id": "SYN-W5-BALANCE-01",
+              "expected_at": null,
+              "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "received_at": null,
+              "record_kind": "inventory",
+              "supplier_id": null,
+              "availability": "unknown",
+              "commitment_id": null,
+              "source_system": "本地合成库存记录"
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "capture_key": "f22088a0-1c3b-4304-96fb-1ed30041f7d5",
+          "expected_build_revision": 1,
+          "expected_product_revision": 1
+        },
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "snapshot_record_payload": {
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "expected_build_revision": 1,
+          "capture_id": "15e95206-bd0a-4e27-949b-1ae7faefe9ef",
+          "expected_capture_revision": 1,
+          "expected_previous_snapshot_id": null,
+          "expected_previous_revision": null,
+          "reason": "合成首版：分开记录库存观察和供方承诺，保持缺项与未知。"
+        }
+      }
+    ],
+    "snapshots": [
+      {
+        "id": "51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+        "revision": "2",
+        "sha256": "477f472538715c4b07b89de864cae55c7594bcf70792e95d491e2c310121fcdd",
+        "captured_at": "2026-10-02T12:39:04.065585+00:00",
+        "freshness": "current",
+        "freshness_reasons": [],
+        "binding": {
+          "basis_sha256": "b3eb43973357a62bb3e9523385e7d7a12c82774d9fe4a6c683f66ee23214ba2c",
+          "demand_sha256": "30781a99287914174e60097c67e67a3672f416f08e200316f2c3c693b7774396",
+          "basis": {
+            "schema_version": "supply-cost-input.v1",
+            "build": {
+              "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+              "ref": {
+                "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "version": "1",
+                "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                "captured_at": "2026-10-02T11:43:29.515406Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "quantity": "10.00000000",
+              "product_unit": "台"
+            },
+            "bom": {
+              "ref": {
+                "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "version": "1",
+                "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                "captured_at": "2026-10-02T11:41:47.769153Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "engineering_configuration": {
+                "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "version": "1",
+                "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                "captured_at": "2026-10-02T11:41:59.876254Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "items": [
+                {
+                  "item_id": "housing",
+                  "parent_item_id": null,
+                  "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                  "quantity_per_parent": null,
+                  "unit": "件",
+                  "loss_rate": null,
+                  "supply_required": true,
+                  "critical": false
+                },
+                {
+                  "item_id": "motor",
+                  "parent_item_id": null,
+                  "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                  "quantity_per_parent": "2",
+                  "unit": "件",
+                  "loss_rate": "0.1",
+                  "supply_required": true,
+                  "critical": true
+                }
+              ]
+            }
+          },
+          "manufacturing_configuration": {
+            "source_id": "manufacturing_configuration:29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "version": "1",
+            "sha256": "6aaac00d27a171b766ea1c74d3b2865117091c7d4cf464ead335b29f07760f3a",
+            "captured_at": "2026-10-02T11:42:22.842804Z",
+            "valid_until": null,
+            "state": "current"
+          }
+        },
+        "source_refs": [
+          {
+            "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+            "version": "1",
+            "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+            "captured_at": "2026-10-02T11:43:29.515406Z",
+            "valid_until": null,
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "version": "1",
+            "sha256": "b17ca7c70bcf1f9dd81a49796b02f78abda1b8eea371fcec22f4b29d0450e4c7",
+            "captured_at": "2026-10-02T11:40:57.798449Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+            "version": "1",
+            "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+            "captured_at": "2026-10-02T12:32:51.872859Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "version": "1",
+            "sha256": "a8d690763655118384072b601f7dee80f67ddc0009e86d35075595d21dea981d",
+            "captured_at": "2026-10-02T09:33:01.976795Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+            "version": "1",
+            "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+            "captured_at": "2026-10-02T11:41:47.769153Z",
+            "valid_until": null,
+            "state": "current"
+          },
+          {
+            "source_id": "manufacturing_configuration:29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "version": "1",
+            "sha256": "6aaac00d27a171b766ea1c74d3b2865117091c7d4cf464ead335b29f07760f3a",
+            "captured_at": "2026-10-02T11:42:22.842804Z",
+            "valid_until": null,
+            "state": "current"
+          },
+          {
+            "source_id": "build-readiness:86149d65-1ce6-4dfd-a06b-6f043614480f",
+            "version": "1",
+            "sha256": "30781a99287914174e60097c67e67a3672f416f08e200316f2c3c693b7774396",
+            "captured_at": "2026-10-02T11:46:31.278869Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "supply:51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+            "version": "2",
+            "sha256": "ab1be1985fc675201d585f6c173f2cb5448ecf94d8a2d06670ebba3349529630",
+            "captured_at": "2026-10-02T12:39:04.065585Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+            "version": "1",
+            "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+            "captured_at": "2026-10-02T11:41:59.876254Z",
+            "valid_until": null,
+            "state": "current"
+          }
+        ],
+        "scope_complete": false,
+        "records": [
+          {
+            "record_kind": "commitment",
+            "record_id": "SYN-W5-COMMITMENT-01",
+            "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "quantity": "100",
+            "unit": "件",
+            "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+            "source_revision": "1",
+            "quality": "unknown",
+            "availability": "unknown",
+            "note": "合成供方已有承诺，未证明实到，预计到达时间未知。",
+            "source": {
+              "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+              "version": "1",
+              "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+              "captured_at": "2026-10-02T12:32:51.872859Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "recorded_at": "2026-10-02T12:32:51.872859+00:00",
+            "supplier_id": "SYN-W5-SUPPLIER",
+            "expected_at": null
+          },
+          {
+            "record_kind": "inventory",
+            "record_id": "[\"本地合成库存记录\", \"SYN-W5-POOL-01\", \"94824422-c361-485f-9253-0e0f8753c620\"]",
+            "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "quantity": "15",
+            "unit": "件",
+            "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+            "source_revision": "1",
+            "pool_id": "SYN-W5-POOL-01",
+            "quality": "unknown",
+            "availability": "unknown",
+            "note": "当前物理池库存余额，独立于累计到货记录。",
+            "source": {
+              "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+              "version": "1",
+              "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+              "captured_at": "2026-10-02T12:32:51.872859Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "recorded_at": "2026-10-02T12:32:51.872859+00:00"
+          }
+        ],
+        "pools": [
+          {
+            "key": {
+              "source_system": "本地合成库存记录",
+              "pool_id": "SYN-W5-POOL-01",
+              "material_id": "94824422-c361-485f-9253-0e0f8753c620"
+            },
+            "ref": {
+              "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+              "version": "1",
+              "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+              "captured_at": "2026-10-02T12:32:51.872859Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "stage": "on_hand",
+            "quantity": "15",
+            "unit": "件",
+            "availability": "unknown",
+            "quality": "unknown",
+            "expected_at": null
+          }
+        ],
+        "reservations": [],
+        "reconciliation": {
+          "id": "51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+          "before_snapshot_id": "05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+          "before_revision": "1",
+          "before_sha256": "01b15d1853f665d780bc4a753cb1ca952af2cfdaceb9c5235ebc4e167b959d70",
+          "after_snapshot_id": "51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+          "after_revision": "2",
+          "after_sha256": "477f472538715c4b07b89de864cae55c7594bcf70792e95d491e2c310121fcdd",
+          "deltas": [
+            {
+              "record_key": "pools · [\"本地合成库存记录\",\"SYN-W5-POOL-01\",\"94824422-c361-485f-9253-0e0f8753c620\"]",
+              "field": "来源数量",
+              "before": "12",
+              "after": "15",
+              "difference": null,
+              "unit": null
+            },
+            {
+              "record_key": "snapshot · note",
+              "field": "记录",
+              "before": "合成首版：分开记录库存观察和供方承诺，保持缺项与未知。",
+              "after": "合成续版：同一库存池观察由12件修订为15件，承诺100件单列，旧快照保留。",
+              "difference": null,
+              "unit": null
+            },
+            {
+              "record_key": "snapshot · source",
+              "field": "captured_at",
+              "before": "2026-10-02T12:34:11.795918Z",
+              "after": "2026-10-02T12:39:04.065585Z",
+              "difference": null,
+              "unit": null
+            },
+            {
+              "record_key": "snapshot · source",
+              "field": "sha256",
+              "before": "c01127b2966e22e4926eb4bdd91eb63c464ecc3cd6d205177f44e59e828e2e7e",
+              "after": "ab1be1985fc675201d585f6c173f2cb5448ecf94d8a2d06670ebba3349529630",
+              "difference": null,
+              "unit": null
+            },
+            {
+              "record_key": "snapshot · source",
+              "field": "source_id",
+              "before": "supply:05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+              "after": "supply:51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+              "difference": null,
+              "unit": null
+            },
+            {
+              "record_key": "snapshot · source",
+              "field": "version",
+              "before": "1",
+              "after": "2",
+              "difference": null,
+              "unit": null
+            }
+          ],
+          "reasons": [
+            "来源、配置、余额或占用变化后，齐套和成本须按新的固定依据重核。"
+          ]
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成续版：同一库存池观察由12件修订为15件，承诺100件单列，旧快照保留。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ],
+        "sources": [
+          {
+            "line": 2,
+            "quote": "合成供方记录：供应方 SYN-W5-SUPPLIER 承诺100件，尚未证明实到或可用。",
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "合成复核记录：同一电机池后续登记15件，完整跨轮次占用仍未取得。",
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ]
+      },
+      {
+        "id": "05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+        "revision": "1",
+        "sha256": "01b15d1853f665d780bc4a753cb1ca952af2cfdaceb9c5235ebc4e167b959d70",
+        "captured_at": "2026-10-02T12:34:11.795918+00:00",
+        "freshness": "historical",
+        "freshness_reasons": [
+          "supply_snapshot_superseded"
+        ],
+        "binding": {
+          "basis_sha256": "b3eb43973357a62bb3e9523385e7d7a12c82774d9fe4a6c683f66ee23214ba2c",
+          "demand_sha256": "30781a99287914174e60097c67e67a3672f416f08e200316f2c3c693b7774396",
+          "basis": {
+            "schema_version": "supply-cost-input.v1",
+            "build": {
+              "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+              "ref": {
+                "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "version": "1",
+                "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                "captured_at": "2026-10-02T11:43:29.515406Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "quantity": "10.00000000",
+              "product_unit": "台"
+            },
+            "bom": {
+              "ref": {
+                "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                "version": "1",
+                "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                "captured_at": "2026-10-02T11:41:47.769153Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "engineering_configuration": {
+                "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                "version": "1",
+                "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                "captured_at": "2026-10-02T11:41:59.876254Z",
+                "valid_until": null,
+                "state": "current"
+              },
+              "items": [
+                {
+                  "item_id": "housing",
+                  "parent_item_id": null,
+                  "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                  "quantity_per_parent": null,
+                  "unit": "件",
+                  "loss_rate": null,
+                  "supply_required": true,
+                  "critical": false
+                },
+                {
+                  "item_id": "motor",
+                  "parent_item_id": null,
+                  "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                  "quantity_per_parent": "2",
+                  "unit": "件",
+                  "loss_rate": "0.1",
+                  "supply_required": true,
+                  "critical": true
+                }
+              ]
+            }
+          },
+          "manufacturing_configuration": {
+            "source_id": "manufacturing_configuration:29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "version": "1",
+            "sha256": "6aaac00d27a171b766ea1c74d3b2865117091c7d4cf464ead335b29f07760f3a",
+            "captured_at": "2026-10-02T11:42:22.842804Z",
+            "valid_until": null,
+            "state": "current"
+          }
+        },
+        "source_refs": [
+          {
+            "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+            "version": "1",
+            "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+            "captured_at": "2026-10-02T11:43:29.515406Z",
+            "valid_until": null,
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "version": "1",
+            "sha256": "b17ca7c70bcf1f9dd81a49796b02f78abda1b8eea371fcec22f4b29d0450e4c7",
+            "captured_at": "2026-10-02T11:40:57.798449Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+            "version": "1",
+            "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+            "captured_at": "2026-10-02T12:32:51.872859Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "supply:05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+            "version": "1",
+            "sha256": "c01127b2966e22e4926eb4bdd91eb63c464ecc3cd6d205177f44e59e828e2e7e",
+            "captured_at": "2026-10-02T12:34:11.795918Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "version": "1",
+            "sha256": "a8d690763655118384072b601f7dee80f67ddc0009e86d35075595d21dea981d",
+            "captured_at": "2026-10-02T09:33:01.976795Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+            "version": "1",
+            "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+            "captured_at": "2026-10-02T11:41:47.769153Z",
+            "valid_until": null,
+            "state": "current"
+          },
+          {
+            "source_id": "manufacturing_configuration:29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "version": "1",
+            "sha256": "6aaac00d27a171b766ea1c74d3b2865117091c7d4cf464ead335b29f07760f3a",
+            "captured_at": "2026-10-02T11:42:22.842804Z",
+            "valid_until": null,
+            "state": "current"
+          },
+          {
+            "source_id": "build-readiness:86149d65-1ce6-4dfd-a06b-6f043614480f",
+            "version": "1",
+            "sha256": "30781a99287914174e60097c67e67a3672f416f08e200316f2c3c693b7774396",
+            "captured_at": "2026-10-02T11:46:31.278869Z",
+            "valid_until": "2026-10-09T09:33:01.917395Z",
+            "state": "current"
+          },
+          {
+            "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+            "version": "1",
+            "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+            "captured_at": "2026-10-02T11:41:59.876254Z",
+            "valid_until": null,
+            "state": "current"
+          }
+        ],
+        "scope_complete": false,
+        "records": [
+          {
+            "record_kind": "commitment",
+            "record_id": "SYN-W5-COMMITMENT-01",
+            "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "quantity": "100",
+            "unit": "件",
+            "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+            "source_revision": "1",
+            "quality": "unknown",
+            "availability": "unknown",
+            "note": "合成供方已有承诺，未证明实到，预计到达时间未知。",
+            "source": {
+              "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+              "version": "1",
+              "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+              "captured_at": "2026-10-02T12:32:51.872859Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "recorded_at": "2026-10-02T12:32:51.872859+00:00",
+            "supplier_id": "SYN-W5-SUPPLIER",
+            "expected_at": null
+          },
+          {
+            "record_kind": "inventory",
+            "record_id": "[\"本地合成库存记录\", \"SYN-W5-POOL-01\", \"94824422-c361-485f-9253-0e0f8753c620\"]",
+            "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+            "quantity": "12",
+            "unit": "件",
+            "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+            "source_revision": "1",
+            "pool_id": "SYN-W5-POOL-01",
+            "quality": "unknown",
+            "availability": "unknown",
+            "note": "当前物理池库存余额，独立于累计到货记录。",
+            "source": {
+              "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+              "version": "1",
+              "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+              "captured_at": "2026-10-02T12:32:51.872859Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "recorded_at": "2026-10-02T12:32:51.872859+00:00"
+          }
+        ],
+        "pools": [
+          {
+            "key": {
+              "source_system": "本地合成库存记录",
+              "pool_id": "SYN-W5-POOL-01",
+              "material_id": "94824422-c361-485f-9253-0e0f8753c620"
+            },
+            "ref": {
+              "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+              "version": "1",
+              "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+              "captured_at": "2026-10-02T12:32:51.872859Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "stage": "on_hand",
+            "quantity": "12",
+            "unit": "件",
+            "availability": "unknown",
+            "quality": "unknown",
+            "expected_at": null
+          }
+        ],
+        "reservations": [],
+        "reconciliation": null,
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成首版：分开记录库存观察和供方承诺，保持缺项与未知。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ],
+        "sources": [
+          {
+            "line": 2,
+            "quote": "合成供方记录：供应方 SYN-W5-SUPPLIER 承诺100件，尚未证明实到或可用。",
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "合成库存记录：电机池 SYN-W5-POOL-01 当前登记12件，质量和可用性未核验。",
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ]
+      }
+    ],
+    "kits": [
+      {
+        "id": "a5cff38c-d8cd-4ca2-b1a7-b9363a552ab6",
+        "revision": "1",
+        "created_at": "2026-10-02T12:39:33.946767+00:00",
+        "freshness": "current",
+        "freshness_reasons": [],
+        "result": {
+          "schema_version": "supply-coverage-result.v1",
+          "algorithm": "fixed-bom-shared-pool.v1",
+          "input_sha256": "577b602fa6a71bd3e0dd6342d0bd72b9ee858409976ab8c926e4ee548dd51e19",
+          "input_snapshot": {
+            "as_of": "2026-10-02T12:39:33.946767Z",
+            "basis": {
+              "schema_version": "supply-cost-input.v1",
+              "build": {
+                "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "ref": {
+                  "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                  "version": "1",
+                  "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                  "captured_at": "2026-10-02T11:43:29.515406Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "quantity": "10.00000000",
+                "product_unit": "台"
+              },
+              "bom": {
+                "ref": {
+                  "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                  "version": "1",
+                  "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                  "captured_at": "2026-10-02T11:41:47.769153Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "engineering_configuration": {
+                  "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                  "version": "1",
+                  "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                  "captured_at": "2026-10-02T11:41:59.876254Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "items": [
+                  {
+                    "item_id": "housing",
+                    "parent_item_id": null,
+                    "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                    "quantity_per_parent": null,
+                    "unit": "件",
+                    "loss_rate": null,
+                    "supply_required": true,
+                    "critical": false
+                  },
+                  {
+                    "item_id": "motor",
+                    "parent_item_id": null,
+                    "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                    "quantity_per_parent": "2",
+                    "unit": "件",
+                    "loss_rate": "0.1",
+                    "supply_required": true,
+                    "critical": true
+                  }
+                ]
+              }
+            },
+            "supply_snapshot": {
+              "source_id": "supply:51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+              "version": "2",
+              "sha256": "ab1be1985fc675201d585f6c173f2cb5448ecf94d8a2d06670ebba3349529630",
+              "captured_at": "2026-10-02T12:39:04.065585Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "supply_scope_complete": false,
+            "pools": [
+              {
+                "key": {
+                  "source_system": "本地合成库存记录",
+                  "pool_id": "SYN-W5-POOL-01",
+                  "material_id": "94824422-c361-485f-9253-0e0f8753c620"
+                },
+                "ref": {
+                  "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+                  "version": "1",
+                  "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+                  "captured_at": "2026-10-02T12:32:51.872859Z",
+                  "valid_until": "2026-10-09T09:33:01.917395Z",
+                  "state": "current"
+                },
+                "stage": "on_hand",
+                "quantity": "15",
+                "unit": "件",
+                "availability": "unknown",
+                "quality": "unknown",
+                "expected_at": null
+              }
+            ],
+            "reservations": [],
+            "alternates": []
+          },
+          "secured_ready": null,
+          "potential_ready": null,
+          "critical_secured_ready": null,
+          "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+          "potential_is_feasibility_proof": false,
+          "lines": [
+            {
+              "demand": {
+                "item_id": "motor",
+                "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "unit": "件",
+                "critical": true,
+                "ancestry": [],
+                "quantity_per_product": "2.2",
+                "required_quantity": "22.000000000",
+                "issues": []
+              },
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "0",
+              "secured_gap": null,
+              "potential_gap": null,
+              "secured_ready": null,
+              "potential_ready": null,
+              "uses": [],
+              "issues": [
+                {
+                  "code": "availability_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Usability is unknown",
+                  "kind": "missing"
+                },
+                {
+                  "code": "incomplete_supply_scope",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Missing reservations may reduce this pool's capacity",
+                  "kind": "missing"
+                },
+                {
+                  "code": "quality_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Quality release is unknown",
+                  "kind": "missing"
+                }
+              ]
+            },
+            {
+              "demand": {
+                "item_id": "housing",
+                "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                "unit": "件",
+                "critical": false,
+                "ancestry": [],
+                "quantity_per_product": null,
+                "required_quantity": null,
+                "issues": [
+                  {
+                    "code": "bom_quantity_unknown",
+                    "path": "housing",
+                    "message": "BOM quantity is unknown",
+                    "kind": "missing"
+                  },
+                  {
+                    "code": "loss_unknown",
+                    "path": "housing",
+                    "message": "Loss uplift assumption is unknown",
+                    "kind": "missing"
+                  }
+                ]
+              },
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "0",
+              "secured_gap": null,
+              "potential_gap": null,
+              "secured_ready": null,
+              "potential_ready": null,
+              "uses": [],
+              "issues": [
+                {
+                  "code": "bom_quantity_unknown",
+                  "path": "housing",
+                  "message": "BOM quantity is unknown",
+                  "kind": "missing"
+                },
+                {
+                  "code": "loss_unknown",
+                  "path": "housing",
+                  "message": "Loss uplift assumption is unknown",
+                  "kind": "missing"
+                }
+              ]
+            }
+          ],
+          "pools": [
+            {
+              "key": {
+                "source_system": "本地合成库存记录",
+                "pool_id": "SYN-W5-POOL-01",
+                "material_id": "94824422-c361-485f-9253-0e0f8753c620"
+              },
+              "stage": "on_hand",
+              "unit": "件",
+              "quantity": "15",
+              "reserved_quantity": null,
+              "unreserved_usable_quantity": null,
+              "own_secured_quantity": null,
+              "source": {
+                "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+                "version": "1",
+                "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+                "captured_at": "2026-10-02T12:32:51.872859Z",
+                "valid_until": "2026-10-09T09:33:01.917395Z",
+                "state": "current"
+              },
+              "issues": [
+                {
+                  "code": "availability_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Usability is unknown",
+                  "kind": "missing"
+                },
+                {
+                  "code": "incomplete_supply_scope",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Missing reservations may reduce this pool's capacity",
+                  "kind": "missing"
+                },
+                {
+                  "code": "quality_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Quality release is unknown",
+                  "kind": "missing"
+                }
+              ]
+            }
+          ],
+          "issues": [
+            {
+              "code": "availability_unknown",
+              "path": "SYN-W5-POOL-01",
+              "message": "Usability is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "incomplete_supply_scope",
+              "path": "SYN-W5-POOL-01",
+              "message": "Missing reservations may reduce this pool's capacity",
+              "kind": "missing"
+            },
+            {
+              "code": "quality_unknown",
+              "path": "SYN-W5-POOL-01",
+              "message": "Quality release is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "bom_quantity_unknown",
+              "path": "housing",
+              "message": "BOM quantity is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "loss_unknown",
+              "path": "housing",
+              "message": "Loss uplift assumption is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "incomplete_supply_scope",
+              "path": "supply_snapshot",
+              "message": "Relevant pools or active reservations may be missing",
+              "kind": "missing"
+            }
+          ],
+          "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility"
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "确定性计算固定需求的齐套与短缺；不预约库存、不批准替代或开工。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ],
+        "supply_snapshot_id": "51ba6bed-c11e-42cf-9e67-87cbed4adca5"
+      },
+      {
+        "id": "50d5db1f-4f54-4feb-bce1-a301ee255adb",
+        "revision": "1",
+        "created_at": "2026-10-02T12:35:14.465859+00:00",
+        "freshness": "requires_recalculation",
+        "freshness_reasons": [
+          "supply_snapshot_changed"
+        ],
+        "result": {
+          "schema_version": "supply-coverage-result.v1",
+          "algorithm": "fixed-bom-shared-pool.v1",
+          "input_sha256": "f91eeb0e68e5bdf15ee469f0650edcb358233338d1ecce959ae5af7528f7e60c",
+          "input_snapshot": {
+            "as_of": "2026-10-02T12:35:14.465859Z",
+            "basis": {
+              "schema_version": "supply-cost-input.v1",
+              "build": {
+                "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                "ref": {
+                  "source_id": "build:137e82b2-86d3-4874-8a8e-652fbe853ca0",
+                  "version": "1",
+                  "sha256": "ffc303b4f641ef2be7a7fd3a221d5f38027d7ab78baa7e438aae4e00d6d71226",
+                  "captured_at": "2026-10-02T11:43:29.515406Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "quantity": "10.00000000",
+                "product_unit": "台"
+              },
+              "bom": {
+                "ref": {
+                  "source_id": "bom:c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+                  "version": "1",
+                  "sha256": "24702bba1c6ec35309e23d341cef065fd7eb94be3f8547eecf80053e3dea0686",
+                  "captured_at": "2026-10-02T11:41:47.769153Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "engineering_configuration": {
+                  "source_id": "configuration:4542ae73-91b3-481e-9bf9-a240e84b831a",
+                  "version": "1",
+                  "sha256": "70af0d2dfb9ab30682c800bbc478608bad5e3ab32aacc00bf732b2ba57abe18d",
+                  "captured_at": "2026-10-02T11:41:59.876254Z",
+                  "valid_until": null,
+                  "state": "current"
+                },
+                "items": [
+                  {
+                    "item_id": "housing",
+                    "parent_item_id": null,
+                    "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                    "quantity_per_parent": null,
+                    "unit": "件",
+                    "loss_rate": null,
+                    "supply_required": true,
+                    "critical": false
+                  },
+                  {
+                    "item_id": "motor",
+                    "parent_item_id": null,
+                    "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                    "quantity_per_parent": "2",
+                    "unit": "件",
+                    "loss_rate": "0.1",
+                    "supply_required": true,
+                    "critical": true
+                  }
+                ]
+              }
+            },
+            "supply_snapshot": {
+              "source_id": "supply:05aa80f1-1c98-4c15-be74-5cfd7bdafda2",
+              "version": "1",
+              "sha256": "c01127b2966e22e4926eb4bdd91eb63c464ecc3cd6d205177f44e59e828e2e7e",
+              "captured_at": "2026-10-02T12:34:11.795918Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z",
+              "state": "current"
+            },
+            "supply_scope_complete": false,
+            "pools": [
+              {
+                "key": {
+                  "source_system": "本地合成库存记录",
+                  "pool_id": "SYN-W5-POOL-01",
+                  "material_id": "94824422-c361-485f-9253-0e0f8753c620"
+                },
+                "ref": {
+                  "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+                  "version": "1",
+                  "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+                  "captured_at": "2026-10-02T12:32:51.872859Z",
+                  "valid_until": "2026-10-09T09:33:01.917395Z",
+                  "state": "current"
+                },
+                "stage": "on_hand",
+                "quantity": "12",
+                "unit": "件",
+                "availability": "unknown",
+                "quality": "unknown",
+                "expected_at": null
+              }
+            ],
+            "reservations": [],
+            "alternates": []
+          },
+          "secured_ready": null,
+          "potential_ready": null,
+          "critical_secured_ready": null,
+          "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+          "potential_is_feasibility_proof": false,
+          "lines": [
+            {
+              "demand": {
+                "item_id": "motor",
+                "material_id": "94824422-c361-485f-9253-0e0f8753c620",
+                "unit": "件",
+                "critical": true,
+                "ancestry": [],
+                "quantity_per_product": "2.2",
+                "required_quantity": "22.000000000",
+                "issues": []
+              },
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "0",
+              "secured_gap": null,
+              "potential_gap": null,
+              "secured_ready": null,
+              "potential_ready": null,
+              "uses": [],
+              "issues": [
+                {
+                  "code": "availability_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Usability is unknown",
+                  "kind": "missing"
+                },
+                {
+                  "code": "incomplete_supply_scope",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Missing reservations may reduce this pool's capacity",
+                  "kind": "missing"
+                },
+                {
+                  "code": "quality_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Quality release is unknown",
+                  "kind": "missing"
+                }
+              ]
+            },
+            {
+              "demand": {
+                "item_id": "housing",
+                "material_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                "unit": "件",
+                "critical": false,
+                "ancestry": [],
+                "quantity_per_product": null,
+                "required_quantity": null,
+                "issues": [
+                  {
+                    "code": "bom_quantity_unknown",
+                    "path": "housing",
+                    "message": "BOM quantity is unknown",
+                    "kind": "missing"
+                  },
+                  {
+                    "code": "loss_unknown",
+                    "path": "housing",
+                    "message": "Loss uplift assumption is unknown",
+                    "kind": "missing"
+                  }
+                ]
+              },
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "0",
+              "secured_gap": null,
+              "potential_gap": null,
+              "secured_ready": null,
+              "potential_ready": null,
+              "uses": [],
+              "issues": [
+                {
+                  "code": "bom_quantity_unknown",
+                  "path": "housing",
+                  "message": "BOM quantity is unknown",
+                  "kind": "missing"
+                },
+                {
+                  "code": "loss_unknown",
+                  "path": "housing",
+                  "message": "Loss uplift assumption is unknown",
+                  "kind": "missing"
+                }
+              ]
+            }
+          ],
+          "pools": [
+            {
+              "key": {
+                "source_system": "本地合成库存记录",
+                "pool_id": "SYN-W5-POOL-01",
+                "material_id": "94824422-c361-485f-9253-0e0f8753c620"
+              },
+              "stage": "on_hand",
+              "unit": "件",
+              "quantity": "12",
+              "reserved_quantity": null,
+              "unreserved_usable_quantity": null,
+              "own_secured_quantity": null,
+              "source": {
+                "source_id": "artifact:9d325f50-2801-4874-850e-ca3015500a65",
+                "version": "1",
+                "sha256": "8481e493dee0d4a3825e96bd0b2ea6aff20425efee232e5c3437a9d23442dd2a",
+                "captured_at": "2026-10-02T12:32:51.872859Z",
+                "valid_until": "2026-10-09T09:33:01.917395Z",
+                "state": "current"
+              },
+              "issues": [
+                {
+                  "code": "availability_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Usability is unknown",
+                  "kind": "missing"
+                },
+                {
+                  "code": "incomplete_supply_scope",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Missing reservations may reduce this pool's capacity",
+                  "kind": "missing"
+                },
+                {
+                  "code": "quality_unknown",
+                  "path": "SYN-W5-POOL-01",
+                  "message": "Quality release is unknown",
+                  "kind": "missing"
+                }
+              ]
+            }
+          ],
+          "issues": [
+            {
+              "code": "availability_unknown",
+              "path": "SYN-W5-POOL-01",
+              "message": "Usability is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "incomplete_supply_scope",
+              "path": "SYN-W5-POOL-01",
+              "message": "Missing reservations may reduce this pool's capacity",
+              "kind": "missing"
+            },
+            {
+              "code": "quality_unknown",
+              "path": "SYN-W5-POOL-01",
+              "message": "Quality release is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "bom_quantity_unknown",
+              "path": "housing",
+              "message": "BOM quantity is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "loss_unknown",
+              "path": "housing",
+              "message": "Loss uplift assumption is unknown",
+              "kind": "missing"
+            },
+            {
+              "code": "incomplete_supply_scope",
+              "path": "supply_snapshot",
+              "message": "Relevant pools or active reservations may be missing",
+              "kind": "missing"
+            }
+          ],
+          "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility"
+        },
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "确定性计算固定需求的齐套与短缺；不预约库存、不批准替代或开工。",
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9d325f50-2801-4874-850e-ca3015500a65",
+            "expected_revision": 1
+          }
+        ],
+        "supply_snapshot_id": "05aa80f1-1c98-4c15-be74-5cfd7bdafda2"
+      }
+    ],
+    "current_by_build": {
+      "137e82b2-86d3-4874-8a8e-652fbe853ca0": {
+        "snapshot_id": "51ba6bed-c11e-42cf-9e67-87cbed4adca5",
+        "revision": 2
+      }
+    },
+    "has_more": false,
+    "unavailable_count": 0,
+    "inventory_scope_complete": false,
+    "qualification_status": "unknown"
+  },
+  "receipt_ids": [
+    "3bc55145-0a88-4020-b684-145f6d0925ab",
+    "09babb7e-079b-492a-892f-0b96eb19aee3",
+    "58b4f2ab-75c8-4678-96a4-5466658cb378",
+    "0b212bbc-84fd-409c-9d2f-64f9c6dfab77"
+  ],
+  "audit_and_outbox_each_once": true,
+  "model_calls": 0,
+  "agent_business_write_privileges": 0,
+  "backups": {
+    "pre-wave5-next_0006.dump": {
+      "bytes": 5117246,
+      "sha256": "509545e5a37ef8bff4a0257dfe1bf8dd2b5241b9a53aad3800d012bb2a18484b",
+      "mode": "0o600"
+    },
+    "wave5-business.dump": {
+      "bytes": 7745404,
+      "sha256": "a0ba422909622a29d6a81fe2102222f826afabaee2ffa2c34b2e6773b875a736",
+      "mode": "0o600"
+    }
+  },
+  "limitations": "Synthetic observations only; incomplete stock/reservations and unknown quality. No start, release, real qualification, or costing claim."
+}

@@ -1,0 +1,43 @@
+{
+  "tool": "pdos-next/tools/wave15_seed.py",
+  "before_sha256": "a44d2eaafda0ca89a6d2d6909c2002fad9785893b6b890873d5533565c921ac1",
+  "after_sha256": "d03460000b337f4540c1c4ea10312521d29b479439295fa1dae8a9538a747880",
+  "cause": "The explicit demo role facts omitted both change operations; list_changes derives authorization from selected Issue project/purpose before roots are selected.",
+  "change": {
+    "new_group": "change-followup",
+    "role": "quality",
+    "operations": [
+      "change.request.create",
+      "change.impact.compute"
+    ],
+    "kinds": [
+      "duty",
+      "qualification"
+    ],
+    "labels": [
+      "authority-change-followup-duty",
+      "authority-change-followup-qualification"
+    ],
+    "scope": "existing new demo actor/Product/Project and unchanged exact PURPOSE",
+    "nature": "synthetic only through unchanged trusted professional host importer",
+    "default_prepare": "Existing five groups preserved exactly; sixth independent group appended",
+    "standalone_method": "Demo.authority(only_group=\"change-followup\")",
+    "standalone_filter": "Only None or exact change-followup accepted; no other group processed in standalone mode"
+  },
+  "recovery": {
+    "root_owned_execution": true,
+    "call": "Construct a fresh Demo with the verified existing marker and original saved lead_minutes, then demo.authority(only_group=\"change-followup\"); no main/prepare/quality invocation",
+    "issuer": "Existing configure/import behavior unchanged; fresh Demo has a fresh Engine so do not reconfigure an already provisioned API or Demo issuer",
+    "existing_receipts_keys_facts": "No existing group label/request key/Receipt/fact is changed; checkpoint receives only newly successful receipts",
+    "currentness": "Refresh selected Issue change list and current server authority; retain all original source/qualification/retained checks"
+  },
+  "validation": {
+    "ruff": "passed",
+    "ast_compile": "passed",
+    "old_groups_ast_equal": "passed",
+    "outside_authority_ast_unchanged": "passed",
+    "inverse_delta_matches_exact_before_sha": "passed",
+    "database_http_pytest_main": "not run"
+  },
+  "boundaries": "No frozen production/schema/PG tests/profile/private checkpoint edited by this agent; no production qualification or authorization granted."
+}

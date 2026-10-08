@@ -1,0 +1,13 @@
+{
+  "read_only": true,
+  "head": "next_0024",
+  "current_formal_versions": [
+    {
+      "id": "6cedc339-9c39-482a-b30f-26e8b6dbcd8e",
+      "logical_request_id": "e774b968-dc18-449c-81d2-954a1c2f7a7d",
+      "revision": 7,
+      "status": "reported",
+      "direct_receipts": []
+    }
+  ]
+}

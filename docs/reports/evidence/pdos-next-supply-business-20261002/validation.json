@@ -1,0 +1,17 @@
+{
+  "candidate_sha256": "8876b5bc371bd86fdf2ca9b3afd0311907463b2937aadc2657bf6c7e26274763",
+  "isolated_domain_pytest": 106,
+  "component_checks": 15,
+  "python_lint_and_format_pass": true,
+  "frontend_types_and_lint_pass": true,
+  "import_audit_pass": true,
+  "consistency": {
+    "candidate_unchanged": true,
+    "candidate_sha256": "8876b5bc371bd86fdf2ca9b3afd0311907463b2937aadc2657bf6c7e26274763",
+    "frontend_matches_combined_candidate": true,
+    "consumed_changed_after_drift_review": [],
+    "engine_initial_sha_unchanged": true
+  },
+  "db_http_browser_validation": "pending mainline integration",
+  "real_qualification": "not granted"
+}

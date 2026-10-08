@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-10-04T00:47:39.542365+00:00",
+  "status": "CONTINUE_FRESH_FORMAL_REQUEST_NO_REWRITE",
+  "old_planned_generation": "19ee5abb-ec6d-47f4-a46f-9ea74af05d23",
+  "actual_expiry_readback": "test-saved-plan-expired-readback-v1.json",
+  "old_plan_and_promise_retained": true,
+  "actual_start_not_fabricated": true,
+  "no_new_canonical_operation_or_migration_required": true,
+  "next": "new Formal/Method/Offer/Accept/new logical Run and new resource series; same actual foundation/Build/A1/current scope/source guards",
+  "pending_fresh_controller_candidate": true,
+  "public_core_544_changed": false,
+  "source_budget_not_claimed_complete": true,
+  "active_queue_file_sha256": "751c589d95a4d4a9d26840985f7f9e074804c5ccf22cec1db0807cb2a95b204a"
+}

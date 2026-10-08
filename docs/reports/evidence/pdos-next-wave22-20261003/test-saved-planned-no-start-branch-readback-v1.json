@@ -1,0 +1,30 @@
+{
+  "schema_version": "wave22-saved-planned-no-start-readback-v1",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "scope": {
+    "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+    "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0"
+  },
+  "source_generation": "19ee5abb-ec6d-47f4-a46f-9ea74af05d23",
+  "source_checkpoint_sha256": "06e9728df2d234f5d5b98781b10a6fb8eba0af3a437665ac0186f15bbcba9afa",
+  "build_id": "beb94737-d081-4f0f-a72c-326824126b58",
+  "request_id": "03b3408f-a7f3-5e33-82bb-f7d7fa3d1094",
+  "run_id": "ccba4377-c158-5d34-a554-958652296f64",
+  "request_current": {
+    "id": "db2b7075-a03c-4ed9-ac43-3b5b32cd731b",
+    "revision": 5,
+    "status": "scheduled"
+  },
+  "run_current": {
+    "id": "9c6bf54b-f232-4287-9314-4a331d0100e8",
+    "revision": 1,
+    "status": "planned"
+  },
+  "plan_receipt_id": "d11e4910-8a99-44bf-b386-cdde2773a94b",
+  "promise_receipt_id": "90eb3ee4-a805-4850-b234-4e859596affb",
+  "actual_start_count": 0,
+  "resource_occupancy_count": 0,
+  "sample_usage_count": 0,
+  "checked_at": "2026-10-04T00:48:55.080629+00:00"
+}

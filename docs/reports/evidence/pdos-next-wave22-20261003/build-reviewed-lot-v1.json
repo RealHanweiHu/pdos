@@ -1,0 +1,73 @@
+{
+  "label": "lot",
+  "tier": "T1",
+  "review_digest": "7eacc1c30bbe480e52b1c164aeadf6017a22d357554fcfed2f8969e6f9b0d34d",
+  "review": {
+    "operation": "build.output.record",
+    "name": "wave22-two-A-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a",
+    "effect": "只记录实际配置、外部已发生产出或单件身份；保留原计划与未知准备条件，不批准开工、放行、品质接收、测试预约或样件消耗。",
+    "before": null,
+    "after": {
+      "id": null,
+      "revision": 1,
+      "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+      "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+      "build_id": "beb94737-d081-4f0f-a72c-326824126b58",
+      "build_revision": 1,
+      "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+      "visibility": "product",
+      "created_at": null,
+      "reason": "仅记录本轮已发生的本地合成实物观察，不作为放行",
+      "sources": [
+        {
+          "artifact_id": "3da38126-770b-415a-82e7-3241e72718ff",
+          "expected_revision": 1,
+          "line": 1,
+          "quote": "{\"actual_configuration_id\":\"a5331fd7-df15-4750-b0b6-dbff97e5d0fd\",\"build_id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"nature\":\"synthetic\",\"observed_unit_count\":2,\"occurred_at\":\"2026-10-03T19:01:55.740442+00:00\",\"unit\":\"ea\"}"
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "3da38126-770b-415a-82e7-3241e72718ff",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a17b90a0-a7aa-4d94-b6c3-9635333549f7",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "qualification_status": "unknown",
+      "authorization_status": "not_authorized",
+      "observation_route": "external_observation",
+      "verification_status": "not_checked",
+      "plan_status": "planned",
+      "status": "observed",
+      "actual_configuration_id": "a5331fd7-df15-4750-b0b6-dbff97e5d0fd",
+      "actual_configuration_revision": 1,
+      "lot_label": "wave22-two-A-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a",
+      "observed_unit_count": 2,
+      "unit": "ea",
+      "identified_count": 0,
+      "remaining_unit_count": 2,
+      "build_observed_unit_count_before": 0,
+      "build_observed_unit_count_after": 2,
+      "build_observed_unit_count": 2,
+      "planned_quantity": "2.00000000",
+      "over_planned_quantity": false,
+      "observation": {
+        "system": "explicit-synthetic-wave22",
+        "external_id": "wave22-output-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a",
+        "nature": "synthetic",
+        "occurred_at": "2026-10-03T19:01:55.740442Z",
+        "received_at": null
+      },
+      "quality_status": "unknown"
+    },
+    "reason": "仅记录本轮已发生的本地合成实物观察，不作为放行"
+  }
+}

@@ -18,7 +18,7 @@ export function IssueFieldsEditor({ value, onChange }: { value: IssueField[]; on
   return (
     <details>
       <summary className="cursor-pointer text-sm font-medium">问题办理的补充字段</summary>
-      <p className="mt-2 text-xs text-muted-foreground">用于记录本产品线需要的额外资料。新项目固定采用创建时版本，已有问题的字段和原有必填条件保留。问题可先暂存，进入所选节点前必须补齐；这些字段不会替代负责人、验证人、根因或关闭证据。</p>
+      <p className="mt-2 text-xs text-muted-foreground">用于记录本品类需要的额外资料。新项目固定采用创建时版本，已有问题的字段和原有必填条件保留。问题可先暂存，进入所选节点前必须补齐；这些字段不会替代负责人、验证人、根因或关闭证据。</p>
       <div className="mt-3 space-y-3">
         {value.map((item, index) => (
           <details key={index} className="rounded-md border p-3">

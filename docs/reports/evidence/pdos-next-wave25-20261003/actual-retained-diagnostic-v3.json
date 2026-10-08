@@ -1,0 +1,57 @@
+{
+  "status": "PASS_READONLY_DIAGNOSTIC_WITH_RETAINED_GATE_STATE",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "head": "next_0028",
+  "exact_old_actor": "77465957-a05e-4663-85bf-34cd39ac43dd",
+  "exact_old_product": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "scope": "actual current two profiles each family and actual original-store/security runtime; old immutable saved Start evaluation clock only",
+  "stage_helper_sha256": "a1fd4ee0c2963ba20d96f4329fe3f0aaaa35f4621f814f732c636749bf456abf",
+  "business_commands": 0,
+  "qualification_imports": 0,
+  "runtime_module_modified": false,
+  "model_calls": 0,
+  "diagnostic": {
+    "schema_version": "wave25-retained-readonly-diagnostic-v1",
+    "diagnostic_only": true,
+    "retained_calls": 1,
+    "retained_current": false,
+    "reason_codes": [
+      "RETAINED_EXECUTION_CHANGED"
+    ],
+    "resource_probe": {
+      "attempts": 1,
+      "status": "read_actual_current_bundle",
+      "saved_facts_revision": "002beeace7977d96e2092a3ee3add0bf03860ac7585ffde36825b6b3b1a463ab",
+      "current_facts_revision": "d792f6252d823f2bb7efe42be0d53368b14442601a5e0c444b9f9053ffd61434",
+      "fingerprints_match": false,
+      "report_status": "READY",
+      "report_check_codes": [
+        "acceptance_valid",
+        "calibration_valid",
+        "capacity_available",
+        "qualification_valid"
+      ],
+      "original_reservation_present": true,
+      "issuer_dependency": {
+        "fixed_issuer_key_sha256": "1af2d4a84f81b8aa8b58b59b6b113d20286880c12750db260031b56b2dfff094",
+        "stored_dependency_sha256": "33c03eab0c9af3ed91e9296b2855dab07d793211485b9a641fe5a179ed61d9bb",
+        "live_dependency_sha256": "df8517e4ef9d4da9b617d47f71613ce54e3d2219c61761a9c477f444dbffc9c2",
+        "exact_key_scope_version_nature_epoch_match": true,
+        "all_registry_keys_count": 2,
+        "all_registry_keys_sha256": "61d3eed08b1db479857f48292834beeaea689d1602884713b85023ebbc96badb",
+        "all_epoch_keys_count": 2,
+        "all_epoch_keys_sha256": "61d3eed08b1db479857f48292834beeaea689d1602884713b85023ebbc96badb",
+        "all_epoch_map_sha256": "0590115b7f432581be5f7d163193f8e8cdc1e1513b44d457468b235a3b409682",
+        "unrelated_issuer_is_actual_failure_cause": null
+      }
+    },
+    "qualification_attested": false,
+    "new_execution_or_consumption_attested": false,
+    "scope_sha256": "16f297fc61cd619f63d90e3b0d1702f39b9fa527805973e851b4048a4d5e10da"
+  },
+  "actual_session_bind_is_configured_engine": true,
+  "all_122_tenant_tables_unchanged": true,
+  "outer_rollback": true,
+  "diagnostic_current_is_not_new_qualification": true
+}

@@ -1,0 +1,12 @@
+{
+  "status": 409,
+  "code": "SOURCE_STALE",
+  "message": "原实际开测、资源与消费证明已变化。",
+  "response_sha256": "91a41ea32b0b53c1a7c74657118614cad23bc17557c8ead018a79bb9008a881f",
+  "scope": "actual unchanged Wave15 actor/token exact saved Build/Run, read only",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "actor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+  "build_id": "0c16c8b2-9f71-4df2-85db-36aec7945b34",
+  "run_id": "055a9f66-8e2a-4900-87da-b1c9666549af",
+  "application_mutated": false
+}

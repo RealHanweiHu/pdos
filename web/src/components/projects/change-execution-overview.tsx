@@ -18,7 +18,7 @@ const actions: Record<string, string> = { retest: "复验", rereview: "复审", 
 const taskStatuses: Record<string, string> = { todo: "待执行", in_progress: "执行中", blocked: "受阻", done: "任务已完成", skipped: "任务已跳过", pending_approval: "待批准" };
 const evidenceKinds: Record<string, string> = { test_run: "实际测试", engineering_review: "专业复审", certification: "认证记录", document: "项目文件" };
 
-export function ChangeExecutionOverview({ projectId, ecrId, refreshKey }: { projectId: string; ecrId: string; refreshKey: number }) {
+export function ChangeExecutionOverview({ projectId, ecrId, refreshKey, executionBaseHref = "" }: { projectId: string; ecrId: string; refreshKey: number; executionBaseHref?: string }) {
   const [enabled, setEnabled] = useState(false);
   const [revision, setRevision] = useState(0);
   const [data, setData] = useState<Row | null>(null);
@@ -65,7 +65,7 @@ export function ChangeExecutionOverview({ projectId, ecrId, refreshKey }: { proj
         {Array.isArray(data.scope_gaps) && data.scope_gaps.length > 0 && <p className="text-primary">{data.scope_gaps.map(String).join("；")}</p>}
         {data.all_required_verified === true && <p role="status">本版要求执行的各条目均已有独立确认，当前原证据仍支持这些确认。请继续核对逐项未覆盖范围与后续要求。</p>}
         {Number(data.historical_binding_count) > 0 && <p>另有 {text(data.historical_binding_count)} 条历史范围任务保留在原执行安排中，未计入本版。</p>}
-        {rows(data.source_changes).length > 0 && <details><summary className="cursor-pointer">获批来源的当前变化（{rows(data.source_changes).length}）</summary><ul className="mt-2 space-y-1">{rows(data.source_changes).map(change => <li key={`${text(change.kind)}:${text(change.id)}`}>{scopeKinds[text(change.kind)] ?? text(change.kind)} · {sourceLabel(obj(change.before))}：{change.blocking ? "设计或原证据变化，需重核范围" : "执行进展变化，结合实际结果核对"}</li>)}</ul></details>}
+        {rows(data.source_changes).length > 0 && <details><summary className="cursor-pointer">获批来源的当前变化（{rows(data.source_changes).length}）</summary><ul className="mt-2 space-y-1">{rows(data.source_changes).map(change => <li key={`${text(change.kind)}:${text(change.id)}`}>{({ cost_alternative: "降本方案", engineering_review: "专业复审", firmware_package: "固件工作包" } as Record<string, string>)[text(change.kind)] ?? scopeKinds[text(change.kind)] ?? text(change.kind)} · {sourceLabel(obj(obj(change.before).source ?? change.before))}：{change.blocking ? "获批来源或原证据变化，需重核范围" : "执行进展变化，结合实际结果核对"}</li>)}</ul></details>}
         <div className="flex flex-wrap gap-3">
           <label>查看条目<select className="ml-2 rounded-md border bg-background p-2" value={filter} onChange={e => setFilter(e.target.value)}><option value="all">全部范围</option><option value="remaining">尚待办理的执行项</option>{Object.entries(statuses).map(([value, label]) => <option key={value} value={value}>{label}（{Number(counts[value] ?? 0)}）</option>)}</select></label>
           <label>执行类别<select className="ml-2 rounded-md border bg-background p-2" value={action} onChange={e => setAction(e.target.value)}><option value="all">全部类别</option>{Object.entries(actions).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
@@ -89,7 +89,7 @@ export function ChangeExecutionOverview({ projectId, ecrId, refreshKey }: { proj
             </>}
             {row.confirmation != null && <p className="whitespace-pre-wrap">原{confirmation.outcome === "verified" ? "确认" : "退回"}：{person(confirmation.created_by_user_id)} · {text(confirmation.created_at)} · {text(confirmation.note)}</p>}
             {Array.isArray(row.gaps) && row.gaps.length > 0 && <p className="text-primary">{row.gaps.map(String).join("；")}</p>}
-            {row.binding_id != null && <a className="inline-block text-primary underline" href={`#change-execution-${ecrId}-${text(row.binding_id)}`}>前往本条任务、原证据与结果办理</a>}
+            {row.binding_id != null && <a className="inline-block text-primary underline" href={executionBaseHref ? `${executionBaseHref}&change_ecr_id=${ecrId}&change_task_id=${text(task.id)}&change_binding_id=${text(row.binding_id)}#ecr-${ecrId}` : `#change-execution-${ecrId}-${text(row.binding_id)}`}>前往本条任务、原证据与结果办理</a>}
           </article>;
         })}
       </>}

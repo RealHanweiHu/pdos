@@ -1,0 +1,23 @@
+# Wave20 Shared Link / paired owner integration — frozen B scope
+
+This is a source/pure-check handoff, not a DB, HTTP, qualification or performance result. The historical Wave19 service SHA `77bef966e6d3623ab6199400c612f08b3ab0b36da214483b68ef61889c3cd152` remains recorded; B service is now `e819f9a9c675b7a9f7a5c91b24b86be6be716220733081b6f30aa32ae012eb5d`. No row, saved schema, migration, privilege or public registration was changed by this task.
+
+## Read and refresh protocol
+
+`capa_verification.service._read_output(s, ctx, product_id, basis, ref, *, write=False)` returns `(OutputReading, PairedFollowupRead | None)`. `_refresh_output(s, ctx, product_id, basis, ref, previous, *, write=False)` returns `OutputReading` after an independent actual paired refresh when the first handle is non-null. `resolve_followup_outputs` retains handles only in local stack variables. Neither opaque handles, actual live HostGate, nor actual receipt IDs enter the existing OutputReading/ResolvedOutputs JSON or Session.info.
+
+Dispatch uses an exact scoped immutable Formal row and its saved operation: `verification.schedule.promise`, `test.run.start`, `test.results.import`, `test.run.review`, `test.disposition.decide`. `test.run.plan` does not write Formal and is excluded. Early Draft/offered/accepted and all other output kinds preserve the existing direct owner path/material. `verification_run` remains the actual Run owner path. Missing paired startup configuration, an actual owner refusal, changed operation, or a changed refreshed output cannot fall back to a fabricated direct Formal receipt. Root views can use the paired handle's actual `receipt_id`; direct output proof remains the existing canonical direct receipt path.
+
+The adapter owns exact active-UOW / actual runtime / live owner and original report / retained / professional attestations. B only calls its public `configured/read/refresh` interfaces; the dependency SHA in `shared-source-v1.json` is an observed source snapshot, not a claim that A's separate checks or future runtime are already accepted.
+
+## Shared Link signer and consumer
+
+Saved `authority_snapshot.subject_id` must equal both the actual immutable Link `writer_id` and `owner_id`, plus the saved exact scope, purpose and canonical `quality.capa.followup.link`. This is separate from the fixed CAPA basis owner and the current consumer. The only historical Context is passed to professional `recheck_snapshot(..., write=False, retained=True)` for that original signer. Product/Project/Issue/outputs/current policy/complete source ACL are still checked using the actual consumer. A private Link or private original/output source cannot be opened using the signer's Context.
+
+The original signer's actual Principal/Grant, current professional fact fingerprint, issuer registry epochs and natural current expiry must remain valid. The immutable row's current policy snapshot is compared to the whole actual `quality_execution.policy.assess` result; this schema has no consumer identity or dynamic checked_at field to remove. Complete source union remains bounded at 20 and is never truncated. Independent late owner/source/policy/professional checks, then actual future qualification boundaries and final signer/consumer Grant reads, precede the final real clock check. The original Link created_at does not substitute for current time. Existing policy/source locks and caller UOW remain required; this adapter does not issue a new current gate or widen permissions.
+
+## Checks and remaining central work
+
+The two new no-connect pure files passed 52 cases in 1.23 seconds. All three owned files passed Ruff, format check and AST parsing. Raw final logs and exact commands/hashes are in `shared-check-result-v1.json`. Actual SQLAlchemy Session/UOW objects are used; connections are forbidden and stored rows / live owner ports are explicit substitutes. Earlier static fixture-import and line-length diagnostics are recorded separately and superseded, not counted as additional passed cases.
+
+Root must run actual shared-consumer / signer revoke-restore / issuer-disable / private-source / natural expiry and full paired Launch/Result atomic proof checks. Existing `tests/capa_verification/test_fixed_request_owner.py` Link fixtures have no real signer/policy binding (`offline_substitute_only` snapshot and a recheck result without assessment); they need a separately authorized fixture repair, not a production guard exemption. These unchanged shared tests were not run by B. No saving/Receipt/proof consume path or old Link row was modified here; unresolved action fulfilment / independent verification / observation remain unknown and do not grant effectiveness or close.

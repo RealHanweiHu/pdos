@@ -1,0 +1,40 @@
+{
+  "scope": "verified task synthetic original store only; bytes unchanged",
+  "directories_narrowed": [
+    {
+      "path": ".local/objects/originals",
+      "from": "0o755",
+      "to": "0o700"
+    },
+    {
+      "path": ".local/objects/originals/75d79fb709d24786ab5e95493d40b894",
+      "from": "0o755",
+      "to": "0o700"
+    },
+    {
+      "path": ".local/objects/originals/489492b2511c46669eb225673088d4ee",
+      "from": "0o755",
+      "to": "0o700"
+    },
+    {
+      "path": ".local/objects/originals/58d53a57386e462eb652474398d1fb69",
+      "from": "0o755",
+      "to": "0o700"
+    },
+    {
+      "path": ".local/objects/originals/25ec7493a4214fb1905fb1de03b7df87",
+      "from": "0o755",
+      "to": "0o700"
+    },
+    {
+      "path": ".local/objects/originals/0f81bea9bc22495d953063b3548e872b",
+      "from": "0o755",
+      "to": "0o700"
+    },
+    {
+      "path": ".local/objects/originals/c31d2efc6a6948e18a084cbfb9e9d451",
+      "from": "0o755",
+      "to": "0o700"
+    }
+  ]
+}

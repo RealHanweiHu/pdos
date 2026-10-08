@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-05T19:08:27.011674+00:00",
+  "first_failure": {
+    "log": "actual-versioned-flow-pg-v1.log",
+    "scope": "setup",
+    "cause": "Root fixture attempted environment_guard SELECT with restricted auth role",
+    "fix": "marker verified with Admin/App; auth endpoint/role bound to same explicit test URL; no permission grant"
+  },
+  "second_failure": {
+    "log": "actual-versioned-flow-pg-v2.log",
+    "scope": "Plan precheck",
+    "code": "RESOURCE_NOT_READY",
+    "cause": "Root requested 45-minute resource window without activating existing long-storage professional bootstrap before original signing",
+    "fix": "named indirect launch_work profile activates complete 120-minute synthetic prerequisites before original signed material; no old history extension"
+  },
+  "third_attempt": {
+    "log": "actual-versioned-flow-pg-v3.log",
+    "status": "RUNNING",
+    "same_isolated_target_verified": true,
+    "wait_clock_overridden": false
+  },
+  "public62513_migrated": false,
+  "real_qualifications_granted": false,
+  "overall_goal_complete": false
+}

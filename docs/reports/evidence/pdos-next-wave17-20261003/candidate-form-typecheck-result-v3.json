@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+    "--project",
+    "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-v3-mwc4nbk4/tsconfig.json"
+  ],
+  "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+  "exit_code": 0,
+  "elapsed_seconds": 1.595378,
+  "stdout": "",
+  "stderr": "",
+  "config": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-v3-mwc4nbk4/tsconfig.json",
+  "strict": true,
+  "noUnusedLocals": true,
+  "noUnusedParameters": true,
+  "noEmit": true,
+  "scope": "Only candidate-form.tsx and candidate-form-contract.ts plus required transitive types"
+}

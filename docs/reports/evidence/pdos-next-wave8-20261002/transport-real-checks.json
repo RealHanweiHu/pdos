@@ -1,0 +1,104 @@
+{
+  "checked_at": "2026-10-02T14:37:56.861754+00:00",
+  "scope": "local_synthetic_bytes_only_no_database_no_real_files",
+  "production_qualified": false,
+  "rules_age_days_at_check": 18,
+  "configuration": {
+    "scanner": {
+      "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+      "engine_version": "1.5.4",
+      "rules_version": "28123/Mon Sep 14 06:24:19 2026"
+    },
+    "policy": {
+      "version": "pdos-local-synthetic-file-policy-v1",
+      "limits": {
+        "max_input_bytes": 8388608,
+        "max_zip_entries": 1000,
+        "max_zip_expanded_bytes": 50000000,
+        "max_zip_entry_bytes": 20000000,
+        "max_zip_ratio": 100,
+        "timeout_seconds": 60
+      },
+      "clean_max_age_seconds": 86400
+    }
+  },
+  "container_profile": {
+    "network": "none",
+    "read_only": true,
+    "nonroot": true,
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "stdin_only": true,
+    "host_mounts": [],
+    "docker_socket_mount": false,
+    "stdout_stderr_bounded": true
+  },
+  "checks": [
+    {
+      "case": "clean_utf8",
+      "status": "clean",
+      "error_code": null,
+      "seconds": 7.532
+    },
+    {
+      "case": "synthetic_antivirus_marker",
+      "status": "infected",
+      "error_code": "MALWARE_DETECTED",
+      "seconds": 7.704
+    },
+    {
+      "case": "whole_container_timeout",
+      "status": "timeout",
+      "seconds": 0.127
+    },
+    {
+      "case": "container_utf8_line_locations",
+      "status": "parsed",
+      "segments": 4
+    },
+    {
+      "case": "container_pdf_partial_located_text",
+      "status": "parsed",
+      "segments": 1
+    },
+    {
+      "case": "container_xlsx_cells_formula_not_evaluated",
+      "status": "parsed",
+      "segments": 2
+    },
+    {
+      "case": "invalid_utf8",
+      "failure_code": "INVALID_ENCODING"
+    },
+    {
+      "case": "bounded_text",
+      "failure_code": "OUTPUT_LIMIT"
+    },
+    {
+      "case": "container_timeout",
+      "failure_code": "PARSER_TIMEOUT"
+    },
+    {
+      "case": "actual_os_container_boundaries",
+      "observed": {
+        "uid": 65532,
+        "caps": "0000000000000000",
+        "no_new_privileges": "1",
+        "seccomp": "2",
+        "root_read_only": true,
+        "tmp_noexec": true,
+        "docker_socket_present": false,
+        "memory_max": "536870912",
+        "pids_max": "16",
+        "cpu_max": "100000 100000",
+        "external_connect_errno": 101
+      }
+    },
+    {
+      "case": "actual_container_output_overflow_no_eof",
+      "failure_code": "OUTPUT_LIMIT",
+      "seconds": 0.487
+    }
+  ],
+  "owned_containers_remaining": 0
+}

@@ -1,0 +1,15 @@
+{
+  "browser_closed": true,
+  "browser_close_log": "browser-close.log",
+  "web_pid": 98225,
+  "api_pid": 79236,
+  "backup_path": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-work-modules-20261004-c3csojwy/pdos_test.backup.dump",
+  "backup_bytes": 4213329,
+  "backup_sha256": "541a67ed3579d61230eb351bb8e9a97edc579f9a5146a5006288a3fb59a20c07",
+  "test_container": "pdos-work-modules-test-20261004-a419",
+  "test_database": "pdos_test",
+  "test_endpoint": "127.0.0.1:65287",
+  "web_stopped": true,
+  "api_stopped": true,
+  "container_state": "exited"
+}

@@ -1,0 +1,12 @@
+{
+  "state": "explicit_inputs_rejected_before_command_creation",
+  "canonical_operation": "quality.capa.draft",
+  "label": "capa-preparation-scope-v1",
+  "reason": "Existing kernel does not allow overwriting a saved CAPA; no immutable Issue revision or current change formed",
+  "log_sha256": "8dc925029ecaf8c0a207364ebce585497b34e86e23cd1eb1dda0f94930bfa2a4",
+  "new_action_text_intent": "Preparation completed separately from future independent retest",
+  "pending_code_candidate": "uncompleted/unrooted CAPA draft text CAS revision only; all IDs/kind/executors/hypotheses/requirement unchanged",
+  "old_case_preserved": true,
+  "api_policy_or_qualification_not_extended": true,
+  "not_complete": true
+}

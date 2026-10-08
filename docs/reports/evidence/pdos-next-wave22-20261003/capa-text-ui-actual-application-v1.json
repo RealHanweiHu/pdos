@@ -1,0 +1,50 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "recorded_at": "2026-10-04T02:28:32.888485+00:00",
+  "selected_files": [
+    {
+      "source": "pdos-next/.local/wave22-capa-text-ui-staged/web/src/components/builds/build-quality-loop.tsx",
+      "source_sha256": "2fc48a829bf40e4521f44073172f02b76dd6dc3e57fc2bcd9fa8c28faa376254",
+      "target": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "baseline_sha256": "734a53c862d64d7ec460084f90fb6dfd3325c47519f181192f085a4a8f6dffe1",
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/components/builds/build-quality-loop.tsx",
+      "combined_sha256": "2fc48a829bf40e4521f44073172f02b76dd6dc3e57fc2bcd9fa8c28faa376254",
+      "transform": null,
+      "role": "B CAPA text entry"
+    },
+    {
+      "source": "pdos-next/.local/wave22-capa-text-ui-staged/web/src/components/builds/capa-draft-text-revision.tsx",
+      "source_sha256": "a012257cde9f8b38e90abd9d8d28b86babff9c6cf7a725802e500ae2099ed62c",
+      "target": "pdos-next/web/src/components/builds/capa-draft-text-revision.tsx",
+      "baseline_sha256": null,
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/components/builds/capa-draft-text-revision.tsx",
+      "combined_sha256": "a012257cde9f8b38e90abd9d8d28b86babff9c6cf7a725802e500ae2099ed62c",
+      "transform": null,
+      "role": "B CAPA text component"
+    },
+    {
+      "source": "pdos-next/.local/wave22-capa-text-ui-staged/web/src/lib/capa-draft-text-view.ts",
+      "source_sha256": "97de24434cd167221405419805a88ac46857b329e7934af85c5e6a04232d8f66",
+      "target": "pdos-next/web/src/lib/capa-draft-text-view.ts",
+      "baseline_sha256": null,
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/lib/capa-draft-text-view.ts",
+      "combined_sha256": "97de24434cd167221405419805a88ac46857b329e7934af85c5e6a04232d8f66",
+      "transform": null,
+      "role": "B CAPA text helper"
+    },
+    {
+      "source": "pdos-next/.local/wave22-capa-text-ui-staged/web/src/lib/capa-draft-text-view.test.tsx",
+      "source_sha256": "39f8ce4f681313858d41d094a9d1038a5ca99bee7962ee44fc95fcc3f3266100",
+      "target": "pdos-next/web/src/lib/capa-draft-text-view.test.tsx",
+      "baseline_sha256": null,
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/lib/capa-draft-text-view.test.tsx",
+      "combined_sha256": "39f8ce4f681313858d41d094a9d1038a5ca99bee7962ee44fc95fcc3f3266100",
+      "transform": null,
+      "role": "B frozen test dependency, not run"
+    }
+  ],
+  "other_five_manufacturing_ui_files_not_applied": true,
+  "backup_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave22-root-capa-text-ui-before-v1",
+  "api_runtime_reload": false,
+  "business_command_count": 0
+}

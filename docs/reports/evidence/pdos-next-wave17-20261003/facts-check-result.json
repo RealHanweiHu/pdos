@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-03T10:25:34.736661+00:00",
+  "result": "owned pure and static checks passed; unmounted staged interface",
+  "candidate": "docs/reports/evidence/pdos-next-wave17-20261003/facts-source-manifest.json",
+  "candidate_sha256": "491911ce14dac89f7ab9ef85620ed6fb2810cf8153e927ceb44eddeb316f6b9e",
+  "source_files": {
+    "pdos-next/staging/wave17/facts.py": "5b711db84275b2c9e88d633a6e782fca63bee90f41207a1116a94f24676a017d",
+    "pdos-next/staging/wave17/test_facts.py": "bb676aa2cd1a0008c0c2100360515469ef8894dccc3ac6c9be54403d35b411d3",
+    "pdos-next/staging/wave17/facts-contract.md": "fbcf3b5bb959a556e8b801ab9436e4180700c6a9b54ef39769a9407b8f2292e1"
+  },
+  "checks": [
+    {
+      "argv": [
+        "pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "pdos-next/staging/wave17/facts.py",
+        "pdos-next/staging/wave17/test_facts.py"
+      ],
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-format.log",
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "argv": [
+        "pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos-next/staging/wave17/facts.py",
+        "pdos-next/staging/wave17/test_facts.py"
+      ],
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-ruff.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "argv": [
+        "pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-q",
+        "-x",
+        "--tb=short",
+        "pdos-next/staging/wave17/test_facts.py"
+      ],
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-pure-tests.log",
+      "log_sha256": "a45f8e9baf3b3c61dcc394d9d1aae34b41a49b23716c15a878bd32efd89e5e31"
+    },
+    {
+      "program": "ast.parse(read_text()) for both owned Python files",
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-ast.log",
+      "log_sha256": "776bf7acd2762a74c5d099cf8dc5cb79602b097fe406c5257f75d3cddb9250c2"
+    }
+  ],
+  "pure_result": {
+    "passed": 77,
+    "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-pure-tests.log"
+  },
+  "authority_boundary": {
+    "public_operations_registered": false,
+    "database_or_http_executed": false,
+    "writes_or_receipts_generated": false,
+    "verification_evidence_assembled": false,
+    "qualification_granted": false,
+    "production_enabled": false
+  },
+  "limits": [
+    "Only the three new staged files were checked; this is not a full-tree or Root480 candidate audit.",
+    "All synthetic host objects are fake protocol inputs, not real source/participant/applicability/transaction proof.",
+    "Actual host registry, companion facts/Current/provenance guards and all live owner callbacks remain integration requirements.",
+    "No old quality effectiveness or independence rules were copied; eventual Evidence assembly must use actual owners and the existing quality kernel.",
+    "Original full proof and source-safety material remain; no cross-phase cache is installed."
+  ]
+}

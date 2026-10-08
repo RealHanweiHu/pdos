@@ -3,7 +3,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { ResearchCollection } from "./research-collection";
 import type { Evidence, Workspace } from "./product-work-api";
 
-vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams() }));
+vi.mock("next/navigation", () => ({ usePathname: () => window.location.pathname, useSearchParams: () => new URLSearchParams() }));
 vi.mock("./research-search", () => ({ ResearchSearch: () => null }));
 vi.mock("./research-subscriptions", () => ({ ResearchSubscriptions: () => null }));
 const source = { id: "source", name: "已登记公开来源", base_url: "https://example.com", status: "active", allowed_use: "internal_analysis", license_note: "合成许可说明" };

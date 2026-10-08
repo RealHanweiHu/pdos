@@ -136,7 +136,11 @@ def capture(
                     problem = "产品线根节点不一致"
                 break
             parent = nodes.get(current["parent_id"])
-            if parent is None or parent["level"] != PARENT_LEVEL.get(current["level"]):
+            if parent is None or parent["level"] not in (
+                {"line", "series"}
+                if current["level"] == "model"
+                else {PARENT_LEVEL.get(current["level"])}
+            ):
                 problem = "父级缺失或层级不匹配"
                 break
             current = parent
@@ -310,10 +314,26 @@ class ProductMatrixService:
                     set(left["content"]["included_features"])
                     & set(right["content"]["included_features"])
                 )
-                platforms = [
-                    {node["id"] for node in item["path"] if node["level"] == "platform"}
-                    for item in (left, right)
-                ]
+                platforms = []
+                t = tables.product_platform_links
+                for item in (left, right):
+                    model_id = next(
+                        (node["id"] for node in reversed(item["path"]) if node["level"] == "model"),
+                        None,
+                    )
+                    current_links = {}
+                    if model_id:
+                        for link in connection.execute(
+                            select(t)
+                            .where(
+                                t.c.tenant_id == context.tenant.id, t.c.product_id == UUID(model_id)
+                            )
+                            .order_by(t.c.version.desc())
+                        ).mappings():
+                            current_links.setdefault(link["platform_id"], link["action"])
+                    platforms.append(
+                        {str(key) for key, action in current_links.items() if action == "attach"}
+                    )
                 related = left["id"] in [node["id"] for node in right["path"]] or right["id"] in [
                     node["id"] for node in left["path"]
                 ]

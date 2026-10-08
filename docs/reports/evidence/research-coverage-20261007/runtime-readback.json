@@ -1,0 +1,25 @@
+{
+  "observed_at": "2026-10-07T07:26:12.718116+00:00",
+  "read_only": true,
+  "governance": {
+    "eligible_models": [
+      {
+        "provider": "minimax",
+        "model": "MiniMax-M3",
+        "protocol": "openai-compatible"
+      }
+    ],
+    "selection": {
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "available": true
+    },
+    "budget": {
+      "daily_token_budget": 2000000,
+      "used_tokens_today": 73129,
+      "remaining_tokens_today": 1926871,
+      "exhausted": false,
+      "token_budget_enforced": false
+    }
+  }
+}

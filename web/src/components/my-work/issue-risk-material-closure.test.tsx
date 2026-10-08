@@ -15,7 +15,7 @@ import { IssueRiskWorkCard } from "./issue-risk-work-card";
 const reference = { exception_id: "material-exception", review_id: "named-review", source_digest: "current-source" };
 const card = {
   item: { id: "issue", project_id: "project", status: "verification", title: "电机缺料", severity: "high", owner_user_id: "owner", verifier_user_id: "verifier", target_date: "2026-09-30", closure_criteria: "齐备后验证", updated_at: "2026-09-30T01:00:00Z" },
-  actor_id: "verifier", permissions: { edit: true, assign: true, execute: true, verify: true }, verification_policy: {}, people: [{ id: "owner", name: "原负责人", active: true }, { id: "verifier", name: "原验证人", active: true }],
+  actor_id: "verifier", permissions: { edit: true, assign: true, execute: true, verify: true }, verification_policy: {}, cost_closure: { required: false, ready: true, items: [] }, people: [{ id: "owner", name: "原负责人", active: true }, { id: "verifier", name: "原验证人", active: true }],
   material_closure: { required: true, ready: true, items: [{ exception_id: reference.exception_id, title: "电机恢复", closure: { ready: true, reasons: [], reference } }] },
 };
 const choice = "我已核对以上全部来源，引用本次物料恢复记录";
@@ -61,5 +61,38 @@ describe("material closure in My Work", () => {
     expect(screen.queryByRole("checkbox", { name: choice })).not.toBeInTheDocument();
     expect(screen.queryByText("电机恢复 · 当前复核可供关闭验证")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "验证通过并关闭" })).not.toBeInTheDocument();
+  });
+});
+
+describe("cost closure in My Work", () => {
+  const costReference = { case_id: "cost", observation_id: "observation-2", source_digest: "current-cost" };
+  const costCard = { ...card, material_closure: { required: false, ready: true, items: [] }, cost_closure: { required: true, ready: true, items: [{ case_id: "cost", title: "硬件单位成本", closure: { ready: true, reasons: [], reference: costReference } }] } };
+  async function openCost() {
+    const user = userEvent.setup();
+    render(<IssueRiskWorkCard projectId="project" itemId="issue" kind="issues" onChanged={vi.fn().mockResolvedValue(undefined)} onNotice={vi.fn()}/>);
+    await user.click(screen.getByText("查看依据并办理问题"));
+    await screen.findByText("硬件单位成本 · 当前同口径成本已回到目标内");
+    await user.type(screen.getByLabelText("验证及关闭证据"), "具名成本验证报告");
+    return user;
+  }
+  it("requires selection of the current cost observation before closing", async () => {
+    const fetcher = vi.fn().mockResolvedValueOnce(Response.json(costCard)).mockResolvedValueOnce(Response.json({ ...card.item, status: "closed" })).mockResolvedValueOnce(Response.json({ ...costCard, item: { ...card.item, status: "closed" } }));
+    vi.stubGlobal("fetch", fetcher);
+    const user = await openCost();
+    expect(screen.getByRole("button", { name: "验证通过并关闭" })).toBeDisabled();
+    await user.click(screen.getByRole("checkbox", { name: "我已核对全部成本来源，引用本次恢复记录" }));
+    await user.click(screen.getByRole("button", { name: "验证通过并关闭" }));
+    await screen.findByText("电机缺料 · 已关闭");
+    expect(JSON.parse(fetcher.mock.calls[1][1].body).cost_closures).toEqual([costReference]);
+  });
+  it("clears stale cost selection and keeps the written evidence", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(Response.json(costCard)).mockResolvedValueOnce(Response.json({ detail: { message: "成本来源已更新" } }, { status: 409 })));
+    const user = await openCost();
+    await user.click(screen.getByRole("checkbox", { name: "我已核对全部成本来源，引用本次恢复记录" }));
+    await user.click(screen.getByRole("button", { name: "验证通过并关闭" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("成本来源已更新");
+    expect(screen.getByRole("checkbox", { name: "我已核对全部成本来源，引用本次恢复记录" })).not.toBeChecked();
+    expect(screen.getByLabelText("验证及关闭证据")).toHaveValue("具名成本验证报告");
+    expect(screen.getByRole("button", { name: "验证通过并关闭" })).toBeDisabled();
   });
 });

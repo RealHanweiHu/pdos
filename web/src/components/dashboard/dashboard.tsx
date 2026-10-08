@@ -19,7 +19,7 @@ import { requestDashboardRisks, type DashboardRisks } from "./dashboard-api";
 
 type DashboardState = "loading" | "ready" | "error" | "redirecting";
 type RiskState = "loading" | "ready" | "error" | "restricted";
-const riskRoles = ["owner", "admin", "project_manager", "engineer", "quality"];
+const riskRoles = ["owner", "admin", "product_manager", "project_manager", "engineer", "quality"];
 
 function scoreTone(score: number) {
   if (score >= 15) return "border-destructive/25 bg-destructive/10 text-destructive";
@@ -45,11 +45,6 @@ export function Dashboard() {
       if (loaded === null) {
         setState("redirecting");
         replace("/login");
-        return;
-      }
-      if (["engineer", "quality"].includes(loaded.identity.user.role)) {
-        setState("redirecting");
-        replace("/my-work");
         return;
       }
       setIdentity(loaded.identity);
@@ -98,11 +93,6 @@ export function Dashboard() {
         if (loaded === null) {
           setState("redirecting");
           replace("/login");
-          return;
-        }
-        if (["engineer", "quality"].includes(loaded.identity.user.role)) {
-          setState("redirecting");
-          replace("/my-work");
           return;
         }
         setIdentity(loaded.identity);
@@ -157,12 +147,12 @@ export function Dashboard() {
   }
 
   if (state === "redirecting") return null;
-  if (state === "loading") return <main className="mx-auto max-w-6xl px-4 py-10 text-sm text-muted-foreground">正在加载驾驶舱…</main>;
+  if (state === "loading") return <main className="mx-auto max-w-6xl px-4 py-10 text-sm text-muted-foreground">正在加载项目快照…</main>;
   if (state === "error" || identity === null) {
     return (
       <main className="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center px-6 text-center">
         <WarningCircleIcon aria-hidden="true" className="size-9 text-destructive" />
-        <h1 className="mt-3 text-lg font-semibold">驾驶舱暂不可用</h1>
+        <h1 className="mt-3 text-lg font-semibold">项目快照暂不可用</h1>
         <p className="mt-1 text-sm text-muted-foreground">无法读取项目组合，请检查连接后重试。</p>
         <Button className="mt-4 h-11" onClick={() => void loadDashboard()}>重新加载</Button>
       </main>
@@ -176,8 +166,7 @@ export function Dashboard() {
     <WorkspaceShell active="dashboard" identity={identity} loggingOut={loggingOut} onLogout={() => void logout()}>
       <div className="flex flex-wrap items-end justify-between gap-3 border-b pb-4">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Portfolio</p>
-          <h1 className="mt-1 text-lg font-semibold">驾驶舱</h1>
+          <h1 className="text-lg font-semibold tracking-tight">项目快照</h1>
           <p className="mt-1 text-sm text-muted-foreground">可见项目组合与开放风险的当前快照。</p>
         </div>
         <span className="font-mono text-[11px] text-muted-foreground">{projects.length} 个可见项目</span>
@@ -194,13 +183,13 @@ export function Dashboard() {
               <FolderDashedIcon aria-hidden="true" className="size-8 text-muted-foreground" />
               <h3 className="mt-3 font-semibold">还没有可见项目</h3>
               <p className="mt-1 text-sm text-muted-foreground">先从已批准的开发案例创建项目。</p>
+              <Link className="mt-4 inline-flex min-h-11 items-center rounded-lg border px-3 text-sm font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="/cases">查看开发案例</Link>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2">
               {projects.map((project) => {
                 const riskSummary = risksByProject.get(project.id);
                 const maxRisk = riskSummary?.max_score ?? 0;
-                const progress = Math.round((project.current_stage.sequence / project.workflow.stages.length) * 100);
                 return (
                   <Link
                     aria-label={`打开项目 ${project.code}`}
@@ -223,9 +212,8 @@ export function Dashboard() {
                       <span className="font-mono">{project.code}</span>
                       <span>{projectStatusLabels[project.status]}</span>
                     </div>
-                    <div className="mt-4 h-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-primary" style={{ width: `${progress}%` }} /></div>
-                    <div className="mt-1.5 flex justify-between gap-3 text-[11px] text-muted-foreground">
-                      <span>阶段进度 {progress}%</span>
+                    <div className="mt-4 flex flex-wrap justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
+                      <span>当前阶段 · {project.current_stage.name}</span>
                       <span>{riskState === "ready" && riskSummary ? `开放风险 ${riskSummary.open_risk_count}` : "风险待确认"}</span>
                     </div>
                   </Link>
@@ -254,7 +242,7 @@ export function Dashboard() {
             <ol className="divide-y">
               {risks.map((risk, index) => (
                 <li data-testid="dashboard-risk" key={risk.id}>
-                  <Link className="flex min-h-16 min-w-0 items-center gap-3 px-4 py-3 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25" href={`/projects?project=${encodeURIComponent(risk.project_id)}&tab=work-items`}>
+                  <Link className="flex min-h-16 min-w-0 items-center gap-3 px-4 py-3 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/25" href={`/projects?project=${encodeURIComponent(risk.project_id)}&tab=work-items&view=risks&entity_id=${encodeURIComponent(risk.id)}`}>
                     <span className="w-4 shrink-0 font-mono text-[11px] text-muted-foreground">{index + 1}</span>
                     <span className={cn("shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold", scoreTone(risk.score))}>{risk.score}</span>
                     <span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{risk.title}</span><span className="mt-0.5 block truncate font-mono text-[10px] text-muted-foreground">{risk.project.code}</span></span>

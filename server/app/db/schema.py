@@ -29,9 +29,10 @@ from sqlalchemy import (
     create_mock_engine,
     text,
 )
-from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TSVECTOR
 from sqlalchemy.sql.elements import conv
 
+from app.db.category_schema import define_category_tables
 from app.db.namespaces import (
     AI_SCHEMA,
     AUDIT_SCHEMA,
@@ -45,7 +46,9 @@ from app.db.namespaces import (
     QUALITY_SCHEMA,
     SUPPLIER_SCHEMA,
 )
+from app.db.preproject_dialogue_schema import define_preproject_confirmations
 from app.db.product_master_reference_schema import define_table as define_product_master_references
+from app.db.product_proposal_schema import define_proposal_tables
 from app.db.vector import Vector
 from app.db.xiaopai_schema import define_xiaopai_tables
 
@@ -99,6 +102,7 @@ users = Table(
     Column("email", String(320)),
     Column("display_name", String(256), nullable=False),
     Column("role", String(32), nullable=False),
+    Column("work_modules", ARRAY(String(32)), nullable=False, server_default=text("'{}'")),
     Column("password_hash", String(256)),
     Column("auth_version", Integer, nullable=False, server_default=text("1")),
     Column("is_active", Boolean, nullable=False, server_default=text("true")),
@@ -118,11 +122,18 @@ users = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "role IN ('owner', 'admin', 'project_manager', 'engineer', 'quality', "
+        "role IN ('owner', 'admin', 'product_manager', 'project_manager', 'engineer', 'quality', "
         "'supplier', 'customer')",
         name="role_allowed",
     ),
     CheckConstraint("auth_version >= 1", name="auth_version_positive"),
+    CheckConstraint(
+        "work_modules <@ ARRAY['product','project','engineering','quality',"
+        "'introduction','supply','portfolio']::varchar[] "
+        "AND array_position(work_modules, NULL) IS NULL "
+        "AND (role NOT IN ('supplier','customer') OR cardinality(work_modules) = 0)",
+        name="work_modules_allowed",
+    ),
     CheckConstraint(
         "manager_user_id IS NULL OR manager_user_id <> id",
         name="manager_not_self",
@@ -9307,6 +9318,7 @@ tenant_model_settings = Table(
     ),
     Column("provider", String(32), nullable=False, server_default=text("'minimax'")),
     Column("model", String(128), nullable=False, server_default=text("'MiniMax-M2.7'")),
+    Column("token_budget_enforced", Boolean, nullable=False, server_default=text("true")),
     Column(
         "daily_token_budget",
         BigInteger,
@@ -10762,7 +10774,13 @@ agent_runs = Table(
         "first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 AND "
         "event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)<>'' "
         "AND requested_by_user_id IS NOT NULL AND status IN "
-        "('running','succeeded','degraded','failed')) IS TRUE",
+        "('running','succeeded','degraded','failed')) IS TRUE"
+        " OR (context_version='xiaopai-conversation-v1' AND agent_key='ai_chat' "
+        "AND market_space_id IS NULL AND ((scope_kind='tenant' AND project_id IS NULL) "
+        "OR (scope_kind='project' AND project_id IS NOT NULL)) AND subscription_id IS NULL "
+        "AND first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 "
+        "AND event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND requested_by_user_id "
+        "IS NOT NULL AND status IN ('running','succeeded','degraded','failed')) IS TRUE",
         name="scope",
     ),
     Column("subscription_id", Uuid),
@@ -10864,7 +10882,13 @@ agent_runs = Table(
         "first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 AND "
         "event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND btrim(request_id)<>'' "
         "AND requested_by_user_id IS NOT NULL AND status IN "
-        "('running','succeeded','degraded','failed')) IS TRUE",
+        "('running','succeeded','degraded','failed')) IS TRUE"
+        " OR (context_version='xiaopai-conversation-v1' AND agent_key='ai_chat' "
+        "AND market_space_id IS NULL AND ((scope_kind='tenant' AND project_id IS NULL) "
+        "OR (scope_kind='project' AND project_id IS NOT NULL)) AND subscription_id IS NULL "
+        "AND first_event_row_id IS NULL AND last_event_row_id IS NULL AND event_count=0 "
+        "AND event_row_ids='[]'::jsonb AND request_id IS NOT NULL AND requested_by_user_id "
+        "IS NOT NULL AND status IN ('running','succeeded','degraded','failed')) IS TRUE",
         name="event_bounds_consistent",
     ),
     ForeignKeyConstraint(
@@ -14739,6 +14763,50 @@ legacy_usage_resolutions = Table(
 )
 
 
+legacy_usage_holds = Table(
+    "legacy_usage_holds",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("invocation_id", Uuid, nullable=False),
+    Column("reviewer_user_id", Uuid, nullable=False),
+    Column("policy_key", String(64), nullable=False),
+    Column("approval_ref", Text, nullable=False),
+    Column("bound_source_ref", Text, nullable=False),
+    Column("bound_source_digest", String(64), nullable=False),
+    Column("input_token_bound", BigInteger, nullable=False),
+    Column("output_token_bound", BigInteger, nullable=False),
+    Column("budget_period_start", DateTime(timezone=True), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    ForeignKeyConstraint(
+        ["tenant_id", "invocation_id"],
+        [
+            f"{AI_SCHEMA}.model_invocations.tenant_id",
+            f"{AI_SCHEMA}.model_invocations.id",
+        ],
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "reviewer_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        ondelete="RESTRICT",
+    ),
+    UniqueConstraint(
+        "tenant_id", "invocation_id", name="uq_legacy_usage_hold_invocation"
+    ),
+    CheckConstraint(
+        "input_token_bound = 1000000 AND output_token_bound = 524288",
+        name="preview_bounds",
+    ),
+    CheckConstraint(
+        "policy_key = 'preview-legacy-20261006.v1' AND btrim(approval_ref) <> '' "
+        "AND btrim(bound_source_ref) <> '' AND bound_source_digest = "
+        "'d3cda8f989a0076dca8e044aee7145d35293b00d4b32c14b74bde10c04729237'",
+        name="preview_evidence",
+    ),
+    schema=AI_SCHEMA,
+)
+
 model_call_sessions = Table(
     "model_call_sessions",
     metadata,
@@ -16837,6 +16905,200 @@ research_collection_runs = Table(
     schema=EVIDENCE_SCHEMA,
 )
 
+research_crawl_frontier = Table(
+    "research_crawl_frontier",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("source_id", Uuid, nullable=False),
+    Column("owner_user_id", Uuid, nullable=False),
+    Column("url", String(1024), nullable=False),
+    Column("url_key", String(64), nullable=False),
+    Column("hostname", String(253), nullable=False),
+    Column("depth", Integer, nullable=False),
+    Column("discovered_from", String(16), nullable=False),
+    Column("discovered_from_snapshot_id", Uuid),
+    Column("status", String(16), nullable=False),
+    Column("next_attempt_at", DateTime(timezone=True)),
+    Column("lease_token", Uuid),
+    Column("lease_expires_at", DateTime(timezone=True)),
+    Column("attempts", Integer, nullable=False, server_default=text("0")),
+    Column("consecutive_failures", Integer, nullable=False, server_default=text("0")),
+    Column("last_attempt_at", DateTime(timezone=True)),
+    Column("last_success_at", DateTime(timezone=True)),
+    Column("last_snapshot_id", Uuid),
+    Column("last_error_code", String(64)),
+    Column("last_error_message", Text),
+    Column("version", Integer, nullable=False, server_default=text("1")),
+    Column(
+        "created_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        (
+            "discovered_from IN ('seed','sitemap','feed','link') AND status IN ('pen"
+            "ding','running','done','skipped','failed')"
+        ),
+        name="state_allowed",
+    ),
+    CheckConstraint(
+        "depth BETWEEN 0 AND 5 AND attempts>=0 AND consecutive_failures>=0 AND version>0"
+        " AND btrim(url)<>'' AND btrim(url_key)<>'' AND btrim(hostname)<>''",
+        name="required_content",
+    ),
+    CheckConstraint("(status='pending')=(next_attempt_at IS NOT NULL)", name="schedule_state"),
+    CheckConstraint(
+        "(lease_token IS NULL)=(lease_expires_at IS NULL)"
+        " AND (lease_token IS NULL OR status='running')",
+        name="lease_pair",
+    ),
+    UniqueConstraint("tenant_id", "id", name="uq_research_crawl_frontier_tenant_id"),
+    UniqueConstraint("tenant_id", "source_id", "url_key", name="uq_research_crawl_frontier_url"),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_crawl_frontier_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_crawl_frontier_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_id"],
+        [f"{EVIDENCE_SCHEMA}.research_sources.tenant_id", f"{EVIDENCE_SCHEMA}.research_sources.id"],
+        name="fk_research_crawl_frontier_source",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "discovered_from_snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_research_crawl_frontier_seed_snapshot",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "last_snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_research_crawl_frontier_snapshot",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "owner_user_id"],
+        [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
+        name="fk_research_crawl_frontier_owner",
+        ondelete="RESTRICT",
+    ),
+    Index("ix_research_crawl_frontier_due", "tenant_id", "status", "next_attempt_at"),
+    schema=EVIDENCE_SCHEMA,
+)
+
+research_crawl_runs = Table(
+    "research_crawl_runs",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("frontier_id", Uuid, nullable=False),
+    Column("frontier_version", Integer, nullable=False),
+    Column("hostname", String(253), nullable=False),
+    Column("status", String(16), nullable=False),
+    Column("started_at", DateTime(timezone=True), nullable=False),
+    Column("finished_at", DateTime(timezone=True)),
+    Column("snapshot_id", Uuid),
+    Column("content_changed", Boolean),
+    Column("links_added", Integer),
+    Column("error_code", String(64)),
+    Column("error_message", Text),
+    UniqueConstraint("tenant_id", "id", name="uq_research_crawl_run_scope"),
+    CheckConstraint(
+        (
+            "status IN ('running','completed','failed','skipped_robots','timed"
+            "_out') AND frontier_version>0"
+        ),
+        name="state_allowed",
+    ),
+    CheckConstraint("(status='running')=(finished_at IS NULL)", name="finish_state"),
+    CheckConstraint("(status='completed')=(snapshot_id IS NOT NULL)", name="result_consistent"),
+    CheckConstraint("links_added IS NULL OR links_added>=0", name="links_valid"),
+    ForeignKeyConstraint(
+        ["tenant_id", "frontier_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.research_crawl_frontier.tenant_id",
+            f"{EVIDENCE_SCHEMA}.research_crawl_frontier.id",
+        ],
+        name="fk_research_crawl_runs_frontier",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_research_crawl_runs_snapshot",
+        ondelete="RESTRICT",
+    ),
+    Index(
+        "ix_research_crawl_runs_running",
+        "tenant_id",
+        "frontier_id",
+        unique=True,
+        postgresql_where=text("status='running'"),
+    ),
+    Index("ix_research_crawl_runs_host_time", "tenant_id", "hostname", "started_at"),
+    schema=EVIDENCE_SCHEMA,
+)
+
+research_robots_cache = Table(
+    "research_robots_cache",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("tenant_id", Uuid, nullable=False),
+    Column("hostname", String(253), nullable=False),
+    Column("robots_digest", String(64), nullable=False),
+    Column("disallow_prefixes", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("allow_prefixes", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("crawl_delay_seconds", Integer),
+    Column("sitemap_urls", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("fetched_at", DateTime(timezone=True), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    CheckConstraint(
+        (
+            "jsonb_typeof(disallow_prefixes)='array' AND jsonb_typeof(allow_prefix"
+            "es)='array' AND jsonb_typeof(sitemap_urls)='array'"
+        ),
+        name="arrays",
+    ),
+    CheckConstraint(
+        "crawl_delay_seconds IS NULL OR crawl_delay_seconds BETWEEN 0 AND 86400",
+        name="delay_valid",
+    ),
+    CheckConstraint("expires_at>fetched_at", name="window_valid"),
+    UniqueConstraint("tenant_id", "hostname", name="uq_research_robots_cache_host"),
+    schema=EVIDENCE_SCHEMA,
+)
+
 research_searches = Table(
     "research_searches",
     metadata,
@@ -16903,6 +17165,76 @@ research_searches = Table(
         [f"{CORE_SCHEMA}.users.tenant_id", f"{CORE_SCHEMA}.users.id"],
         name="fk_research_searches_requester",
         ondelete="RESTRICT",
+    ),
+    schema=PRODUCT_SCHEMA,
+)
+
+research_index_documents = Table(
+    "research_index_documents",
+    metadata,
+    Column("tenant_id", Uuid, primary_key=True),
+    Column("snapshot_id", Uuid, primary_key=True),
+    Column("market_space_id", Uuid, nullable=False),
+    Column("product_line_id", Uuid),
+    Column("source_id", Uuid, nullable=False),
+    Column("content_digest", String(64), nullable=False),
+    Column("url", String(1024), nullable=False),
+    Column("title", String(512), nullable=False, server_default=text("''")),
+    Column("lang", String(16), nullable=False),
+    Column("extracted_text", Text, nullable=False),
+    Column("doc_tsv", TSVECTOR, nullable=False),
+    Column("captured_at", DateTime(timezone=True), nullable=False),
+    Column(
+        "indexed_at",
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ),
+    CheckConstraint(
+        "btrim(url)<>'' AND btrim(content_digest)<>'' AND char_length(title)<=512",
+        name="required_content",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id"],
+        [f"{PRODUCT_SCHEMA}.market_spaces.tenant_id", f"{PRODUCT_SCHEMA}.market_spaces.id"],
+        name="fk_research_index_documents_space",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "market_space_id", "product_line_id"],
+        [
+            f"{PRODUCT_SCHEMA}.product_nodes.tenant_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.market_space_id",
+            f"{PRODUCT_SCHEMA}.product_nodes.id",
+        ],
+        name="fk_research_index_documents_line",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "source_id"],
+        [f"{EVIDENCE_SCHEMA}.research_sources.tenant_id", f"{EVIDENCE_SCHEMA}.research_sources.id"],
+        name="fk_research_index_documents_source",
+        ondelete="RESTRICT",
+    ),
+    ForeignKeyConstraint(
+        ["tenant_id", "snapshot_id"],
+        [
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.tenant_id",
+            f"{EVIDENCE_SCHEMA}.evidence_snapshots.id",
+        ],
+        name="fk_research_index_documents_snapshot",
+        ondelete="RESTRICT",
+    ),
+    Index(
+        "ix_research_index_documents_tsv",
+        "doc_tsv",
+        postgresql_using="gin",
+    ),
+    Index(
+        "ix_research_index_documents_scope",
+        "tenant_id",
+        "market_space_id",
+        postgresql_where=text("product_line_id IS NULL"),
     ),
     schema=PRODUCT_SCHEMA,
 )
@@ -17073,6 +17405,8 @@ product_nodes = Table(
     Column("lifecycle", String(16), nullable=False, server_default=text("'proposed'")),
     Column("regions", json_type, nullable=False, server_default=text("'[]'::jsonb")),
     Column("channels", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    Column("tags", json_type, nullable=False, server_default=text("'[]'::jsonb")),
+    CheckConstraint("jsonb_typeof(tags)='array' AND jsonb_array_length(tags)<=30", name="tags"),
     Column("version", Integer, nullable=False, server_default=text("1")),
     Column("request_id", Uuid, nullable=False),
     Column("request_digest", String(64), nullable=False),
@@ -17143,6 +17477,9 @@ product_nodes = Table(
     ),
     schema=PRODUCT_SCHEMA,
 )
+
+Index("uq_product_nodes_one_category", product_nodes.c.tenant_id, product_nodes.c.market_space_id,
+      unique=True, postgresql_where=text("level='line'"))
 
 product_line_members = Table(
     "product_line_members",
@@ -26099,6 +26436,11 @@ conversation_messages = Table(
     Column("request_id", Uuid, nullable=False),
     Column("request_digest", String(64), nullable=False),
     Column("body", Text, nullable=False),
+    Column("preproject_goal", String(16)),
+    CheckConstraint(
+        "preproject_goal IS NULL OR (project_id IS NULL AND action='note' "
+        "AND preproject_goal IN ('category','proposal'))", name="preproject_goal"
+    ),
     Column("action", String(32), nullable=False),
     Column(
         "object_focus", JSON(none_as_null=True).with_variant(JSONB(none_as_null=True), "postgresql")
@@ -29776,6 +30118,24 @@ Index(
 
 product_master_references = define_product_master_references(metadata)
 
+
+product_proposals, product_proposal_revisions, product_proposal_decisions = (
+    define_proposal_tables(metadata)
+)
+
+_proposal_run_shape = "context_version='product-proposal-v1' AND agent_key='ai_chat' " \
+    "AND scope_kind='tenant' AND project_id IS NULL AND market_space_id IS NULL " \
+    "AND subscription_id IS NULL AND first_event_row_id IS NULL AND last_event_row_id IS NULL " \
+    "AND event_count=0 AND event_row_ids='[]'::jsonb AND request_id IS NOT NULL " \
+    "AND requested_by_user_id IS NOT NULL AND status IN ('running','succeeded','degraded','failed')"
+for _proposal_constraint in agent_runs.constraints:
+    if _proposal_constraint.name in {
+        "ck_agent_runs_scope", "ck_agent_runs_event_bounds_consistent"
+    }:
+        _proposal_constraint.sqltext = text(
+            f"({_proposal_constraint.sqltext}) OR ({_proposal_run_shape}) IS TRUE"
+        )
+
 # PostgreSQL already stores SQLAlchemy's deterministic shortened identifiers.
 # Alembic's check-constraint comparator compares the raw metadata name, so pin
 # long check names to that same physical identifier. Generated DDL is unchanged.
@@ -29799,8 +30159,25 @@ for _table in metadata.tables.values():
 xiaopai_delegations, xiaopai_followups, xiaopai_receipts = define_xiaopai_tables(metadata)
 
 
+(
+    category_parameters, category_knowledge, category_promotion_proofs,
+    technical_platforms, product_platform_links,
+) = define_category_tables(metadata)
+
+preproject_confirmations = define_preproject_confirmations(metadata)
+
+
 @dataclass(frozen=True)
 class Tables:
+    preproject_confirmations: Table
+    category_parameters: Table
+    category_knowledge: Table
+    category_promotion_proofs: Table
+    technical_platforms: Table
+    product_platform_links: Table
+    product_proposals: Table
+    product_proposal_revisions: Table
+    product_proposal_decisions: Table
     product_master_references: Table
     xiaopai_delegations: Table
     xiaopai_followups: Table
@@ -30029,6 +30406,10 @@ class Tables:
     competitor_observations: Table
     research_subscriptions: Table
     research_collection_runs: Table
+    research_crawl_frontier: Table
+    research_crawl_runs: Table
+    research_robots_cache: Table
+    research_index_documents: Table
     research_searches: Table
     product_rfq_requirement_links: Table
     product_source_files: Table
@@ -30197,6 +30578,7 @@ class Tables:
     budget_run_links: Table
     budget_journal: Table
     legacy_usage_resolutions: Table
+    legacy_usage_holds: Table
     model_call_sessions: Table
     model_call_events: Table
     model_call_mode_events: Table
@@ -30265,6 +30647,15 @@ class Tables:
 
 
 tables = Tables(
+    preproject_confirmations=preproject_confirmations,
+    category_parameters=category_parameters,
+    category_knowledge=category_knowledge,
+    category_promotion_proofs=category_promotion_proofs,
+    technical_platforms=technical_platforms,
+    product_platform_links=product_platform_links,
+    product_proposals=product_proposals,
+    product_proposal_revisions=product_proposal_revisions,
+    product_proposal_decisions=product_proposal_decisions,
     product_master_references=product_master_references,
     xiaopai_delegations=xiaopai_delegations,
     xiaopai_followups=xiaopai_followups,
@@ -30493,6 +30884,10 @@ tables = Tables(
     competitor_observations=competitor_observations,
     research_subscriptions=research_subscriptions,
     research_collection_runs=research_collection_runs,
+    research_crawl_frontier=research_crawl_frontier,
+    research_crawl_runs=research_crawl_runs,
+    research_robots_cache=research_robots_cache,
+    research_index_documents=research_index_documents,
     research_searches=research_searches,
     product_rfq_requirement_links=product_rfq_requirement_links,
     product_source_files=product_source_files,
@@ -30661,6 +31056,7 @@ tables = Tables(
     budget_run_links=budget_run_links,
     budget_journal=budget_journal,
     legacy_usage_resolutions=legacy_usage_resolutions,
+    legacy_usage_holds=legacy_usage_holds,
     model_call_sessions=model_call_sessions,
     model_call_events=model_call_events,
     model_call_mode_events=model_call_mode_events,

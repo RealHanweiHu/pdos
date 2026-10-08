@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "scope": "Wave19 new applicability/action owner; no DB/HTTP/public verification",
+  "files": [
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/capa_applicability_owner.py",
+      "sha256": "a493490f3f860ef18bced0d82218884f3d20e57246897ccce906e81623afc208"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_effectiveness/test_actual_applicability_owner.py",
+      "sha256": "bfc88ad06e6d7ec8378192fc59a911c2cccaea0169d66ba9972406f5cf7f8ee8"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave19-20261003/applicability-owner-contract.md",
+      "sha256": "b40bcb676c2066c455be0f952b8dfea81aa5ada23c6fd11c00918e116021fca7"
+    }
+  ]
+}

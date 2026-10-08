@@ -22,6 +22,7 @@ from app.ai.change_impact_preparation import (
     source_state,
     validate_assessment,
 )
+from app.ai.durable import agent_entry
 from app.ai.gateway import GatewayInvocation
 from app.ai.model_catalog import AgentTier
 from app.ai.rollout_guard import CapabilityUnavailableError, require_live_key
@@ -221,6 +222,7 @@ class ChangeWorkPackageRuns:
             "next_before_id": str(values[19]["id"]) if len(values) > 20 else None,
         }
 
+    @agent_entry
     def create(
         self, *, context: AuthContext, project_id: UUID, ecr_id: UUID, request: Request
     ) -> dict[str, Any]:

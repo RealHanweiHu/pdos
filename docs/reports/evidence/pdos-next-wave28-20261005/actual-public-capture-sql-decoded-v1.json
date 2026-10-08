@@ -1,0 +1,584 @@
+{
+  "status": "DECODED_HASH_ONLY_POSSIBLE_QUERY_SHAPES",
+  "wall_seconds": 1768.9166177079896,
+  "successful_sql_count": 585493,
+  "successful_sql_wall_seconds": 1061.341531351849,
+  "anonymous_pytest_phases": [
+    {
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 1067.8849736670381
+    },
+    {
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 699.5117572079762
+    },
+    {
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0009952919790521264
+    }
+  ],
+  "decoded_top_shapes": [
+    {
+      "query_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "successful_count": 97155,
+      "successful_seconds": 165.81779141532024,
+      "maximum_successful_seconds": 0.11848204099806026,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "orm_primary_key_identity",
+          "tables": [
+            "artifact_versions"
+          ],
+          "possible_call_sites": [
+            "ORM identity read; caller unknown"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": false,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "successful_count": 78755,
+      "successful_seconds": 135.72816742473515,
+      "maximum_successful_seconds": 0.13298808300169185,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "source_for_artifact_locked",
+          "tables": [
+            "artifact_versions"
+          ],
+          "possible_call_sites": [
+            "pdos_next.service.source_for"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": true,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "successful_count": 78936,
+      "successful_seconds": 130.92300143255852,
+      "maximum_successful_seconds": 0.12959033297374845,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "source_for_product_locked",
+          "tables": [
+            "products"
+          ],
+          "possible_call_sites": [
+            "pdos_next.service.source_for",
+            "pdos_next.service.execute Product read"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": true,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "successful_count": 43936,
+      "successful_seconds": 89.78339912259253,
+      "maximum_successful_seconds": 0.12468149996129796,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "orm_primary_key_identity",
+          "tables": [
+            "professional_authority_facts"
+          ],
+          "possible_call_sites": [
+            "ORM identity read; caller unknown"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": false,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "successful_count": 48439,
+      "successful_seconds": 83.84119453426683,
+      "maximum_successful_seconds": 0.10767599998507649,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "successful_count": 25951,
+      "successful_seconds": 44.21403481659945,
+      "maximum_successful_seconds": 0.10602095897775143,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "orm_primary_key_identity",
+          "tables": [
+            "principals"
+          ],
+          "possible_call_sites": [
+            "ORM identity read; caller unknown"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": false,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "successful_count": 22822,
+      "successful_seconds": 39.15543357550632,
+      "maximum_successful_seconds": 0.11778254195814952,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "caller_principal_unlocked",
+          "tables": [
+            "principals"
+          ],
+          "possible_call_sites": [
+            "pdos_next.service.require_access"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": true,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "successful_count": 22822,
+      "successful_seconds": 38.469601795019116,
+      "maximum_successful_seconds": 0.12432629201794043,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "caller_grant_unlocked",
+          "tables": [
+            "grants"
+          ],
+          "possible_call_sites": [
+            "pdos_next.service.require_access"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": true,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "successful_count": 10400,
+      "successful_seconds": 17.673570128448773,
+      "maximum_successful_seconds": 0.10158212500391528,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "successful_count": 7045,
+      "successful_seconds": 17.477279906685,
+      "maximum_successful_seconds": 0.1259395420202054,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "successful_count": 9101,
+      "successful_seconds": 16.544014882470947,
+      "maximum_successful_seconds": 0.11455766600556672,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "successful_count": 9101,
+      "successful_seconds": 16.474801342294086,
+      "maximum_successful_seconds": 0.10999462497420609,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "successful_count": 7125,
+      "successful_seconds": 13.451203142292798,
+      "maximum_successful_seconds": 0.1141173749929294,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "successful_count": 7193,
+      "successful_seconds": 13.138546737434808,
+      "maximum_successful_seconds": 0.10237004200462252,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "successful_count": 7210,
+      "successful_seconds": 12.566820862295572,
+      "maximum_successful_seconds": 0.1057779589900747,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "successful_count": 6471,
+      "successful_seconds": 11.847982113424223,
+      "maximum_successful_seconds": 0.10892141598742455,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "successful_count": 6516,
+      "successful_seconds": 11.749173057207372,
+      "maximum_successful_seconds": 0.11260545800905675,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "successful_count": 6532,
+      "successful_seconds": 11.385164567851461,
+      "maximum_successful_seconds": 0.1140042920014821,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "successful_count": 6496,
+      "successful_seconds": 11.302480403450318,
+      "maximum_successful_seconds": 0.10068949998822063,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "successful_count": 6536,
+      "successful_seconds": 10.8955392591306,
+      "maximum_successful_seconds": 0.10398787498706952,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "successful_count": 5783,
+      "successful_seconds": 9.717350758321118,
+      "maximum_successful_seconds": 0.09587141702650115,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "caller_grant_locked",
+          "tables": [
+            "grants"
+          ],
+          "possible_call_sites": [
+            "pdos_next.service.require_access"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": true,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "successful_count": 5783,
+      "successful_seconds": 9.4525519029703,
+      "maximum_successful_seconds": 0.10256554099032655,
+      "match": "exact_statement_sha_candidate",
+      "shape_candidates": [
+        {
+          "shape_label": "caller_principal_locked",
+          "tables": [
+            "principals"
+          ],
+          "possible_call_sites": [
+            "pdos_next.service.require_access"
+          ],
+          "possible_phases": [
+            "fixture_setup",
+            "initial_capture",
+            "covered_capture",
+            "inputs",
+            "execute",
+            "replay"
+          ],
+          "source_callsite_bound": true,
+          "actual_owner": "unattributed",
+          "actual_phase": "unattributed",
+          "match_scope": "exact_compiled_statement_sha_only"
+        }
+      ],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "successful_count": 1833,
+      "successful_seconds": 7.469955118256621,
+      "maximum_successful_seconds": 0.10297891602385789,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "successful_count": 1892,
+      "successful_seconds": 6.947307989466935,
+      "maximum_successful_seconds": 0.10506895795697346,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    },
+    {
+      "query_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "successful_count": 3243,
+      "successful_seconds": 6.638938634307124,
+      "maximum_successful_seconds": 0.10050699999555945,
+      "match": "unknown",
+      "shape_candidates": [],
+      "actual_owner": "unattributed",
+      "actual_phase": "unattributed",
+      "actual_engine": "unattributed"
+    }
+  ],
+  "matching_top_shape_count": 9,
+  "actual_owner_phase_engine_attribution": "unattributed",
+  "source_sha256": {
+    "server/pdos_next/models.py": "a4abed80c0ffae0e6f8527b52822f6550703ee24bf0464f7f9818420182ceedb",
+    "server/pdos_next/service.py": "dffe0a7a39d57bbdbbd1b1cbddaf7e1ece167b91411dc487d0932519993e93c6",
+    "server/pdos_next/change_order_service.py": "83b7f623556f627738a7319c0078342d7b0c1a447a0058c451e030c331554891",
+    "server/pdos_next/change_implementation_owner.py": "ff9b2710332f5ac8b5cd404d6c94294e75dd6165aa20d348b922101486adaa41",
+    "server/pdos_next/change_graph_closure.py": "bdfd6cf4225e17b182873ac8aad1cf1cacf1202d4f1fae99b2e58d8c750ed366",
+    "server/pdos_next/domain/change_execution/service.py": "51ab45d8a501a6ff9c6d041d16234425165ab76eb93567d2646b9aa7300fb4a3",
+    "server/pdos_next/domain/change_execution/models.py": "83aaf1880855a27382dd27e5adad6ee36daeff56c287bfd8cd762af2ac5734e1",
+    "server/pdos_next/domain/change_coverage_owner/owner.py": "f0ce1681699e2a20de868d47e82666d7dad1760e902126d66e591383202b656f",
+    "server/pdos_next/domain/change_coverage_owner/models.py": "897ae10b0db2300749fa4faecf52ca1e3585676ffcc08ae54383fa87fe2d818e",
+    "server/pdos_next/domain/quality_execution/service.py": "797f551597138641a7de9408181e65f4179f3be43c691ed78854ee443fd60e1c",
+    "server/pdos_next/domain/configurations/service.py": "e4f03b7acf612ac3fdb83452bdc948c7821e11c5501d777c211f7c4d8ae972ac",
+    "server/pdos_next/domain/products/definitions.py": "80a3cb56b0e8060162e45387fd4c315cfa15da35937cb1e1185e8597755eef2d",
+    "server/pdos_next/change_publication_finalization.py": "75eba32c202241f298deaa5ea7df60ba5910b69e85e91c8469872a9bdb0424f8",
+    ".local/wave28_sql_metrics.py": "4f5534b9e51607ae8888e6f779060070e468142f8b760cb5973bc658e6ddd85e"
+  },
+  "schema_metadata_sha256": "ac10e95bec13a021c0ab8d769da59532c3e3480b1dc48057354bde6eb4ce202b",
+  "model_source_sha256": {
+    "server/pdos_next/change_controlled_store.py": "79c3829ecbb9df7cfc3918d6ef14e77b77008c378f35d0b7090b8be4c37cce6c",
+    "server/pdos_next/change_dependency_clock.py": "37dee7cbd9b60d7288b75fa63fa78b0f0373ae8b9360240a3503cac39bad744e",
+    "server/pdos_next/change_order_store.py": "d78299dbdbc3148a9a99782b9b5490113c2eb3506c091d351f5ae4331c171045",
+    "server/pdos_next/domain/build_execution/models.py": "87560e4c5836f8f956249c6d2aad98fffb6659e97079365542ab5ddf9aeb4413",
+    "server/pdos_next/domain/build_operational_facts/models.py": "5ab8509fd9d2a0d9e8d49c4686e8badc1575acf5e1f5227c4917ece4c75954ba",
+    "server/pdos_next/domain/build_start/models.py": "e07b849647c76284f9cb35917af5b008a384f340bbe0a7f035dc6c1f6698e9bd",
+    "server/pdos_next/domain/builds/models.py": "6f01acd30b8f645d337277268d5a216c669c80b5dde242d0225e675339ad8b13",
+    "server/pdos_next/domain/capa_effectiveness/fact_storage_models.py": "77cde6bac7d5c49b109a44d8540e4fba476fa52c1853317f25182afb813108fe",
+    "server/pdos_next/domain/capa_verification/models.py": "321a721fd5b90d9857f8e29603ef057f6b7cc1cf62e29ba27b036c3296952ef4",
+    "server/pdos_next/domain/change_coverage_owner/models.py": "897ae10b0db2300749fa4faecf52ca1e3585676ffcc08ae54383fa87fe2d818e",
+    "server/pdos_next/domain/change_execution/models.py": "83aaf1880855a27382dd27e5adad6ee36daeff56c287bfd8cd762af2ac5734e1",
+    "server/pdos_next/domain/configurations/models.py": "7d366adab2fd2e9cf04a570f7b5821a1efe0a60ead9894954d11fb4c0d2606b4",
+    "server/pdos_next/domain/cost_execution/models.py": "ea9206c0ad8c4bc27054f639b619842820e0c1cb313fcfb14d4352cb87baa2b7",
+    "server/pdos_next/domain/manufacturing_baseline/models.py": "02661157a13d08f15707ae93478309b233af32b62ba05dd6c6d5b16478bd1881",
+    "server/pdos_next/domain/products/models.py": "5a6157bfdf4d1ddf4731a1a4bf4d65c2d57c7f2dd1bd9d7cf8de99cce33be92a",
+    "server/pdos_next/domain/products/variant_models.py": "df6f2a5276b749a21465bdf0b937aa03c39dcf9bc0fcfb56f0df1c07716ac385",
+    "server/pdos_next/domain/professional_authority/models.py": "e3c50807cf798ba35e64c8cc226105534209fbb105a68a368ea60fe2d1ff6c04",
+    "server/pdos_next/domain/projects/models.py": "74414ad221e4026129f60b180490468b68897750433c6e6278dc047193044f73",
+    "server/pdos_next/domain/quality_execution/models.py": "c8dab50b927abe5fbb63fb05fc0fe2d9d0ae67b78b0ef5115a3595ef7a092537",
+    "server/pdos_next/domain/sample_handoff/models.py": "37c2054a685192d944213bac762e5d9e6f3730d2047624fd1252149df3470216",
+    "server/pdos_next/domain/supply_execution/models.py": "7b19619aefdff9416693ee3cb200959d4a048888a6f6ce67c0cde971e1478a79",
+    "server/pdos_next/domain/test_resources/models.py": "58ac5ee9ffa43f020ef80447e8b7b24a9cba22b5299f2a48a5d901410aef7cfc",
+    "server/pdos_next/domain/verification_execution/models.py": "b8f18932a9f316a93bf229cf90fbd2d9951d484015c1c626405e43a08faee597",
+    "server/pdos_next/domain/verification_front/models.py": "954809891be1c66fec8e60351054fdba88bd3744cd906ee7564d706d16a625c5",
+    "server/pdos_next/domain/verification_handoff/models.py": "cc13761c19c589e6255eac9c05259469e4e34cbd9e7c7d1fe95a691cf489f45c",
+    "server/pdos_next/domain/verification_launch/models.py": "d5c57c98a2bae45063ce935406474425f60b9bb13d93366e1959e7eb0d62e79c",
+    "server/pdos_next/domain/verification_results/models.py": "9ae98e9a2a69b7a02a987d38e03940b4983f69f62b030f96464650824efc5403",
+    "server/pdos_next/models.py": "a4abed80c0ffae0e6f8527b52822f6550703ee24bf0464f7f9818420182ceedb"
+  },
+  "limits": [
+    "Compiled schema/SQLAlchemy candidates do not identify the actual caller.",
+    "Exact SHA includes whitespace and placeholder names; unknown hashes remain unknown.",
+    "All Engines and threads are combined; business-phase SQL timing is unavailable.",
+    "Plugin aggregates are not thread-local or locked; concurrent precision is unverified.",
+    "Only successful SQL is recorded; failure/unfinished counts and cleanup are unknown.",
+    "Concurrent SQL elapsed can exceed wall; SQL count alone does not prove a speedup.",
+    "Compare compilation hashes with the actual tested source snapshot."
+  ],
+  "sql_statement_parameters_credentials_output": false,
+  "business_success_or_speedup_claimed": false
+}

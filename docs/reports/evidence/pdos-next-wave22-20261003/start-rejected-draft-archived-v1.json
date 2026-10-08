@@ -1,0 +1,9 @@
+{
+  "status": "ORIGINAL_REJECTED_DRAFT_ARCHIVED_FOR_EXPLICIT_NEW_DRAFT",
+  "original_command_id": "644113fd-1b4d-4294-a5a7-3bbd67d10291",
+  "original_body_sha256": "ed7c6f445ce1e641b549a6de277d641685312e856ec41037a337fa037bf9ac0e",
+  "archive_sha256": "6b6e18cc6bc5d8b19c94c9843fa43e124fb23ee28f4a43110b272b12563e6712",
+  "same_registered_event_and_original_clock": true,
+  "new_key_required": true,
+  "unknown_preview_auto_recovery": false
+}

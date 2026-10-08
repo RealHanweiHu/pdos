@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const { routerReplace } = vi.hoisted(() => ({ routerReplace: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
   useRouter: () => ({ replace: routerReplace }),
 }));
 
@@ -56,6 +57,50 @@ describe("UserManagement", () => {
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+  });
+
+  it("lets an administrator explicitly save and revoke a member's additional modules", async () => {
+    const user = userEvent.setup();
+    const engineer = { ...users.items[0], id: "user-engineer", username: "engineer-one", display_name: "Engineer One", role: "engineer", work_modules: [] };
+    fetchMock
+      .mockImplementationOnce(() => response({ ...ownerIdentity, user: { ...ownerIdentity.user, id: "user-admin", role: "admin" } }))
+      .mockImplementationOnce(() => response({ items: [engineer] }))
+      .mockImplementationOnce(() => response({ ...engineer, work_modules: ["product", "quality"], updated_at: "2026-10-04T01:00:00Z" }))
+      .mockImplementationOnce(() => response({ ...engineer, updated_at: "2026-10-04T02:00:00Z" }));
+    render(<UserManagement />);
+    await user.click(await screen.findByText("配置兼任模块 · engineer-one"));
+    expect(screen.getByLabelText("工程设计（主角色自动启用）")).toBeChecked();
+    expect(screen.getByLabelText("工程设计（主角色自动启用）")).toBeDisabled();
+    await user.click(screen.getByLabelText("产品工作"));
+    await user.click(screen.getByLabelText("测试与品质"));
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await user.click(screen.getByRole("button", { name: "保存 engineer-one 的模块" }));
+    expect(await screen.findByText("兼任：产品工作、测试与品质")).toBeInTheDocument();
+    expect(JSON.parse(String(fetchMock.mock.calls[2]?.[1]?.body))).toEqual({ work_modules: ["product", "quality"] });
+    await user.click(screen.getByText("配置兼任模块 · engineer-one"));
+    await user.click(screen.getByLabelText("产品工作"));
+    await user.click(screen.getByLabelText("测试与品质"));
+    await user.click(screen.getByRole("button", { name: "保存 engineer-one 的模块" }));
+    await waitFor(() => expect(screen.queryByText("兼任：产品工作、测试与品质")).not.toBeInTheDocument());
+    expect(JSON.parse(String(fetchMock.mock.calls[3]?.[1]?.body))).toEqual({ work_modules: [] });
+    expect(screen.getByLabelText("engineer-one 的角色")).toHaveValue("engineer");
+  });
+
+  it("retains a module draft after a failed save and hides internal modules for external accounts", async () => {
+    const user = userEvent.setup();
+    const engineer = { ...users.items[0], id: "user-engineer", username: "engineer-one", role: "engineer" };
+    fetchMock
+      .mockImplementationOnce(() => response(ownerIdentity))
+      .mockImplementationOnce(() => response({ items: [engineer, { ...engineer, id: "external", username: "customer", role: "customer" }] }))
+      .mockResolvedValueOnce(Response.json({}, { status: 403 }));
+    render(<UserManagement />);
+    await user.click(await screen.findByText("配置兼任模块 · engineer-one"));
+    await user.click(screen.getByLabelText("供应协作"));
+    await user.click(screen.getByRole("button", { name: "保存 engineer-one 的模块" }));
+    expect(await screen.findByText(/无法更新 engineer-one/)).toBeInTheDocument();
+    expect(screen.getByLabelText("供应协作")).toBeChecked();
+    expect(screen.getByRole("button", { name: "保存 engineer-one 的模块" })).toBeEnabled();
+    expect(screen.queryByText("配置兼任模块 · customer")).not.toBeInTheDocument();
   });
 
   it("lets an Owner create a tenant account without retaining the temporary password", async () => {
@@ -143,6 +188,25 @@ describe("UserManagement", () => {
         body: JSON.stringify({ password: "rotated production passphrase" }),
       }),
     );
+  });
+
+  it.each(["owner", "admin"])("lets %s create a product manager", async (actorRole) => {
+    const user = userEvent.setup();
+    const created = { ...users.items[0], id: "user-product", username: "product-person", display_name: "产品经理", role: "product_manager" };
+    fetchMock
+      .mockImplementationOnce(() => response({ ...ownerIdentity, user: { ...ownerIdentity.user, role: actorRole } }))
+      .mockImplementationOnce(() => response(users))
+      .mockImplementationOnce(() => response(created, 201));
+    render(<UserManagement />);
+    await screen.findByRole("heading", { name: "成员与角色" });
+    expect(screen.getByRole("option", { name: "产品经理" })).toHaveValue("product_manager");
+    await user.type(screen.getByLabelText("用户名"), "product-person");
+    await user.type(screen.getByLabelText("显示名称"), "产品经理");
+    await user.selectOptions(screen.getByLabelText("角色"), "product_manager");
+    await user.type(screen.getByLabelText("临时密码"), "temporary passphrase 2026");
+    await user.click(screen.getByRole("button", { name: "创建账户" }));
+    expect(await screen.findByText("账户 product-person 已创建")).toBeInTheDocument();
+    expect(JSON.parse(String(fetchMock.mock.calls[2]?.[1]?.body))).toEqual(expect.objectContaining({ role: "product_manager" }));
   });
 
   it("hides privileged role choices from Admins", async () => {

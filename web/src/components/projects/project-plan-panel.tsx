@@ -14,6 +14,7 @@ import { ResourceAllocationLanding } from "./resource-allocation-release";
 import { ProjectResourceInventory } from "./project-resource-inventory";
 import { ReservationResponsibilityLanding } from "@/components/quality/quality-responsibility";
 import { ProjectReservationPanel } from "./project-reservation-panel";
+import { ProjectTaskWorkspace } from "./project-task-workspace";
 
 export function ProjectPlanPanel({ projectId, userId }: { projectId: string; userId: string }) {
   const panel = useRef<HTMLElement>(null);
@@ -39,13 +40,15 @@ export function ProjectPlanPanel({ projectId, userId }: { projectId: string; use
     <ScheduleResponsibilityLanding projectId={projectId} />
     <ApprovalRequestLanding projectId={projectId} />
     <ApprovalResponsibilityLanding projectId={projectId} />
-    <ProjectExecutionPanel key={`execution:${projectId}`} projectId={projectId} />
-    <ScheduleExecutionPanel key={`schedule-execution:${projectId}`} projectId={projectId} />
-    <ScheduleForecastPanel key={`forecasts:${projectId}`} projectId={projectId} />
-    <ScheduleCommitmentPanel key={`commitments:${projectId}`} projectId={projectId} />
     <ResourceAllocationLanding projectId={projectId}/>
-    <ProjectResourceInventory key={`inventory:${projectId}`} projectId={projectId} />
     <ReservationResponsibilityLanding projectId={projectId}/>
-    <ProjectReservationPanel key={`reservations:${projectId}`} projectId={projectId} userId={userId} />
+    <ProjectTaskWorkspace label="计划与协调办理" sections={[
+      { id: "execution-baseline", title: "确认执行与基线", description: "核对立项输入和执行批准，查看当前有效计划。", queryKeys: ["approval_request_id", "approval_policy_id"], hashPrefixes: ["project-execution"], children: <ProjectExecutionPanel key={`execution:${projectId}`} projectId={projectId} /> },
+      { id: "formal-schedule", title: "查看正式计划", description: "核对正式节点、依赖和实际执行记录。", hashPrefixes: ["schedule-execution"], children: <ScheduleExecutionPanel key={`schedule-execution:${projectId}`} projectId={projectId} /> },
+      { id: "progress-forecast", title: "核对进展与预测", description: "比较最新实际与基线，追查预测变化的来源。", queryKeys: ["forecast"], hashPrefixes: ["schedule-forecasts"], children: <ScheduleForecastPanel key={`forecasts:${projectId}`} projectId={projectId} /> },
+      { id: "date-commitments", title: "办理时间承诺", description: "基于当前依据准备承诺，保留具名确认和外发边界。", queryKeys: ["commitment_node"], hashPrefixes: ["schedule-commitments"], children: <ScheduleCommitmentPanel key={`commitments:${projectId}`} projectId={projectId} /> },
+      { id: "resource-inventory", title: "核对可用资源", description: "查看实际资源、容量和适用限制。", hashPrefixes: ["resource-inventory"], children: <ProjectResourceInventory key={`inventory:${projectId}`} projectId={projectId} /> },
+      { id: "resource-coordination", title: "协调预约与依赖", description: "核对资源预约和跨项目接续，分别办理具名确认。", queryKeys: ["resource_allocation_id", "resource_reservation_id", "reservation_node_id", "reservation_resource_id", "reservation_owner_id", "cross_proposal", "schedule_responsibility_node"], hashPrefixes: ["resource-", "reservation-", "cross-proposal"], children: <ProjectReservationPanel key={`reservations:${projectId}`} projectId={projectId} userId={userId} /> },
+    ]} />
   </section>;
 }

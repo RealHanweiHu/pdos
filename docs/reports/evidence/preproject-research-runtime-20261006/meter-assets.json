@@ -1,0 +1,22 @@
+{
+  "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/resolve/f0e1c1e04d40177e4673a22097036854f536e9c0/",
+  "assets": [
+    {
+      "file": "tokenizer.json",
+      "bytes": 9731500,
+      "sha256": "bb1f1626cf01448f1e3b6036d0a061ffc66c91d9046aada14ea23a5441b5ad6e"
+    },
+    {
+      "file": "chat_template.jinja",
+      "bytes": 11756,
+      "sha256": "11421244f67553498e5c8112dae02802025bcc4305ec45ad380af95c96f9fe64"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "bytes": 11288,
+      "sha256": "15caca9f74fbce9b86dc014e9324cbefa56703d81ccd6d56020faa1c41d2eae5"
+    }
+  ],
+  "real_model_requests": 0,
+  "qualification_published": false
+}

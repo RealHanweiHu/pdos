@@ -1,0 +1,362 @@
+{
+  "label": "ready-A1",
+  "tier": "T1",
+  "review_digest": "414f5fa3eafce720882af3b58cb0b52aa38062768cf5ba2b18d9ad48c1ef2b72",
+  "review": {
+    "operation": "build.sample.readiness.record",
+    "name": "Wave22-eb2c84ee-A1",
+    "effect": "记录具名实物可交样或hold事实及发生/接收时钟；不改样件身份，不替代品质接收、方法认可、预约或测试消耗。",
+    "reason": "具名记录本地合成实物已就绪；品质接收、方法与开测须独立办理",
+    "before": null,
+    "after": {
+      "id": "a1b208a7-ba8b-588c-bf13-ba8ed4163373",
+      "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+      "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+      "build_id": "beb94737-d081-4f0f-a72c-326824126b58",
+      "build_revision": 1,
+      "sample_id": "88331854-7b73-4561-8a15-b0e6b7eb8a43",
+      "sample_revision": 1,
+      "lot_id": "9eacc0c0-6b05-41cb-af05-bfdd542e17b0",
+      "lot_revision": 1,
+      "actual_configuration_id": "a5331fd7-df15-4750-b0b6-dbff97e5d0fd",
+      "actual_configuration_revision": 1,
+      "revision": 1,
+      "previous_readiness_id": null,
+      "previous_revision": null,
+      "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+      "visibility": "product",
+      "status": "ready",
+      "purpose": "内部共享三人调查：独立单模穴A尺寸复测（合成）",
+      "occurred_at": "2026-10-03T19:03:03.336066+00:00",
+      "occurred_timezone": "UTC",
+      "received_at": null,
+      "nature": "synthetic",
+      "event_source": {
+        "artifact_id": "1d6476f3-d68b-4c4f-99da-1aa5794e9e0f",
+        "expected_revision": 1,
+        "line": 1,
+        "quote": "{\"actual_configuration_id\":\"a5331fd7-df15-4750-b0b6-dbff97e5d0fd\",\"build_id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"lot_id\":\"9eacc0c0-6b05-41cb-af05-bfdd542e17b0\",\"occurred_at\":\"2026-10-03T19:03:03.336066+00:00\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"sample_id\":\"88331854-7b73-4561-8a15-b0e6b7eb8a43\",\"state\":\"ready\"}"
+      },
+      "sources": [
+        {
+          "artifact_id": "1d6476f3-d68b-4c4f-99da-1aa5794e9e0f",
+          "expected_revision": 1,
+          "line": 1,
+          "quote": "{\"actual_configuration_id\":\"a5331fd7-df15-4750-b0b6-dbff97e5d0fd\",\"build_id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"lot_id\":\"9eacc0c0-6b05-41cb-af05-bfdd542e17b0\",\"occurred_at\":\"2026-10-03T19:03:03.336066+00:00\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"sample_id\":\"88331854-7b73-4561-8a15-b0e6b7eb8a43\",\"state\":\"ready\"}"
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "1d6476f3-d68b-4c4f-99da-1aa5794e9e0f",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "3da38126-770b-415a-82e7-3241e72718ff",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a17b90a0-a7aa-4d94-b6c3-9635333549f7",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "b4027069-27cb-4e2d-acca-0af1e1f0fde0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "bf2fdd4c-d43d-447c-ab4d-006f3c79f4af",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "fixed_snapshot": {
+        "sample": {
+          "id": "88331854-7b73-4561-8a15-b0e6b7eb8a43",
+          "revision": 1,
+          "label": "Wave22-eb2c84ee-A1",
+          "lot_id": "9eacc0c0-6b05-41cb-af05-bfdd542e17b0",
+          "actual_configuration_id": "a5331fd7-df15-4750-b0b6-dbff97e5d0fd",
+          "operation_key": "assembly",
+          "cavity": "A",
+          "custodian_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+          "custodian_label": null,
+          "location": "本地合成内部保留",
+          "destination": null
+        },
+        "lot": {
+          "id": "9eacc0c0-6b05-41cb-af05-bfdd542e17b0",
+          "revision": 1,
+          "occurred_at": "2026-10-03T19:01:55.740442+00:00",
+          "received_at": "2026-10-03T19:02:31.316340+00:00",
+          "nature": "synthetic"
+        },
+        "actual_configuration": {
+          "id": "a5331fd7-df15-4750-b0b6-dbff97e5d0fd",
+          "revision": 1,
+          "actual_engineering_configuration_id": "becde270-4262-4728-a257-d0fa77698197",
+          "actual_engineering_revision": 1,
+          "actual_manufacturing_configuration_id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+          "actual_manufacturing_revision": 1,
+          "observed_at": "2026-10-03T19:01:06.453926+00:00"
+        },
+        "build": {
+          "id": "beb94737-d081-4f0f-a72c-326824126b58",
+          "revision": 1,
+          "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+          "start_id": "9d64cbc2-d0ca-59e2-8219-87187ee72744"
+        },
+        "start": {
+          "id": "9d64cbc2-d0ca-59e2-8219-87187ee72744",
+          "revision": 1,
+          "sha256": "e44de63f71483aba7854a81c3a81827dae9087c7d052afd2d98da8b485219221",
+          "occurred_at": "2026-10-03T18:51:16.664889+00:00"
+        }
+      },
+      "authority_snapshot": {
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+          "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0"
+        },
+        "subject_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+        "operation": "build.sample.readiness.record",
+        "purpose": "内部共享三人调查：独立单模穴A尺寸复测（合成）",
+        "authorized": true,
+        "roles": [
+          "manufacturing"
+        ],
+        "qualified": true,
+        "reason_codes": [],
+        "fact_refs": [
+          {
+            "id": "1fc4281c-01c2-416d-8a99-7de6c046e783",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "qualification",
+            "role": "engineering",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "03fa0dc0-ad9c-4c0f-85e9-e27b9cf5bc18",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "duty",
+            "role": "quality",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "daf50345-5eea-4303-88b4-3c5029b1783b",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "qualification",
+            "role": "manufacturing",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "418643d2-072b-4e9a-8b51-13e7d43621e8",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "duty",
+            "role": "manufacturing",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "0a205402-334e-43aa-9a88-252cf7754fb7",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "duty",
+            "role": "engineering",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "57e93c07-0911-4e55-80ff-eddc44b71901",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "qualification",
+            "role": "quality",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          }
+        ],
+        "facts_revision": "b885837d13649ad0f75a11e751036fbda1e174e713baacd6a92039266c22f9a0",
+        "valid_until": "2026-10-05T18:22:48.865992+00:00",
+        "synthetic": true,
+        "required_source_read_set": [
+          {
+            "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+            "expected_revision": 1
+          }
+        ]
+      },
+      "source_basis": {
+        "refs": [
+          {
+            "source_id": "artifact:1d6476f3-d68b-4c4f-99da-1aa5794e9e0f",
+            "version": "1",
+            "sha256": "ffdad95f3a8024e094ebad262866330c6f349ac6201109e595cd9d1502a27ed3",
+            "captured_at": "2026-10-03T19:03:05.708321Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:3da38126-770b-415a-82e7-3241e72718ff",
+            "version": "1",
+            "sha256": "b87c16be81f4eb2c9c0f7a6e0497405a8c73b1652da1d7e320c5472f806f36db",
+            "captured_at": "2026-10-03T19:01:57.332366Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+            "version": "1",
+            "sha256": "c7194f614d493ee62e65c79a99e6d6dac64f3eb1502e51f9ade139d7e944e3e7",
+            "captured_at": "2026-10-03T18:43:59.737576Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:945468fa-cec2-42a4-8850-69e3103593c3",
+            "version": "1",
+            "sha256": "4b75a7b3523b4386a7776a3aef65e85948c1743db77da5ba6088aba8dab1a971",
+            "captured_at": "2026-10-03T18:31:20.790009Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:a17b90a0-a7aa-4d94-b6c3-9635333549f7",
+            "version": "1",
+            "sha256": "0d3f79304098a5e5a16cd6dd7ff595d4471e18e8c1c5695d01ea5aa619d8da10",
+            "captured_at": "2026-10-03T19:01:08.236556Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:b4027069-27cb-4e2d-acca-0af1e1f0fde0",
+            "version": "1",
+            "sha256": "e3a7fed6120bc51baff75224d45ab4fbf7ba1c1dc3482f5902742e528fc02598",
+            "captured_at": "2026-10-03T18:39:23.634253Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:bf2fdd4c-d43d-447c-ab4d-006f3c79f4af",
+            "version": "1",
+            "sha256": "3d6530e95485ee4f9a0eea64166f7dcb724837df2624b9aedb85e27a217698f2",
+            "captured_at": "2026-10-03T18:51:20.269963Z",
+            "state": "current"
+          },
+          {
+            "source_id": "artifact:c5427990-1249-4c62-b39d-df8210f19002",
+            "version": "1",
+            "sha256": "445c7b5692b89e6a78f7cfaa19497a1fd42de6ec71334916856adebfa728cbf5",
+            "captured_at": "2026-10-03T18:22:49.780138Z",
+            "state": "current"
+          }
+        ],
+        "security": [
+          {
+            "artifact_id": "1d6476f3-d68b-4c4f-99da-1aa5794e9e0f",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "3da38126-770b-415a-82e7-3241e72718ff",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "a17b90a0-a7aa-4d94-b6c3-9635333549f7",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "b4027069-27cb-4e2d-acca-0af1e1f0fde0",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "bf2fdd4c-d43d-447c-ab4d-006f3c79f4af",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          },
+          {
+            "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+            "revision": 1,
+            "visibility": "product",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "original_id": null
+          }
+        ]
+      },
+      "intent_digest": "e4f92db8720e3acdadea90c54098b022e810748fca4dbb9232cced7c485b9938",
+      "reason": "具名记录本地合成实物已就绪；品质接收、方法与开测须独立办理",
+      "state": "ready",
+      "created_at": null,
+      "source_status": "current",
+      "is_current": true,
+      "sha256": null,
+      "clocks": {
+        "occurred_at": "2026-10-03T19:03:03.336066+00:00",
+        "received_at": null,
+        "original_timezone": "UTC"
+      },
+      "sample_label": "Wave22-eb2c84ee-A1",
+      "source_ref": {
+        "kind": "domain",
+        "id": "a1b208a7-ba8b-588c-bf13-ba8ed4163373",
+        "revision": 1,
+        "position": "sample-readiness"
+      },
+      "reservation": null,
+      "consumption": null,
+      "quality_accepted": false,
+      "time_policy": "server_on_save"
+    },
+    "impact": {
+      "purpose_limited": true,
+      "hold_blocks_all_purposes": false,
+      "quality_acceptance": false,
+      "test_reservation": false,
+      "test_consumption": false
+    }
+  }
+}

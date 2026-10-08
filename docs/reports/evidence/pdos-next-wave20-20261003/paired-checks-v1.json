@@ -1,0 +1,60 @@
+{
+  "source_stable": true,
+  "source_sha256": {
+    "pdos_next/paired_followup_adapter.py": "7c6bdc2437ad7c6d3d207c76666b844d7e5cd7e59172db3ccb1e72b5763f389b",
+    "tests/capa_effectiveness/test_paired_followup_adapter.py": "aea458fde139c850f6582d4523d20a2eee338ee1c91494de086ffc3d5a173551"
+  },
+  "checks": [
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "tests/capa_effectiveness/test_paired_followup_adapter.py",
+        "-q",
+        "--tb=short"
+      ],
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/paired-pure-05.log",
+      "log_sha256": "6308775cafaabd33b997ccebd11bf32087073afe1cd6c97e950314e0a4472c6a",
+      "output": "............................                                             [100%]\n28 passed in 2.28s\n"
+    },
+    {
+      "command": [
+        ".venv/bin/ruff",
+        "check",
+        "pdos_next/paired_followup_adapter.py",
+        "tests/capa_effectiveness/test_paired_followup_adapter.py"
+      ],
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/paired-ruff-02.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "pdos_next/paired_followup_adapter.py",
+        "tests/capa_effectiveness/test_paired_followup_adapter.py"
+      ],
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/paired-format-02.log",
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+      "output": "2 files already formatted\n"
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-c",
+        "import ast; from pathlib import Path; [ast.parse(Path(p).read_text(),filename=p) for p in (\"pdos_next/paired_followup_adapter.py\",\"tests/capa_effectiveness/test_paired_followup_adapter.py\")]; from pdos_next.paired_followup_adapter import PairedFollowupOwner, configured, PAIRED_FORMAL_OPERATIONS; assert len(PAIRED_FORMAL_OPERATIONS)==5; print(\"AST and cold import passed, no connection\")"
+      ],
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/paired-import-02.log",
+      "log_sha256": "762f1da837afee3558db3874e500df2975e2c6ab7e011af0a1c4a972dfc3350b",
+      "output": "AST and cold import passed, no connection\n"
+    }
+  ]
+}

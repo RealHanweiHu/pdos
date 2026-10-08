@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-10-03T09:12:40.085807+00:00",
+  "scope": "Actual synthetic completion read-only observation at head25",
+  "issue_revisions": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "status": "awaiting_verification",
+  "occurred_at": "2026-10-03T08:08:20.788303Z",
+  "original_timezone": "UTC",
+  "received_at": "2026-10-03T09:11:15.351734+00:00",
+  "receipt_count": 1,
+  "atom": {
+    "audit_entries": 1,
+    "outbox_events": 1
+  },
+  "actual_T1_consumed": true,
+  "root_and_original_failures_preserved": true,
+  "no_effectiveness_or_close": true
+}

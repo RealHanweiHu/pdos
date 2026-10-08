@@ -1,0 +1,17 @@
+{
+  "selection": "tests/test_launch_storage.py::test_corrupt_new_start_atom_rolls_back_all_eight_storage_boundaries",
+  "exit_code": 1,
+  "elapsed_seconds": 635.15,
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "source": {
+    "pdos-next/server/tests/test_launch_storage.py": "bdceaeaa13d3abdffeb633d77e72980b9870e3663b1a0154de22f07f0cd18ef0",
+    "pdos-next/server/tests/verification_launch/fixtures.py": "10e5c57889064fd47be6044f80197eecb6c07f46079153e6e6dcb63eef81ff5f"
+  },
+  "clock": "real Python and PostgreSQL clock; no advance mock",
+  "profile": {
+    "window_minutes": 45,
+    "fact_minutes": 60,
+    "synthetic_upstream_minutes": 120
+  }
+}

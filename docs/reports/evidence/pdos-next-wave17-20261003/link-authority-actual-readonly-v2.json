@@ -1,0 +1,35 @@
+{
+  "scope": "actual readonly Link professional fingerprint; no fact writes",
+  "model_calls": 0,
+  "False": {
+    "current": false,
+    "authorized": true,
+    "qualified": true,
+    "reason_codes": [
+      "PROFESSIONAL_AUTHORITY_CHANGED"
+    ]
+  },
+  "True": {
+    "current": true,
+    "authorized": true,
+    "qualified": true,
+    "reason_codes": []
+  },
+  "actual_link": {
+    "current": false,
+    "code": "RECHECK_REQUIRED",
+    "message": "\u6574\u6539\u56de\u94fe\u7684\u56fa\u5b9a\u8f93\u51fa\u6216\u6765\u6e90\u53d1\u751f\u53d8\u5316\u3002",
+    "frames": [
+      {
+        "file": "wave17_link_authority_observation.py",
+        "line": 82
+      },
+      {
+        "file": "service.py",
+        "line": 639
+      }
+    ]
+  },
+  "status": "PASS",
+  "finished_at": "2026-10-03T13:20:00.903162+00:00"
+}

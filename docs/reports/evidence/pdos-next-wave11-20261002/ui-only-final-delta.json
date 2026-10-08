@@ -1,0 +1,8 @@
+{
+  "changed": [
+    "pdos-next/web/src/components/builds/build-start.tsx"
+  ],
+  "backend_and_tests_unchanged": true,
+  "reason": "已保存开工卡明确展示实际物料/资源占用条数；中文事务历史描述",
+  "validation": "final production build + browser; backend joint remains same frozen files"
+}

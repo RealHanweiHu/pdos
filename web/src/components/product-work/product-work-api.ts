@@ -1,7 +1,7 @@
 import { notifyProductWorkChanged } from "./product-work-scope";
 
 export type SourceRef = { tenant_id: string; project_id?: string | null; kind: string; ref_id: string; as_of: string; digest: string; locator?: string | null };
-export type Space = { id: string; code: string; title: string; lifecycle: string; version: number; payload_digest: string; owner_user_id: string; user_groups: string[]; regions: string[]; use_scenarios: string[]; research_questions: string[] };
+export type Space = { can_restore?: boolean; category_id?: string; category_line_id?: string; id: string; code: string; title: string; lifecycle: string; version: number; payload_digest: string; owner_user_id: string; user_groups: string[]; regions: string[]; use_scenarios: string[]; research_questions: string[] };
 export type Member = { id: string; display_name: string; access: string };
 export type Research = { id: string; source_finding_id?: string | null; market_space_id: string; product_line_id: string | null; owner_user_id: string; version: number; payload_digest: string; question: string; state: string; method: string; expected_decision: string; time_scope: string; stop_conditions: string[]; conclusion: string | null; cancellation_reason?: string | null; findings: string[]; unresolved: string[]; sources: SourceRef[] };
 export type WorkItem = { id: string; market_space_id: string; product_line_id: string | null; title: string; version: number; payload_digest: string; state: string; owner_user_id: string | null; receiver_user_id: string | null; action_type: string; acceptance_required: boolean; expected_output: string; completion_criteria: string; result_note: string | null; due_at: string | null; evidence: SourceRef[] };
@@ -24,7 +24,7 @@ export async function request<T>(path: string, method: "GET" | "POST" | "PUT" = 
     const match = path.match(/^spaces\/([^/]+)\/(.+)$/);
     if (method === "GET" || !match) return;
     const writes = /^(?:research|work-items|competitors|market-segments|opportunities|experiments|strategies|definitions|products|members)(?:\/[0-9a-f-]{36}(?:\/(?:actions|changes|start|conclude|cancel|reviews|lifecycle|members(?:\/[0-9a-f-]{36})?))?)?$/i;
-    if (writes.test(match[2]) || /^(?:research|evidence)-ai-(?:review|apply)$/.test(match[2]) || /^(?:rfq-ai-confirm|product-ai-runs|product-ai-cancel)$/.test(match[2])) notifyProductWorkChanged(`spaces/${match[1]}`);
+    if (writes.test(match[2]) || /^(?:research|evidence)-ai-(?:item-)?(?:review|apply)$/.test(match[2]) || /^(?:rfq-ai-confirm|product-ai-runs|product-ai-cancel)$/.test(match[2])) notifyProductWorkChanged(`spaces/${match[1]}`);
   }
 }
 export function command(record: { version: number; payload_digest: string }) {
@@ -33,8 +33,8 @@ export function command(record: { version: number; payload_digest: string }) {
 export const stateLabels: Record<string, string> = { draft: "待开始", active: "研究中", pending_assignment: "待分派", ready: "可开始", in_progress: "办理中", submitted: "待接收", completed: "已完成", cancelled: "已取消" };
 export const actionLabels: Record<string, string> = { evidence_collection: "资料补证", discipline_review: "专业评审", constraint_review: "约束审查", experiment_preparation: "实验准备", handoff_preparation: "交接准备" };
 
-export type ProductNode = { id: string; market_space_id: string; product_line_id: string; parent_id: string | null; code: string; name: string; level: string; lifecycle: string; owner_user_id: string; regions: string[]; channels: string[]; version: number; payload_digest: string };
-export type ProductCatalog = { nodes: ProductNode[]; members: { product_line_id: string; user_id: string; access: string; display_name: string }[]; can_create_line: boolean; line_access: Record<string, { can_manage: boolean; can_contribute: boolean }> };
+export type ProductNode = { tags?:string[]; id: string; market_space_id: string; product_line_id: string; parent_id: string | null; code: string; name: string; level: string; lifecycle: string; owner_user_id: string; regions: string[]; channels: string[]; version: number; payload_digest: string };
+export type ProductCatalog = { category_id?: string; category_line_id?: string; nodes: ProductNode[]; members: { product_line_id: string; user_id: string; access: string; display_name: string }[]; can_create_line: boolean; line_access: Record<string, { can_manage: boolean; can_contribute: boolean }> };
 
 export type ResearchSource = { id: string; name: string; base_url: string; source_type: string; allowed_use: string; license_note: string | null; trust_tier: string; status: string; collection_frequency: string; retention_policy: string };
 export type EvidenceContent = { snapshot_id: string; content: string; content_digest: string; byte_size: number; stored_at: string; taint: string; content_language: string };

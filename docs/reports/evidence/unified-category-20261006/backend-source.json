@@ -1,0 +1,17 @@
+{
+  "server/app/contracts/product_records.py": "7f6baf0ff2fad0e05c6fe01b77844b9d47f8531199ee65d5a46692b70a1170ad",
+  "server/app/db/schema.py": "98b23de8b29a55bb168ee1842a52d09635e4d21ef38bffff72ce12160bd245a9",
+  "server/app/domain/product_workspace.py": "726929f4da053b578771783addf7681128cd899ebf0834dee9953600f149b3ee",
+  "server/app/domain/product_catalog.py": "3d660decad8477fd16e9c0454ee362cb5b3ad3720e7f83f38448b975693fbf1c",
+  "server/app/domain/preproject_responsibilities.py": "34d1ba8dac35d56640c8b64441511e84e5f92b274c3bf15d258c9b705b7aba5c",
+  "server/app/domain/product_categories.py": "f61f95353b1bb361bc6b4cfdb6f32c98cacd05caba30b79d5769d7f484357ad9",
+  "server/app/domain/product_proposals.py": "9e46836f56b3b0ce766701a2744c627b6baf26766be5aca4e9ba4f8f49351274",
+  "server/app/api/product_workspace.py": "6523a0b114b67f9612e3f0e28e0ca9e23b08ee3fea001ad9dec4a5e0c069ef8e",
+  "server/app/api/product_categories.py": "4d51ff080990a809ee1b689a3191e1482c0fb3d394940022773da72215dac2ef",
+  "server/app/main.py": "fe3fd056cfd4c85aceb61ff22fd8d96332473cb699257d16018111e8ccd3d2ce",
+  "server/migrations/versions/0426_unified_categories.py": "153d0bf354d37c801227d496a494bec1f7ddb98b227f6ec749b89a62e5878e1b",
+  "server/migrations/versions/0427_category_reference_aliases.py": "103f102d023a108f858ceecabe1cd366c21fe08b332f2e87c0c213950568666b",
+  "server/tests/test_product_categories_api.py": "b99807c6d9fafb730ca1915a05f9504319065e61c8613285bbf68b33b2cc1e3e",
+  "server/tests/test_product_proposals_api.py": "f8e2c1d295df08fa18af03749cc57410220cc189123eb4456a3c248f07f2b486",
+  "server/tests/test_migrations.py": "c943d63df364fdbf0a7cbccbb163f482d728d807995a4722de87e78b210ca486"
+}

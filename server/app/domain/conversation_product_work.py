@@ -128,6 +128,8 @@ def save(
     product_sources: list[dict[str, Any]],
     matrix_selection: dict[str, Any] | None = None,
     attachment_selections: list[dict[str, Any]] | None = None,
+    reply_only: bool = False,
+    preproject_goal: str | None = None,
 ) -> dict[str, Any]:
     from app.domain.conversation_attachments import ConversationAttachmentService, bind_attachments
     from app.domain.conversations import ConversationError
@@ -136,6 +138,8 @@ def save(
         _plain(
             {
                 "body": body,
+                **({"reply_only": True} if reply_only else {}),
+                **({"preproject_goal": preproject_goal} if preproject_goal else {}),
                 "context_version": expected_context_version,
                 "attachment_ids": attachment_ids,
                 "product_sources": product_sources,
@@ -175,7 +179,7 @@ def save(
         or conversation["context_version"] != expected_context_version
     ):
         raise ConversationError("会话已归档或范围版本变化，请刷新")
-    cap, guidance = intent(body, conversation)
+    cap, guidance = (None, None) if reply_only else intent(body, conversation)
     fragments = [
         ProductPrivateAttachmentSelection.model_validate(s) for s in attachment_selections or []
     ]
@@ -269,6 +273,7 @@ def save(
                 request_id=request_id,
                 request_digest=signature,
                 body=body,
+                preproject_goal=preproject_goal,
                 action="product_work" if prepared else "note",
                 dispatch_input=body,
                 operation_request_id=str(uuid5(message_id, "conversation-operation.v1")),

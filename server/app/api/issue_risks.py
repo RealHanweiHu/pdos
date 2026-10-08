@@ -22,6 +22,12 @@ from app.domain import (
     risk_followups,
     risk_references,
 )
+from app.domain.cost_issue_closure import (
+    CostClosureAccessError,
+    CostClosureError,
+    CostClosureReference,
+    read_issue_cost_closure,
+)
 from app.domain.issues import (
     IssueAssignmentIncompleteError,
     IssueCloseNotVerifierError,
@@ -195,6 +201,7 @@ class IssueTransitionRequest(BaseModel):
     comment: str | None = Field(default=None, max_length=2_000)
     closure_evidence_ref: str | None = Field(default=None, max_length=2_000)
     material_closures: list[MaterialClosureReference] | None = Field(default=None, max_length=200)
+    cost_closures: list[CostClosureReference] | None = Field(default=None, max_length=200)
 
     @field_validator("comment", "closure_evidence_ref", mode="before")
     @classmethod
@@ -323,6 +330,14 @@ def risk_response(record: RiskRecord) -> RiskResponse:
 
 
 def issue_error(error: Exception) -> HTTPException:
+    if isinstance(error, CostClosureAccessError):
+        return HTTPException(
+            403, detail={"code": "ISSUE_COST_ACCESS_DENIED", "message": str(error)}
+        )
+    if isinstance(error, CostClosureError):
+        return HTTPException(
+            409, detail={"code": "ISSUE_COST_SOURCE_CHANGED", "message": str(error)}
+        )
     if isinstance(error, KnowledgeAccessError):
         return HTTPException(
             403,
@@ -646,6 +661,7 @@ def transition_issue(
                 closure_evidence_ref=body.closure_evidence_ref,
                 expected_updated_at=body.expected_updated_at,
                 material_closures=body.material_closures,
+                cost_closures=body.cost_closures,
             )
         )
     except Exception as error:
@@ -1326,6 +1342,11 @@ def personal_work_card(
                 if collection == "issues"
                 else None
             )
+            cost_closure = (
+                read_issue_cost_closure(c, context, project_id, item_id)
+                if collection == "issues"
+                else None
+            )
         return {
             "item": item,
             "permissions": permissions,
@@ -1333,6 +1354,7 @@ def personal_work_card(
             "actor_id": str(context.user.id),
             "verification_policy": dict(policy),
             **({"material_closure": material_closure} if collection == "issues" else {}),
+            **({"cost_closure": cost_closure} if collection == "issues" else {}),
         }
     except HTTPException:
         raise

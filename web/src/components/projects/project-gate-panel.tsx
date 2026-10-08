@@ -44,6 +44,7 @@ const slotLabels = { product: "产品", engineering: "工程", quality: "质量"
 const roleSlots: Record<string, readonly (keyof typeof slotLabels)[]> = {
   owner: ["product", "engineering", "quality"],
   admin: ["product", "engineering", "quality"],
+  product_manager: ["product"],
   project_manager: ["product"],
   engineer: ["engineering"],
   quality: ["quality"],

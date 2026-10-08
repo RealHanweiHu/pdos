@@ -11,7 +11,7 @@ export function productView(tab: string) {
 }
 
 export function productWorkHref(space: string, tab?: string, line?: string | null, anchor?: string) {
-  const params = new URLSearchParams({ space });
+  const params = new URLSearchParams({ category: space });
   if (tab) params.set("tab", tab);
   if (line !== undefined && line !== null && line !== "all") params.set("line", line);
   return `/product-work?${params}${anchor ? `#${anchor}` : ""}`;
@@ -20,15 +20,18 @@ export function productWorkHref(space: string, tab?: string, line?: string | nul
 export function navigateProductWork(change: { space?: string; tab?: string | null; line?: string | null }) {
   const params = change.space !== undefined ? new URLSearchParams() : new URLSearchParams(window.location.search);
   if (change.space !== undefined) {
-    if (change.space) params.set("space", change.space);
+    if (change.space) params.set("category", change.space);
   }
+  const category = params.get("category") ?? params.get("space");
+  params.delete("space");
+  if (category) params.set("category", category);
   if (change.tab !== undefined) {
     if (change.tab === null) params.delete("tab"); else params.set("tab", change.tab);
   }
   if (change.line !== undefined) {
     if (change.line === null || change.line === "all") params.delete("line"); else params.set("line", change.line);
   }
-  for (const key of ["roadmap_product", "record_id", "run", "responsibility_kind", "responsibility_id", "history"]) params.delete(key);
+  for (const key of ["roadmap_product", "record_id", "run", "responsibility_kind", "responsibility_id", "history", "proposal"]) params.delete(key);
   const href = `/product-work${params.size ? `?${params}` : ""}`;
   if (href !== `${window.location.pathname}${window.location.search}${window.location.hash}`) window.history.pushState(null, "", href);
 }

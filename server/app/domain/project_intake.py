@@ -328,7 +328,16 @@ class ProjectIntakeService:
                         m.c.project_id == project,
                         m.c.tenant_id == ctx.tenant.id,
                         u.c.is_active.is_(True),
-                        u.c.role.in_(["owner", "admin", "project_manager", "engineer", "quality"]),
+                        u.c.role.in_(
+                            [
+                                "owner",
+                                "admin",
+                                "product_manager",
+                                "project_manager",
+                                "engineer",
+                                "quality",
+                            ]
+                        ),
                     )
                     .order_by(u.c.display_name, u.c.id)
                 ).mappings()

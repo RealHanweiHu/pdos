@@ -1,0 +1,127 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "manifest_sha256": "4f1ee944465c21374cba26d9dddbcc33eb7a1bfa07d778e7cd261f2ff6a8cead",
+  "mapping": [
+    {
+      "source": "pdos-next/.local/wave23-change-root-combination-staged/tests/kernel_helpers.py",
+      "source_sha256": "7e9b785532d54aede8d3368284099ce21460a1f80dd72dd9101ea0f3829c82ba",
+      "target": "pdos-next/server/tests/change_execution/kernel_helpers.py",
+      "target_before_sha256": null,
+      "candidate": "server/tests/change_execution/kernel_helpers.py",
+      "candidate_sha256": "7e9b785532d54aede8d3368284099ce21460a1f80dd72dd9101ea0f3829c82ba",
+      "mode": "add_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [],
+      "new_only_functions": []
+    },
+    {
+      "source": "pdos-next/.local/wave23-change-root-combination-staged/tests/test_change_order.py",
+      "source_sha256": "890f0b12a23e0cdb90324f2b78b5fa32297016122d4aa129199d3da6744a3e23",
+      "target": "pdos-next/server/tests/change_execution/test_change_order.py",
+      "target_before_sha256": null,
+      "candidate": "server/tests/change_execution/test_change_order.py",
+      "candidate_sha256": "e7b8f718e5f01704a5f083fbc7ce05f4206d07e8f88cb4def1c2e015a3c2304b",
+      "mode": "add_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [],
+      "new_only_functions": []
+    },
+    {
+      "source": "pdos-next/.local/wave23-change-root-combination-staged/tests/test_controlled_change.py",
+      "source_sha256": "581a4639de23755eb92dbd5783d4c2e7b4486d6517c8c7f098871b2629b9f57f",
+      "target": "pdos-next/server/tests/change_execution/test_controlled_change.py",
+      "target_before_sha256": null,
+      "candidate": "server/tests/change_execution/test_controlled_change.py",
+      "candidate_sha256": "d273c60943f505f83e1671edcf5d9fff53733590c708bce829fd693405fc2cac",
+      "mode": "add_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [],
+      "new_only_functions": []
+    },
+    {
+      "source": "pdos-next/.local/wave23-change-root-combination-staged/tests/test_public_integration.py",
+      "source_sha256": "3c50416b4522216a6c75f395b8e5ae6e972941f23600801e4da3f970bcf5a4b5",
+      "target": "pdos-next/server/tests/change_execution/test_public_integration.py",
+      "target_before_sha256": null,
+      "candidate": "server/tests/change_execution/test_public_integration.py",
+      "candidate_sha256": "7a48a6a30d8dca4693406bd2c4f0436ac91b3645031f5635047da6523572858d",
+      "mode": "add_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [
+        "test_unnumbered_static_migration_metadata_matches_exact_eight_tables_and_old_guards"
+      ],
+      "new_only_functions": [
+        "test_actual_migration27_matches_exact_eight_tables_and_preserves_old_guards"
+      ]
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-expiry-staged/tests/test_preparation.py",
+      "source_sha256": "a0eb0003901f9e179d55076622d2921350d916998db73058ec5aa8b6904a2e85",
+      "target": "pdos-next/server/tests/manufacturing_preparation/test_preparation.py",
+      "target_before_sha256": "a0eb0003901f9e179d55076622d2921350d916998db73058ec5aa8b6904a2e85",
+      "candidate": "server/tests/manufacturing_preparation/test_preparation.py",
+      "candidate_sha256": "a0eb0003901f9e179d55076622d2921350d916998db73058ec5aa8b6904a2e85",
+      "mode": "replace_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [],
+      "new_only_functions": []
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-expiry-staged/tests/test_integration.py",
+      "source_sha256": "6a44b249d4c86c7ec1488fb3279cadd427091f5b7ae4d3c560e903bfb895acde",
+      "target": "pdos-next/server/tests/manufacturing_preparation/test_public_protocol.py",
+      "target_before_sha256": "ceb81f28077949e2221841122810215a747f1a717b07c49587f45f188c09ca01",
+      "candidate": "server/tests/manufacturing_preparation/test_public_protocol.py",
+      "candidate_sha256": "2a2cd600ca60edbb7c169dec4793b704af2ddb226c418e6a1a0491fb262877ad",
+      "mode": "replace_file",
+      "changed_function_bodies": [
+        "test_index_width_and_common_canonical_specs_unchanged_from_baseline"
+      ],
+      "old_only_functions": [
+        "test_static_migration_is_unassigned_head26_retention_safe_and_no_live_model_reads"
+      ],
+      "new_only_functions": [
+        "test_actual_migration28_is_numbered_retention_safe_and_static_embedded_sql"
+      ]
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-expiry-staged/tests/test_expiry.py",
+      "source_sha256": "24dbbf6627e87881f716e00a9f07cf06cc148c01adfb9e8255b26854d4938541",
+      "target": "pdos-next/server/tests/manufacturing_preparation/test_expiry.py",
+      "target_before_sha256": "24dbbf6627e87881f716e00a9f07cf06cc148c01adfb9e8255b26854d4938541",
+      "candidate": "server/tests/manufacturing_preparation/test_expiry.py",
+      "candidate_sha256": "3dd0a422a937a1699dc63fe1d853431184acc11dadda0d54244013bc378266e4",
+      "mode": "replace_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [],
+      "new_only_functions": []
+    },
+    {
+      "source": "pdos-next/.local/wave24-change-manufacturing-combination-staged/tests/test_combined_registries.py",
+      "source_sha256": "e98d728be77802c4b4d54d39d3b3e4572e756ba9ca54e1d5af18d089af71b65c",
+      "target": "pdos-next/server/tests/change_execution/test_combined_registries.py",
+      "target_before_sha256": null,
+      "candidate": "server/tests/change_execution/test_combined_registries.py",
+      "candidate_sha256": "2aea750f23b30bb062f8c639a227b7a713044691ee50f0c33fc73fc1de81b2e6",
+      "mode": "add_file",
+      "changed_function_bodies": [
+        "test_real_root_plan_preview_and_fact_first_flush_survive_both_hunks"
+      ],
+      "old_only_functions": [],
+      "new_only_functions": []
+    },
+    {
+      "source": null,
+      "source_sha256": null,
+      "target": "pdos-next/server/tests/manufacturing_preparation/__init__.py",
+      "target_before_sha256": null,
+      "candidate": "server/tests/manufacturing_preparation/__init__.py",
+      "candidate_sha256": "12c9741932cbccd0524bb3cba61ae9d416d161b2a609872bdeb8fbde23dccc05",
+      "mode": "add_file",
+      "changed_function_bodies": [],
+      "old_only_functions": [],
+      "new_only_functions": []
+    }
+  ],
+  "unrelated_runtime_files_changed": false
+}

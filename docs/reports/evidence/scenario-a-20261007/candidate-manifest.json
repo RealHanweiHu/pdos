@@ -1,0 +1,19 @@
+{
+  "server/app/api/conversations.py": "f5a110e8f777a6a1ca32b8b81ff02c369cfdef9dda87837bb137af637cf6c79c",
+  "server/app/ai/conversation_reply.py": "dfb1def8080fbec083d4b5385edf00add9060d5bb707aedfcc86e3ee55804cb7",
+  "server/app/ai/conversation_research.py": "e416d5552a62910469e369943ca66a87a8fb04f88bf21b01ca3105aa3ac181dd",
+  "server/app/ai/context_projection.py": "ab448ab34275f1eab55c633241cfa0b5aec651b0632e5dde9b002ecf7e3a7802",
+  "server/app/domain/preproject_dialogue.py": "ef28f061c91c27a5437d7f5e19639f00873bdf358bdb19616a75670181c4c64e",
+  "server/app/domain/research_index.py": "c0bff307948f93f7c490368d75b73ff39d23487efe3250bd279515144562bf65",
+  "server/app/ai/prompts/xiaopai_reply_v5.json": "16d307fc3d143f5d98717608bc04faa3836e6e3ed577596fc5de7ffb025eba4e",
+  "server/app/ai/prompts/preproject_dialogue_v6.json": "f5fc7c2a26a16778436d22a7a1cac534fff4f4209fade43c960b7344c61c568b",
+  "web/src/components/ai/xiaopai-provider.tsx": "5312e41cb55b0f015d52cc18258ae1e012a9a065c821ad300d853b3cf273016e",
+  "web/src/components/ai/xiaopai-session.tsx": "2912af781e4164600229e6f64ac27ab62b54b467693296fac7d5060bd1758762",
+  "server/app/ai/budget_adoption.py": "20ae29c9a635e000a6b0cc401a7d24395e1faa5f50731e78121691d5e4ad185e",
+  "server/app/ai/application_gateway.py": "3b33edc808d90ce0949d93d5268fc22663f4da710a6c60c5065a0ebe869e2eff",
+  "server/app/ai/model_budget.py": "f8bb1d2cd2c511af3ee8918c18a5f4168bd608f34a888af195c864385c6e2734",
+  "server/app/api/ai.py": "021026cc1bcb0dece69b127b1e9fd85a2eaee0b89e80e933be4ea5b78ec80e17",
+  "server/app/ai/policies/preproject-research-budget-v1.json": "338c59a3eb36cc88e2a5928789527d44906d4b199c185b1b9081fee4b22d5c1c",
+  "server/app/ai/prompts/xiaopai_reply_v6.json": "9143cbb5b686606ec159802b4c342eea860adf554ba1117907bf5c8fe0180347",
+  ".env.example": "7739e62461684b7d7505c3f1a2ea69ec8a96198d0aec53d01c7e135fcca1392a"
+}

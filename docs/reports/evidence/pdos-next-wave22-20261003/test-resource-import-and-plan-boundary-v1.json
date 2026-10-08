@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T19:23:20.198476+00:00",
+  "actual_saved_host_import": "5c661ded-1252-4141-818b-ed5afd455511",
+  "same_original_request_key_retained": true,
+  "same_original_command_id_retained": true,
+  "failure_history": [
+    {
+      "log": "test-resource-actual-import-v1.log",
+      "stage": "ready before host import",
+      "cause": "app role cannot read Alembic metadata; admin read-only head guard used in v2"
+    },
+    {
+      "log": "test-resource-actual-import-v2.log",
+      "stage": "sameUOW rolled back; original intent retained unknown",
+      "cause": "new host process lacked current professional and operational issuer registries; actual method recheck rejected SOURCE_STALE"
+    },
+    {
+      "log": "test-resource-actual-import-v3.log",
+      "stage": "saved",
+      "cause": "explicit same-original recovery after loading exact installed professional/operational/quality/test-resource lists"
+    }
+  ],
+  "script_sha256s": {
+    "wave22-root-resource-import-v3.py": "9596d77bba69243e0ed4465a093f4d56deae67c2f8d2e54d86f3ea76a19f35dc",
+    "wave22-root-resource-import-v2.py": "a1f7868959c4bfdfe09a94fc657d4e9809a4e832587779283889405fc9c601cd",
+    "wave22-root-resource-import-v1.py": "f30168e1abd489d9646470687e12abb3219ba079793d88eb699095e31b9644f1"
+  },
+  "unsubmitted_old_plan": "test-unsubmitted-plan-readback-v1.json",
+  "old_plan_not_confirmed": true,
+  "new_prospective_intent_decision": "test-new-prospective-plan-decision-v1.json",
+  "api_current_pid": 25401,
+  "real_qualification": false,
+  "model_calls": 0
+}

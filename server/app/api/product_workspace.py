@@ -53,6 +53,7 @@ def _error(error: Exception) -> HTTPException:
 
 
 @router.get("/spaces")
+@router.get("/categories")
 def list_spaces(response: Response, context: Context, engine: Database) -> dict[str, Any]:
     no_store(response)
     try:
@@ -65,6 +66,7 @@ def list_spaces(response: Response, context: Context, engine: Database) -> dict[
 
 
 @router.post("/spaces", status_code=201)
+@router.post("/categories", status_code=201)
 def create_space(
     body: MarketSpaceDraft, response: Response, context: Context, engine: Database
 ) -> dict[str, Any]:
@@ -95,6 +97,7 @@ def my_work(
 
 
 @router.get("/spaces/{space_id}")
+@router.get("/categories/{space_id}")
 def get_space(
     space_id: UUID, response: Response, context: Context, engine: Database
 ) -> dict[str, Any]:

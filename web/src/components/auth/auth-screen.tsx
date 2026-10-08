@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { getWorkHomeHref } from "@/components/workspace-experience";
 
 import { AuthFrame } from "./auth-frame";
 import type {
@@ -121,7 +122,7 @@ export function AuthScreen({
       const identity = (await identityResponse.json()) as AuthIdentity;
       setAuthenticated(true);
       if (onAuthenticated) onAuthenticated(identity);
-      else router.push("/");
+      else router.push(getWorkHomeHref(identity.user.role));
       return { ok: true };
     } catch {
       return { ok: false, message: "网络连接失败，请稍后重试。" };
@@ -198,16 +199,13 @@ export function AuthScreen({
   const setup = screen === "setup";
   return (
     <AuthFrame>
-      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-        {setup ? "First-run setup" : "Tenant sign-in"}
-      </p>
-      <h1 className="mt-3 text-xl font-semibold tracking-tight">
+      <h1 className="text-xl font-semibold tracking-tight">
         {setup ? "初始化 PDOS 工作区" : "登录 PDOS"}
       </h1>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
         {setup
           ? "空库仅允许完成一次初始化。创建首个租户和 Owner 管理员后，setup 入口将永久关闭。"
-          : "使用租户标识与本地账号进入。身份范围会在每次受保护请求中重新校验。"}
+          : "使用企业租户标识和账号，进入你的工作区。"}
       </p>
       {authenticated ? (
         <p className="mt-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success" role="status">
@@ -223,9 +221,10 @@ export function AuthScreen({
           onSubmit={(payload) => submit("/api/session/login", payload)}
         />
       )}
-      <p className="mt-6 border-t pt-4 text-xs leading-5 text-muted-foreground">
-        会话令牌仅保存在 HttpOnly cookie 中，不写入浏览器存储，也不会显示在页面上。
-      </p>
+      <details className="mt-6 border-t pt-4 text-xs leading-5 text-muted-foreground">
+        <summary className="cursor-pointer rounded-md py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">登录与账号保护说明</summary>
+        <p className="mt-2">会话令牌仅保存在 HttpOnly cookie 中，不写入浏览器存储，也不会显示在页面上。</p>
+      </details>
     </AuthFrame>
   );
 }

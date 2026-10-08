@@ -51,6 +51,12 @@ class Settings(BaseSettings):
     research_search_endpoint: str | None = Field(
         default=None, validation_alias="PDOS_RESEARCH_SEARCH_ENDPOINT"
     )
+    research_tavily_api_key: SecretStr | None = Field(
+        default=None, validation_alias="PDOS_RESEARCH_TAVILY_API_KEY"
+    )
+    research_firecrawl_api_key: SecretStr | None = Field(
+        default=None, validation_alias="PDOS_RESEARCH_FIRECRAWL_API_KEY"
+    )
     capture_recognition_enabled: bool = Field(
         default=False, validation_alias="PDOS_CAPTURE_RECOGNITION_ENABLED"
     )
@@ -90,6 +96,15 @@ class Settings(BaseSettings):
     )
     research_subscriptions_enabled: bool = Field(
         default=False, validation_alias="PDOS_RESEARCH_SUBSCRIPTIONS_ENABLED"
+    )
+    research_crawler_enabled: bool = Field(
+        default=False, validation_alias="PDOS_RESEARCH_CRAWLER_ENABLED"
+    )
+    research_crawl_max_depth: int = Field(
+        default=3, ge=1, le=5, validation_alias="PDOS_RESEARCH_CRAWL_MAX_DEPTH"
+    )
+    research_crawl_max_frontier: int = Field(
+        default=500, ge=10, le=5000, validation_alias="PDOS_RESEARCH_CRAWL_MAX_FRONTIER"
     )
     schedule_propagation_enabled: bool = Field(
         default=False, validation_alias="PDOS_SCHEDULE_PROPAGATION_ENABLED"
@@ -187,6 +202,9 @@ class Settings(BaseSettings):
         if value is None or not value.strip():
             return None
         value = value.strip()
+        # This fixed operator-configured loopback service is not a research target.
+        if value == "http://127.0.0.1:8888/search":
+            return value
         parsed = urlsplit(value)
         if (
             parsed.scheme not in {"http", "https"}
