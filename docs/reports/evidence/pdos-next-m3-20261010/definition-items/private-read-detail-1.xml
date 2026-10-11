@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="4.420" timestamp="2026-10-11T06:00:30.108323-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_private_header_or_current_nested_source_stops_before_definition_body[nested_source]" time="3.914"><failure message="AssertionError: ('固定基线不存在或已变化。', {'reason': 'VERSION_CONFLICT'})&#10;assert 'VERSION_CONFLICT' == 'SOURCE_UNAVAILABLE'&#10;  &#10;  - SOURCE_UNAVAILABLE&#10;  + VERSION_CONFLICT">work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x14cefa540&gt;
+private_kind = 'nested_source'
+
+    @pytest.mark.parametrize("private_kind", ["definition", "nested_source"])
+    def test_private_header_or_current_nested_source_stops_before_definition_body(
+        work,
+        monkeypatch,
+        private_kind,
+    ):
+        if private_kind == "nested_source":
+            parent, source_id, _, copied_value = typed_private_parent(work)
+            with synthetic_owner(work) as session:
+                audience = ObjectAudience(
+                    id=uuid4(),
+                    tenant_id=work.tenant,
+                    category_id=work.category,
+                    object_type="artifact_versions",
+                    subject_id=source_id,
+                    owner_id=work.human,
+                    principal_id=work.peer,
+                )
+                audience_id = audience.id
+                session.add(audience)
+            baseline, listed, fixed_view = definition_reads(work, parent, actor=work.peer)
+            assert baseline.status_code == listed.status_code == fixed_view.status_code == 200
+            assert copied_value in listed.text and copied_value in fixed_view.text
+            # Revoke an actual audience in the owner-only synthetic fixture;
+            # the immutable Artifact remains unchanged.
+            with synthetic_owner(work) as session:
+                session.delete(session.get(ObjectAudience, audience_id))
+            with reviewer_session(work) as session:
+                assert session.get(Artifact, source_id) is None
+                assert session.get(Product, parent.product_id) is not None
+            peer = copy(work)
+            peer.human = work.peer
+            peer.ctx = work.ctx.__class__(work.tenant, work.peer, work.peer, category_id=work.category)
+            peer.headers = {"Authorization": f"Bearer {work.tokens[work.peer]}"}
+            arguments = {
+                "baseline": fixed(work, parent.id, parent.revision),
+                "proposed": fixed(work, parent.id, parent.revision),
+            }
+            f = reader(peer, arguments)
+        else:
+            chain = three_way(work, visibility="private")
+            f = reader(work, chain.arguments)
+    
+        def forbidden_body(*_args, **_kwargs):
+            pytest.fail("Private definition/source reached the full definition body")
+    
+        monkeypatch.setattr(m3_definition_diff.definitions, "definition_view", forbidden_body)
+        with pytest.raises(DomainError) as denied:
+            invoke(f)
+&gt;       assert denied.value.code == "SOURCE_UNAVAILABLE", (str(denied.value), denied.value.detail)
+E       AssertionError: ('固定基线不存在或已变化。', {'reason': 'VERSION_CONFLICT'})
+E       assert 'VERSION_CONFLICT' == 'SOURCE_UNAVAILABLE'
+E         
+E         - SOURCE_UNAVAILABLE
+E         + VERSION_CONFLICT
+
+tests/agent_kernel/test_m3_definition_diff_pg.py:338: AssertionError</failure></testcase></testsuite></testsuites>

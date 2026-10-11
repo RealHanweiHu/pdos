@@ -372,9 +372,12 @@ class Bootstrap:
     def adapters(self):
         from .domain_reads import DomainReads
         from .m3_calculators import ENGINES, handlers
+        from .m3_definition_diff import DefinitionDiffReads
         from .m3_object_reads import M3ObjectReads
         from .m3_spec_compare import SpecCompareReads
 
+        domain_reads = DomainReads(self.store, self.commands)
+        definition_diff = DefinitionDiffReads(self.store, self.commands, domain_reads)
         spec_compare = SpecCompareReads(self.store, self.commands)
 
         adapters = KernelAdapters(
@@ -385,7 +388,8 @@ class Bootstrap:
             execute_command=self.commands.execute,
             recover_command=self.commands.recover,
             read_tools={
-                **DomainReads(self.store, self.commands).handlers(),
+                **domain_reads.handlers(),
+                **definition_diff.handlers(),
                 **M3ObjectReads(self.store, self.commands).handlers(),
                 **handlers,
                 **spec_compare.handlers(),
@@ -399,7 +403,7 @@ class Bootstrap:
             skill_catalog=self.catalog,
             tool_registry=self.registry,
             compute_engines=ENGINES,
-            read_restores=spec_compare.restores(),
+            read_restores={**spec_compare.restores(), **definition_diff.restores()},
         )
         if self.ports.research_service is not None:
             from pdos_next.research.tools import ResearchToolHost

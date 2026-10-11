@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
+    FetchedValue,
     ForeignKeyConstraint,
     Index,
     Integer,
@@ -123,6 +124,10 @@ class DefinitionSpecRow(Row, Base):
     __tablename__ = "definition_specs"
     product_id: Mapped[UUID]
     definition_id: Mapped[UUID]
+    item_id: Mapped[UUID] = mapped_column(server_default=FetchedValue())
+    item_version: Mapped[int] = mapped_column(Integer, default=1, server_default="1")
+    removed: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    prepared_candidate_id: Mapped[UUID | None]
     key: Mapped[str] = mapped_column(Text)
     parameter: Mapped[str] = mapped_column(Text)
     value_type: Mapped[str] = mapped_column(String(16))
@@ -179,7 +184,31 @@ class DefinitionSpecRow(Row, Base):
             name="m3_spec_origin",
         ),
         UniqueConstraint("tenant_id", "product_id", "definition_id", "id"),
-        UniqueConstraint("tenant_id", "definition_id", "key"),
+        UniqueConstraint(
+            "tenant_id",
+            "definition_id",
+            "item_id",
+            "item_version",
+            name="m3_spec_item_version_unique",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "category_id",
+            "product_id",
+            "definition_id",
+            "item_id",
+            "id",
+            "item_version",
+            "key",
+            "removed",
+            name="m3_spec_current_identity_unique",
+        ),
+        CheckConstraint("item_version > 0", name="m3_spec_item_version_positive"),
+        ForeignKeyConstraint(
+            ["tenant_id", "prepared_candidate_id"],
+            ["proposal_prepared_candidates.tenant_id", "proposal_prepared_candidates.id"],
+            name="m3_spec_candidate_fk",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "definition_id"],
             [
@@ -210,6 +239,56 @@ class DefinitionSpecRow(Row, Base):
             "(value_type IN ('text','boolean','enum') AND text IS NOT NULL AND value IS NULL "
             "AND lower IS NULL AND upper IS NULL)",
             name="m3_spec_known_shape",
+        ),
+    )
+
+
+class DefinitionSpecCurrent(Row, Base):
+    __tablename__ = "definition_spec_current"
+    product_id: Mapped[UUID]
+    definition_id: Mapped[UUID]
+    item_id: Mapped[UUID]
+    current_row_id: Mapped[UUID]
+    current_version: Mapped[int] = mapped_column(Integer)
+    key: Mapped[str] = mapped_column(Text)
+    removed: Mapped[bool] = mapped_column(Boolean)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "item_id", name="m3_spec_current_item_unique"),
+        UniqueConstraint("tenant_id", "definition_id", "key", name="m3_spec_current_key_unique"),
+        CheckConstraint("id=item_id AND current_version>0", name="m3_spec_current_shape"),
+        ForeignKeyConstraint(
+            [
+                "tenant_id",
+                "category_id",
+                "product_id",
+                "definition_id",
+                "item_id",
+                "current_row_id",
+                "current_version",
+                "key",
+                "removed",
+            ],
+            [
+                "definition_specs.tenant_id",
+                "definition_specs.category_id",
+                "definition_specs.product_id",
+                "definition_specs.definition_id",
+                "definition_specs.item_id",
+                "definition_specs.id",
+                "definition_specs.item_version",
+                "definition_specs.key",
+                "definition_specs.removed",
+            ],
+            name="m3_spec_current_row_fk",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "definition_id"],
+            [
+                "definition_revisions.tenant_id",
+                "definition_revisions.product_id",
+                "definition_revisions.id",
+            ],
+            name="m3_spec_current_definition_fk",
         ),
     )
 

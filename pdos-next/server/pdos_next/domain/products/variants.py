@@ -998,7 +998,10 @@ def apply(s, ctx, command, product, payload):
         select(DefinitionRevision)
         .where(
             DefinitionRevision.tenant_id == ctx.tenant_id,
+            DefinitionRevision.category_id == ctx.category_id,
             DefinitionRevision.product_id == product.id,
+            DefinitionRevision.variant_id
+            == (UUID(parent["variant_id"]) if parent["variant_id"] else None),
         )
         .order_by(DefinitionRevision.revision.desc())
         .limit(1)

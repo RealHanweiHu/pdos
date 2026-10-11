@@ -121,6 +121,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation == "product.definition.item.patch":
+        from pdos_next.domain.products import definition_items
+
+        return definition_items
     if operation == "research.snapshot.register":
         from pdos_next.agent_kernel import snapshot_command
 

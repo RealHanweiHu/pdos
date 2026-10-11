@@ -157,7 +157,9 @@ class DomainCommands:
             operation=operation,
             expected_revision=current.revision,
             source_read_set=reads,
-            payload=normalized.model_dump(mode="json"),
+            payload=normalized.model_dump(
+                mode="json", exclude_unset=operation == "product.definition.item.patch"
+            ),
         )
 
     @staticmethod

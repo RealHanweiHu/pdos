@@ -11,7 +11,7 @@ from pdos_next.models import Artifact, Grant, Principal, now
 from pdos_next.request_proof import batch_read
 from pdos_next.schemas.products.definitions import DefinitionDraftPayload
 
-from .models import DefinitionRevision, DefinitionSource, DefinitionSpecRow
+from .models import DefinitionRevision, DefinitionSource, DefinitionSpecCurrent, DefinitionSpecRow
 
 if TYPE_CHECKING:
     from pdos_next.contracts import Command
@@ -20,7 +20,11 @@ if TYPE_CHECKING:
 
 def semantic(payload: DefinitionDraftPayload) -> dict:
     """Server validation retains exact pinned sources and parent, independent of request key."""
-    value = payload.model_dump(mode="json")
+    if payload.mode == "inherit_parent":
+        from . import definition_inherit
+
+        return definition_inherit.semantic(payload)
+    value = payload.model_dump(mode="json", exclude={"mode"})
     value["sources"] = sorted(
         value["sources"], key=lambda r: (r["artifact_id"], r["line"], r["quote"])
     )
@@ -33,6 +37,10 @@ def semantic(payload: DefinitionDraftPayload) -> dict:
 
 
 def validate(s, ctx: "Context", command: "Command", product, payload: DefinitionDraftPayload):
+    if payload.mode == "inherit_parent":
+        from . import definition_inherit
+
+        return definition_inherit.validate(s, ctx, command, product, payload)
     from pdos_next.service import require_access, source_for
 
     require_access(s, ctx, product.id, write=True, lock=True)
@@ -105,6 +113,10 @@ def validate(s, ctx: "Context", command: "Command", product, payload: Definition
 
 
 def apply_draft(s, ctx, command, product, payload: DefinitionDraftPayload):
+    if payload.mode == "inherit_parent":
+        from . import definition_inherit
+
+        return definition_inherit.apply_draft(s, ctx, command, product, payload)
     validate(s, ctx, command, product, payload)
     latest = s.scalar(
         select(DefinitionRevision)
@@ -136,7 +148,7 @@ def apply_draft(s, ctx, command, product, payload: DefinitionDraftPayload):
         product,
         owner_id=ctx.requester_id,
         revision=revision,
-        fields=payload.model_dump(exclude={"sources", "specs", "expected_parent_revision"}),
+        fields=payload.model_dump(exclude={"mode", "sources", "specs", "expected_parent_revision"}),
         specs=[spec.model_dump(exclude={"sources"}) for spec in payload.specs],
         sources=[
             {
@@ -308,12 +320,14 @@ def definition_view(s, ctx, row) -> dict:
         raise DomainError(
             "SOURCE_UNAVAILABLE", "此定义引用权限已变化，重新核对前不展示派生内容。", 403
         )
-    specs = []
+    specs, item_versions = [], []
     for spec in snapshot_rows(
         s,
         (DefinitionSpecRow, row.product_id, row.id),
         select(DefinitionSpecRow)
+        .join(DefinitionSpecCurrent, DefinitionSpecCurrent.current_row_id == DefinitionSpecRow.id)
         .where(
+            DefinitionSpecCurrent.removed.is_(False),
             DefinitionSpecRow.tenant_id == ctx.tenant_id,
             DefinitionSpecRow.definition_id == row.id,
         )
@@ -324,7 +338,18 @@ def definition_view(s, ctx, row) -> dict:
             column.name: getattr(spec, column.name)
             for column in spec.__table__.columns
             if column.name
-            not in {"id", "tenant_id", "category_id", "product_id", "definition_id", "created_at"}
+            not in {
+                "id",
+                "tenant_id",
+                "category_id",
+                "product_id",
+                "definition_id",
+                "created_at",
+                "item_id",
+                "item_version",
+                "removed",
+                "prepared_candidate_id",
+            }
         }
         from decimal import Decimal
         from uuid import UUID
@@ -342,7 +367,16 @@ def definition_view(s, ctx, row) -> dict:
             if spec.key in source["spec_keys"]
         ]
         specs.append(data)
+        item_versions.append(
+            {
+                "item_id": str(spec.item_id),
+                "item_version": spec.item_version,
+                "row_id": str(spec.id),
+                "key": spec.key,
+            }
+        )
     return {
+        "item_versions": item_versions,
         "id": str(row.id),
         "category_id": str(row.category_id),
         "product_id": str(row.product_id),

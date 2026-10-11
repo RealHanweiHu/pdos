@@ -120,7 +120,11 @@ def _source(s, ctx, ref):
 
 
 def _target(s, ctx, command, scope, target):
-    from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
+    from pdos_next.domain.products.models import (
+        DefinitionRevision,
+        DefinitionSpecCurrent,
+        DefinitionSpecRow,
+    )
 
     from .category_models import KnowledgeCurrent, KnowledgeEntry
     from .models import ProposalItem
@@ -156,6 +160,16 @@ def _target(s, ctx, command, scope, target):
     if definition.product_id != row.product_id:
         fail("FORBIDDEN_SCOPE", "evidence_target_scope", "规格与定义范围不一致。", 403)
     _version(definition.revision, target.version)
+    pointer = s.scalar(
+        select(DefinitionSpecCurrent).where(
+            DefinitionSpecCurrent.tenant_id == ctx.tenant_id,
+            DefinitionSpecCurrent.item_id == row.item_id,
+            DefinitionSpecCurrent.current_row_id == row.id,
+            DefinitionSpecCurrent.removed.is_(False),
+        )
+    )
+    if not pointer:
+        fail("VERSION_CONFLICT", "definition_item_moved", "只能关联当前有效规格版本。")
     if definition.sealed or definition.status != "draft":
         fail("VERSION_CONFLICT", "definition_sealed", "封存定义不能追加关联。")
     return row, None, definition.visibility != "private" and product.visibility != "private"

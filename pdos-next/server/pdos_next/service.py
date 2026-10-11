@@ -113,6 +113,7 @@ EVENTS = {
     "evidence.original.scan.record": "original.scan_recorded",
     "evidence.original.withdraw": "original.withdrawn",
     "product.definition.draft": "definition.draft_created",
+    "product.definition.item.patch": "definition.item_patched",
     "product.variant.derive": "variant.derived",
     "product.variant.rebase": "variant.rebased",
     "work.plan.propose": "plan.proposed",
@@ -278,7 +279,11 @@ def command_scope(s, ctx, command, *, lock=False):
 
         # Evidence rows can connect product originals to category consumers.
         # Acquire Category before Product, including an empty evidence read set.
-        if getattr(module, "category_lifecycle_fence", False) or (
+        if (
+            getattr(module, "category_lifecycle_fence", False)
+            or command.operation
+            in {"product.definition.draft", "product.variant.derive", "product.variant.rebase"}
+        ) or (
             command.source_read_set
             and s.scalar(
                 select(Artifact.id)
@@ -331,7 +336,14 @@ def confirmation_subject(s, ctx, command, scope, payload, module):
             if not actual or actual.category_id != ctx.category_id:
                 raise DomainError("FORBIDDEN_SCOPE", "确认主体不在当前品类。", 403)
             return kind, key, actual.current_version
-        if kind not in {"category", "product", "proposal", "claim", "agent_run"}:
+        if kind not in {
+            "category",
+            "product",
+            "proposal",
+            "claim",
+            "agent_run",
+            "definition_revision",
+        }:
             raise DomainError("INTEGRATION_REQUIRED", "确认主体未注册。", 503)
         # RLS-read the owner-selected stored object; a payload cannot supply policy facts.
         actual = s.get(type(row), row.id)
@@ -452,9 +464,11 @@ def source_for(s, ctx, product_id, artifact_id, revision=None):
         from pdos_next.originals import require_original
 
         original = require_original(
-            s, ctx,
+            s,
+            ctx,
             source.product_id if source.product_id not in (None, product_id) else product_id,
-            source.original_id, lock=writing,
+            source.original_id,
+            lock=writing,
         )
         require_safe(s, ctx, original, lock=writing)
     proof.sources[key] = source
@@ -1079,6 +1093,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "research.snapshot.register",
             "evidence.claim.withdraw",
             "proposal.share",
+            "product.definition.item.patch",
             "ai.run.revert",
         }:
             subject.confirmation_id = material_confirmation.id
@@ -1152,6 +1167,10 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
         s.flush()
         if module and hasattr(module, "finalize_receipt"):
             module.finalize_receipt(s, ctx, command, product, payload, subject, r)
+        if isinstance(payload, DefinitionDraftPayload) and payload.mode == "inherit_parent":
+            from pdos_next.domain.products.definition_inherit import finalize_draft_receipt
+
+            finalize_draft_receipt(s, ctx, command, product, payload, subject, r)
         if command.operation in {
             "change.impact.compute",
             "change.order.prepare",

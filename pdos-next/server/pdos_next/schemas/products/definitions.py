@@ -95,17 +95,18 @@ class DefinitionSpec(StrictModel):
 
 
 class DefinitionDraftPayload(StrictModel):
-    title: str = Field(min_length=2, max_length=200)
-    purpose: str = Field(min_length=3, max_length=2000)
+    mode: Literal["manual", "inherit_parent"] = "manual"
+    title: str | None = Field(default=None, min_length=2, max_length=200)
+    purpose: str | None = Field(default=None, min_length=3, max_length=2000)
     visibility: Literal["private", "category", "audience"] = "private"
     parent_definition_id: UUID | None = None
     expected_parent_revision: int | None = Field(default=None, ge=1)
-    use_cases: list[str] = Field(min_length=1)
+    use_cases: list[str] = Field(default_factory=list)
     requirements: list[str] = Field(default_factory=list)
     constraints: list[str] = Field(default_factory=list)
     unknowns: list[str] = Field(default_factory=list)
     exclusions: list[str] = Field(default_factory=list)
-    sources: list[DefinitionReference] = Field(min_length=1)
+    sources: list[DefinitionReference] = Field(default_factory=list)
     specs: list[DefinitionSpec] = Field(default_factory=list)
     change_reason: str = Field(min_length=3, max_length=2000)
 
@@ -121,6 +122,17 @@ class DefinitionDraftPayload(StrictModel):
 
     @model_validator(mode="after")
     def consistent_definition(self) -> Self:
+        if self.mode == "inherit_parent":
+            allowed = {"mode", "parent_definition_id", "expected_parent_revision", "change_reason"}
+            if (
+                self.model_fields_set - allowed
+                or self.parent_definition_id is None
+                or self.expected_parent_revision is None
+            ):
+                raise ValueError("Inherited drafts accept only a fixed parent and change reason")
+            return self
+        if not self.title or not self.purpose or not self.use_cases or not self.sources:
+            raise ValueError("Manual definitions require title, purpose, use cases and sources")
         if (self.parent_definition_id is None) != (self.expected_parent_revision is None):
             raise ValueError("固定父版ID和版本必须同时提供")
         if len({item.key for item in self.specs}) != len(self.specs):

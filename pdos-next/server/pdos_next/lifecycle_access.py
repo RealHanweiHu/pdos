@@ -40,6 +40,7 @@ from pdos_next.upload_lifecycle import exact_reference
 # consuming business references. Column additions still invalidate coverage.
 NON_CONSUMING = frozenset(
     {
+        "definition_spec_current",
         "categories",
         "object_audiences",
         "principals",

@@ -26,6 +26,7 @@ class RevertPlan:
     receipts: tuple
     subjects: tuple
     epoch: int | None
+    item_plan: object | None = None
 
 
 @command_inputs_once
@@ -48,9 +49,18 @@ def prepared(s, ctx, command, scope, payload):
         or command.expected_revision != run.cancel_epoch + 1
     ):
         raise DomainError("VERSION_CONFLICT", "运行范围或撤回状态已变化，请重新核对。")
+    from pdos_next.domain.products import definition_items
+
+    item_plan = (
+        definition_items.prepare_revert(s, ctx, run, receipts)
+        if any(r.operation == "product.definition.item.patch" for r in receipts)
+        else None
+    )
     subjects = []
     # Lock the complete target set in a stable order before applying any effect.
     for receipt in sorted(receipts, key=lambda r: (r.subject_type, str(r.subject_id))):
+        if receipt.operation == "product.definition.item.patch":
+            continue
         if receipt.operation == "evidence.claim.record":
             _, subject = reversible_claim(s, ctx, receipt.id, receipt.product_id)
         elif receipt.operation == "evidence.artifact.register":
@@ -96,11 +106,32 @@ def prepared(s, ctx, command, scope, payload):
                         "UNDO_BLOCKED_BY_DEPENDENCY", "关联条目已有人工修改或已提交。"
                     )
             elif subject.target_type == "definition_spec":
-                from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
+                from pdos_next.domain.products.models import (
+                    DefinitionRevision,
+                    DefinitionSpecCurrent,
+                    DefinitionSpecRow,
+                )
 
                 spec = s.get(DefinitionSpecRow, subject.target_id)
                 definition = s.get(DefinitionRevision, spec.definition_id) if spec else None
-                if not definition or definition.sealed or definition.status != "draft":
+                pointer = (
+                    s.scalar(
+                        select(DefinitionSpecCurrent).where(
+                            DefinitionSpecCurrent.tenant_id == ctx.tenant_id,
+                            DefinitionSpecCurrent.item_id == spec.item_id,
+                        )
+                    )
+                    if spec
+                    else None
+                )
+                if (
+                    not definition
+                    or definition.sealed
+                    or definition.status != "draft"
+                    or not pointer
+                    or pointer.current_row_id != spec.id
+                    or pointer.removed
+                ):
                     raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "关联定义已固定或不可读。")
         else:
             raise DomainError(
@@ -112,7 +143,11 @@ def prepared(s, ctx, command, scope, payload):
         ):
             raise DomainError("FORBIDDEN_SCOPE", "待撤回对象与回执范围不一致。", 403)
         subjects.append(subject)
+    if item_plan:
+        subjects.extend(item_plan.original_rows)
     import json
+
+    from pdos_next.domain.products.models import DefinitionSpecRow
 
     if s.scalar(
         text(
@@ -127,7 +162,13 @@ def prepared(s, ctx, command, scope, payload):
                     {
                         "type": "claim"
                         if isinstance(row, Claim)
-                        else ("evidence_link" if isinstance(row, EvidenceLink) else "artifact"),
+                        else (
+                            "definition_spec"
+                            if isinstance(row, DefinitionSpecRow)
+                            else "evidence_link"
+                            if isinstance(row, EvidenceLink)
+                            else "artifact"
+                        ),
                         "id": str(row.id),
                     }
                     for row in subjects
@@ -137,7 +178,7 @@ def prepared(s, ctx, command, scope, payload):
         },
     ):
         raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "运行结果已有后续消费，不能部分撤回。")
-    return RevertPlan(run, tuple(receipts), tuple(subjects), run.cancel_epoch)
+    return RevertPlan(run, tuple(receipts), tuple(subjects), run.cancel_epoch, item_plan)
 
 
 def validate(s, ctx, command, scope, payload):
@@ -172,7 +213,15 @@ def apply(s, ctx, command, scope, payload):
     from pdos_next.domain.preproject.evidence_models import EvidenceLink
 
     receipt_id = uuid4()
+    from pdos_next.domain.products import definition_items
+    from pdos_next.domain.products.models import DefinitionSpecRow
+
+    changed_rows = (
+        definition_items.apply_revert(s, ctx, plan.item_plan, receipt_id) if plan.item_plan else []
+    )
     for subject in plan.subjects:
+        if isinstance(subject, DefinitionSpecRow):
+            continue
         if isinstance(subject, EvidenceLink):
             subject.reverted_by_receipt_id = receipt_id
             continue
@@ -188,6 +237,8 @@ def apply(s, ctx, command, scope, payload):
             action_result={
                 "receipt_ids": [str(r.id) for r in plan.receipts],
                 "execution_state": plan.target.state,
+                "definition_item_changes": [definition_items._change(row) for row in changed_rows],
+                "retained_items": list(plan.item_plan.retained) if plan.item_plan else [],
             },
         )
         return subject, "agent_run", "private"

@@ -17,6 +17,7 @@ CONTENT_OPERATIONS = frozenset(
     {
         "proposal.create",
         "proposal.item.patch",
+        "product.definition.item.patch",
         "proposal.question.create",
         "category.knowledge.add",
         "category.knowledge.withdraw",
@@ -35,7 +36,13 @@ def _scope_matches(payload, proposal_id):
 
 
 def content(payload):
-    data = payload.model_dump(mode="json") if hasattr(payload, "model_dump") else dict(payload)
+    from pdos_next.schemas.products.definition_items import DefinitionItemPatch
+
+    data = (
+        payload.model_dump(mode="json", exclude_unset=isinstance(payload, DefinitionItemPatch))
+        if hasattr(payload, "model_dump")
+        else dict(payload)
+    )
     return {
         key: value
         for key, value in data.items()
@@ -68,7 +75,11 @@ def prepare_candidate(s, scope, operation, arguments, source, *, catalog, regist
     payload = PAYLOADS[operation].model_validate(arguments)
     if payload.prepared_by_run_id or payload.candidate_digest or payload.confirmation_token:
         fail("FORBIDDEN_SCOPE", "server_candidate_binding", "候选身份与摘要由服务器绑定。", 403)
-    if scope.product_id is not None or not _scope_matches(payload, scope.proposal_id):
+    product_patch = operation == "product.definition.item.patch"
+    if (product_patch and (scope.product_id is None or scope.proposal_id is not None)) or (
+        not product_patch
+        and (scope.product_id is not None or not _scope_matches(payload, scope.proposal_id))
+    ):
         fail("FORBIDDEN_SCOPE", "proposal_run_mismatch", "候选不属于运行绑定提案。", 403)
     body = content(payload)
     fingerprint = digest(

@@ -51,10 +51,17 @@ def default_registry():
     from .category_candidate import CategoryCandidateInput
     from .domain_reads import SCHEMAS
     from .m3_calculators import SCHEMAS as COMPUTE_SCHEMAS
+    from .m3_definition_diff import SCHEMAS as DEFINITION_SCHEMAS
     from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
     from .m3_spec_compare import SCHEMAS as COMPARE_SCHEMAS
 
-    schemas = {**SCHEMAS, **COMPUTE_SCHEMAS, **OBJECT_SCHEMAS, **COMPARE_SCHEMAS}
+    schemas = {
+        **SCHEMAS,
+        **COMPUTE_SCHEMAS,
+        **OBJECT_SCHEMAS,
+        **COMPARE_SCHEMAS,
+        **DEFINITION_SCHEMAS,
+    }
 
     registry = ToolRegistry(command_tools())
     for name in sorted(READS | COMPUTE | {"skill.load"}):
@@ -83,7 +90,8 @@ def default_registry():
                     name,
                     f"准备 {name} 候选。",
                     CategoryCandidateInput.model_json_schema()
-                    if name == "category.create" else {"type": "object"},
+                    if name == "category.create"
+                    else {"type": "object"},
                     {"type": "object"},
                     "write",
                     tier,

@@ -3153,6 +3153,7 @@ COVERED_COLUMNS.update(
             "category_id",
         ),
         "definition_specs": (
+            "item_id", "item_version", "removed", "prepared_candidate_id",
             "product_id",
             "definition_id",
             "key",
@@ -3515,3 +3516,9 @@ M3_GUARDED = (
     "claim_withdrawals",
 )
 GUARDED += M3_GUARDED
+
+# Owner-maintained identity projection; all historical source edges remain on specs.
+COVERED_COLUMNS["definition_spec_current"] = (
+    "id", "tenant_id", "category_id", "created_at", "product_id", "definition_id",
+    "item_id", "current_row_id", "current_version", "key", "removed",
+)

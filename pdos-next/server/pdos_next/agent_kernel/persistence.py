@@ -583,7 +583,9 @@ def prepare_run_revert(session, ctx, run_id, *, lock=False):
             or not (
                 receipt.actor_id == run.writer_id
                 or (receipt.actor_id == run.requester_id
-                    and receipt.operation == "evidence.claim.record"
+                    and receipt.operation in {
+                        "evidence.claim.record", "product.definition.item.patch"
+                    }
                     and receipt.result.get("origin") == "ai_draft"
                     and receipt.result.get("writer_id") == str(run.writer_id)
                     and receipt.result.get("confirmed_by") == str(run.requester_id))

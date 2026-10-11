@@ -1,0 +1,8 @@
+{
+  "proposed_head": "s0_0753",
+  "committed": false,
+  "business_data_changed": false,
+  "orm_differences": "[]",
+  "statement_count": 20,
+  "schema_sha256": "8546b699ef43f73165255302f85ea93babec5cabb7b5e9745def360e020001fc"
+}

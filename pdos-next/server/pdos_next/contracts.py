@@ -414,3 +414,7 @@ PAYLOADS.update(
         "npi.manufacturing_baseline.record": BaselinePayload,
     }
 )
+
+from pdos_next.schemas.products.definition_items import DefinitionItemPatch  # noqa: E402
+
+PAYLOADS["product.definition.item.patch"] = DefinitionItemPatch

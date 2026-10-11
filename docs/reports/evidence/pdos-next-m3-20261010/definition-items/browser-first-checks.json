@@ -1,0 +1,27 @@
+{
+  "synthetic_only": true,
+  "schema_head": "s0_0756",
+  "model_calls": 0,
+  "actual_http_and_ui": [
+    "complete inherit_parent",
+    "typed zero,false,enum display and copied conditions/exceptions",
+    "real concurrent Human patch then 409 definition_item_moved",
+    "explicit reread and new request succeeded",
+    "real preview and confirm append-only removal",
+    "actual server commit then response aborted",
+    "reload produced zero command POSTs",
+    "manual replay produced one POST and same receipt"
+  ],
+  "recovery_command_id": "7e92364d-e984-4fcd-afcf-d5a68bc75e17",
+  "recovery_receipt_id": "93d13cb2-2df0-431f-97aa-596f735d4a9a",
+  "mobile_dark": {
+    "width": 390,
+    "scroll_width": 390,
+    "actual_html_class": "dark",
+    "receipt_visible": true
+  },
+  "detected_ui_issue": "Previous successful notice remained while the new request result was unknown; requires notice reset and affected rerun",
+  "fixture_correction": "First fault hook matched the unscoped URL and did not intercept; normal receipt 827c9dc6-03e7-4ce7-a9bd-628d17445fc7 preserved. Corrected to actual /api/v1/categories/{category}/commands.",
+  "component_sha256_before_notice_fix": "548a418d740115ec7038008535d3edeeae243ca9a522135c1d754c94c7fb35ee",
+  "component_sha256_after_notice_fix": "c11748882bac2222499c072912b297c242fac050421bfb29f2e61aaff205a155"
+}

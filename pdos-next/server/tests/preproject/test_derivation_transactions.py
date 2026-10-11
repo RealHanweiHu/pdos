@@ -118,6 +118,22 @@ def synthetic_parent(
     product_id = product_id or work.product
     identity = uuid4()
     with synthetic_owner(work) as session:
+        # Represent a pre-0753 stored publication, including the deliberately
+        # inconsistent historic source cases below. The migration backfills
+        # these rows without treating them as newly authorized draft commands.
+        # Only this owner-only fixture skips the new creation-receipt trigger;
+        # existing scope, immutability, lifecycle and Current guards still run.
+        legacy_atom = session.scalar(
+            text(
+                "SELECT EXISTS(SELECT 1 FROM pg_trigger WHERE tgrelid='definition_specs'::regclass "
+                "AND tgname='definition_item_atom' AND NOT tgisinternal)"
+            )
+        )
+        if legacy_atom:
+            assert session.scalar(text("SELECT current_user")) == "pdos_next_owner"
+            session.execute(
+                text("ALTER TABLE definition_specs DISABLE TRIGGER definition_item_atom")
+            )
         product = session.get(Product, product_id)
         if private and product.visibility != "private":
             product.visibility = "private"
@@ -202,6 +218,16 @@ def synthetic_parent(
                     **values,
                 )
             )
+        if legacy_atom:
+            session.flush()
+            # Execute the old deferred guard before changing trigger metadata.
+            # A failed flush rolls back this whole transaction, including DDL,
+            # without masking its error with an ALTER in an aborted transaction.
+            session.execute(text("SET CONSTRAINTS m3_variant_lifecycle IMMEDIATE"))
+            session.execute(
+                text("ALTER TABLE definition_specs ENABLE TRIGGER definition_item_atom")
+            )
+            session.execute(text("SET CONSTRAINTS m3_variant_lifecycle DEFERRED"))
         if artifact_source is not None:
             source = session.get(Artifact, artifact_source)
             assert source.status == "active" and source.revision == 1
@@ -803,14 +829,16 @@ def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_appro
         # The audience guard can reject the missing revision before the final
         # canonical-output guard runs. Both fail the same injected omission.
         assert any(
-            state == "23514" and message in {
-                "G0 variant canonical definition mismatch", "audience target unavailable"
-            }
+            state == "23514"
+            and message
+            in {"G0 variant canonical definition mismatch", "audience target unavailable"}
             for state, message in database_errors
         )
     else:
         assert any(
-            state == "23514" and message in {
+            state == "23514"
+            and message
+            in {
                 "G0 derivation outputs require exact same transaction named receipt",
                 "project definition variant scope mismatch",
             }

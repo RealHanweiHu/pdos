@@ -4,11 +4,12 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { ArrowClockwise, FileText, Plus, Trash } from "@phosphor-icons/react";
 import { originalLocation } from "@/lib/original-location";
 import { Button } from "@/components/ui/button";
-import { availabilityLabels, continueDefinition, natureLabels, plainReference, referenceKey, sourceLines, specificationValue, type DefinitionApi, type DefinitionList, type DefinitionPayload, type DefinitionReference, type DefinitionRevision, type DefinitionSource, type DefinitionSpec } from "@/lib/product-view";
+import { availabilityLabels, isLatestDefinition, natureLabels, plainReference, referenceKey, sourceLines, specificationValue, type DefinitionApi, type DefinitionList, type DefinitionPayload, type DefinitionReference, type DefinitionRevision, type DefinitionSource, type DefinitionSpec } from "@/lib/product-view";
+import { DefinitionDraftActions } from "./definition-draft-actions";
 import { ReadingPanel, ReadingRecord } from "./reading";
 
 type Product = { id: string; name: string; purpose: string; revision: number };
-type Props = { product: Product; principalId: string; sources: DefinitionSource[]; api: DefinitionApi; onSaved: () => void | Promise<void> };
+type Props = { product: Product; principalId: string; sources: DefinitionSource[]; api: DefinitionApi; onSaved: () => void | Promise<void>; onAccessDenied?: () => void };
 type Pending = { command_id: string; idempotency_key: string; operation: "product.definition.draft"; product_id: string; expected_revision: number; source_read_set: { artifact_id: string; expected_revision: number }[]; payload: DefinitionPayload };
 type LocalDraft = { payload: DefinitionPayload; pending: Pending | null };
 const listFields = [ ["use_cases", "使用场景"], ["requirements", "要求"], ["constraints", "成本 / 市场 / 专业约束"], ["unknowns", "仍待确认的事项"], ["exclusions", "本轮排除范围"] ] as const;
@@ -68,7 +69,7 @@ export function ProductDefinition(props: Props) {
   return <DefinitionPanel key={`${props.principalId}:${props.product.id}`} {...props}/>;
 }
 
-function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props) {
+function DefinitionPanel({ product, principalId, sources, api, onSaved, onAccessDenied }: Props) {
   const storageKey = `pdos-next:definition:${principalId}:${product.id}`;
   const [items, setItems] = useState<DefinitionRevision[]>([]);
   const [payload, setPayload] = useState(() => emptyPayload(product));
@@ -90,7 +91,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
   const selectedSources = payload.sources.map(ref => sources.find(item => item.id === ref.artifact_id));
   const privateSource = selectedSources.some(item => item?.visibility !== "category");
   const invalidSources = payload.sources.some(ref => !sources.some(item => item.id === ref.artifact_id && item.revision === ref.expected_revision && item.status === "active"));
-  const latest = items[0];
+  const latest = items.find(item => item.variant_id === null && isLatestDefinition(item, items));
 
   const refresh = useCallback(async () => {
     const result = await api<DefinitionList>(`v1/products/${product.id}/definitions`);
@@ -120,10 +121,14 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
   function changeSpec(index: number, patch: Partial<DefinitionSpec>) {
     edit({ ...payload, specs: payload.specs.map((spec, position) => index === position ? { ...spec, ...patch } : spec) });
   }
-  function resume(item: DefinitionRevision) {
-    const next = continueDefinition(item);
-    setNotice(""); setError(""); setEditorOpen(true); edit(next);
-    requestAnimationFrame(() => document.getElementById(`definition-editor-${product.id}`)?.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
+  function clearPrivate() {
+    setItems([]); setPayload(emptyPayload(product)); setEditorOpen(false);
+    setSourceId(""); setQuote(""); setUnavailable(0);
+    if (!pending) localStorage.removeItem(storageKey);
+    onAccessDenied?.();
+  }
+  async function definitionSaved() {
+    await refresh(); await onSaved();
   }
   function addReference() {
     if (!source || source.status !== "active" || !quote.trim()) return;
@@ -183,7 +188,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
       <ReadingPanel title={payload.parent_definition_id ? `续写固定草稿 v${payload.expected_parent_revision}` : "准备首版定义"}>
         <form noValidate id={`definition-editor-${product.id}`} className="min-w-0 scroll-mt-20" onSubmit={event => { event.preventDefault(); void submit(); }}>
           <fieldset disabled={busy || !!pending || !ready} className="min-w-0">
-            {latest && payload.parent_definition_id !== latest.id && <div className="mb-4 rounded-lg border border-border p-3"><p className="subtle mb-2">当前最新可见草稿为 v{latest.revision}。保存续版前先载入此版本；本机未提交输入不会自动覆盖。</p><Button type="button" variant="outline" onClick={() => resume(latest)}>载入最新草稿继续</Button></div>}
+            {latest && <p className="subtle mb-4">已有基础定义 v{latest.revision}。请在已保存版本中修订条目，或填写原因继续下一版草稿。</p>}
             <label>定义名称<input required minLength={2} maxLength={200} value={payload.title} onChange={event => edit({ ...payload, title: event.target.value })}/></label>
             <label>用途<textarea required minLength={3} maxLength={2000} value={payload.purpose} onChange={event => edit({ ...payload, purpose: event.target.value })}/></label>
             {listFields.map(([key, label]) => <label key={key}>{label}（每行一项）<textarea required={key === "use_cases"} maxLength={12000} value={payload[key].join("\n")} onChange={event => edit({ ...payload, [key]: lines(event.target.value) })}/></label>)}
@@ -228,7 +233,8 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
           <details><summary className="cursor-pointer text-sm font-medium"><FileText className="mr-1 inline-block size-4"/>原文依据与版本</summary><ul className="mt-3 space-y-3">{item.sources.map(ref => <li key={referenceKey(ref)} className="min-w-0 border-l-2 border-border pl-3"><p className="subtle">{ref.title} · v{ref.expected_revision} · 第{ref.line}行 · {ref.status === "active" ? "当前来源有效" : "来源待重核"}</p><blockquote className="mt-1 break-words text-sm">{ref.quote}</blockquote></li>)}</ul></details>
           <p className="subtle break-words">本版原因：{item.change_reason}{item.parent_definition_id ? " · 固定前一草稿，历史未覆盖" : " · 首版"}</p>
           {item.differences.length > 0 && <details><summary className="cursor-pointer text-sm font-medium">与固定父版的变化 · {item.differences.length}处</summary><div className="mt-3 space-y-3">{item.differences.map(change => <div key={change.path} className="min-w-0 rounded-lg border border-border p-3"><p className="mb-2 text-sm font-medium">{pathLabels[change.path] ?? `规格 ${change.path.replace("specs/", "")}`}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="subtle">前版</p><div className="break-words whitespace-pre-wrap text-sm">{changeValue(change.before)}</div></div><div><p className="subtle">此版</p><div className="break-words whitespace-pre-wrap text-sm">{change.after == null ? "从新版本移除，前版保留" : changeValue(change.after)}</div></div></div></div>)}</div></details>}
-          {index === 0 && <Button variant="outline" disabled={busy || !!pending || item.source_status !== "current"} onClick={() => resume(item)}>基于此固定版本继续编辑</Button>}
+          <DefinitionDraftActions definition={item} product={product} principalId={principalId} sources={sources}
+            api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/>
         </ReadingRecord>)}</div>}
         {hasMore && <p className="subtle mt-4">显示最近100个可见版本，历史仍保留。</p>}
       </ReadingPanel>

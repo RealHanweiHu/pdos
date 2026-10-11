@@ -1,0 +1,8 @@
+{
+  "proposed_head": "s0_0753",
+  "committed": false,
+  "business_data_changed": false,
+  "orm_differences": "[('add_index', Index('ix_definition_spec_current_category_id', Column('category_id', Uuid(), table=<definition_spec_current>, nullable=False, server_default=FetchedValue())))]",
+  "statement_count": 20,
+  "schema_sha256": "da82ad53a22bdd1b266d1297fa6bc44a4a0a2898625b503b54efa635607081f9"
+}

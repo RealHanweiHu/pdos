@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="15" time="143.852" timestamp="2026-10-11T05:34:48.255789-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.products.test_definition_inherit_pg" name="test_g0_new_product_continuation_copies_category_source_without_decision_credentials" time="5.041" /><testcase classname="tests.products.test_definition_item_revert_mixed_pg" name="test_mixed_claim_item_link_run_reverts_once_with_actual_receipts" time="2.813" /><testcase classname="tests.products.test_definition_item_revert_mixed_pg" name="test_mixed_revert_finish_failure_rolls_back_and_original_confirmation_retries" time="3.363" /><testcase classname="tests.products.test_definition_item_revert_mixed_pg" name="test_mixed_run_fixed_definition_dependency_blocks_all_effects" time="3.309" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_actual_three_way_tool_is_ordinary_read_and_cannot_authorize_computed_claim" time="15.812" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_completed_diff_restores_reauthorize_full_item_versions_without_freezing_draft[same-content-new-item-version]" time="29.999" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_completed_diff_restores_reauthorize_full_item_versions_without_freezing_draft[new-content]" time="30.686" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_fixed_definition_identity_mismatch_never_rebinds_to_another_current_row[definition_revision-999-VERSION_CONFLICT]" time="8.541" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_fixed_definition_identity_mismatch_never_rebinds_to_another_current_row[variant_id-00000000-0000-0000-0000-000000000001-VERSION_CONFLICT]" time="8.534" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_fixed_definition_identity_mismatch_never_rebinds_to_another_current_row[product_id-00000000-0000-0000-0000-000000000001-FORBIDDEN_SCOPE]" time="8.387" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_private_header_or_current_nested_source_stops_before_definition_body[definition]" time="9.429" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_private_header_or_current_nested_source_stops_before_definition_body[nested_source]" time="1.594"><failure message="pdos_next.errors.DomainError: 请求身份与事务范围不符。">work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x11be182f0&gt;
+private_kind = 'nested_source'
+
+    @pytest.mark.parametrize("private_kind", ["definition", "nested_source"])
+    def test_private_header_or_current_nested_source_stops_before_definition_body(
+        work,
+        monkeypatch,
+        private_kind,
+    ):
+        if private_kind == "nested_source":
+            parent, source_id, _, copied_value = typed_private_parent(work)
+            with synthetic_owner(work) as session:
+                audience = ObjectAudience(
+                    id=uuid4(),
+                    tenant_id=work.tenant,
+                    category_id=work.category,
+                    object_type="artifact_versions",
+                    subject_id=source_id,
+                    owner_id=work.human,
+                    principal_id=work.peer,
+                )
+                audience_id = audience.id
+                session.add(audience)
+            baseline, listed, fixed_view = definition_reads(work, parent, actor=work.peer)
+            assert baseline.status_code == listed.status_code == fixed_view.status_code == 200
+            assert copied_value in listed.text and copied_value in fixed_view.text
+            # Revoke an actual audience in the owner-only synthetic fixture;
+            # the immutable Artifact remains unchanged.
+            with synthetic_owner(work) as session:
+                session.delete(session.get(ObjectAudience, audience_id))
+            with reviewer_session(work) as session:
+                assert session.get(Artifact, source_id) is None
+                assert session.get(Product, parent.product_id) is not None
+            peer = copy(work)
+            peer.human = work.peer
+            peer.headers = {"Authorization": f"Bearer {work.tokens[work.peer]}"}
+            arguments = {
+                "baseline": fixed(work, parent.id, parent.revision),
+                "proposed": fixed(work, parent.id, parent.revision),
+            }
+&gt;           f = reader(peer, arguments)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_m3_definition_diff_pg.py:326: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_m3_definition_diff_pg.py:53: in reader
+    store, scope = create_read_run(
+tests/agent_kernel/test_transactions.py:36: in run
+    identity = create_run(
+pdos_next/agent_kernel/persistence.py:405: in create_run
+    require_context(session, ctx)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = &lt;sqlalchemy.orm.session.Session object at 0x11beaa120&gt;
+ctx = Context(tenant_id=UUID('32f49e88-46e9-4230-a0b4-0741922b772a'), actor_id=UUID('fc0bff7e-c5cb-44ef-8519-d9ea0166896d'),...ne, cancel_epoch=None, category_id=UUID('ee8f0aa0-cf8b-4de3-a498-80a528028bb1'), agent_run_id=None, agent_call_id=None)
+
+    def require_context(session, ctx):
+        """A domain caller cannot borrow another actor's transaction or read proof."""
+        from pdos_next.errors import DomainError
+    
+        scope = getattr(session, "info", {}).get("scope")
+        if scope and (
+            scope[:3] != (ctx.tenant_id, ctx.actor_id, ctx.requester_id)
+            or (scope[3] is not None and scope[3] != ctx.category_id)
+        ):
+&gt;           raise DomainError("FORBIDDEN_SCOPE", "请求身份与事务范围不符。", 403)
+E           pdos_next.errors.DomainError: 请求身份与事务范围不符。
+
+pdos_next/database.py:62: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_g0_and_old_published_baseline_keep_fixed_dto_and_digest[g0]" time="3.104" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_g0_and_old_published_baseline_keep_fixed_dto_and_digest[published]" time="8.137" /><testcase classname="tests.agent_kernel.test_m3_definition_diff_pg" name="test_actual_legacy_proposal_mode_keeps_original_derivation_result" time="4.361" /></testsuite></testsuites>
