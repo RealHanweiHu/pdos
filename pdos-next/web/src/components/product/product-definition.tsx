@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowClockwise, FileText, Plus, Trash } from "@phosphor-icons/react";
 import { originalLocation } from "@/lib/original-location";
+import { numericShapeProblem } from "@/lib/spec-bound-values";
 import { Button } from "@/components/ui/button";
 import { availabilityLabels, isLatestDefinition, natureLabels, plainReference, referenceKey, sourceLines, specificationValue, type DefinitionApi, type DefinitionList, type DefinitionPayload, type DefinitionReference, type DefinitionRevision, type DefinitionSource, type DefinitionSpec } from "@/lib/product-view";
 import { DefinitionDraftActions } from "./definition-draft-actions";
@@ -46,8 +47,10 @@ function inputProblem(draft: DefinitionPayload): string | null {
     if (spec.availability === "known") {
       if (spec.value_type === "text" && !spec.text?.trim()) return `规格 ${spec.parameter} 需要文字目标。`;
       if (spec.value_type !== "text" && !spec.unit?.trim()) return `规格 ${spec.parameter} 需要明确单位。`;
-      if (spec.value_type === "number" && spec.value === null) return `规格 ${spec.parameter} 需要目标值。`;
-      if (spec.value_type === "range" && (spec.lower === null || spec.upper === null)) return `规格 ${spec.parameter} 需要上下限。`;
+      if (["number", "range"].includes(spec.value_type)) {
+        const problem = numericShapeProblem(spec.value_type, spec.value, spec.lower, spec.upper, spec.text);
+        if (problem) return `规格 ${spec.parameter}：${problem}`;
+      }
     }
   }
   return null;
@@ -206,7 +209,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved, onAccess
                 <summary className="cursor-pointer break-words font-medium">{spec.parameter || `新规格 ${index + 1}`} · {availabilityLabels[spec.availability]}</summary>
                 <div className="mt-4 min-w-0"><label>规格参数<input required maxLength={200} value={spec.parameter} onChange={event => changeSpec(index, { parameter: event.target.value })}/></label><p className="subtle mb-3">稳定标识 {spec.key}</p>
                   <div className="grid gap-3 sm:grid-cols-2"><label>值类型<select value={spec.value_type} onChange={event => changeSpec(index, { value_type: event.target.value as DefinitionSpec["value_type"], value: null, lower: null, upper: null, text: null, tolerance: null })}><option value="number">数值</option><option value="range">上下限</option><option value="text">文字要求</option></select></label><label>信息状态<select value={spec.availability} onChange={event => changeSpec(index, { availability: event.target.value as DefinitionSpec["availability"], value: null, lower: null, upper: null, text: null, tolerance: null })}>{Object.entries(availabilityLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label></div>
-                  {spec.availability === "known" && (spec.value_type === "text" ? <label>文字目标<textarea required maxLength={2000} value={spec.text ?? ""} onChange={event => changeSpec(index, { text: nullable(event.target.value) })}/></label> : <><div className="grid gap-3 sm:grid-cols-2">{(spec.value_type === "range" ? ["lower", "upper"] : ["value"]).map(key => <label key={key}>{({ lower: "下限", upper: "上限", value: "目标值" } as Record<string, string>)[key]}<input required inputMode="decimal" value={spec[key as "value" | "lower" | "upper"] ?? ""} onChange={event => changeSpec(index, { [key]: nullable(event.target.value) })}/></label>)}<label>单位<input required maxLength={80} value={spec.unit ?? ""} onChange={event => changeSpec(index, { unit: nullable(event.target.value) })}/></label><label>允差（未知留空）<input inputMode="decimal" value={spec.tolerance ?? ""} onChange={event => changeSpec(index, { tolerance: nullable(event.target.value) })}/></label></div></>)}
+                  {spec.availability === "known" && (spec.value_type === "text" ? <label>文字目标<textarea required maxLength={2000} value={spec.text ?? ""} onChange={event => changeSpec(index, { text: nullable(event.target.value) })}/></label> : <><div className="grid gap-3 sm:grid-cols-2">{(spec.value_type === "range" ? ["lower", "upper"] : ["value", "lower", "upper"]).map(key => <label key={key}>{({ lower: "下限", upper: "上限", value: "目标值" } as Record<string, string>)[key]}<input inputMode="decimal" value={spec[key as "value" | "lower" | "upper"] ?? ""} onChange={event => changeSpec(index, { [key]: nullable(event.target.value) })}/></label>)}<label>单位<input required maxLength={80} value={spec.unit ?? ""} onChange={event => changeSpec(index, { unit: nullable(event.target.value) })}/></label><label>允差（未知留空）<input inputMode="decimal" value={spec.tolerance ?? ""} onChange={event => changeSpec(index, { tolerance: nullable(event.target.value) })}/></label></div></>)}
                   <label>测试条件（每行一项）<textarea value={spec.test_conditions.join("\n")} onChange={event => changeSpec(index, { test_conditions: lines(event.target.value) })}/></label><label>判定方法（未知留空）<textarea maxLength={2000} value={spec.method ?? ""} onChange={event => changeSpec(index, { method: nullable(event.target.value) })}/></label><label>验收判据（未知留空）<textarea maxLength={2000} value={spec.acceptance_criterion ?? ""} onChange={event => changeSpec(index, { acceptance_criterion: nullable(event.target.value) })}/></label>
                   <label>事实性质<select value={spec.nature} onChange={event => changeSpec(index, { nature: event.target.value as DefinitionSpec["nature"] })}>{Object.entries(natureLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
                   <label>该条依据 / 未知 / 冲突 / 不适用说明<textarea required maxLength={2000} value={spec.reason} onChange={event => changeSpec(index, { reason: event.target.value })}/></label>

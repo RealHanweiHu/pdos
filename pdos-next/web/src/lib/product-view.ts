@@ -1,4 +1,5 @@
 import type { LocatedSource } from "@/lib/original-location";
+import { numericValueText } from "./spec-bound-values";
 import type { ItemReference, ItemWatermark } from "@/lib/definition-item-editor";
 export type DefinitionSource = LocatedSource & { id: string; title: string; content: string; revision: number; visibility: string; status: string };
 export type DefinitionReference = { artifact_id: string; expected_revision: number; line: number; quote: string };
@@ -65,7 +66,7 @@ export function specificationValue(spec: DefinitionSpec | DefinitionReadSpec): s
   if (spec.availability !== "known") return availabilityLabels[spec.availability];
   if (spec.value_type === "boolean") return spec.text === "true" ? "是" : spec.text === "false" ? "否" : "未知";
   if (spec.value_type === "text" || spec.value_type === "enum") return spec.text ?? "未知";
-  const value = spec.value_type === "range" ? `${decimalText(spec.lower)} ～ ${decimalText(spec.upper)}` : decimalText(spec.value);
+  const value = numericValueText(spec.value, spec.lower, spec.upper, decimalText);
   return `${value}${spec.tolerance === null ? "" : ` ± ${decimalText(spec.tolerance)}`} ${spec.unit ?? ""}`;
 }
 

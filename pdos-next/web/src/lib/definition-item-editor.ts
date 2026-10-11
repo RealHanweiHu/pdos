@@ -1,4 +1,6 @@
 /** Business-only projection for the shared server SpecItem/Reference contract. */
+import { numericShapeProblem, numericValueText } from "./spec-bound-values";
+
 export type ItemReference = {
   type: "human" | "artifact" | "original" | "snapshot" | "knowledge" | "parameter" | "definition" | "claim";
   id: string; version: number; line?: number | null; quote?: string | null; statement?: string | null;
@@ -56,7 +58,7 @@ export function itemSummary(content: ItemContent): string {
   if (content.availability !== "known") return ({ unknown: "未知", conflicted: "存在冲突", not_applicable: "不适用" })[content.availability];
   if (content.value_type === "boolean") return content.text_value === "true" ? "是" : content.text_value === "false" ? "否" : "未知";
   if (["text", "enum"].includes(content.value_type)) return content.text_value ?? "未知";
-  const value = content.value_type === "range" ? `${content.lower ?? "未知"} ～ ${content.upper ?? "未知"}` : content.value ?? "未知";
+  const value = numericValueText(content.value, content.lower, content.upper);
   return `${value}${content.unit ? ` ${content.unit}` : ""}`;
 }
 export function itemProblem(content: ItemContent, refs: ItemReference[]): string | null {
@@ -64,8 +66,10 @@ export function itemProblem(content: ItemContent, refs: ItemReference[]): string
   if (content.item_status === "confirmed" && !refs.length) return "确认条目前，请明确选择来源或填写本人具名陈述。";
   if (content.availability === "not_applicable" && !content.reason?.trim()) return "请说明不适用的原因。";
   if (content.availability === "known") {
-    if (content.value_type === "number" && content.value == null) return "请填写目标值，零也是有效值。";
-    if (content.value_type === "range" && (content.lower == null || content.upper == null)) return "请填写范围上下限。";
+    if (["number", "range"].includes(content.value_type)) {
+      const problem = numericShapeProblem(content.value_type, content.value, content.lower, content.upper, content.text_value);
+      if (problem) return problem;
+    }
     if (["text", "enum", "boolean"].includes(content.value_type) && content.text_value == null) return "请填写或选择实际值。";
   }
   return null;

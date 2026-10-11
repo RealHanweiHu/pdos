@@ -1,0 +1,303 @@
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - generic [ref=f1e9]: PDOS
+        - button "收起侧栏" [ref=f1e10]
+      - button "快速查找入口或型号" [ref=f1e11] [cursor=pointer]:
+        - generic [ref=f1e14]: 快速查找
+        - generic [ref=f1e15]: ⌘ K
+      - navigation "工作区导航" [ref=f1e16]:
+        - link "我的工作" [ref=f1e18] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=work&view=overview&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - generic [ref=f1e22]:
+          - paragraph [ref=f1e23]: 工作区
+          - link "型号" [ref=f1e24] [cursor=pointer]:
+            - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=overview&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "项目" [ref=f1e29] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=projects&view=overview&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "组合与资源" [ref=f1e34] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=resources&view=overview&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "知识" [ref=f1e39] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=knowledge&view=sources&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - generic [ref=f1e43]:
+          - paragraph [ref=f1e44]: 当前型号
+          - paragraph [ref=f1e45]: Synthetic product
+          - paragraph [ref=f1e46]: 专业工作按此型号范围读取
+      - generic [ref=f1e47]:
+        - link "计划执行进度" [ref=f1e48] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e51]: 计划进度
+        - link "小Pai 工作" [ref=f1e52] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=work&view=overview&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+          - generic [ref=f1e55]: 小Pai
+        - link "设置" [ref=f1e56] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=settings&view=preferences&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - generic [ref=f1e60]:
+          - generic [aria-hidden] [ref=f1e61]: S
+          - generic [ref=f1e62]:
+            - paragraph [ref=f1e63]: Synthetic owner
+            - paragraph [ref=f1e64]: 本地合成环境
+    - generic [ref=f1e65]:
+      - generic [ref=f1e66]:
+        - generic [ref=f1e67]: 品类 · 汽车充气泵
+        - button "切换品类" [ref=f1e68]
+      - banner [ref=f1e69]:
+        - generic [ref=f1e70]:
+          - generic [ref=f1e71]: 型号
+          - generic [ref=f1e74]: 定义与规格
+        - generic [ref=f1e75]:
+          - combobox "当前型号" [ref=f1e76]:
+            - option "Synthetic product" [selected]
+          - button "切换明暗主题" [ref=f1e77]
+      - navigation "型号视图" [ref=f1e78]:
+        - link "总览" [ref=f1e79] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=overview&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "研究" [ref=f1e83] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=research&task=sources&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "机会与实验 尚未接入" [ref=f1e87] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=opportunities&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+          - generic [ref=f1e90]: 机会与实验
+          - generic "尚未接入" [ref=f1e91]
+        - link "定义与规格" [ref=f1e92] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=definition&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "派生与配置" [ref=f1e96] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=variants&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+        - link "矩阵与路线图 尚未接入" [ref=f1e100] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=roadmap&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+          - generic [ref=f1e103]: 矩阵与路线图
+          - generic "尚未接入" [ref=f1e104]
+        - link "反馈 尚未接入" [ref=f1e105] [cursor=pointer]:
+          - /url: "?category=788fa57c-8130-4f61-a754-3949de75d9e4&area=products&view=feedback&product=b7ec17be-3ed6-456c-a5be-a7d2b4926185"
+          - generic [ref=f1e108]: 反馈
+          - generic "尚未接入" [ref=f1e109]
+      - main [ref=f1e110]:
+        - generic [ref=f1e111]:
+          - generic [ref=f1e112]:
+            - heading "定义与规格" [level=1] [ref=f1e113]
+            - paragraph [ref=f1e114]: 当前范围：Synthetic product
+          - button "新建型号" [ref=f1e115]
+        - region "型号定义" [ref=f1e117]:
+          - generic [ref=f1e118]:
+            - generic [ref=f1e119]:
+              - paragraph [ref=f1e120]: 从当前资料形成定义 · 无需建立项目
+              - heading "型号定义与可测规格" [level=2] [ref=f1e121]
+            - generic [ref=f1e122]:
+              - button "编辑定义草稿" [ref=f1e123]
+              - button "刷新已保存版本" [ref=f1e124]
+          - generic [ref=f1e126]:
+            - generic [ref=f1e127]:
+              - heading "已保存定义" [level=3] [ref=f1e128]
+              - generic [ref=f1e129]: "2"
+            - generic [ref=f1e130]:
+              - group [ref=f1e204]:
+                - generic [ref=f1e205] [cursor=pointer]:
+                  - text: Synthetic definition · v2
+                  - generic [ref=f1e206]:
+                    - time [ref=f1e207]: 10/11/2026, 7:37:29 AM
+                    - text: · 草稿 · 仅本人
+                - generic [ref=f1e208]:
+                  - paragraph [ref=f1e209]: Synthetic product verification only
+                  - generic [ref=f1e210]:
+                    - heading "使用场景" [level=4] [ref=f1e211]
+                    - list [ref=f1e212]:
+                      - listitem [ref=f1e213]: Synthetic evaluation
+                  - generic [ref=f1e214]:
+                    - heading "仍待确认的事项" [level=4] [ref=f1e215]
+                    - list [ref=f1e216]:
+                      - listitem [ref=f1e217]: Test condition not confirmed
+                  - generic [ref=f1e218]:
+                    - heading "规格与核对条件" [level=4] [ref=f1e219]
+                    - article [ref=f1e220]:
+                      - paragraph [ref=f1e221]: 压力显示
+                      - paragraph [ref=f1e222]: 否
+                      - paragraph [ref=f1e223]: 人的取舍 · 待专业确认 · 负责人待定
+                      - paragraph [ref=f1e224]: 依据：
+                      - paragraph [ref=f1e225]: 条件：尚未明确
+                      - paragraph [ref=f1e226]: 方法：尚未明确 · 判据：尚未明确
+                    - article [ref=f1e227]:
+                      - paragraph [ref=f1e228]: 表面选项
+                      - paragraph [ref=f1e229]: matte
+                      - paragraph [ref=f1e230]: 人的取舍 · 待专业确认 · 负责人待定
+                      - paragraph [ref=f1e231]: 依据：
+                      - paragraph [ref=f1e232]: 条件：尚未明确
+                      - paragraph [ref=f1e233]: 方法：尚未明确 · 判据：尚未明确
+                    - article [ref=f1e234]:
+                      - paragraph [ref=f1e235]: 压力目标
+                      - paragraph [ref=f1e236]: 0 ± 0 PSI
+                      - paragraph [ref=f1e237]: 人的取舍 · 待专业确认 · 负责人待定
+                      - paragraph [ref=f1e238]: 依据：
+                      - paragraph [ref=f1e239]: 条件：室温
+                      - paragraph [ref=f1e240]: 方法：核对本人目标 · 判据：精确零目标
+                  - group [ref=f1e241]:
+                    - generic "原文依据与版本" [ref=f1e242] [cursor=pointer]
+                  - paragraph [ref=f1e245]: 本版原因：核对单边上限，保留原条件和例外 · 固定前一草稿，历史未覆盖
+                  - group [ref=f1e246]:
+                    - generic "与固定父版的变化 · 3处" [ref=f1e247] [cursor=pointer]
+                  - generic [ref=f1e248]:
+                    - heading "定义续版与条目修订" [level=3] [ref=f1e250]
+                    - generic [ref=f1e251]:
+                      - alert [ref=f1e351]: Failed to fetch
+                      - generic [ref=f1e352]:
+                        - paragraph [ref=f1e353]: 原操作结果仍待核对。离开页面不会撤销已发送请求。
+                        - button "按原请求核对结果" [ref=f1e354]
+                      - paragraph [ref=f1e252]: 固定定义 v2 · 草稿。续版保留完整内容与原来源，新版为独立草稿。
+                      - group [ref=f1e253]:
+                        - generic [ref=f1e254]:
+                          - text: 续版原因
+                          - textbox "续版原因" [disabled] [ref=f1e255]
+                        - button "保留完整内容，创建新草稿" [disabled]
+                      - generic [ref=f1e257]:
+                        - generic [ref=f1e258]:
+                          - heading "当前条目" [level=4] [ref=f1e259]
+                          - button "新增规格条目" [disabled]
+                        - generic [ref=f1e261]:
+                          - paragraph [ref=f1e262]: 压力显示 · 否
+                          - generic [ref=f1e263]:
+                            - button "修订压力显示" [disabled]
+                            - button "移除压力显示" [disabled]
+                        - generic [ref=f1e266]:
+                          - paragraph [ref=f1e267]: 表面选项 · matte
+                          - generic [ref=f1e268]:
+                            - button "修订表面选项" [disabled]
+                            - button "移除表面选项" [disabled]
+                        - generic [ref=f1e271]:
+                          - paragraph [ref=f1e272]: 压力目标 · 0E-12 PSI
+                          - generic [ref=f1e273]:
+                            - button "修订压力目标" [disabled]
+                            - button "移除压力目标" [disabled]
+                      - group [ref=f1e278]:
+                        - heading "修订条目 · v1" [level=4] [ref=f1e279]
+                        - generic [ref=f1e280]:
+                          - generic [ref=f1e281]:
+                            - text: 条目标识
+                            - textbox "条目标识" [disabled] [ref=f1e282]: pressure
+                          - generic [ref=f1e283]:
+                            - text: 参数名称
+                            - textbox "参数名称" [disabled] [ref=f1e284]: 压力目标
+                        - generic [ref=f1e285]:
+                          - generic [ref=f1e286]:
+                            - text: 值类型
+                            - combobox "值类型" [disabled] [ref=f1e287]:
+                              - option "数值" [disabled] [selected]
+                              - option "范围" [disabled]
+                              - option "文字" [disabled]
+                              - option "是 / 否" [disabled]
+                              - option "枚举选项" [disabled]
+                          - generic [ref=f1e288]:
+                            - text: 信息状态
+                            - combobox "信息状态" [disabled] [ref=f1e289]:
+                              - option "已知" [disabled] [selected]
+                              - option "未知" [disabled]
+                              - option "存在冲突" [disabled]
+                              - option "不适用" [disabled]
+                        - generic [ref=f1e290]:
+                          - generic [ref=f1e291]:
+                            - text: 目标值
+                            - textbox "value" [disabled] [ref=f1e292]
+                          - generic [ref=f1e293]:
+                            - text: 下限
+                            - textbox "lower" [disabled] [ref=f1e294]
+                          - generic [ref=f1e295]:
+                            - text: 上限
+                            - textbox "upper" [disabled] [ref=f1e296]: "75"
+                          - generic [ref=f1e297]:
+                            - text: 允差
+                            - textbox "允差" [disabled] [ref=f1e298]: "0E-12"
+                        - paragraph [ref=f1e299]: 填写目标值，或填写上下限；原文未给的端点留空。
+                        - generic [ref=f1e300]:
+                          - text: 单位
+                          - textbox "单位" [disabled] [ref=f1e301]: PSI
+                        - generic [ref=f1e302]:
+                          - text: 工况说明
+                          - textbox "工况说明" [disabled] [ref=f1e303]: 合成固定台架
+                        - generic [ref=f1e304]:
+                          - text: 核对方法
+                          - textbox "核对方法" [disabled] [ref=f1e305]: 核对本人目标
+                        - generic [ref=f1e306]:
+                          - text: 验收判据
+                          - textbox "验收判据" [disabled] [ref=f1e307]: 合成上限 75，未给下限和目标值
+                        - generic [ref=f1e308]:
+                          - text: 依据或未知说明
+                          - textbox "依据或未知说明" [disabled] [ref=f1e309]
+                        - generic [ref=f1e310]:
+                          - text: 测试条件（每行一项）
+                          - textbox "测试条件（每行一项）" [disabled] [ref=f1e311]: 室温
+                        - generic [ref=f1e312]:
+                          - generic [ref=f1e313]:
+                            - text: 要求程度
+                            - combobox "要求程度" [disabled] [ref=f1e314]:
+                              - option "未记录" [disabled]
+                              - option "必须" [disabled] [selected]
+                              - option "应当" [disabled]
+                              - option "可以" [disabled]
+                              - option "禁止" [disabled]
+                              - option "未说明" [disabled]
+                          - generic [ref=f1e315]:
+                            - text: 事实性质
+                            - combobox "事实性质" [disabled] [ref=f1e316]:
+                              - option "亲历观察" [disabled]
+                              - option "原文抽取" [disabled]
+                              - option "确定性计算" [disabled]
+                              - option "推断" [disabled]
+                              - option "人的取舍" [disabled] [selected]
+                          - generic [ref=f1e317]:
+                            - text: 确认状态
+                            - combobox "确认状态" [disabled] [ref=f1e318]:
+                              - option "未知 / 未确认" [disabled]
+                              - option "待专业核对" [disabled]
+                              - option "本人确认" [disabled] [selected]
+                              - option "保留候选状态" [disabled]
+                          - generic [ref=f1e319]:
+                            - text: 负责人
+                            - combobox "负责人" [disabled] [ref=f1e320]:
+                              - option "未指定" [disabled] [selected]
+                              - option "我负责" [disabled]
+                        - group [ref=f1e321]:
+                          - generic "例外 · 1" [ref=f1e322]
+                        - group [ref=f1e323]:
+                          - generic "适用变体 · 0" [ref=f1e324]
+                        - generic [ref=f1e325]:
+                          - heading "固定来源" [level=4] [ref=f1e326]
+                          - generic [ref=f1e327]:
+                            - paragraph [ref=f1e328]: 本人的具名陈述 · v1
+                            - paragraph [ref=f1e329]: 本人确认的本地合成目标，不代表真实测量或市场结论
+                            - group [ref=f1e330]:
+                              - generic "核对固定来源编号" [ref=f1e331] [cursor=pointer]
+                            - button "移除此来源" [disabled]
+                          - generic [ref=f1e333]:
+                            - paragraph [ref=f1e334]: Synthetic specification source · v1 · 原文第2行
+                            - paragraph [ref=f1e335]: "Pressure: 150 PSI"
+                            - group [ref=f1e336]:
+                              - generic "核对固定来源编号" [ref=f1e337] [cursor=pointer]
+                            - button "移除此来源" [disabled]
+                          - generic [ref=f1e339]:
+                            - text: 原文资料
+                            - combobox "原文资料" [disabled] [ref=f1e340]:
+                              - option "选择实际资料" [disabled] [selected]
+                              - option "Synthetic specification source · v1" [disabled]
+                          - generic [ref=f1e341]:
+                            - text: 原文行号
+                            - textbox "原文行号" [disabled] [ref=f1e342]: "1"
+                          - generic [ref=f1e343]:
+                            - text: 精确摘录
+                            - textbox "精确摘录" [disabled] [ref=f1e344]
+                          - button "加入原文来源" [disabled]
+                          - generic [ref=f1e346]:
+                            - text: 本人具名陈述
+                            - textbox "本人具名陈述" [disabled] [ref=f1e347]:
+                              - /placeholder: 仅填写你本人实际作出的陈述
+                          - button "加入本人陈述" [disabled]
+                        - generic [ref=f1e348]:
+                          - button "保存此条修订" [disabled]
+                          - button "取消本次编辑" [disabled]
+                      - button "重新读取固定定义" [disabled]
+              - group [ref=f1e131]:
+                - generic [ref=f1e132] [cursor=pointer]:
+                  - text: Synthetic definition · v1
+                  - generic [ref=f1e133]:
+                    - time [ref=f1e134]: 10/11/2026, 7:36:57 AM
+                    - text: · 草稿 · 仅本人

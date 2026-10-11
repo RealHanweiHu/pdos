@@ -234,7 +234,7 @@ class DefinitionSpecRow(Row, Base):
             "availability<>'known' OR "
             "(value_type='number' AND value IS NOT NULL "
             "AND lower IS NULL AND upper IS NULL AND text IS NULL) OR "
-            "(value_type='range' AND lower IS NOT NULL AND upper IS NOT NULL "
+            "(value_type IN ('number','range') AND (lower IS NOT NULL OR upper IS NOT NULL) "
             "AND value IS NULL AND text IS NULL) OR "
             "(value_type IN ('text','boolean','enum') AND text IS NOT NULL AND value IS NULL "
             "AND lower IS NULL AND upper IS NULL)",

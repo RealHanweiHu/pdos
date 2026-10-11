@@ -313,3 +313,17 @@ test("late removal preview never enters another fixed definition scope", async t
   old.resolve({ command: { ...old.body, payload: { ...old.body.payload, confirmation_token: "old-token" } }, review: { definition_id: definitionId, effect: "移除旧条目" } });
   await env.flush(); assert.equal(button(env, "确认移除此条"), undefined); assert.equal(env.calls.length, 1);
 });
+
+test("actual numeric editor saves a single bound without changing dictionary identity or copied conditions", async t => {
+  const env = environment(t); await env.flush(); await click(env, "修订压力");
+  await input(env, "value", ""); await input(env, "upper", "75");
+  await submitForm(env); assert.equal(env.calls.length, 1);
+  const actual = env.calls[0].body.payload.ops[0].content;
+  assert.equal(actual.value_type, "number"); assert.equal(actual.parameter_id, id(10));
+  assert.equal(actual.parameter_version, 2); assert.equal(actual.value, null);
+  assert.equal(actual.lower, null); assert.equal(actual.upper, "75");
+  assert.deepEqual(actual.exceptions, [{ text: "室内", numeric: 0 }]);
+  assert.deepEqual(actual.test_conditions, ["固定台架"]);
+  assert.equal(actual.acceptance_criterion, "精确零目标");
+  assert.equal(env.calls[0].body.payload.ops[0].base_version, 7);
+});

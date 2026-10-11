@@ -224,3 +224,14 @@ test("true zero and equivalent decimal spellings remain plotable", () => {
     assert.equal(html.includes("NaN"), false, value);
   }
 });
+
+test("single numeric source bounds remain explicit constraints in the actual comparison view", () => {
+  const upper = structuredClone(comparison);
+  upper.data.groups[0].observations[0] = { ...observation, value: null, lower: null, upper: "75", nature: "extracted", evidence_kind: "target" };
+  const html = view(upper);
+  assert.ok(html.includes("≤75")); assert.ok(html.includes("原始证据"));
+  assert.equal(html.includes("未知 ～ 75"), false);
+  const lower = structuredClone(upper);
+  lower.data.groups[0].observations[0].lower = "0"; lower.data.groups[0].observations[0].upper = null;
+  assert.ok(view(lower).includes("≥0"));
+});

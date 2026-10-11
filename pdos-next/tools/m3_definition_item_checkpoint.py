@@ -14,13 +14,15 @@ from sqlalchemy import text
 
 PREDECESSORS = {
     "s0_0753": "s0_0752", "s0_0754": "s0_0753",
-    "s0_0755": "s0_0754", "s0_0756": "s0_0755",
+    "s0_0755": "s0_0754", "s0_0756": "s0_0755", "s0_0757": "s0_0756",
 }
 
 
-def run(audit_only=False, revision="s0_0753"):
+def run(audit_only=False, revision="s0_0753", attempt=1):
     current = fixture.state()
-    report = fixture.REPORT.parent / "definition-items"
+    report = fixture.REPORT.parent / (
+        "spec-bounds" if revision == "s0_0757" else "definition-items"
+    )
     report.mkdir(exist_ok=True)
     label = "schema" if revision == "s0_0753" else revision
     target = report / f"{label}-{'audit' if audit_only else 'roundtrip'}.json"
@@ -32,14 +34,15 @@ def run(audit_only=False, revision="s0_0753"):
         assert head == (revision if audit_only else PREDECESSORS[revision])
         before = catalog(connection)
     if not audit_only:
-        migrate("upgrade", revision, f"upgrade-{revision}-1.log")
+        index = 2 * attempt - 1
+        migrate("upgrade", revision, f"upgrade-{revision}-{index}.log")
         with engine.connect() as connection:
             after = catalog(connection)
-        migrate("downgrade", PREDECESSORS[revision], f"downgrade-{revision}-1.log")
+        migrate("downgrade", PREDECESSORS[revision], f"downgrade-{revision}-{attempt}.log")
         with engine.connect() as connection:
             restored = catalog(connection)
         assert restored == before, "Downgrade must restore the actual predecessor catalog"
-        migrate("upgrade", revision, f"upgrade-{revision}-2.log")
+        migrate("upgrade", revision, f"upgrade-{revision}-{index + 1}.log")
     else:
         after, restored = before, before
     with engine.connect() as connection:
@@ -127,5 +130,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--audit-only", action="store_true")
     parser.add_argument("--revision", choices=tuple(PREDECESSORS), default="s0_0753")
+    parser.add_argument("--attempt", type=int, choices=range(1, 100), default=1)
     args = parser.parse_args()
-    run(args.audit_only, args.revision)
+    run(args.audit_only, args.revision, args.attempt)

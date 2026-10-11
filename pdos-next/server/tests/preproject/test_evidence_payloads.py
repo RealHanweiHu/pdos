@@ -186,8 +186,6 @@ def test_source_rejects_invalid_or_conflicting_locations(changes):
         {"parameter_id": str(uuid4())},
         {"parameter_version": 1},
         {"parameter_id": str(uuid4()), "parameter_version": 0},
-        {"lower": "1"},
-        {"upper": "2"},
         {"lower": "2", "upper": "1"},
         {"lower": "1", "upper": "2", "value": "1.5"},
         {"value": Decimal("Infinity")},

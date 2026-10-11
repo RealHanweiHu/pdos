@@ -1,0 +1,63 @@
+{
+  "actual_synthetic_http": true,
+  "reload": {
+    "postsAfterReload": 0,
+    "receipt": {
+      "command_id": "c87ab02c-4baa-48d6-9084-34245879bcb8",
+      "receipt_id": "15015b32-8ff6-41d3-8445-55fdafae5e22",
+      "server_status": 200,
+      "operation": "product.definition.item.patch",
+      "subject_id": "a09a9c16-41e1-4538-aa77-86ee20b3994f"
+    }
+  },
+  "recovery": {
+    "postsAfterReloadAndRecovery": 1,
+    "receipt": {
+      "command_id": "c87ab02c-4baa-48d6-9084-34245879bcb8",
+      "receipt_id": "15015b32-8ff6-41d3-8445-55fdafae5e22",
+      "server_status": 200,
+      "operation": "product.definition.item.patch",
+      "subject_id": "a09a9c16-41e1-4538-aa77-86ee20b3994f"
+    },
+    "recoveryNotice": true,
+    "upperBoundVisible": true,
+    "falsePreserved": true
+  },
+  "screens": {
+    "screens": [
+      {
+        "width": 390,
+        "pageWidth": 390,
+        "dark": false,
+        "bound": true,
+        "falsePreserved": true,
+        "staleUnknown": false
+      },
+      {
+        "width": 390,
+        "pageWidth": 390,
+        "dark": true,
+        "bound": true,
+        "falsePreserved": true,
+        "staleUnknown": false
+      },
+      {
+        "width": 1440,
+        "pageWidth": 1440,
+        "dark": false,
+        "bound": true,
+        "falsePreserved": true,
+        "staleUnknown": false
+      },
+      {
+        "width": 1440,
+        "pageWidth": 1440,
+        "dark": true,
+        "bound": true,
+        "falsePreserved": true,
+        "staleUnknown": false
+      }
+    ],
+    "modelCalls": 0
+  }
+}

@@ -17,6 +17,7 @@ from pdos_next.category_scope import category_scope
 from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Product
 from pdos_next.schema_base import StrictModel
+from pdos_next.schemas.spec_values import numeric_value_shape
 from pdos_next.service import digest
 
 from . import baseline, category_reads, category_service, root_sources
@@ -24,7 +25,7 @@ from .access import fail
 from .category_models import KnowledgeCurrent, KnowledgeEntry
 from .schemas import Reference
 
-VERSION = "spec-compare/v1"
+VERSION = "spec-compare/v2"
 
 
 class Subject(StrictModel):
@@ -354,14 +355,17 @@ def _value(raw, value_type):
     values["text_value"] = raw.get("text_value", raw.get("text"))
     try:
         if value_type in {"number", "range"}:
-            fields = ("value",) if value_type == "number" else ("lower", "upper")
-            for field in fields:
+            for field in ("value", "lower", "upper"):
+                if values[field] is None:
+                    continue
                 if type(values[field]) not in (int, str, Decimal):
                     raise ValueError
                 values[field] = Decimal(values[field])
                 if not values[field].is_finite():
                     raise ValueError
-            if value_type == "range" and values["lower"] > values["upper"]:
+            if not numeric_value_shape(
+                value_type, values["value"], values["lower"], values["upper"], None
+            ):
                 raise ValueError
         else:
             value = values["text_value"] if values["text_value"] is not None else values["value"]

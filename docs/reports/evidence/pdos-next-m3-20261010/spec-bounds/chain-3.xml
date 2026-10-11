@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="13.560" timestamp="2026-10-11T07:18:57.639837-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_actual_noise_seed_claim_g0_inherit_and_fixed_snapshot_keep_single_upper" time="7.864"><failure message="AttributeError: 'DerivationResult' object has no attribute 'changes'">work = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_noise_seed_claim_g0_inherit_and_fixed_snapshot_keep_single_upper(work):
+        seed = next(
+            row for row in preview("bicycle-pump").categories[0].parameters if row.key == "noise_level"
+        )
+        assert seed.value_type == "number" and seed.unit == "dB(A)"
+        published, _ = save(
+            work,
+            request(
+                work,
+                "category.parameter.publish",
+                parameter(
+                    key=seed.key,
+                    name=seed.name,
+                    value_type=seed.value_type,
+                    unit=seed.unit,
+                    direction=seed.direction,
+                    standard_condition=seed.standard_condition,
+                    method=seed.method,
+                    acceptance_criterion=seed.acceptance_criterion,
+                ),
+            ),
+        )
+        identity = UUID(published["result"]["parameter_id"])
+        source = artifact(work, body=QUOTE)
+        claim_input = claim_body(source, quote=QUOTE)
+        claim_input["content"] = {
+            "parameter_id": str(identity),
+            "parameter_version": 1,
+            "upper": "75",
+            "unit": seed.unit,
+            "modality": "must",
+            "exceptions": [EXCEPTION],
+            "text": QUOTE,
+        }
+        claim_response = post(work, evidence_request(work, "evidence.claim.record", claim_input))
+        assert claim_response.status_code == 200, claim_response.text
+        claim_id = UUID(claim_response.json()["subject_id"])
+        with Session(work.admin) as session:
+            saved_claim = session.get(Claim, claim_id)
+            assert saved_claim.content["upper"] == "75" and saved_claim.content.get("lower") is None
+            assert saved_claim.content.get("value") is None and saved_claim.content["exceptions"] == [
+                EXCEPTION
+            ]
+            actual_parameter = session.scalar(
+                select(ParameterVersion).where(
+                    ParameterVersion.tenant_id == work.tenant,
+                    ParameterVersion.parameter_id == identity,
+                    ParameterVersion.version == 1,
+                )
+            )
+            assert actual_parameter.value_type == "number" and actual_parameter.unit == seed.unit
+        document = payload(work)
+        noise = next(
+            row
+            for row in document["groups"]["items"]
+            if row["kind"] == "spec" and row["content"]["key"] == "noise"
+        )
+        noise["content"].update(
+            key=seed.key,
+            parameter=seed.name,
+            parameter_id=str(identity),
+            parameter_version=1,
+            value_type=seed.value_type,
+            unit=seed.unit,
+            upper="75",
+            availability="known",
+            item_status="ai_draft",
+            nature="extracted",
+            modality="must",
+            exceptions=[EXCEPTION],
+        )
+        noise["source_refs"] = [
+            {"type": "artifact", "id": str(source), "version": 1, "line": 1, "quote": QUOTE},
+            {"type": "claim", "id": str(claim_id), "version": 1},
+        ]
+        proposal_id, _ = create(work, document)
+        submit(work, proposal_id)
+        decision, _ = save(work, decide_request(work, proposal_id), actor=work.peer)
+        target = copy(work)
+        target.product = UUID(decision["result"]["product_id"])
+        parent_id = UUID(decision["result"]["definition_id"])
+        parent = current_items(target, parent_id)[seed.key]
+        assert_upper_bound(parent)
+        assert parent.parameter_id == identity and parent.parameter_version == 1
+        continued = product_post(target, inherit(target, parent_id))
+        assert continued.status_code == 200, continued.text
+        child_id = UUID(continued.json()["subject_id"])
+        child = current_items(target, child_id)[seed.key]
+        assert_upper_bound(child)
+        assert copied_values(child) == copied_values(parent)
+        native_request = command(
+            target,
+            "product.variant.derive",
+            {
+                "name": "合成地域变体",
+                "kind": "region",
+                "applicability": ["合成台架"],
+                "parent_definition_id": str(child_id),
+                "expected_parent_revision": 2,
+                "visibility": "private",
+                "overrides": {},
+                "reason": "核对单边约束完整派生",
+                "sources": [
+                    {"artifact_id": str(source), "expected_revision": 1, "line": 1, "quote": QUOTE}
+                ],
+            },
+            str(source),
+        )
+        native_preview = post(target, native_request, preview=True)
+        assert native_preview.status_code == 422
+        assert native_preview.json()["detail"]["reason"] == "m3_definition_requires_proposal"
+        ctx = Context(work.tenant, work.human, work.human, category_id=work.category)
+        with tenant_session(
+            work.engine, work.tenant, actor_id=work.human, category_id=work.category
+        ) as session:
+            parent_snapshot = snapshot_from_definition(
+                definition_view(session, ctx, session.get(DefinitionRevision, parent_id))
+            )
+            child_snapshot = snapshot_from_definition(
+                definition_view(session, ctx, session.get(DefinitionRevision, child_id))
+            )
+        copied_noise = next(row for row in child_snapshot.content.specs if row.key == seed.key)
+        assert copied_noise.value is None and copied_noise.lower is None
+        assert copied_noise.upper == Decimal(75) and copied_noise.value_type == "number"
+        assert copied_noise.exceptions == (EXCEPTION,)
+        comparison = compare_snapshots(
+            DerivationRequest(
+                old_parent=parent_snapshot,
+                new_parent=parent_snapshot,
+                child=child_snapshot,
+                pinned_parent=parent_snapshot.ref,
+            ),
+            allow_same_parent=True,
+        )
+&gt;       assert all(change.classification == "unchanged" for change in comparison.changes)
+                                                                      ^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_spec_bound_transactions_pg.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DerivationResult(schema_version='derivation.v1', request_digest='e6ef4a090769937ac6d029ab31b653aa7dc067c3e481d67c9efed..., Diagnostic(path='specs/noise_level', code='missing_test_conditions', detail='child: Test conditions remain absent')))
+item = 'changes'
+
+    def __getattr__(self, item: str) -&gt; Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra and item in pydantic_extra:
+                return pydantic_extra[item]
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+&gt;                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'DerivationResult' object has no attribute 'changes'
+
+.venv/lib/python3.12/site-packages/pydantic/main.py:1042: AttributeError</failure></testcase><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_removed_single_bound_history_still_blocks_destructive_downgrade" time="2.122" /><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_app_cannot_insert_empty_or_mixed_numeric_shape[shape0]" time="0.957" /><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_app_cannot_insert_empty_or_mixed_numeric_shape[shape1]" time="0.913" /><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_app_cannot_insert_empty_or_mixed_numeric_shape[shape2]" time="1.219" /></testsuite></testsuites>

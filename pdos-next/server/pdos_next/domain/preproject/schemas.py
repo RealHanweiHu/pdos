@@ -6,6 +6,7 @@ from uuid import UUID
 from pydantic import Field, model_validator
 
 from pdos_next.schema_base import StrictModel
+from pdos_next.schemas.spec_values import numeric_value_shape
 
 
 class Reference(StrictModel):
@@ -55,11 +56,12 @@ class SpecItem(StrictModel):
             raise ValueError("Unknown values must remain null")
         if self.availability == "known":
             valid = {
-                "number": self.value is not None and all(v is None for v in values[1:]),
-                "range": self.lower is not None
-                and self.upper is not None
-                and self.value is None
-                and self.text_value is None,
+                "number": numeric_value_shape(
+                    self.value_type, self.value, self.lower, self.upper, self.text_value
+                ),
+                "range": numeric_value_shape(
+                    self.value_type, self.value, self.lower, self.upper, self.text_value
+                ),
                 "text": self.text_value is not None and all(v is None for v in values[:3]),
                 "enum": self.text_value is not None and all(v is None for v in values[:3]),
                 "boolean": self.text_value in {"true", "false"}

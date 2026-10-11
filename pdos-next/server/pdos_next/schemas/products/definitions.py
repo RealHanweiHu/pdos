@@ -5,6 +5,7 @@ from uuid import UUID
 from pydantic import Field, field_validator, model_validator
 
 from pdos_next.schema_base import StrictModel
+from pdos_next.schemas.spec_values import numeric_value_shape
 
 
 class DefinitionReference(StrictModel):
@@ -64,15 +65,17 @@ class DefinitionSpec(StrictModel):
             raise ValueError("未知、冲突或不适用规格不得补填数值或文字目标")
         if self.availability == "known":
             if self.value_type == "number":
-                if self.value is None or any(
-                    v is not None for v in (self.lower, self.upper, self.text)
+                if not numeric_value_shape(
+                    self.value_type, self.value, self.lower, self.upper, self.text
                 ):
-                    raise ValueError("数值规格须有且仅有一个目标值")
+                    raise ValueError("数值规格须有目标值或有序上下限，不能混填")
             elif self.value_type == "range":
-                if self.lower is None or self.upper is None or self.lower > self.upper:
-                    raise ValueError("范围规格须有有序上下限")
                 if self.value is not None or self.text is not None:
                     raise ValueError("范围规格不能另填单值或文字目标")
+                if not numeric_value_shape(
+                    self.value_type, self.value, self.lower, self.upper, self.text
+                ):
+                    raise ValueError("范围规格须有至少一个有效边界，双端须有序")
             elif (
                 not self.text
                 or not self.text.strip()

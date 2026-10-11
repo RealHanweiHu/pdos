@@ -59,10 +59,8 @@ class ClaimContent(StrictModel):
     def coherent_values(self):
         if (self.parameter_id is None) != (self.parameter_version is None):
             raise ValueError("Parameter identity and version must be supplied together")
-        if (self.lower is None) != (self.upper is None):
-            raise ValueError("Range endpoints must be supplied together")
-        if self.lower is not None:
-            if self.lower > self.upper:
+        if self.lower is not None or self.upper is not None:
+            if self.lower is not None and self.upper is not None and self.lower > self.upper:
                 raise ValueError("Lower bound exceeds upper bound")
             if self.value is not None:
                 raise ValueError("Choose a scalar value or a range")

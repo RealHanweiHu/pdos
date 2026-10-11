@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { Button } from "@/components/ui/button";
+import { numericValueText } from "@/lib/spec-bound-values";
 import { ProposalSourceInspector } from "./proposal-source-inspector";
 import { isProposalViewResponse, matchesProposalDocument, proposalViewNames } from "./proposal-view-contracts";
 import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse, ViewComparisonGroup, ViewMaturity, ViewObservation, ViewPositioningGroup, ViewSubject, ViewSubjectRef, ViewUnknown } from "./proposal-view-contracts";
@@ -32,7 +33,7 @@ function Observation({ observation }: { observation: ViewObservation }) {
   const value = observation.availability === "unknown" ? "未知"
     : observation.availability === "not_applicable" ? "不适用"
     : typeof observation.value === "boolean" ? observation.value ? "有" : "无"
-    : observation.value ?? observation.text_value ?? (observation.lower != null && observation.upper != null ? `${observation.lower}–${observation.upper}` : "未知");
+    : observation.value ?? observation.text_value ?? numericValueText(null, observation.lower, observation.upper);
   return <div className="space-y-2">
     <p className="font-medium">{String(value)}</p>
     <p className="text-xs text-muted-foreground">{observation.evidence_label ?? labels[observation.evidence_kind] ?? observation.nature ?? observation.evidence_kind} · {labels[observation.availability] ?? observation.availability}</p>

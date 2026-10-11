@@ -8,6 +8,7 @@ from pydantic import AliasChoices, ConfigDict, Field, field_validator, model_val
 
 from pdos_next.schema_base import StrictModel
 from pdos_next.schemas.products.definitions import DefinitionReference
+from pdos_next.schemas.spec_values import numeric_value_shape
 
 CONTENT_FIELDS = (
     "purpose",
@@ -110,12 +111,12 @@ class SpecSnapshot(DTO):
             raise ValueError("Unknown values must remain absent")
         if self.availability == "known":
             valid = {
-                "number": self.value is not None and all(v is None for v in values[1:]),
-                "range": self.lower is not None
-                and self.upper is not None
-                and self.lower <= self.upper
-                and self.value is None
-                and self.text is None,
+                "number": numeric_value_shape(
+                    self.value_type, self.value, self.lower, self.upper, self.text
+                ),
+                "range": numeric_value_shape(
+                    self.value_type, self.value, self.lower, self.upper, self.text
+                ),
                 "text": self.text is not None and all(v is None for v in values[:3]),
                 "enum": self.text is not None and all(v is None for v in values[:3]),
                 "boolean": self.text in {"true", "false"} and all(v is None for v in values[:3]),
